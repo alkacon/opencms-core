@@ -276,16 +276,63 @@ public final class CmsContainerpageController {
         @Override
         public void execute() {
 
+            boolean cached = false;
             if (m_elements.containsKey(m_clientId)) {
-                m_callback.execute(m_elements.get(m_clientId));
+                cached = true;
+                CmsContainerElementData elementData = m_elements.get(m_clientId);
+                if (elementData.isGroupContainer()) {
+                    for (String subItemId : elementData.getSubItems()) {
+                        if (!m_elements.containsKey(subItemId)) {
+                            cached = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (cached) {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    /**
+                     * @see com.google.gwt.user.client.Command#execute()
+                     */
+                    public void execute() {
+
+                        getCallback().execute(m_elements.get(getClientId()));
+
+                    }
+                });
             } else {
                 List<String> clientIds = new ArrayList<String>();
                 clientIds.add(m_clientId);
-                getContainerpageService().getElementsData(CmsCoreProvider.get().getStructureId(),
-
-                getRequestParams(), clientIds, m_containerBeans, getLocale(), this);
+                getContainerpageService().getElementsData(
+                    CmsCoreProvider.get().getStructureId(),
+                    getRequestParams(),
+                    clientIds,
+                    m_containerBeans,
+                    getLocale(),
+                    this);
             }
 
+        }
+
+        /**
+         * Returns the call-back function.<p>
+         * 
+         * @return the call-back function
+         */
+        protected I_CmsSimpleCallback<CmsContainerElementData> getCallback() {
+
+            return m_callback;
+        }
+
+        /** 
+         * Returns the requested elements id.<p>
+         * 
+         * @return the element client id
+         */
+        protected String getClientId() {
+
+            return m_clientId;
         }
 
         /**
@@ -746,22 +793,8 @@ public final class CmsContainerpageController {
      */
     public void getElement(final String clientId, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
-        if (m_elements.containsKey(clientId)) {
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                /**
-                 * @see com.google.gwt.user.client.Command#execute()
-                 */
-                public void execute() {
-
-                    callback.execute(m_elements.get(clientId));
-
-                }
-            });
-        } else {
-            SingleElementAction action = new SingleElementAction(clientId, callback);
-            action.execute();
-        }
+        SingleElementAction action = new SingleElementAction(clientId, callback);
+        action.execute();
     }
 
     /**
@@ -1277,44 +1310,6 @@ public final class CmsContainerpageController {
     /**
      * Method to save and leave the page.<p>
      * 
-     * @param targetUri the new URI to call
-     */
-    public void saveAndLeave(final String targetUri) {
-
-        if (hasPageChanged()) {
-            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-                /**
-                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-                 */
-                @Override
-                public void execute() {
-
-                    getContainerpageService().saveContainerpage(
-                        CmsCoreProvider.get().getStructureId(),
-                        getPageContent(),
-                        getLocale(),
-                        this);
-                }
-
-                /**
-                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-                 */
-                @Override
-                protected void onResponse(Void result) {
-
-                    CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
-                    setPageChanged(false, true);
-                    Window.Location.assign(targetUri);
-                }
-            };
-            action.execute();
-        }
-    }
-
-    /**
-     * Method to save and leave the page.<p>
-     * 
      * @param leaveCommand the command to execute to leave the page
      */
     public void saveAndLeave(final Command leaveCommand) {
@@ -1344,6 +1339,44 @@ public final class CmsContainerpageController {
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     setPageChanged(false, true);
                     leaveCommand.execute();
+                }
+            };
+            action.execute();
+        }
+    }
+
+    /**
+     * Method to save and leave the page.<p>
+     * 
+     * @param targetUri the new URI to call
+     */
+    public void saveAndLeave(final String targetUri) {
+
+        if (hasPageChanged()) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    getContainerpageService().saveContainerpage(
+                        CmsCoreProvider.get().getStructureId(),
+                        getPageContent(),
+                        getLocale(),
+                        this);
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
+                    setPageChanged(false, true);
+                    Window.Location.assign(targetUri);
                 }
             };
             action.execute();
