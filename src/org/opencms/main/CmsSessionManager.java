@@ -223,12 +223,12 @@ public class CmsSessionManager {
      *  
      * @return all current session info objects
      */
-    public List getSessionInfos() {
+    public List<CmsSessionInfo> getSessionInfos() {
 
         // since this method could be called from another thread
         // we have to prevent access before initialization
         if (m_sessionStorageProvider == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return m_sessionStorageProvider.getAll();
     }
@@ -245,12 +245,12 @@ public class CmsSessionManager {
      *  
      * @return a list of all active session info objects for the specified user
      */
-    public List getSessionInfos(CmsUUID userId) {
+    public List<CmsSessionInfo> getSessionInfos(CmsUUID userId) {
 
         // since this method could be called from another thread
         // we have to prevent access before initialization
         if (m_sessionStorageProvider == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return m_sessionStorageProvider.getAllOfUser(userId);
     }
@@ -262,6 +262,7 @@ public class CmsSessionManager {
      * 
      * @param message the message to broadcast
      */
+    @SuppressWarnings("unchecked")
     public void sendBroadcast(CmsObject cms, String message) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
@@ -271,9 +272,9 @@ public class CmsSessionManager {
         // create the broadcast
         CmsBroadcast broadcast = new CmsBroadcast(cms.getRequestContext().getCurrentUser(), message);
         // send the broadcast to all authenticated sessions
-        Iterator i = m_sessionStorageProvider.getAll().iterator();
+        Iterator<CmsSessionInfo> i = m_sessionStorageProvider.getAll().iterator();
         while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            CmsSessionInfo sessionInfo = i.next();
             if (m_sessionStorageProvider.get(sessionInfo.getSessionId()) != null) {
                 // double check for concurrent modification
                 sessionInfo.getBroadcastQueue().add(broadcast);
@@ -289,6 +290,7 @@ public class CmsSessionManager {
      * @param message the message to broadcast
      * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
      */
+    @SuppressWarnings("unchecked")
     public void sendBroadcast(CmsObject cms, String message, String sessionId) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
@@ -314,6 +316,7 @@ public class CmsSessionManager {
      * @param message the message to broadcast
      * @param toUser the target (receiver) of the broadcast
      */
+    @SuppressWarnings("unchecked")
     public void sendBroadcast(CmsUser fromUser, String message, CmsUser toUser) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
@@ -322,11 +325,11 @@ public class CmsSessionManager {
         }
         // create the broadcast
         CmsBroadcast broadcast = new CmsBroadcast(fromUser, message);
-        List userSessions = getSessionInfos(toUser.getId());
-        Iterator i = userSessions.iterator();
+        List<CmsSessionInfo> userSessions = getSessionInfos(toUser.getId());
+        Iterator<CmsSessionInfo> i = userSessions.iterator();
         // send the broadcast to all sessions of the selected user
         while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            CmsSessionInfo sessionInfo = i.next();
             if (m_sessionStorageProvider.get(sessionInfo.getSessionId()) != null) {
                 // double check for concurrent modification
                 sessionInfo.getBroadcastQueue().add(broadcast);
@@ -396,13 +399,14 @@ public class CmsSessionManager {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer output = new StringBuffer();
-        Iterator i = m_sessionStorageProvider.getAll().iterator();
+        Iterator<CmsSessionInfo> i = m_sessionStorageProvider.getAll().iterator();
         output.append("[CmsSessions]:\n");
         while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            CmsSessionInfo sessionInfo = i.next();
             output.append(sessionInfo.getSessionId().toString());
             output.append(" : ");
             output.append(sessionInfo.getUserId().toString());
@@ -420,10 +424,10 @@ public class CmsSessionManager {
     public void updateSessionInfos(CmsObject cms) {
 
         // get all sessions
-        List userSessions = getSessionInfos();
-        Iterator i = userSessions.iterator();
+        List<CmsSessionInfo> userSessions = getSessionInfos();
+        Iterator<CmsSessionInfo> i = userSessions.iterator();
         while (i.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
+            CmsSessionInfo sessionInfo = i.next();
             // check is the project stored in this session is not existing anymore
             // if so, set it to the online project
             CmsUUID projectId = sessionInfo.getProject();

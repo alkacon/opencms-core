@@ -168,11 +168,11 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @return <code>false</code> if OCEE is present but not compatible with opencms version
      */
-    @SuppressWarnings( {"unchecked", "boxing"})
+    @SuppressWarnings({"boxing"})
     public boolean checkOceeVersion(String version) {
 
         try {
-            Class manager = Class.forName("org.opencms.ocee.base.CmsOceeManager");
+            Class<?> manager = Class.forName("org.opencms.ocee.base.CmsOceeManager");
             Method checkVersion = manager.getMethod("checkOceeVersion", String.class);
             return (Boolean)checkVersion.invoke(manager, version);
         } catch (ClassNotFoundException e) {
