@@ -54,6 +54,8 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
+
 /**
  * A class to parse ADE sitemap or module configuration files and create configuration objects from them.<p>
  */
@@ -122,6 +124,12 @@ public class CmsConfigurationReader {
      * @throws CmsException if something goes wrong 
      */
     public CmsADEConfigData parseConfiguration(String basePath, CmsXmlContent content) throws CmsException {
+
+        m_detailPageConfigs = Lists.newArrayList();
+        m_functionReferences = Lists.newArrayList();
+        m_modelPageConfigs = Lists.newArrayList();
+        m_propertyConfigs = Lists.newArrayList();
+        m_resourceTypeConfigs = Lists.newArrayList();
 
         if (!content.hasLocale(DEFAULT_LOCALE)) {
             return CmsADEConfigData.emptyConfiguration(basePath);
