@@ -265,6 +265,21 @@ public final class Messages {
     public static final String GUI_RESULT_BUTTON_DELETE_0 = "GUI_RESULT_BUTTON_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCOPE_SHARED_0 = "GUI_SCOPE_SHARED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCOPE_SITE_0 = "GUI_SCOPE_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCOPE_SITESHARED_0 = "GUI_SCOPE_SITESHARED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCOPE_SUBSITE_0 = "GUI_SCOPE_SUBSITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCOPE_SUBSITESHARED_0 = "GUI_SCOPE_SUBSITESHARED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SEARCH_SCOPE_0 = "GUI_SEARCH_SCOPE_0";
 
     /** Message constant for key in the resource bundle. */
