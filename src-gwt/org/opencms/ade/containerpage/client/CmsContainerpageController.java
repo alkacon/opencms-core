@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
@@ -1615,27 +1616,27 @@ public final class CmsContainerpageController {
 
         List<CmsContainer> containers = new ArrayList<CmsContainer>();
         for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
-            List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
-            Iterator<Widget> elIt = entry.getValue().iterator();
-            while (elIt.hasNext()) {
-                try {
-                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
-                    CmsContainerElement element = new CmsContainerElement();
-                    element.setClientId(elementWidget.getId());
-                    element.setResourceType(elementWidget.getNewType());
-                    element.setNew(elementWidget.isNew());
-                    element.setSitePath(elementWidget.getSitePath());
-                    elements.add(element);
-                } catch (ClassCastException e) {
-                    // no proper container element, skip it (this should never happen!)
-                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
-                }
-            }
+
             CmsContainerJso cnt = m_containers.get(entry.getKey());
+            // only consider containers that are not marked as detail view
             if (!cnt.isDetailView()) {
-                // container is currently showing detail element.
-                // we don't include it in the data to save, so on the server side
-                // the existing elements in that container will be preserved.
+                List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
+                Iterator<Widget> elIt = entry.getValue().iterator();
+                while (elIt.hasNext()) {
+                    try {
+                        CmsContainerPageElementPanel elementWidget = (CmsContainerPageElementPanel)elIt.next();
+                        CmsContainerElement element = new CmsContainerElement();
+                        element.setClientId(elementWidget.getId());
+                        element.setResourceType(elementWidget.getNewType());
+                        element.setNew(elementWidget.isNew());
+                        element.setSitePath(elementWidget.getSitePath());
+                        elements.add(element);
+                    } catch (ClassCastException e) {
+                        // no proper container element, skip it (this should never happen!)
+                        CmsDebugLog.getInstance().printLine(
+                            "WARNING: there is an inappropriate element within a container");
+                    }
+                }
                 containers.add(new CmsContainer(
                     entry.getKey(),
                     cnt.getType(),

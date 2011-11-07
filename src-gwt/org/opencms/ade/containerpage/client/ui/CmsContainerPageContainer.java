@@ -41,7 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -124,7 +123,20 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         if (getWidgetCount() >= m_maxElements) {
             m_overflowingElement = getWidget(getWidgetCount() - 1);
-            m_overflowingElement.getElement().getStyle().setDisplay(Display.NONE);
+            m_overflowingElement.removeFromParent();
+            //            Widget overflowElement=null;
+            //            int index =0;
+            //            for (Widget widget:this){
+            //                if (!Display.NONE.getCssName().equals(widget.getElement().getStyle().getDisplay())){
+            //                    index++;
+            //                    if (index >= m_maxElements){
+            //                        widget.getElement().getStyle().setDisplay(Display.NONE);
+            //                        if (overflowElement==null)
+            //                            overflowElement=widget;
+            //                    }
+            //                }
+            //            }
+            //            m_overflowingElement = overflowElement;
         }
     }
 
@@ -134,9 +146,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void checkMaxElementsOnLeave() {
 
         if (m_overflowingElement != null) {
-            m_overflowingElement.getElement().getStyle().clearDisplay();
+            add(m_overflowingElement);
+            //           m_overflowingElement.getElement().getStyle().clearDisplay();
         }
-
     }
 
     /**
@@ -302,8 +314,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void onDrop(I_CmsDraggable draggable) {
 
-        // nothing to do
-
+        m_overflowingElement = null;
     }
 
     /**
