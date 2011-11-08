@@ -78,6 +78,7 @@
 		<loginmanager>	
 			<disableMinutes>20</disableMinutes>
 			<maxBadAttempts>3</maxBadAttempts>
+			<enableSecurity>false</enableSecurity>
 		</loginmanager>	
 		<loginmessage>
 			<enabled>false</enabled>
