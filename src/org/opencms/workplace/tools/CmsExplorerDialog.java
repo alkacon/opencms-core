@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
 public class CmsExplorerDialog extends CmsDialog {
 
     /** List of explorer tools. */
-    public static final List EXPLORER_TOOLS = new ArrayList();
+    public static final List<String> EXPLORER_TOOLS = new ArrayList<String>();
 
     /**
      * Public constructor with JSP action element.<p>

@@ -129,6 +129,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -137,6 +138,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -145,6 +147,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -156,9 +159,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                 /**
                  * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
                  */
-                public List getCollectorNames() {
+                public List<String> getCollectorNames() {
 
-                    List names = new ArrayList();
+                    List<String> names = new ArrayList<String>();
                     names.add(COLLECTOR_NAME);
                     return names;
                 }
@@ -166,7 +169,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                 /**
                  * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
                  */
-                public List getResources(CmsObject cms, Map params) {
+                @Override
+                public List<CmsResource> getResources(CmsObject cms, Map<String, String> params) {
 
                     if (m_publishRelated && getSettings().getPublishList().isDirectPublish()) {
                         try {
@@ -192,6 +196,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                 /**
                  * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
                  */
+                @Override
                 protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
                     item.set(
@@ -217,6 +222,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         CmsObject cms;
@@ -234,11 +240,11 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
             progressOffset = thread.getProgress();
         }
 
-        List publishResources = getSettings().getPublishList().getAllResources();
+        List<CmsResource> publishResources = getSettings().getPublishList().getAllResources();
 
         // get content
-        List resourceNames = new ArrayList(getList().getAllContent());
-        Iterator itResourceNames = resourceNames.iterator();
+        List<CmsListItem> resourceNames = new ArrayList<CmsListItem>(getList().getAllContent());
+        Iterator<CmsListItem> itResourceNames = resourceNames.iterator();
         int count = 0;
         while (itResourceNames.hasNext()) {
             // set progress in thread
@@ -248,17 +254,17 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                         org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                 }
-                thread.setProgress((count * 10 / resourceNames.size()) + progressOffset);
+                thread.setProgress(((count * 10) / resourceNames.size()) + progressOffset);
                 thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
                     org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP3_2,
                     new Integer(count),
                     new Integer(resourceNames.size())));
             }
 
-            CmsListItem item = (CmsListItem)itResourceNames.next();
+            CmsListItem item = itResourceNames.next();
             try {
                 if (detailId.equals(LIST_DETAIL_RELATIONS)) {
-                    List relatedResources = new ArrayList();
+                    List<String> relatedResources = new ArrayList<String>();
                     CmsResource resource = getResourceUtil(item).getResource();
 
                     String rightSite = OpenCms.getSiteManager().getSiteRoot(resource.getRootPath());
@@ -269,11 +275,11 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     try {
                         cms.getRequestContext().setSiteRoot(rightSite);
                         // get and iterate over all related resources
-                        Iterator itRelations = cms.getRelationsForResource(
+                        Iterator<CmsRelation> itRelations = cms.getRelationsForResource(
                             resource,
                             CmsRelationFilter.TARGETS.filterStrong()).iterator();
                         while (itRelations.hasNext()) {
-                            CmsRelation relation = (CmsRelation)itRelations.next();
+                            CmsRelation relation = itRelations.next();
                             CmsResource target = null;
                             try {
                                 target = relation.getTarget(cms, CmsResourceFilter.ALL);
@@ -322,7 +328,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                 resource,
                                 CmsRelationFilter.SOURCES.filterStrong()).iterator();
                             while (itRelations.hasNext()) {
-                                CmsRelation relation = (CmsRelation)itRelations.next();
+                                CmsRelation relation = itRelations.next();
                                 CmsResource source = null;
                                 try {
                                     source = relation.getSource(cms, CmsResourceFilter.ALL);
@@ -381,6 +387,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
@@ -396,13 +403,14 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
 
-        Iterator it = metadata.getColumnDefinitions().iterator();
+        Iterator<CmsListColumnDefinition> it = metadata.getColumnDefinitions().iterator();
         while (it.hasNext()) {
-            CmsListColumnDefinition colDefinition = (CmsListColumnDefinition)it.next();
+            CmsListColumnDefinition colDefinition = it.next();
             colDefinition.setSorteable(false);
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
                 colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
@@ -416,6 +424,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getIconPath()
                      */
+                    @Override
                     public String getIconPath() {
 
                         if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
@@ -427,6 +436,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getName()
                      */
+                    @Override
                     public CmsMessageContainer getName() {
 
                         if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
@@ -451,6 +461,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         /**
@@ -471,6 +482,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 StringBuffer html = new StringBuffer(1024);
@@ -507,6 +519,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
              */
+            @Override
             public String jsCode(CmsWorkplace wp) {
 
                 return "javascript:showRelatedResources(false);";
@@ -522,6 +535,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
              */
+            @Override
             public String jsCode(CmsWorkplace wp) {
 
                 return "javascript:showRelatedResources(true);";
@@ -538,6 +552,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListItemDetails#getAction()
              */
+            @Override
             public I_CmsListAction getAction() {
 
                 return new CmsListIndependentAction("hide") {
@@ -545,6 +560,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
                      */
+                    @Override
                     public String buttonHtml(CmsWorkplace wp) {
 
                         return "";
@@ -562,12 +578,13 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     return new DataFormatException().getLocalizedMessage();
                 }
                 StringBuffer html = new StringBuffer(512);
-                Iterator itResourceNames = ((List)data).iterator();
+                @SuppressWarnings("unchecked")
+                Iterator<String> itResourceNames = ((List<String>)data).iterator();
                 if (itResourceNames.hasNext()) {
                     html.append("<table border='0' cellspacing='0' cellpadding='0'>\n");
                 }
                 while (itResourceNames.hasNext()) {
-                    String resName = (String)itResourceNames.next();
+                    String resName = itResourceNames.next();
                     html.append("\t<tr>\n");
                     html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
                     html.append("\t\t\t");
@@ -626,6 +643,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs, and remove default search action

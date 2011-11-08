@@ -110,7 +110,7 @@ public interface I_CmsRepositorySession {
      * 
      * @throws CmsException if something goes wrong
      */
-    List list(String path) throws CmsException;
+    List<I_CmsRepositoryItem> list(String path) throws CmsException;
 
     /**
      * Creates a new lock on the item at the path with the given information 

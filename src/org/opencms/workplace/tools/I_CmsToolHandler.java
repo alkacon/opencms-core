@@ -91,7 +91,7 @@ public interface I_CmsToolHandler {
      * 
      * @return the parameters map
      */
-    Map getParameters(CmsWorkplace wp);
+    Map<String, String[]> getParameters(CmsWorkplace wp);
 
     /**
      * Returns the tool path to install the tool in.<p>

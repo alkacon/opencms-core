@@ -30,6 +30,7 @@ package org.opencms.configuration;
 import org.opencms.db.CmsUserExportSettings;
 import org.opencms.importexport.CmsExtendedHtmlImportDefault;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.importexport.I_CmsImport;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
 import org.opencms.repository.A_CmsRepository;
@@ -689,10 +690,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         Element importexportElement = parent.addElement(N_IMPORTEXPORT);
 
         Element resourceloadersElement = importexportElement.addElement(N_IMPORTEXPORTHANDLERS);
-        List handlers = m_importExportManager.getImportExportHandlers();
-        Iterator i = handlers.iterator();
-        while (i.hasNext()) {
-            I_CmsImportExportHandler handler = (I_CmsImportExportHandler)i.next();
+        List<I_CmsImportExportHandler> handlers = m_importExportManager.getImportExportHandlers();
+        Iterator<I_CmsImportExportHandler> handlerIt = handlers.iterator();
+        while (handlerIt.hasNext()) {
+            I_CmsImportExportHandler handler = handlerIt.next();
             // add the handler node
             Element loaderNode = resourceloadersElement.addElement(N_IMPORTEXPORTHANDLER);
             loaderNode.addAttribute(A_CLASS, handler.getClass().getName());
@@ -714,33 +715,35 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
         // <importversions> node
         Element resourcetypesElement = importElement.addElement(N_IMPORTVERSIONS);
-        i = m_importExportManager.getImportVersionClasses().iterator();
-        while (i.hasNext()) {
-            resourcetypesElement.addElement(N_IMPORTVERSION).addAttribute(A_CLASS, i.next().getClass().getName());
+        Iterator<I_CmsImport> importVersions = m_importExportManager.getImportVersionClasses().iterator();
+        while (importVersions.hasNext()) {
+            resourcetypesElement.addElement(N_IMPORTVERSION).addAttribute(
+                A_CLASS,
+                importVersions.next().getClass().getName());
         }
 
         // <immutables> node
         Element immutablesElement = importElement.addElement(N_IMMUTABLES);
-        i = m_importExportManager.getImmutableResources().iterator();
-        while (i.hasNext()) {
-            String uri = (String)i.next();
+        Iterator<String> immutables = m_importExportManager.getImmutableResources().iterator();
+        while (immutables.hasNext()) {
+            String uri = immutables.next();
             immutablesElement.addElement(N_RESOURCE).addAttribute(A_URI, uri);
         }
 
         // <principaltranslations> node
         Element principalsElement = importElement.addElement(N_PRINCIPALTRANSLATIONS);
-        i = m_importExportManager.getImportUserTranslations().keySet().iterator();
-        while (i.hasNext()) {
-            String from = (String)i.next();
-            String to = (String)m_importExportManager.getImportUserTranslations().get(from);
+        Iterator<String> userTranslationKeys = m_importExportManager.getImportUserTranslations().keySet().iterator();
+        while (userTranslationKeys.hasNext()) {
+            String from = userTranslationKeys.next();
+            String to = m_importExportManager.getImportUserTranslations().get(from);
             principalsElement.addElement(N_PRINCIPALTRANSLATION).addAttribute(A_TYPE, I_CmsPrincipal.PRINCIPAL_USER).addAttribute(
                 A_FROM,
                 from).addAttribute(A_TO, to);
         }
-        i = m_importExportManager.getImportGroupTranslations().keySet().iterator();
-        while (i.hasNext()) {
-            String from = (String)i.next();
-            String to = (String)m_importExportManager.getImportGroupTranslations().get(from);
+        Iterator<String> groupTranslationKeys = m_importExportManager.getImportGroupTranslations().keySet().iterator();
+        while (groupTranslationKeys.hasNext()) {
+            String from = groupTranslationKeys.next();
+            String to = m_importExportManager.getImportGroupTranslations().get(from);
             principalsElement.addElement(N_PRINCIPALTRANSLATION).addAttribute(A_TYPE, I_CmsPrincipal.PRINCIPAL_GROUP).addAttribute(
                 A_FROM,
                 from).addAttribute(A_TO, to);
@@ -748,9 +751,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
         // <ignoredproperties> node
         Element propertiesElement = importElement.addElement(N_IGNOREDPROPERTIES);
-        i = m_importExportManager.getIgnoredProperties().iterator();
-        while (i.hasNext()) {
-            String property = (String)i.next();
+        Iterator<String> ignoredProperties = m_importExportManager.getIgnoredProperties().iterator();
+        while (ignoredProperties.hasNext()) {
+            String property = ignoredProperties.next();
             propertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, property);
         }
 
@@ -796,19 +799,19 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         // <defaultsuffixes> node and its <suffix> sub nodes
         Element defaultsuffixesElement = staticexportElement.addElement(N_STATICEXPORT_DEFAULTSUFFIXES);
 
-        i = m_staticExportManager.getExportSuffixes().iterator();
-        while (i.hasNext()) {
-            String suffix = (String)i.next();
+        Iterator<String> exportSuffixes = m_staticExportManager.getExportSuffixes().iterator();
+        while (exportSuffixes.hasNext()) {
+            String suffix = exportSuffixes.next();
             Element suffixElement = defaultsuffixesElement.addElement(N_STATICEXPORT_SUFFIX);
             suffixElement.addAttribute(A_KEY, suffix);
         }
 
         // <exportheaders> node and its <header> sub nodes
-        i = m_staticExportManager.getExportHeaders().iterator();
-        if (i.hasNext()) {
+        Iterator<String> exportHandlers = m_staticExportManager.getExportHeaders().iterator();
+        if (exportHandlers.hasNext()) {
             Element exportheadersElement = staticexportElement.addElement(N_STATICEXPORT_EXPORTHEADERS);
-            while (i.hasNext()) {
-                String header = (String)i.next();
+            while (exportHandlers.hasNext()) {
+                String header = exportHandlers.next();
                 exportheadersElement.addElement(N_STATICEXPORT_HEADER).addText(header);
             }
         }
@@ -858,9 +861,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         // <resourcestorender> node and <regx> subnodes
         Element resourcetorenderElement = rendersettingsElement.addElement(N_STATICEXPORT_RESOURCESTORENDER);
 
-        i = m_staticExportManager.getExportFolderPatterns().iterator();
-        while (i.hasNext()) {
-            String pattern = (String)i.next();
+        Iterator<String> exportFolderPatterns = m_staticExportManager.getExportFolderPatterns().iterator();
+        while (exportFolderPatterns.hasNext()) {
+            String pattern = exportFolderPatterns.next();
             resourcetorenderElement.addElement(N_STATICEXPORT_REGEX).addText(pattern);
         }
 
@@ -868,25 +871,25 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             // <export-rules> node
             Element exportRulesElement = resourcetorenderElement.addElement(N_STATICEXPORT_EXPORTRULES);
 
-            i = m_staticExportManager.getExportRules().iterator();
-            while (i.hasNext()) {
-                CmsStaticExportExportRule rule = (CmsStaticExportExportRule)i.next();
+            Iterator<CmsStaticExportExportRule> exportRules = m_staticExportManager.getExportRules().iterator();
+            while (exportRules.hasNext()) {
+                CmsStaticExportExportRule rule = exportRules.next();
                 // <export-rule> node
                 Element exportRuleElement = exportRulesElement.addElement(N_STATICEXPORT_EXPORTRULE);
                 exportRuleElement.addElement(N_STATICEXPORT_NAME).addText(rule.getName());
                 exportRuleElement.addElement(N_STATICEXPORT_DESCRIPTION).addText(rule.getDescription());
                 // <modified-resources> node and <regex> subnodes
                 Element modifiedElement = exportRuleElement.addElement(N_STATICEXPORT_MODIFIED);
-                Iterator itMods = rule.getModifiedResources().iterator();
+                Iterator<Pattern> itMods = rule.getModifiedResources().iterator();
                 while (itMods.hasNext()) {
-                    Pattern regex = (Pattern)itMods.next();
+                    Pattern regex = itMods.next();
                     modifiedElement.addElement(N_STATICEXPORT_REGEX).addText(regex.pattern());
                 }
                 // <export-resources> node and <uri> subnodes
                 Element exportElement = exportRuleElement.addElement(N_STATICEXPORT_EXPORT);
-                Iterator itExps = rule.getExportResourcePatterns().iterator();
+                Iterator<String> itExps = rule.getExportResourcePatterns().iterator();
                 while (itExps.hasNext()) {
-                    String uri = (String)itExps.next();
+                    String uri = itExps.next();
                     exportElement.addElement(N_STATICEXPORT_URI).addText(uri);
                 }
             }
@@ -896,9 +899,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             // <rfs-rules> node
             Element rfsRulesElement = rendersettingsElement.addElement(N_STATICEXPORT_RFS_RULES);
 
-            i = m_staticExportManager.getRfsRules().iterator();
-            while (i.hasNext()) {
-                CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)i.next();
+            Iterator<CmsStaticExportRfsRule> rfsRules = m_staticExportManager.getRfsRules().iterator();
+            while (rfsRules.hasNext()) {
+                CmsStaticExportRfsRule rule = rfsRules.next();
                 // <rfs-rule> node and subnodes
                 Element rfsRuleElement = rfsRulesElement.addElement(N_STATICEXPORT_RFS_RULE);
                 rfsRuleElement.addElement(N_STATICEXPORT_NAME).addText(rule.getName());
@@ -918,9 +921,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
                         rule.getUseRelativeLinks().toString());
                 }
                 Element relatedSystemRes = rfsRuleElement.addElement(N_STATICEXPORT_RELATED_SYSTEM_RES);
-                Iterator itSystemRes = rule.getRelatedSystemResources().iterator();
+                Iterator<Pattern> itSystemRes = rule.getRelatedSystemResources().iterator();
                 while (itSystemRes.hasNext()) {
-                    Pattern sysRes = (Pattern)itSystemRes.next();
+                    Pattern sysRes = itSystemRes.next();
                     relatedSystemRes.addElement(N_STATICEXPORT_REGEX).addText(sysRes.pattern());
                 }
             }
@@ -934,26 +937,26 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             userExportElement.addElement(N_SEPARATOR).setText(
                 m_importExportManager.getUserExportSettings().getSeparator());
             Element exportColumns = userExportElement.addElement(N_COLUMNS);
-            List exportColumnList = m_importExportManager.getUserExportSettings().getColumns();
-            Iterator itExportColumnList = exportColumnList.iterator();
+            List<String> exportColumnList = m_importExportManager.getUserExportSettings().getColumns();
+            Iterator<String> itExportColumnList = exportColumnList.iterator();
             while (itExportColumnList.hasNext()) {
-                exportColumns.addElement(N_COLUMN).setText((String)itExportColumnList.next());
+                exportColumns.addElement(N_COLUMN).setText(itExportColumnList.next());
             }
             // </usercsvexport>
         }
 
         if (m_repositoryManager.isConfigured()) {
-            List repositories = m_repositoryManager.getRepositories();
+            List<A_CmsRepository> repositories = m_repositoryManager.getRepositories();
             if (repositories != null) {
 
                 // <repositories> node
                 Element repositoriesElement = parent.addElement(N_REPOSITORIES);
 
-                i = repositories.iterator();
-                while (i.hasNext()) {
+                Iterator<A_CmsRepository> repositoriesIt = repositories.iterator();
+                while (repositoriesIt.hasNext()) {
 
                     // <repository> node
-                    A_CmsRepository repository = (A_CmsRepository)i.next();
+                    A_CmsRepository repository = repositoriesIt.next();
                     Element repositoryElement = repositoriesElement.addElement(N_REPOSITORY);
                     repositoryElement.addAttribute(A_NAME, repository.getName());
                     repositoryElement.addAttribute(A_CLASS, repository.getClass().getName());
@@ -968,15 +971,15 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
                     // <filter> node
                     CmsRepositoryFilter filter = repository.getFilter();
                     if (filter != null) {
-                        List rules = filter.getFilterRules();
+                        List<Pattern> rules = filter.getFilterRules();
                         if (rules.size() > 0) {
                             Element filterElement = repositoryElement.addElement(N_FILTER);
                             filterElement.addAttribute(A_TYPE, filter.getType());
 
                             // <regex> nodes
-                            Iterator it = rules.iterator();
+                            Iterator<Pattern> it = rules.iterator();
                             while (it.hasNext()) {
-                                Pattern rule = (Pattern)it.next();
+                                Pattern rule = it.next();
                                 filterElement.addElement(N_REGEX).addText(rule.pattern());
                             }
                         }

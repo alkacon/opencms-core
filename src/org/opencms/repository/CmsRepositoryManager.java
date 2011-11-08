@@ -55,10 +55,10 @@ public class CmsRepositoryManager {
     private boolean m_frozen;
 
     /** A list with all configured repositories. */
-    private List m_repositoryList;
+    private List<A_CmsRepository> m_repositoryList;
 
     /** All initialized repositories, mapped to their name. */
-    private Map m_repositoryMap;
+    private Map<String, A_CmsRepository> m_repositoryMap;
 
     /**
      * Creates a new instance for the resource manager, 
@@ -70,8 +70,8 @@ public class CmsRepositoryManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_REPOSITORY_CONFIG_0));
         }
 
-        m_repositoryList = new ArrayList();
-        m_repositoryMap = new HashMap();
+        m_repositoryList = new ArrayList<A_CmsRepository>();
+        m_repositoryMap = new HashMap<String, A_CmsRepository>();
         m_frozen = false;
         m_configured = true;
     }
@@ -99,7 +99,7 @@ public class CmsRepositoryManager {
      * 
      * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
-    public void addRepositoryClass(I_CmsRepository rep) throws CmsConfigurationException {
+    public void addRepositoryClass(A_CmsRepository rep) throws CmsConfigurationException {
 
         // check if new repositories can still be added
         if (m_frozen) {
@@ -114,7 +114,7 @@ public class CmsRepositoryManager {
      *
      * @return the repositories
      */
-    public List getRepositories() {
+    public List<A_CmsRepository> getRepositories() {
 
         return m_repositoryList;
     }
@@ -126,9 +126,9 @@ public class CmsRepositoryManager {
      * 
      * @return the repository configured for that name
      */
-    public I_CmsRepository getRepository(String name) {
+    public A_CmsRepository getRepository(String name) {
 
-        return (I_CmsRepository)m_repositoryMap.get(name);
+        return m_repositoryMap.get(name);
     }
 
     /**
@@ -140,9 +140,9 @@ public class CmsRepositoryManager {
 
         m_repositoryList = Collections.unmodifiableList(m_repositoryList);
 
-        Iterator iter = m_repositoryList.iterator();
+        Iterator<A_CmsRepository> iter = m_repositoryList.iterator();
         while (iter.hasNext()) {
-            A_CmsRepository rep = (A_CmsRepository)iter.next();
+            A_CmsRepository rep = iter.next();
             m_repositoryMap.put(rep.getName(), rep);
 
             if (CmsLog.INIT.isInfoEnabled()) {

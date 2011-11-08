@@ -42,6 +42,7 @@ import org.opencms.workplace.tools.CmsToolManager;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,7 +57,9 @@ public class CmsAdminMenu extends CmsToolDialog {
     public static final String DEFAULT_TARGET = "admin_content";
 
     /** Group container. */
-    private CmsIdentifiableObjectContainer m_groupContainer = new CmsIdentifiableObjectContainer(true, true);
+    private CmsIdentifiableObjectContainer<CmsAdminMenuGroup> m_groupContainer = new CmsIdentifiableObjectContainer<CmsAdminMenuGroup>(
+        true,
+        true);
 
     /**
      * Default Constructor.<p>
@@ -79,7 +82,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * 
      * @param group the group
      * 
-     * @see I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addGroup(CmsAdminMenuGroup group) {
 
@@ -92,7 +95,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * @param group the group
      * @param position the position
      * 
-     * @see I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addGroup(CmsAdminMenuGroup group, float position) {
 
@@ -146,13 +149,13 @@ public class CmsAdminMenu extends CmsToolDialog {
      * 
      * @return all initialized parameters of the current request
      */
-    public String allRequestParamsAsUrl(Collection excludes) {
+    public String allRequestParamsAsUrl(Collection<String> excludes) {
 
         StringBuffer result = new StringBuffer(512);
-        Map params = getJsp().getRequest().getParameterMap();
-        Iterator i = params.entrySet().iterator();
+        Map<?, ?> params = getJsp().getRequest().getParameterMap();
+        Iterator<?> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
+            Entry<?, ?> entry = (Entry<?, ?>)i.next();
             String param = (String)entry.getKey();
             if ((excludes == null) || (!excludes.contains(param))) {
                 if (result.length() > 0) {
@@ -180,11 +183,11 @@ public class CmsAdminMenu extends CmsToolDialog {
      * 
      * @return the group
      * 
-     * @see I_CmsIdentifiableObjectContainer#getObject(String)
+     * @see CmsIdentifiableObjectContainer#getObject(String)
      */
     public CmsAdminMenuGroup getGroup(String name) {
 
-        return (CmsAdminMenuGroup)m_groupContainer.getObject(name);
+        return m_groupContainer.getObject(name);
     }
 
     /**
@@ -192,6 +195,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * 
      * @return the admin manager
      */
+    @Override
     public CmsToolManager getToolManager() {
 
         return OpenCms.getWorkplaceManager().getToolManager();
@@ -207,9 +211,9 @@ public class CmsAdminMenu extends CmsToolDialog {
     public String groupHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(2048);
-        Iterator itHtml = m_groupContainer.elementList().iterator();
+        Iterator<CmsAdminMenuGroup> itHtml = m_groupContainer.elementList().iterator();
         while (itHtml.hasNext()) {
-            CmsAdminMenuGroup group = (CmsAdminMenuGroup)itHtml.next();
+            CmsAdminMenuGroup group = itHtml.next();
             html.append(group.groupHtml(wp));
         }
         return html.toString();
@@ -229,9 +233,12 @@ public class CmsAdminMenu extends CmsToolDialog {
         helpMenu.addMenuItem(new CmsAdminContextHelpMenuItem());
         addGroup(helpMenu);
 
-        Iterator itElems = getToolManager().getToolsForPath(this, getToolManager().getBaseToolPath(this), false).iterator();
+        Iterator<CmsTool> itElems = getToolManager().getToolsForPath(
+            this,
+            getToolManager().getBaseToolPath(this),
+            false).iterator();
         while (itElems.hasNext()) {
-            CmsTool tool = (CmsTool)itElems.next();
+            CmsTool tool = itElems.next();
             // check visibility
             String link = tool.getHandler().getLink();
             if (link.indexOf("?") > 0) {
@@ -270,6 +277,7 @@ public class CmsAdminMenu extends CmsToolDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);

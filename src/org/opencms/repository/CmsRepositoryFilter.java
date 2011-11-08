@@ -53,7 +53,7 @@ public class CmsRepositoryFilter {
     private static final String TYPE_INCLUDE = "include";
 
     /** The rules to be used of the filter. */
-    private List m_filterRules;
+    private List<Pattern> m_filterRules;
 
     /** The type of the filter: include or exclude. */
     private String m_type;
@@ -63,7 +63,7 @@ public class CmsRepositoryFilter {
      */
     public CmsRepositoryFilter() {
 
-        m_filterRules = new ArrayList();
+        m_filterRules = new ArrayList<Pattern>();
     }
 
     /**
@@ -81,7 +81,7 @@ public class CmsRepositoryFilter {
      *
      * @return the filterRules
      */
-    public List getFilterRules() {
+    public List<Pattern> getFilterRules() {
 
         return m_filterRules;
     }
@@ -109,9 +109,9 @@ public class CmsRepositoryFilter {
 
         if (CmsLog.INIT.isInfoEnabled()) {
 
-            Iterator iter = m_filterRules.iterator();
+            Iterator<Pattern> iter = m_filterRules.iterator();
             while (iter.hasNext()) {
-                Pattern rule = (Pattern)iter.next();
+                Pattern rule = iter.next();
 
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_FILTER_RULE_2, m_type, rule.pattern()));
             }
@@ -129,7 +129,7 @@ public class CmsRepositoryFilter {
     public boolean isFiltered(String path) {
 
         for (int j = 0; j < m_filterRules.size(); j++) {
-            Pattern pattern = (Pattern)m_filterRules.get(j);
+            Pattern pattern = m_filterRules.get(j);
             if (isPartialMatch(pattern, path)) {
                 return m_type.equals(TYPE_EXCLUDE);
             }
@@ -143,7 +143,7 @@ public class CmsRepositoryFilter {
      *
      * @param filterRules the filterRules to set
      */
-    public void setFilterRules(List filterRules) {
+    public void setFilterRules(List<Pattern> filterRules) {
 
         m_filterRules = filterRules;
     }

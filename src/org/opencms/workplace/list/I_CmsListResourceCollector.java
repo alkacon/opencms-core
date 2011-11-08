@@ -72,7 +72,7 @@ public interface I_CmsListResourceCollector extends I_CmsResourceCollector {
      * 
      * @throws CmsException if something goes wrong
      */
-    List getListItems(String parameter) throws CmsException;
+    List<CmsListItem> getListItems(String parameter) throws CmsException;
 
     /**
      * Returns the resource for the given item.<p>
@@ -96,7 +96,7 @@ public interface I_CmsListResourceCollector extends I_CmsResourceCollector {
      * 
      * @throws CmsException if something goes wrong
      */
-    List getResources(CmsObject cms, Map params) throws CmsException;
+    List<CmsResource> getResources(CmsObject cms, Map<String, String> params) throws CmsException;
 
     /**
      * Returns the workplace object.<p>

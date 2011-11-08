@@ -242,17 +242,17 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         List<Throwable> errors = new ArrayList<Throwable>();
         // create absolute RFS path and store it in dialog object
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String[]> params = new HashMap<String, String[]>();
         List<String> paths = m_dialogSettings.getPaths();
         String sourceLanguage = m_dialogSettings.getSourcelanguage();
         String targetLanguage = m_dialogSettings.getTargetlanguage();
-        params.put(CmsLanguageCopySelectionList.PARAM_PATHS, CmsStringUtil.collectionAsString(paths, ","));
-        params.put(CmsLanguageCopySelectionList.PARAM_SOURCE_LANGUAGE, sourceLanguage);
-        params.put(CmsLanguageCopySelectionList.PARAM_TARGET_LANGUAGE, targetLanguage);
+        params.put(CmsLanguageCopySelectionList.PARAM_PATHS, (String[])paths.toArray());
+        params.put(CmsLanguageCopySelectionList.PARAM_SOURCE_LANGUAGE, new String[] {sourceLanguage});
+        params.put(CmsLanguageCopySelectionList.PARAM_TARGET_LANGUAGE, new String[] {targetLanguage});
         // set style to display report in correct layout
-        params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         // set close link to get back to overview after finishing the import
-        params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/languagecopy"));
+        params.put(PARAM_CLOSELINK, new String[] {CmsToolManager.linkForToolPath(getJsp(), "/languagecopy")});
         // redirect to the report output JSP
         getToolManager().jspForwardPage(
             this,

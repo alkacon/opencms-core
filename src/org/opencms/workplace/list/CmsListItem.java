@@ -47,7 +47,7 @@ public class CmsListItem {
     private final CmsListMetadata m_metadata;
 
     /** Item values. */
-    private final Map m_values = new HashMap();
+    private final Map<String, Object> m_values = new HashMap<String, Object>();
 
     /**
      * Default Constructor.<p>
@@ -115,7 +115,7 @@ public class CmsListItem {
      * 
      * @return the value map of the list item
      */
-    public Map getValues() {
+    public Map<String, Object> getValues() {
 
         return Collections.unmodifiableMap(m_values);
     }
@@ -143,6 +143,7 @@ public class CmsListItem {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_id + ":" + m_values.toString();

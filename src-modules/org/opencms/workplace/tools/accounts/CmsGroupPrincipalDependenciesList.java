@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 8.0.0 
  */
-public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
+public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_ICON = "ai";
@@ -91,7 +91,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsGroupPrincipalDepemdenciesList(CmsJspActionElement jsp) {
+    public CmsGroupPrincipalDependenciesList(CmsJspActionElement jsp) {
 
         this(LIST_ID, jsp);
         m_showAttributes = false;
@@ -104,7 +104,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsGroupPrincipalDepemdenciesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsGroupPrincipalDependenciesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
         m_showAttributes = false;
@@ -116,7 +116,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
-    protected CmsGroupPrincipalDepemdenciesList(String listId, CmsJspActionElement jsp) {
+    protected CmsGroupPrincipalDependenciesList(String listId, CmsJspActionElement jsp) {
 
         super(
             jsp,
@@ -131,6 +131,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -139,6 +140,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -167,6 +169,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-op
@@ -175,28 +178,31 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        CmsIdentifiableObjectContainer ret = new CmsIdentifiableObjectContainer(true, false);
-        Iterator itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        CmsIdentifiableObjectContainer<CmsListItem> ret = new CmsIdentifiableObjectContainer<CmsListItem>(true, false);
+        Iterator<String> itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
         String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
         try {
             getCms().getRequestContext().setSiteRoot("/");
             while (itGroups.hasNext()) {
-                CmsGroup group = getCms().readGroup(new CmsUUID(itGroups.next().toString()));
+                CmsGroup group = getCms().readGroup(new CmsUUID(itGroups.next()));
                 // get content
-                Set resources = getCms().getResourcesForPrincipal(group.getId(), null, m_showAttributes);
-                Iterator itRes = resources.iterator();
+                Set<CmsResource> resources = getCms().getResourcesForPrincipal(group.getId(), null, m_showAttributes);
+                Iterator<CmsResource> itRes = resources.iterator();
                 while (itRes.hasNext()) {
-                    CmsResource resource = (CmsResource)itRes.next();
-                    CmsListItem item = (CmsListItem)ret.getObject(resource.getResourceId().toString());
+                    CmsResource resource = itRes.next();
+                    CmsListItem item = ret.getObject(resource.getResourceId().toString());
                     if (item == null) {
                         item = getList().newItem(resource.getResourceId().toString());
                         item.set(LIST_COLUMN_NAME, resource.getRootPath());
                         item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
-                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(
+                            resource.getRootPath(),
+                            false).iterator();
                         while (itAces.hasNext()) {
-                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            CmsAccessControlEntry ace = itAces.next();
                             if (ace.getPrincipal().equals(group.getId())) {
                                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
                                     item.set(LIST_COLUMN_PERMISSIONS, group.getName()
@@ -209,9 +215,11 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
                         ret.addIdentifiableObject(item.getId(), item);
                     } else {
                         String oldData = (String)item.get(LIST_COLUMN_PERMISSIONS);
-                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(
+                            resource.getRootPath(),
+                            false).iterator();
                         while (itAces.hasNext()) {
-                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            CmsAccessControlEntry ace = itAces.next();
                             if (ace.getPrincipal().equals(group.getId())) {
                                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
                                     String data = group.getName() + ": " + ace.getPermissions().getPermissionString();
@@ -226,10 +234,10 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
                     }
                 }
                 // add users
-                Iterator itUsers = getCms().getUsersOfGroup(group.getName()).iterator();
+                Iterator<CmsUser> itUsers = getCms().getUsersOfGroup(group.getName()).iterator();
                 while (itUsers.hasNext()) {
-                    CmsUser user = (CmsUser)itUsers.next();
-                    CmsListItem item = (CmsListItem)ret.getObject(user.getId().toString());
+                    CmsUser user = itUsers.next();
+                    CmsListItem item = ret.getObject(user.getId().toString());
                     if (item == null) {
                         item = getList().newItem(user.getId().toString());
                         item.set(LIST_COLUMN_NAME, user.getName());
@@ -238,10 +246,10 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
                     }
                 }
                 // add child groups
-                Iterator itChildren = getCms().getChildren(group.getName(), false).iterator();
+                Iterator<CmsGroup> itChildren = getCms().getChildren(group.getName(), false).iterator();
                 while (itChildren.hasNext()) {
-                    CmsGroup child = (CmsGroup)itChildren.next();
-                    CmsListItem item = (CmsListItem)ret.getObject(child.getId().toString());
+                    CmsGroup child = itChildren.next();
+                    CmsListItem item = ret.getObject(child.getId().toString());
                     if (item == null) {
                         item = getList().newItem(child.getId().toString());
                         item.set(LIST_COLUMN_NAME, child.getName());
@@ -259,6 +267,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -272,6 +281,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for edit
@@ -348,6 +358,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // no-op
@@ -356,6 +367,7 @@ public class CmsGroupPrincipalDepemdenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op

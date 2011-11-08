@@ -137,6 +137,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -145,6 +146,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -182,21 +184,22 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        CmsIdentifiableObjectContainer ret = new CmsIdentifiableObjectContainer(true, false);
-        Iterator itUsers = CmsStringUtil.splitAsList(getParamUserid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        CmsIdentifiableObjectContainer<CmsListItem> ret = new CmsIdentifiableObjectContainer<CmsListItem>(true, false);
+        Iterator<String> itUsers = CmsStringUtil.splitAsList(getParamUserid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
         String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
         try {
             getCms().getRequestContext().setSiteRoot("/");
             while (itUsers.hasNext()) {
                 CmsUser user = getCms().readUser(new CmsUUID(itUsers.next().toString()));
                 // get content
-                Set resources = getCms().getResourcesForPrincipal(user.getId(), null, m_showAttributes);
-                Iterator itRes = resources.iterator();
+                Set<CmsResource> resources = getCms().getResourcesForPrincipal(user.getId(), null, m_showAttributes);
+                Iterator<CmsResource> itRes = resources.iterator();
                 while (itRes.hasNext()) {
-                    CmsResource resource = (CmsResource)itRes.next();
-                    CmsListItem item = (CmsListItem)ret.getObject(resource.getResourceId().toString());
+                    CmsResource resource = itRes.next();
+                    CmsListItem item = ret.getObject(resource.getResourceId().toString());
                     if (item == null) {
                         String userCreated = resource.getUserCreated().toString();
                         try {
@@ -215,9 +218,11 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
                         item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
                         item.set(LIST_COLUMN_CREATED, userCreated);
                         item.set(LIST_COLUMN_LASTMODIFIED, userLastmodified);
-                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(
+                            resource.getRootPath(),
+                            false).iterator();
                         while (itAces.hasNext()) {
-                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            CmsAccessControlEntry ace = itAces.next();
                             if (ace.getPrincipal().equals(user.getId())) {
                                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
                                     item.set(LIST_COLUMN_PERMISSIONS, user.getName()
@@ -230,9 +235,11 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
                         ret.addIdentifiableObject(item.getId(), item);
                     } else {
                         String oldData = (String)item.get(LIST_COLUMN_PERMISSIONS);
-                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(
+                            resource.getRootPath(),
+                            false).iterator();
                         while (itAces.hasNext()) {
-                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            CmsAccessControlEntry ace = itAces.next();
                             if (ace.getPrincipal().equals(user.getId())) {
                                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
                                     String data = user.getName() + ": " + ace.getPermissions().getPermissionString();
@@ -256,6 +263,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -269,6 +277,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon
@@ -325,6 +334,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // no-op       
@@ -333,6 +343,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op

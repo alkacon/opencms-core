@@ -174,17 +174,17 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getParameters(org.opencms.workplace.CmsWorkplace)
      */
-    public Map getParameters(CmsWorkplace wp) {
+    public Map<String, String[]> getParameters(CmsWorkplace wp) {
 
-        Map argMap = new HashMap();
+        Map<String, String[]> argMap = new HashMap<String, String[]>();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_parameters)) {
             String toolParams = CmsEncoder.decode(wp.resolveMacros(m_parameters));
-            Iterator itArgs = CmsStringUtil.splitAsList(toolParams, "&").iterator();
+            Iterator<String> itArgs = CmsStringUtil.splitAsList(toolParams, "&").iterator();
             while (itArgs.hasNext()) {
-                String arg = (String)itArgs.next();
+                String arg = itArgs.next();
                 int pos = arg.indexOf("=");
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(arg.substring(pos + 1))) {
-                    argMap.put(arg.substring(0, pos), arg.substring(pos + 1));
+                    argMap.put(arg.substring(0, pos), new String[] {arg.substring(pos + 1)});
                 }
             }
         }
@@ -473,6 +473,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_path + " - " + m_group + " - " + m_position;
@@ -539,12 +540,12 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         try {
             CmsProperty prop = cms.readPropertyObject(resourcePath, ARGS_PROPERTY_DEFINITION, false);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
-                Map argsMap = new HashMap();
-                Iterator itArgs = CmsStringUtil.splitAsList(prop.getValue(), ARGUMENT_SEPARATOR).iterator();
+                Map<String, String> argsMap = new HashMap<String, String>();
+                Iterator<String> itArgs = CmsStringUtil.splitAsList(prop.getValue(), ARGUMENT_SEPARATOR).iterator();
                 while (itArgs.hasNext()) {
                     String arg = "";
                     try {
-                        arg = (String)itArgs.next();
+                        arg = itArgs.next();
                         int pos = arg.indexOf(VALUE_SEPARATOR);
                         argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
                     } catch (StringIndexOutOfBoundsException e) {
@@ -553,13 +554,13 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                     }
                 }
                 if (argsMap.get(ARG_PATH_NAME) != null) {
-                    setPath((String)argsMap.get(ARG_PATH_NAME));
+                    setPath(argsMap.get(ARG_PATH_NAME));
                 }
                 if (argsMap.get(ARG_CONFIRMATION_NAME) != null) {
-                    setConfirmationMessage((String)argsMap.get(ARG_CONFIRMATION_NAME));
+                    setConfirmationMessage(argsMap.get(ARG_CONFIRMATION_NAME));
                 }
                 if (argsMap.get(ARG_PARAM_NAME) != null) {
-                    setParameterString((String)argsMap.get(ARG_PARAM_NAME));
+                    setParameterString(argsMap.get(ARG_PARAM_NAME));
                 }
             }
         } catch (CmsException e) {

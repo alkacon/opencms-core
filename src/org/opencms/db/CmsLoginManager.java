@@ -162,7 +162,7 @@ public class CmsLoginManager {
      * 
      * @param disableMinutes the minutes to disable an account if the threshold is reached
      * @param maxBadAttempts the number of bad login attempts allowed before an account is temporarily disabled
-     * @param enableSecurity flag to determine if the security option ahould be enabled on the login dialog
+     * @param enableSecurity flag to determine if the security option should be enabled on the login dialog
      */
     public CmsLoginManager(int disableMinutes, int maxBadAttempts, boolean enableSecurity) {
 

@@ -66,13 +66,13 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     protected String m_collectorParameter;
 
     /** List item cache. */
-    protected Map m_liCache = new HashMap();
+    protected Map<String, CmsListItem> m_liCache = new HashMap<String, CmsListItem>();
 
     /** Resource cache. */
-    protected Map m_resCache = new HashMap();
+    protected Map<String, CmsResource> m_resCache = new HashMap<String, CmsResource>();
 
     /** Cache for resource list result. */
-    protected List m_resources;
+    protected List<CmsResource> m_resources;
 
     /** The workplace object where the collector is used from. */
     private A_CmsListExplorerDialog m_wp;
@@ -180,19 +180,19 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getListItems(String parameter) throws CmsException {
+    public List<CmsListItem> getListItems(String parameter) throws CmsException {
 
         synchronized (this) {
             if (parameter == null) {
                 parameter = m_collectorParameter;
             }
-            Map params = CmsStringUtil.splitAsMap(
+            Map<String, String> params = CmsStringUtil.splitAsMap(
                 parameter,
                 I_CmsListResourceCollector.SEP_PARAM,
                 I_CmsListResourceCollector.SEP_KEYVAL);
             CmsListState state = getState(params);
-            List resources = getInternalResources(getWp().getCms(), params);
-            List ret = new ArrayList();
+            List<CmsResource> resources = getInternalResources(getWp().getCms(), params);
+            List<CmsListItem> ret = new ArrayList<CmsListItem>();
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
@@ -241,7 +241,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             boolean showSite = (colSite.isVisible() || colSite.isPrintable());
 
             // get content
-            Iterator itRes = resources.iterator();
+            Iterator<CmsResource> itRes = resources.iterator();
             int count = 0;
             while (itRes.hasNext()) {
                 // set progress in thread
@@ -251,7 +251,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                         throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                             org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                     }
-                    thread.setProgress((count * 40 / resources.size()) + progressOffset);
+                    thread.setProgress(((count * 40) / resources.size()) + progressOffset);
                     thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
                         org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP2_2,
                         new Integer(count),
@@ -264,7 +264,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     continue;
                 }
                 CmsResource resource = (CmsResource)obj;
-                CmsListItem item = (CmsListItem)m_liCache.get(resource.getStructureId().toString());
+                CmsListItem item = m_liCache.get(resource.getStructureId().toString());
                 if (item == null) {
                     item = createResourceListItem(
                         resource,
@@ -328,7 +328,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      */
     public CmsResource getResource(CmsObject cms, CmsListItem item) {
 
-        CmsResource res = (CmsResource)m_resCache.get(item.getId());
+        CmsResource res = m_resCache.get(item.getId());
         if (res == null) {
             CmsUUID id = new CmsUUID(item.getId());
             if (!id.isNullUUID()) {
@@ -358,12 +358,12 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @throws CmsException if something goes wrong
      */
-    public abstract List getResources(CmsObject cms, Map params) throws CmsException;
+    public abstract List<CmsResource> getResources(CmsObject cms, Map<String, String> params) throws CmsException;
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject)
      */
-    public List getResults(CmsObject cms) throws CmsException {
+    public List<CmsResource> getResults(CmsObject cms) throws CmsException {
 
         return getResults(cms, getDefaultCollectorName(), m_collectorParameter);
     }
@@ -373,7 +373,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String parameter) throws CmsException {
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String parameter) throws CmsException {
 
         synchronized (this) {
             if (LOG.isDebugEnabled()) {
@@ -382,15 +382,15 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             if (parameter == null) {
                 parameter = m_collectorParameter;
             }
-            List resources = new ArrayList();
+            List<CmsResource> resources = new ArrayList<CmsResource>();
             if (getWp().getList() != null) {
-                Iterator itItems = getListItems(parameter).iterator();
+                Iterator<CmsListItem> itItems = getListItems(parameter).iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem item = (CmsListItem)itItems.next();
+                    CmsListItem item = itItems.next();
                     resources.add(getResource(cms, item));
                 }
             } else {
-                Map params = CmsStringUtil.splitAsMap(
+                Map<String, String> params = CmsStringUtil.splitAsMap(
                     parameter,
                     I_CmsListResourceCollector.SEP_PARAM,
                     I_CmsListResourceCollector.SEP_KEYVAL);
@@ -589,14 +589,14 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected List getInternalResources(CmsObject cms, Map params) throws CmsException {
+    protected List<CmsResource> getInternalResources(CmsObject cms, Map<String, String> params) throws CmsException {
 
         synchronized (this) {
             if (m_resources == null) {
                 m_resources = getResources(cms, params);
-                Iterator it = m_resources.iterator();
+                Iterator<CmsResource> it = m_resources.iterator();
                 while (it.hasNext()) {
-                    CmsResource resource = (CmsResource)it.next();
+                    CmsResource resource = it.next();
                     m_resCache.put(resource.getStructureId().toString(), resource);
                 }
             }
@@ -613,14 +613,14 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @see I_CmsListResourceCollector#PARAM_RESOURCES
      */
-    protected List getResourceNamesFromParam(Map params) {
+    protected List<String> getResourceNamesFromParam(Map<String, String> params) {
 
         String resourcesParam = "/";
         if (params.containsKey(I_CmsListResourceCollector.PARAM_RESOURCES)) {
-            resourcesParam = (String)params.get(I_CmsListResourceCollector.PARAM_RESOURCES);
+            resourcesParam = params.get(I_CmsListResourceCollector.PARAM_RESOURCES);
         }
         if (resourcesParam.length() == 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return CmsStringUtil.splitAsList(resourcesParam, "#");
     }
@@ -632,26 +632,26 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @return the state of the list from the parameter map
      */
-    protected CmsListState getState(Map params) {
+    protected CmsListState getState(Map<String, String> params) {
 
         CmsListState state = new CmsListState();
         try {
-            state.setPage(Integer.parseInt((String)params.get(I_CmsListResourceCollector.PARAM_PAGE)));
+            state.setPage(Integer.parseInt(params.get(I_CmsListResourceCollector.PARAM_PAGE)));
         } catch (Throwable e) {
             // ignore
         }
         try {
-            state.setOrder(CmsListOrderEnum.valueOf((String)params.get(I_CmsListResourceCollector.PARAM_ORDER)));
+            state.setOrder(CmsListOrderEnum.valueOf(params.get(I_CmsListResourceCollector.PARAM_ORDER)));
         } catch (Throwable e) {
             // ignore
         }
         try {
-            state.setFilter((String)params.get(I_CmsListResourceCollector.PARAM_FILTER));
+            state.setFilter(params.get(I_CmsListResourceCollector.PARAM_FILTER));
         } catch (Throwable e) {
             // ignore
         }
         try {
-            state.setColumn((String)params.get(I_CmsListResourceCollector.PARAM_SORTBY));
+            state.setColumn(params.get(I_CmsListResourceCollector.PARAM_SORTBY));
         } catch (Throwable e) {
             // ignore
         }
@@ -673,7 +673,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @param resources the list of resource names to use
      */
-    protected void setResourcesParam(List resources) {
+    protected void setResourcesParam(List<String> resources) {
 
         m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
             + I_CmsListResourceCollector.PARAM_RESOURCES

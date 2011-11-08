@@ -58,6 +58,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.digester.Digester;
@@ -510,8 +511,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
      */
     public static void addExplorerTypeXmlRules(Digester digester) {
 
-        // remove workflow nodes from the dtd, there are just there for compatibility reasons
-        int todo;
+        //TODO: remove workflow nodes from the dtd, there are just there for compatibility reasons
 
         // add explorer type settings
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
@@ -613,7 +613,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
      * @param explorerTypes the list of explorer types
      * @param module true if the XML tree for the module config should be generated, false otherwise
      */
-    public static void generateExplorerTypesXml(Element startNode, List explorerTypes, boolean module) {
+    public static void generateExplorerTypesXml(
+        Element startNode,
+        List<CmsExplorerTypeSettings> explorerTypes,
+        boolean module) {
 
         // we need the default access node later to check if the explorer type is an individual setting
         CmsExplorerTypeAccess defaultAccess = null;
@@ -622,10 +625,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         }
         // get the menu rule translator to eliminate eventual legacy menu rules
         CmsMenuRuleTranslator menuRuleTranslator = new CmsMenuRuleTranslator();
-        Iterator i = explorerTypes.iterator();
+        Iterator<CmsExplorerTypeSettings> i = explorerTypes.iterator();
         while (i.hasNext()) {
             // create an explorer type node
-            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+            CmsExplorerTypeSettings settings = i.next();
 
             if (settings.isAddititionalModuleExplorerType() == module) {
                 Element explorerTypeElement = startNode.addElement(N_EXPLORERTYPE);
@@ -659,14 +662,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 CmsExplorerTypeAccess access = settings.getAccess();
                 if (access != defaultAccess) {
                     // don't output the node if this is in fact the default access settings
-                    List accessEntries = new ArrayList(access.getAccessEntries().keySet());
+                    List<String> accessEntries = new ArrayList<String>(access.getAccessEntries().keySet());
                     // sort accessEntries
                     Collections.sort(accessEntries);
                     if (accessEntries.size() > 0) {
                         Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
-                        Iterator k = accessEntries.iterator();
+                        Iterator<String> k = accessEntries.iterator();
                         while (k.hasNext()) {
-                            String key = (String)k.next();
+                            String key = k.next();
                             String value = settings.getAccess().getAccessEntries().get(key);
                             Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
                             accessEntryElement.addAttribute(A_PRINCIPAL, key);
@@ -680,14 +683,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                     Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
                     defaultPropertiesElement.addAttribute(A_ENABLED, String.valueOf(settings.isPropertiesEnabled()));
                     defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, String.valueOf(settings.isShowNavigation()));
-                    Iterator m = settings.getProperties().iterator();
+                    Iterator<String> m = settings.getProperties().iterator();
                     while (m.hasNext()) {
-                        defaultPropertiesElement.addElement(N_DEFAULTPROPERTY).addAttribute(A_NAME, (String)m.next());
+                        defaultPropertiesElement.addElement(N_DEFAULTPROPERTY).addAttribute(A_NAME, m.next());
                     }
                     Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
-                    m = settings.getContextMenuEntries().iterator();
-                    while (m.hasNext()) {
-                        CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
+                    Iterator<CmsExplorerContextMenuItem> contextMenuEntries = settings.getContextMenuEntries().iterator();
+                    while (contextMenuEntries.hasNext()) {
+                        CmsExplorerContextMenuItem item = contextMenuEntries.next();
                         generateContextMenuItemXml(contextMenuElement, menuRuleTranslator, item);
                     }
                 }
@@ -795,9 +798,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 }
             }
             if (item.isParentItem()) {
-                Iterator i = item.getSubItems().iterator();
+                Iterator<CmsExplorerContextMenuItem> i = item.getSubItems().iterator();
                 while (i.hasNext()) {
-                    CmsExplorerContextMenuItem subItem = (CmsExplorerContextMenuItem)i.next();
+                    CmsExplorerContextMenuItem subItem = i.next();
                     generateContextMenuItemXml(itemElement, menuRuleTranslator, subItem);
                 }
             }
@@ -973,23 +976,21 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         // generate workplace node and subnodes
         Element workplaceElement = parent.addElement(N_WORKPLACE);
-        Iterator i;
-
         // add default locale
         workplaceElement.addElement(N_DEFAULTLOCALE).setText(m_workplaceManager.getDefaultLocale().toString());
 
         // add <localizedfolders> subnode
         Element localizedElement = workplaceElement.addElement(N_LOCALIZEDFOLDERS);
-        Iterator localizedIterator = m_workplaceManager.getLocalizedFolders().iterator();
+        Iterator<String> localizedIterator = m_workplaceManager.getLocalizedFolders().iterator();
         while (localizedIterator.hasNext()) {
             // add <resource uri=""/> element(s)
-            localizedElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)localizedIterator.next());
+            localizedElement.addElement(N_RESOURCE).addAttribute(A_URI, localizedIterator.next());
         }
 
         // add <dialoghandlers> subnode
         Element dialogElement = workplaceElement.addElement(N_DIALOGHANDLERS);
-        Map dialogs = m_workplaceManager.getDialogHandler();
-        String[] keys = (String[])dialogs.keySet().toArray(new String[0]);
+        Map<String, I_CmsDialogHandler> dialogs = m_workplaceManager.getDialogHandler();
+        String[] keys = dialogs.keySet().toArray(new String[0]);
         Arrays.sort(keys);
         for (int j = 0; j < keys.length; j++) {
             String name = keys[j];
@@ -997,7 +998,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             Element dialogHandler = dialogElement.addElement(N_DIALOGHANDLER).addAttribute(
                 A_CLASS,
                 dialogs.get(name).getClass().getName());
-            I_CmsDialogHandler daialogHandlerConfig = (I_CmsDialogHandler)dialogs.get(name);
+            I_CmsDialogHandler daialogHandlerConfig = dialogs.get(name);
             CmsParameterConfiguration handlerConfig = daialogHandlerConfig.getConfiguration();
             if (handlerConfig != null) {
                 handlerConfig.appendToXml(dialogHandler);
@@ -1014,9 +1015,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         if (m_workplaceManager.getEditorCssHandlers().size() > 0) {
             Element editorCssHandlers = workplaceElement.addElement(N_EDITORCSSHANDLERS);
-            Iterator it = m_workplaceManager.getEditorCssHandlers().iterator();
+            Iterator<I_CmsEditorCssHandler> it = m_workplaceManager.getEditorCssHandlers().iterator();
             while (it.hasNext()) {
-                I_CmsEditorCssHandler current = (I_CmsEditorCssHandler)it.next();
+                I_CmsEditorCssHandler current = it.next();
                 Element handler = editorCssHandlers.addElement(N_EDITORCSSHANDLER);
                 handler.addAttribute(A_CLASS, current.getClass().getName());
             }
@@ -1024,9 +1025,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         if (m_workplaceManager.getPreEditorConditionDefinitions().size() > 0) {
             Element editorPreActions = workplaceElement.addElement(N_EDITORPRECONDITIONS);
-            Iterator it = m_workplaceManager.getPreEditorConditionDefinitions().iterator();
+            Iterator<I_CmsPreEditorActionDefinition> it = m_workplaceManager.getPreEditorConditionDefinitions().iterator();
             while (it.hasNext()) {
-                I_CmsPreEditorActionDefinition current = (I_CmsPreEditorActionDefinition)it.next();
+                I_CmsPreEditorActionDefinition current = it.next();
                 Element action = editorPreActions.addElement(N_EDITORPRECONDITION);
                 action.addAttribute(A_NAME, current.getResourceTypeName());
                 action.addAttribute(A_CLASS, current.getClass().getName());
@@ -1050,10 +1051,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         // add <exportpoints> subnode
         Element resourceloadersElement = workplaceElement.addElement(N_EXPORTPOINTS);
-        Set points = m_workplaceManager.getExportPoints();
-        i = points.iterator();
-        while (i.hasNext()) {
-            CmsExportPoint point = (CmsExportPoint)i.next();
+        Set<CmsExportPoint> points = m_workplaceManager.getExportPoints();
+        Iterator<CmsExportPoint> exportPoints = points.iterator();
+        while (exportPoints.hasNext()) {
+            CmsExportPoint point = exportPoints.next();
             resourceloadersElement.addElement(N_EXPORTPOINT).addAttribute(A_URI, point.getUri()).addAttribute(
                 A_DESTINATION,
                 point.getConfiguredDestination());
@@ -1079,9 +1080,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         // add <labeledfolders> resource list
         Element labeledElement = workplaceElement.addElement(N_LABELEDFOLDERS);
-        i = m_workplaceManager.getLabelSiteFolders().iterator();
-        while (i.hasNext()) {
-            labeledElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)i.next());
+        Iterator<String> sitesFolders = m_workplaceManager.getLabelSiteFolders().iterator();
+        while (sitesFolders.hasNext()) {
+            labeledElement.addElement(N_RESOURCE).addAttribute(A_URI, sitesFolders.next());
         }
 
         // add <rfsfileviewsettings> node
@@ -1102,16 +1103,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         // add <explorertypes> node
         Element explorerTypesElement = workplaceElement.addElement(N_EXPLORERTYPES);
-        List explorerTypes = m_workplaceManager.getExplorerTypeSettings();
+        List<CmsExplorerTypeSettings> explorerTypes = m_workplaceManager.getExplorerTypeSettings();
         generateExplorerTypesXml(explorerTypesElement, explorerTypes, false);
 
         // add the <defaultaccesscontrol> node
         Element defaultAccessControlElement = explorerTypesElement.addElement(N_DEFAULTACCESSCONTROL);
         // create subnode <accesscontrol>            
-        List accessEntries = new ArrayList();
+        List<String> accessEntries = new ArrayList<String>();
         // sort accessEntries   
         CmsExplorerTypeAccess access = m_workplaceManager.getDefaultAccess();
-        Iterator iter = access.getAccessEntries().keySet().iterator();
+        Iterator<String> iter = access.getAccessEntries().keySet().iterator();
         while (iter.hasNext()) {
             accessEntries.add(iter.next());
         }
@@ -1119,10 +1120,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         if (accessEntries.size() > 0) {
             Element accessControlElement = defaultAccessControlElement.addElement(N_ACCESSCONTROL);
-            Iterator k = accessEntries.iterator();
+            Iterator<String> k = accessEntries.iterator();
 
             while (k.hasNext()) {
-                String key = (String)k.next();
+                String key = k.next();
                 String value = m_workplaceManager.getDefaultAccess().getAccessEntries().get(key);
                 Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
                 accessEntryElement.addAttribute(A_PRINCIPAL, key);
@@ -1131,14 +1132,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         }
 
         // add the <multicontextmenu> node
-        i = m_workplaceManager.getMultiContextMenu().getAllEntries().iterator();
-        if (i.hasNext()) {
+        Iterator<CmsExplorerContextMenuItem> menuEntries = m_workplaceManager.getMultiContextMenu().getAllEntries().iterator();
+        if (menuEntries.hasNext()) {
             // only generate the node if entries are defined
             Element contextMenuElement = explorerTypesElement.addElement(N_MULTICONTEXTMENU);
             // get the menu rule translator to eliminate eventual legacy menu rules
             CmsMenuRuleTranslator menuRuleTranslator = new CmsMenuRuleTranslator();
-            while (i.hasNext()) {
-                CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
+            while (menuEntries.hasNext()) {
+                CmsExplorerContextMenuItem item = menuEntries.next();
                 generateContextMenuItemXml(contextMenuElement, menuRuleTranslator, item);
             }
         }
@@ -1146,16 +1147,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add <menurules> node and subnodes
         if (m_workplaceManager.getMenuRules().size() > 0) {
             Element rulesElement = explorerTypesElement.addElement(N_MENURULES);
-            i = m_workplaceManager.getMenuRules().iterator();
-            while (i.hasNext()) {
+            Iterator<CmsMenuRule> menuRules = m_workplaceManager.getMenuRules().iterator();
+            while (menuRules.hasNext()) {
                 // create a <menurule> element for each rule set
-                CmsMenuRule rule = (CmsMenuRule)i.next();
+                CmsMenuRule rule = menuRules.next();
                 Element ruleElement = rulesElement.addElement(N_MENURULE);
                 ruleElement.addAttribute(A_NAME, rule.getName());
-                Iterator it = rule.getMenuItemRules().iterator();
+                Iterator<I_CmsMenuItemRule> it = rule.getMenuItemRules().iterator();
                 while (it.hasNext()) {
                     // create a <menuitemrule> element for each configured item rule
-                    I_CmsMenuItemRule itemRule = (I_CmsMenuItemRule)it.next();
+                    I_CmsMenuItemRule itemRule = it.next();
                     Element itemRuleElement = ruleElement.addElement(N_MENUITEMRULE);
                     itemRuleElement.addAttribute(A_CLASS, itemRule.getClass().getName());
                 }
@@ -1165,15 +1166,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add the user-infos node
         if (m_workplaceManager.getUserInfoManager() != null) {
             Element userInfosElement = workplaceElement.addElement(N_USERINFOS);
-            i = m_workplaceManager.getUserInfoManager().getBlocks().iterator();
-            while (i.hasNext()) {
-                CmsWorkplaceUserInfoBlock block = (CmsWorkplaceUserInfoBlock)i.next();
+            Iterator<CmsWorkplaceUserInfoBlock> infoBlocks = m_workplaceManager.getUserInfoManager().getBlocks().iterator();
+            while (infoBlocks.hasNext()) {
+                CmsWorkplaceUserInfoBlock block = infoBlocks.next();
                 Element infoBlockElement = userInfosElement.addElement(N_INFOBLOCK);
                 infoBlockElement.addAttribute(A_NAME, block.getTitle());
 
-                Iterator itEntries = block.getEntries().iterator();
+                Iterator<CmsWorkplaceUserInfoEntry> itEntries = block.getEntries().iterator();
                 while (itEntries.hasNext()) {
-                    CmsWorkplaceUserInfoEntry entry = (CmsWorkplaceUserInfoEntry)itEntries.next();
+                    CmsWorkplaceUserInfoEntry entry = itEntries.next();
                     Element userInfoElement = infoBlockElement.addElement(N_USERINFO);
                     userInfoElement.addAttribute(A_KEY, entry.getKey());
                     if (entry.getType() != null) {
@@ -1371,11 +1372,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add the <editors-preferrededitors> node
         Element editorPreferrededitors = editorsPreferences.addElement(N_EDITORPREFERREDEDITORS);
         // add the <editor> nodes
-        Iterator editors = m_workplaceManager.getDefaultUserSettings().getEditorSettings().entrySet().iterator();
+        Iterator<Entry<String, String>> editors = m_workplaceManager.getDefaultUserSettings().getEditorSettings().entrySet().iterator();
         while (editors.hasNext()) {
-            Map.Entry e = (Map.Entry)editors.next();
-            String type = (String)e.getKey();
-            String value = (String)e.getValue();
+            Entry<String, String> e = editors.next();
+            String type = e.getKey();
+            String value = e.getValue();
             Element editor = editorPreferrededitors.addElement(N_EDITOR);
             editor.addAttribute(A_TYPE, type);
             editor.addAttribute(A_VALUE, value);
@@ -1387,11 +1388,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             //add the <startgalleries> node
             Element galleryStartGalleries = galleriesPreferences.addElement(N_STARTGALLERIES);
             //add the <startgallery> nodes
-            Iterator startGalleries = m_workplaceManager.getDefaultUserSettings().getStartGalleriesSettings().entrySet().iterator();
+            Iterator<Entry<String, String>> startGalleries = m_workplaceManager.getDefaultUserSettings().getStartGalleriesSettings().entrySet().iterator();
             while (startGalleries.hasNext()) {
-                Map.Entry e = (Map.Entry)startGalleries.next();
-                String type = (String)e.getKey();
-                String path = (String)e.getValue();
+                Entry<String, String> e = startGalleries.next();
+                String type = e.getKey();
+                String path = e.getValue();
                 Element startGallery = galleryStartGalleries.addElement(N_STARTGALLERY);
                 startGallery.addAttribute(A_TYPE, type);
                 startGallery.addAttribute(A_PATH, path);
@@ -1413,9 +1414,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         // add the tool-manager node
         Element toolManagerElement = workplaceElement.addElement(N_TOOLMANAGER);
         Element rootsElement = toolManagerElement.addElement(N_ROOTS);
-        Iterator it = m_workplaceManager.getToolManager().getToolRoots().iterator();
+        Iterator<CmsToolRootHandler> it = m_workplaceManager.getToolManager().getToolRoots().iterator();
         while (it.hasNext()) {
-            CmsToolRootHandler root = (CmsToolRootHandler)it.next();
+            CmsToolRootHandler root = it.next();
             Element rootElement = rootsElement.addElement(N_ROOT);
             rootElement.addElement(N_KEY).addText(root.getKey());
             rootElement.addElement(N_URI).addText(root.getUri());
@@ -1586,7 +1587,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, "setDefaultUserSettings");
 
         // TODO: most of these settings are not user dependent, so they should not be stored in the CmsDefaultUserSettings class
-        int todo = 0;
 
         // add workplace preferences general options rules 
         String xPathPrefix = "*/"

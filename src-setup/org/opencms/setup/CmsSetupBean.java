@@ -267,7 +267,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     protected String m_webAppRfsPath;
 
     /** Contains all defined components. */
-    private CmsIdentifiableObjectContainer m_components;
+    private CmsIdentifiableObjectContainer<CmsSetupComponent> m_components;
 
     /** The absolute path to the config sub directory of the OpenCms web application. */
     private String m_configRfsPath;
@@ -520,7 +520,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_availableModules = new HashMap<String, CmsModule>();
             m_moduleDependencies = new HashMap<String, List<String>>();
             m_moduleFilenames = new HashMap<String, String>();
-            m_components = new CmsIdentifiableObjectContainer(true, true);
+            m_components = new CmsIdentifiableObjectContainer<CmsSetupComponent>(true, true);
 
             try {
                 addComponentsFromPath(m_webAppRfsPath + FOLDER_SETUP);
@@ -1499,7 +1499,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         jsCode.append(m_components.elementList().size());
         jsCode.append(");\n");
         for (int i = 0; i < m_components.elementList().size(); i++) {
-            CmsSetupComponent component = (CmsSetupComponent)m_components.elementList().get(i);
+            CmsSetupComponent component = m_components.elementList().get(i);
             jsCode.append("\tcomponentNames[" + i + "] = \"" + component.getId() + "\";\n");
         }
         jsCode.append("\n\n");

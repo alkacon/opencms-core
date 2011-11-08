@@ -345,7 +345,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 new Integer(getAction())));
         }
         switch (getAction()) {
-            //////////////////// ACTION: default actions
+        //////////////////// ACTION: default actions
             case ACTION_LIST_SEARCH:
             case ACTION_LIST_SORT:
             case ACTION_LIST_SELECT_PAGE:
@@ -981,7 +981,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
             // if the list is not empty
             if (getList().getTotalSize() > 0) {
                 // if the detail column has not been previously initialized
-                if (((CmsListItem)getList().getAllContent().get(0)).get(detailId) == null) {
+                if (getList().getAllContent().get(0).get(detailId) == null) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_START_DETAILS_LIST_2,

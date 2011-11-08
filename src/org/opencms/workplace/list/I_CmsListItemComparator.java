@@ -46,5 +46,5 @@ public interface I_CmsListItemComparator {
      * 
      * @return a new comparator
      */
-    Comparator getComparator(final String columnId, final Locale locale);
+    Comparator<CmsListItem> getComparator(final String columnId, final Locale locale);
 }

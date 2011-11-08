@@ -47,19 +47,27 @@ public class CmsListMetadata {
     public static final String SEARCH_BAR_INPUT_ID = "listSearchFilter";
 
     /** Container for column definitions. */
-    private CmsIdentifiableObjectContainer m_columns = new CmsIdentifiableObjectContainer(true, false);
+    private CmsIdentifiableObjectContainer<CmsListColumnDefinition> m_columns = new CmsIdentifiableObjectContainer<CmsListColumnDefinition>(
+        true,
+        false);
 
     /** Container for of independent actions. */
-    private CmsIdentifiableObjectContainer m_indepActions = new CmsIdentifiableObjectContainer(true, false);
+    private CmsIdentifiableObjectContainer<I_CmsListAction> m_indepActions = new CmsIdentifiableObjectContainer<I_CmsListAction>(
+        true,
+        false);
 
     /** Container for item detail definitions. */
-    private CmsIdentifiableObjectContainer m_itemDetails = new CmsIdentifiableObjectContainer(true, false);
+    private CmsIdentifiableObjectContainer<CmsListItemDetails> m_itemDetails = new CmsIdentifiableObjectContainer<CmsListItemDetails>(
+        true,
+        false);
 
     /** The id of the list. */
     private String m_listId;
 
     /** Container for multi actions. */
-    private CmsIdentifiableObjectContainer m_multiActions = new CmsIdentifiableObjectContainer(true, false);
+    private CmsIdentifiableObjectContainer<CmsListMultiAction> m_multiActions = new CmsIdentifiableObjectContainer<CmsListMultiAction>(
+        true,
+        false);
 
     /** Search action. */
     private CmsListSearchAction m_searchAction;
@@ -202,9 +210,9 @@ public class CmsListMetadata {
     public String csvHeader() {
 
         StringBuffer csv = new StringBuffer(1024);
-        Iterator itCols = m_columns.elementList().iterator();
+        Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
-            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            CmsListColumnDefinition col = itCols.next();
             if (!col.isVisible()) {
                 continue;
             }
@@ -225,9 +233,9 @@ public class CmsListMetadata {
     public String csvItem(CmsListItem item) {
 
         StringBuffer csv = new StringBuffer(1024);
-        Iterator itCols = m_columns.elementList().iterator();
+        Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
-            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            CmsListColumnDefinition col = itCols.next();
             if (!col.isVisible()) {
                 continue;
             }
@@ -247,7 +255,7 @@ public class CmsListMetadata {
      */
     public CmsListColumnDefinition getColumnDefinition(String columnId) {
 
-        return (CmsListColumnDefinition)m_columns.getObject(columnId);
+        return m_columns.getObject(columnId);
     }
 
     /**
@@ -255,7 +263,7 @@ public class CmsListMetadata {
      * 
      * @return a list of <code>{@link CmsListColumnDefinition}</code>s.
      */
-    public List getColumnDefinitions() {
+    public List<CmsListColumnDefinition> getColumnDefinitions() {
 
         return m_columns.elementList();
     }
@@ -269,7 +277,7 @@ public class CmsListMetadata {
      */
     public I_CmsListAction getIndependentAction(String actionId) {
 
-        return (I_CmsListAction)m_indepActions.getObject(actionId);
+        return m_indepActions.getObject(actionId);
     }
 
     /**
@@ -277,7 +285,7 @@ public class CmsListMetadata {
      * 
      * @return a list of <code>{@link I_CmsListAction}</code>s
      */
-    public List getIndependentActions() {
+    public List<I_CmsListAction> getIndependentActions() {
 
         return m_indepActions.elementList();
     }
@@ -291,7 +299,7 @@ public class CmsListMetadata {
      */
     public CmsListItemDetails getItemDetailDefinition(String itemDetailId) {
 
-        return (CmsListItemDetails)m_itemDetails.getObject(itemDetailId);
+        return m_itemDetails.getObject(itemDetailId);
     }
 
     /**
@@ -299,7 +307,7 @@ public class CmsListMetadata {
      * 
      * @return a list of <code>{@link CmsListItemDetails}</code>.
      */
-    public List getItemDetailDefinitions() {
+    public List<CmsListItemDetails> getItemDetailDefinitions() {
 
         return m_itemDetails.elementList();
     }
@@ -323,7 +331,7 @@ public class CmsListMetadata {
      */
     public CmsListMultiAction getMultiAction(String actionId) {
 
-        return (CmsListMultiAction)m_multiActions.getObject(actionId);
+        return m_multiActions.getObject(actionId);
     }
 
     /**
@@ -331,7 +339,7 @@ public class CmsListMetadata {
      * 
      * @return a list of <code>{@link CmsListMultiAction}</code>s
      */
-    public List getMultiActions() {
+    public List<CmsListMultiAction> getMultiActions() {
 
         return m_multiActions.elementList();
     }
@@ -383,9 +391,9 @@ public class CmsListMetadata {
      */
     public boolean hasCheckMultiActions() {
 
-        Iterator it = m_multiActions.elementList().iterator();
+        Iterator<CmsListMultiAction> it = m_multiActions.elementList().iterator();
         while (it.hasNext()) {
-            CmsListMultiAction action = (CmsListMultiAction)it.next();
+            CmsListMultiAction action = it.next();
             if (!(action instanceof CmsListRadioMultiAction)) {
                 return true;
             }
@@ -410,9 +418,9 @@ public class CmsListMetadata {
      */
     public boolean hasSingleActions() {
 
-        Iterator itCols = m_columns.elementList().iterator();
+        Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
-            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            CmsListColumnDefinition col = itCols.next();
             if (!col.getDefaultActions().isEmpty() || !col.getDirectActions().isEmpty()) {
                 return true;
             }
@@ -430,9 +438,9 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='misc'>\n");
         html.append("\t<div>\n");
-        Iterator itDetails = m_itemDetails.elementList().iterator();
+        Iterator<CmsListItemDetails> itDetails = m_itemDetails.elementList().iterator();
         while (itDetails.hasNext()) {
-            I_CmsListAction detailAction = ((CmsListItemDetails)itDetails.next()).getAction();
+            I_CmsListAction detailAction = itDetails.next().getAction();
             html.append("\t\t");
             html.append(detailAction.buttonHtml());
             if (itDetails.hasNext()) {
@@ -440,9 +448,9 @@ public class CmsListMetadata {
             }
             html.append("\n");
         }
-        Iterator itActions = m_indepActions.elementList().iterator();
+        Iterator<I_CmsListAction> itActions = m_indepActions.elementList().iterator();
         while (itActions.hasNext()) {
-            I_CmsListAction indepAction = (I_CmsListAction)itActions.next();
+            I_CmsListAction indepAction = itActions.next();
             html.append("\t\t");
             html.append("&nbsp;");
             html.append(indepAction.buttonHtml());
@@ -482,9 +490,9 @@ public class CmsListMetadata {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr>\n");
-        Iterator itCols = m_columns.elementList().iterator();
+        Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
-            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            CmsListColumnDefinition col = itCols.next();
             if (!col.isVisible() && !list.isPrintable()) {
                 continue;
             }
@@ -523,10 +531,10 @@ public class CmsListMetadata {
             html.append("'");
         }
         html.append(">\n");
-        Iterator itCols = m_columns.elementList().iterator();
+        Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
         int width = 0;
         while (itCols.hasNext()) {
-            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            CmsListColumnDefinition col = itCols.next();
             if (!col.isVisible() && !isPrintable) {
                 continue;
             }
@@ -567,9 +575,9 @@ public class CmsListMetadata {
         }
         html.append("</tr>\n");
 
-        Iterator itDet = m_itemDetails.elementList().iterator();
+        Iterator<CmsListItemDetails> itDet = m_itemDetails.elementList().iterator();
         while (itDet.hasNext()) {
-            CmsListItemDetails lid = (CmsListItemDetails)itDet.next();
+            CmsListItemDetails lid = itDet.next();
             if (!lid.isVisible() && !isPrintable) {
                 continue;
             }
@@ -581,7 +589,7 @@ public class CmsListMetadata {
                 int padCols = 0;
                 itCols = m_columns.elementList().iterator();
                 while (itCols.hasNext()) {
-                    CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+                    CmsListColumnDefinition col = itCols.next();
                     if (col.getId().equals(lid.getAtColumn())) {
                         break;
                     }
@@ -629,9 +637,9 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='misc'>\n");
         html.append("\t<div>\n");
-        Iterator itActions = m_multiActions.elementList().iterator();
+        Iterator<CmsListMultiAction> itActions = m_multiActions.elementList().iterator();
         while (itActions.hasNext()) {
-            CmsListMultiAction multiAction = (CmsListMultiAction)itActions.next();
+            CmsListMultiAction multiAction = itActions.next();
             html.append("\t\t");
             html.append(multiAction.buttonHtml());
             if (itActions.hasNext()) {
@@ -698,9 +706,9 @@ public class CmsListMetadata {
      */
     public boolean isSorteable() {
 
-        Iterator itCols = m_columns.elementList().iterator();
+        Iterator<CmsListColumnDefinition> itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
-            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            CmsListColumnDefinition col = itCols.next();
             if (col.isSorteable()) {
                 return true;
             }
@@ -759,24 +767,24 @@ public class CmsListMetadata {
     public void setWp(A_CmsListDialog wp) {
 
         m_wp = wp;
-        Iterator itCols = getColumnDefinitions().iterator();
+        Iterator<CmsListColumnDefinition> itCols = getColumnDefinitions().iterator();
         while (itCols.hasNext()) {
-            CmsListColumnDefinition column = (CmsListColumnDefinition)itCols.next();
+            CmsListColumnDefinition column = itCols.next();
             column.setWp(wp);
         }
-        Iterator itDets = getItemDetailDefinitions().iterator();
+        Iterator<CmsListItemDetails> itDets = getItemDetailDefinitions().iterator();
         while (itDets.hasNext()) {
-            CmsListItemDetails detail = (CmsListItemDetails)itDets.next();
+            CmsListItemDetails detail = itDets.next();
             detail.setWp(wp);
         }
-        Iterator itMultiActs = getMultiActions().iterator();
+        Iterator<CmsListMultiAction> itMultiActs = getMultiActions().iterator();
         while (itMultiActs.hasNext()) {
-            CmsListMultiAction action = (CmsListMultiAction)itMultiActs.next();
+            CmsListMultiAction action = itMultiActs.next();
             action.setWp(wp);
         }
-        Iterator itIndActs = getIndependentActions().iterator();
+        Iterator<I_CmsListAction> itIndActs = getIndependentActions().iterator();
         while (itIndActs.hasNext()) {
-            I_CmsListAction action = (I_CmsListAction)itIndActs.next();
+            I_CmsListAction action = itIndActs.next();
             action.setWp(wp);
         }
         if (m_searchAction != null) {
@@ -792,7 +800,7 @@ public class CmsListMetadata {
      */
     public void toogleDetailState(String itemDetailId) {
 
-        CmsListItemDetails lid = (CmsListItemDetails)m_itemDetails.getObject(itemDetailId);
+        CmsListItemDetails lid = m_itemDetails.getObject(itemDetailId);
         lid.setVisible(!lid.isVisible());
     }
 
@@ -811,46 +819,46 @@ public class CmsListMetadata {
      */
     /*package*/void checkIds() {
 
-        Set ids = new TreeSet();
+        Set<String> ids = new TreeSet<String>();
         // indep actions
-        Iterator itIndepActions = getIndependentActions().iterator();
+        Iterator<I_CmsListAction> itIndepActions = getIndependentActions().iterator();
         while (itIndepActions.hasNext()) {
-            String id = ((CmsListIndependentAction)itIndepActions.next()).getId();
+            String id = itIndepActions.next().getId();
             if (ids.contains(id)) {
                 throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, id));
             }
             ids.add(id);
         }
         // multi actions
-        Iterator itMultiActions = getMultiActions().iterator();
+        Iterator<CmsListMultiAction> itMultiActions = getMultiActions().iterator();
         while (itMultiActions.hasNext()) {
-            String id = ((CmsListMultiAction)itMultiActions.next()).getId();
+            String id = itMultiActions.next().getId();
             if (ids.contains(id)) {
                 throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, id));
             }
             ids.add(id);
         }
         // details
-        Iterator itItemDetails = getItemDetailDefinitions().iterator();
+        Iterator<CmsListItemDetails> itItemDetails = getItemDetailDefinitions().iterator();
         while (itItemDetails.hasNext()) {
-            String id = ((CmsListItemDetails)itItemDetails.next()).getId();
+            String id = itItemDetails.next().getId();
             if (ids.contains(id)) {
                 throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, id));
             }
             ids.add(id);
         }
         // columns
-        Iterator itColumns = getColumnDefinitions().iterator();
+        Iterator<CmsListColumnDefinition> itColumns = getColumnDefinitions().iterator();
         while (itColumns.hasNext()) {
-            CmsListColumnDefinition col = (CmsListColumnDefinition)itColumns.next();
+            CmsListColumnDefinition col = itColumns.next();
             if (ids.contains(col.getId())) {
                 throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, col.getId()));
             }
             ids.add(col.getId());
             // default actions
-            Iterator itDefaultActions = col.getDefaultActions().iterator();
+            Iterator<CmsListDefaultAction> itDefaultActions = col.getDefaultActions().iterator();
             while (itDefaultActions.hasNext()) {
-                CmsListDefaultAction action = (CmsListDefaultAction)itDefaultActions.next();
+                CmsListDefaultAction action = itDefaultActions.next();
                 if (ids.contains(action.getId())) {
                     throw new CmsIllegalStateException(Messages.get().container(
                         Messages.ERR_DUPLICATED_ID_1,
@@ -859,9 +867,9 @@ public class CmsListMetadata {
                 ids.add(action.getId());
             }
             // direct actions
-            Iterator itDirectActions = col.getDirectActions().iterator();
+            Iterator<I_CmsListDirectAction> itDirectActions = col.getDirectActions().iterator();
             while (itDirectActions.hasNext()) {
-                CmsListDirectAction action = (CmsListDirectAction)itDirectActions.next();
+                I_CmsListDirectAction action = itDirectActions.next();
                 if (ids.contains(action.getId())) {
                     throw new CmsIllegalStateException(Messages.get().container(
                         Messages.ERR_DUPLICATED_ID_1,
@@ -881,14 +889,14 @@ public class CmsListMetadata {
 
         col.setListId(getListId());
         // default actions
-        Iterator itDefaultActions = col.getDefaultActions().iterator();
+        Iterator<CmsListDefaultAction> itDefaultActions = col.getDefaultActions().iterator();
         while (itDefaultActions.hasNext()) {
-            ((CmsListDefaultAction)itDefaultActions.next()).setListId(getListId());
+            itDefaultActions.next().setListId(getListId());
         }
         // direct actions
-        Iterator itDirectActions = col.getDirectActions().iterator();
+        Iterator<I_CmsListDirectAction> itDirectActions = col.getDirectActions().iterator();
         while (itDirectActions.hasNext()) {
-            ((CmsListDirectAction)itDirectActions.next()).setListId(getListId());
+            itDirectActions.next().setListId(getListId());
         }
     }
 }

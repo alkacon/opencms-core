@@ -92,12 +92,12 @@ public class CmsSourceSearchReport extends A_CmsListReport {
     public void actionCloseDialog() throws JspException {
 
         // create a map with empty "resource" parameter to avoid changing the folder when returning to explorer file list
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(PARAM_RESOURCE, "");
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(PARAM_RESOURCE, new String[] {""});
         // set action parameter to initial dialog call
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-        params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, Boolean.TRUE.toString());
-        params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
+        params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, new String[] {Boolean.TRUE.toString()});
+        params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
 
         // close link parameter present
         try {

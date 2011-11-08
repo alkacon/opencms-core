@@ -218,29 +218,26 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void executeListMultiActions() throws IOException, ServletException, CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_COPY)) {
 
             // create absolute RFS path and store it in dialog object
-            Map<String, String> params = new HashMap<String, String>();
+            Map<String, String[]> params = new HashMap<String, String[]>();
             List<CmsListItem> items = this.getSelectedItems();
             List<String> paths = new LinkedList<String>();
             for (CmsListItem item : items) {
                 paths.add(String.valueOf(item.get(LIST_COLUMN_PATH)));
             }
-            params.put(
-                CmsLanguageCopyFolderAndLanguageSelectDialog.PARAM_COPYRESOURCES,
-                CmsStringUtil.collectionAsString(paths, ","));
+            params.put(CmsLanguageCopyFolderAndLanguageSelectDialog.PARAM_COPYRESOURCES, (String[])paths.toArray());
             // the source language
-            params.put(PARAM_SOURCE_LANGUAGE, getParamSourcelanguage());
+            params.put(PARAM_SOURCE_LANGUAGE, new String[] {getParamSourcelanguage()});
             // the target language
-            params.put(PARAM_TARGET_LANGUAGE, getParamTargetlanguage());
+            params.put(PARAM_TARGET_LANGUAGE, new String[] {getParamTargetlanguage()});
             // set style to display report in correct layout
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             // set close link to get back to overview after finishing the import
-            params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/contenttools"));
+            params.put(PARAM_CLOSELINK, new String[] {CmsToolManager.linkForToolPath(getJsp(), "/contenttools")});
             // redirect to the report output JSP
             getToolManager().jspForwardPage(
                 this,
@@ -263,7 +260,6 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
     /**
      * @return the resourcses to copy
      */
-    @SuppressWarnings("unchecked")
     public String[] getCopyResources() {
 
         List<CmsListItem> items = this.getSelectedItems();
@@ -383,7 +379,6 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
-    @SuppressWarnings("unchecked")
     @Override
     protected void setColumns(final CmsListMetadata metadata) {
 
@@ -466,7 +461,6 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
      * @param item the item to fill.
      * @param id used for the ID column.
      */
-    @SuppressWarnings("unchecked")
     private void fillItem(final CmsResource resource, final CmsListItem item, final int id) {
 
         CmsObject cms = this.getCms();
@@ -531,7 +525,6 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
      * 
      * @return the resources available for processing based on the path parameters.
      */
-    @SuppressWarnings("unchecked")
     private List<CmsResource> getResources() {
 
         List<CmsResource> result = new LinkedList<CmsResource>();
