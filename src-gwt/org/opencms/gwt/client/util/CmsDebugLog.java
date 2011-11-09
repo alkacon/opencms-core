@@ -59,6 +59,7 @@ public final class CmsDebugLog extends Composite {
     /**
      * Constructor.<p>
      */
+    @SuppressWarnings("unused")
     private CmsDebugLog() {
 
         if (!DEBUG) {
@@ -107,6 +108,7 @@ public final class CmsDebugLog extends Composite {
         if (!DEBUG) {
             return;
         }
+        @SuppressWarnings("unused")
         Element child = DOM.createElement("p");
         child.setInnerHTML(text);
         m_html.getElement().insertFirst(child);
@@ -116,6 +118,7 @@ public final class CmsDebugLog extends Composite {
     /**
      * Clears the debug log.<p>
      */
+    @SuppressWarnings("unused")
     public void clear() {
 
         if (!DEBUG) {
