@@ -27,7 +27,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -74,7 +73,7 @@ public class CmsHtmlList {
     protected CmsListOrderEnum m_currentSortOrder;
 
     /** Filtered list of items or <code>null</code> if no filter is set and not sorted. */
-    protected List m_filteredItems;
+    protected List<CmsListItem> m_filteredItems;
 
     /** Dhtml id. */
     protected final String m_id;
@@ -92,7 +91,7 @@ public class CmsHtmlList {
     protected CmsMessageContainer m_name;
 
     /** Really content of the list. */
-    protected List m_originalItems = new ArrayList();
+    protected List<CmsListItem> m_originalItems = new ArrayList<CmsListItem>();
 
     /** printable flag. */
     protected boolean m_printable;
@@ -113,7 +112,7 @@ public class CmsHtmlList {
     protected int m_totalSize;
 
     /** Items currently displayed. */
-    protected List m_visibleItems;
+    protected List<CmsListItem> m_visibleItems;
 
     /** The related workplace dialog object. */
     protected transient A_CmsListDialog m_wp;
@@ -149,8 +148,8 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(256);
         for (int i = 0; i < nrPages; i++) {
-            int displayedFrom = i * itemsPage + 1;
-            int displayedTo = (i + 1) * itemsPage < nrItems ? (i + 1) * itemsPage : nrItems;
+            int displayedFrom = (i * itemsPage) + 1;
+            int displayedTo = ((i + 1) * itemsPage) < nrItems ? (i + 1) * itemsPage : nrItems;
             html.append("\t\t\t\t<option value='");
             html.append(i + 1);
             html.append("'");
@@ -189,19 +188,19 @@ public class CmsHtmlList {
      * 
      * @return all list items
      */
-    public List getAllContent() {
+    public List<CmsListItem> getAllContent() {
 
         if (m_metadata.isSelfManaged()) {
             if (m_filteredItems != null) {
                 return Collections.unmodifiableList(m_filteredItems);
             } else {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
         } else {
             if (m_originalItems != null) {
                 return Collections.unmodifiableList(m_originalItems);
             } else {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
         }
     }
@@ -213,7 +212,7 @@ public class CmsHtmlList {
      * 
      * @return the filtered list of list items
      */
-    public List getContent() {
+    public List<CmsListItem> getContent() {
 
         if (m_filteredItems == null) {
             return getAllContent();
@@ -237,10 +236,10 @@ public class CmsHtmlList {
      * 
      * @return all items of the current page, a list of {@link CmsListItem} objects
      */
-    public List getCurrentPageItems() {
+    public List<CmsListItem> getCurrentPageItems() {
 
         if (getSize() == 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         if (m_metadata.isSelfManaged()) {
             return getContent();
@@ -279,9 +278,9 @@ public class CmsHtmlList {
      */
     public CmsListItem getItem(String id) {
 
-        Iterator it = getAllContent().iterator();
+        Iterator<CmsListItem> it = getAllContent().iterator();
         while (it.hasNext()) {
-            CmsListItem item = (CmsListItem)it.next();
+            CmsListItem item = it.next();
             if (item.getId().equals(id)) {
                 return item;
             }
@@ -453,9 +452,9 @@ public class CmsHtmlList {
         if (getContent().isEmpty()) {
             csv.append(m_metadata.csvEmptyList());
         } else {
-            Iterator itItems = getContent().iterator();
+            Iterator<CmsListItem> itItems = getContent().iterator();
             while (itItems.hasNext()) {
-                CmsListItem item = (CmsListItem)itItems.next();
+                CmsListItem item = itItems.next();
                 csv.append(m_metadata.csvItem(item));
             }
         }
@@ -479,9 +478,9 @@ public class CmsHtmlList {
 
         // this block has to be executed before calling htmlBegin()
         if (isPrintable()) {
-            m_visibleItems = new ArrayList(getContent());
+            m_visibleItems = new ArrayList<CmsListItem>(getContent());
         } else {
-            m_visibleItems = new ArrayList(getCurrentPageItems());
+            m_visibleItems = new ArrayList<CmsListItem>(getCurrentPageItems());
         }
 
         StringBuffer html = new StringBuffer(5120);
@@ -508,7 +507,7 @@ public class CmsHtmlList {
         if (m_visibleItems.isEmpty()) {
             html.append(m_metadata.htmlEmptyTable());
         } else {
-            Iterator itItems = m_visibleItems.iterator();
+            Iterator<CmsListItem> itItems = m_visibleItems.iterator();
             boolean odd = true;
             int count = 0;
             while (itItems.hasNext()) {
@@ -521,14 +520,14 @@ public class CmsHtmlList {
                         throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                             org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                     }
-                    thread.setProgress((count * (100 - progressOffset) / m_visibleItems.size()) + progressOffset);
+                    thread.setProgress(((count * (100 - progressOffset)) / m_visibleItems.size()) + progressOffset);
                     thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
                         org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP4_2,
                         new Integer(count),
                         new Integer(m_visibleItems.size())));
                 }
 
-                CmsListItem item = (CmsListItem)itItems.next();
+                CmsListItem item = itItems.next();
                 html.append(m_metadata.htmlItem(item, odd, isPrintable()));
                 odd = !odd;
             }
@@ -567,9 +566,9 @@ public class CmsHtmlList {
             js.append(" = '");
             js.append(CmsStringUtil.escapeJavaScript(messages.key(Messages.GUI_LIST_ACTION_NO_SELECTION_0)));
             js.append("';\n");
-            Iterator it = m_metadata.getMultiActions().iterator();
+            Iterator<CmsListMultiAction> it = m_metadata.getMultiActions().iterator();
             while (it.hasNext()) {
-                CmsListMultiAction action = (CmsListMultiAction)it.next();
+                CmsListMultiAction action = it.next();
                 if (action instanceof CmsListRadioMultiAction) {
                     CmsListRadioMultiAction rAction = (CmsListRadioMultiAction)action;
                     js.append("\tvar ");
@@ -662,14 +661,14 @@ public class CmsHtmlList {
      * 
      * @param listItems a collection of {@link CmsListItem} objects
      */
-    public void setContent(Collection listItems) {
+    public void setContent(Collection<CmsListItem> listItems) {
 
         if (m_metadata.isSelfManaged()) {
-            m_filteredItems = new ArrayList(listItems);
+            m_filteredItems = new ArrayList<CmsListItem>(listItems);
             m_originalItems = null;
         } else {
             m_filteredItems = null;
-            m_originalItems = new ArrayList(listItems);
+            m_originalItems = new ArrayList<CmsListItem>(listItems);
         }
     }
 
@@ -729,11 +728,11 @@ public class CmsHtmlList {
         boolean showAll = CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchFilter);
         getMetadata().getSearchAction().getShowAllAction().setVisible(showAll);
         if (!m_metadata.isSelfManaged()) {
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
 
-            // reset content if filter is empty
+                // reset content if filter is empty
                 m_filteredItems = null;
-        } else {
+            } else {
                 m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), m_searchFilter);
             }
         }
@@ -794,7 +793,7 @@ public class CmsHtmlList {
             }
             if (!m_metadata.isSelfManaged()) {
                 if (m_filteredItems == null) {
-                    m_filteredItems = new ArrayList(getAllContent());
+                    m_filteredItems = new ArrayList<CmsListItem>(getAllContent());
                 }
                 Collections.reverse(m_filteredItems);
             }
@@ -805,7 +804,7 @@ public class CmsHtmlList {
         m_currentSortOrder = CmsListOrderEnum.ORDER_ASCENDING;
         if (!m_metadata.isSelfManaged()) {
             if (m_filteredItems == null) {
-                m_filteredItems = new ArrayList(getAllContent());
+                m_filteredItems = new ArrayList<CmsListItem>(getAllContent());
             }
             I_CmsListItemComparator c = getMetadata().getColumnDefinition(sortedColumn).getListItemComparator();
             Collections.sort(m_filteredItems, c.getComparator(sortedColumn, getWp().getLocale()));
@@ -875,7 +874,7 @@ public class CmsHtmlList {
             if (isPrintable()) {
                 return 1;
             } else {
-                return (getCurrentPage() - 1) * getMaxItemsPerPage() + 1;
+                return ((getCurrentPage() - 1) * getMaxItemsPerPage()) + 1;
             }
         }
         return 0;
@@ -890,7 +889,7 @@ public class CmsHtmlList {
 
         if (getSize() != 0) {
             if (!isPrintable()) {
-                if (getCurrentPage() * getMaxItemsPerPage() < getSize()) {
+                if ((getCurrentPage() * getMaxItemsPerPage()) < getSize()) {
                     return getCurrentPage() * getMaxItemsPerPage();
                 }
             }
@@ -908,20 +907,20 @@ public class CmsHtmlList {
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
         if (!isPrintable() && (m_visibleItems != null) && !m_visibleItems.isEmpty()) {
-            Iterator cols = getMetadata().getColumnDefinitions().iterator();
+            Iterator<CmsListColumnDefinition> cols = getMetadata().getColumnDefinitions().iterator();
             while (cols.hasNext()) {
-                CmsListColumnDefinition col = (CmsListColumnDefinition)cols.next();
-                Iterator actions = col.getDirectActions().iterator();
+                CmsListColumnDefinition col = cols.next();
+                Iterator<I_CmsListDirectAction> actions = col.getDirectActions().iterator();
                 while (actions.hasNext()) {
-                    I_CmsListDirectAction action = (I_CmsListDirectAction)actions.next();
-                    action.setItem((CmsListItem)m_visibleItems.get(0));
+                    I_CmsListDirectAction action = actions.next();
+                    action.setItem(m_visibleItems.get(0));
                     html.append(action.helpTextHtml());
                     html.append(action.confirmationTextHtml());
                 }
-                Iterator defActions = col.getDefaultActions().iterator();
+                Iterator<CmsListDefaultAction> defActions = col.getDefaultActions().iterator();
                 while (defActions.hasNext()) {
-                    I_CmsListDirectAction action = (I_CmsListDirectAction)defActions.next();
-                    action.setItem((CmsListItem)m_visibleItems.get(0));
+                    I_CmsListDirectAction action = defActions.next();
+                    action.setItem(m_visibleItems.get(0));
                     html.append(action.helpTextHtml());
                     html.append(action.confirmationTextHtml());
                 }
@@ -1050,14 +1049,14 @@ public class CmsHtmlList {
     protected String htmlTitle() {
 
         boolean showTitle = isShowTitle();
-        Iterator itIndepActions = getMetadata().getIndependentActions().iterator();
+        Iterator<I_CmsListAction> itIndepActions = getMetadata().getIndependentActions().iterator();
         while (!showTitle && itIndepActions.hasNext()) {
-            CmsListIndependentAction indepAction = (CmsListIndependentAction)itIndepActions.next();
+            I_CmsListAction indepAction = itIndepActions.next();
             showTitle = showTitle || indepAction.isVisible();
         }
-        Iterator itItemDetails = getMetadata().getItemDetailDefinitions().iterator();
+        Iterator<CmsListItemDetails> itItemDetails = getMetadata().getItemDetailDefinitions().iterator();
         while (!showTitle && itItemDetails.hasNext()) {
-            CmsListItemDetails itemDetail = (CmsListItemDetails)itItemDetails.next();
+            CmsListItemDetails itemDetail = itItemDetails.next();
             showTitle = showTitle || itemDetail.getAction().isVisible();
         }
         if (!showTitle) {
@@ -1119,9 +1118,9 @@ public class CmsHtmlList {
     protected String htmlToolBar() {
 
         boolean showToolBar = getMetadata().isSearchable();
-        Iterator itMultiActions = getMetadata().getMultiActions().iterator();
+        Iterator<CmsListMultiAction> itMultiActions = getMetadata().getMultiActions().iterator();
         while (!showToolBar && itMultiActions.hasNext()) {
-            CmsListMultiAction multiAction = (CmsListMultiAction)itMultiActions.next();
+            CmsListMultiAction multiAction = itMultiActions.next();
             showToolBar = showToolBar || multiAction.isVisible();
         }
         if (!showToolBar) {

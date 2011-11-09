@@ -96,7 +96,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         List errors = new ArrayList();
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_msgInfo.getTo())) {
-            setCommitErrors(Collections.singletonList(new CmsIllegalStateException(Messages.get().container(
+            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
             return;
         }
@@ -229,7 +229,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
             setExcludedUsers(text.toString());
         }
         if (users.isEmpty()) {
-            setCommitErrors(Collections.singletonList(new CmsIllegalStateException(Messages.get().container(
+            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
             return "";
         }

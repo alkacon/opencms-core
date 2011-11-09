@@ -32,7 +32,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsSelectWidget;
@@ -206,17 +205,17 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
     public void actionCommit() throws IOException, ServletException {
 
         initDialogObject();
-        List<String> errors = new ArrayList<String>();
-        Map<String, String> params = new HashMap<String, String>();
+        List<Throwable> errors = new ArrayList<Throwable>();
+        Map<String, String[]> params = new HashMap<String, String[]>();
         List<String> paths = m_settings.getPaths();
-        params.put(CmsPropertyviewList.PARAM_RESOURCES, CmsStringUtil.collectionAsString(paths, ","));
+        params.put(CmsPropertyviewList.PARAM_RESOURCES, (String[])paths.toArray());
         List<String> props = m_settings.getProperties();
-        params.put(CmsPropertyviewList.PARAM_PROPERTIES, CmsStringUtil.collectionAsString(props, ","));
-        params.put(CmsPropertyviewList.PARAM_SIBLINGS, String.valueOf(m_settings.isShowSiblings()));
+        params.put(CmsPropertyviewList.PARAM_PROPERTIES, (String[])props.toArray());
+        params.put(CmsPropertyviewList.PARAM_SIBLINGS, new String[] {String.valueOf(m_settings.isShowSiblings())});
         // set style to display report in correct layout
-        params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         // set close link to get back to overview after finishing the import
-        params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "propertyviewer"));
+        params.put(PARAM_CLOSELINK, new String[] {CmsToolManager.linkForToolPath(getJsp(), "propertyviewer")});
 
         // redirect to the report output JSP
         getToolManager().jspForwardPage(
@@ -323,7 +322,6 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
      * 
      * @return a select widget configuration String for available properties in the system.
      */
-    @SuppressWarnings("unchecked")
     private String getPropertySelectWidgetConfiguration() {
 
         String result = "";

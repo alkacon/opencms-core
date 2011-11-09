@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.dnd;
 
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
@@ -199,6 +200,8 @@ public class CmsDNDHandler implements MouseDownHandler {
 
             if (!isDragging()) {
                 // this should never happen, as the preview handler should be removed after the dragging stopped
+                CmsDebugLog.getInstance().printLine("Preview handler still registered, even though dragging stopped.");
+                stopDragging();
                 return;
             }
             Event nativeEvent = Event.as(event.getNativeEvent());
@@ -467,8 +470,8 @@ public class CmsDNDHandler implements MouseDownHandler {
             // source is no drag handle, wrong DNDHandler assignment ignore
             return;
         }
-        I_CmsDragHandle handle = (I_CmsDragHandle)source;
-        m_draggable = handle.getDraggable();
+        I_CmsDragHandle dragHandle = (I_CmsDragHandle)source;
+        m_draggable = dragHandle.getDraggable();
         if (m_draggable == null) {
             // cancel dragging
             return;
@@ -492,6 +495,13 @@ public class CmsDNDHandler implements MouseDownHandler {
         // add marker css class to enable drag and drop dependent styles
         Document.get().getBody().addClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+        if (m_previewHandlerRegistration != null) {
+            // this should never be the case
+            CmsDebugLog.getInstance().printLine("Preview handler already registered!!!");
+            m_previewHandlerRegistration.removeHandler();
+
+        }
+        CmsDebugLog.getInstance().printLine("Registering preview handler");
         m_previewHandlerRegistration = Event.addNativePreviewHandler(m_previewHandler);
         onMove((Event)event.getNativeEvent());
     }
@@ -773,6 +783,7 @@ public class CmsDNDHandler implements MouseDownHandler {
 
         if (m_dragHelper == null) {
             // should never happen
+            CmsDebugLog.getInstance().printLine("Drag helper is null");
             return;
         }
         Element parentElement = m_dragHelper.getParentElement();
@@ -780,6 +791,19 @@ public class CmsDNDHandler implements MouseDownHandler {
         int top = CmsDomUtil.getRelativeY(m_clientY, parentElement) - m_cursorOffsetY;
         DOM.setStyleAttribute((com.google.gwt.user.client.Element)m_dragHelper, "left", left + "px");
         DOM.setStyleAttribute((com.google.gwt.user.client.Element)m_dragHelper, "top", top + "px");
+    }
+
+    /**
+     * Sets dragging to false and removes the event preview handler.<p>
+     */
+    protected void stopDragging() {
+
+        clearScrollTimer();
+        m_dragging = false;
+        if (m_previewHandlerRegistration != null) {
+            m_previewHandlerRegistration.removeHandler();
+            m_previewHandlerRegistration = null;
+        }
     }
 
     /**
@@ -891,18 +915,5 @@ public class CmsDNDHandler implements MouseDownHandler {
         int startLeft = CmsDomUtil.getCurrentStyleInt(m_dragHelper, Style.left);
         m_currentAnimation = new CmsMoveAnimation(m_dragHelper, startTop, startLeft, endTop, endLeft, callback);
         m_currentAnimation.run(300);
-    }
-
-    /**
-     * Sets dragging to false and removes the event preview handler.<p>
-     */
-    private void stopDragging() {
-
-        clearScrollTimer();
-        m_dragging = false;
-        if (m_previewHandlerRegistration != null) {
-            m_previewHandlerRegistration.removeHandler();
-            m_previewHandlerRegistration = null;
-        }
     }
 }

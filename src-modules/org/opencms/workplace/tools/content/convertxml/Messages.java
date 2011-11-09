@@ -45,9 +45,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CONVERTXML_THREAD_NAME_0 = "GUI_CONVERTXML_THREAD_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_BEGIN_0 = "RPT_CONVERTXML_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_BEGIN_TRANSFORM_0 = "RPT_CONVERTXML_BEGIN_TRANSFORM_0";
 
     /** Message constant for key in the resource bundle. */
@@ -132,16 +129,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1 = "RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_TRANSFORM_PUBLISHED_FILE_0 = "RPT_CONVERTXML_TRANSFORM_PUBLISHED_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_TRANSFORMATION_ERROR_0 = "RPT_CONVERTXML_TRANSFORMATION_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_TRANSFORMING_FAILED_0 = "RPT_CONVERTXML_TRANSFORMING_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_TRANSFORMING_FAILED2_0 = "RPT_CONVERTXML_TRANSFORMING_FAILED2_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_TRANSFORMING_SUCCESS_0 = "RPT_CONVERTXML_TRANSFORMING_SUCCESS_0";
@@ -151,9 +142,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONVERTXML_WRITE_ERROR_1 = "RPT_CONVERTXML_WRITE_ERROR_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CONVERTXML_XMLCONTENT_1 = "RPT_CONVERTXML_XMLCONTENT_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.content.convertxml.messages";

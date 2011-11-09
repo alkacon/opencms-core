@@ -42,7 +42,9 @@ import java.util.List;
 public class CmsToolGroup {
 
     /** Container for the items. */
-    private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
+    private final CmsIdentifiableObjectContainer<CmsTool> m_container = new CmsIdentifiableObjectContainer<CmsTool>(
+        true,
+        true);
 
     /** Dhtml id. */
     private final String m_id;
@@ -67,7 +69,7 @@ public class CmsToolGroup {
      * 
      * @param adminTool the admin tool
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addAdminTool(CmsTool adminTool) {
 
@@ -80,7 +82,7 @@ public class CmsToolGroup {
      * @param adminTool the admin tool
      * @param position the position
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addAdminTool(CmsTool adminTool, float position) {
 
@@ -88,11 +90,11 @@ public class CmsToolGroup {
     }
 
     /**
-     * Retuns a list of admin tools.<p>
+     * Returns a list of admin tools.<p>
      * 
      * @return a list of <code>{@link CmsTool}</code>s
      */
-    public List getAdminTools() {
+    public List<CmsTool> getAdminTools() {
 
         return m_container.elementList();
     }
@@ -127,9 +129,9 @@ public class CmsToolGroup {
     public String groupHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(2048);
-        Iterator itItem = m_container.elementList().iterator();
+        Iterator<CmsTool> itItem = m_container.elementList().iterator();
         while (itItem.hasNext()) {
-            CmsTool item = (CmsTool)itItem.next();
+            CmsTool item = itItem.next();
             html.append(item.buttonHtml(wp));
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(html.toString())) {

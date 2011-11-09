@@ -28,6 +28,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.file.CmsObject;
+import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -66,7 +67,11 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
      */
     public CmsUUID asId(CmsObject cms) {
 
-        return ((CmsXmlVfsFileValue)m_value).getLink(cms).getStructureId();
+        CmsLink link = ((CmsXmlVfsFileValue)m_value).getLink(cms);
+        if (link == null) {
+            return null;
+        }
+        return link.getStructureId();
     }
 
     /**

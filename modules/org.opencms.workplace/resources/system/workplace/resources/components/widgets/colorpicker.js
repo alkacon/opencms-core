@@ -56,7 +56,7 @@ function showColorPicker(fieldName) {
 		// Mozilla based or other browser, use standards compliant method to open popup
 		currField = theField;
 		window.open(colorPicker.url + "?" + fieldValue, "colorpicker",
-				      "toolbar=no,menubar=no,personalbar=no,width=10,height=10," +
+				      "toolbar=no,menubar=no,personalbar=no,width=238,height=187," +
 				      "scrollbars=no,resizable=yes"); 
 	}
 }

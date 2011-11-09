@@ -39,19 +39,21 @@ import java.util.Map;
  * 
  * It can handle relative or absolute orderings and unique names.<p> 
  * 
+ * @param <T> the type of objects 
+ * 
  * @since 6.0.0 
  */
-public class CmsIdentifiableObjectContainer {
+public class CmsIdentifiableObjectContainer<T> {
 
     /**
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @since 6.0.0
      */
-    private static class CmsIdObjectElement {
+    private static class CmsIdObjectElement<T> {
 
         /** Identifiable object. */
-        private final Object m_object;
+        private final T m_object;
 
         /** Relative position. */
         private final float m_position;
@@ -63,7 +65,7 @@ public class CmsIdentifiableObjectContainer {
          * @param position the relative position
          * 
          */
-        public CmsIdObjectElement(Object object, float position) {
+        public CmsIdObjectElement(T object, float position) {
 
             m_object = object;
             m_position = position;
@@ -74,7 +76,7 @@ public class CmsIdentifiableObjectContainer {
          *
          * @return the object
          */
-        public Object getObject() {
+        public T getObject() {
 
             return m_object;
         }
@@ -92,13 +94,17 @@ public class CmsIdentifiableObjectContainer {
     }
 
     /** Cache for element list. */
-    private List m_cache;
+    private List<T> m_cache;
 
     /** List of objects. */
-    private final List m_objectList = new ArrayList();
+    private final List<T> m_objectList = new ArrayList<T>();
+
+    private final List<CmsIdObjectElement<T>> m_orderedObjectList = new ArrayList<CmsIdObjectElement<T>>();
 
     /** Map of objects only used if uniqueIds flag set. */
-    private final Map m_objectsById = new HashMap();
+    private final Map<String, T> m_objectsById = new HashMap<String, T>();
+
+    private final Map<String, List<T>> m_objectsListsById = new HashMap<String, List<T>>();
 
     /** Flag for managing absolute and relative ordering. */
     private final boolean m_relativeOrdered;
@@ -126,7 +132,7 @@ public class CmsIdentifiableObjectContainer {
      * 
      * @see java.util.List#add(Object)
      */
-    public void addIdentifiableObject(String id, Object idObject) {
+    public void addIdentifiableObject(String id, T idObject) {
 
         m_cache = null;
         if (m_uniqueIds && (m_objectsById.get(id) != null)) {
@@ -134,23 +140,23 @@ public class CmsIdentifiableObjectContainer {
         }
         if (m_relativeOrdered) {
             float pos = 1;
-            if (!m_objectList.isEmpty()) {
-                pos = ((CmsIdObjectElement)m_objectList.get(m_objectList.size() - 1)).getPosition() + 1;
+            if (!m_orderedObjectList.isEmpty()) {
+                pos = m_orderedObjectList.get(m_orderedObjectList.size() - 1).getPosition() + 1;
             }
-            m_objectList.add(new CmsIdObjectElement(idObject, pos));
+            m_orderedObjectList.add(new CmsIdObjectElement<T>(idObject, pos));
         } else {
             m_objectList.add(idObject);
         }
         if (m_uniqueIds) {
             m_objectsById.put(id, idObject);
         } else {
-            Object prevObj = m_objectsById.get(id);
+            List<T> prevObj = m_objectsListsById.get(id);
             if (prevObj == null) {
-                List list = new ArrayList();
+                List<T> list = new ArrayList<T>();
                 list.add(idObject);
-                m_objectsById.put(id, list);
+                m_objectsListsById.put(id, list);
             } else {
-                ((List)prevObj).add(idObject);
+                prevObj.add(idObject);
             }
         }
 
@@ -168,7 +174,7 @@ public class CmsIdentifiableObjectContainer {
      * 
      * @see java.util.List#add(int, Object)
      */
-    public void addIdentifiableObject(String id, Object idObject, float position) {
+    public void addIdentifiableObject(String id, T idObject, float position) {
 
         m_cache = null;
         if (m_uniqueIds && (m_objectsById.get(id) != null)) {
@@ -176,28 +182,28 @@ public class CmsIdentifiableObjectContainer {
         }
         if (m_relativeOrdered) {
             int pos = 0;
-            Iterator itElems = m_objectList.iterator();
+            Iterator<CmsIdObjectElement<T>> itElems = m_orderedObjectList.iterator();
             while (itElems.hasNext()) {
-                CmsIdObjectElement element = (CmsIdObjectElement)itElems.next();
+                CmsIdObjectElement<T> element = itElems.next();
                 if (element.getPosition() > position) {
                     break;
                 }
                 pos++;
             }
-            m_objectList.add(pos, new CmsIdObjectElement(idObject, position));
+            m_orderedObjectList.add(pos, new CmsIdObjectElement<T>(idObject, position));
         } else {
             m_objectList.add((int)position, idObject);
         }
         if (m_uniqueIds) {
             m_objectsById.put(id, idObject);
         } else {
-            Object prevObj = m_objectsById.get(id);
+            List<T> prevObj = m_objectsListsById.get(id);
             if (prevObj == null) {
-                List list = new ArrayList();
+                List<T> list = new ArrayList<T>();
                 list.add(idObject);
-                m_objectsById.put(id, list);
+                m_objectsListsById.put(id, list);
             } else {
-                ((List)prevObj).add(idObject);
+                prevObj.add(idObject);
             }
         }
 
@@ -211,6 +217,8 @@ public class CmsIdentifiableObjectContainer {
         m_cache = null;
         m_objectList.clear();
         m_objectsById.clear();
+        m_orderedObjectList.clear();
+        m_objectsListsById.clear();
     }
 
     /**
@@ -218,16 +226,16 @@ public class CmsIdentifiableObjectContainer {
      *
      * @return the a list of <code>{@link Object}</code>s.
      */
-    public List elementList() {
+    public List<T> elementList() {
 
         if (m_cache != null) {
             return m_cache;
         }
         if (m_relativeOrdered) {
-            List objectList = new ArrayList();
-            Iterator itObjs = m_objectList.iterator();
+            List<T> objectList = new ArrayList<T>();
+            Iterator<CmsIdObjectElement<T>> itObjs = m_orderedObjectList.iterator();
             while (itObjs.hasNext()) {
-                CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
+                CmsIdObjectElement<T> object = itObjs.next();
                 objectList.add(object.getObject());
             }
             m_cache = Collections.unmodifiableList(objectList);
@@ -251,9 +259,28 @@ public class CmsIdentifiableObjectContainer {
      * 
      * @see java.util.Map#get(Object)
      */
-    public Object getObject(String id) {
+    public T getObject(String id) {
 
+        if (!m_uniqueIds) {
+            throw new UnsupportedOperationException("Not supported for not unique ids");
+        }
         return m_objectsById.get(id);
+
+    }
+
+    /**
+     * Returns the list of objects with the given id.<p>
+     * 
+     * @param id the object id
+     * 
+     * @return the list of objects if found, or <code>null</code>
+     */
+    public List<T> getObjectList(String id) {
+
+        if (m_uniqueIds) {
+            throw new UnsupportedOperationException("Not supported for unique ids");
+        }
+        return m_objectsListsById.get(id);
     }
 
     /**
@@ -270,9 +297,9 @@ public class CmsIdentifiableObjectContainer {
         if (m_relativeOrdered) {
             if (m_uniqueIds) {
                 Object o = getObject(id);
-                Iterator itObjs = m_objectList.iterator();
+                Iterator<CmsIdObjectElement<T>> itObjs = m_orderedObjectList.iterator();
                 while (itObjs.hasNext()) {
-                    CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
+                    CmsIdObjectElement<T> object = itObjs.next();
                     if (object.getObject() == o) {
                         itObjs.remove();
                         break;
@@ -280,24 +307,28 @@ public class CmsIdentifiableObjectContainer {
                 }
                 m_objectsById.remove(id);
             } else {
-                Iterator itRemove = ((List)getObject(id)).iterator();
+                Iterator<T> itRemove = m_objectsListsById.get(id).iterator();
                 while (itRemove.hasNext()) {
-                    Object o = itRemove.next();
-                    Iterator itObjs = m_objectList.iterator();
+                    T o = itRemove.next();
+                    Iterator<CmsIdObjectElement<T>> itObjs = m_orderedObjectList.iterator();
                     while (itObjs.hasNext()) {
-                        CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
+                        CmsIdObjectElement<T> object = itObjs.next();
                         if (object.getObject() == o) {
                             itObjs.remove();
                             break;
                         }
                     }
                 }
-                m_objectsById.remove(id);
+                m_orderedObjectList.remove(id);
             }
         } else {
             Object o = getObject(id);
             m_objectList.remove(o);
-            m_objectsById.remove(id);
+            if (m_uniqueIds) {
+                m_objectsById.remove(id);
+            } else {
+                m_objectsListsById.remove(id);
+            }
         }
     }
 }

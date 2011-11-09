@@ -93,6 +93,7 @@ public class CmsWidgetException extends CmsException {
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
+    @Override
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         if (cause instanceof CmsWidgetException) {

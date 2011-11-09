@@ -29,6 +29,7 @@ package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 
@@ -70,7 +72,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     private static final String LIST_ID = "lrlr";
 
     /** The list holds the broken links list item ids. */
-    private List m_brokenLinks;
+    private List<String> m_brokenLinks;
 
     /** The resource collector for this class. */
     private I_CmsListResourceCollector m_collector;
@@ -79,7 +81,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     private boolean m_isSource;
 
     /** The map to map resources to relation types. */
-    private Map m_relationTypes;
+    private Map<CmsResource, List<CmsRelationType>> m_relationTypes;
 
     /**
      * Default constructor.<p>
@@ -91,7 +93,10 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_LINK_RELATION_LIST_NAME_0));
         m_isSource = isSource;
-
+        I_CmsResourceCollector collector = getCollector();
+        if ((collector != null) && (collector instanceof CmsListResourceLinkRelationCollector)) {
+            ((CmsListResourceLinkRelationCollector)collector).setSource(isSource);
+        }
         // set the right resource util parameters
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setAbbrevLength(50);
@@ -102,6 +107,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -110,6 +116,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -120,7 +127,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
      * 
      * @return the list to identify the resources with broken links
      */
-    public List getBrokenLinks() {
+    public List<String> getBrokenLinks() {
 
         return m_brokenLinks;
     }
@@ -128,6 +135,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -141,7 +149,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
      *
      * @return the relationTypes
      */
-    public Map getRelationTypes() {
+    public Map<CmsResource, List<CmsRelationType>> getRelationTypes() {
 
         return m_relationTypes;
     }
@@ -161,7 +169,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
      * 
      * @param brokenLinks the list to identify the resources with broken links
      */
-    public void setBrokenLinks(List brokenLinks) {
+    public void setBrokenLinks(List<String> brokenLinks) {
 
         m_brokenLinks = brokenLinks;
     }
@@ -171,7 +179,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
      *
      * @param relationTypes the relationTypes to set
      */
-    public void setRelationTypes(Map relationTypes) {
+    public void setRelationTypes(Map<CmsResource, List<CmsRelationType>> relationTypes) {
 
         m_relationTypes = relationTypes;
     }
@@ -189,6 +197,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + CmsListExplorerColumn.getExplorerStyleDef() + dialogContentStart(getParamTitle());
@@ -197,6 +206,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // empty
@@ -205,25 +215,26 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List newItems = new ArrayList();
-        List items = super.getListItems();
-        Iterator itItems = items.iterator();
+        List<CmsListItem> newItems = new ArrayList<CmsListItem>();
+        List<CmsListItem> items = super.getListItems();
+        Iterator<CmsListItem> itItems = items.iterator();
         while (itItems.hasNext()) {
-            CmsListItem item = (CmsListItem)itItems.next();
+            CmsListItem item = itItems.next();
             CmsResource resource = getResourceUtil(item).getResource();
 
-            CmsRelationType relationType = (CmsRelationType)((List)getRelationTypes().get(resource)).remove(0);
+            CmsRelationType relationType = getRelationTypes().get(resource).remove(0);
             String localizedRelationType = relationType.getLocalizedName(getMessages());
 
-            Map itemValues = item.getValues();
+            Map<String, Object> itemValues = item.getValues();
             CmsListItem newItem = getList().newItem(localizedRelationType + "_" + resource.getStructureId().toString());
 
-            Iterator itItemValuesKeys = itemValues.entrySet().iterator();
+            Iterator<Entry<String, Object>> itItemValuesKeys = itemValues.entrySet().iterator();
             while (itItemValuesKeys.hasNext()) {
-                Map.Entry e = (Map.Entry)itItemValuesKeys.next();
-                String currentKey = (String)e.getKey();
+                Entry<String, Object> e = itItemValuesKeys.next();
+                String currentKey = e.getKey();
                 newItem.set(currentKey, e.getValue());
             }
             newItem.set(LIST_COLUMN_RELATION_TYPE, localizedRelationType);
@@ -233,8 +244,27 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
+     */
+    @Override
+    protected boolean isColumnVisible(int colFlag) {
+
+        boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
+        isVisible = isVisible || (colFlag == LIST_COLUMN_TYPEICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_LOCKICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_PROJSTATEICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_NAME.hashCode());
+        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_TYPE);
+        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_SIZE);
+        isVisible = isVisible
+            || ((colFlag == LIST_COLUMN_SITE.hashCode()) && (OpenCms.getSiteManager().getSites().size() > 1));
+        return isVisible;
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -248,6 +278,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 if (((CmsResourceLinkRelationList)getWp()).getBrokenLinks() != null) {
@@ -261,6 +292,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 if (((CmsResourceLinkRelationList)getWp()).getBrokenLinks() != null) {
@@ -281,25 +313,9 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
-     */
-    protected boolean isColumnVisible(int colFlag) {
-
-        boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
-        isVisible = isVisible || (colFlag == LIST_COLUMN_TYPEICON.hashCode());
-        isVisible = isVisible || (colFlag == LIST_COLUMN_LOCKICON.hashCode());
-        isVisible = isVisible || (colFlag == LIST_COLUMN_PROJSTATEICON.hashCode());
-        isVisible = isVisible || (colFlag == LIST_COLUMN_NAME.hashCode());
-        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_TYPE);
-        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_SIZE);
-        isVisible = isVisible
-            || ((colFlag == LIST_COLUMN_SITE.hashCode()) && (OpenCms.getSiteManager().getSites().size() > 1));
-        return isVisible;
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // empty
@@ -308,6 +324,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamResource())) {

@@ -42,7 +42,9 @@ import java.util.List;
 public class CmsAdminMenuGroup {
 
     /** Item container. */
-    private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
+    private final CmsIdentifiableObjectContainer<CmsAdminMenuItem> m_container = new CmsIdentifiableObjectContainer<CmsAdminMenuItem>(
+        true,
+        true);
 
     /** Dhtml id, from name. */
     private final String m_id;
@@ -67,7 +69,7 @@ public class CmsAdminMenuGroup {
      * 
      * @param item the item
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addMenuItem(CmsAdminMenuItem item) {
 
@@ -80,7 +82,7 @@ public class CmsAdminMenuGroup {
      * @param item the item
      * @param position the position
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addMenuItem(CmsAdminMenuItem item, float position) {
 
@@ -98,11 +100,11 @@ public class CmsAdminMenuGroup {
     }
 
     /**
-     * Retuns a list of menu items.<p>
+     * Returns a list of menu items.<p>
      * 
      * @return a list of <code>{@link CmsAdminMenuItem}</code>s
      */
-    public List getMenuItems() {
+    public List<CmsAdminMenuItem> getMenuItems() {
 
         return m_container.elementList();
     }
@@ -128,9 +130,9 @@ public class CmsAdminMenuGroup {
 
         StringBuffer html = new StringBuffer(512);
         html.append(htmlStart(wp));
-        Iterator itItem = m_container.elementList().iterator();
+        Iterator<CmsAdminMenuItem> itItem = m_container.elementList().iterator();
         while (itItem.hasNext()) {
-            CmsAdminMenuItem item = (CmsAdminMenuItem)itItem.next();
+            CmsAdminMenuItem item = itItem.next();
             html.append(item.itemHtml(wp));
             html.append("\n");
         }

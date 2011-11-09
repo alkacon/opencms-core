@@ -115,7 +115,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
         boolean isEmail = (getParamMsgtype() != null) && getParamMsgtype().equals(MSGTYPE_EMAIL);
 
         if ((m_groups == null) || m_groups.isEmpty()) {
-            setCommitErrors(Collections.singletonList(new CmsIllegalStateException(Messages.get().container(
+            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_NO_SELECTED_GROUP_0))));
             return;
         }
@@ -144,7 +144,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
         }
 
         if (!hasUser) {
-            setCommitErrors(Collections.singletonList(new CmsIllegalStateException(Messages.get().container(
+            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_NO_SELECTED_RECEIVERS_0))));
             return;
         }

@@ -32,6 +32,8 @@ import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Method;
+import org.opencms.gwt.client.util.CmsDomUtil.Target;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
 import java.util.HashMap;
@@ -87,7 +89,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         Element parent = CmsDomUtil.getPositioningParent(getElement());
         Style style = getElement().getStyle();
         style.setRight(parent.getOffsetWidth()
-            - (buttonsPosition.getLeft() + buttonsPosition.getWidth() - parent.getAbsoluteLeft()), Unit.PX);
+            - ((buttonsPosition.getLeft() + buttonsPosition.getWidth()) - parent.getAbsoluteLeft()), Unit.PX);
         int top = buttonsPosition.getTop() - parent.getAbsoluteTop();
         if (top < 0) {
             top = 0;
@@ -158,7 +160,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         if (m_editableData.getElementName() != null) {
             formVaules.put("elementname", m_editableData.getElementName());
         }
-        formVaules.put("backlink", CmsCoreProvider.get().getUri());
+        formVaules.put("backlink", CmsCoreProvider.get().getUri() + Window.Location.getQueryString());
         formVaules.put("redirect", "true");
         formVaules.put("directedit", "true");
         if (isNew) {
@@ -166,7 +168,7 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
             formVaules.put("editortitle", m_editableData.getNewTitle());
         }
         FormElement formElement = CmsDomUtil.generateHiddenForm(CmsCoreProvider.get().link(
-            CmsCoreProvider.get().getContentEditorUrl()), "post", "_top", formVaules);
+            CmsCoreProvider.get().getContentEditorUrl()), Method.post, Target.TOP, formVaules);
         getMarkerTag().appendChild(formElement);
         formElement.submit();
     }

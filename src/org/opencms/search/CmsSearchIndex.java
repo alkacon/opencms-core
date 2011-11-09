@@ -246,6 +246,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Constant for additional parameter to enable time range checks (default: true). */
     public static final String TIME_RANGE = CmsSearchIndex.class.getName() + ".checkTimeRange";
 
+    /** The use all locale. */
+    public static final String USE_ALL_LOCALE = "all";
+
     /**
      * Field selector for Lucene that that will ensure the OpenCms default search index fields
      * {@link CmsSearchField#FIELD_CONTENT} and {@link CmsSearchField#FIELD_CONTENT_BLOB}
@@ -1845,9 +1848,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 oldDir.copy(newDir, fileName, fileName);
             }
         } catch (Exception e) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_CREATE_3, getName(), getPath(), backupPath),
-                e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_IO_INDEX_BACKUP_CREATE_3,
+                getName(),
+                getPath(),
+                backupPath), e);
             backupPath = null;
         }
         return backupPath;
@@ -1887,7 +1892,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, resource.getRootPath()));
             }
         }
-        if (!excludeFromIndex) {
+        if (!excludeFromIndex && !USE_ALL_LOCALE.equalsIgnoreCase(getLocale().getLanguage())) {
             // check if any resource default locale has a match with the index locale, if not skip resource
             List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
             Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(

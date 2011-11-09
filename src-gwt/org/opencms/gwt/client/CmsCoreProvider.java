@@ -53,9 +53,6 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  */
 public final class CmsCoreProvider extends CmsCoreData {
 
-    /** The parameter name for the return code. */
-    public static final String PARAM_RETURNCODE = "returncode";
-
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
 

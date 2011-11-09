@@ -67,7 +67,7 @@ public class CmsRadioSelectWidget extends A_CmsSelectWidget {
      * 
      * @see CmsSelectWidgetOption
      */
-    public CmsRadioSelectWidget(List configuration) {
+    public CmsRadioSelectWidget(List<CmsSelectWidgetOption> configuration) {
 
         super(configuration);
     }
@@ -93,11 +93,11 @@ public class CmsRadioSelectWidget extends A_CmsSelectWidget {
         result.append("<td class=\"xmlTd\">");
 
         // get select box options from default value String
-        List options = parseSelectOptions(cms, widgetDialog, param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
         String selected = getSelectedValue(cms, param);
-        Iterator i = options.iterator();
+        Iterator<CmsSelectWidgetOption> i = options.iterator();
         while (i.hasNext()) {
-            CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+            CmsSelectWidgetOption option = i.next();
 
             // create the option
             result.append("<input type='radio' name='");

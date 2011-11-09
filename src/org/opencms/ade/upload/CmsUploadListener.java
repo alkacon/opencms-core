@@ -294,7 +294,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
                 m_watcher.start();
             } catch (Exception e) {
                 LOG.info(Messages.get().getBundle().key(
-                    Messages.INFO_UPLOAD_CREATE_WATCH_DOG_2,
+                    Messages.LOG_UPLOAD_CREATE_WATCH_DOG_2,
                     getId(),
                     e.getMessage()));
             }

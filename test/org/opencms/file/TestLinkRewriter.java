@@ -390,9 +390,9 @@ public class TestLinkRewriter extends OpenCmsTestCase {
         CmsFile file = cms.readFile(res);
         String contentString = new String(file.getContents(), "UTF-8");
         String contentWithWrongEncoding = new String(file.getContents(), "ISO-8859-1");
-        assertTrue(contentString.contains("äöüß"));
+        assertTrue(contentString.contains("\u00e4\u00f6\u00fc\u00df"));
         assertTrue(contentString.contains("UTF-8"));
-        assertFalse(contentWithWrongEncoding.contains("äöüß"));
+        assertFalse(contentWithWrongEncoding.contains("\u00e4\u00f6\u00fc\u00df"));
         cms.copyResource("/system/enc", "/system/enc2");
         CmsProperty encoding = new CmsProperty("content-encoding", "ISO-8859-1", "ISO-8859-1");
         cms.lockResource("/system/enc2");
@@ -402,9 +402,9 @@ public class TestLinkRewriter extends OpenCmsTestCase {
         file = cms.readFile(res);
         String newContent = new String(file.getContents(), "ISO-8859-1");
         String newContentWithWrongEncoding = new String(file.getContents(), "UTF-8");
-        assertTrue(newContent.contains("äöüß"));
+        assertTrue(newContent.contains("\u00e4\u00f6\u00fc\u00df"));
         assertTrue(newContent.contains("ISO-8859-1"));
-        assertFalse(newContentWithWrongEncoding.contains("äöüß"));
+        assertFalse(newContentWithWrongEncoding.contains("\u00e4\u00f6\u00fc\u00df"));
     }
 
     /**

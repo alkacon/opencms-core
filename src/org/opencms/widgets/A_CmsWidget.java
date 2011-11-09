@@ -103,6 +103,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -199,7 +200,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String helpId = getHelpKey(param);
-        Set helpIdsShown = widgetDialog.getHelpMessageIds();
+        Set<String> helpIdsShown = widgetDialog.getHelpMessageIds();
         if (helpIdsShown.contains(helpId)) {
             // help hey has already been included in output
             return "";
@@ -244,6 +245,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getClass().getName().hashCode();
@@ -262,11 +264,11 @@ public abstract class A_CmsWidget implements I_CmsWidget {
      */
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        String[] values = (String[])formParameters.get(param.getId());
+        String[] values = formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
             param.setStringValue(cms, values[0]);
         }

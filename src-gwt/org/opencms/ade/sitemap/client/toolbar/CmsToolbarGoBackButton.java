@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -48,6 +49,9 @@ import com.google.gwt.user.client.Window;
  * @since 8.0.0
  */
 public class CmsToolbarGoBackButton extends CmsPushButton {
+
+    /** The return code. */
+    private String m_returnCode;
 
     /**
      * Constructor.<p>
@@ -74,6 +78,17 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
                 goBack();
             }
         });
+        m_returnCode = controller.getData().getReturnCode();
+    }
+
+    /**
+     * Returns the return code.<p>
+     * 
+     * @return the return code
+     */
+    protected String getReturnCode() {
+
+        return m_returnCode;
     }
 
     /**
@@ -81,15 +96,14 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
      */
     protected void goBack() {
 
-        final String returnCode = Window.Location.getParameter(CmsCoreProvider.PARAM_RETURNCODE);
-        if (returnCode != null) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getReturnCode())) {
             CmsRpcAction<CmsReturnLinkInfo> goBackAction = new CmsRpcAction<CmsReturnLinkInfo>() {
 
                 @Override
                 public void execute() {
 
                     start(300, false);
-                    CmsCoreProvider.getService().getLinkForReturnCode(returnCode, this);
+                    CmsCoreProvider.getService().getLinkForReturnCode(getReturnCode(), this);
                 }
 
                 @Override
@@ -113,5 +127,4 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
         }
 
     }
-
 }

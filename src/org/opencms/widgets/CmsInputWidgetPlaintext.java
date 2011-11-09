@@ -62,6 +62,7 @@ public final class CmsInputWidgetPlaintext extends CmsInputWidget {
     /**
      * @see org.opencms.widgets.CmsInputWidget#newInstance()
      */
+    @Override
     public I_CmsWidget newInstance() {
 
         return new CmsInputWidgetPlaintext();
@@ -70,13 +71,14 @@ public final class CmsInputWidgetPlaintext extends CmsInputWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        String[] values = (String[])formParameters.get(param.getId());
+        String[] values = formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
             String value = values[0];
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {

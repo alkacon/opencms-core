@@ -66,6 +66,50 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class CmsDomUtil {
 
+    /** Enumeration of link/form targets. */
+    public static enum Target {
+
+        /** Target top. */
+        TOP("_top"),
+
+        /** Target parent. */
+        PARENT("_parent"),
+
+        /** Target self. */
+        SELF("_self");
+
+        /** The target representation. */
+        private String m_representaition;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param representaition the target representation
+         */
+        Target(String representaition) {
+
+            m_representaition = representaition;
+        }
+
+        /**
+         * Returns the target representation.<p>
+         * @return the target representation
+         */
+        public String getRepresentaition() {
+
+            return m_representaition;
+        }
+    }
+
+    /** Form methods. */
+    public static enum Method {
+
+        /** The post method. */
+        post,
+        /** The get method. */
+        get;
+    }
+
     /**
      * HTML tag attributes.<p>
      */
@@ -813,16 +857,31 @@ public final class CmsDomUtil {
      * 
      * @return the generated form element
      */
-    public static FormElement generateHiddenForm(String action, String method, String target, Map<String, String> values) {
+    public static FormElement generateHiddenForm(String action, Method method, String target, Map<String, String> values) {
 
         FormElement formElement = Document.get().createFormElement();
-        formElement.setMethod(method);
+        formElement.setMethod(method.name());
         formElement.setTarget(target);
         formElement.setAction(action);
         for (Entry<String, String> input : values.entrySet()) {
             formElement.appendChild(createHiddenInput(input.getKey(), input.getValue()));
         }
         return formElement;
+    }
+
+    /**
+     * Generates a form element with hidden input fields.<p>
+     * 
+     * @param action the form action
+     * @param method the form method
+     * @param target the form target
+     * @param values the input values
+     * 
+     * @return the generated form element
+     */
+    public static FormElement generateHiddenForm(String action, Method method, Target target, Map<String, String> values) {
+
+        return generateHiddenForm(action, method, target.name(), values);
     }
 
     /**

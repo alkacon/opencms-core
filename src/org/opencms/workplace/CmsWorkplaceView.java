@@ -32,7 +32,7 @@ package org.opencms.workplace;
  * 
  * @since 6.0.0 
  */
-public class CmsWorkplaceView implements Comparable {
+public class CmsWorkplaceView implements Comparable<CmsWorkplaceView> {
 
     /** The localization key of this view. */
     private String m_key;
@@ -60,20 +60,18 @@ public class CmsWorkplaceView implements Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsWorkplaceView obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsWorkplaceView) {
-            return m_order.compareTo(((CmsWorkplaceView)obj).getOrder());
-        }
-        return 0;
+        return m_order.compareTo(obj.getOrder());
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -118,6 +116,7 @@ public class CmsWorkplaceView implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getUri().hashCode();

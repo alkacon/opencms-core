@@ -1284,18 +1284,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             return;
         }
 
-        // do not allow to move a resource into an as deleted marked folder
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-        if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
-            // does not matter online
-            filter = CmsResourceFilter.ALL;
-        }
-
         // determine destination folder        
         String destinationFoldername = CmsResource.getParentFolder(destinationPath);
 
         // read the destination folder (will also check read permissions)
-        CmsFolder destinationFolder = m_driverManager.readFolder(dbc, destinationFoldername, filter);
+        CmsFolder destinationFolder = m_driverManager.readFolder(dbc, destinationFoldername, CmsResourceFilter.ALL);
 
         if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
             // check online resource

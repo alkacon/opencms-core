@@ -105,6 +105,7 @@ public class CmsDisplayWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         StringBuffer result = new StringBuffer(128);
@@ -137,10 +138,11 @@ public class CmsDisplayWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getHelpText(org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String helpId = getDisabledHelpKey(param);
-        Set helpIdsShown = widgetDialog.getHelpMessageIds();
+        Set<String> helpIdsShown = widgetDialog.getHelpMessageIds();
         if (helpIdsShown.contains(helpId)) {
             // help hey has already been included in output
             return "";

@@ -32,6 +32,8 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -43,14 +45,14 @@ import org.opencms.xml.types.CmsXmlHtmlValue;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import junit.framework.Test;
 
 /**
  * Tests for the XML page that doesn't require a running OpenCms system.<p>
  * 
  * @since 6.0.0
  */
-public class TestCmsXmlPage extends TestCase {
+public class TestCmsXmlPage extends OpenCmsTestCase {
 
     private static final String XMLPAGE_SCHEMA_SYSTEM_ID = CmsXmlPage.XMLPAGE_XSD_SYSTEM_ID;
 
@@ -64,6 +66,17 @@ public class TestCmsXmlPage extends TestCase {
     public TestCmsXmlPage(String arg0) {
 
         super(arg0);
+    }
+
+    /**
+     * Test suite for this test class.<p>
+     * 
+     * @return the test suite
+     */
+    public static Test suite() {
+
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return generateSetupTestWrapper(TestCmsXmlPage.class, "simpletest", "/");
     }
 
     /**
@@ -465,8 +478,7 @@ public class TestCmsXmlPage extends TestCase {
     public void testXmlPageRenameElement() throws Exception {
 
         // create a XML entity resolver for test case
-        CmsXmlContentTypeManager.createTypeManagerForTestCases();
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(getCmsObject());
 
         System.out.println("Testing renaming element in the XML page\n");
 
@@ -503,14 +515,17 @@ public class TestCmsXmlPage extends TestCase {
         content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-1.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
         page.addValue("body3", Locale.ENGLISH);
-        page.setStringValue(null, "body3", Locale.ENGLISH, "English WRITTEN! Image <img src=\"/test/image.gif\" />");
+        page.setStringValue(
+            getCmsObject(),
+            "body3",
+            Locale.ENGLISH,
+            "English WRITTEN! Image <img src=\"/test/image.gif\" />");
         assertTrue(page.hasValue("body3", Locale.ENGLISH));
         CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
         assertTrue(table.getLink("link0").isInternal());
-        assertEquals("English WRITTEN! Image <img alt=\"\" src=\"/test/image.gif\" />", page.getStringValue(
-            null,
-            "body3",
-            Locale.ENGLISH));
+        assertEquals(
+            "English WRITTEN! Image <img alt=\"\" src=\"/data/opencms/test/image.gif\" />",
+            page.getStringValue(getCmsObject(), "body3", Locale.ENGLISH));
     }
 
     /**
@@ -530,13 +545,16 @@ public class TestCmsXmlPage extends TestCase {
         content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-old-1.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
         page.addValue("body3", Locale.ENGLISH);
-        page.setStringValue(null, "body3", Locale.ENGLISH, "English WRITTEN! Image <img src=\"/test/image.gif\" />");
+        page.setStringValue(
+            getCmsObject(),
+            "body3",
+            Locale.ENGLISH,
+            "English WRITTEN! Image <img src=\"/test/image.gif\" />");
         assertTrue(page.hasValue("body3", Locale.ENGLISH));
         CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
         assertTrue(table.getLink("link0").isInternal());
-        assertEquals("English WRITTEN! Image <img alt=\"\" src=\"/test/image.gif\" />", page.getStringValue(
-            null,
-            "body3",
-            Locale.ENGLISH));
+        assertEquals(
+            "English WRITTEN! Image <img alt=\"\" src=\"/data/opencms/test/image.gif\" />",
+            page.getStringValue(getCmsObject(), "body3", Locale.ENGLISH));
     }
 }

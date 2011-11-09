@@ -203,7 +203,7 @@ public class CmsUploadBean extends CmsJspBean {
             removeListener(listener.getId());
         }
         // the upload was successful inform the user about success
-        return generateResponse(Boolean.TRUE, m_bundle.key(org.opencms.ade.upload.Messages.INFO_UPLOAD_SUCCESS_0), "");
+        return generateResponse(Boolean.TRUE, m_bundle.key(org.opencms.ade.upload.Messages.LOG_UPLOAD_SUCCESS_0), "");
     }
 
     /**

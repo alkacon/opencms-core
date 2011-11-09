@@ -158,6 +158,11 @@ public class CmsGalleryDataBean implements IsSerializable {
         return m_referenceSitePath;
     }
 
+    /**
+     * Returns the search scope.<p>
+     * 
+     * @return the search scope
+     */
     public CmsGallerySearchScope getScope() {
 
         return m_scope;
@@ -274,6 +279,11 @@ public class CmsGalleryDataBean implements IsSerializable {
         this.m_referenceSitePath = referenceSitePath;
     }
 
+    /**
+     * Sets the search scope.<p>
+     * 
+     * @param scope the search scope
+     */
     public void setScope(CmsGallerySearchScope scope) {
 
         m_scope = scope;

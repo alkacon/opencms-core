@@ -174,6 +174,22 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/icons/lockIconActive.png")
+    ImageResource lockIconActive();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
+    @Source("images/icons/lockIconDeactivated.png")
+    ImageResource lockIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/icons/logoutIconActive.png")
     ImageResource logoutIconActive();
 

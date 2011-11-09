@@ -84,6 +84,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename("testOverwriteMovedResource"));
         suite.addTest(new TestMoveRename("testMoveTargetWithoutPermissions"));
         suite.addTest(new TestMoveRename("testMoveDeleted"));
+        suite.addTest(new TestMoveRename("testMoveDeletedWithSubfolders"));
         suite.addTest(new TestMoveRename("testMoveSourceWithoutReadPermissions"));
         suite.addTest(new TestMoveRename("testMoveSourceWithoutWritePermissions"));
 
@@ -161,6 +162,73 @@ public class TestMoveRename extends OpenCmsTestCase {
         assertLock(cms, destinationFolder + file, CmsLockType.INHERITED);
         // now assert the filter for the rest of the attributes
         assertFilter(cms, destinationFolder + file, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
+    }
+
+    /**
+     * Tests to move a folder with deleted sub-resources which are non-empty folders.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveDeletedWithSubfolders() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to move a folder with deleted sub-resources which are non-empty folders");
+
+        // Creating paths
+        String folder1 = "/testMoveDeletedWithSub/";
+        String folder2 = "/testMoveDeletedWithSub/folders/";
+        String file = "index.html";
+
+        // create the resources
+        cms.createResource(folder1, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(folder1 + file, CmsResourceTypePlain.getStaticTypeId());
+        cms.createResource(folder2, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(folder2 + file, CmsResourceTypePlain.getStaticTypeId());
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, folder1);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // delete the file
+        cms.lockResource(folder1);
+        cms.deleteResource(folder2, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        storeResources(cms, folder1, true);
+
+        // now move the folder
+        String destinationFolder1 = "/testMoveDeletedWithSubChanged/";
+        String destinationFolder2 = "/testMoveDeletedWithSubChanged/folders/";
+        cms.moveResource(folder1, destinationFolder1);
+
+        // assert the folder
+
+        // project must be current project
+        assertProject(cms, destinationFolder1, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        assertState(cms, destinationFolder1, CmsResource.STATE_CHANGED);
+        // assert lock state
+        assertLock(cms, destinationFolder1, CmsLockType.EXCLUSIVE);
+
+        // set filter mapping
+        setMapping(destinationFolder1, folder1);
+        // now assert the filter for the rest of the attributes
+        assertFilter(cms, destinationFolder1, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
+
+        // assert the file
+
+        // project must be current project
+        assertProject(cms, destinationFolder1 + file, cms.getRequestContext().getCurrentProject());
+        // state must still be "deleted"
+        assertState(cms, destinationFolder1 + file, CmsResource.STATE_CHANGED);
+        assertState(cms, destinationFolder1 + file, CmsResource.STATE_CHANGED);
+        assertState(cms, destinationFolder2, CmsResource.STATE_DELETED);
+        assertState(cms, destinationFolder2 + file, CmsResource.STATE_DELETED);
+        // assert lock state
+        assertLock(cms, destinationFolder1 + file, CmsLockType.INHERITED);
+        assertLock(cms, destinationFolder2 + file, CmsLockType.INHERITED);
+        // now assert the filter for the rest of the attributes
+        assertFilter(cms, destinationFolder1 + file, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
+        assertFilter(cms, destinationFolder2 + file, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
     }
 
     /**
@@ -297,7 +365,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.copyResource(source, folder);
         cms.copyResource(source, folder + test);
 
-        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        List<CmsResource> list = cms.readResources(folder, CmsResourceFilter.ALL, true);
         int files = list.size();
 
         // remove read permission for test2, this should not be a problem when moving
@@ -317,10 +385,10 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        assertEquals("there missing files after moving", files, cms.readResources(
-            destinationFolder,
-            CmsResourceFilter.ALL,
-            true).size());
+        assertEquals(
+            "there missing files after moving",
+            files,
+            cms.readResources(destinationFolder, CmsResourceFilter.ALL, true).size());
     }
 
     /**
@@ -342,7 +410,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.copyResource(source, folder);
         cms.copyResource(source, folder + test);
 
-        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        List<CmsResource> list = cms.readResources(folder, CmsResourceFilter.ALL, true);
         int files = list.size();
 
         // remove read permission for test2

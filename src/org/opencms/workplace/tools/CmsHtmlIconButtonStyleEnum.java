@@ -64,7 +64,7 @@ public final class CmsHtmlIconButtonStyleEnum {
     private static final CmsHtmlIconButtonStyleEnum[] VALUE_ARRAY = {BIG_ICON_TEXT, SMALL_ICON_TEXT, SMALL_ICON_ONLY};
 
     /** List of ordering constants.     */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
+    public static final List<CmsHtmlIconButtonStyleEnum> VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_style;
@@ -90,9 +90,9 @@ public final class CmsHtmlIconButtonStyleEnum {
      */
     public static CmsHtmlIconButtonStyleEnum valueOf(String value) throws CmsIllegalArgumentException {
 
-        Iterator iter = VALUES.iterator();
+        Iterator<CmsHtmlIconButtonStyleEnum> iter = VALUES.iterator();
         while (iter.hasNext()) {
-            CmsHtmlIconButtonStyleEnum target = (CmsHtmlIconButtonStyleEnum)iter.next();
+            CmsHtmlIconButtonStyleEnum target = iter.next();
             if (value.equals(target.getStyle())) {
                 return target;
             }
@@ -116,6 +116,7 @@ public final class CmsHtmlIconButtonStyleEnum {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_style;

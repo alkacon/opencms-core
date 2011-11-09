@@ -58,6 +58,7 @@ public class CmsImageGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsGalleryWidget#getNameLower()
      */
+    @Override
     public String getNameLower() {
 
         return "image";
@@ -66,6 +67,7 @@ public class CmsImageGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsGalleryWidget#getNameUpper()
      */
+    @Override
     public String getNameUpper() {
 
         return "Image";
@@ -82,6 +84,7 @@ public class CmsImageGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsGalleryWidget#showPreview(java.lang.String)
      */
+    @Override
     public boolean showPreview(String value) {
 
         return CmsStringUtil.isNotEmpty(value) && value.startsWith("/");

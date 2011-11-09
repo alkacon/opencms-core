@@ -62,10 +62,10 @@ public class CmsListColumnDefinition {
     private I_CmsListItemComparator m_comparator = new CmsListItemDefaultComparator();
 
     /** Default action. */
-    private List m_defaultActions = new ArrayList();
+    private List<CmsListDefaultAction> m_defaultActions = new ArrayList<CmsListDefaultAction>();
 
     /** List of actions. */
-    private List m_directActions = new ArrayList();
+    private List<I_CmsListDirectAction> m_directActions = new ArrayList<I_CmsListDirectAction>();
 
     /** Data formatter. */
     private I_CmsListFormatter m_formatter;
@@ -161,9 +161,9 @@ public class CmsListColumnDefinition {
                 // null values are not showed by default
                 csv.append(item.get(m_id).toString());
             } else {
-                Iterator itActions = m_directActions.iterator();
+                Iterator<I_CmsListDirectAction> itActions = m_directActions.iterator();
                 while (itActions.hasNext()) {
-                    I_CmsListDirectAction action = (I_CmsListDirectAction)itActions.next();
+                    I_CmsListDirectAction action = itActions.next();
                     if (action.isVisible()) {
                         action.setItem(item);
                         csv.append(action.getName().key(getWp().getLocale()));
@@ -209,9 +209,9 @@ public class CmsListColumnDefinition {
      */
     public CmsListDefaultAction getDefaultAction(String actionId) {
 
-        Iterator it = m_defaultActions.iterator();
+        Iterator<CmsListDefaultAction> it = m_defaultActions.iterator();
         while (it.hasNext()) {
-            CmsListDefaultAction action = (CmsListDefaultAction)it.next();
+            CmsListDefaultAction action = it.next();
             if (action.getId().equals(actionId)) {
                 return action;
             }
@@ -224,12 +224,12 @@ public class CmsListColumnDefinition {
      *
      * @return the default Action Ids list
      */
-    public List getDefaultActionIds() {
+    public List<String> getDefaultActionIds() {
 
-        List ids = new ArrayList();
-        Iterator itDefActions = m_defaultActions.iterator();
+        List<String> ids = new ArrayList<String>();
+        Iterator<CmsListDefaultAction> itDefActions = m_defaultActions.iterator();
         while (itDefActions.hasNext()) {
-            I_CmsListDirectAction action = (I_CmsListDirectAction)itDefActions.next();
+            I_CmsListDirectAction action = itDefActions.next();
             ids.add(action.getId());
         }
         return Collections.unmodifiableList(ids);
@@ -240,7 +240,7 @@ public class CmsListColumnDefinition {
      *
      * @return a list of {@link CmsListDefaultAction} objects
      */
-    public List getDefaultActions() {
+    public List<CmsListDefaultAction> getDefaultActions() {
 
         return Collections.unmodifiableList(m_defaultActions);
     }
@@ -254,9 +254,9 @@ public class CmsListColumnDefinition {
      */
     public I_CmsListDirectAction getDirectAction(String actionId) {
 
-        Iterator it = m_directActions.iterator();
+        Iterator<I_CmsListDirectAction> it = m_directActions.iterator();
         while (it.hasNext()) {
-            I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
+            I_CmsListDirectAction action = it.next();
             if (action.getId().equals(actionId)) {
                 return action;
             }
@@ -269,12 +269,12 @@ public class CmsListColumnDefinition {
      *
      * @return the direct Action Ids list
      */
-    public List getDirectActionIds() {
+    public List<String> getDirectActionIds() {
 
-        List ids = new ArrayList();
-        Iterator itDirActions = m_directActions.iterator();
+        List<String> ids = new ArrayList<String>();
+        Iterator<I_CmsListDirectAction> itDirActions = m_directActions.iterator();
         while (itDirActions.hasNext()) {
-            I_CmsListDirectAction action = (I_CmsListDirectAction)itDirActions.next();
+            I_CmsListDirectAction action = itDirActions.next();
             ids.add(action.getId());
         }
         return Collections.unmodifiableList(ids);
@@ -285,7 +285,7 @@ public class CmsListColumnDefinition {
      * 
      * @return a list of <code>{@link I_CmsListDirectAction}</code>s.
      */
-    public List getDirectActions() {
+    public List<I_CmsListDirectAction> getDirectActions() {
 
         return Collections.unmodifiableList(m_directActions);
     }
@@ -377,9 +377,9 @@ public class CmsListColumnDefinition {
     public String htmlCell(CmsListItem item, boolean isPrintable) {
 
         StringBuffer html = new StringBuffer(512);
-        Iterator itActions = m_directActions.iterator();
+        Iterator<I_CmsListDirectAction> itActions = m_directActions.iterator();
         while (itActions.hasNext()) {
-            I_CmsListDirectAction action = (I_CmsListDirectAction)itActions.next();
+            I_CmsListDirectAction action = itActions.next();
             action.setItem(item);
             boolean enabled = action.isEnabled();
             if (isPrintable) {
@@ -391,9 +391,9 @@ public class CmsListColumnDefinition {
             }
         }
         if (!m_defaultActions.isEmpty()) {
-            Iterator itDefaultActions = m_defaultActions.iterator();
+            Iterator<CmsListDefaultAction> itDefaultActions = m_defaultActions.iterator();
             while (itDefaultActions.hasNext()) {
-                CmsListDefaultAction defAction = (CmsListDefaultAction)itDefaultActions.next();
+                CmsListDefaultAction defAction = itDefaultActions.next();
                 defAction.setItem(item);
                 boolean enabled = defAction.isEnabled();
                 if (isPrintable) {
@@ -551,9 +551,9 @@ public class CmsListColumnDefinition {
      */
     public CmsListDefaultAction removeDefaultAction(String actionId) {
 
-        Iterator it = m_defaultActions.iterator();
+        Iterator<CmsListDefaultAction> it = m_defaultActions.iterator();
         while (it.hasNext()) {
-            CmsListDefaultAction action = (CmsListDefaultAction)it.next();
+            CmsListDefaultAction action = it.next();
             if (action.getId().equals(actionId)) {
                 it.remove();
                 return action;
@@ -571,9 +571,9 @@ public class CmsListColumnDefinition {
      */
     public I_CmsListDirectAction removeDirectAction(String actionId) {
 
-        Iterator it = m_directActions.iterator();
+        Iterator<I_CmsListDirectAction> it = m_directActions.iterator();
         while (it.hasNext()) {
-            I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
+            I_CmsListDirectAction action = it.next();
             if (action.getId().equals(actionId)) {
                 it.remove();
                 return action;
@@ -601,9 +601,9 @@ public class CmsListColumnDefinition {
 
         m_formatter = formatter;
         // set the formatter for all default actions
-        Iterator it = m_defaultActions.iterator();
+        Iterator<CmsListDefaultAction> it = m_defaultActions.iterator();
         while (it.hasNext()) {
-            CmsListDefaultAction action = (CmsListDefaultAction)it.next();
+            CmsListDefaultAction action = it.next();
             action.setColumnForLink(this);
         }
     }
@@ -711,14 +711,14 @@ public class CmsListColumnDefinition {
     public void setWp(A_CmsListDialog wp) {
 
         m_wp = wp;
-        Iterator itActs = getDirectActions().iterator();
+        Iterator<I_CmsListDirectAction> itActs = getDirectActions().iterator();
         while (itActs.hasNext()) {
-            I_CmsListDirectAction action = (I_CmsListDirectAction)itActs.next();
+            I_CmsListDirectAction action = itActs.next();
             action.setWp(wp);
         }
-        Iterator itDefActs = getDefaultActions().iterator();
+        Iterator<CmsListDefaultAction> itDefActs = getDefaultActions().iterator();
         while (itDefActs.hasNext()) {
-            CmsListDefaultAction action = (CmsListDefaultAction)itDefActs.next();
+            CmsListDefaultAction action = itDefActs.next();
             action.setWp(wp);
         }
     }

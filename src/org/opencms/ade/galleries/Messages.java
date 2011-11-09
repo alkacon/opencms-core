@@ -38,10 +38,10 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERROR_BUILD_TYPE_LIST_1 = "ERROR_BUILD_TYPE_LIST_1";
+    public static final String ERR_BUILD_TYPE_LIST_1 = "ERR_BUILD_TYPE_LIST_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERROR_INSTANCING_PREVIEW_PROVIDER_2 = "ERROR_INSTANCING_PREVIEW_PROVIDER_2";
+    public static final String ERR_INSTANCING_PREVIEW_PROVIDER_2 = "ERR_INSTANCING_PREVIEW_PROVIDER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DOWNLOAD_GALLERY_TITLE_0 = "GUI_DOWNLOAD_GALLERY_TITLE_0";

@@ -164,13 +164,14 @@ public class CmsLocalizationWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        String[] values = (String[])formParameters.get(param.getId());
+        String[] values = formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
             // initialize bundle
             initConfiguration(cms, param);
@@ -219,10 +220,10 @@ public class CmsLocalizationWidget extends A_CmsWidget {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getConfiguration())) {
             //initialize messages, the optional bundle key name and the optional locale from configuration String
             String bundleName = "";
-            List configs = CmsStringUtil.splitAsList(getConfiguration(), '|');
-            Iterator i = configs.iterator();
+            List<String> configs = CmsStringUtil.splitAsList(getConfiguration(), '|');
+            Iterator<String> i = configs.iterator();
             while (i.hasNext()) {
-                String config = (String)i.next();
+                String config = i.next();
                 if (config.startsWith(OPTION_KEY)) {
                     m_bundleKey = config.substring(OPTION_KEY.length());
                 } else if (config.startsWith(OPTION_LOCALE)) {

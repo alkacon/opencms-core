@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @since 6.0.0 
  */
-public class CmsGroupDependenciesList extends CmsGroupPrincipalDepemdenciesList {
+public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList {
 
     /** Value for the delete action. */
     public static final int ACTION_DELETE = 131;

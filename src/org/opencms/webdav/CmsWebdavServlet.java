@@ -86,6 +86,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
@@ -210,7 +211,7 @@ public class CmsWebdavServlet extends HttpServlet {
     private static final int FIND_PROPERTY_NAMES = 2;
 
     /** Full range marker. */
-    private static ArrayList FULL_RANGE = new ArrayList();
+    private static ArrayList<CmsWebdavRange> FULL_RANGE = new ArrayList<CmsWebdavRange>();
 
     /** The name of the header "allow". */
     private static final String HEADER_ALLOW = "Allow";
@@ -412,6 +413,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @throws ServletException if something goes wrong
      */
+    @Override
     public void init() throws ServletException {
 
         if (LOG.isInfoEnabled()) {
@@ -643,8 +645,11 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @throws IOException if an input/output error occurs
      */
-    protected void copy(I_CmsRepositoryItem item, PrintWriter writer, Iterator ranges, String contentType)
-    throws IOException {
+    protected void copy(
+        I_CmsRepositoryItem item,
+        PrintWriter writer,
+        Iterator<CmsWebdavRange> ranges,
+        String contentType) throws IOException {
 
         IOException exception = null;
 
@@ -653,7 +658,7 @@ public class CmsWebdavServlet extends HttpServlet {
             InputStream resourceInputStream = new ByteArrayInputStream(item.getContent());
 
             Reader reader = new InputStreamReader(resourceInputStream);
-            CmsWebdavRange currentRange = (CmsWebdavRange)ranges.next();
+            CmsWebdavRange currentRange = ranges.next();
 
             // Writing MIME header.
             writer.println();
@@ -737,8 +742,11 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @throws IOException if an input/output error occurs
      */
-    protected void copy(I_CmsRepositoryItem item, ServletOutputStream ostream, Iterator ranges, String contentType)
-    throws IOException {
+    protected void copy(
+        I_CmsRepositoryItem item,
+        ServletOutputStream ostream,
+        Iterator<CmsWebdavRange> ranges,
+        String contentType) throws IOException {
 
         IOException exception = null;
 
@@ -747,7 +755,7 @@ public class CmsWebdavServlet extends HttpServlet {
             InputStream resourceInputStream = new ByteArrayInputStream(item.getContent());
             InputStream istream = new BufferedInputStream(resourceInputStream, m_input);
 
-            CmsWebdavRange currentRange = (CmsWebdavRange)ranges.next();
+            CmsWebdavRange currentRange = ranges.next();
 
             // Writing MIME header.
             ostream.println();
@@ -842,7 +850,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         IOException exception = null;
-        long bytesToRead = end - start + 1;
+        long bytesToRead = (end - start) + 1;
 
         byte[] buffer = new byte[m_input];
         int len = buffer.length;
@@ -922,7 +930,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         IOException exception = null;
-        long bytesToRead = end - start + 1;
+        long bytesToRead = (end - start) + 1;
 
         char[] buffer = new char[m_input];
         int len = buffer.length;
@@ -1086,6 +1094,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @throws IOException if an input/output error occurs
      */
+    @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         // Get the path to delete
@@ -1129,16 +1138,16 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         // Check if resources found in the tree of the path are locked
-        Hashtable errorList = new Hashtable();
+        Hashtable<String, Integer> errorList = new Hashtable<String, Integer>();
 
         checkChildLocks(req, path, errorList);
         if (!errorList.isEmpty()) {
             sendReport(req, resp, errorList);
 
             if (LOG.isDebugEnabled()) {
-                Iterator iter = errorList.keySet().iterator();
+                Iterator<String> iter = errorList.keySet().iterator();
                 while (iter.hasNext()) {
-                    String errorPath = (String)iter.next();
+                    String errorPath = iter.next();
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_CHILD_LOCKED_1, errorPath));
                 }
             }
@@ -1192,6 +1201,7 @@ public class CmsWebdavServlet extends HttpServlet {
      *
      * @throws IOException if an input/output error occurs
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Serve the requested resource, including the data content
@@ -1206,6 +1216,7 @@ public class CmsWebdavServlet extends HttpServlet {
      *
      * @throws IOException if an input/output error occurs
      */
+    @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Serve the requested resource, without the data content
@@ -1220,6 +1231,7 @@ public class CmsWebdavServlet extends HttpServlet {
      *
      * @throws IOException if an input/output error occurs
      */
+    @SuppressWarnings("unchecked")
     protected void doLock(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String path = getRelativePath(req);
@@ -1284,14 +1296,14 @@ public class CmsWebdavServlet extends HttpServlet {
         if (lockInfoNode != null) {
 
             // Reading lock information
-            Iterator iter = lockInfoNode.elementIterator();
+            Iterator<Element> iter = lockInfoNode.elementIterator();
 
             Element lockScopeNode = null;
             Element lockTypeNode = null;
             Element lockOwnerNode = null;
 
             while (iter.hasNext()) {
-                Element currentElem = (Element)iter.next();
+                Element currentElem = iter.next();
                 switch (currentElem.getNodeType()) {
                     case Node.TEXT_NODE:
                         break;
@@ -1316,7 +1328,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
                 iter = lockScopeNode.elementIterator();
                 while (iter.hasNext()) {
-                    Element currentElem = (Element)iter.next();
+                    Element currentElem = iter.next();
                     switch (currentElem.getNodeType()) {
                         case Node.TEXT_NODE:
                             break;
@@ -1349,7 +1361,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
                 iter = lockTypeNode.elementIterator();
                 while (iter.hasNext()) {
-                    Element currentElem = (Element)iter.next();
+                    Element currentElem = iter.next();
                     switch (currentElem.getNodeType()) {
                         case Node.TEXT_NODE:
                             break;
@@ -1382,7 +1394,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
                 iter = lockOwnerNode.elementIterator();
                 while (iter.hasNext()) {
-                    Element currentElem = (Element)iter.next();
+                    Element currentElem = iter.next();
                     switch (currentElem.getNodeType()) {
                         case Node.TEXT_NODE:
                             lock.setOwner(lock.getOwner() + currentElem.getStringValue());
@@ -1750,6 +1762,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param req the servlet request we are processing
      * @param resp the servlet response we are creating
      */
+    @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
 
         resp.addHeader("DAV", "1,2");
@@ -1783,7 +1796,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         // Properties which are to be displayed.
-        List properties = new Vector();
+        List<String> properties = new Vector<String>();
 
         // Propfind depth
         int depth = CmsRepositoryLockInfo.DEPTH_INFINITY_VALUE;
@@ -1813,10 +1826,11 @@ public class CmsWebdavServlet extends HttpServlet {
 
             // Get the root element of the document
             Element rootElement = document.getRootElement();
-            Iterator iter = rootElement.elementIterator();
+            @SuppressWarnings("unchecked")
+            Iterator<Element> iter = rootElement.elementIterator();
 
             while (iter.hasNext()) {
-                Element currentElem = (Element)iter.next();
+                Element currentElem = iter.next();
                 switch (currentElem.getNodeType()) {
                     case Node.TEXT_NODE:
                         break;
@@ -1842,9 +1856,10 @@ public class CmsWebdavServlet extends HttpServlet {
 
         if (propNode != null) {
             if (type == FIND_BY_PROPERTY) {
-                Iterator iter = propNode.elementIterator();
+                @SuppressWarnings("unchecked")
+                Iterator<Element> iter = propNode.elementIterator();
                 while (iter.hasNext()) {
-                    Element currentElem = (Element)iter.next();
+                    Element currentElem = iter.next();
                     switch (currentElem.getNodeType()) {
                         case Node.TEXT_NODE:
                             break;
@@ -1897,24 +1912,24 @@ public class CmsWebdavServlet extends HttpServlet {
             parseProperties(req, multiStatusElem, item, type, properties);
         } else {
             // The stack always contains the object of the current level
-            Stack stack = new Stack();
+            Stack<I_CmsRepositoryItem> stack = new Stack<I_CmsRepositoryItem>();
             stack.push(item);
 
             // Stack of the objects one level below
-            Stack stackBelow = new Stack();
+            Stack<I_CmsRepositoryItem> stackBelow = new Stack<I_CmsRepositoryItem>();
 
             while ((!stack.isEmpty()) && (depth >= 0)) {
 
-                I_CmsRepositoryItem currentItem = (I_CmsRepositoryItem)stack.pop();
+                I_CmsRepositoryItem currentItem = stack.pop();
                 parseProperties(req, multiStatusElem, currentItem, type, properties);
 
                 if ((currentItem.isCollection()) && (depth > 0)) {
 
                     try {
-                        List list = m_session.list(currentItem.getName());
-                        Iterator iter = list.iterator();
+                        List<I_CmsRepositoryItem> list = m_session.list(currentItem.getName());
+                        Iterator<I_CmsRepositoryItem> iter = list.iterator();
                         while (iter.hasNext()) {
-                            I_CmsRepositoryItem element = (I_CmsRepositoryItem)iter.next();
+                            I_CmsRepositoryItem element = iter.next();
                             stackBelow.push(element);
                         }
 
@@ -1935,7 +1950,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 if (stack.isEmpty()) {
                     depth--;
                     stack = stackBelow;
-                    stackBelow = new Stack();
+                    stackBelow = new Stack<I_CmsRepositoryItem>();
                 }
             }
         }
@@ -1990,6 +2005,7 @@ public class CmsWebdavServlet extends HttpServlet {
      *
      * @throws IOException if an input/output error occurs
      */
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String path = getRelativePath(req);
@@ -2216,7 +2232,10 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @return Vector of ranges
      */
-    protected ArrayList parseRange(HttpServletRequest request, HttpServletResponse response, I_CmsRepositoryItem item) {
+    protected ArrayList<CmsWebdavRange> parseRange(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        I_CmsRepositoryItem item) {
 
         // Checking If-Range
         String headerValue = request.getHeader(HEADER_IFRANGE);
@@ -2276,7 +2295,7 @@ public class CmsWebdavServlet extends HttpServlet {
         rangeHeader = rangeHeader.substring(6);
 
         // Vector which will contain all the ranges which are successfully parsed.
-        ArrayList result = new ArrayList();
+        ArrayList<CmsWebdavRange> result = new ArrayList<CmsWebdavRange>();
         StringTokenizer commaTokenizer = new StringTokenizer(rangeHeader, ",");
 
         // Parsing the range list
@@ -2310,7 +2329,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
                 try {
                     currentRange.setStart(Long.parseLong(rangeDefinition.substring(0, dashPos)));
-                    if (dashPos < rangeDefinition.length() - 1) {
+                    if (dashPos < (rangeDefinition.length() - 1)) {
                         currentRange.setEnd(Long.parseLong(rangeDefinition.substring(
                             dashPos + 1,
                             rangeDefinition.length())));
@@ -2351,17 +2370,6 @@ public class CmsWebdavServlet extends HttpServlet {
     protected InputStream renderHtml(String contextPath, String path) throws IOException {
 
         String name = path;
-
-        // Number of characters to trim from the beginnings of filenames
-        int trim = name.length();
-        if (!name.endsWith("/")) {
-            trim += 1;
-        }
-
-        if (name.equals("/")) {
-            trim = 1;
-        }
-
         // Prepare a writer to a buffered area
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         OutputStreamWriter osWriter = null;
@@ -2469,11 +2477,11 @@ public class CmsWebdavServlet extends HttpServlet {
         try {
 
             // Render the directory entries within this directory
-            List list = m_session.list(path);
-            Iterator iter = list.iterator();
+            List<I_CmsRepositoryItem> list = m_session.list(path);
+            Iterator<I_CmsRepositoryItem> iter = list.iterator();
             while (iter.hasNext()) {
 
-                I_CmsRepositoryItem childItem = (I_CmsRepositoryItem)iter.next();
+                I_CmsRepositoryItem childItem = iter.next();
 
                 String resourceName = childItem.getName();
                 if (resourceName.endsWith("/")) {
@@ -2628,7 +2636,7 @@ public class CmsWebdavServlet extends HttpServlet {
             contentType = getServletContext().getMimeType(item.getName());
         }
 
-        ArrayList ranges = null;
+        ArrayList<CmsWebdavRange> ranges = null;
         long contentLength = -1L;
 
         if (item.isCollection()) {
@@ -2746,14 +2754,14 @@ public class CmsWebdavServlet extends HttpServlet {
 
             if (ranges.size() == 1) {
 
-                CmsWebdavRange range = (CmsWebdavRange)ranges.get(0);
+                CmsWebdavRange range = ranges.get(0);
                 response.addHeader(HEADER_CONTENTRANGE, "bytes "
                     + range.getStart()
                     + "-"
                     + range.getEnd()
                     + "/"
                     + range.getLength());
-                long length = range.getEnd() - range.getStart() + 1;
+                long length = (range.getEnd() - range.getStart()) + 1;
                 if (length < Integer.MAX_VALUE) {
                     response.setContentLength((int)length);
                 } else {
@@ -2812,6 +2820,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * @throws IOException if an input/output error occurs
      * @throws ServletException if a servlet-specified error occurs
      */
+    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String method = req.getMethod();
@@ -2927,9 +2936,9 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param path the path to check the items for locks
      * @param errorList the error list where to put the found errors
      */
-    private void checkChildLocks(HttpServletRequest req, String path, Hashtable errorList) {
+    private void checkChildLocks(HttpServletRequest req, String path, Hashtable<String, Integer> errorList) {
 
-        List list = null;
+        List<I_CmsRepositoryItem> list = null;
         try {
             list = m_session.list(path);
         } catch (CmsException e) {
@@ -2940,9 +2949,9 @@ public class CmsWebdavServlet extends HttpServlet {
             return;
         }
 
-        Iterator iter = list.iterator();
+        Iterator<I_CmsRepositoryItem> iter = list.iterator();
         while (iter.hasNext()) {
-            I_CmsRepositoryItem element = (I_CmsRepositoryItem)iter.next();
+            I_CmsRepositoryItem element = iter.next();
 
             if (isLocked(element.getName())) {
                 errorList.put(element.getName(), new Integer(CmsWebdavStatus.SC_LOCKED));
@@ -3352,7 +3361,7 @@ public class CmsWebdavServlet extends HttpServlet {
         Element elem,
         I_CmsRepositoryItem item,
         int type,
-        List propertiesVector) {
+        List<String> propertiesVector) {
 
         String path = item.getName();
         Element responseElem = addElement(elem, TAG_RESPONSE);
@@ -3446,12 +3455,12 @@ public class CmsWebdavServlet extends HttpServlet {
 
             case FIND_BY_PROPERTY:
 
-                List propertiesNotFound = new Vector();
+                List<String> propertiesNotFound = new Vector<String>();
 
                 // Parse the list of properties
-                Iterator iter = propertiesVector.iterator();
+                Iterator<String> iter = propertiesVector.iterator();
                 while (iter.hasNext()) {
-                    String property = (String)iter.next();
+                    String property = iter.next();
 
                     if (property.equals(TAG_CREATIONDATE)) {
                         addElement(propElem, TAG_CREATIONDATE).addText(
@@ -3528,9 +3537,9 @@ public class CmsWebdavServlet extends HttpServlet {
                     propstatElem = addElement(responseElem, TAG_PROPSTAT);
                     propElem = addElement(propstatElem, TAG_PROP);
 
-                    Iterator notFoundIter = propertiesNotFound.iterator();
+                    Iterator<String> notFoundIter = propertiesNotFound.iterator();
                     while (notFoundIter.hasNext()) {
-                        addElement(propElem, (String)notFoundIter.next());
+                        addElement(propElem, notFoundIter.next());
                     }
 
                     addElement(propstatElem, TAG_STATUS).addText(status);
@@ -3572,7 +3581,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @throws IOException if errors while writing to response occurs
      */
-    private void sendReport(HttpServletRequest req, HttpServletResponse resp, Map errors) throws IOException {
+    private void sendReport(HttpServletRequest req, HttpServletResponse resp, Map<String, Integer> errors)
+    throws IOException {
 
         resp.setStatus(CmsWebdavStatus.SC_MULTI_STATUS);
 
@@ -3582,11 +3592,11 @@ public class CmsWebdavServlet extends HttpServlet {
         Document doc = DocumentHelper.createDocument();
         Element multiStatusElem = doc.addElement(new QName(TAG_MULTISTATUS, Namespace.get(DEFAULT_NAMESPACE)));
 
-        Iterator it = errors.entrySet().iterator();
+        Iterator<Entry<String, Integer>> it = errors.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry e = (Map.Entry)it.next();
-            String errorPath = (String)e.getKey();
-            int errorCode = ((Integer)e.getValue()).intValue();
+            Entry<String, Integer> e = it.next();
+            String errorPath = e.getKey();
+            int errorCode = e.getValue().intValue();
 
             Element responseElem = addElement(multiStatusElem, TAG_RESPONSE);
 

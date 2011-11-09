@@ -59,7 +59,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -82,7 +81,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
     private static final Log LOG = CmsLog.getLog(CmsModuleImportExportHandler.class);
 
     /** The VFS resources to be exported additionally with the module.<p> */
-    private List m_additionalResources;
+    private List<String> m_additionalResources;
 
     /** The description of this import/export handler.<p> */
     private String m_description;
@@ -255,7 +254,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @return the VFS resources to be exported additionally with the module
      */
-    public List getAdditionalResources() {
+    public List<String> getAdditionalResources() {
 
         return m_additionalResources;
     }
@@ -303,7 +302,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @return the VFS resources to be exported additionally with the module as a list
      */
-    public List getResourcesAsList() {
+    public List<String> getResourcesAsList() {
 
         return m_additionalResources;
     }
@@ -390,6 +389,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #importData(CmsObject, I_CmsReport)} instead
      */
+    @Deprecated
     public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
     throws CmsXmlException, CmsImportExportException, CmsRoleViolationException, CmsException {
 
@@ -506,15 +506,13 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         }
 
         // check the module dependencies
-        List dependencies = OpenCms.getModuleManager().checkDependencies(
+        List<CmsModuleDependency> dependencies = OpenCms.getModuleManager().checkDependencies(
             importedModule,
             CmsModuleManager.DEPENDENCY_MODE_IMPORT);
         if (dependencies.size() > 0) {
             // some dependencies not fulfilled
             StringBuffer missingModules = new StringBuffer();
-            Iterator it = dependencies.iterator();
-            while (it.hasNext()) {
-                CmsModuleDependency dependency = (CmsModuleDependency)it.next();
+            for (CmsModuleDependency dependency : dependencies) {
                 missingModules.append("  ").append(dependency.getName()).append(", Version ").append(
                     dependency.getVersion()).append("\r\n");
             }
@@ -525,10 +523,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         }
 
         // check the imported resource types for name / id conflicts
-        List checkedTypes = new ArrayList();
-        Iterator i = importedModule.getResourceTypes().iterator();
-        while (i.hasNext()) {
-            I_CmsResourceType type = (I_CmsResourceType)i.next();
+        List<I_CmsResourceType> checkedTypes = new ArrayList<I_CmsResourceType>();
+        for (I_CmsResourceType type : importedModule.getResourceTypes()) {
             // first check against the already configured resource types
             int externalConflictIndex = OpenCms.getResourceManager().getResourceTypes().indexOf(type);
             if (externalConflictIndex >= 0) {
@@ -549,7 +545,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             // now check against the other resource types of the imported module
             int internalConflictIndex = checkedTypes.indexOf(type);
             if (internalConflictIndex >= 0) {
-                I_CmsResourceType conflictingType = (I_CmsResourceType)checkedTypes.get(internalConflictIndex);
+                I_CmsResourceType conflictingType = checkedTypes.get(internalConflictIndex);
                 throw new CmsConfigurationException(org.opencms.loader.Messages.get().container(
                     org.opencms.loader.Messages.ERR_CONFLICTING_RESTYPES_IN_MODULE_5,
                     new Object[] {

@@ -24,7 +24,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.i18n;
 
 import java.util.ArrayList;
@@ -46,30 +46,30 @@ public class TestCmsLocaleManager extends TestCase {
      * @throws Exception if the test fails
      */
     public void testDefaultLocaleSelection() throws Exception {
-        
+
         CmsLocaleManager localeManager = new CmsLocaleManager();
-        
-        List available = new ArrayList();        
-        
+
+        List<Locale> available = new ArrayList<Locale>();
+
         localeManager.addDefaultLocale(Locale.US.toString());
         localeManager.addDefaultLocale(Locale.UK.toString());
         localeManager.addDefaultLocale(Locale.GERMANY.toString());
         localeManager.addDefaultLocale(Locale.ENGLISH.toString());
-        localeManager.addDefaultLocale(Locale.GERMAN.toString()); 
-        
+        localeManager.addDefaultLocale(Locale.GERMAN.toString());
+
         available.add(Locale.GERMAN);
         available.add(Locale.US);
-                
+
         // direct match
-        Locale result = localeManager.getBestMatchingLocale(Locale.GERMAN, localeManager.getDefaultLocales(), available);        
+        Locale result = localeManager.getBestMatchingLocale(Locale.GERMAN, localeManager.getDefaultLocales(), available);
         assertEquals(Locale.GERMAN, result);
-        
+
         // simplified direct match
-        result = localeManager.getBestMatchingLocale(Locale.GERMANY, localeManager.getDefaultLocales(), available);        
+        result = localeManager.getBestMatchingLocale(Locale.GERMANY, localeManager.getDefaultLocales(), available);
         assertEquals(Locale.GERMAN, result);
-        
+
         // no match, result must be first default
-        result = localeManager.getBestMatchingLocale(Locale.FRENCH, localeManager.getDefaultLocales(), available);        
+        result = localeManager.getBestMatchingLocale(Locale.FRENCH, localeManager.getDefaultLocales(), available);
         assertEquals(Locale.US, result);
-    }    
+    }
 }

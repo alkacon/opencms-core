@@ -238,7 +238,7 @@ public final class CmsWebdavStatus {
      * status codes to descriptive text.  This is a static
      * variable.
      */
-    private static Hashtable mapStatusCodes = new Hashtable();
+    private static Hashtable<Integer, String> mapStatusCodes = new Hashtable<Integer, String>();
 
     /**
      * Hide default constructor for utility class.
@@ -296,7 +296,7 @@ public final class CmsWebdavStatus {
         if (!mapStatusCodes.containsKey(intKey)) {
             return "";
         } else {
-            return (String)mapStatusCodes.get(intKey);
+            return mapStatusCodes.get(intKey);
         }
     }
 

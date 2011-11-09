@@ -28,7 +28,7 @@ div.optionBar{
 	position: absolute;
 	top: 2px;
 	right: 2px;
-	z-index: value("constants.css.zIndexInline");
+	z-index: value("constants.css.zIndexMenu");
 	margin: 0;
 	padding: 0;
 	color: value("constants.css.textColor");

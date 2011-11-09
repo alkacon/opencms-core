@@ -282,7 +282,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_PASSWORD_0 = "GUI_LOGIN_PASSWORD_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_PCTYPE_PRIVATE_0 = "GUI_LOGIN_PCTYPE_PRIVATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_PCTYPE_PUBLIC_0 = "GUI_LOGIN_PCTYPE_PUBLIC_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_RIGHTS_RESERVED_0 = "GUI_LOGIN_RIGHTS_RESERVED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_SECURITY_0 = "GUI_LOGIN_SECURITY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_SUCCESS_WITH_MESSAGE_2 = "GUI_LOGIN_SUCCESS_WITH_MESSAGE_2";

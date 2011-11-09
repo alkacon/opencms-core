@@ -79,7 +79,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
     private String m_paramResourcelist;
 
     /** The list of resource names for the multi operation. */
-    private List m_resourceList;
+    private List<String> m_resourceList;
 
     /**
      * Public constructor.<p>
@@ -137,9 +137,9 @@ public abstract class CmsMultiDialog extends CmsDialog {
         }
 
         result.append("<table border=\"0\">\n");
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             result.append("\t<tr>\n");
             result.append("\t\t<td class='textbold' style=\"vertical-align:top;\">");
             result.append(CmsResource.getName(resName));
@@ -170,6 +170,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#buildLockHeaderBox()
      */
+    @Override
     public String buildLockHeaderBox() throws CmsException {
 
         if (!isMultiOperation()) {
@@ -225,7 +226,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
      * 
      * @return the resources that are defined for the dialog operation
      */
-    public List getResourceList() {
+    public List<String> getResourceList() {
 
         if (m_resourceList == null) {
             // use lazy initializing
@@ -235,7 +236,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
                 Collections.sort(m_resourceList);
             } else {
                 // this is a single resource operation, create list containing the resource name
-                m_resourceList = new ArrayList(1);
+                m_resourceList = new ArrayList<String>(1);
                 m_resourceList.add(getParamResource());
             }
         }
@@ -306,6 +307,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#setParamResource(java.lang.String)
      */
+    @Override
     public void setParamResource(String value) {
 
         super.setParamResource(value);
@@ -323,6 +325,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
      * @param neededForFolder if true, the permissions are required for the parent folder of the resource (e.g. for editors)
      * @return true if the permissions are sufficient, otherwise false
      */
+    @Override
     protected boolean checkResourcePermissions(CmsPermissionSet required, boolean neededForFolder) {
 
         if (isMultiOperation()) {
@@ -341,9 +344,9 @@ public abstract class CmsMultiDialog extends CmsDialog {
      */
     protected boolean isOperationOnFolder() {
 
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 CmsResource curRes = getCms().readResource(resName, CmsResourceFilter.ALL);
                 if (curRes.isFolder()) {

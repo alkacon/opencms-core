@@ -45,9 +45,9 @@ public final class TestCmsCoreMessageBundles extends TestCmsMessageBundles {
      * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
      */
     @Override
-    protected List getNotLocalizedBundles(Locale locale) {
+    protected List<I_CmsMessageBundle> getNotLocalizedBundles(Locale locale) {
 
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     /**

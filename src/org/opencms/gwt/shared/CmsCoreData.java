@@ -53,6 +53,12 @@ public class CmsCoreData implements IsSerializable {
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_gwt";
 
+    /** The parameter name for path. */
+    public static final String PARAM_PATH = "path";
+
+    /** The parameter name for the return code. */
+    public static final String PARAM_RETURNCODE = "returncode";
+
     /** The time sent from the server when loading the data. */
     protected long m_serverTime;
 
@@ -64,9 +70,6 @@ public class CmsCoreData implements IsSerializable {
 
     /** The XML content editor URL. */
     private String m_contentEditorUrl;
-
-    /** The OpenCms VFS prefix. */
-    private String m_vfsPrefix;
 
     /** The mappings of file extensions to resource types. */
     private Map<String, String> m_extensionMapping;
@@ -91,6 +94,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** The current uri. */
     private String m_uri;
+
+    /** The OpenCms VFS prefix. */
+    private String m_vfsPrefix;
 
     /** The current workplace locale. */
     private String m_wpLocale;
@@ -178,16 +184,6 @@ public class CmsCoreData implements IsSerializable {
     }
 
     /**
-     * Returns the login URL.<p>
-     *
-     * @return the login URL
-     */
-    public String getLoginURL() {
-
-        return m_loginURL;
-    }
-
-    /**
      * Returns the XML content editor back-link URL.<p>
      *
      * @return the XML content editor back-link URL
@@ -218,16 +214,6 @@ public class CmsCoreData implements IsSerializable {
     }
 
     /**
-     * Returns the OpenCms VFS prefix.<p>
-     *
-     * @return the OpenCms VFS prefix
-     */
-    public String getVfsPrefix() {
-
-        return m_vfsPrefix;
-    }
-
-    /**
      * Returns the extensionMapping.<p>
      *
      * @return the extensionMapping
@@ -245,6 +231,16 @@ public class CmsCoreData implements IsSerializable {
     public String getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the login URL.<p>
+     *
+     * @return the login URL
+     */
+    public String getLoginURL() {
+
+        return m_loginURL;
     }
 
     /**
@@ -295,6 +291,16 @@ public class CmsCoreData implements IsSerializable {
     public String getUri() {
 
         return m_uri;
+    }
+
+    /**
+     * Returns the OpenCms VFS prefix.<p>
+     *
+     * @return the OpenCms VFS prefix
+     */
+    public String getVfsPrefix() {
+
+        return m_vfsPrefix;
     }
 
     /**

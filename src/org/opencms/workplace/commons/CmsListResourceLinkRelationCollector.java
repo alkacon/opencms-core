@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
@@ -86,9 +87,9 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
-        List names = new ArrayList();
+        List<String> names = new ArrayList<String>();
         names.add(COLLECTOR_NAME);
         return names;
     }
@@ -106,6 +107,7 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResource(org.opencms.file.CmsObject, org.opencms.workplace.list.CmsListItem)
      */
+    @Override
     public CmsResource getResource(CmsObject cms, CmsListItem item) {
 
         String itemId;
@@ -114,7 +116,7 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
         } else {
             itemId = item.getId();
         }
-        CmsResource res = (CmsResource)m_resCache.get(itemId);
+        CmsResource res = m_resCache.get(itemId);
         if (res == null) {
             CmsUUID id = new CmsUUID(item.getId());
             if (!id.isNullUUID()) {
@@ -135,14 +137,15 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List getResources(CmsObject cms, Map params) {
+    @Override
+    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params) {
 
-        List allResources = new ArrayList();
+        List<CmsResource> allResources = new ArrayList<CmsResource>();
         CmsRelationFilter filter = CmsRelationFilter.TARGETS;
         if (isSource()) {
             filter = CmsRelationFilter.SOURCES;
         }
-        List relations = new ArrayList();
+        List<CmsRelation> relations = new ArrayList<CmsRelation>();
         try {
             relations = cms.getRelationsForResource(getResource(), filter);
         } catch (CmsException e) {
@@ -150,11 +153,11 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
                 LOG.error(e.getLocalizedMessage(getWp().getLocale()), e);
             }
         }
-        Map relationTypes = new HashMap();
-        List brokenLinks = new ArrayList();
-        Iterator itRelations = relations.iterator();
+        Map<CmsResource, List<CmsRelationType>> relationTypes = new HashMap<CmsResource, List<CmsRelationType>>();
+        List<String> brokenLinks = new ArrayList<String>();
+        Iterator<CmsRelation> itRelations = relations.iterator();
         while (itRelations.hasNext()) {
-            CmsRelation relation = (CmsRelation)itRelations.next();
+            CmsRelation relation = itRelations.next();
             CmsResource resource = null;
             try {
                 if (isSource()) {
@@ -194,9 +197,9 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
             }
             allResources.add(resource);
             if (relationTypes.containsKey(resource)) {
-                ((List)relationTypes.get(resource)).add(relation.getType());
+                relationTypes.get(resource).add(relation.getType());
             } else {
-                List types = new ArrayList();
+                List<CmsRelationType> types = new ArrayList<CmsRelationType>();
                 types.add(relation.getType());
                 relationTypes.put(resource, types);
             }
@@ -242,6 +245,7 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // noop

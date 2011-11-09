@@ -117,14 +117,14 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The update database thread. */
     private CmsUpdateDBThread m_dbUpdateThread;
 
+    /** The detected mayor version, based on DB structure. */
+    private int m_detectedVersion;
+
     /** Parameter for keeping the history. */
     private boolean m_keepHistory;
 
     /** List of module to be updated. */
     private List<String> m_modulesToUpdate;
-
-    /** The detected mayor version, based on DB structure. */
-    private int m_detectedVersion;
 
     /** the update project. */
     private String m_updateProject = "_tmpUpdateProject" + (System.currentTimeMillis() % 1000);
@@ -168,11 +168,11 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @return <code>false</code> if OCEE is present but not compatible with opencms version
      */
-    @SuppressWarnings( {"unchecked", "boxing"})
+    @SuppressWarnings({"boxing"})
     public boolean checkOceeVersion(String version) {
 
         try {
-            Class manager = Class.forName("org.opencms.ocee.base.CmsOceeManager");
+            Class<?> manager = Class.forName("org.opencms.ocee.base.CmsOceeManager");
             Method checkVersion = manager.getMethod("checkOceeVersion", String.class);
             return (Boolean)checkVersion.invoke(manager, version);
         } catch (ClassNotFoundException e) {
@@ -181,6 +181,35 @@ public class CmsUpdateBean extends CmsSetupBean {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /** 
+     * Creates the shared folder if possible.<p>
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void createSharedFolder() throws Exception {
+
+        String originalSiteRoot = m_cms.getRequestContext().getSiteRoot();
+        CmsProject originalProject = m_cms.getRequestContext().getCurrentProject();
+        try {
+            m_cms.getRequestContext().setSiteRoot("");
+            m_cms.getRequestContext().setCurrentProject(m_cms.createTempfileProject());
+            if (!m_cms.existsResource("/shared")) {
+                m_cms.createResource("/shared", OpenCms.getResourceManager().getResourceType("folder").getTypeId());
+                CmsResource shared = m_cms.readResource("/shared");
+                OpenCms.getPublishManager().publishProject(
+                    m_cms,
+                    new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()),
+                    shared,
+                    false);
+                OpenCms.getPublishManager().waitWhileRunning();
+            }
+        } finally {
+            m_cms.getRequestContext().setSiteRoot(originalSiteRoot);
+            m_cms.getRequestContext().setCurrentProject(originalProject);
+        }
+
     }
 
     /**
@@ -765,8 +794,10 @@ public class CmsUpdateBean extends CmsSetupBean {
             I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
 
             Set<String> utdModules = new HashSet<String>(getUptodateModules());
-            for (int i = 0; i < m_installModules.size(); i++) {
-                String name = m_installModules.get(i);
+            for (String moduleToRemove : getModulesToDelete()) {
+                removeModule(moduleToRemove, report);
+            }
+            for (String name : m_installModules) {
                 if (!utdModules.contains(name)) {
                     String filename = m_moduleFilenames.get(name);
                     try {
@@ -782,35 +813,6 @@ public class CmsUpdateBean extends CmsSetupBean {
                 }
             }
         }
-    }
-
-    /** 
-     * Creates the shared folder if possible.<p>
-     * 
-     * @throws Exception if something goes wrong 
-     */
-    public void createSharedFolder() throws Exception {
-
-        String originalSiteRoot = m_cms.getRequestContext().getSiteRoot();
-        CmsProject originalProject = m_cms.getRequestContext().getCurrentProject();
-        try {
-            m_cms.getRequestContext().setSiteRoot("");
-            m_cms.getRequestContext().setCurrentProject(m_cms.createTempfileProject());
-            if (!m_cms.existsResource("/shared")) {
-                m_cms.createResource("/shared", OpenCms.getResourceManager().getResourceType("folder").getTypeId());
-                CmsResource shared = m_cms.readResource("/shared");
-                OpenCms.getPublishManager().publishProject(
-                    m_cms,
-                    new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()),
-                    shared,
-                    false);
-                OpenCms.getPublishManager().waitWhileRunning();
-            }
-        } finally {
-            m_cms.getRequestContext().setSiteRoot(originalSiteRoot);
-            m_cms.getRequestContext().setCurrentProject(originalProject);
-        }
-
     }
 
     /**
@@ -855,10 +857,12 @@ public class CmsUpdateBean extends CmsSetupBean {
             while (itTypes.hasNext()) {
                 I_CmsResourceType type = itTypes.next();
                 m++;
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(m),
-                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(m),
+                        String.valueOf(n)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     type.getTypeName()));
@@ -882,15 +886,17 @@ public class CmsUpdateBean extends CmsSetupBean {
                             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                             I_CmsReport.FORMAT_OK);
                     } catch (Exception e) {
-                        report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ERROR_0),
+                            I_CmsReport.FORMAT_ERROR);
                         report.addError(e);
                         // log the error
                         e.printStackTrace(System.err);
                     }
                 } else {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.FORMAT_WARNING);
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
+                        I_CmsReport.FORMAT_WARNING);
                 }
             }
         } finally {
@@ -927,6 +933,46 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Computes a list of modules which need to be removed before updating the other modules, e.g. because of resource type
+     * conflicts.<p>
+     * 
+     * @return the list of names of modules which need to be removed 
+     */
+    protected List<String> getModulesToDelete() {
+
+        List<String> result = new ArrayList<String>();
+        if (m_installModules.contains("org.opencms.ade.config")) {
+            // some resource types have been moved from org.opencms.ade.containerpage an org.opencms.ade.sitemap
+            // to org.opencms.ade.config in 8.0.3, so we need to remove the former modules to avoid a resource
+            // type conflict.
+            CmsModule containerpageModule = OpenCms.getModuleManager().getModule("org.opencms.ade.containerpage");
+            if (containerpageModule != null) {
+                String version = containerpageModule.getVersion().toString();
+                if ("8.0.0".equals(version) || "8.0.1".equals(version) || "8.0.2".equals(version)) {
+                    result.add("org.opencms.ade.containerpage");
+                    result.add("org.opencms.ade.sitemap");
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Removes a module.<p>
+     * 
+     * @param moduleName the name of the module to remove 
+     * @param report the report to write to
+     *
+     * @throws CmsException   
+     */
+    protected void removeModule(String moduleName, I_CmsReport report) throws CmsException {
+
+        if (OpenCms.getModuleManager().getModule(moduleName) != null) {
+            OpenCms.getModuleManager().deleteModule(m_cms, moduleName, true, report);
+        }
+    }
+
+    /**
      * Sets the admin Group.<p>
      *
      * @param adminGroup the admin Group to set
@@ -955,9 +1001,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         report.println(
             Messages.get().container(Messages.RPT_BEGIN_UPDATE_MODULE_1, moduleName),
             I_CmsReport.FORMAT_HEADLINE);
-        if (OpenCms.getModuleManager().getModule(moduleName) != null) {
-            OpenCms.getModuleManager().deleteModule(m_cms, moduleName, true, report);
-        }
+        removeModule(moduleName, report);
         OpenCms.getPublishManager().stopPublishing();
         OpenCms.getPublishManager().startPublishing();
         OpenCms.getPublishManager().waitWhileRunning();

@@ -85,22 +85,22 @@ public class CmsToolManager {
     private static final Log LOG = CmsLog.getLog(CmsToolManager.class);
 
     /** List of all available roots. */
-    private final CmsIdentifiableObjectContainer m_roots;
+    private final CmsIdentifiableObjectContainer<CmsToolRootHandler> m_roots;
 
     /** List of all available tools. */
-    private final CmsIdentifiableObjectContainer m_tools;
+    private final CmsIdentifiableObjectContainer<CmsTool> m_tools;
 
     /** List of all available urls and related tool paths. */
-    private final CmsIdentifiableObjectContainer m_urls;
+    private final CmsIdentifiableObjectContainer<String> m_urls;
 
     /**
      * Default constructor.<p>
      */
     public CmsToolManager() {
 
-        m_roots = new CmsIdentifiableObjectContainer(true, false);
-        m_tools = new CmsIdentifiableObjectContainer(true, false);
-        m_urls = new CmsIdentifiableObjectContainer(false, false);
+        m_roots = new CmsIdentifiableObjectContainer<CmsToolRootHandler>(true, false);
+        m_tools = new CmsIdentifiableObjectContainer<CmsTool>(true, false);
+        m_urls = new CmsIdentifiableObjectContainer<String>(false, false);
     }
 
     /**
@@ -135,13 +135,13 @@ public class CmsToolManager {
      * 
      * @return the OpenCms link for the given tool path which requires parameters
      */
-    public static String linkForToolPath(CmsJspActionElement jsp, String toolPath, Map params) {
+    public static String linkForToolPath(CmsJspActionElement jsp, String toolPath, Map<String, String[]> params) {
 
         if (params == null) {
             // no parameters - take the shortcut
             return linkForToolPath(jsp, toolPath);
         }
-        params.put(CmsToolDialog.PARAM_PATH, toolPath);
+        params.put(CmsToolDialog.PARAM_PATH, new String[] {toolPath});
         return CmsRequestUtil.appendParameters(jsp.link(VIEW_JSPPAGE_LOCATION), params, true);
     }
 
@@ -175,9 +175,9 @@ public class CmsToolManager {
         }
         m_tools.clear();
         m_urls.clear();
-        Iterator it = getToolRoots().iterator();
+        Iterator<CmsToolRootHandler> it = getToolRoots().iterator();
         while (it.hasNext()) {
-            CmsToolRootHandler toolRoot = (CmsToolRootHandler)it.next();
+            CmsToolRootHandler toolRoot = it.next();
             if (!cms.existsResource(toolRoot.getUri())) {
                 if (CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(
@@ -286,7 +286,7 @@ public class CmsToolManager {
                 }
             }
         }
-        return (CmsToolRootHandler)m_roots.getObject(root);
+        return m_roots.getObject(root);
     }
 
     /**
@@ -342,7 +342,7 @@ public class CmsToolManager {
      * 
      * @return list if <code>{@link CmsTool}</code>
      */
-    public List getToolHandlers() {
+    public List<CmsTool> getToolHandlers() {
 
         return m_tools.elementList();
     }
@@ -352,7 +352,7 @@ public class CmsToolManager {
      * 
      * @return a list of {@link CmsToolRootHandler} objects 
      */
-    public List getToolRoots() {
+    public List<CmsToolRootHandler> getToolRoots() {
 
         return m_roots.elementList();
     }
@@ -366,13 +366,13 @@ public class CmsToolManager {
      * 
      * @return a list of {@link CmsTool} objects 
      */
-    public List getToolsForPath(CmsWorkplace wp, String baseTool, boolean includeSubtools) {
+    public List<CmsTool> getToolsForPath(CmsWorkplace wp, String baseTool, boolean includeSubtools) {
 
-        List toolList = new ArrayList();
+        List<CmsTool> toolList = new ArrayList<CmsTool>();
         String rootKey = getCurrentRoot(wp).getKey();
-        Iterator itTools = m_tools.elementList().iterator();
+        Iterator<CmsTool> itTools = m_tools.elementList().iterator();
         while (itTools.hasNext()) {
-            CmsTool tool = (CmsTool)itTools.next();
+            CmsTool tool = itTools.next();
             String path = tool.getHandler().getPath();
             if (resolveAdminTool(rootKey, path) != tool) {
                 continue;
@@ -408,9 +408,9 @@ public class CmsToolManager {
         if (userData == null) {
             userData = new CmsToolUserData();
             userData.setRootKey(ROOTKEY_DEFAULT);
-            Iterator it = getToolRoots().iterator();
+            Iterator<CmsToolRootHandler> it = getToolRoots().iterator();
             while (it.hasNext()) {
-                CmsToolRootHandler root = (CmsToolRootHandler)it.next();
+                CmsToolRootHandler root = it.next();
                 userData.setCurrentToolPath(root.getKey(), TOOLPATH_SEPARATOR);
                 userData.setBaseTool(root.getKey(), TOOLPATH_SEPARATOR);
             }
@@ -428,7 +428,7 @@ public class CmsToolManager {
      */
     public boolean hasToolPathForUrl(String url) {
 
-        List toolPaths = (List)m_urls.getObject(url);
+        List<String> toolPaths = m_urls.getObjectList(url);
         return ((toolPaths != null) && !toolPaths.isEmpty());
     }
 
@@ -462,9 +462,10 @@ public class CmsToolManager {
      * @throws IOException in case of errors during forwarding
      * @throws ServletException in case of errors during forwarding
      */
-    public void jspForwardPage(CmsWorkplace wp, String pagePath, Map params) throws IOException, ServletException {
+    public void jspForwardPage(CmsWorkplace wp, String pagePath, Map<String, String[]> params)
+    throws IOException, ServletException {
 
-        Map newParams = createToolParams(wp, pagePath, params);
+        Map<String, String[]> newParams = createToolParams(wp, pagePath, params);
         if (pagePath.indexOf("?") > 0) {
             pagePath = pagePath.substring(0, pagePath.indexOf("?"));
         }
@@ -488,16 +489,17 @@ public class CmsToolManager {
      * @throws IOException in case of errors during forwarding
      * @throws ServletException in case of errors during forwarding
      */
-    public void jspForwardTool(CmsWorkplace wp, String toolPath, Map params) throws IOException, ServletException {
+    public void jspForwardTool(CmsWorkplace wp, String toolPath, Map<String, String[]> params)
+    throws IOException, ServletException {
 
-        Map newParams;
+        Map<String, String[]> newParams;
         if (params == null) {
-            newParams = new HashMap();
+            newParams = new HashMap<String, String[]>();
         } else {
-            newParams = new HashMap(params);
+            newParams = new HashMap<String, String[]>(params);
         }
         // update path param
-        newParams.put(CmsToolDialog.PARAM_PATH, toolPath);
+        newParams.put(CmsToolDialog.PARAM_PATH, new String[] {toolPath});
         jspForwardPage(wp, VIEW_JSPPAGE_LOCATION, newParams);
     }
 
@@ -511,7 +513,7 @@ public class CmsToolManager {
      */
     public CmsTool resolveAdminTool(String rootKey, String toolPath) {
 
-        return (CmsTool)m_tools.getObject(rootKey + ROOT_SEPARATOR + toolPath);
+        return m_tools.getObject(rootKey + ROOT_SEPARATOR + toolPath);
     }
 
     /**
@@ -577,22 +579,22 @@ public class CmsToolManager {
      */
     private void configureToolRoot(CmsObject cms, CmsToolRootHandler toolRoot) throws CmsException {
 
-        List handlers = new ArrayList();
+        List<I_CmsToolHandler> handlers = new ArrayList<I_CmsToolHandler>();
 
         // add tool root handler 
         handlers.add(toolRoot);
 
         // look in every file under the root uri for valid
         // admin tools and register them
-        List resources = cms.readResourcesWithProperty(toolRoot.getUri(), HANDLERCLASS_PROPERTY);
-        Iterator itRes = resources.iterator();
+        List<CmsResource> resources = cms.readResourcesWithProperty(toolRoot.getUri(), HANDLERCLASS_PROPERTY);
+        Iterator<CmsResource> itRes = resources.iterator();
         while (itRes.hasNext()) {
-            CmsResource res = (CmsResource)itRes.next();
+            CmsResource res = itRes.next();
             CmsProperty prop = cms.readPropertyObject(res.getRootPath(), HANDLERCLASS_PROPERTY, false);
             if (!prop.isNullProperty()) {
                 try {
                     // instantiate the handler
-                    Class handlerClass = Class.forName(prop.getValue());
+                    Class<?> handlerClass = Class.forName(prop.getValue());
                     I_CmsToolHandler handler = (I_CmsToolHandler)handlerClass.newInstance();
 
                     if (!handler.setup(cms, toolRoot, res.getRootPath())) {
@@ -642,13 +644,13 @@ public class CmsToolManager {
      * 
      * @return the new parameter map
      */
-    private Map createToolParams(CmsWorkplace wp, String url, Map params) {
+    private Map<String, String[]> createToolParams(CmsWorkplace wp, String url, Map<String, String[]> params) {
 
-        Map newParams = new HashMap();
+        Map<String, String[]> newParams = new HashMap<String, String[]>();
         // add query parameters to the parameter map if required
         if (url.indexOf("?") > 0) {
             String query = url.substring(url.indexOf("?"));
-            Map reqParameters = CmsRequestUtil.createParameterMap(query);
+            Map<String, String[]> reqParameters = CmsRequestUtil.createParameterMap(query);
             newParams.putAll(reqParameters);
         }
         if (params != null) {
@@ -657,9 +659,12 @@ public class CmsToolManager {
 
         // put close link if not set
         if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            Map argMap = resolveAdminTool(getCurrentRoot(wp).getKey(), getCurrentToolPath(wp)).getHandler().getParameters(
+            Map<String, String[]> argMap = resolveAdminTool(getCurrentRoot(wp).getKey(), getCurrentToolPath(wp)).getHandler().getParameters(
                 wp);
-            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
+            newParams.put(CmsDialog.PARAM_CLOSELINK, new String[] {linkForToolPath(
+                wp.getJsp(),
+                getCurrentToolPath(wp),
+                argMap)});
         }
         return newParams;
     }
@@ -736,12 +741,16 @@ public class CmsToolManager {
      * @param len the recursion level
      * @param handlers the list of handlers to register
      */
-    private void registerHandlerList(CmsObject cms, CmsToolRootHandler toolRoot, int len, List handlers) {
+    private void registerHandlerList(
+        CmsObject cms,
+        CmsToolRootHandler toolRoot,
+        int len,
+        List<I_CmsToolHandler> handlers) {
 
         boolean found = false;
-        Iterator it = handlers.iterator();
+        Iterator<I_CmsToolHandler> it = handlers.iterator();
         while (it.hasNext()) {
-            I_CmsToolHandler handler = (I_CmsToolHandler)it.next();
+            I_CmsToolHandler handler = it.next();
             int myLen = CmsStringUtil.splitAsArray(handler.getPath(), TOOLPATH_SEPARATOR).length;
             if (((len == myLen) && !handler.getPath().equals(TOOLPATH_SEPARATOR))
                 || ((len == 1) && handler.getPath().equals(TOOLPATH_SEPARATOR))) {
@@ -812,11 +821,11 @@ public class CmsToolManager {
         if (!toolPath.startsWith(TOOLPATH_SEPARATOR)) {
             return false;
         }
-        List groups = CmsStringUtil.splitAsList(toolPath, TOOLPATH_SEPARATOR);
-        Iterator itGroups = groups.iterator();
+        List<String> groups = CmsStringUtil.splitAsList(toolPath, TOOLPATH_SEPARATOR);
+        Iterator<String> itGroups = groups.iterator();
         String subpath = "";
         while (itGroups.hasNext()) {
-            String group = (String)itGroups.next();
+            String group = itGroups.next();
             if (subpath.length() != TOOLPATH_SEPARATOR.length()) {
                 subpath += TOOLPATH_SEPARATOR + group;
             } else {

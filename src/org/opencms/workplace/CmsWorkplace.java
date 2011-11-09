@@ -69,6 +69,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -77,6 +78,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.Buffer;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 
 /**
@@ -226,10 +228,10 @@ public abstract class CmsWorkplace {
     private CmsMultiMessages m_messages;
 
     /** The list of multi part file items (if available). */
-    private List m_multiPartFileItems;
+    private List<FileItem> m_multiPartFileItems;
 
     /** The map of parameters read from the current request. */
-    private Map m_parameterMap;
+    private Map<String, String[]> m_parameterMap;
 
     /** The current resource URI. */
     private String m_resourceUri;
@@ -273,7 +275,12 @@ public abstract class CmsWorkplace {
      * @param useLineFeed if true, adds some formatting "\n" to the output String
      * @return a String representing a html select box
      */
-    public static String buildSelect(String parameters, List options, List values, int selected, boolean useLineFeed) {
+    public static String buildSelect(
+        String parameters,
+        List<String> options,
+        List<String> values,
+        int selected,
+        boolean useLineFeed) {
 
         StringBuffer result = new StringBuffer(1024);
         result.append("<select ");
@@ -289,7 +296,7 @@ public abstract class CmsWorkplace {
         for (int i = 0; i < length; i++) {
             if (values != null) {
                 try {
-                    value = (String)values.get(i);
+                    value = values.get(i);
                 } catch (Exception e) {
                     // can usually be ignored
                     if (LOG.isInfoEnabled()) {
@@ -535,9 +542,9 @@ public abstract class CmsWorkplace {
             cms.getRequestContext().setSiteRoot(currentSite);
         }
         if ((res == null) || !access) {
-            List sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
+            List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
             if (sites.size() > 0) {
-                siteRoot = ((CmsSite)sites.get(0)).getSiteRoot();
+                siteRoot = sites.get(0).getSiteRoot();
                 cms.getRequestContext().setSiteRoot(siteRoot);
             }
         }
@@ -620,10 +627,10 @@ public abstract class CmsWorkplace {
     public String allParamsAsHidden() {
 
         StringBuffer result = new StringBuffer(512);
-        Map params = allParamValues();
-        Iterator i = params.entrySet().iterator();
+        Map<String, Object> params = allParamValues();
+        Iterator<Entry<String, Object>> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
+            Entry<String, Object> entry = i.next();
             result.append("<input type=\"hidden\" name=\"");
             result.append(entry.getKey());
             result.append("\" value=\"");
@@ -645,9 +652,10 @@ public abstract class CmsWorkplace {
 
         StringBuffer retValue = new StringBuffer(512);
         HttpServletRequest request = getJsp().getRequest();
-        Iterator paramNames = request.getParameterMap().keySet().iterator();
+        @SuppressWarnings("unchecked")
+        Iterator<String> paramNames = request.getParameterMap().keySet().iterator();
         while (paramNames.hasNext()) {
-            String paramName = (String)paramNames.next();
+            String paramName = paramNames.next();
             String paramValue = request.getParameter(paramName);
             retValue.append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
             if (paramNames.hasNext()) {
@@ -700,7 +708,7 @@ public abstract class CmsWorkplace {
      * @param selected the index of the pre-selected option, if -1 no option is pre-selected
      * @return a formatted html String representing a html select box
      */
-    public String buildSelect(String parameters, List options, List values, int selected) {
+    public String buildSelect(String parameters, List<String> options, List<String> values, int selected) {
 
         return buildSelect(parameters, options, values, selected, true);
     }
@@ -1082,6 +1090,7 @@ public abstract class CmsWorkplace {
      * 
      * @param request the current JSP request
      */
+    @SuppressWarnings("unchecked")
     public void fillParamValues(HttpServletRequest request) {
 
         m_parameterMap = null;
@@ -1102,12 +1111,12 @@ public abstract class CmsWorkplace {
             m_parameterMap = request.getParameterMap();
         }
 
-        List methods = paramSetMethods();
-        Iterator i = methods.iterator();
+        List<Method> methods = paramSetMethods();
+        Iterator<Method> i = methods.iterator();
         while (i.hasNext()) {
-            Method m = (Method)i.next();
+            Method m = i.next();
             String name = m.getName().substring(8).toLowerCase();
-            String[] values = (String[])m_parameterMap.get(name);
+            String[] values = m_parameterMap.get(name);
             String value = null;
             if (values != null) {
                 // get the parameter value from the map
@@ -1291,7 +1300,7 @@ public abstract class CmsWorkplace {
      * 
      * @return list of FileItem instances parsed from the request, in the order that they were transmitted
      */
-    public List getMultiPartFileItems() {
+    public List<FileItem> getMultiPartFileItems() {
 
         return m_multiPartFileItems;
     }
@@ -1624,14 +1633,14 @@ public abstract class CmsWorkplace {
      * @return all initialized parameters of the current workplace class
      * that are not in the given exclusion list as hidden field tags that can be inserted in a form
      */
-    public String paramsAsHidden(Collection excludes) {
+    public String paramsAsHidden(Collection<String> excludes) {
 
         StringBuffer result = new StringBuffer(512);
-        Map params = paramValues();
-        Iterator i = params.entrySet().iterator();
+        Map<String, Object> params = paramValues();
+        Iterator<Entry<String, Object>> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String param = (String)entry.getKey();
+            Entry<String, Object> entry = i.next();
+            String param = entry.getKey();
             if ((excludes == null) || (!excludes.contains(param))) {
                 result.append("<input type=\"hidden\" name=\"");
                 result.append(param);
@@ -1653,7 +1662,7 @@ public abstract class CmsWorkplace {
      * @return all initialized parameters of the current workplace class in the
      * form of a parameter map
      */
-    public Map paramsAsParameterMap() {
+    public Map<String, String[]> paramsAsParameterMap() {
 
         return CmsRequestUtil.createParameterMap(paramValues());
     }
@@ -1668,10 +1677,10 @@ public abstract class CmsWorkplace {
     public String paramsAsRequest() {
 
         StringBuffer result = new StringBuffer(512);
-        Map params = paramValues();
-        Iterator i = params.entrySet().iterator();
+        Map<String, Object> params = paramValues();
+        Iterator<Entry<String, Object>> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
+            Entry<String, Object> entry = i.next();
             result.append(entry.getKey());
             result.append("=");
             result.append(CmsEncoder.encode(entry.getValue().toString(), getCms().getRequestContext().getEncoding()));
@@ -1723,12 +1732,16 @@ public abstract class CmsWorkplace {
      * @throws IOException in case the forward fails
      * @throws ServletException in case the forward fails
      */
-    public void sendForward(String location, Map params) throws IOException, ServletException {
+    public void sendForward(String location, Map<String, ?> params) throws IOException, ServletException {
 
         setForwarded(true);
         // params must be arrays of String, ensure this is the case
-        params = CmsRequestUtil.createParameterMap(params);
-        CmsRequestUtil.forwardRequest(getJsp().link(location), params, getJsp().getRequest(), getJsp().getResponse());
+        Map<String, String[]> parameters = CmsRequestUtil.createParameterMap(params);
+        CmsRequestUtil.forwardRequest(
+            getJsp().link(location),
+            parameters,
+            getJsp().getRequest(),
+            getJsp().getResponse());
     }
 
     /**
@@ -1784,13 +1797,13 @@ public abstract class CmsWorkplace {
      * 
      * @return the values of all parameter methods of this workplace class instance
      */
-    protected Map allParamValues() {
+    protected Map<String, Object> allParamValues() {
 
-        List methods = paramGetMethods();
-        Map map = new HashMap(methods.size());
-        Iterator i = methods.iterator();
+        List<Method> methods = paramGetMethods();
+        Map<String, Object> map = new HashMap<String, Object>(methods.size());
+        Iterator<Method> i = methods.iterator();
         while (i.hasNext()) {
-            Method m = (Method)i.next();
+            Method m = i.next();
             Object o = null;
             try {
                 o = m.invoke(this, new Object[0]);
@@ -1853,7 +1866,7 @@ public abstract class CmsWorkplace {
      * 
      * @return the map of parameters read from the current request
      */
-    protected Map getParameterMap() {
+    protected Map<String, String[]> getParameterMap() {
 
         return m_parameterMap;
     }
@@ -1967,13 +1980,13 @@ public abstract class CmsWorkplace {
      * 
      * @return the values of all parameter methods of this workplace class instance
      */
-    protected Map paramValues() {
+    protected Map<String, Object> paramValues() {
 
-        List methods = paramGetMethods();
-        Map map = new HashMap(methods.size());
-        Iterator i = methods.iterator();
+        List<Method> methods = paramGetMethods();
+        Map<String, Object> map = new HashMap<String, Object>(methods.size());
+        Iterator<Method> i = methods.iterator();
         while (i.hasNext()) {
-            Method m = (Method)i.next();
+            Method m = i.next();
             Object o = null;
             try {
                 o = m.invoke(this, new Object[0]);
@@ -2089,9 +2102,9 @@ public abstract class CmsWorkplace {
      * @return a list of all methods of the current class instance that 
      * start with "getParam" and have no parameters
      */
-    private List paramGetMethods() {
+    private List<Method> paramGetMethods() {
 
-        List list = new ArrayList();
+        List<Method> list = new ArrayList<Method>();
         Method[] methods = this.getClass().getMethods();
         int length = methods.length;
         for (int i = 0; i < length; i++) {
@@ -2113,9 +2126,9 @@ public abstract class CmsWorkplace {
      * @return a list of all methods of the current class instance that 
      * start with "setParam" and have exactly one String parameter
      */
-    private List paramSetMethods() {
+    private List<Method> paramSetMethods() {
 
-        List list = new ArrayList();
+        List<Method> list = new ArrayList<Method>();
         Method[] methods = getClass().getMethods();
         int length = methods.length;
         for (int i = 0; i < length; i++) {

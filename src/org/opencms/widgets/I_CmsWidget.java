@@ -167,5 +167,9 @@ public interface I_CmsWidget {
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
      */
-    void setEditorValue(CmsObject cms, Map formParameters, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
+    void setEditorValue(
+        CmsObject cms,
+        Map<String, String[]> formParameters,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param);
 }

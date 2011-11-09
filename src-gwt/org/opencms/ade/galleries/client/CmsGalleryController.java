@@ -945,9 +945,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getTypes())) {
             // no galleries is selected, provide all available types
             if (CmsCollectionUtil.isEmptyOrNull(m_searchObject.getGalleries())) {
-                // additionally provide all available gallery folders 'widget' and 'editor' dialogmode 
-                if ((m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.widget)
-                    || (m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.editor)) {
+                // additionally provide all available gallery folders if in 'widget' and 'editor' dialog-mode and no folder has been selected 
+                if (((m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.widget) || (m_dialogMode == I_CmsGalleryProviderConstants.GalleryMode.editor))
+                    && CmsCollectionUtil.isEmptyOrNull(m_searchObject.getFolders())) {
                     ArrayList<String> availableGalleries = new ArrayList<String>();
                     for (CmsGalleryFolderBean galleryPath : m_dialogBean.getGalleries()) {
                         availableGalleries.add(galleryPath.getPath());

@@ -46,7 +46,7 @@ import java.util.List;
 public abstract class A_CmsSelectWidget extends A_CmsWidget {
 
     /** The possible options for the select box. */
-    private List m_selectOptions;
+    private List<CmsSelectWidgetOption> m_selectOptions;
 
     /**
      * Creates a new select widget.<p>
@@ -66,7 +66,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
      * 
      * @see CmsSelectWidgetOption
      */
-    public A_CmsSelectWidget(List configuration) {
+    public A_CmsSelectWidget(List<CmsSelectWidgetOption> configuration) {
 
         super();
         m_selectOptions = configuration;
@@ -95,7 +95,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
     public void addSelectOption(CmsSelectWidgetOption option) {
 
         if (m_selectOptions == null) {
-            m_selectOptions = new ArrayList();
+            m_selectOptions = new ArrayList<CmsSelectWidgetOption>();
         }
         m_selectOptions.add(option);
     }
@@ -103,6 +103,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
      */
+    @Override
     public String getConfiguration() {
 
         if (super.getConfiguration() != null) {
@@ -147,14 +148,14 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
      * 
      * @return a list of the currently selected values of the select widget
      */
-    protected List getSelectedValues(CmsObject cms, I_CmsWidgetParameter param) {
+    protected List<String> getSelectedValues(CmsObject cms, I_CmsWidgetParameter param) {
 
-        List values = new ArrayList();
+        List<String> values = new ArrayList<String>();
         String paramValue = param.getStringValue(cms);
         if (CmsStringUtil.isEmpty(paramValue)) {
-            Iterator itOptions = CmsSelectWidgetOption.getDefaultOptions(m_selectOptions).iterator();
+            Iterator<CmsSelectWidgetOption> itOptions = CmsSelectWidgetOption.getDefaultOptions(m_selectOptions).iterator();
             while (itOptions.hasNext()) {
-                CmsSelectWidgetOption option = (CmsSelectWidgetOption)itOptions.next();
+                CmsSelectWidgetOption option = itOptions.next();
                 values.add(option.getValue());
             }
         } else {
@@ -189,7 +190,10 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
      * 
      * @see CmsSelectWidgetOption
      */
-    protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+    protected List<CmsSelectWidgetOption> parseSelectOptions(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
 
         if (m_selectOptions == null) {
             String configuration = getConfiguration();
@@ -200,7 +204,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
             configuration = CmsMacroResolver.resolveMacros(configuration, cms, widgetDialog.getMessages());
             m_selectOptions = CmsSelectWidgetOption.parseOptions(configuration);
             if (m_selectOptions == Collections.EMPTY_LIST) {
-                m_selectOptions = new ArrayList();
+                m_selectOptions = new ArrayList<CmsSelectWidgetOption>();
             }
         }
         return m_selectOptions;
@@ -213,9 +217,9 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
      * 
      * @param selectOptions the list of select options to set
      */
-    protected void setSelectOptions(List selectOptions) {
+    protected void setSelectOptions(List<CmsSelectWidgetOption> selectOptions) {
 
-        m_selectOptions = new ArrayList();
+        m_selectOptions = new ArrayList<CmsSelectWidgetOption>();
         m_selectOptions.addAll(selectOptions);
     }
 }

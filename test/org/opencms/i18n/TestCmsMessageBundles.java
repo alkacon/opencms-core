@@ -82,7 +82,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
     private static final String TARGET_FOLDER = "bin/";
 
     /** Cache the resource bundle to exclude from additional locales tests. */
-    private Map m_excludedBundles = new HashMap();
+    private Map<Locale, List<I_CmsMessageBundle>> m_excludedBundles = new HashMap<Locale, List<I_CmsMessageBundle>>();
 
     /**
      * Checks all message bundles for the DE locale.<p>
@@ -164,13 +164,13 @@ public abstract class TestCmsMessageBundles extends TestCase {
      */
     protected String doTestBundle(Class<?> clazz, String bundleName, Locale locale) throws Exception {
 
-        List keys = new ArrayList();
+        List<String> keys = new ArrayList<String>();
 
         System.out.println("\nValidating all keys in bundle " + bundleName + " for locale " + locale + ":");
 
         CmsMessages messages = getMessageBundle(bundleName, locale);
 
-        List errorMessages = new ArrayList();
+        List<String> errorMessages = new ArrayList<String>();
         // use reflection on all member constants
         Field[] fields = clazz.getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
@@ -263,9 +263,9 @@ public abstract class TestCmsMessageBundles extends TestCase {
             keys.add(key);
         }
 
-        Enumeration bundleKeys = messages.getResourceBundle().getKeys();
+        Enumeration<String> bundleKeys = messages.getResourceBundle().getKeys();
         while (bundleKeys.hasMoreElements()) {
-            String bundleKey = (String)bundleKeys.nextElement();
+            String bundleKey = bundleKeys.nextElement();
             if (bundleKey.toUpperCase().equals(bundleKey)) {
                 // only check keys which are all upper case
                 if (!keys.contains(bundleKey)) {
@@ -284,7 +284,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
             ResourceBundle enResBundle = getMessageBundle(bundleName, defLocale).getResourceBundle();
             bundleKeys = enResBundle.getKeys();
             while (bundleKeys.hasMoreElements()) {
-                String bundleKey = (String)bundleKeys.nextElement();
+                String bundleKey = bundleKeys.nextElement();
                 if (!bundleKey.toUpperCase().equals(bundleKey)) {
                     // additional key found
                     String keyValue;
@@ -331,7 +331,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
         if (!errorMessages.isEmpty()) {
             String msg = "Errors for bundle '" + bundleName + "' and Locale '" + locale + "':";
-            Iterator it = errorMessages.iterator();
+            Iterator<String> it = errorMessages.iterator();
             while (it.hasNext()) {
                 msg += "\n     - ";
                 msg += it.next();
@@ -349,18 +349,18 @@ public abstract class TestCmsMessageBundles extends TestCase {
      * 
      * @return the resource bundles to be excluded from additional locales tests
      */
-    protected List getExcludedLocalizedBundles(Locale locale) {
+    protected List<I_CmsMessageBundle> getExcludedLocalizedBundles(Locale locale) {
 
         if (Locale.ENGLISH.equals(locale)) {
-            return new ArrayList();
+            return new ArrayList<I_CmsMessageBundle>();
         }
         if (m_excludedBundles.get(locale) == null) {
-            List excludedBundles;
-            List notLocalized = getNotLocalizedBundles(locale);
+            List<I_CmsMessageBundle> excludedBundles;
+            List<I_CmsMessageBundle> notLocalized = getNotLocalizedBundles(locale);
             if (notLocalized == null) {
-                excludedBundles = new ArrayList();
+                excludedBundles = new ArrayList<I_CmsMessageBundle>();
             } else {
-                excludedBundles = new ArrayList(notLocalized);
+                excludedBundles = new ArrayList<I_CmsMessageBundle>(notLocalized);
             }
             for (int i = 0; i < getTestMessageBundles().length; i++) {
                 I_CmsMessageBundle bundle = getTestMessageBundles()[i];
@@ -388,9 +388,9 @@ public abstract class TestCmsMessageBundles extends TestCase {
                 }
                 // test if the bundle contains additional keys
                 CmsMessages messages = new CmsMessages(bundle.getBundleName(), Locale.ENGLISH);
-                Enumeration bundleKeys = messages.getResourceBundle().getKeys();
+                Enumeration<String> bundleKeys = messages.getResourceBundle().getKeys();
                 while (bundleKeys.hasMoreElements()) {
-                    String bundleKey = (String)bundleKeys.nextElement();
+                    String bundleKey = bundleKeys.nextElement();
                     if (!bundleKey.toUpperCase().equals(bundleKey)) {
                         exclude = false;
                         break;
@@ -402,7 +402,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
             }
             m_excludedBundles.put(locale, excludedBundles);
         }
-        return (List)m_excludedBundles.get(locale);
+        return m_excludedBundles.get(locale);
     }
 
     /**
@@ -491,7 +491,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
      * 
      * @return a list of bundles not to be localized
      */
-    protected abstract List getNotLocalizedBundles(Locale locale);
+    protected abstract List<I_CmsMessageBundle> getNotLocalizedBundles(Locale locale);
 
     /**
      * Template method that has to be overwritten to return the client class that will be tested.<p> 

@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -261,15 +262,16 @@ public final class CmsRequestUtil {
      * @param params the map of parameters to create a parameter map from
      * @return the created parameter map, all values will be instances of <code>String[]</code>
      */
-    public static Map<String, String[]> createParameterMap(Map<String, Object> params) {
+    public static Map<String, String[]> createParameterMap(Map<String, ?> params) {
 
         if (params == null) {
             return null;
         }
         Map<String, String[]> result = new HashMap<String, String[]>();
-        Iterator<Map.Entry<String, Object>> i = params.entrySet().iterator();
+        Iterator<?> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry<String, ?> entry = i.next();
+            @SuppressWarnings("unchecked")
+            Map.Entry<String, ?> entry = (Entry<String, ?>)i.next();
             String key = entry.getKey();
             Object values = entry.getValue();
             if (values instanceof String[]) {

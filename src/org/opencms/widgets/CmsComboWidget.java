@@ -69,7 +69,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
      * 
      * @see CmsSelectWidgetOption
      */
-    public CmsComboWidget(List configuration) {
+    public CmsComboWidget(List<CmsSelectWidgetOption> configuration) {
 
         super(configuration);
     }
@@ -87,13 +87,14 @@ public class CmsComboWidget extends A_CmsSelectWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getDialogHtmlEnd(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(256);
 
         // get the select box options
-        List options = parseSelectOptions(cms, widgetDialog, param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
 
         if (options.size() > 0) {
             // create combo div
@@ -102,9 +103,9 @@ public class CmsComboWidget extends A_CmsSelectWidget {
             result.append("\">\n");
 
             int count = 0;
-            Iterator i = options.iterator();
+            Iterator<CmsSelectWidgetOption> i = options.iterator();
             while (i.hasNext()) {
-                CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+                CmsSelectWidgetOption option = i.next();
                 String itemId = new StringBuffer(64).append("ci").append(id).append('.').append(count).toString();
                 // create the link around value
                 result.append("\t<a href=\"javascript:setComboValue(\'");
@@ -136,7 +137,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
                 count = 0;
                 i = options.iterator();
                 while (i.hasNext()) {
-                    CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+                    CmsSelectWidgetOption option = i.next();
                     if (option.getHelp() != null) {
                         // help text is optional
                         String itemId = new StringBuffer(64).append("ci").append(id).append('.').append(count).toString();
@@ -161,6 +162,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(16);
@@ -171,6 +173,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return "\tinitComboBox();\n";

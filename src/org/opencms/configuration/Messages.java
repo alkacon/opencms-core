@@ -101,7 +101,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_IMPORT_MANAGER_0 = "INIT_IMPORT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_LOGINMANAGER_2 = "INIT_LOGINMANAGER_2";
+    public static final String INIT_LOGINMANAGER_3 = "INIT_LOGINMANAGER_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_LOGINMESSAGE_3 = "INIT_LOGINMESSAGE_3";

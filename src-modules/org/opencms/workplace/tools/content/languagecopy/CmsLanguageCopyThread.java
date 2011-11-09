@@ -183,7 +183,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
                 I_CmsReport.FORMAT_NOTE);
 
             report.print(Messages.get().container(
-                Messages.LOCALIZATION_BYPASS_1,
+                Messages.RPT_LOCALIZATION_BYPASS_1,
                 new Object[] {this.m_copyresources[i]}));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 

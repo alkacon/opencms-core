@@ -198,6 +198,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the login message enabled flag. */
     public static final String N_ENABLED = "enabled";
 
+    /** The node name for the login security option enabled flag. */
+    public static final String N_ENABLESCURITY = "enableSecurity";
+
     /** The node name for the context encoding. */
     public static final String N_ENCODING = "encoding";
 
@@ -881,9 +884,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
-        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 2);
+        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 3);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAXBADATTEMPTS, 1);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_ENABLESCURITY, 2);
 
         // add login message creation rules
         digester.addObjectCreate("*/" + N_LOGINMESSAGE, CmsLoginMessage.class);
@@ -1266,6 +1270,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             Element managerElement = systemElement.addElement(N_LOGINMANAGER);
             managerElement.addElement(N_DISABLEMINUTES).addText(String.valueOf(m_loginManager.getDisableMinutes()));
             managerElement.addElement(N_MAXBADATTEMPTS).addText(String.valueOf(m_loginManager.getMaxBadAttempts()));
+            managerElement.addElement(N_ENABLESCURITY).addText(String.valueOf(m_loginManager.isEnableSecurity()));
         }
 
         // login message
@@ -1721,7 +1726,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             // no login manager configured, create default
             m_loginManager = new CmsLoginManager(
                 CmsLoginManager.DISABLE_MINUTES_DEFAULT,
-                CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT);
+                CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT,
+                CmsLoginManager.ENABLE_SECURITY_DEFAULT);
         }
         if (m_loginMessage != null) {
             // null OpenCms object is ok during configuration
@@ -2148,8 +2154,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      *
      * @param maxBadAttemptsStr the number of allowed bad login attempts
      * @param disableMinutesStr the time an account gets locked if to many bad logins are attempted
+     * @param enableSecurityStr flag to determine if the security option should be enabled on the login dialog
      */
-    public void setLoginManager(String disableMinutesStr, String maxBadAttemptsStr) {
+    public void setLoginManager(String disableMinutesStr, String maxBadAttemptsStr, String enableSecurityStr) {
 
         int disableMinutes;
         try {
@@ -2163,12 +2170,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         } catch (NumberFormatException e) {
             maxBadAttempts = CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT;
         }
-        m_loginManager = new CmsLoginManager(disableMinutes, maxBadAttempts);
+        boolean enableSecurity = Boolean.valueOf(enableSecurityStr).booleanValue();
+        m_loginManager = new CmsLoginManager(disableMinutes, maxBadAttempts, enableSecurity);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_LOGINMANAGER_2,
+                Messages.INIT_LOGINMANAGER_3,
                 new Integer(disableMinutes),
-                new Integer(maxBadAttempts)));
+                new Integer(maxBadAttempts),
+                new Boolean(enableSecurity)));
         }
     }
 

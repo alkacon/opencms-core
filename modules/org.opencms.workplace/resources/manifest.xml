@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>8.0.2</version>
+		<version>8.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -80,6 +80,7 @@
 			<resource uri="/system/workplace/resources/commons/json2.js"/>
 			<resource uri="/system/workplace/resources/commons/login.png"/>
 			<resource uri="/system/workplace/resources/commons/login_logo.png"/>
+			<resource uri="/system/workplace/resources/commons/login_security.png"/>
 			<resource uri="/system/workplace/resources/commons/ok.png"/>
 			<resource uri="/system/workplace/resources/commons/template_bg.gif"/>
 			<resource uri="/system/workplace/resources/commons/wait.gif"/>
@@ -5868,6 +5869,26 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:200,h:50]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/login_security.png</source>
+			<destination>system/workplace/resources/commons/login_security.png</destination>
+			<type>image</type>
+			<uuidstructure>48466c26-063a-11e1-8e34-c9a60a7588dd</uuidstructure>
+			<uuidresource>48466c27-063a-11e1-8e34-c9a60a7588dd</uuidresource>
+			<datelastmodified>Thu, 03 Nov 2011 16:38:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2011 16:38:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:48,h:48]]></value>
 				</property>
 			</properties>
 			<relations/>

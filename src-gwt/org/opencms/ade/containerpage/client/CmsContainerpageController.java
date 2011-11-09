@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
@@ -72,6 +73,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -274,16 +276,63 @@ public final class CmsContainerpageController {
         @Override
         public void execute() {
 
+            boolean cached = false;
             if (m_elements.containsKey(m_clientId)) {
-                m_callback.execute(m_elements.get(m_clientId));
+                cached = true;
+                CmsContainerElementData elementData = m_elements.get(m_clientId);
+                if (elementData.isGroupContainer()) {
+                    for (String subItemId : elementData.getSubItems()) {
+                        if (!m_elements.containsKey(subItemId)) {
+                            cached = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (cached) {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    /**
+                     * @see com.google.gwt.user.client.Command#execute()
+                     */
+                    public void execute() {
+
+                        getCallback().execute(m_elements.get(getClientId()));
+
+                    }
+                });
             } else {
                 List<String> clientIds = new ArrayList<String>();
                 clientIds.add(m_clientId);
-                getContainerpageService().getElementsData(CmsCoreProvider.get().getStructureId(),
-
-                getRequestParams(), clientIds, m_containerBeans, getLocale(), this);
+                getContainerpageService().getElementsData(
+                    CmsCoreProvider.get().getStructureId(),
+                    getRequestParams(),
+                    clientIds,
+                    m_containerBeans,
+                    getLocale(),
+                    this);
             }
 
+        }
+
+        /**
+         * Returns the call-back function.<p>
+         * 
+         * @return the call-back function
+         */
+        protected I_CmsSimpleCallback<CmsContainerElementData> getCallback() {
+
+            return m_callback;
+        }
+
+        /** 
+         * Returns the requested elements id.<p>
+         * 
+         * @return the element client id
+         */
+        protected String getClientId() {
+
+            return m_clientId;
         }
 
         /**
@@ -478,7 +527,8 @@ public final class CmsContainerpageController {
      * 
      * @param element the container element
      */
-    public void createAndEditNewElement(final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element) {
+    public void createAndEditNewElement(
+        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element) {
 
         if (!element.isNew()) {
             return;
@@ -743,22 +793,8 @@ public final class CmsContainerpageController {
      */
     public void getElement(final String clientId, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
-        if (m_elements.containsKey(clientId)) {
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                /**
-                 * @see com.google.gwt.user.client.Command#execute()
-                 */
-                public void execute() {
-
-                    callback.execute(m_elements.get(clientId));
-
-                }
-            });
-        } else {
-            SingleElementAction action = new SingleElementAction(clientId, callback);
-            action.execute();
-        }
+        SingleElementAction action = new SingleElementAction(clientId, callback);
+        action.execute();
     }
 
     /**
@@ -957,9 +993,6 @@ public final class CmsContainerpageController {
                     } else {
                         unlockContainerpage();
                     }
-                } else {
-                    // the page itself hasn't changed, but maybe the availability
-                    unlockContainerpage();
                 }
             }
         });
@@ -1277,6 +1310,44 @@ public final class CmsContainerpageController {
     /**
      * Method to save and leave the page.<p>
      * 
+     * @param leaveCommand the command to execute to leave the page
+     */
+    public void saveAndLeave(final Command leaveCommand) {
+
+        if (hasPageChanged()) {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    getContainerpageService().saveContainerpage(
+                        CmsCoreProvider.get().getStructureId(),
+                        getPageContent(),
+                        getLocale(),
+                        this);
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Void result) {
+
+                    CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
+                    setPageChanged(false, true);
+                    leaveCommand.execute();
+                }
+            };
+            action.execute();
+        }
+    }
+
+    /**
+     * Method to save and leave the page.<p>
+     * 
      * @param targetUri the new URI to call
      */
     public void saveAndLeave(final String targetUri) {
@@ -1578,27 +1649,27 @@ public final class CmsContainerpageController {
 
         List<CmsContainer> containers = new ArrayList<CmsContainer>();
         for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
-            List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
-            Iterator<Widget> elIt = entry.getValue().iterator();
-            while (elIt.hasNext()) {
-                try {
-                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
-                    CmsContainerElement element = new CmsContainerElement();
-                    element.setClientId(elementWidget.getId());
-                    element.setResourceType(elementWidget.getNewType());
-                    element.setNew(elementWidget.isNew());
-                    element.setSitePath(elementWidget.getSitePath());
-                    elements.add(element);
-                } catch (ClassCastException e) {
-                    // no proper container element, skip it (this should never happen!)
-                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
-                }
-            }
+
             CmsContainerJso cnt = m_containers.get(entry.getKey());
+            // only consider containers that are not marked as detail view
             if (!cnt.isDetailView()) {
-                // container is currently showing detail element.
-                // we don't include it in the data to save, so on the server side
-                // the existing elements in that container will be preserved.
+                List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
+                Iterator<Widget> elIt = entry.getValue().iterator();
+                while (elIt.hasNext()) {
+                    try {
+                        CmsContainerPageElementPanel elementWidget = (CmsContainerPageElementPanel)elIt.next();
+                        CmsContainerElement element = new CmsContainerElement();
+                        element.setClientId(elementWidget.getId());
+                        element.setResourceType(elementWidget.getNewType());
+                        element.setNew(elementWidget.isNew());
+                        element.setSitePath(elementWidget.getSitePath());
+                        elements.add(element);
+                    } catch (ClassCastException e) {
+                        // no proper container element, skip it (this should never happen!)
+                        CmsDebugLog.getInstance().printLine(
+                            "WARNING: there is an inappropriate element within a container");
+                    }
+                }
                 containers.add(new CmsContainer(
                     entry.getKey(),
                     cnt.getType(),

@@ -65,7 +65,7 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
      * @param wp the workplace object
      * @param resources list of locked resources
      */
-    public CmsLockedResourcesCollector(A_CmsListExplorerDialog wp, List resources) {
+    public CmsLockedResourcesCollector(A_CmsListExplorerDialog wp, List<String> resources) {
 
         super(wp);
         setResourcesParam(resources);
@@ -74,9 +74,9 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
-        List names = new ArrayList();
+        List<String> names = new ArrayList<String>();
         names.add(COLLECTOR_NAME);
         return names;
     }
@@ -84,12 +84,13 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List getResources(CmsObject cms, Map params) {
+    @Override
+    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params) {
 
-        List resources = new ArrayList();
-        Iterator itResourceNames = getResourceNamesFromParam(params).iterator();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
+        Iterator<String> itResourceNames = getResourceNamesFromParam(params).iterator();
         while (itResourceNames.hasNext()) {
-            String resName = (String)itResourceNames.next();
+            String resName = itResourceNames.next();
             boolean relatedResource = resName.endsWith("*");
             if (relatedResource) {
                 resName = resName.substring(0, resName.length() - 1);
@@ -128,6 +129,7 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         item.set(

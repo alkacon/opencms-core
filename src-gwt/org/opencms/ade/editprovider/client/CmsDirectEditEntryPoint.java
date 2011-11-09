@@ -254,7 +254,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
      */
     protected CmsDirectEditButtons processEditableElement(Element elem) {
 
-        RootPanel root = RootPanel.get(elem.getId());
+        RootPanel root = RootPanel.get();
         CmsDirectEditButtons result = new CmsDirectEditButtons(elem, null);
         root.add(result);
         result.setPosition(

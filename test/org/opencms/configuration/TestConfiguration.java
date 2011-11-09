@@ -75,13 +75,13 @@ public class TestConfiguration extends OpenCmsTestCase {
         // now digest the XML
         manager.loadXmlConfiguration();
         // generate an output XML format
-        List allConfigurations = new ArrayList();
+        List<I_CmsXmlConfiguration> allConfigurations = new ArrayList<I_CmsXmlConfiguration>();
         allConfigurations.add(manager);
         allConfigurations.addAll(manager.getConfigurations());
 
-        Iterator i = allConfigurations.iterator();
+        Iterator<I_CmsXmlConfiguration> i = allConfigurations.iterator();
         while (i.hasNext()) {
-            I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
+            I_CmsXmlConfiguration config = i.next();
             String xmlOrigFile = inputFile + config.getXmlFileName();
             System.out.println("\n\nConfiguration instance: " + config + ":\n");
 

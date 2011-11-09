@@ -53,7 +53,7 @@ public class CmsMenuRule {
     private boolean m_frozen;
 
     /** The menu item rules that are part of this rule set. */
-    private List m_menuItemRules;
+    private List<I_CmsMenuItemRule> m_menuItemRules;
 
     /** The name of the menu rule set. */
     private String m_name;
@@ -64,7 +64,7 @@ public class CmsMenuRule {
     public CmsMenuRule() {
 
         // initialize members
-        m_menuItemRules = new ArrayList(5);
+        m_menuItemRules = new ArrayList<I_CmsMenuItemRule>(5);
     }
 
     /**
@@ -93,7 +93,7 @@ public class CmsMenuRule {
     public void addMenuItemRuleName(String className) {
 
         try {
-            m_menuItemRules.add(Class.forName(className).newInstance());
+            m_menuItemRules.add((I_CmsMenuItemRule)Class.forName(className).newInstance());
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INITIALIZE_MENUITEMRULE_1, className));
@@ -124,9 +124,9 @@ public class CmsMenuRule {
      */
     public I_CmsMenuItemRule getMatchingRule(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        Iterator i = getMenuItemRules().iterator();
+        Iterator<I_CmsMenuItemRule> i = getMenuItemRules().iterator();
         while (i.hasNext()) {
-            I_CmsMenuItemRule rule = (I_CmsMenuItemRule)i.next();
+            I_CmsMenuItemRule rule = i.next();
             if (rule.matches(cms, resourceUtil)) {
                 return rule;
             }
@@ -139,7 +139,7 @@ public class CmsMenuRule {
      * 
      * @return the menu item rules class instances
      */
-    public List getMenuItemRules() {
+    public List<I_CmsMenuItemRule> getMenuItemRules() {
 
         return m_menuItemRules;
     }
@@ -169,7 +169,7 @@ public class CmsMenuRule {
      * 
      * @param menuItemRules the menu item rules class instances
      */
-    public void setMenuItemRules(List menuItemRules) {
+    public void setMenuItemRules(List<I_CmsMenuItemRule> menuItemRules) {
 
         m_menuItemRules = menuItemRules;
     }

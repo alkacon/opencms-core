@@ -139,7 +139,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     private static final Log LOG = CmsLog.getLog(A_CmsListExplorerDialog.class);
 
     /** Column visibility flags container. */
-    private Map m_colVisibilities;
+    private Map<Integer, Boolean> m_colVisibilities;
 
     /** Stores the value of the request parameter for the show explorer flag. */
     private String m_paramShowexplorer;
@@ -183,12 +183,13 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
+    @Override
     public void executeListIndepActions() {
 
         if (getParamListAction().equals(CmsListIndependentAction.ACTION_EXPLORER_SWITCH_ID)) {
-            Map params = new HashMap();
+            Map<String, String[]> params = new HashMap<String, String[]>();
             // set action parameter to initial dialog call
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
             params.putAll(getToolManager().getCurrentTool(this).getHandler().getParameters(this));
 
             getSettings().setCollector(getCollector());
@@ -305,6 +306,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -320,6 +322,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeSelectPage()
      */
+    @Override
     protected void executeSelectPage() {
 
         super.executeSelectPage();
@@ -329,6 +332,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillList()
      */
+    @Override
     protected void fillList() {
 
         getListState().setPage(getSettings().getExplorerPage());
@@ -340,7 +344,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      *
      * @return the colVisibilities map
      */
-    protected Map getColVisibilities() {
+    protected Map<Integer, Boolean> getColVisibilities() {
 
         return m_colVisibilities;
     }
@@ -348,7 +352,8 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
         if (getSettings().getExplorerMode() != null) {
             CmsListColumnDefinition nameCol = getList().getMetadata().getColumnDefinition(LIST_COLUMN_NAME);
@@ -376,7 +381,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             lstate = getListState();
         }
         switch (getAction()) {
-            //////////////////// ACTION: default actions
+        //////////////////// ACTION: default actions
             case ACTION_LIST_SEARCH:
                 if (getParamSearchFilter() == null) {
                     setParamSearchFilter("");
@@ -414,15 +419,16 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
         // this to show first the explorer view
         if (getShowExplorer()) {
             CmsUUID projectId = getProject().getUuid();
-            Map params = new HashMap();
+            Map<String, String[]> params = new HashMap<String, String[]>();
             // set action parameter to initial dialog call
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
             params.putAll(getToolManager().getCurrentTool(this).getHandler().getParameters(this));
 
             getSettings().setExplorerProjectId(projectId);
@@ -452,8 +458,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      */
     protected boolean isColumnVisible(int colFlag) {
 
-        if (m_colVisibilities.get(new Integer(colFlag)) instanceof Boolean) {
-            return ((Boolean)m_colVisibilities.get(new Integer(colFlag))).booleanValue();
+        Integer key = new Integer(colFlag);
+        if (m_colVisibilities.containsKey(key)) {
+            return m_colVisibilities.get(key).booleanValue();
         }
         return false;
     }
@@ -463,6 +470,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         setColumnVisibilities();
@@ -638,7 +646,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      */
     protected void setColumnVisibilities() {
 
-        m_colVisibilities = new HashMap(16);
+        m_colVisibilities = new HashMap<Integer, Boolean>(16);
         // set explorer configurable column visibilities
         int preferences = new CmsUserSettings(getCms()).getExplorerSettings();
         setColumnVisibility(CmsUserSettings.FILELIST_TITLE, preferences);
@@ -682,7 +690,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      *
      * @param colVisibilities the colVisibilities map to set
      */
-    protected void setColVisibilities(Map colVisibilities) {
+    protected void setColVisibilities(Map<Integer, Boolean> colVisibilities) {
 
         m_colVisibilities = colVisibilities;
     }
@@ -690,6 +698,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         metadata.addIndependentAction(CmsListIndependentAction.getDefaultExplorerSwitchAction());
@@ -705,7 +714,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         if (getParamShowexplorer() != null) {
             return Boolean.valueOf(getParamShowexplorer()).booleanValue();
         }
-        Map dialogObject = (Map)getSettings().getDialogObject();
+        Map<?, ?> dialogObject = (Map<?, ?>)getSettings().getDialogObject();
         if (dialogObject == null) {
             return false;
         }
@@ -721,6 +730,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      * 
      * @param showExplorer the show explorer flag
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void setShowExplorer(boolean showExplorer) {
 
         Map dialogMap = (Map)getSettings().getDialogObject();

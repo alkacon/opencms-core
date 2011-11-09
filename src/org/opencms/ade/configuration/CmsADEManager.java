@@ -35,6 +35,7 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsSitemapDetailPageFinder;
 import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -200,6 +201,7 @@ public class CmsADEManager {
         // further initialization is done by the initialize() method. We don't do that in the constructor,
         // because during the setup the configuration resource types don't exist yet.
     }
+
 
     /**
      * Finds the entry point to a sitemap.<p>
@@ -503,7 +505,7 @@ public class CmsADEManager {
                 m_initStatus = Status.initializing;
                 m_configType = OpenCms.getResourceManager().getResourceType(CONFIG_TYPE);
                 m_moduleConfigType = OpenCms.getResourceManager().getResourceType(MODULE_CONFIG_TYPE);
-                CmsProject temp = m_onlineCms.createTempfileProject();
+                CmsProject temp = getTempfileProject(m_onlineCms);
                 m_offlineCms = OpenCms.initCmsObject(m_onlineCms);
                 m_offlineCms.getRequestContext().setCurrentProject(temp);
                 m_onlineCache = new CmsConfigurationCache(m_onlineCms, m_configType, m_moduleConfigType);
@@ -730,6 +732,23 @@ public class CmsADEManager {
 
         CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
         return cache.getPathForStructureId(structureId);
+    }
+
+    /**
+     * Gets a tempfile project, creating one if it doesn't exist already.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @return the tempfile project
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsProject getTempfileProject(CmsObject cms) throws CmsException {
+
+        try {
+            return cms.readProject(I_CmsProjectDriver.TEMP_FILE_PROJECT_NAME);
+        } catch (CmsException e) {
+            return cms.createTempfileProject();
+        }
     }
 
     /**

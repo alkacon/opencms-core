@@ -46,7 +46,9 @@ import java.util.List;
 public class CmsTool {
 
     /** Sub-tools container. */
-    private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
+    private final CmsIdentifiableObjectContainer<CmsToolGroup> m_container = new CmsIdentifiableObjectContainer<CmsToolGroup>(
+        true,
+        true);
 
     /** Handler that represents this tool. */
     private I_CmsToolHandler m_handler;
@@ -72,7 +74,7 @@ public class CmsTool {
      * 
      * @param group the group
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addToolGroup(CmsToolGroup group) {
 
@@ -85,7 +87,7 @@ public class CmsTool {
      * @param group the group
      * @param position the position
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addToolGroup(CmsToolGroup group, float position) {
 
@@ -127,6 +129,7 @@ public class CmsTool {
      * 
      * @return <code>true</code> if the tools have the same name
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -165,19 +168,19 @@ public class CmsTool {
      * 
      * @return the group
      * 
-     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#getObject(String)
+     * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#getObject(String)
      */
     public CmsToolGroup getToolGroup(String name) {
 
-        return (CmsToolGroup)m_container.getObject(name);
+        return m_container.getObject(name);
     }
 
     /**
-     * Retuns a list of groups.<p>
+     * Returns a list of groups.<p>
      * 
      * @return a list of <code>{@link CmsToolGroup}</code>
      */
-    public List getToolGroups() {
+    public List<CmsToolGroup> getToolGroups() {
 
         return m_container.elementList();
     }
@@ -191,14 +194,14 @@ public class CmsTool {
      */
     public String groupHtml(CmsWorkplace wp) {
 
-        List subTools = OpenCms.getWorkplaceManager().getToolManager().getToolsForPath(
+        List<CmsTool> subTools = OpenCms.getWorkplaceManager().getToolManager().getToolsForPath(
             wp,
             getHandler().getPath(),
             false);
-        Iterator itSubTools = subTools.iterator();
+        Iterator<CmsTool> itSubTools = subTools.iterator();
         m_container.clear();
         while (itSubTools.hasNext()) {
-            CmsTool subTool = (CmsTool)itSubTools.next();
+            CmsTool subTool = itSubTools.next();
             // locate group
             CmsToolGroup group = null;
             String groupName = CmsToolMacroResolver.resolveMacros(subTool.getHandler().getGroup(), wp);
@@ -218,9 +221,9 @@ public class CmsTool {
         }
 
         StringBuffer html = new StringBuffer(512);
-        Iterator itHtml = getToolGroups().iterator();
+        Iterator<CmsToolGroup> itHtml = getToolGroups().iterator();
         while (itHtml.hasNext()) {
-            CmsToolGroup group = (CmsToolGroup)itHtml.next();
+            CmsToolGroup group = itHtml.next();
             html.append(group.groupHtml(wp));
         }
         return CmsToolMacroResolver.resolveMacros(html.toString(), wp);
@@ -229,6 +232,7 @@ public class CmsTool {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_handler.getName().hashCode();

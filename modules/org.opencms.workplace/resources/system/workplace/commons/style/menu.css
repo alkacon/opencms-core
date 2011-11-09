@@ -906,6 +906,12 @@ table.logindialog {
 	border-bottom: 1px solid ThreedDarkShadow;
 }
 
+div.loginsecurity {
+	border-bottom: 1px solid ThreeDHighlight;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+
 input.loginbutton {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;

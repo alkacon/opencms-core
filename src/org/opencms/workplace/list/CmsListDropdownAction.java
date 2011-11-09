@@ -50,10 +50,12 @@ public class CmsListDropdownAction extends CmsListIndependentAction {
     public static final String SUFFIX_PARAM = "-sel";
 
     /** The item ids, as a list of String objects. */
-    private List m_ids = new ArrayList();
+    private List<String> m_ids = new ArrayList<String>();
 
     /** The items, a map of [ids, display names] as [String, CmsMessageContainer] objects. */
-    private CmsIdentifiableObjectContainer m_items = new CmsIdentifiableObjectContainer(true, false);
+    private CmsIdentifiableObjectContainer<CmsMessageContainer> m_items = new CmsIdentifiableObjectContainer<CmsMessageContainer>(
+        true,
+        false);
 
     /** The selected item id. */
     private String m_selection;
@@ -83,6 +85,7 @@ public class CmsListDropdownAction extends CmsListIndependentAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
@@ -125,15 +128,15 @@ public class CmsListDropdownAction extends CmsListIndependentAction {
         html.append(getName().key(wp.getLocale()));
         html.append("<select name='").append(getId()).append(SUFFIX_PARAM).append("' onchange=\"");
         html.append(resolveOnClic(wp)).append("\">\n");
-        Iterator it = m_ids.iterator();
+        Iterator<String> it = m_ids.iterator();
         while (it.hasNext()) {
-            String itemId = (String)it.next();
+            String itemId = it.next();
             html.append("\t\t\t\t<option value='");
             html.append(itemId);
             html.append("'");
             html.append(itemId.equals(getSelection()) ? " selected" : "");
             html.append(">");
-            html.append(((CmsMessageContainer)m_items.getObject(itemId)).key(wp.getLocale()));
+            html.append(m_items.getObject(itemId).key(wp.getLocale()));
             html.append("</option>\n");
         }
         html.append("</select>\n");

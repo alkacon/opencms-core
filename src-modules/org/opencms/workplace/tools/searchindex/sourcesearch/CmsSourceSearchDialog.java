@@ -109,14 +109,14 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
     public void actionCommit() throws IOException, ServletException {
 
         setDialogObject(m_dialogObject);
-        List<String> errors = new ArrayList<String>();
+        List<Throwable> errors = new ArrayList<Throwable>();
         // create absolute RFS path and store it in dialog object
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String[]> params = new HashMap<String, String[]>();
         // set style to display report in correct layout
-        params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         // set close link to get back to overview after finishing the import
-        params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/sourcesearch"));
+        params.put(PARAM_CLOSELINK, new String[] {CmsToolManager.linkForToolPath(getJsp(), "/sourcesearch")});
         // redirect to the report output JSP
         getToolManager().jspForwardPage(
             this,

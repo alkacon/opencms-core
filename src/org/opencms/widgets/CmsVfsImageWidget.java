@@ -365,24 +365,24 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
     @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
-        String[] imgValues = (String[])formParameters.get(PREFIX_IMAGE + param.getId());
+        String[] imgValues = formParameters.get(PREFIX_IMAGE + param.getId());
         if ((imgValues != null) && (imgValues.length > 0)) {
             param.setStringValue(cms, imgValues[0]);
         }
 
         CmsXmlVfsImageValue value = (CmsXmlVfsImageValue)param;
 
-        String[] descValues = (String[])formParameters.get(PREFIX_DESCRIPTION + param.getId());
+        String[] descValues = formParameters.get(PREFIX_DESCRIPTION + param.getId());
         value.setDescription(cms, descValues[0]);
 
-        String[] formatValues = (String[])formParameters.get(PREFIX_FORMAT + param.getId());
+        String[] formatValues = formParameters.get(PREFIX_FORMAT + param.getId());
         value.setFormat(cms, formatValues[0]);
 
-        String[] scaleValues = (String[])formParameters.get(PREFIX_SCALE + param.getId());
+        String[] scaleValues = formParameters.get(PREFIX_SCALE + param.getId());
         value.setScaleOptions(cms, scaleValues[0]);
     }
 

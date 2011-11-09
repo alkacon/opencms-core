@@ -38,7 +38,7 @@ import java.util.List;
 public final class CmsWorkplaceUserInfoBlock {
 
     /** The list of defined entries in the block. */
-    private final List m_entries;
+    private final List<CmsWorkplaceUserInfoEntry> m_entries;
 
     /** The block's title. */
     private String m_title;
@@ -48,7 +48,7 @@ public final class CmsWorkplaceUserInfoBlock {
      */
     public CmsWorkplaceUserInfoBlock() {
 
-        m_entries = new ArrayList();
+        m_entries = new ArrayList<CmsWorkplaceUserInfoEntry>();
     }
 
     /**
@@ -70,7 +70,7 @@ public final class CmsWorkplaceUserInfoBlock {
      * 
      * @return a list of {@link CmsWorkplaceUserInfoEntry} objects
      */
-    public List getEntries() {
+    public List<CmsWorkplaceUserInfoEntry> getEntries() {
 
         return m_entries;
     }
