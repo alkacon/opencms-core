@@ -147,6 +147,6 @@
 	gwt-image: "warningSmallImage"; 
 }
 
-@sprite .warningBigIcon, div.warningBigIcon, span.warningBigIcon{
+@sprite table tr td.warningBigIcon, div.warningBigIcon, span.warningBigIcon{
 	gwt-image: "warningBigImage"; 
 }
