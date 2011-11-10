@@ -42,6 +42,15 @@ public final class CmsMenuCommandParameters {
     /** Parameter for 'reload on edit'. */
     public static final String PARAM_RELOAD = "reload";
 
+    /** Parameter key for dialog URI. */
+    public static final String PARAM_DIALOG_URI = "dialogUri";
+
+    /** Parameter key for dialog height. */
+    public static final String PARAM_DIALOG_HEIGHT = "dialogHeight";
+
+    /** Parameter key for dialog width. */
+    public static final String PARAM_DIALOG_WIDTH = "dialogWidth";
+
     /**
      * Hidden constructor.<p>
      */
