@@ -335,7 +335,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 Map<String, String> parameter = new HashMap<String, String>();
                 parameter.put(CmsCoreData.PARAM_PATH, CmsContainerpageController.getCurrentUri());
                 parameter.put(CmsCoreData.PARAM_RETURNCODE, m_controller.getReturnCode());
-                FormElement form = CmsDomUtil.generateHiddenForm(sitemapUri, Method.post, Target.SELF, parameter);
+                FormElement form = CmsDomUtil.generateHiddenForm(sitemapUri, Method.post, Target.NONE, parameter);
                 RootPanel.getBodyElement().appendChild(form);
                 form.submit();
 

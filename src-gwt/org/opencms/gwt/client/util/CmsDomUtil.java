@@ -69,6 +69,9 @@ public final class CmsDomUtil {
     /** Enumeration of link/form targets. */
     public static enum Target {
 
+        /** Unspecified target. */
+        NONE(""),
+
         /** Target top. */
         TOP("_top"),
 
@@ -861,7 +864,9 @@ public final class CmsDomUtil {
 
         FormElement formElement = Document.get().createFormElement();
         formElement.setMethod(method.name());
-        formElement.setTarget(target);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(target)) {
+            formElement.setTarget(target);
+        }
         formElement.setAction(action);
         for (Entry<String, String> input : values.entrySet()) {
             formElement.appendChild(createHiddenInput(input.getKey(), input.getValue()));
