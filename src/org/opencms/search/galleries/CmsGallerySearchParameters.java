@@ -125,7 +125,7 @@ public class CmsGallerySearchParameters {
     /**
      * Helper class to store a time range.<p>
      */
-    protected class CmsGallerySearchTimeRange {
+    public class CmsGallerySearchTimeRange {
 
         /** The end time of the time range. */
         private long m_endTime;
