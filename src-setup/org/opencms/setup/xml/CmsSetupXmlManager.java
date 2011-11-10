@@ -198,6 +198,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddResourceTypeParams());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddWidgets());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddCollectors());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddTypeMappings());
         //m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateSchemaTypes());
 
         // workplace

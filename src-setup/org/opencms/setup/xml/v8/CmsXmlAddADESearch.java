@@ -164,6 +164,42 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         }
     }
 
+    class ElementReplaceAction extends CmsXmlUpdateAction {
+
+        private String m_replacementXml;
+
+        private String m_xpath;
+
+        public ElementReplaceAction(String xpath, String replacementXml) {
+
+            m_xpath = xpath;
+            m_replacementXml = replacementXml;
+        }
+
+        @Override
+        public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+            if (!forReal) {
+                return true;
+            }
+            Node node = doc.selectSingleNode(m_xpath);
+            if (node != null) {
+                Element parent = node.getParent();
+                node.detach();
+                try {
+                    Element element = createElementFromXml(m_replacementXml);
+                    parent.add(element);
+                    return true;
+                } catch (DocumentException e) {
+                    e.printStackTrace(System.out);
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+
     /** A map from xpaths to XML update actions.<p> */
     private Map<String, CmsXmlUpdateAction> m_actions;
 
@@ -794,6 +830,20 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         m_actions.put(
             buildXpathForIndexedDocumentType("source1", "containerpage"),
             createIndexedTypeAction("containerpage"));
+
+        //=============================================================================================================
+
+        String analyzerEnPath = "/opencms/search/analyzers/analyzer[class='org.apache.lucene.analysis.standard.StandardAnalyzer'][locale='en']";
+        m_actions.put(analyzerEnPath, new ElementReplaceAction(analyzerEnPath, "<analyzer>\n"
+            + "                <class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>\n"
+            + "                <locale>en</locale>\n"
+            + "            </analyzer>"));
+
+        String analyzerItPath = "/opencms/search/analyzers/analyzer[class='org.apache.lucene.analysis.snowball.SnowballAnalyzer'][stemmer='Italian']";
+        m_actions.put(analyzerItPath, new ElementReplaceAction(analyzerItPath, "<analyzer>\n"
+            + "                <class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>\n"
+            + "                <locale>it</locale>\n"
+            + "            </analyzer>"));
 
     }
 }

@@ -47,13 +47,13 @@ import org.dom4j.Document;
  */
 public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
 
-    /** List of xpaths to update. */
-    private List<String> m_xpaths;
-
     /** 
      * The new widget definition data.<p>
      */
-    private String[] m_suffixes = {".flv", ".swf"};
+    private String[] m_suffixes = {".flv", ".swf", ".docx", ".xlsx", ".pptx"};
+
+    /** List of xpaths to update. */
+    private List<String> m_xpaths;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -78,16 +78,16 @@ public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
     @Override
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
+        boolean result = false;
         for (int i = 0; i < m_suffixes.length; i++) {
             if (xpath.equals(getXPathsToUpdate().get(i))) {
-                if (document.selectSingleNode(xpath) != null) {
-                    return false;
+                if (document.selectSingleNode(xpath) == null) {
+                    CmsSetupXmlHelper.setValue(document, xpath, "");
+                    result = true;
                 }
-                CmsSetupXmlHelper.setValue(document, xpath, "");
-                return true;
             }
         }
-        return false;
+        return result;
     }
 
     /**
@@ -112,23 +112,6 @@ public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
             }
         }
         return m_xpaths;
-    }
-
-    /**
-     * Returns the xpath for a the resourcetypes node.<p>
-     * 
-     * @return the xpath for the resourcetypes node 
-     */
-    protected String xpathForTypes() {
-
-        return "/"
-            + CmsConfigurationManager.N_ROOT
-            + "/"
-            + CmsVfsConfiguration.N_VFS
-            + "/"
-            + CmsVfsConfiguration.N_RESOURCES
-            + "/"
-            + CmsVfsConfiguration.N_RESOURCETYPES;
     }
 
     /**
@@ -169,6 +152,23 @@ public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
             + "='"
             + suffix
             + "']";
+    }
+
+    /**
+     * Returns the xpath for a the resourcetypes node.<p>
+     * 
+     * @return the xpath for the resourcetypes node 
+     */
+    protected String xpathForTypes() {
+
+        return "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsVfsConfiguration.N_VFS
+            + "/"
+            + CmsVfsConfiguration.N_RESOURCES
+            + "/"
+            + CmsVfsConfiguration.N_RESOURCETYPES;
     }
 
 }
