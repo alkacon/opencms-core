@@ -164,18 +164,36 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         }
     }
 
+    /**
+     * An XML update action which replaces an element given by an XPath with some other XML element.
+     */
     class ElementReplaceAction extends CmsXmlUpdateAction {
 
+        /** 
+         * The XML which should be used as a replacement (as a string).
+         */
         private String m_replacementXml;
 
+        /**
+         * The xpath of the element to replace.
+         */
         private String m_xpath;
 
+        /**
+         * Creates a new instance.<p>
+         * 
+         * @param xpath the xpath of the element to replace
+         * @param replacementXml the replacement xml 
+         */
         public ElementReplaceAction(String xpath, String replacementXml) {
 
             m_xpath = xpath;
             m_replacementXml = replacementXml;
         }
 
+        /**
+         * @see org.opencms.setup.xml.CmsXmlUpdateAction#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
+         */
         @Override
         public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
@@ -300,6 +318,13 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         return xp.toString();
     }
 
+    /**
+     * Creates an action which adds an indexed type to an index source.<p>
+     *  
+     * @param type the type which should be indexed
+     *  
+     * @return the update action 
+     */
     private CmsXmlUpdateAction createIndexedTypeAction(final String type) {
 
         return new CmsXmlUpdateAction() {
@@ -327,6 +352,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         StringBuffer xp;
         CmsXmlUpdateAction action0 = new CmsXmlUpdateAction() {
 
+            @SuppressWarnings("unchecked")
             @Override
             public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
@@ -502,6 +528,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         //
         CmsXmlUpdateAction action1 = new CmsXmlUpdateAction() {
 
+            @SuppressWarnings("synthetic-access")
             @Override
             public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
@@ -511,7 +538,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     return true;
                 }
                 return false;
-            };
+            }
         };
         xp = new StringBuffer(256);
         xp.append(getCommonPath());
@@ -528,6 +555,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         //
         CmsXmlUpdateAction action2 = new CmsXmlUpdateAction() {
 
+            @SuppressWarnings("synthetic-access")
             @Override
             public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
@@ -546,7 +574,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     "gallery_fields",
                     new String[] {"gallery_source", "gallery_modules_source"});
                 return true;
-            };
+            }
         };
         xp = new StringBuffer(256);
         xp.append(getCommonPath());
@@ -563,6 +591,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         //
         CmsXmlUpdateAction action3 = new CmsXmlUpdateAction() {
 
+            @SuppressWarnings("synthetic-access")
             @Override
             public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
