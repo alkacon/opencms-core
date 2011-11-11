@@ -1,12 +1,8 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -66,14 +62,14 @@ import com.google.common.collect.Lists;
  */
 public class TestConfig extends OpenCmsTestCase {
 
-    /** Empty property definition list. **/
-    protected static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
-
     /** Empty detail page list. **/
     protected static final List<CmsDetailPageInfo> NO_DETAILPAGES = Collections.<CmsDetailPageInfo> emptyList();
 
     /** Empty model page list. **/
     protected static final List<CmsModelPageConfig> NO_MODEL_PAGES = Collections.<CmsModelPageConfig> emptyList();
+
+    /** Empty property definition list. **/
+    protected static final List<CmsPropertyConfig> NO_PROPERTIES = Collections.<CmsPropertyConfig> emptyList();
 
     /** Empty resource type list. **/
     protected static final List<CmsResourceTypeConfig> NO_TYPES = Collections.<CmsResourceTypeConfig> emptyList();

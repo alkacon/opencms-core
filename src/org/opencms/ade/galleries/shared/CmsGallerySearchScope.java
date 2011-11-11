@@ -1,12 +1,8 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,32 +34,32 @@ import java.util.List;
  * An enum that represents the possible search scope choices in the ADE gallery search tab.<p>
  */
 public enum CmsGallerySearchScope {
+    /** Search only in the shared folder. */
+    shared(false, false, true, "GUI_SCOPE_SHARED_0"),
+
     /** Search in the current site. */
     site(true, false, false, "GUI_SCOPE_SITE_0"),
-
-    /** Search in the current subsite. */
-    subSite(false, true, false, "GUI_SCOPE_SUBSITE_0"),
 
     /** Search in the current site and the shared folder. */
     siteShared(true, false, true, "GUI_SCOPE_SITESHARED_0"),
 
-    /** Search in the current subsite and the shared folder. */
-    subSiteShared(false, true, true, "GUI_SCOPE_SUBSITESHARED_0"),
+    /** Search in the current subsite. */
+    subSite(false, true, false, "GUI_SCOPE_SUBSITE_0"),
 
-    /** Search only in the shared folder. */
-    shared(false, false, true, "GUI_SCOPE_SHARED_0");
+    /** Search in the current subsite and the shared folder. */
+    subSiteShared(false, true, true, "GUI_SCOPE_SUBSITESHARED_0");
+
+    /** The localization key.*/
+    private final String m_key;
+
+    /** If true, search in the shared folder. */
+    private final boolean m_shared;
 
     /** If true, search in the current site. */
     private final boolean m_site;
 
     /** If true, search in the current sub-site. */
     private final boolean m_subSite;
-
-    /** If true, search in the shared folder. */
-    private final boolean m_shared;
-
-    /** The localization key.*/
-    private final String m_key;
 
     /**
      * Default constructor needed for serialization.<p>

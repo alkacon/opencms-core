@@ -1,12 +1,8 @@
 /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,11 +37,11 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
     /** The function reference name. */
     private String m_name;
 
-    /** The function resource structure id. */
-    private CmsUUID m_structureId;
-
     /** A number used for sorting the function references.<p>*/
     private int m_order;
+
+    /** The function resource structure id. */
+    private CmsUUID m_structureId;
 
     /**
      * Creates a new function reference.<p>
