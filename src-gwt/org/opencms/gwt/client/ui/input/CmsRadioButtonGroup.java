@@ -50,7 +50,9 @@ public class CmsRadioButtonGroup {
     public void deselectButton() {
 
         if (m_selectedButton != null) {
-            m_selectedButton.setChecked(false);
+            if (m_selectedButton.isChecked()) {
+                m_selectedButton.setChecked(false);
+            }
             m_selectedButton = null;
         }
     }
@@ -76,7 +78,9 @@ public class CmsRadioButtonGroup {
             if (m_selectedButton != null) {
                 m_selectedButton.setChecked(false);
             }
-            button.setChecked(true);
+            if (!button.isChecked()) {
+                button.setChecked(true);
+            }
             m_selectedButton = button;
             if (m_target != null) {
                 ValueChangeEvent.fire(m_target, button.getName());

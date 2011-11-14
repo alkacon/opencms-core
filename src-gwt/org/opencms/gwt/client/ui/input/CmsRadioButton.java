@@ -168,6 +168,11 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
     public void setChecked(boolean checked) {
 
         m_button.setDown(checked);
+        if (checked) {
+            m_group.selectButton(this);
+        } else {
+            m_group.deselectButton();
+        }
     }
 
     /**
