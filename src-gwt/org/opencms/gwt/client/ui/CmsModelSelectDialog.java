@@ -30,14 +30,13 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.CmsRadioButton;
+import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -50,53 +49,6 @@ import com.google.gwt.user.client.ui.Label;
  * @since 8.0.3
  */
 public class CmsModelSelectDialog extends CmsPopup {
-
-    /**
-     * Click handler for the model items.<p>
-     */
-    private class ModelClickHandler implements ClickHandler {
-
-        /** The item structure id. */
-        private CmsUUID m_id;
-
-        /**
-         * Constructor.<p>
-         * 
-         * @param id the item structure id
-         */
-        ModelClickHandler(CmsUUID id) {
-
-            m_id = id;
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-         */
-        public void onClick(ClickEvent event) {
-
-            setModelStructureId(m_id);
-            uncheckAllOthers(m_id);
-            // ensure checked
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                public void execute() {
-
-                    ensureChecked(getId());
-
-                }
-            });
-        }
-
-        /**
-         * Gets the item structure id.<p>
-         * 
-         * @return the item structure id
-         */
-        protected CmsUUID getId() {
-
-            return m_id;
-        }
-    }
 
     /** The dialog width. */
     private static int DIALOG_WIDTH = 450;
@@ -116,11 +68,11 @@ public class CmsModelSelectDialog extends CmsPopup {
     /** The label to display the dialog message. */
     private Label m_messageLabel;
 
-    /** The currently selected model strtucture id. */
-    private CmsUUID m_modelStructureId;
-
     /** The unlock button. */
     private CmsPushButton m_okButton;
+
+    /** The radio button group. */
+    private CmsRadioButtonGroup m_radioGroup;
 
     /**
      * Constructor.<p>
@@ -174,22 +126,36 @@ public class CmsModelSelectDialog extends CmsPopup {
         m_messageLabel = new Label(message);
 
         content.add(m_messageLabel);
+        m_radioGroup = new CmsRadioButtonGroup();
         m_listPanel = new CmsList<CmsListItem>();
         m_listPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().modelSelectList());
         m_listPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         content.add(m_listPanel);
+        boolean first = true;
         for (CmsModelResourceInfo modelInfo : modelResources) {
-            CmsCheckBox checkBox = new CmsCheckBox();
-            ClickHandler clickHandler = new ModelClickHandler(modelInfo.getStructureId());
-            checkBox.addClickHandler(clickHandler);
+            final CmsRadioButton radioButton = new CmsRadioButton(
+                modelInfo.getStructureId().toString(),
+                modelInfo.getTitle());
+            radioButton.setGroup(m_radioGroup);
+            ClickHandler clickHandler = new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    radioButton.setChecked(true);
+
+                }
+            };
+            if (first) {
+                radioButton.setChecked(true);
+                first = false;
+            }
             CmsListItemWidget itemWidget = new CmsListItemWidget(modelInfo);
             itemWidget.addClickHandler(clickHandler);
-            CmsListItem listItem = new CmsListItem(checkBox, itemWidget);
+            CmsListItem listItem = new CmsListItem(itemWidget);
+            listItem.addDecorationWidget(radioButton, 20);
             listItem.setId(String.valueOf(modelInfo.getStructureId()));
             m_listPanel.add(listItem);
         }
-        // set the first entry checked
-        m_listPanel.getItem(0).getCheckBox().setChecked(true);
         setMainContent(content);
     }
 
@@ -220,7 +186,8 @@ public class CmsModelSelectDialog extends CmsPopup {
      */
     protected void createSelectedModel() {
 
-        m_selectHandler.onModelSelect(m_modelStructureId);
+        CmsUUID structureId = new CmsUUID(m_radioGroup.getSelectedButton().getName());
+        m_selectHandler.onModelSelect(structureId);
         hide();
     }
 
@@ -231,31 +198,10 @@ public class CmsModelSelectDialog extends CmsPopup {
      */
     protected void ensureChecked(CmsUUID structureId) {
 
-        m_listPanel.getItem(String.valueOf(structureId)).getCheckBox().setChecked(true);
-    }
-
-    /**
-     * Sets the model id.<p>
-     * 
-     * @param modelStructureId the model structure id
-     */
-    protected void setModelStructureId(CmsUUID modelStructureId) {
-
-        m_modelStructureId = modelStructureId;
-    }
-
-    /**
-     * Removes any present checks on all items except the one with the given id.<p>
-     * 
-     * @param structureId the structure id
-     */
-    protected void uncheckAllOthers(CmsUUID structureId) {
-
-        for (int i = 0; i < m_listPanel.getWidgetCount(); i++) {
-            CmsListItem item = m_listPanel.getItem(i);
-            if (!item.getId().equals(String.valueOf(structureId))) {
-                item.getCheckBox().setChecked(false);
-            }
+        CmsRadioButton button = (CmsRadioButton)m_listPanel.getItem(String.valueOf(structureId)).getDecorationWidgets().get(
+            0);
+        if (!button.isChecked()) {
+            button.setChecked(true);
         }
     }
 
