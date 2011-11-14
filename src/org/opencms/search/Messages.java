@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EVENT_REBUILD_SEARCHINDEX_1 = "ERR_EVENT_REBUILD_SEARCHINDEX_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_FIELD_CONFIGURATION_IS_EMPTY_1 = "ERR_FIELD_CONFIGURATION_IS_EMPTY_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_FIELD_CONFIGURATION_UNKNOWN_2 = "ERR_FIELD_CONFIGURATION_UNKNOWN_2";
 
     /** Message constant for key in the resource bundle. */

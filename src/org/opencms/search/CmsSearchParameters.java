@@ -726,6 +726,7 @@ public class CmsSearchParameters {
      * @param restriction the parameters to restrict this parameters with
      * @return the restricted parameters
      */
+    @SuppressWarnings("unchecked")
     public CmsSearchParameters restrict(CmsSearchParameters restriction) {
 
         // append queries

@@ -220,7 +220,7 @@
 <!--
 # A field configuration is made up as a list of fields.
 -->
-<!ELEMENT fields (field+) >
+<!ELEMENT fields (field*) >
 
 <!--
 # A field is made up as a list of mappings, plus the attributes that describe how to create the field.
