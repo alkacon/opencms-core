@@ -23,6 +23,10 @@
 	display: block;
 }
 
+.buttonTabs .gwt-TabLayoutPanelTabs {
+	height: 24px !important; 
+}
+
 @sprite .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
 	gwt-image: "backgrounds.dialogBackgroundShadow";
     background-color: value("constants.css.backgroundColorMenu");
