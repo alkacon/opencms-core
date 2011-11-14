@@ -6,7 +6,6 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_tab" styleName="{resources.tabbedPanelCss.tabPanel}">
 		<g:FlowPanel ui:field="m_options" addStyleNames="{galleryResources.galleryDialogCss.tabOptions}" />
-		<g:Label ui:field="m_label" />
 		<g:ScrollPanel ui:field="m_list" styleName="{galleryResources.galleryDialogCss.criteriaList}"  addStyleNames="{resources.generalCss.cornerAll}">
 		</g:ScrollPanel>			
 	</g:FlowPanel> 

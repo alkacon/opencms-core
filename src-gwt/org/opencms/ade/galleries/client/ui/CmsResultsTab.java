@@ -483,16 +483,6 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
-     * Helper function to display a debug message.<p>
-     * 
-     * @param message the debug message 
-     */
-    protected void debug(String message) {
-
-        m_label.setText(message);
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
     @Override

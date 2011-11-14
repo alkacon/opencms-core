@@ -142,10 +142,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** A label for displaying additional information about the tab. */
     protected HasText m_infoLabel;
 
-    /** Text field for debug messages. */
-    @UiField
-    protected Label m_label;
-
     /** The borded panel to hold the scrollable list. */
     @UiField
     protected ScrollPanel m_list;
