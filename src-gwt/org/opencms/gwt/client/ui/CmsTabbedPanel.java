@@ -130,6 +130,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     /** Stores the indexes and the title of disabled tabs. */
     private Map<Integer, String> m_disabledTabIndexes = new HashMap<Integer, String>();
 
+    private CmsTabbedPanelStyle m_panelStyle;
+
     /** The TabLayoutPanel widget. */
     private TabLayoutPanel m_tabPanel;
 
@@ -143,8 +145,6 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
         this(CmsTabbedPanelStyle.DEFAULT);
     }
-
-    private CmsTabbedPanelStyle m_panelStyle;
 
     /**
      * The constructor for an empty tabbed panel. <p>
@@ -498,6 +498,17 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
         m_tabPanel.setTabText(pos, text);
 
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        super.onLoad();
+        // force layout after insertion into DOM to deal with IE layout problems
+        m_tabPanel.forceLayout();
     }
 
     /**
