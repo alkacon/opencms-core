@@ -295,11 +295,19 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource arrowRightImage();
 
     /**
-     * Accessor for the big ícon resource bundle.<p>
+     * Accessor for the big icon resource bundle.<p>
      * 
      * @return the big icon resource bundle 
      */
     I_CmsBigIconBundle bigIcons();
+
+    /**
+     * Image resource accessor.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/broken_image.png")
+    ImageResource brokenImage();
 
     /**
      * Access method.<p>

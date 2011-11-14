@@ -29,7 +29,14 @@
 	padding: 2px;
 	line-height: 1px;
 }
-.tilingList div.imageTile, .tilingList div.imageTile img {
+
+@sprite .tilingList div.imageTile{
+	gwt-image: "coreImages.brokenImage";
+	display: block;
+	width: 142px;
+	height: 100px;
+}
+.tilingList div.imageTile img {
 	display: block;
 	width: 142px;
 	height: 100px;

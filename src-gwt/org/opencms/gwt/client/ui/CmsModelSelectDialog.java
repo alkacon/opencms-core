@@ -152,7 +152,7 @@ public class CmsModelSelectDialog extends CmsPopup {
             CmsListItemWidget itemWidget = new CmsListItemWidget(modelInfo);
             itemWidget.addClickHandler(clickHandler);
             CmsListItem listItem = new CmsListItem(itemWidget);
-            listItem.addDecorationWidget(radioButton, 20);
+            listItem.addDecorationWidget(radioButton, 18);
             listItem.setId(String.valueOf(modelInfo.getStructureId()));
             m_listPanel.add(listItem);
         }
