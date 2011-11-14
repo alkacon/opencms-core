@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -189,6 +190,18 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
+     * Adds a decoration widget to the list item.<p>
+     * 
+     * @param widget the widget
+     * @param width the widget width
+     */
+    public void addDecorationWidget(Widget widget, int width) {
+
+        addDecoration(widget, width, false);
+        initContent();
+    }
+
+    /**
      * Adds a tag to the widget.<p>
      * 
      * @param tag the tag which should be added 
@@ -211,6 +224,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     public CmsCheckBox getCheckBox() {
 
         return m_checkbox;
+    }
+
+    /**
+     * Returns the decoration widgets of this list item.<p>
+     * 
+     * @return the decoration widgets
+     */
+    public List<Widget> getDecorationWidgets() {
+
+        return Collections.unmodifiableList(m_decorationWidgets);
     }
 
     /**
