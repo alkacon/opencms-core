@@ -29,7 +29,6 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -112,10 +111,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     @Override
     public int doEndTag() {
 
-        if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
-            // need to release manually, JSP container may not call release as required (happens with Tomcat)
-            release();
-        }
+        release();
         return EVAL_PAGE;
     }
 

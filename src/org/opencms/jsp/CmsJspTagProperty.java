@@ -276,6 +276,16 @@ public class CmsJspTagProperty extends TagSupport {
     }
 
     /**
+     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+     */
+    @Override
+    public int doEndTag() {
+
+        release();
+        return EVAL_PAGE;
+    }
+
+    /**
      * @return SKIP_BODY
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
@@ -303,7 +313,7 @@ public class CmsJspTagProperty extends TagSupport {
             }
         }
         return SKIP_BODY;
-    }
+    };
 
     /**
      * Returns the default value.<p>

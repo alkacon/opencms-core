@@ -202,6 +202,8 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
         if (file != null) {
             m_file = file.toLowerCase();
+        } else {
+            m_file = null;
         }
     }
 

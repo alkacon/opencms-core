@@ -244,6 +244,8 @@ public class CmsJspTagContentShow extends TagSupport {
 
         if (value != null) {
             m_escapeHtml = Boolean.valueOf(value.trim()).booleanValue();
+        } else {
+            m_escapeHtml = false;
         }
     }
 

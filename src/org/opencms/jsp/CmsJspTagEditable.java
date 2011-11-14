@@ -393,9 +393,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
      */
     public void setFile(String file) {
 
-        if (file != null) {
-            m_file = file;
-        }
+        m_file = file;
     }
 
     /**
@@ -415,8 +413,6 @@ public class CmsJspTagEditable extends BodyTagSupport {
      */
     public void setProvider(String provider) {
 
-        if (provider != null) {
-            m_provider = provider;
-        }
+        m_provider = provider;
     }
 }

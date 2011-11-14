@@ -70,17 +70,11 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     /** The list of collected resource items. */
     protected List<CmsResource> m_collectorResult;
 
-    /** Reference to the last loaded resource element. */
-    protected transient CmsResource m_resource;
-
     /** The bean to store information required to make the result list browsable. */
     protected CmsContentInfoBean m_contentInfoBean;
 
     /** The FlexController for the current request. */
     protected CmsFlexController m_controller;
-
-    /** Indicates if the collector results should be preloaded. */
-    protected boolean m_preload;
 
     /** The index of the current page that gets displayed. */
     protected String m_pageIndex;
@@ -94,8 +88,14 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     /** Parameter used for the collector. */
     protected String m_param;
 
+    /** Indicates if the collector results should be preloaded. */
+    protected boolean m_preload;
+
     /** The (optional) property to extend the parameter with. */
     protected String m_property;
+
+    /** Reference to the last loaded resource element. */
+    protected transient CmsResource m_resource;
 
     /** The file name to load the current content value from. */
     protected String m_resourceName;
@@ -157,6 +157,25 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
         setPageContext(context);
         init(container);
+    }
+
+    /**
+     * Returns the resource name currently processed.<p> 
+     * 
+     * @param cms the current OpenCms user context
+     * @param contentContainer the current resource container
+     * 
+     * @return the resource name currently processed
+     */
+    protected static String getResourceName(CmsObject cms, I_CmsResourceContainer contentContainer) {
+
+        if ((contentContainer != null) && (contentContainer.getResourceName() != null)) {
+            return contentContainer.getResourceName();
+        } else if (cms != null) {
+            return cms.getRequestContext().getUri();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -226,10 +245,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     @Override
     public int doEndTag() {
 
-        if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
-            // need to release manually, JSP container may not call release as required (happens with Tomcat)
-            release();
-        }
+        release();
         return EVAL_PAGE;
     }
 
@@ -332,6 +348,16 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     public String getParam() {
 
         return m_param;
+    }
+
+    /**
+     * Returns <code>"true"</code> if this content load tag should only preload the values from the collector.<p>
+     * 
+     * @return <code>"true"</code> if this content load tag should only preload the values from the collector
+     */
+    public String getPreload() {
+
+        return String.valueOf(isPreloader());
     }
 
     /**
@@ -517,13 +543,19 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     }
 
     /**
-     * Returns <code>"true"</code> if this content load tag should only preload the values from the collector.<p>
+     * Returns the next resource from the collector.<p>
      * 
-     * @return <code>"true"</code> if this content load tag should only preload the values from the collector
+     * @return the next resource from the collector
      */
-    public String getPreload() {
+    protected CmsResource getNextResource() {
 
-        return String.valueOf(isPreloader());
+        if ((m_collectorResult != null) && (m_collectorResult.size() > 0)) {
+
+            m_contentInfoBean.incResultIndex();
+            return m_collectorResult.remove(0);
+        }
+
+        return null;
     }
 
     /**
@@ -620,40 +652,5 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
             m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
             throw new JspException(e);
         }
-    }
-
-    /**
-     * Returns the resource name currently processed.<p> 
-     * 
-     * @param cms the current OpenCms user context
-     * @param contentContainer the current resource container
-     * 
-     * @return the resource name currently processed
-     */
-    protected static String getResourceName(CmsObject cms, I_CmsResourceContainer contentContainer) {
-
-        if ((contentContainer != null) && (contentContainer.getResourceName() != null)) {
-            return contentContainer.getResourceName();
-        } else if (cms != null) {
-            return cms.getRequestContext().getUri();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the next resource from the collector.<p>
-     * 
-     * @return the next resource from the collector
-     */
-    protected CmsResource getNextResource() {
-
-        if ((m_collectorResult != null) && (m_collectorResult.size() > 0)) {
-
-            m_contentInfoBean.incResultIndex();
-            return m_collectorResult.remove(0);
-        }
-
-        return null;
     }
 }

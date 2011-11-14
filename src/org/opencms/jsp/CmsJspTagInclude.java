@@ -476,12 +476,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 req,
                 res);
 
-            if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
-                // must call release here manually to make sure m_parameterMap is cleared
-                release();
-            } else {
-                m_parameterMap = null;
-            }
+            release();
         }
 
         return EVAL_PAGE;

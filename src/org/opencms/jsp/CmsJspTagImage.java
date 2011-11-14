@@ -325,10 +325,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
                 throw new javax.servlet.jsp.JspException(ex);
             }
         }
-        if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
-            // need to release manually, JSP container may not call release as required (happens with Tomcat)
-            release();
-        }
+        release();
         return EVAL_PAGE;
     }
 

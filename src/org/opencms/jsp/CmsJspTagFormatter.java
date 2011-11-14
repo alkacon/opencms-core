@@ -176,6 +176,8 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
             m_value = val.trim();
+        } else {
+            m_value = val;
         }
     }
 

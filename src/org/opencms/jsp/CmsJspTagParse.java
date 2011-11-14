@@ -33,7 +33,6 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.parse.A_CmsConfiguredHtmlParser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
@@ -126,9 +125,11 @@ public class CmsJspTagParse extends BodyTagSupport {
 
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.GUI_ERR_TAG_ATTRIBUTE_INVALID_3,
-                            new Object[] {TAG_NAME, ATT_VISITOR_CLASS, A_CmsConfiguredHtmlParser.class.getName()}), e);
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.GUI_ERR_TAG_ATTRIBUTE_INVALID_3,
+                                new Object[] {TAG_NAME, ATT_VISITOR_CLASS, A_CmsConfiguredHtmlParser.class.getName()}),
+                            e);
                     }
                     e.printStackTrace(System.err);
                 }
@@ -138,16 +139,10 @@ public class CmsJspTagParse extends BodyTagSupport {
                     getBodyContent().clear();
                     getBodyContent().print(content);
                     getBodyContent().writeOut(pageContext.getOut());
-                    if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
-                        // need to release manually, JSP container may not call release as required (happens with Tomcat)
-                        release();
-                    }
+                    release();
 
                 } catch (Exception ex) {
-                    if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
-                        // need to release manually, JSP container may not call release as required (happens with Tomcat)
-                        release();
-                    }
+                    release();
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, TAG_NAME), ex);
                     }
@@ -235,9 +230,11 @@ public class CmsJspTagParse extends BodyTagSupport {
             } catch (ParserException pex) {
 
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
-                        Messages.ERR_PROCESS_TAG_1,
-                        new Object[] {TAG_NAME}), pex);
+                    LOG.error(
+                        Messages.get().getBundle(cmsContext.getLocale()).key(
+                            Messages.ERR_PROCESS_TAG_1,
+                            new Object[] {TAG_NAME}),
+                        pex);
                 }
                 StringWriter stackTrace = new StringWriter();
                 PrintWriter writer = new PrintWriter(new StringWriter());
@@ -247,9 +244,11 @@ public class CmsJspTagParse extends BodyTagSupport {
                 result = msg.toString();
             } catch (CmsException cmex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
-                        Messages.ERR_PROCESS_TAG_1,
-                        new Object[] {TAG_NAME}), cmex);
+                    LOG.error(
+                        Messages.get().getBundle(cmsContext.getLocale()).key(
+                            Messages.ERR_PROCESS_TAG_1,
+                            new Object[] {TAG_NAME}),
+                        cmex);
                 }
                 StringWriter stackTrace = new StringWriter();
                 PrintWriter writer = new PrintWriter(new StringWriter());

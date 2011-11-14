@@ -51,20 +51,20 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspTagElementSetting extends TagSupport {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -7847101480288189549L;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagElementSetting.class);
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -7847101480288189549L;
 
     /** The default value. */
     private String m_defaultValue;
 
-    /** Indicates if HTML should be escaped. */
-    private boolean m_escapeHtml;
-
     /** The name of the element setting to read. */
     private String m_elementSetting;
+
+    /** Indicates if HTML should be escaped. */
+    private boolean m_escapeHtml;
 
     /**
      * Internal action method.<p>
@@ -209,6 +209,8 @@ public class CmsJspTagElementSetting extends TagSupport {
 
         if (value != null) {
             m_escapeHtml = Boolean.valueOf(value.trim()).booleanValue();
+        } else {
+            m_escapeHtml = false;
         }
     }
 

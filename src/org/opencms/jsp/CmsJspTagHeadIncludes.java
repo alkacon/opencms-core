@@ -219,8 +219,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         } catch (Exception e) {
             throw new JspException(e);
+        } finally {
+            m_parameterMap = null;
         }
-
         return EVAL_PAGE;
 
     }
