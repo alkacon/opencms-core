@@ -36,6 +36,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
@@ -501,6 +503,16 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     }
 
     /**
+     * Returns the tab layout panel.<p>
+     * 
+     * @return the tab layout panel
+     */
+    protected TabLayoutPanel getTabPanel() {
+
+        return m_tabPanel;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.Widget#onLoad()
      */
     @Override
@@ -508,7 +520,15 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
 
         super.onLoad();
         // force layout after insertion into DOM to deal with IE layout problems
-        m_tabPanel.forceLayout();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                getTabPanel().forceLayout();
+
+            }
+        });
+
     }
 
     /**

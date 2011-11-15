@@ -15,7 +15,7 @@
 	border: none;	
 }
 
-ul.clipboardList {
+.menuTabContainer ul.clipboardList {
 	overflow: auto;
 	/* position relative is required to hide overflowing content caused by layout bug in IE7 */
 	position: relative;
