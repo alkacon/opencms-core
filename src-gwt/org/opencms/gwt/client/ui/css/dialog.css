@@ -104,7 +104,7 @@
     position:relative;
 }
 
-@sprite .popup .popupMainContent.contentPadding {
+@sprite .popup .popupMainContent.contentPadding, .popupMainContent.contentPadding {
 	gwt-image: "backgrounds.dialogBackgroundShadow";
     background-color: value("constants.css.backgroundColorDialog");
 	background-position: top;
