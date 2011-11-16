@@ -469,7 +469,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
                 }
             });
         }
-        show();
+        center();
     }
 
     /**
