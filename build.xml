@@ -2,61 +2,61 @@
 
 <project name="OpenCms" default="bindist" basedir=".">
 
-    <property name="version.number"             		value="8.0.3" />
-    <property name="java.target.version"                value="1.5" />
-    
-	<property name="app.name" 							value="opencms" />
-	<property name="src.all.comps" 						value="lib,modules,src-components,src-gwt,src-modules,src-setup,test,webapp" />
-	
-    <property name="opencms.input" 						location="${basedir}" />
-	<property name="opencms.output" 					location="${basedir}/../BuildCms" />
+	<property name="version.number" value="8.0.3" />
+	<property name="java.target.version" value="1.5" />
 
-    <property name="opencms.build"			            location="${opencms.output}/build" />
-    <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />
-    <property name="opencms.output.tests"               location="${opencms.output}/build/test" />
-    <property name="opencms.output.jars"                location="${opencms.output}/build/jars-core" />
-    <property name="opencms.output.warfiles"            location="${opencms.output}/build/${app.name}" />
-    <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
+	<property name="app.name" value="opencms" />
+	<property name="src.all.comps" value="lib,modules,src-components,src-gwt,src-modules,src-setup,test,webapp" />
 
-    <property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
-    <property name="opencms.input.webinf" 				location="${opencms.input.warfiles}/WEB-INF" />
-    <property name="opencms.input.libs.runtime"			location="${basedir}/lib/runtime" />
-    <property name="opencms.input.libs.compile"			location="${basedir}/lib/compile" />
-    <property name="opencms.input.libs.db.base"			location="${opencms.input.warfiles}/setup/database" />
+	<property name="opencms.input" location="${basedir}" />
+	<property name="opencms.output" location="${basedir}/../BuildCms" />
 
-    <property name="opencms.input.defaultconfiguration" location="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" />
-    <property name="opencms.input.default.registry"		location="${opencms.input.warfiles}/WEB-INF/config/registry.xml" />
-    <property name="opencms.input.default.config"		location="${opencms.input.warfiles}/WEB-INF/config/opencms.xml" />
-    <property name="opencms.input.default.system"		location="${opencms.input.warfiles}/WEB-INF/config/opencms-system.xml" />
+	<property name="opencms.build" location="${opencms.output}/build" />
+	<property name="opencms.output.classes" location="${opencms.output}/build/classes-core" />
+	<property name="opencms.output.tests" location="${opencms.output}/build/test" />
+	<property name="opencms.output.jars" location="${opencms.output}/build/jars-core" />
+	<property name="opencms.output.warfiles" location="${opencms.output}/build/${app.name}" />
+	<property name="opencms.output.distfiles" location="${opencms.output}/zip" />
 
-	<property name="drivers.vfs"						value="db" />
-	<property name="drivers.project"					value="db" />
-	<property name="drivers.user"						value="db" />
-	<property name="drivers.history"					value="db" />
-	<property name="drivers.subscription"				value="db" />
-	<property name="db.additional.pools" 				value="" />
-	<property name="drivers.configuration"				value="" />
-	<property name="registry.configuration"				value="" />
-	<property name="opencms.configuration"				value="" />
-	<property name="system.runtimeinfo"					value="org.opencms.db.CmsDbContextFactory" />
+	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
+	<property name="opencms.input.webinf" location="${opencms.input.warfiles}/WEB-INF" />
+	<property name="opencms.input.libs.runtime" location="${basedir}/lib/runtime" />
+	<property name="opencms.input.libs.compile" location="${basedir}/lib/compile" />
+	<property name="opencms.input.libs.db.base" location="${opencms.input.warfiles}/setup/database" />
 
-    <property name="excludes"                   		value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
-    
-    <property environment="env" />
-	
-	<property name="enhance"					        value="1" />
+	<property name="opencms.input.defaultconfiguration" location="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" />
+	<property name="opencms.input.default.registry" location="${opencms.input.warfiles}/WEB-INF/config/registry.xml" />
+	<property name="opencms.input.default.config" location="${opencms.input.warfiles}/WEB-INF/config/opencms.xml" />
+	<property name="opencms.input.default.system" location="${opencms.input.warfiles}/WEB-INF/config/opencms-system.xml" />
+
+	<property name="drivers.vfs" value="db" />
+	<property name="drivers.project" value="db" />
+	<property name="drivers.user" value="db" />
+	<property name="drivers.history" value="db" />
+	<property name="drivers.subscription" value="db" />
+	<property name="db.additional.pools" value="" />
+	<property name="drivers.configuration" value="" />
+	<property name="registry.configuration" value="" />
+	<property name="opencms.configuration" value="" />
+	<property name="system.runtimeinfo" value="org.opencms.db.CmsDbContextFactory" />
+
+	<property name="excludes" value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
+
+	<property environment="env" />
+
+	<property name="enhance" value="1" />
 
 	<!-- comma separated list of jar archives to be removed during update -->
-	<property name="updater.jars.remove"				value="poi-2.5.1-final-20040804.jar,alkacon-diff-0.9.1.jar,commons-collections-3.1.jar,commons-collections-3.2.jar,commons-dbcp-1.2.1.jar,commons-digester-1.7.jar,commons-logging-1.1.jar,commons-logging-1.0.4.jar,commons-pool-1.2.jar,commons-pool-1.3.jar,commons-pool-1.4.jar,htmlparser-1.5-20050925.jar,jaxen-1.1-beta-4.jar,jaxen-1.1.jar,jstl-1.0.6.jar,jug-1.1.jar,jug-1.1.1.jar,jug-1.1.2.jar,log4j-1.2.9.jar,log4j-1.2.14.jar,lucene-analyzers-1.9.1.jar,lucene-analyzers-2.3.1.jar,lucene-core-1.9.1.jar,lucene-core-2.3.1.jar,lucene-analyzers-2.1.0.jar,lucene-core-2.1.0.jar,lucene-highlighter-2.1.0.jar,lucene-highlighter-2.3.1.jar,lucene-snowball-2.1.0.jar,lucene-snowball-2.3.1.jar,lucene-analyzers-2.2.0.jar,lucene-core-2.2.0.jar,lucene-highlighter-2.2.0.jar,lucene-snowball-2.2.0.jar,lucene-analyzers-3.1.0.jar,lucene-core-3.1.0.jar,lucene-highlighter-3.1.0.jar,lucene-memory-3.1.0.jar,lucene-queries-3.1.0.jar,lucene-analyzers-3.3.0.jar,lucene-core-3.3.0.jar,lucene-highlighter-3.3.0.jar,lucene-memory-3.3.0.jar,lucene-queries-3.3.0.jar,mysql-connector-java-3.1.12-bin.jar,mysql-connector-java-5.0.5-bin.jar,quartz-1.4.5.jar,standard-1.0.6.jar,xercesImpl.jar,xercesImpl-2.6.2.jar,xercesImpl-2.9.0.jar,xml-apis-2.6.2.jar,xml-apis-2.9.0.jar,xml-apis.jar,alkacon-simapi-0.9.2.jar,alkacon-simapi-0.9.3.jar,alkacon-simapi-0.9.4.jar,alkacon-simapi-0.9.5.jar,alkacon-simapi-0.9.6.jar,alkacon-simapi-0.9.7.jar,jtidy-r8-05102004.jar,postgresql-8.32-505.jdbc3.jar,postgresql-8.3-603.jdbc3.jar,activation.jar,commons-beanutils-1.7.0.jar,commons-email-1.0-mod.jar,commons-dbcp-1.2.2.jar,commons-fileupload-1.2.1.jar,commons-pool-1.5.4.jar,commons-email-1.1.jar,commons-fileupload-1.0.jar,commons-httpclient-3.0.1.jar,mail.jar,lucene-queries-2.3.2.jar,lucene-core-2.3.2.jar,lucene-analyzers-2.3.2.jar,lucene-highlighter-2.3.2.jar,lucene-snowball-2.3.2.jar,lucene-queries-2.4.1.jar,lucene-core-2.4.1.jar,lucene-analyzers-2.4.1.jar,lucene-highlighter-2.4.1.jar,lucene-snowball-2.4.1.jar,PDFBox-0.7.2.jar,org.opencms.ade.containerpage.jar,org.opencms.ade.galleries.jar,org.opencms.ade.sitemap.jar,org.opencms.ade.upload.jar,gwt-servlet_2.2.0.jar,org.opencms.ade.publish.jar,org.opencms.ade.editprovider.jar,org.opencms.gwt.jar,tm-extractors-0.4.jar" />
+	<property name="updater.jars.remove" value="poi-2.5.1-final-20040804.jar,alkacon-diff-0.9.1.jar,commons-collections-3.1.jar,commons-collections-3.2.jar,commons-dbcp-1.2.1.jar,commons-digester-1.7.jar,commons-logging-1.1.jar,commons-logging-1.0.4.jar,commons-pool-1.2.jar,commons-pool-1.3.jar,commons-pool-1.4.jar,htmlparser-1.5-20050925.jar,jaxen-1.1-beta-4.jar,jaxen-1.1.jar,jstl-1.0.6.jar,jug-1.1.jar,jug-1.1.1.jar,jug-1.1.2.jar,log4j-1.2.9.jar,log4j-1.2.14.jar,lucene-analyzers-1.9.1.jar,lucene-analyzers-2.3.1.jar,lucene-core-1.9.1.jar,lucene-core-2.3.1.jar,lucene-analyzers-2.1.0.jar,lucene-core-2.1.0.jar,lucene-highlighter-2.1.0.jar,lucene-highlighter-2.3.1.jar,lucene-snowball-2.1.0.jar,lucene-snowball-2.3.1.jar,lucene-analyzers-2.2.0.jar,lucene-core-2.2.0.jar,lucene-highlighter-2.2.0.jar,lucene-snowball-2.2.0.jar,lucene-analyzers-3.1.0.jar,lucene-core-3.1.0.jar,lucene-highlighter-3.1.0.jar,lucene-memory-3.1.0.jar,lucene-queries-3.1.0.jar,lucene-analyzers-3.3.0.jar,lucene-core-3.3.0.jar,lucene-highlighter-3.3.0.jar,lucene-memory-3.3.0.jar,lucene-queries-3.3.0.jar,mysql-connector-java-3.1.12-bin.jar,mysql-connector-java-5.0.5-bin.jar,quartz-1.4.5.jar,standard-1.0.6.jar,xercesImpl.jar,xercesImpl-2.6.2.jar,xercesImpl-2.9.0.jar,xml-apis-2.6.2.jar,xml-apis-2.9.0.jar,xml-apis.jar,alkacon-simapi-0.9.2.jar,alkacon-simapi-0.9.3.jar,alkacon-simapi-0.9.4.jar,alkacon-simapi-0.9.5.jar,alkacon-simapi-0.9.6.jar,alkacon-simapi-0.9.7.jar,jtidy-r8-05102004.jar,postgresql-8.32-505.jdbc3.jar,postgresql-8.3-603.jdbc3.jar,activation.jar,commons-beanutils-1.7.0.jar,commons-email-1.0-mod.jar,commons-dbcp-1.2.2.jar,commons-fileupload-1.2.1.jar,commons-pool-1.5.4.jar,commons-email-1.1.jar,commons-fileupload-1.0.jar,commons-httpclient-3.0.1.jar,mail.jar,lucene-queries-2.3.2.jar,lucene-core-2.3.2.jar,lucene-analyzers-2.3.2.jar,lucene-highlighter-2.3.2.jar,lucene-snowball-2.3.2.jar,lucene-queries-2.4.1.jar,lucene-core-2.4.1.jar,lucene-analyzers-2.4.1.jar,lucene-highlighter-2.4.1.jar,lucene-snowball-2.4.1.jar,PDFBox-0.7.2.jar,org.opencms.ade.containerpage.jar,org.opencms.ade.galleries.jar,org.opencms.ade.sitemap.jar,org.opencms.ade.upload.jar,gwt-servlet_2.2.0.jar,org.opencms.ade.publish.jar,org.opencms.ade.editprovider.jar,org.opencms.gwt.jar,tm-extractors-0.4.jar" />
 	<!-- comma separated list of files in WEB-INF/ to be updated -->
-	<property name="updater.webinf.files"				value="opencms.tld,web.xml,cmsshell.sh,classes/META-INF/persistence.xml,classes/ehcache.xml" />
+	<property name="updater.webinf.files" value="opencms.tld,web.xml,cmsshell.sh,classes/META-INF/persistence.xml,classes/ehcache.xml" />
 
- 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
-	  <classpath>
-	    <pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar"/>
-	  </classpath>
+	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
+		<classpath>
+			<pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar" />
+		</classpath>
 	</taskdef>
-	
+
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
 			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.2.jar" />
@@ -73,186 +73,182 @@
 	<!-- 
 	  -	Checks if all required libraries are available
 	  -->
-    <target name="init" >
-    	<!-- this is a comment -->
-    	
-        <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
-            <available file="${env.TOMCAT_HOME}" type="dir"/>
-        </condition>
+	<target name="init">
+		<!-- this is a comment -->
 
-        <condition property="tomcat.home" value="${env.CATALINA_HOME}">
-            <available file="${env.CATALINA_HOME}" type="dir"/>
-        </condition>
-    
-        <tstamp>
-            <format property="timestamp" pattern="yyyy.MM.dd-HH.mm"/>
-        </tstamp>
-        <property name="version.number" value="${env.USERNAME}_${timestamp}"/>
-        
-        <echo message="Building OpenCms ${version.number}" />
-        <echo message=" " />
-        <echo message="OpenCms input directory is: ${opencms.input}" />
-        <echo message="OpenCms output directory is: ${opencms.output}" />
-        <echo message="Java version detected: ${ant.java.version}"/>
-        <echo message="Java target version: ${java.target.version}"/>
-        <echo message="Java home is: ${env.JAVA_HOME}"/>
-    	<echo message="Tomcat home is: ${tomcat.home}" />        
-    </target>
+		<condition property="tomcat.home" value="${env.TOMCAT_HOME}">
+			<available file="${env.TOMCAT_HOME}" type="dir" />
+		</condition>
 
-    <target name="clean" description="Delete existing output directories">
-    	
-        <delete dir="${opencms.output.tests}" />
-        <delete dir="${opencms.output.warfiles}" />
-        <delete dir="${opencms.output}/build" />
-        <delete dir="${opencms.output.distfiles}" />
-    </target>
-    		
-    <target name="compile" depends="init" description="Compile the OpenCms classes">
-    	
-        <mkdir dir="${opencms.output.classes}" />    	
-    	
-        <uptodate property="classesUpToDate" targetfile="${opencms.output.jars}/opencms.jar">
-        	<srcfiles dir= "${opencms.input}/src" includes="**/*.java" excludes="${build.excludes},${excludes}"/>
-        	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
-        </uptodate>
-            	
-       	<javac
-            srcdir="${opencms.input}/src"
-            destdir="${opencms.output.classes}"
-            debug="on"
-            optimize="on"
-            deprecation="on"
-       		source="1.5"
-    		target="${java.target.version}">
-       	    <classpath>
-       	      <fileset dir="${opencms.input.libs.compile}">
-       	        <include name="**/*.jar"/>
-       	     	<exclude name="**/gwt-user*.jar"/>
-       	     	<exclude name="**/gwt-dev*.jar"/>
-       	      </fileset>
-     	      <fileset dir="${opencms.input.libs.runtime}">
-     	        <include name="**/*.jar"/>
-     	      </fileset>
-       	      <fileset dir="${opencms.input.libs.db.base}">
-       	        <include name="**/*.jar"/>
-       	      </fileset>
-       	    </classpath>
-       		<!-- compilerarg value="-Xlint:unchecked"/ -->
-       	</javac>
-		
-    	<taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask">
-    		<classpath>
-    			<fileset dir="${opencms.input.libs.compile}">
-    				<include name="**/*.jar"/>
-    			</fileset>
-    			<fileset dir="${opencms.input.libs.runtime}">
-    				<include name="**/*.jar"/>
-    			</fileset>
-    				</classpath>
-    			</taskdef>
+		<condition property="tomcat.home" value="${env.CATALINA_HOME}">
+			<available file="${env.CATALINA_HOME}" type="dir" />
+		</condition>
 
-    			<!-- invoke OpenJPA enhancer on all .class files below the persistence directory -->
-    			<if>
-    	        <equals arg1="${enhance}" arg2="1" />
-    	        <then>
-    	        <echo message="Enhancing entity classes !!!"/>
-    			<openjpac>
-    				<fileset dir="${opencms.output.classes}/org/opencms/db/jpa/persistence">
-    					<include name="*.class" />
-    					<exclude name="*$*.class" />
-    				</fileset>
-    				<classpath>
-    					<pathelement location="${opencms.output.classes}" />
-    				</classpath>
-    				<config propertiesFile="${opencms.input}/webapp/WEB-INF/classes/META-INF/persistence.xml" />
-    			</openjpac>
-    	        </then>
-    			</if>
-    	
-        <copy todir="${opencms.output.classes}">
-            <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}"/>
-        </copy>              
-                
-        <antcall target="versioninfo" />        
-    </target>
+		<tstamp>
+			<format property="timestamp" pattern="yyyy.MM.dd-HH.mm" />
+		</tstamp>
+		<property name="version.number" value="${env.USERNAME}_${timestamp}" />
 
-    
+		<echo message="Building OpenCms ${version.number}" />
+		<echo message=" " />
+		<echo message="OpenCms input directory is: ${opencms.input}" />
+		<echo message="OpenCms output directory is: ${opencms.output}" />
+		<echo message="Java version detected: ${ant.java.version}" />
+		<echo message="Java target version: ${java.target.version}" />
+		<echo message="Java home is: ${env.JAVA_HOME}" />
+		<echo message="Tomcat home is: ${tomcat.home}" />
+	</target>
+
+	<target name="initmodulenames">
+		<property file="${opencms.input}/modules/all-modules.properties" />
+		<var name="modules.common.collect" value="${modules.common.all}" />
+		<if>
+			<isset property="externaldirectories" />
+			<then>
+				<for list="${externaldirectories}" param="exdir">
+					<sequential>
+						<var name="modules.common.all" unset="true" />
+						<property file="@{exdir}/modules/all-modules.properties" />
+						<var name="modules.common.collect" value="${modules.common.collect},${modules.common.all}" />
+					</sequential>
+				</for>
+			</then>
+		</if>
+		<var name="modules.common.all" unset="true" />
+		<property name="modules.common.all" value="${modules.common.collect}" />
+	</target>
+
+	<target name="clean" description="Delete existing output directories">
+
+		<delete dir="${opencms.output.tests}" />
+		<delete dir="${opencms.output.warfiles}" />
+		<delete dir="${opencms.output}/build" />
+		<delete dir="${opencms.output.distfiles}" />
+	</target>
+
+	<target name="compile" depends="init" description="Compile the OpenCms classes">
+
+		<mkdir dir="${opencms.output.classes}" />
+
+		<uptodate property="classesUpToDate" targetfile="${opencms.output.jars}/opencms.jar">
+			<srcfiles dir="${opencms.input}/src" includes="**/*.java" excludes="${build.excludes},${excludes}" />
+			<srcfiles dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
+		</uptodate>
+
+		<javac srcdir="${opencms.input}/src" destdir="${opencms.output.classes}" debug="on" optimize="on" deprecation="on" source="1.5" target="${java.target.version}">
+			<classpath>
+				<fileset dir="${opencms.input.libs.compile}">
+					<include name="**/*.jar" />
+					<exclude name="**/gwt-user*.jar" />
+					<exclude name="**/gwt-dev*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.runtime}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.db.base}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+			<!-- compilerarg value="-Xlint:unchecked"/ -->
+		</javac>
+
+		<taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask">
+			<classpath>
+				<fileset dir="${opencms.input.libs.compile}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.runtime}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+
+		<!-- invoke OpenJPA enhancer on all .class files below the persistence directory -->
+		<if>
+			<equals arg1="${enhance}" arg2="1" />
+			<then>
+				<echo message="Enhancing entity classes !!!" />
+				<openjpac>
+					<fileset dir="${opencms.output.classes}/org/opencms/db/jpa/persistence">
+						<include name="*.class" />
+						<exclude name="*$*.class" />
+					</fileset>
+					<classpath>
+						<pathelement location="${opencms.output.classes}" />
+					</classpath>
+					<config propertiesFile="${opencms.input}/webapp/WEB-INF/classes/META-INF/persistence.xml" />
+				</openjpac>
+			</then>
+		</if>
+
+		<copy todir="${opencms.output.classes}">
+			<fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
+		</copy>
+
+		<antcall target="versioninfo" />
+	</target>
+
+
 	<!-- 
 	  -	Generate version information files
 	  -->
-    <target name="versioninfo" unless="classesUpToDate" >
+	<target name="versioninfo" unless="classesUpToDate">
 
-		<copy 
-			file="${opencms.input.warfiles}/WEB-INF/setupdata/version.properties" 
-			tofile="${opencms.output.classes}/org/opencms/main/version.properties" overwrite="true">			
-    		<filterset>
-      			<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}"/>
-      			<filter token="OPENCMS_VERSION_NAME" value="${version.name}"/>
-    		</filterset>			
-		</copy>		
-      				    	
-		<copy 
-			file="${opencms.input.warfiles}/setup/versions.txt" 
-			tofile="${opencms.output.classes}/versions.txt" overwrite="true">			
-    		<filterset>
-      			<filter token="OPENCMS_VERSION" value="OpenCms ${version.number}"/>
-    		</filterset>			
+		<copy file="${opencms.input.warfiles}/WEB-INF/setupdata/version.properties" tofile="${opencms.output.classes}/org/opencms/main/version.properties" overwrite="true">
+			<filterset>
+				<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}" />
+				<filter token="OPENCMS_VERSION_NAME" value="${version.name}" />
+			</filterset>
 		</copy>
-    	
-		<copy 
-			file="${opencms.input.warfiles}/setup/license.html" 
-			tofile="${opencms.output.classes}/license.html" overwrite="true">			
-    		<filterset>
-      			<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}"/>
-      			<filter token="OPENCMS_VERSION_NAME" value="${version.name}"/>
-    		</filterset>			
-		</copy>    	
-       	
-	   	<copy 
-	   		file="${opencms.input.defaultconfiguration}" 
-	   		tofile="${opencms.output.classes}/opencms.properties" overwrite="true">	   		
-    		<filterset>
-      			<filter token="DRIVERS_VFS" value="${drivers.vfs}"/>
-      			<filter token="DRIVERS_PROJECT" value="${drivers.project}"/>
-      			<filter token="DRIVERS_USER" value="${drivers.user}"/>
-      			<filter token="DRIVERS_HISTORY" value="${drivers.history}"/>    			
-      			<filter token="DRIVERS_CONFIGURATION" value="${drivers.configuration}"/>
-    			<filter token="DRIVERS_SUBSCRIPTION" value="${drivers.subscription}" />
-    			<filter token="ADDITIONAL_DB_POOLS" value="${db.additional.pools}"/>
-    		</filterset>
-	   	</copy>       	  
-    	
-	   	<copy 
-	   		file="${opencms.input.default.config}" 
-	   		tofile="${opencms.output.classes}/opencms.xml" overwrite="true">	   		
-    		<filterset>
-      			<filter token="OPENCMS_CONFIGURATION" value="${opencms.configuration}"/>
-    		</filterset>	   		
-	   	</copy>	   		   	
 
-	   	<copy 
-	   		file="${opencms.input.default.system}" 
-	   		tofile="${opencms.output.classes}/opencms-system.xml" overwrite="true">	   		
-    		<filterset>
-      			<filter token="RUNTIME_INFO" value="${system.runtimeinfo}"/>
-    		</filterset>	   		
-	   	</copy>	   		   	
+		<copy file="${opencms.input.warfiles}/setup/versions.txt" tofile="${opencms.output.classes}/versions.txt" overwrite="true">
+			<filterset>
+				<filter token="OPENCMS_VERSION" value="OpenCms ${version.number}" />
+			</filterset>
+		</copy>
+
+		<copy file="${opencms.input.warfiles}/setup/license.html" tofile="${opencms.output.classes}/license.html" overwrite="true">
+			<filterset>
+				<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}" />
+				<filter token="OPENCMS_VERSION_NAME" value="${version.name}" />
+			</filterset>
+		</copy>
+
+		<copy file="${opencms.input.defaultconfiguration}" tofile="${opencms.output.classes}/opencms.properties" overwrite="true">
+			<filterset>
+				<filter token="DRIVERS_VFS" value="${drivers.vfs}" />
+				<filter token="DRIVERS_PROJECT" value="${drivers.project}" />
+				<filter token="DRIVERS_USER" value="${drivers.user}" />
+				<filter token="DRIVERS_HISTORY" value="${drivers.history}" />
+				<filter token="DRIVERS_CONFIGURATION" value="${drivers.configuration}" />
+				<filter token="DRIVERS_SUBSCRIPTION" value="${drivers.subscription}" />
+				<filter token="ADDITIONAL_DB_POOLS" value="${db.additional.pools}" />
+			</filterset>
+		</copy>
+
+		<copy file="${opencms.input.default.config}" tofile="${opencms.output.classes}/opencms.xml" overwrite="true">
+			<filterset>
+				<filter token="OPENCMS_CONFIGURATION" value="${opencms.configuration}" />
+			</filterset>
+		</copy>
+
+		<copy file="${opencms.input.default.system}" tofile="${opencms.output.classes}/opencms-system.xml" overwrite="true">
+			<filterset>
+				<filter token="RUNTIME_INFO" value="${system.runtimeinfo}" />
+			</filterset>
+		</copy>
 	</target>
-    		    
 
-    <target name="jar" 
-    	depends="compile" description="Generate the OpenCms .jar files">
-    	
-        <mkdir dir="${opencms.output.jars}" />
-            	
-        <jar
-            jarfile="${opencms.output.jars}/opencms.jar"
-            basedir="${opencms.output.classes}"
-            includes="org/opencms/**" >      
-            <metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld"/>
-        </jar>        	     
-    	
-    </target>
+
+	<target name="jar" depends="compile" description="Generate the OpenCms .jar files">
+
+		<mkdir dir="${opencms.output.jars}" />
+
+		<jar jarfile="${opencms.output.jars}/opencms.jar" basedir="${opencms.output.classes}" includes="org/opencms/**">
+			<metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld" />
+		</jar>
+
+	</target>
 
 	<!-- 
 		Set/Override this property to one of the following values: 
@@ -260,193 +256,182 @@
 		- selection: module selection based on modules.common.selection property
 		- all: module selection based on modules.common.all property defined in the all-modules.properties file
 	-->
-	<property name="modules.selection.mode"				value="interactive" />
-	
-    <target name="build.updater" 
-    	depends="setup-jar" description="Generates a distributable updater zip file">
-    	
-    	<property file="${basedir}/modules/all-modules.properties" />
-    	<echo message="all: ${basedir}/modules"/>
-    	<if>
-    		<not><isset property="modules.common.all" /></not>
-    	  <then>
-    		<fail>
+	<property name="modules.selection.mode" value="interactive" />
+
+	<target name="build.updater" depends="setup-jar" description="Generates a distributable updater zip file">
+
+		<property file="${basedir}/modules/all-modules.properties" />
+		<echo message="all: ${basedir}/modules" />
+		<if>
+			<not>
+				<isset property="modules.common.all" />
+			</not>
+			<then>
+				<fail>
     			property modules.common.all undefined.
     		</fail>
-    	  </then>
-    	</if>
-        <sortlist property="modules.all.sort" value="${modules.common.all}" override="true" />
-	  	<echo message="all: ${modules.all.sort}"/>
+			</then>
+		</if>
+		<sortlist property="modules.all.sort" value="${modules.common.all}" override="true" />
+		<echo message="all: ${modules.all.sort}" />
 		<property name="modules.var" value="${modules.all.sort}" />
-	  	<ant antfile="${basedir}/modules/build.xml" target="dist" inheritAll="false" >
-	  		<property name="modules.selection.mode" value="selection" />
-	  		<property name="modules.common.selection" value="${modules.var}" />
-	  	</ant>
+		<ant antfile="${basedir}/modules/build.xml" target="dist" inheritAll="false">
+			<property name="modules.selection.mode" value="selection" />
+			<property name="modules.common.selection" value="${modules.var}" />
+		</ant>
 
-    	<delete failonerror="no" file="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" />
-    	<for list="${updater.jars.remove}" param="jarfile" delimiter="," trim="yes">
-    	  <sequential>
-            <copy file="${opencms.input.warfiles}/update/empty.jar" tofile="${opencms.output}/build/jars-core/@{jarfile}"/>
-      	  </sequential>
+		<delete failonerror="no" file="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" />
+		<for list="${updater.jars.remove}" param="jarfile" delimiter="," trim="yes">
+			<sequential>
+				<copy file="${opencms.input.warfiles}/update/empty.jar" tofile="${opencms.output}/build/jars-core/@{jarfile}" />
+			</sequential>
 		</for>
-    	<copy todir="${opencms.output.jars}" flatten="true" >
-    		<fileset dir="${opencms.input.libs.db.base}">
-    	    	<include name="**/*.jar"/>
-    	    </fileset>
-    	</copy>
-    	    	
-    	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" >
-        	<zipfileset dir="${opencms.input.webinf}" prefix="WEB-INF" includes="${updater.webinf.files}" />
-    		<zipfileset dir="${opencms.input.warfiles}" includes="update/**" excludes="update/empty.jar,update/readme.txt"/> 
-    		<zipfileset dir="${opencms.input.warfiles}" includes="update/readme.txt" fullpath="readme.txt"/>
-        	<zipfileset dir="${opencms.input.libs.runtime}" prefix="WEB-INF/lib" includes="*.jar" />
-        	<zipfileset dir="${opencms.output}/build/jars-core/" prefix="WEB-INF/lib" includes="*.jar" />
-    	</zip>
+		<copy todir="${opencms.output.jars}" flatten="true">
+			<fileset dir="${opencms.input.libs.db.base}">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
 
-    	<for list="${modules.var}" param="module" trim="yes">
-    	  <sequential>
-    	  	<!-- skip some unwanted modules -->
-        	<if>
-        		<not>
-        			<or>
-			    		<equals arg1="@{module}" arg2="org.opencms.legacy.compatibility" />
-			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos" />
-			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos.list" />
-			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos.widget" />
-        				<equals arg1="@{module}" arg2="com.alkacon.opencms.v8.template3.demo" />
-        				<equals arg1="@{module}" arg2="org.opencms.dev.demo.content" />
-        				<equals arg1="@{module}" arg2="org.opencms.welcome" />
-        			</or>
-        		</not>
-				<then>
-		    	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
-		            	<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
-		    	  	</zip>
-		        	<if>
-			    		<available file="${opencms.output}/build/jars-@{module}" />
-						<then>
-							<echo message="adding module to zip:  @{module}" />
-				    	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
-				            	<zipfileset dir="${opencms.output}/build/jars-@{module}" prefix="WEB-INF/lib" includes="@{module}.jar" />
-				    	  	</zip>
-						</then>
-					</if>
-		        	<if>
-			    		<available file="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" />
-						<then>
-				    	  	<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
-				            	<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="WEB-INF/lib" includes="*.jar" />
-				    	  	</zip>
-						</then>
-					</if>
-				</then>
-			</if>    	  	
-    	  </sequential>
-    	</for>
-    </target>
+		<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip">
+			<zipfileset dir="${opencms.input.webinf}" prefix="WEB-INF" includes="${updater.webinf.files}" />
+			<zipfileset dir="${opencms.input.warfiles}" includes="update/**" excludes="update/empty.jar,update/readme.txt" />
+			<zipfileset dir="${opencms.input.warfiles}" includes="update/readme.txt" fullpath="readme.txt" />
+			<zipfileset dir="${opencms.input.libs.runtime}" prefix="WEB-INF/lib" includes="*.jar" />
+			<zipfileset dir="${opencms.output}/build/jars-core/" prefix="WEB-INF/lib" includes="*.jar" />
+		</zip>
 
-    <target name="war" 
-    	depends="setup-jar" description="Builds the opencms.war">
-        
-    	<delete failonerror="no" file="${opencms.output}/build/${app.name}.war" />
-    	<copy todir="${opencms.output.jars}" flatten="true" >
-    		<fileset dir="${opencms.input.libs.db.base}">
-    	    	<include name="**/*.jar"/>
-    	    </fileset>
-    	</copy>
+		<for list="${modules.var}" param="module" trim="yes">
+			<sequential>
+				<!-- skip some unwanted modules -->
+				<if>
+					<not>
+						<or>
+							<equals arg1="@{module}" arg2="org.opencms.legacy.compatibility" />
+							<equals arg1="@{module}" arg2="org.opencms.workplace.demos" />
+							<equals arg1="@{module}" arg2="org.opencms.workplace.demos.list" />
+							<equals arg1="@{module}" arg2="org.opencms.workplace.demos.widget" />
+							<equals arg1="@{module}" arg2="com.alkacon.opencms.v8.template3.demo" />
+							<equals arg1="@{module}" arg2="org.opencms.dev.demo.content" />
+							<equals arg1="@{module}" arg2="org.opencms.welcome" />
+						</or>
+					</not>
+					<then>
+						<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
+							<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
+						</zip>
+						<if>
+							<available file="${opencms.output}/build/jars-@{module}" />
+							<then>
+								<echo message="adding module to zip:  @{module}" />
+								<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
+									<zipfileset dir="${opencms.output}/build/jars-@{module}" prefix="WEB-INF/lib" includes="@{module}.jar" />
+								</zip>
+							</then>
+						</if>
+						<if>
+							<available file="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" />
+							<then>
+								<zip zipfile="${opencms.output.distfiles}/opencms_upgrade_to_${version.number}.zip" update="true" whenempty="fail">
+									<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="WEB-INF/lib" includes="*.jar" />
+								</zip>
+							</then>
+						</if>
+					</then>
+				</if>
+			</sequential>
+		</for>
+	</target>
 
-        <war 
-        	destfile="${opencms.output}/build/${app.name}.war" 
-        	webxml="${opencms.input.warfiles}/WEB-INF/web.xml"
-        	manifest="${opencms.input.warfiles}/META-INF/MANIFEST.MF">
-        	     		
-       		<lib dir="${opencms.output.jars}">
-       			<include name="*.jar" />
-       		</lib>
-       		<lib dir="${opencms.input.libs.runtime}" >
-	   			<include name="*.jar" />
-	   		</lib>
-       		<fileset dir="${opencms.input.warfiles}">       		
-       			<exclude name="WEB-INF/web.xml" />
-       			<exclude name="WEB-INF/config/opencms.properties" />
-       			<exclude name="WEB-INF/config/opencms-system.xml" />
-       			<exclude name="WEB-INF/config/opencms.xml" />
-       			<exclude name="WEB-INF/config/registry.xml" />
-       			<exclude name="setup/versions.txt" />
-       			<exclude name="setup/license.html" />
-       			<exclude name="setup/database/**/*.jar" />
-       			<exclude name="update/**" />
-       			<exclude name="build.xml,.*,${excludes}" />
-       		</fileset>
-  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.properties" />
-  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms-system.xml" />
-  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="registry.xml" />  			
-  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.xml" />  			
-  			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
+	<target name="war" depends="setup-jar" description="Builds the opencms.war">
+
+		<delete failonerror="no" file="${opencms.output}/build/${app.name}.war" />
+		<copy todir="${opencms.output.jars}" flatten="true">
+			<fileset dir="${opencms.input.libs.db.base}">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+
+		<war destfile="${opencms.output}/build/${app.name}.war" webxml="${opencms.input.warfiles}/WEB-INF/web.xml" manifest="${opencms.input.warfiles}/META-INF/MANIFEST.MF">
+
+			<lib dir="${opencms.output.jars}">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${opencms.input.libs.runtime}">
+				<include name="*.jar" />
+			</lib>
+			<fileset dir="${opencms.input.warfiles}">
+				<exclude name="WEB-INF/web.xml" />
+				<exclude name="WEB-INF/config/opencms.properties" />
+				<exclude name="WEB-INF/config/opencms-system.xml" />
+				<exclude name="WEB-INF/config/opencms.xml" />
+				<exclude name="WEB-INF/config/registry.xml" />
+				<exclude name="setup/versions.txt" />
+				<exclude name="setup/license.html" />
+				<exclude name="setup/database/**/*.jar" />
+				<exclude name="update/**" />
+				<exclude name="build.xml,.*,${excludes}" />
+			</fileset>
+			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.properties" />
+			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms-system.xml" />
+			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="registry.xml" />
+			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.xml" />
+			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
 			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
 			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
-        </war>        
-    </target>
-    
+		</war>
+	</target>
 
-    <target name="tomcat.copy" depends="jar" 
-    	description="Copy updated files to Tomcat directorys">
 
-       	<copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
-            <fileset dir="${opencms.input.libs.runtime}">
-                <include name="**/*.jar"/>
-            </fileset>
-        </copy>    	
-        <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
-            <fileset dir="${opencms.output.jars}">
-                <include name="*.jar"/>
-            </fileset>
-        </copy>     
-        <copy file="${opencms.input.warfiles}/WEB-INF/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
-        <copy file="${opencms.input.warfiles}/WEB-INF/opencms.tld" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>       
-    </target>     
-    
-    
-    <target name="tomcat.update" 
-    	depends="setup-jar, tomcat.copy" description="Recompile changed classes and install in Tomcat webapps directory"/>
-	
-	
+	<target name="tomcat.copy" depends="jar" description="Copy updated files to Tomcat directorys">
+
+		<copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
+			<fileset dir="${opencms.input.libs.runtime}">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
+			<fileset dir="${opencms.output.jars}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<copy file="${opencms.input.warfiles}/WEB-INF/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF" />
+		<copy file="${opencms.input.warfiles}/WEB-INF/opencms.tld" todir="${tomcat.home}/webapps/${app.name}/WEB-INF" />
+	</target>
+
+
+	<target name="tomcat.update" depends="setup-jar, tomcat.copy" description="Recompile changed classes and install in Tomcat webapps directory" />
+
+
 	<target name="show-time">
 		<tstamp>
-			<format property="time" pattern="hh:mm"/>
+			<format property="time" pattern="hh:mm" />
 		</tstamp>
 		<echo message="Time: ${time}" />
 	</target>
 
-    <target name="tomcat.all" 
-    	depends="clean, tomcat.update" description="Do a complete recompile of all classes and install in Tomcat webapps directory"/>              
-    
-    <target name="jboss.copy" 
-    	description="Copy updated files to JBoss directory">
+	<target name="tomcat.all" depends="clean, tomcat.update" description="Do a complete recompile of all classes and install in Tomcat webapps directory" />
 
-       	<copy todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/lib">
-            <fileset dir="${opencms.input.libs.runtime}">
-                <include name="**/*.jar"/>
-            </fileset>
-        </copy>    	
-        <copy todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/lib">
-            <fileset dir="${opencms.output.jars}">
-                <include name="*.jar"/>
-            </fileset>
-        </copy>     
-        <copy file="${opencms.input.warfiles}/WEB-INF/web.xml" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF"/>
-        <copy file="${opencms.input.warfiles}/WEB-INF/opencms.tld" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF"/>       
-    </target>     
-       
-    <target name="jboss.update" 
-    	depends="setup-jar, jboss.copy" description="Recompile changed classes and install in JBoss deploy directory"/>      
-    
-    <target name="bindist" 
-    	depends="clean" description="Creates a binary distribution ZIP, including the templateone demopages">
-    	
-    	<!-- read list of all available modules -->
-    	<property file="${opencms.input}/modules/all-modules.properties" />
-    	
+	<target name="jboss.copy" description="Copy updated files to JBoss directory">
+
+		<copy todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/lib">
+			<fileset dir="${opencms.input.libs.runtime}">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/lib">
+			<fileset dir="${opencms.output.jars}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<copy file="${opencms.input.warfiles}/WEB-INF/web.xml" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF" />
+		<copy file="${opencms.input.warfiles}/WEB-INF/opencms.tld" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF" />
+	</target>
+
+	<target name="jboss.update" depends="setup-jar, jboss.copy" description="Recompile changed classes and install in JBoss deploy directory" />
+
+	<target name="bindist" depends="clean, initmodulenames" description="Creates a binary distribution ZIP, including the templateone demopages">
+
+		<!-- read list of all available modules is now done through target 'initmodulenames'-->
 		<!-- remove org.opencms.workplace.demos modules -->
 		<var name="modules.common.selection" unset="true" />
 		<for list="${modules.common.all}" param="module" trim="yes">
@@ -458,283 +443,234 @@
 					</not>
 					<then>
 						<if>
-						  <isset property="modules.common.selection"/>
-						  <then>
-							<var name="modules.common.selection" value="${modules.common.selection},@{module}" />
-						  </then>
-						  <else>
-							<var name="modules.common.selection" value="@{module}" />
-						  </else>
+							<isset property="modules.common.selection" />
+							<then>
+								<var name="modules.common.selection" value="${modules.common.selection},@{module}" />
+							</then>
+							<else>
+								<var name="modules.common.selection" value="@{module}" />
+							</else>
 						</if>
 					</then>
 				</if>
 				<var name="pack.name" unset="true" />
 			</sequential>
 		</for>
-    	<echo>${modules.common.selection}</echo>
-    	<!-- build war with selected modules -->
-	  	<ant antfile="${opencms.input}/modules/build.xml" target="war" inheritAll="false" >
-	  		<property name="modules.common.selection" value="${modules.common.selection}" />
-	  		<property name="modules.selection.mode" value="selection" />
-	  		<property name="app.name" value="${app.name}" />
-	  	</ant>    	
-    	
-    	<!-- build distro -->
-        <mkdir dir="${opencms.output.distfiles}" />                    
-    	
-        <zip destfile="${opencms.output.distfiles}/opencms_${version.number}.zip">
-            <zipfileset dir="${opencms.output}/build" includes="${app.name}.war"/>
-            <zipfileset dir="${opencms.input}" includes="install.html,license.txt,history.txt"/>
-        </zip>
+		<echo>${modules.common.selection}</echo>
+		<!-- build war with selected modules -->
+		<ant antfile="${opencms.input}/modules/build.xml" target="war" inheritAll="false">
+			<property name="modules.common.selection" value="${modules.common.selection}" />
+			<property name="modules.selection.mode" value="selection" />
+			<property name="app.name" value="${app.name}" />
+		</ant>
 
-    </target>    
-    
-    <target name="srcdist" 
-    	description="Creates a source distribution ZIP">
-    	
-    	<echo message="Building OpenCms ${app.name} source distribution " />
-        <echo message=" " />
-        <echo message="OpenCms input directory is: ${opencms.input}" />
-        <echo message="OpenCms output directory is: ${opencms.output}" />
-		
-	  	<selectionprompt 
-	  	  	property="src.comps"
-	  	    defaultvalue="${src.all.comps}"
-	  		allvalues="${src.all.comps}"
-	  		prompt="Please select the additional source components to include:"
-	  		title="Additional Source Components Selection" 
-	  		columns="1" 
-	  	/>
+		<!-- build distro -->
+		<mkdir dir="${opencms.output.distfiles}" />
 
-        <mkdir dir="${opencms.output.distfiles}" />                    
-		
-    	<delete file="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip" failonerror="no"/>
-        <zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip">
-        	<zipfileset dir="${opencms.input}/src" excludes="${excludes}" prefix="src" />
-            <zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt"/>
-        </zip>
-    	
-	    <if>
-	      <not>
-		      <equals arg1="${src.comps}" arg2="__ABORT__" />
-	      </not>
-	      <then>
-	    	<for list="${src.comps}" param="comp" trim="yes">
-	    	  <sequential>
-	            <zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip" update="true" whenempty="fail">
-	            	<zipfileset dir="${opencms.input}/@{comp}" excludes="${excludes}" prefix="@{comp}" />
-	            </zip>
-	    	  </sequential>
-	    	</for>
-	      </then>
-	    </if>
+		<zip destfile="${opencms.output.distfiles}/opencms_${version.number}.zip">
+			<zipfileset dir="${opencms.output}/build" includes="${app.name}.war" />
+			<zipfileset dir="${opencms.input}" includes="install.html,license.txt,history.txt" />
+		</zip>
 
-    </target>
-		
-    <target name="compile-tests" description="Compile the OpenCms test classes">
-    	
-        <mkdir dir="${opencms.output.tests}" />    	
-    	
-       	<javac
-            srcdir="${opencms.input}/test"
-            destdir="${opencms.output.tests}"
-            excludes="**/data/**"
-            debug="on"
-            optimize="on"
-            deprecation="on" 
-       		source="1.5"
-    		target="${java.target.version}">
-       	    <classpath>
-     	      <fileset dir="${opencms.output}/build">
-     	        <include name="**/*.jar"/>
-     	      </fileset>
-       	      <fileset dir="${opencms.input.libs.compile}">
-       	        <include name="**/*.jar"/>
-       	      </fileset>
-     	      <fileset dir="${opencms.input.libs.runtime}">
-     	        <include name="**/*.jar"/>
-     	      </fileset>
-       	      <fileset dir="${opencms.input.libs.db.base}">
-       	        <include name="**/*.jar"/>
-       	      </fileset>
-       	    </classpath>
-       	</javac>
-		
-        <copy todir="${opencms.output.tests}">
-            <fileset dir="${opencms.input}/test" excludes="${excludes},**/data/**, **/*.java"/>
-        </copy>
-    	
-        <mkdir dir="${opencms.output.tests}/../webapp/" />      	
-        <copy todir="${opencms.output.tests}/../webapp/">
-            <fileset dir="${opencms.input.warfiles}" />
-        </copy>       	    	       
-    	
-        <mkdir dir="${opencms.output.tests}/../test/data/" />  
-        <copy todir="${opencms.output.tests}/../test/data/">
-            <fileset dir="${opencms.input}/test/data" />
-        </copy>       	    	       
-    </target>
-	
+	</target>
 
-    <target name="setup-jar" depends="jar" description="Compile the OpenCms setup/updater classes">
-    	
-        <mkdir dir="${opencms.output}/build/setup" />    	
-    	
-       	<javac
-            srcdir="${opencms.input}/src-setup"
-            destdir="${opencms.output}/build/setup"
-            debug="on"
-            optimize="on"
-            deprecation="on" 
-       		source="1.5"
-    		target="${java.target.version}">
-       	    <classpath>
-     	      <fileset dir="${opencms.output}/build">
-     	        <include name="**/*.jar"/>
-     	      </fileset>
-       	      <fileset dir="${opencms.input.libs.compile}">
-       	        <include name="**/*.jar"/>
-       	      </fileset>
-     	      <fileset dir="${opencms.input.libs.runtime}">
-     	        <include name="**/*.jar"/>
-     	      </fileset>
-       	      <fileset dir="${opencms.input.libs.db.base}">
-       	        <include name="**/*.jar"/>
-       	      </fileset>
-       	    </classpath>
-       	</javac>
-    	
-        <copy todir="${opencms.output}/build/setup">
-            <fileset dir="${opencms.input}/src-setup" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}"/>
-        </copy>              
-                
-        <jar
-            jarfile="${opencms.output.jars}/opencms-setup.jar"
-            basedir="${opencms.output}/build/setup"
-            includes="org/opencms/**" />
+	<target name="srcdist" description="Creates a source distribution ZIP">
 
-    </target>
-	
+		<echo message="Building OpenCms ${app.name} source distribution " />
+		<echo message=" " />
+		<echo message="OpenCms input directory is: ${opencms.input}" />
+		<echo message="OpenCms output directory is: ${opencms.output}" />
 
-	<target name="unittests" depends="compile-tests"
-		description="Runs the core Junit test cases">
-		
+		<selectionprompt property="src.comps" defaultvalue="${src.all.comps}" allvalues="${src.all.comps}" prompt="Please select the additional source components to include:" title="Additional Source Components Selection" columns="1" />
+
+		<mkdir dir="${opencms.output.distfiles}" />
+
+		<delete file="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip" failonerror="no" />
+		<zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip">
+			<zipfileset dir="${opencms.input}/src" excludes="${excludes}" prefix="src" />
+			<zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt" />
+		</zip>
+
+		<if>
+			<not>
+				<equals arg1="${src.comps}" arg2="__ABORT__" />
+			</not>
+			<then>
+				<for list="${src.comps}" param="comp" trim="yes">
+					<sequential>
+						<zip destfile="${opencms.output.distfiles}/${app.name}_${version.number}_src.zip" update="true" whenempty="fail">
+							<zipfileset dir="${opencms.input}/@{comp}" excludes="${excludes}" prefix="@{comp}" />
+						</zip>
+					</sequential>
+				</for>
+			</then>
+		</if>
+
+	</target>
+
+	<target name="compile-tests" description="Compile the OpenCms test classes">
+
+		<mkdir dir="${opencms.output.tests}" />
+
+		<javac srcdir="${opencms.input}/test" destdir="${opencms.output.tests}" excludes="**/data/**" debug="on" optimize="on" deprecation="on" source="1.5" target="${java.target.version}">
+			<classpath>
+				<fileset dir="${opencms.output}/build">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.compile}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.runtime}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.db.base}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+
+		<copy todir="${opencms.output.tests}">
+			<fileset dir="${opencms.input}/test" excludes="${excludes},**/data/**, **/*.java" />
+		</copy>
+
+		<mkdir dir="${opencms.output.tests}/../webapp/" />
+		<copy todir="${opencms.output.tests}/../webapp/">
+			<fileset dir="${opencms.input.warfiles}" />
+		</copy>
+
+		<mkdir dir="${opencms.output.tests}/../test/data/" />
+		<copy todir="${opencms.output.tests}/../test/data/">
+			<fileset dir="${opencms.input}/test/data" />
+		</copy>
+	</target>
+
+
+	<target name="setup-jar" depends="jar" description="Compile the OpenCms setup/updater classes">
+
+		<mkdir dir="${opencms.output}/build/setup" />
+
+		<javac srcdir="${opencms.input}/src-setup" destdir="${opencms.output}/build/setup" debug="on" optimize="on" deprecation="on" source="1.5" target="${java.target.version}">
+			<classpath>
+				<fileset dir="${opencms.output}/build">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.compile}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.runtime}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.db.base}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+
+		<copy todir="${opencms.output}/build/setup">
+			<fileset dir="${opencms.input}/src-setup" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
+		</copy>
+
+		<jar jarfile="${opencms.output.jars}/opencms-setup.jar" basedir="${opencms.output}/build/setup" includes="org/opencms/**" />
+
+	</target>
+
+
+	<target name="unittests" depends="compile-tests" description="Runs the core Junit test cases">
+
 		<junit showoutput="yes" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="no">
 			<classpath>
-				<pathelement path="${opencms.output.tests}"/>
-        	    <fileset dir="${opencms.output}/build">
-	       	        <include name="**/*.jar"/>
-	       	    </fileset>
-        	    <fileset dir="${opencms.input.libs.compile}">
-	       	        <include name="**/*.jar"/>
-	       	    </fileset>
-	     	    <fileset dir="${opencms.input.libs.runtime}">
-	     	        <include name="**/*.jar"/>
-	     	    </fileset>
-	       	    <fileset dir="${opencms.input.libs.db.base}">
-	       	        <include name="**/*.jar"/>
-	       	    </fileset>
-	       	</classpath>
-			
+				<pathelement path="${opencms.output.tests}" />
+				<fileset dir="${opencms.output}/build">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.compile}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.runtime}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.db.base}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+
 			<formatter type="plain" />
-			
-			<test name="org.opencms.test.AllTests" />			
+
+			<test name="org.opencms.test.AllTests" />
 		</junit>
 	</target>
 
-    <target name="single-unittest" depends="compile-tests"
-		description="Runs the core Junit test cases">
-		
+	<target name="single-unittest" depends="compile-tests" description="Runs the core Junit test cases">
+
 		<junit showoutput="yes" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="no">
 			<classpath>
-				<pathelement path="${opencms.output.tests}"/>
-        	    <fileset dir="${opencms.output}/build">
-	       	        <include name="**/*.jar"/>
-	       	    </fileset>
-        	    <fileset dir="${opencms.input.libs.compile}">
-	       	        <include name="**/*.jar"/>
-	       	    </fileset>
-	     	    <fileset dir="${opencms.input.libs.runtime}">
-	     	        <include name="**/*.jar"/>
-	     	    </fileset>
-	       	    <fileset dir="${opencms.input.libs.db.base}">
-	       	        <include name="**/*.jar"/>
-	       	    </fileset>
-	       	</classpath>
-			
+				<pathelement path="${opencms.output.tests}" />
+				<fileset dir="${opencms.output}/build">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.compile}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.runtime}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${opencms.input.libs.db.base}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+
 			<formatter type="plain" />
-			
-			<test name="org.opencms.${test}" />			
+
+			<test name="org.opencms.${test}" />
 		</junit>
 	</target>
 
-    <property name="signjar.storepass" value="secret" />
+	<property name="signjar.storepass" value="secret" />
 
-    <target name="uploadjar" description="Build the upload.jar">
-        
-        <delete dir="${opencms.output}/upload/" />
-        <mkdir dir="${opencms.output}/upload/org/opencms/applet/" />
-        
-        <copy todir="${opencms.output}/upload/org/opencms/applet/">
-            <fileset dir="${opencms.input}/src-components/org/opencms/applet">
-                <include name="**/*.png"/>
-                <include name="**/*.gif"/>
-            </fileset>
-        </copy>  
+	<target name="uploadjar" description="Build the upload.jar">
 
-    	<unjar dest="${opencms.output}/upload/" src="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
-        <unjar dest="${opencms.output}/upload/" src="${opencms.input.libs.runtime}/commons-httpclient-3.1.jar" />
-        <unjar dest="${opencms.output}/upload/" src="${opencms.input.libs.runtime}/commons-codec-1.3.jar" />
+		<delete dir="${opencms.output}/upload/" />
+		<mkdir dir="${opencms.output}/upload/org/opencms/applet/" />
 
-        <delete>
-            <fileset dir="${opencms.output}/upload/">
-                <include name="**/*.html" />
-            </fileset>
-        </delete>
-        
-        <javac
-            srcdir="${opencms.input}/src-components/org/opencms/applet"
-            destdir="${opencms.output}/upload"
-            debug="on"
-            optimize="on"
-            deprecation="on"
-            source="1.5"
-            target="${java.target.version}">
-        </javac>
- 
-        <jar
-            jarfile="${opencms.output}/upload/upload_unsigned.jar"
-            basedir="${opencms.output}/upload/"
-            includes="org/**" >  
-        </jar>
-       
-        <genkey 
-            keystore="${opencms.output}/upload/keystore" 
-            validity="3650" 
-            alias="OpenCms" 
-            storepass="${signjar.storepass}">
-            <dname>
-                <param name="CN" value="OpenCms Upload Applet" />
-                <param name="OU" value="opencms.org" />
-                <param name="O"  value="Alkacon Software GmbH" />
-                <param name="L"  value="An der Wachsfabrik 13" />
-                <param name="S"  value="Cologne" />
-                <param name="C"  value="DE" />
-            </dname>
-        </genkey>       
+		<copy todir="${opencms.output}/upload/org/opencms/applet/">
+			<fileset dir="${opencms.input}/src-components/org/opencms/applet">
+				<include name="**/*.png" />
+				<include name="**/*.gif" />
+			</fileset>
+		</copy>
 
-        <signjar 
-            signedjar="${opencms.output}/upload/upload.jar" 
-            alias="OpenCms" 
-            jar="${opencms.output}/upload/upload_unsigned.jar" 
-            storepass="${signjar.storepass}"
-            keystore="${opencms.output}/upload/keystore" />
-        
-        <delete file="${opencms.output}/upload/upload_unsigned.jar" />
+		<unjar dest="${opencms.output}/upload/" src="${opencms.input.libs.runtime}/commons-logging-1.1.1.jar" />
+		<unjar dest="${opencms.output}/upload/" src="${opencms.input.libs.runtime}/commons-httpclient-3.1.jar" />
+		<unjar dest="${opencms.output}/upload/" src="${opencms.input.libs.runtime}/commons-codec-1.3.jar" />
 
-        <copy 
-            todir="${opencms.input}/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/components/upload_applet/"
-            file="${opencms.output}/upload/upload.jar" />
-    </target>    
+		<delete>
+			<fileset dir="${opencms.output}/upload/">
+				<include name="**/*.html" />
+			</fileset>
+		</delete>
+
+		<javac srcdir="${opencms.input}/src-components/org/opencms/applet" destdir="${opencms.output}/upload" debug="on" optimize="on" deprecation="on" source="1.5" target="${java.target.version}">
+		</javac>
+
+		<jar jarfile="${opencms.output}/upload/upload_unsigned.jar" basedir="${opencms.output}/upload/" includes="org/**">
+		</jar>
+
+		<genkey keystore="${opencms.output}/upload/keystore" validity="3650" alias="OpenCms" storepass="${signjar.storepass}">
+			<dname>
+				<param name="CN" value="OpenCms Upload Applet" />
+				<param name="OU" value="opencms.org" />
+				<param name="O" value="Alkacon Software GmbH" />
+				<param name="L" value="An der Wachsfabrik 13" />
+				<param name="S" value="Cologne" />
+				<param name="C" value="DE" />
+			</dname>
+		</genkey>
+
+		<signjar signedjar="${opencms.output}/upload/upload.jar" alias="OpenCms" jar="${opencms.output}/upload/upload_unsigned.jar" storepass="${signjar.storepass}" keystore="${opencms.output}/upload/keystore" />
+
+		<delete file="${opencms.output}/upload/upload_unsigned.jar" />
+
+		<copy todir="${opencms.input}/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/components/upload_applet/" file="${opencms.output}/upload/upload.jar" />
+	</target>
 
 </project>
