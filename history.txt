@@ -15,6 +15,77 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.0.3 - November 16, 2011
+! With the introduction of "Function Pages", JSP based dynamic pages can be added with simple drag and drop in the sitemap editor.
+! The sitemap editor's improved "Create Page" dialog offers a wider choice of types distinguishing "Container Pages", "Type Pages" and "Function Pages".
+! It is now also possible to select the page model when using the sitemap editor's context menu option "Create sub-page".
+! The available container page models can be accessed for editing directly from the "Create page" dialog in the sitemap editor.
+! The sitemap editor executes the "Show page" action if the page icon in the sitemap is clicked.
+! JSP function elements can now have multiple formatters to be used in different containers.
+! The element option bar displays a "Resource is currently locked" icon if an element is currently edited by another user.
+! The content galleries have been improved with a text search field to directly search for "Galleries" and "Categories".
+! Improved Image Gallery now features a "broken image" image if this could not be rendered for any reason.
+! Improved Module Sitemap Configuration now offers localized help bubbles.
+! Improved Add Wizard now hides Resource Types if permissions are not sufficient.
+! Improved search dialog in Galleries initiating the search by pressing "Enter" in addition to the "Search Results" button.
+! Improved Image Gallery now allows selecting an image directly with double-click.
+! Improved Gallery where uploaded elements are directly visible.
+! Improved "Dynamic Functions" allow usage of function JSPs even if container does not have a width set.
+! Added support for XML content "model folders" from XSD.
+! Improved search in galleries with option to limit search to current (sub)site.
+! Improved Link selector in image gallery.
+! Improved upload process that translates filenames to avoid specials chars but preserves title property.
+! Added fall-back mechanism for non-existing formatters in container pages trying to find the appropriate formatter reading the configuration XSD.
+* Fixed issue #1883 that category widget did not work correctly when the category title contains apostrophes.
+* Fixed issue #1981 that static export after publish did not work correctly for template resources with parameters.
+* Fixed issue #1991 that link relations are not displayed correctly in the workplace when first opened in explorer mode.
+* Fixed issue #2002 that the category widget logs errors when editing elements created through a collector list.
+* Fixed issue #2013 that the Toolbar Direct Edit Provider does not preserve request parameters.
+* Fixed issue with Tomcat 7 tag pooling.
+* Fixed Image Gallery now enables setting the alt / Title text in the settings tab in the XML page editor.
+* Fixed issue that if you create a new folder in the shared folder, the folder list in the explorer view (left frame) duplicates all entries.
+* Fixed issue in ADE Editor displaying scrollbars or not depending on the style of the web page, which might lead to flickering.
+* Fixed issue that dragging a new Dynamic Function Element onto the container page threw an exception.
+* Fixed issue in XML Editor submitting the form on "Enter" in a non-multi line field instead of advancing cursor to next field.
+* Fixed issue that user last login information was not updated anymore when working with OCEE cache.
+* Fixed issue in the movedResource method when moving a folder containing a sub-tree marked as deleted.
+* Fixed issue with timeout in Send-to-user function in a multi-user scenario.
+* Fixed issue that links to other sites were saved wrong in the editor.
+* Fixed issue that title property of uploaded image was set to source path when using IE7.
+* Fixed issue in creation of Sub-Sitemap as "common" user in the workplace throwing exception. 
+* Fixed issue that missing "en" locale in sitemap configuration makes resource types vanish.
+* Fixed issue that GWT Upload did not work with Firefox 7 and Mac OS.
+* Fixed issue in property dialog in ADE that deleting once set values was not possible.
+* Fixed issue that Sitemap operations (insert new page, moving existing pages) generated negative NavPos property values.
+* Fixed issue that restricting search results in ADE does not work when reopening ADE galleries.
+* Fixed encoding issue in image galleries that images with special characters in the title are shown with broken characters in ISO-8859-1 environments.
+* Fixed issue in image gallery when reopening the gallery after selecting an image, that first 20 images are not shown.
+* Fixed issue that scrollbars in Explorer view did not work in Chrome.
+* Fixed issue that documents of the latest MS Office editions ending with .docx, .xlsx were not displayed in the galleries at all.
+* Fixed issue that headinclude of CSS does not produce valid XHTML.
+* Fixed issue that headincludes of elements in element groups were not considered.
+* Fixed issue within the link substitution if the "en" locale is missing in a module's .config file.
+* Fixed issue that CmsVfsDriver.readResourcesWithProperty behaved differently for shared and individual properties.
+* Fixed issue that the updater did not add the correct XML in opencms-search.xml when adding the new field-mapping of the "gallery_fields".
+* Fixed issue with the FCKEditor Image Gallery loading different images than selected when using IE7.
+* Fixed issue that repeated resizing of images added white bars at top and bottom of the image.
+* Fixed issue with the updater inserting an invalid node in the configuration when updating an OpenCms 7.0.5 installation with no node in the opencms-workplace.xml.
+* Fixed issue in the gallery search, where it occasionally happened that new resources were not added to the search index.
+* Fixed issue that when readDefaultFile method returned NULL the Sitemap Editor did not work.
+* Fixed caching issue, that new element settings in a modified XSD were not visible after OpenCms restart.
+- Improved updater handles org.opencms.ade.config module to prevent conflicts.
+- Improved handling of not yet released/expired resources in ADE.
+- Improved cms:headincludes with attribute to close the tag supporting DOCTYPE HTML 4.01 strict.
+- Added default icon for resource types if one of the optional "small" or "big" icon is not set in the resource type configuration.
+- Moved all ADE module configuration to the common "ADE config" module.
+- Added support for the latest PostgreSQL "stable release" version.
+- Standardized ordering for core resource types, e.g group containers and dynamic functions.
+- Improved module-resource entries in manifest of org.opencms.workplace.tool.database prevents folders used by other modules of being deleted.
+- Improved Clipboard now uses localized version of Title and other properties.
+- Improved Description Mappings now provided for all Resource Types in Demo content.
+- Improved handling of XSD complex types with new content handlers that are created when unmarshalling content definitions and assigned to the new content definition objects.
+
+
 OpenCms 8.0.2 - August 18, 2011
 ! Support for XSD translations in existing XML contents, configured in opencms-vfs.xml.
 ! It's now possible to configure multiple resource bundles (properties or XML) in an XML content schema.
