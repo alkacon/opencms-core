@@ -1127,7 +1127,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 bean.setJspPath(jspPath);
 
                 String params = item.getParams();
+
                 if (params != null) {
+                    params = CmsVfsService.prepareFileNameForEditor(getCmsObject(), resUtil[0].getResource(), params);
                     bean.setParams(CmsStringUtil.splitAsMap(params, "|", "="));
 
                 }
