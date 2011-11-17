@@ -36,7 +36,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
+ 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.file.collectors.messages";
 
@@ -67,6 +67,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_RESTYPE_1 = "ERR_UNKNOWN_RESTYPE_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_0 = "ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_0";
+    
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 

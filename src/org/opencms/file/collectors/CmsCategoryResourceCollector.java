@@ -59,11 +59,11 @@ import org.apache.commons.logging.Log;
  * 
  * Usage:
  * <code>
- * &lt;cms:contentload collector=&quot;allKeyValuePairFiltered&quot; param=&quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date]|sortAsc=[boolean]&quot;&gt;
+ * &lt;cms:contentload collector=&quot;allKeyValuePairFiltered&quot; param=&quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date|property:[property_name]]|sortAsc=[boolean]&quot;&gt;
  * </code>
  * 
  * @since 7.0.0
- */
+ */ 
 public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
 
     /**
@@ -74,7 +74,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      * 
      * Usage:
      * <code>
-     * &quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date]|sortAsc=[boolean]&quot;
+     * &quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date|property:[property_name]]|sortAsc=[boolean]&quot;
      * </code>
      */
     private static final class CmsCategoryCollectorData extends CmsCollectorData {
@@ -98,7 +98,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         public static final String PARAM_KEY_SORT_BY = "sortBy";
 
         /** The collector parameter key for the sub tree. */
-        public static final String PARAM_KEY_SUB_TREE = "subTree";
+        public static final String PARAM_KEY_SUB_TREE = "subTree";      
 
         /** The list of category types. */
         private List<String> m_categoryTypes;
@@ -106,8 +106,11 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         /** Indicates if the returned list will be sorted ascending or not (descending). */
         private boolean m_sortAsc;
 
-        /** The returned list will be sort by this ('category' or 'date' are excepted). */
+        /** The returned list will be sort by this ('category', 'date' or 'property' are excepted). */
         private String m_sortBy;
+        
+        /** The returned list will be sort by this property value  */
+        private String m_sortByPropertyName;
 
         /** Indicates if the sub tree of the given resource will be searched for appropriate resources too. */
         private boolean m_subTree;
@@ -136,7 +139,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         }
 
         /**
-         * Returns the sort by string (only 'date' or 'category' excepted).<p>
+         * Returns the sort by string (only 'date', 'category' or 'property' excepted).<p>
          *
          * @return the sort by string
          */
@@ -144,7 +147,27 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
 
             return m_sortBy;
         }
+        
+        /**
+         * Returns the sort by this property value.<p>
+         *
+         * @return the sort by string
+         */
+        public String getSortByPropertyName() {
 
+            return m_sortByPropertyName;
+        }
+        
+        /**
+         * Returns the sort order. <code>true=asc</code> or <code>false=desc</code>  <p>
+         *
+         * @return the sort order. <code>true=asc</code> or <code>false=desc</code> 
+         */
+        public boolean getSortOrder() {
+
+            return m_sortAsc;
+        }
+        
         /**
          * Returns <code>true</code> if the list has to be sorted in ascending order.<p>
          *
@@ -172,8 +195,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
          *
          * @throws CmsLoaderException if something goes wrong
          */
-        private void parseExtendedData(String data) throws CmsLoaderException {
-
+        private void parseExtendedData(String data) throws CmsLoaderException {        	
             String[] keyValueTokens = CmsStringUtil.splitAsArray(data, '|');
             setType(-1);
             for (int i = keyValueTokens.length - 1; i >= 0; i--) {
@@ -194,8 +216,17 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                     }
                 } else if (PARAM_KEY_SORT_ASC.equals(key)) {
                     m_sortAsc = Boolean.valueOf(value).booleanValue();
-                } else if (PARAM_KEY_SORT_BY.equals(key)) {
-                    m_sortBy = value;
+                } else if (PARAM_KEY_SORT_BY.equals(key)) {   
+                	if (value.contains(":")) {
+	                	String[] keyValuePairProp = CmsStringUtil.splitAsArray(value, ':');  	
+	                    String keyProp = keyValuePairProp[0];
+	                    String valueProp = keyValuePairProp[1];
+	                    m_sortBy = keyProp;   
+	                    m_sortByPropertyName = valueProp;
+                	} else {
+	                    m_sortBy = value;   
+	                    m_sortByPropertyName = null;
+                	}
                 } else if (PARAM_KEY_SUB_TREE.equals(key)) {
                     m_subTree = Boolean.valueOf(value).booleanValue();
                 } else if (PARAM_KEY_COUNT.equals(key)) {
@@ -279,7 +310,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                     collectorName));
         }
     }
-
+    
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
@@ -337,7 +368,8 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
     protected List<CmsResource> allKeyValuePairFiltered(CmsObject cms, String param) throws CmsException {
 
         CmsCategoryCollectorData data = new CmsCategoryCollectorData(param);
-        if ((data.getCategoryTypes() != null) && (data.getCategoryTypes().size() > 0)) {
+        
+        if ((data.getCategoryTypes() != null) && (data.getCategoryTypes().size() > 0)) {        
             List<CmsResource> result = new ArrayList<CmsResource>();
             Map<String, List<CmsResource>> sortCategories = new HashMap<String, List<CmsResource>>();
             String foldername = null;
@@ -375,7 +407,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                                 sortCategories.put(category.getPath(), sortResources);
                             }
                         } else {
-                            if (!result.contains(resource)) {
+                            if (!result.contains(resource)) {                            	                           	
                                 result.add(resource);
                             }
                         }
@@ -383,13 +415,13 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 }
             }
 
-            if ((data.getSortBy() != null) && data.getSortBy().equals("date")) {
+            if ((data.getSortBy() != null) && data.getSortBy().equals("date")) {            	
                 if (!data.isSortAsc()) {
                     Collections.sort(result, COMPARE_DATE_RELEASED_DESC);
                 } else {
                     Collections.sort(result, I_CmsResource.COMPARE_DATE_RELEASED);
                 }
-            } else if ((data.getSortBy() != null) && data.getSortBy().equals("category")) {
+            } else if ((data.getSortBy() != null) && data.getSortBy().equals("category")) {            	
                 // categories are sort by their paths
                 Iterator<String> itCategoryTypes = categoryTypes.iterator();
                 while (itCategoryTypes.hasNext()) {
@@ -398,7 +430,11 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                         result.addAll(categoryListToAdd);
                     }
                 }
+            } else if ((data.getSortBy() != null) && data.getSortBy().equals("property")) { 	            		
+            		Comparator<CmsResource> comp = new CmsPropertyResourceComparator(cms, data.getSortByPropertyName(),data.getSortOrder());
+            		Collections.sort(result, comp);            		            	            
             }
+                        
             return shrinkToFit(result, data.getCount());
         }
         return null;
