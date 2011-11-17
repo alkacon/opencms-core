@@ -162,7 +162,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         result.append("\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
-            getOpenPreviewCall(widgetDialog, param.getId()),
+            getOpenPreviewCall(widgetDialog, PREFIX_IMAGE + param.getId()),
             null,
             "preview.png",
             Messages.GUI_BUTTON_PREVIEW_0,
