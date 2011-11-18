@@ -359,6 +359,37 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         return result;
     }
 
+    public static Map<String, String> readProperties(CmsObject cms, I_CmsXmlContentLocation baseLocation) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        String elementName = CmsXmlContentProperty.XmlNode.Properties.name();
+        String nameElementName = CmsXmlContentProperty.XmlNode.Name.name();
+        List<I_CmsXmlContentValueLocation> propertyLocations = baseLocation.getSubValues(elementName);
+        for (I_CmsXmlContentValueLocation propertyLocation : propertyLocations) {
+            I_CmsXmlContentValueLocation nameLocation = propertyLocation.getSubValue(nameElementName);
+            String name = nameLocation.asString(cms).trim();
+            String value = null;
+            I_CmsXmlContentValueLocation valueLocation = propertyLocation.getSubValue(CmsXmlContentProperty.XmlNode.Value.name());
+            I_CmsXmlContentValueLocation stringLocation = valueLocation.getSubValue(CmsXmlContentProperty.XmlNode.String.name());
+            I_CmsXmlContentValueLocation fileListLocation = valueLocation.getSubValue(CmsXmlContentProperty.XmlNode.FileList.name());
+            if (stringLocation != null) {
+                value = stringLocation.asString(cms).trim();
+            } else if (fileListLocation != null) {
+                List<CmsUUID> idList = new ArrayList<CmsUUID>();
+                List<I_CmsXmlContentValueLocation> fileLocations = fileListLocation.getSubValues(CmsXmlContentProperty.XmlNode.Uri.name());
+                for (I_CmsXmlContentValueLocation fileLocation : fileLocations) {
+                    CmsUUID structureId = fileLocation.asId(cms);
+                    idList.add(structureId);
+                }
+                value = CmsStringUtil.listAsString(idList, CmsXmlContentProperty.PROP_SEPARATOR);
+            }
+            if (value != null) {
+                result.put(name, value);
+            }
+        }
+        return result;
+    }
+
     /**
      * Reads the properties from property-enabled xml content values.<p>
      * 
@@ -527,14 +558,12 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * @param cms the current CMS context
      * @param parentElement the parent xml element
      * @param properties the properties to save, if there is a list of resources, every entry can be a site path or a UUID
-     * @param resource the resource to get the property configuration from
      * @param propertiesConf the configuration of the properties 
      */
     public static void saveProperties(
         CmsObject cms,
         Element parentElement,
         Map<String, String> properties,
-        CmsResource resource,
         Map<String, CmsXmlContentProperty> propertiesConf) {
 
         // remove old entries

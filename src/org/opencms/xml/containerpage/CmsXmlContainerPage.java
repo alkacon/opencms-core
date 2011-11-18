@@ -508,7 +508,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     cms,
                     uriRes);
 
-                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, uriRes, propertiesConf);
+                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, propertiesConf);
             }
         }
     }

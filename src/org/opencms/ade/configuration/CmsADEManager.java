@@ -27,13 +27,14 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
+import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationWriter;
+import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsSitemapDetailPageFinder;
 import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -45,13 +46,10 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
-import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADECache;
@@ -77,7 +75,7 @@ import org.apache.commons.logging.Log;
  * This is the main class used to access the ADE configuration and also accomplish some other related tasks
  * like loading/saving favorite and recent lists.<p>
  */
-public class CmsADEManager implements I_CmsEventListener {
+public class CmsADEManager {
 
     /** JSON property name constant. */
     protected enum FavListProp {
@@ -172,11 +170,16 @@ public class CmsADEManager implements I_CmsEventListener {
     /** The offline CMS context. */
     private CmsObject m_offlineCms;
 
+    /** The offline inherited container configuration cache. */
+    private CmsContainerConfigurationCache m_offlineContainerConfigurationCache;
+
     /** The offline cache instance. */
     private CmsConfigurationCache m_onlineCache;
-
     /** The online CMS context. */
     private CmsObject m_onlineCms;
+
+    /** The online inherited container configuration cache. */
+    private CmsContainerConfigurationCache m_onlineContainerConfigurationCache;
 
     /**
      * Creates a new ADE manager.<p>
@@ -199,104 +202,6 @@ public class CmsADEManager implements I_CmsEventListener {
         // because during the setup the configuration resource types don't exist yet.
     }
 
-    /**
-     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
-     */
-    public void cmsEvent(CmsEvent event) {
-
-        CmsResource resource = null;
-        List<CmsResource> resources = null;
-        //System.out.println();
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
-            case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-            case I_CmsEventListener.EVENT_RESOURCE_CREATED:
-                //System.out.print(getEventName(event.getType()));
-                Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
-                if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
-                    // skip lock & unlock
-                    return;
-                }
-                resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
-                m_offlineCache.update(resource);
-                //System.out.print(" " + resource.getRootPath());
-                break;
-            case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
-                // a list of resources and all of their properties have been modified
-                //System.out.print(getEventName(event.getType()));
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                for (CmsResource res : resources) {
-                    m_offlineCache.update(res);
-                    //System.out.print(" " + res.getRootPath());
-                }
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCE_MOVED:
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                // source, source folder, dest, dest folder 
-                // - OR -  
-                // source, dest, dest folder
-                m_offlineCache.remove(resources.get(0));
-                m_offlineCache.update(resources.get(resources.size() - 2));
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCE_DELETED:
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                for (CmsResource res : resources) {
-                    m_offlineCache.remove(res);
-                }
-                break;
-            case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
-                //System.out.print(getEventName(event.getType()));
-                // a list of resources has been modified
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                for (CmsResource res : resources) {
-                    m_offlineCache.update(res);
-                }
-                break;
-            case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
-                m_onlineCache.initialize();
-                break;
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-                //System.out.print(getEventName(event.getType()));
-                String publishIdStr = (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID);
-                if (publishIdStr != null) {
-                    CmsUUID publishId = new CmsUUID(publishIdStr);
-                    try {
-                        List<CmsPublishedResource> publishedResources = m_onlineCms.readPublishedResources(publishId);
-                        if (publishedResources.isEmpty()) {
-                            // normally, the list of published resources should not be empty.
-                            // If it is, the publish event is not coming from a normal publish process,
-                            // so we re-initialize the whole cache to be on the safe side.
-                            m_onlineCache.initialize();
-                        } else {
-                            for (CmsPublishedResource res : publishedResources) {
-                                if (res.getState().isDeleted()) {
-                                    m_onlineCache.remove(res);
-                                } else {
-                                    m_onlineCache.update(res);
-                                }
-                            }
-                        }
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-                break;
-            case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                //System.out.print(getEventName(event.getType()));
-                m_offlineCache.initialize();
-                m_onlineCache.initialize();
-                break;
-            case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
-                //System.out.print(getEventName(event.getType()));
-                m_offlineCache.initialize();
-                break;
-            default:
-                // noop
-                break;
-        }
-    }
 
     /**
      * Finds the entry point to a sitemap.<p>
@@ -467,6 +372,36 @@ public class CmsADEManager implements I_CmsEventListener {
         return favList;
     }
 
+    public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, CmsResource resource, String name)
+    throws CmsException {
+
+        String rootPath = resource.getRootPath();
+        if (!resource.isFolder()) {
+            rootPath = CmsResource.getParentFolder(rootPath);
+        }
+        CmsInheritedContainerState result = new CmsInheritedContainerState();
+        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        CmsContainerConfigurationCache cache = online
+        ? m_onlineContainerConfigurationCache
+        : m_offlineContainerConfigurationCache;
+        result.addConfigurations(cache, rootPath, name, cms.getRequestContext().getLocale());
+        return result;
+
+    }
+
+    public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, String rootPath, String name)
+    throws CmsException {
+
+        String oldSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot("");
+            CmsResource resource = cms.readResource(rootPath);
+            return getInheritedContainerState(cms, resource, name);
+        } finally {
+            cms.getRequestContext().setSiteRoot(oldSiteRoot);
+        }
+    }
+
     /** 
      * Gets the maximum sitemap depth.<p>
      * 
@@ -577,7 +512,16 @@ public class CmsADEManager implements I_CmsEventListener {
                 m_offlineCache = new CmsConfigurationCache(m_offlineCms, m_configType, m_moduleConfigType);
                 m_onlineCache.initialize();
                 m_offlineCache.initialize();
-                OpenCms.getEventManager().addCmsEventListener(this);
+                m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_onlineCms, "online");
+                m_offlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_offlineCms, "offline");
+                CmsGlobalConfigurationCacheEventHandler handler = new CmsGlobalConfigurationCacheEventHandler(
+                    m_onlineCms);
+                handler.addCache(m_offlineCache, m_onlineCache, "ADE configuration cache");
+                handler.addCache(
+                    m_offlineContainerConfigurationCache,
+                    m_onlineContainerConfigurationCache,
+                    "Inherited container cache");
+                OpenCms.getEventManager().addCmsEventListener(handler);
                 m_initStatus = Status.initialized;
             } catch (CmsException e) {
                 m_initStatus = Status.notInitialized;
@@ -674,6 +618,17 @@ public class CmsADEManager implements I_CmsEventListener {
         CmsUser user = cms.getRequestContext().getCurrentUser();
         user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, data.toString());
         cms.writeUser(user);
+    }
+
+    public void saveInheritedContainer(
+        CmsObject cms,
+        String sitePath,
+        String name,
+        boolean newOrder,
+        List<CmsContainerElementBean> elements) throws CmsException {
+
+        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
+        writer.save(cms, name, newOrder, cms.readResource(sitePath), elements);
     }
 
     /**

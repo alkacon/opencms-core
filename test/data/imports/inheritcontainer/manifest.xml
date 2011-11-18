@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.0.3</opencms_version>
+		<createdate>Thu, 31 Jan 2008 18:14:37 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>efa7aa1c-d017-11dc-a010-d55d0ba2b9d3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<destination>system/content</destination>
+			<type>folder</type>
+			<uuidstructure>0839fbd8-3959-480e-8fd2-afbb4d514889</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<destination>system/level1</destination>
+			<type>folder</type>
+			<uuidstructure>54bbd556-c49c-4f9a-8bf2-d4c451050c0c</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+				<file>
+			<destination>system/level1/level2</destination>
+			<type>folder</type>
+			<uuidstructure>660ee1b5-399b-4b1a-9b9b-2512abb10f8d</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<destination>system/level1/level2/level3</destination>
+			<type>folder</type>
+			<uuidstructure>ed79f3f4-c92d-491c-9257-f0e921ce0025</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<destination>system/x1</destination>
+			<type>folder</type>
+			<uuidstructure>4852af06-fd52-4b2e-9ef5-c38b571d2c5c</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<destination>system/x1/x2</destination>
+			<type>folder</type>
+			<uuidstructure>69a24300-3b03-4d46-a9db-1cedbbb4d01b</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 31 Jan 2008 16:16:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<file>
+			<source>system/test.txt</source>
+			<destination>system/test.txt</destination>
+			<type>plain</type>
+			<uuidstructure>00000001-0000-0000-0000-000000000000</uuidstructure>
+			<uuidresource>00000001-0001-0000-0000-000000000000</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:21:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<source>system/content/a.txt</source>
+			<destination>system/content/a.txt</destination>
+			<type>plain</type>
+			<uuidstructure>00000002-0000-0000-0000-000000000000</uuidstructure>
+			<uuidresource>00000002-0001-0000-0000-000000000000</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:21:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		<file>
+			<source>system/content/b.txt</source>
+			<destination>system/content/b.txt</destination>
+			<type>plain</type>
+			<uuidstructure>00000003-0000-0000-0000-000000000000</uuidstructure>
+			<uuidresource>00000003-0001-0000-0000-000000000000</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:21:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<source>system/content/c.txt</source>
+			<destination>system/content/c.txt</destination>
+			<type>plain</type>
+			<uuidstructure>00000004-0000-0000-0000-000000000000</uuidstructure>
+			<uuidresource>00000004-0001-0000-0000-000000000000</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:21:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<source>system/content/d.txt</source>
+			<destination>system/content/d.txt</destination>
+			<type>plain</type>
+			<uuidstructure>00000005-0000-0000-0000-000000000000</uuidstructure>
+			<uuidresource>00000005-0001-0000-0000-000000000000</uuidresource>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 09:21:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+	</files>
+</export>

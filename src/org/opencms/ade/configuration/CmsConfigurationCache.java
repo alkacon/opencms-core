@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * file is updated, only the single instance for that configuration file is updated, whereas if a module configuration file
  * is changed, the configuration of all modules will be read again.<p>
  */
-class CmsConfigurationCache {
+class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
@@ -75,6 +75,9 @@ class CmsConfigurationCache {
     /** The CMS context used for reading configuration data. */
     private CmsObject m_cms;
 
+    /** The configuration files which have been changed but not read yet. */
+    private Map<String, CmsUUID> m_configurationsToRead = new HashMap<String, CmsUUID>();
+
     /** The cached content types for folders. */
     private Map<String, String> m_folderTypes = new HashMap<String, String>();
 
@@ -86,9 +89,6 @@ class CmsConfigurationCache {
 
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigData> m_siteConfigurations = new HashMap<String, CmsADEConfigData>();
-
-    /** The configuration files which have been changed but not read yet. */
-    private Map<String, CmsUUID> m_configurationsToRead = new HashMap<String, CmsUUID>();
 
     /** 
      * Creates a new cache instance.<p>
@@ -102,6 +102,14 @@ class CmsConfigurationCache {
         m_cms = cms;
         m_configType = configType;
         m_moduleConfigType = moduleConfigType;
+    }
+
+    /**
+     * @see org.opencms.ade.configuration.I_CmsGlobalConfigurationCache#clear()
+     */
+    public void clear() {
+
+        initialize();
     }
 
     /**
@@ -123,6 +131,83 @@ class CmsConfigurationCache {
         CmsResource res = m_cms.readResource(structureId);
         m_pathCache.put(structureId, res.getRootPath());
         return res.getRootPath();
+    }
+
+    /**
+     * Initializes the cache by reading in all the configuration files.<p>
+     */
+    public synchronized void initialize() {
+
+        m_siteConfigurations.clear();
+        try {
+            List<CmsResource> configFileCandidates = m_cms.readResources(
+                "/",
+                CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
+            for (CmsResource candidate : configFileCandidates) {
+                if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
+                    update(candidate);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        refreshModuleConfiguration();
+        try {
+            initializeFolderTypes();
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+    }
+
+    /**
+     * Removes a published resource from the cache.<p>
+     * 
+     * @param res the published resource 
+     */
+    public void remove(CmsPublishedResource res) {
+
+        remove(res.getStructureId(), res.getRootPath(), res.getType());
+    }
+
+    /**
+     * Removes a resource from the cache.<p>
+     * 
+     * @param res the resource to remove 
+     */
+    public void remove(CmsResource res) {
+
+        remove(res.getStructureId(), res.getRootPath(), res.getTypeId());
+    }
+
+    /**
+     * Updates the cache entry for the given published resource.<p>
+     * 
+     * @param res a published resource
+     */
+    public void update(CmsPublishedResource res) {
+
+        try {
+            update(res.getStructureId(), res.getRootPath(), res.getType(), res.getState());
+        } catch (CmsRuntimeException e) {
+            // may happen during import of org.opencms.ade.configuration module
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /** 
+     * Updates the cache entry for the given resource.<p>
+     * 
+     * @param res the resource for which the cache entry should be updated
+     */
+    public void update(CmsResource res) {
+
+        try {
+            update(res.getStructureId(), res.getRootPath(), res.getTypeId(), res.getState());
+        } catch (CmsRuntimeException e) {
+            // may happen during import of org.opencms.ade.configuration module
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
     }
 
     /** 
@@ -223,33 +308,6 @@ class CmsConfigurationCache {
     }
 
     /**
-     * Initializes the cache by reading in all the configuration files.<p>
-     */
-    protected synchronized void initialize() {
-
-        m_siteConfigurations.clear();
-        try {
-            List<CmsResource> configFileCandidates = m_cms.readResources(
-                "/",
-                CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
-            for (CmsResource candidate : configFileCandidates) {
-                if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
-                    update(candidate);
-                }
-            }
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        refreshModuleConfiguration();
-        try {
-            initializeFolderTypes();
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-
-    }
-
-    /**
      * Initializes the cached folder types.<p>
      * 
      * @throws CmsException if something goes wrong 
@@ -317,26 +375,6 @@ class CmsConfigurationCache {
     }
 
     /**
-     * Removes a published resource from the cache.<p>
-     * 
-     * @param res the published resource 
-     */
-    protected void remove(CmsPublishedResource res) {
-
-        remove(res.getStructureId(), res.getRootPath(), res.getType());
-    }
-
-    /**
-     * Removes a resource from the cache.<p>
-     * 
-     * @param res the resource to remove 
-     */
-    protected void remove(CmsResource res) {
-
-        remove(res.getStructureId(), res.getRootPath(), res.getTypeId());
-    }
-
-    /**
      * Removes the cache entry for the given resource data.<p>
      * 
      * @param structureId the resource structure id 
@@ -367,36 +405,6 @@ class CmsConfigurationCache {
             }
         }
 
-    }
-
-    /**
-     * Updates the cache entry for the given published resource.<p>
-     * 
-     * @param res a published resource
-     */
-    protected void update(CmsPublishedResource res) {
-
-        try {
-            update(res.getStructureId(), res.getRootPath(), res.getType(), res.getState());
-        } catch (CmsRuntimeException e) {
-            // may happen during import of org.opencms.ade.configuration module
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-    }
-
-    /** 
-     * Updates the cache entry for the given resource.<p>
-     * 
-     * @param res the resource for which the cache entry should be updated
-     */
-    protected void update(CmsResource res) {
-
-        try {
-            update(res.getStructureId(), res.getRootPath(), res.getTypeId(), res.getState());
-        } catch (CmsRuntimeException e) {
-            // may happen during import of org.opencms.ade.configuration module
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
     }
 
     /**

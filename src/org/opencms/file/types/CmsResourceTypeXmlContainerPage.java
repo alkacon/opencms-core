@@ -74,6 +74,11 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The group container resource type name. */
     public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";
 
+    public static final String INHERIT_CONTAINER_CONFIG_TYPE_NAME = "inheritconfig";
+
+    /** The resource type name for inherited container references.  */
+    public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritref";
+
     /** A variable containing the actual configured type id of container pages. */
     private static int containerPageTypeId;
 
@@ -268,9 +273,11 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, file);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(file)), e);
+                LOG.error(
+                    org.opencms.db.Messages.get().getBundle().key(
+                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                        cms.getSitePath(file)),
+                    e);
             }
             return Collections.emptyList();
         } finally {

@@ -28,7 +28,11 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
+import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
+import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -701,6 +705,57 @@ public class CmsJspTagContainer extends TagSupport {
         return containerWidth;
     }
 
+    private List<CmsContainerElementBean> getGroupContainerElements(
+        CmsObject cms,
+        CmsContainerElementBean element,
+        ServletRequest req,
+        String containerType) throws CmsXmlException, CmsLoaderException, CmsException {
+
+        List<CmsContainerElementBean> subElements;
+        CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
+        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
+            cms,
+            cms.getRequestContext().getLocale());
+        if (!groupContainer.getTypes().contains(containerType)) {
+            //TODO: change message
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                element.getResource().getRootPath(),
+                OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
+                containerType));
+        }
+        subElements = groupContainer.getElements();
+        return subElements;
+    }
+
+    /**
+     * Reads elements from an inherited container.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param element the element which references the inherited container
+     *  
+     * @return the container elements 
+     */
+
+    private List<CmsContainerElementBean> getInheritedContainerElements(CmsObject cms, CmsContainerElementBean element) {
+
+        CmsResource resource = element.getResource();
+        CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(cms);
+        try {
+            parser.parse(resource);
+            CmsInheritanceReference ref = parser.getReferences().get(cms.getRequestContext().getLocale());
+            String name = ref.getName();
+            CmsADEManager adeManager = OpenCms.getADEManager();
+            CmsInheritedContainerState result = adeManager.getInheritedContainerState(
+                cms,
+                cms.getRequestContext().getRootUri(),
+                name);
+            return result.getElements(!cms.getRequestContext().getCurrentProject().isOnlineProject());
+        } catch (CmsException e) {
+            return Collections.emptyList();
+        }
+    }
+
     /**
      * Parses the maximum element number from the current container and returns the resulting number.<p>
      *  
@@ -848,25 +903,19 @@ public class CmsJspTagContainer extends TagSupport {
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
             cms,
             cms.getRequestContext().getRootUri());
-        if (element.isGroupContainer(cms)) {
-            CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
-                cms,
-                element.getResource(),
-                req);
-            CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
-                cms,
-                cms.getRequestContext().getLocale());
-            if (!groupContainer.getTypes().contains(containerType)) {
-                //TODO: change message
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                    element.getResource().getRootPath(),
-                    OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
-                    containerType));
+        boolean isGroupContainer = element.isGroupContainer(cms);
+        boolean isInheritedContainer = element.isInheritedContainer(cms);
+        if (isGroupContainer || isInheritedContainer) {
+            List<CmsContainerElementBean> subElements;
+            if (isGroupContainer) {
+                subElements = getGroupContainerElements(cms, element, req, containerType);
+            } else {
+                // inherited container case
+                subElements = getInheritedContainerElements(cms, element);
             }
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
             printElementWrapperTagStart(isOnline, cms, element, true);
-            for (CmsContainerElementBean subelement : groupContainer.getElements()) {
+            for (CmsContainerElementBean subelement : subElements) {
                 try {
                     subelement.initResource(cms);
                     // writing elements to the session cache to improve performance of the container-page editor
@@ -906,10 +955,12 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                subelement.getSitePath(),
-                                subelementFormatter), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    subelement.getSitePath(),
+                                    subelementFormatter),
+                                e);
                         }
                         printElementErrorTag(
                             isOnline,
@@ -965,10 +1016,12 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                        element.getSitePath(),
-                        formatter), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                            element.getSitePath(),
+                            formatter),
+                        e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), formatter, e);
             }

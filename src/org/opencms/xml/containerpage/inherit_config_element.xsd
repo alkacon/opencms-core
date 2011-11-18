@@ -1,0 +1,25 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/container_element_property.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/group_container_content_element.xsd" />
+			
+	<xsd:element name="AlkaconInheritConfigElements" type="OpenCmsAlkaconInheritConfigElements"/>
+	
+	<xsd:complexType name="OpenCmsAlkaconInheritConfigElements">
+		<xsd:sequence>
+			<xsd:element name="AlkaconInheritConfigElement" type="OpenCmsAlkaconInheritConfigElement" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsAlkaconInheritConfigElement">
+		<xsd:sequence>
+			<xsd:element name="Key" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Element" type="OpenCmsAlkaconGroupContainerContentElement"  minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+	</xsd:annotation>  
+</xsd:schema>

@@ -1,8 +1,12 @@
 /*
+ * File   : $Source$
+ * Date   : $Date$
+ * Version: $Revision$
+ *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2011 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.configuration;
+package org.opencms.ade.containerpage.inherited;
 
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -33,7 +37,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * All tests for the org.opencms.ade.configuration package.<p>
+ * All tests for the {@link org.opencms.ade.containerpage.inherited} package.<p>
  */
 public final class AllTests {
 
@@ -55,8 +59,7 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestConfig.suite());
-        suite.addTest(TestLiveConfig.suite());
+        suite.addTest(TestInheritedContainer.suite());
         //$JUnit-END$
         return suite;
     }

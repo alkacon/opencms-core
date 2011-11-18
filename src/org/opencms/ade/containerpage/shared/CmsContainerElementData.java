@@ -53,6 +53,9 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The group-container description. */
     private String m_description;
 
+    /** The inheritance info for this container element. */
+    private CmsInheritanceInfo m_inheritanceInfo;
+
     /** Flag for indicating whether this is a group-container. */
     private boolean m_isGroupContainer;
 
@@ -68,11 +71,11 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The no edit reason. If empty editing is allowed. */
     private String m_noEditReason;
 
-    /** The settings for this container entry. */
-    private Map<String, String> m_settings;
-
     /** The setting for this container element. */
     private Map<String, CmsXmlContentProperty> m_settingConfig;
+
+    /** The settings for this container entry. */
+    private Map<String, String> m_settings;
 
     /** The resource status. */
     private char m_status;
@@ -145,6 +148,11 @@ public class CmsContainerElementData extends CmsContainerElement {
         return result;
     }
 
+    public CmsInheritanceInfo getInheritanceInfo() {
+
+        return m_inheritanceInfo;
+    }
+
     /**
      * Returns the last modifying user.<p>
      *
@@ -186,16 +194,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the settings for this container element.<p>
-     * 
-     * @return a map of settings
-     */
-    public Map<String, String> getSettings() {
-
-        return m_settings;
-    }
-
-    /**
      * Gets the setting configuration for this container element.<p>
      * 
      * @return the setting configuration map 
@@ -203,6 +201,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public Map<String, CmsXmlContentProperty> getSettingConfig() {
 
         return m_settingConfig;
+    }
+
+    /**
+     * Returns the settings for this container element.<p>
+     * 
+     * @return a map of settings
+     */
+    public Map<String, String> getSettings() {
+
+        return m_settings;
     }
 
     /**
@@ -308,6 +316,11 @@ public class CmsContainerElementData extends CmsContainerElement {
         m_isGroupContainer = isGroupContainer;
     }
 
+    public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
+
+        m_inheritanceInfo = inheritanceInfo;
+    }
+
     /**
      * Sets the modifying userdByUser.<p>
      *
@@ -349,16 +362,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Sets the settings for this container element.<p>
-     * 
-     * @param settings the new settings
-     */
-    public void setSettings(Map<String, String> settings) {
-
-        m_settings = settings;
-    }
-
-    /**
      * Sets the setting configuration of this container element.<p>
      * 
      * @param settingConfig the new setting configuration 
@@ -366,6 +369,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setSettingConfig(Map<String, CmsXmlContentProperty> settingConfig) {
 
         m_settingConfig = settingConfig;
+    }
+
+    /**
+     * Sets the settings for this container element.<p>
+     * 
+     * @param settings the new settings
+     */
+    public void setSettings(Map<String, String> settings) {
+
+        m_settings = settings;
     }
 
     /**
