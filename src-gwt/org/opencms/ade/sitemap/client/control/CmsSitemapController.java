@@ -1043,7 +1043,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         FormElement form = CmsDomUtil.generateHiddenForm(
             CmsCoreProvider.get().link(CmsCoreProvider.get().getUri()),
             Method.post,
-            Target.NONE,
+            Target.TOP,
             parameter);
         RootPanel.getBodyElement().appendChild(form);
         form.submit();
