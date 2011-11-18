@@ -199,6 +199,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
         result.append("\" id=\"");
         result.append(id);
         result.append("\"");
+        parseSelectOptions(cms, widgetDialog, param);
         String selected = getSelectedValue(cms, param);
         if (selected != null) {
             // append the selection 
