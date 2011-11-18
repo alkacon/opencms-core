@@ -83,6 +83,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** The map of models of the fields. */
     Map<String, I_CmsStringModel> m_models = new HashMap<String, I_CmsStringModel>();
 
+    /** The previous tab index. */
+    private int m_oldTabIndex = -1;
+
     /** The panel used for editing the properties. */
     private CmsPropertyPanel m_panel;
 
@@ -91,9 +94,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /** Flag which indicates whether the resource properties should be editable. */
     private boolean m_showResourceProperties;
-
-    /** The previous tab index. */
-    private int m_oldTabIndex = -1;
 
     /**
      * Creates a new sitemap entry editor instance for the VFS mode.<p>
@@ -230,7 +230,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         Element innerElement = tabElement.getFirstChildElement();
         int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
         int spaceLeft = m_dialog.getAvailableHeight(0);
-        int newHeight = Math.min(spaceLeft, contentHeight) + 45;
+        int newHeight = Math.min(spaceLeft, contentHeight) + 50;
         if ((m_panel.getTabPanel().getOffsetHeight() != newHeight) || changedTab) {
             m_panel.getTabPanel().setHeight(newHeight + "px");
             if (CmsCoreProvider.get().isIe7()) {
@@ -284,8 +284,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             propDef,
             pathValue.getPath() + "#" + tab,
             this,
-            Collections.singletonMap(CmsSelectBox.NO_SELECTION_TEXT, Messages.get().key(
-                Messages.GUI_SELECTBOX_UNSELECTED_1)),
+            Collections.singletonMap(
+                CmsSelectBox.NO_SELECTION_TEXT,
+                Messages.get().key(Messages.GUI_SELECTBOX_UNSELECTED_1)),
             true);
 
         CmsPair<String, String> defaultValueAndOrigin = getDefaultValueToDisplay(ownProp, mode);
