@@ -15,6 +15,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.0.X - XXXX
+* Fixing issue with combo box widget default value.
+* Fixing issue with content tools dialogs.
+* Fixing issue where sitemap editor always opened in new window.
+
 OpenCms 8.0.3 - November 16, 2011
 ! With the introduction of "Function Pages", JSP based dynamic pages can be added with simple drag and drop in the sitemap editor.
 ! The sitemap editor's improved "Create Page" dialog offers a wider choice of types distinguishing "Container Pages", "Type Pages" and "Function Pages".
