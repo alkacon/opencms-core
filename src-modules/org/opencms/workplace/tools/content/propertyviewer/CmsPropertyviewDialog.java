@@ -208,9 +208,9 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
         List<Throwable> errors = new ArrayList<Throwable>();
         Map<String, String[]> params = new HashMap<String, String[]>();
         List<String> paths = m_settings.getPaths();
-        params.put(CmsPropertyviewList.PARAM_RESOURCES, (String[])paths.toArray());
+        params.put(CmsPropertyviewList.PARAM_RESOURCES, paths.toArray(new String[paths.size()]));
         List<String> props = m_settings.getProperties();
-        params.put(CmsPropertyviewList.PARAM_PROPERTIES, (String[])props.toArray());
+        params.put(CmsPropertyviewList.PARAM_PROPERTIES, props.toArray(new String[props.size()]));
         params.put(CmsPropertyviewList.PARAM_SIBLINGS, new String[] {String.valueOf(m_settings.isShowSiblings())});
         // set style to display report in correct layout
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});

@@ -246,7 +246,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         List<String> paths = m_dialogSettings.getPaths();
         String sourceLanguage = m_dialogSettings.getSourcelanguage();
         String targetLanguage = m_dialogSettings.getTargetlanguage();
-        params.put(CmsLanguageCopySelectionList.PARAM_PATHS, (String[])paths.toArray());
+        params.put(CmsLanguageCopySelectionList.PARAM_PATHS, paths.toArray(new String[paths.size()]));
         params.put(CmsLanguageCopySelectionList.PARAM_SOURCE_LANGUAGE, new String[] {sourceLanguage});
         params.put(CmsLanguageCopySelectionList.PARAM_TARGET_LANGUAGE, new String[] {targetLanguage});
         // set style to display report in correct layout

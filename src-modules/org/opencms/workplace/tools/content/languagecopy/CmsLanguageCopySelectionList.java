@@ -229,7 +229,9 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
             for (CmsListItem item : items) {
                 paths.add(String.valueOf(item.get(LIST_COLUMN_PATH)));
             }
-            params.put(CmsLanguageCopyFolderAndLanguageSelectDialog.PARAM_COPYRESOURCES, (String[])paths.toArray());
+            params.put(
+                CmsLanguageCopyFolderAndLanguageSelectDialog.PARAM_COPYRESOURCES,
+                paths.toArray(new String[paths.size()]));
             // the source language
             params.put(PARAM_SOURCE_LANGUAGE, new String[] {getParamSourcelanguage()});
             // the target language
