@@ -101,11 +101,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** Text metrics key. */
     private static final String TM_SITEMAP = "Sitemap";
 
-    /** The controller. */
-    protected CmsSitemapController m_controller;
-
     /** The displayed sitemap tree. */
     protected CmsLazyTree<CmsSitemapTreeItem> m_tree;
+
+    /** The controller. */
+    private CmsSitemapController m_controller;
 
     /** The current sitemap editor mode. */
     private EditorMode m_editorMode;
@@ -133,7 +133,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      * 
      * @return the new created (still orphan) tree item 
      */
-    public CmsSitemapTreeItem create(final CmsClientSitemapEntry entry) {
+    public CmsSitemapTreeItem create(CmsClientSitemapEntry entry) {
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
@@ -160,14 +160,18 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         itemWidget.setIconTitle(entry.isSubSitemapType()
         ? Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0)
         : Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
+        final CmsUUID entryId = entry.getId();
         itemWidget.addIconClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
-                if (entry.isSubSitemapType()) {
-                    getController().openSiteMap(entry.getSitePath());
-                } else {
-                    getController().leaveEditor(entry.getSitePath());
+                CmsClientSitemapEntry sitemapEntry = getController().getEntryById(entryId);
+                if (sitemapEntry != null) {
+                    if (sitemapEntry.isSubSitemapType()) {
+                        getController().openSiteMap(sitemapEntry.getSitePath());
+                    } else {
+                        getController().leaveEditor(sitemapEntry.getSitePath());
+                    }
                 }
             }
         });
@@ -176,43 +180,47 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
             public void load(final AsyncCallback<List<AdditionalInfoItem>> callback) {
 
-                if (entry.getVfsPath() == null) {
-                    List<AdditionalInfoItem> infoItems = new ArrayList<AdditionalInfoItem>();
-                    AdditionalInfoItem item = createResourceStateInfo(CmsResourceState.STATE_NEW);
-                    infoItems.add(item);
-                    callback.onSuccess(infoItems);
-                } else {
-                    m_controller.getService().getAdditionalEntryInfo(
-                        entry.getId(),
-                        new AsyncCallback<CmsAdditionalEntryInfo>() {
+                CmsClientSitemapEntry sitemapEntry = getController().getEntryById(entryId);
+                if (sitemapEntry != null) {
+                    if (sitemapEntry.getVfsPath() == null) {
+                        List<AdditionalInfoItem> infoItems = new ArrayList<AdditionalInfoItem>();
+                        AdditionalInfoItem item = createResourceStateInfo(CmsResourceState.STATE_NEW);
+                        infoItems.add(item);
+                        callback.onSuccess(infoItems);
+                    } else {
+                        getController().getService().getAdditionalEntryInfo(
+                            sitemapEntry.getId(),
+                            new AsyncCallback<CmsAdditionalEntryInfo>() {
 
-                            /**
-                             * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-                             */
-                            public void onFailure(Throwable caught) {
+                                /**
+                                 * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
+                                 */
+                                public void onFailure(Throwable caught) {
 
-                                // do nothing
+                                    // do nothing
 
-                            }
-
-                            /**
-                             * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(Object o)
-                             */
-                            public void onSuccess(CmsAdditionalEntryInfo result) {
-
-                                List<AdditionalInfoItem> items = new ArrayList<AdditionalInfoItem>();
-                                items.add(createResourceStateInfo(result.getResourceState()));
-                                if ((result.getAdditional() != null) && !result.getAdditional().isEmpty()) {
-                                    for (Entry<String, String> infoEntry : result.getAdditional().entrySet()) {
-                                        items.add(new AdditionalInfoItem(infoEntry.getKey(), infoEntry.getValue(), null));
-                                    }
                                 }
-                                callback.onSuccess(items);
-                            }
-                        });
 
+                                /**
+                                 * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(Object o)
+                                 */
+                                public void onSuccess(CmsAdditionalEntryInfo result) {
+
+                                    List<AdditionalInfoItem> items = new ArrayList<AdditionalInfoItem>();
+                                    items.add(createResourceStateInfo(result.getResourceState()));
+                                    if ((result.getAdditional() != null) && !result.getAdditional().isEmpty()) {
+                                        for (Entry<String, String> infoEntry : result.getAdditional().entrySet()) {
+                                            items.add(new AdditionalInfoItem(
+                                                infoEntry.getKey(),
+                                                infoEntry.getValue(),
+                                                null));
+                                        }
+                                    }
+                                    callback.onSuccess(items);
+                                }
+                            });
+                    }
                 }
-
             }
 
             /**
@@ -489,7 +497,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
              */
             public void load(final CmsSitemapTreeItem target) {
 
-                m_controller.getChildren(target.getSitePath(), true, null);
+                getController().getChildren(target.getSitePath(), true, null);
             }
 
             /**
