@@ -96,17 +96,17 @@ import org.apache.commons.logging.Log;
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsVfsDriver.class);
-
-    /** The driver manager. */
-    protected CmsDriverManager m_driverManager;
-
     /** Contains the macro replacement value for the offline project. */
     protected static final String OFFLINE = "OFFLINE";
 
     /** Contains the macro replacement value for the online project. */
     protected static final String ONLINE = "ONLINE";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsVfsDriver.class);
+
+    /** The driver manager. */
+    protected CmsDriverManager m_driverManager;
 
     /** 
      * This field is temporarily used to compute the versions during publishing.<p>
@@ -1177,9 +1177,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery(
-                projectId,
-                "C_READ_RESOURCE_OUS"));
+            stmt = m_sqlManager.getPreparedStatementForSql(
+                conn,
+                m_sqlManager.readQuery(projectId, "C_READ_RESOURCE_OUS"));
             stmt.setInt(1, CmsRelationType.OU_RESOURCE.getId());
             stmt.setString(2, resName);
             res = stmt.executeQuery();
@@ -1196,8 +1196,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         for (CmsRelation rel : rels) {
             try {
-                ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
-                    CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                ous.add(m_driverManager.readOrganizationalUnit(
+                    dbc,
+                    rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
@@ -2975,6 +2976,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         property.getName(),
                         CmsPropertyDefinition.TYPE_NORMAL);
                 }
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_PROPERTY_DEFINITION_CREATED,
+                    Collections.<String, Object> singletonMap("propertyDefinition", propertyDefinition)));
+
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
