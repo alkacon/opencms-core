@@ -82,25 +82,25 @@ public final class CmsDomUtil {
         SELF("_self");
 
         /** The target representation. */
-        private String m_representaition;
+        private String m_representation;
 
         /**
          * Constructor.<p>
          * 
-         * @param representaition the target representation
+         * @param representation the target representation
          */
-        Target(String representaition) {
+        Target(String representation) {
 
-            m_representaition = representaition;
+            m_representation = representation;
         }
 
         /**
          * Returns the target representation.<p>
          * @return the target representation
          */
-        public String getRepresentaition() {
+        public String getRepresentation() {
 
-            return m_representaition;
+            return m_representation;
         }
     }
 
@@ -886,7 +886,7 @@ public final class CmsDomUtil {
      */
     public static FormElement generateHiddenForm(String action, Method method, Target target, Map<String, String> values) {
 
-        return generateHiddenForm(action, method, target.name(), values);
+        return generateHiddenForm(action, method, target.getRepresentation(), values);
     }
 
     /**
