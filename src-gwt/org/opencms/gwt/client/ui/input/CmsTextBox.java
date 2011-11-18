@@ -64,6 +64,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -191,15 +192,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         protected void checkForChange() {
 
             if (!m_textbox.getValue().equals(m_currentValue)) {
+
                 m_currentValue = getFormValueAsString();
                 fireValueChangedEvent();
             }
         }
+
     }
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
-
     /** The widget type identifier for this widget. */
     public static final String WIDGET_TYPE = "string";
 
@@ -282,6 +284,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_textbox.addBlurHandler(handler);
         m_textbox.addValueChangeHandler(handler);
         m_textbox.addKeyPressHandler(handler);
+
         m_handler = handler;
 
         m_textboxContainer.setStyleName(CSS.textBoxPanel());
@@ -291,6 +294,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_panel.add(m_error);
         m_textboxContainer.add(m_textbox);
         m_textboxContainer.setPaddingX(4);
+        sinkEvents(Event.ONPASTE);
         initWidget(m_panel);
     }
 
@@ -475,6 +479,22 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public boolean isTriggerChangeOnKeyPress() {
 
         return m_triggerChangeOnKeyPress;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user.client.Event)
+     */
+    @Override
+    public void onBrowserEvent(Event event) {
+
+        super.onBrowserEvent(event);
+        /* 
+         * In IE8, the change event is not fired if we switch to another application window after having 
+         * pasted some text into the text box, so we need to turn off ghost mode manually 
+         */
+        if (event.getTypeInt() == Event.ONPASTE) {
+            setGhostMode(false);
+        }
     }
 
     /**
