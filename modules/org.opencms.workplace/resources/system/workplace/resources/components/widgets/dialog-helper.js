@@ -67,11 +67,9 @@ function _getScaleValue(scale, valueName) {
 }
 
 /**
- * Closes the dialog with the given id.
- * <p>
+ * Closes the dialog with the given id.<p>
  * 
- * @param fieldId
- *            the field id
+ * @param fieldId the field id
  * 
  * @return void
  */
@@ -81,21 +79,14 @@ function cmsCloseDialog(fieldId){
 }
 
 /**
- * Opens a modal iFrame dialog with the given parameters.
- * <p>
- * Call #cmsCloseDialog(fieldId) to close the dialog again.
- * <p>
+ * Opens a modal iFrame dialog with the given parameters.<p>
+ * Call #cmsCloseDialog(fieldId) to close the dialog again.<p>
  * 
- * @param title
- *            the dialog title
- * @param dialogUrl
- *            the iFrame URL
- * @param fieldId
- *            the field id
- * @param height
- *            the dialog height
- * @param width
- *            the dialog width
+ * @param title the dialog title
+ * @param dialogUrl the iFrame URL
+ * @param fieldId the field id
+ * @param height the dialog height
+ * @param width the dialog width
  * 
  * @return void
  */
@@ -137,20 +128,26 @@ function cmsOpenDialog(title, dialogUrl, fieldId, height, width){
 }
 
 /**
- * Opens a modal image preview.
- * <p>
+ * Opens a modal image preview.<p>
  * 
- * @param title
- *            the dialog title
- * @param context
- *            the context path
- * @param sitePath
- *            the site path of the resource to preview
+ * @param title the dialog title
+ * @param context the context path
+ * @param sitePath the site path of the resource to preview
  * 
  * @return void
  */
 function cmsOpenImagePreview(title, context, fieldId){
 	var sitePath=document.getElementById(fieldId).getAttribute('value');
+	
+	if (fieldId.indexOf('img.')==0 && sitePath.indexOf('__scale=')==-1){
+    	// in case of the CmsXmlVfsImageValue widget get the scale parameter
+        // from a separate input element
+        var scaleId='scale.'+fieldId.substring(4);
+        var scaleInput=document.getElementById(scaleId);
+        if (scaleInput!=null){
+            sitePath=sitePath+'?__scale='+scaleInput.getAttribute('value');
+        }
+    }
 	if (sitePath && $.trim(sitePath).charAt(0)=='/'){
 		sitePath=$.trim(sitePath);
 		var _dialogWidth=null;
@@ -228,15 +225,11 @@ function cmsOpenImagePreview(title, context, fieldId){
 
 
 /**
- * Opens a modal preview dialog.
- * <p>
+ * Opens a modal preview dialog.<p>
  * 
- * @param title
- *            the dialog title
- * @param context
- *            the context path
- * @param sitePath
- *            the site path of the resource to preview
+ * @param title the dialog title
+ * @param context the context path
+ * @param sitePath the site path of the resource to preview
  * 
  * @return void
  */
