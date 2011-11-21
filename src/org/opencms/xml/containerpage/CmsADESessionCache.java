@@ -28,7 +28,6 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
@@ -38,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.list.NodeCachingLinkedList;
-import org.apache.commons.logging.Log;
 
 /**
  * ADE's session cache.<p>
@@ -49,9 +47,6 @@ public final class CmsADESessionCache {
 
     /** Session attribute name constant. */
     public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsADESessionCache.class);
 
     /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;

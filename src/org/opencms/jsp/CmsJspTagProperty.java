@@ -313,7 +313,7 @@ public class CmsJspTagProperty extends TagSupport {
             }
         }
         return SKIP_BODY;
-    };
+    }
 
     /**
      * Returns the default value.<p>

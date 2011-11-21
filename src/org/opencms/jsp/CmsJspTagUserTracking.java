@@ -284,6 +284,7 @@ public class CmsJspTagUserTracking extends TagSupport {
         HttpSession session = req.getSession(true);
         String sessionKey = generateSessionKey(SESSION_PREFIX_SUBSCRIBED, fileName, subFolder, user, groups);
         // try to get the subscribed resources from a session attribute
+        @SuppressWarnings("unchecked")
         List<CmsResource> subscribedResources = (List<CmsResource>)session.getAttribute(sessionKey);
         if (subscribedResources == null) {
             // first call, read subscribed resources and store them to session attribute
@@ -324,6 +325,7 @@ public class CmsJspTagUserTracking extends TagSupport {
         HttpSession session = req.getSession(true);
         String sessionKey = generateSessionKey(SESSION_PREFIX_VISITED, fileName, subFolder, user, null);
         // try to get the visited resources from a session attribute
+        @SuppressWarnings("unchecked")
         List<CmsResource> visitedResources = (List<CmsResource>)req.getSession(true).getAttribute(sessionKey);
         if (visitedResources == null) {
             // first call, read visited resources and store them to session attribute
@@ -347,6 +349,7 @@ public class CmsJspTagUserTracking extends TagSupport {
     protected static void removeSessionAttributes(String[] prefixes, HttpServletRequest req) {
 
         HttpSession session = req.getSession(true);
+        @SuppressWarnings("unchecked")
         Enumeration<String> en = session.getAttributeNames();
         while (en.hasMoreElements()) {
             String attrKey = en.nextElement();

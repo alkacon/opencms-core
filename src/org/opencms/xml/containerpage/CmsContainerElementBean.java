@@ -275,6 +275,11 @@ public class CmsContainerElementBean {
         return m_individualSettings;
     }
 
+    /**
+     * Returns the inheritance info.<p>
+     * 
+     * @return the inheritance info or <code>null</code> if not available
+     */
     public CmsInheritanceInfo getInheritanceInfo() {
 
         return m_inheritanceInfo;
@@ -381,7 +386,7 @@ public class CmsContainerElementBean {
      * 
      * @param cms the CmsObject used for VFS operations
      *  
-     * @return true if the container element refers to a group container
+     * @return <code>true</code> if the container element refers to a group container
      * 
      * @throws CmsException if something goes wrong 
      */
@@ -394,6 +399,15 @@ public class CmsContainerElementBean {
             m_resource).getTypeName());
     }
 
+    /**
+     * Returns whether this element refers to an inherited container element.<p>
+     *  
+     * @param cms the CmsObject used for VFS operations
+     * 
+     * @return <code>true</code> if the container element refers to an inherited container
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public boolean isInheritedContainer(CmsObject cms) throws CmsException {
 
         if (m_resource == null) {
@@ -422,6 +436,11 @@ public class CmsContainerElementBean {
         return isInMemoryOnly() || m_releasedAndNotExpired;
     }
 
+    /**
+     * Sets the inheritance info for this element.<p>
+     * 
+     * @param inheritanceInfo the inheritance info
+     */
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;

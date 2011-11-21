@@ -366,6 +366,11 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
         return m_properties.get(CmsPropertyDefinition.PROPERTY_TITLE);
     }
 
+    /**
+     * Returns if the navigation position has been changed since initialization.<p>
+     * 
+     * @return <code>true</code> if the navigation position has been changed since initialization
+     */
     public boolean hasChangedNavPosition() {
 
         return m_changedNavPos;
