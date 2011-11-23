@@ -1006,7 +1006,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(encoding);
         html.append("\">\n");
 
-        // append workplace css
+        // append workplace CSS
         html.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         html.append(CmsWorkplace.getStyleUri(this, "workplace.css"));
         html.append("\">\n");
@@ -1087,9 +1087,10 @@ public class CmsLogin extends CmsJspLoginBean {
         if ((m_action == ACTION_DISPLAY) && OpenCms.getLoginManager().isEnableSecurity()) {
             html.append("<tr>\n");
             html.append("<td rowspan=\"2\">\n");
-            html.append("<img src=\"");
-            html.append(CmsWorkplace.getResourceUri("commons/login_security.png"));
-            html.append("\" height=\"48\" width=\"48\" alt=\"\">");
+            // security image should not be shown any more
+            //html.append("<img src=\"");
+            //html.append(CmsWorkplace.getResourceUri("commons/login_security.png"));
+            //html.append("\" height=\"48\" width=\"48\" alt=\"\">");
             html.append("</td>\n");
             html.append("<td colspan=\"2\" style=\"white-space: nowrap;\">\n");
             html.append("<div style=\"padding-bottom: 5px;\"><b>");
