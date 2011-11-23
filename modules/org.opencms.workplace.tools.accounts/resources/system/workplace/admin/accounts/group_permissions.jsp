@@ -1,5 +1,5 @@
 <%@ page import="org.opencms.workplace.tools.accounts.*"%><%	
 
-	CmsGroupPrincipalDepemdenciesList wp = new CmsGroupPrincipalDepemdenciesList(pageContext, request, response);
+	CmsGroupPrincipalDependenciesList wp = new CmsGroupPrincipalDependenciesList(pageContext, request, response);
 	wp.displayDialog();	
 %>
