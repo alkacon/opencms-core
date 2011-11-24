@@ -53,10 +53,10 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     public static native void exportOpenUploadDialog() /*-{
 
-        $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
-                uploadTarget) {
-            @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
-        };
+      $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
+            uploadTarget) {
+         @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
+      };
 
     }-*/;
 
@@ -95,19 +95,19 @@ public class CmsUpload extends A_CmsEntryPoint {
             exportOpenUploadDialog();
         } else {
             A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
-            dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+            Runnable onFinish = new Runnable() {
 
                 /**
-                 * The on close action.<p>
-                 * 
-                 * @param event the event
+                 * The action to execute when the dialog has finished.<p>
+                 * @see java.lang.Runnable#run()
                  */
-                public void onClose(CloseEvent<PopupPanel> event) {
+                public void run() {
 
                     String closeLink = getCloseLink() + "?resource=";
                     Window.Location.assign(CmsCoreProvider.get().link(closeLink));
                 }
-            });
+            };
+            dialog.setFinishAction(onFinish);
             dialog.setTargetFolder(getTargetFolder());
             dialog.loadAndShow();
         }
@@ -120,7 +120,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
+      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 
@@ -131,7 +131,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getDialogMode() /*-{
 
-        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
+      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
 
     }-*/;
 
@@ -142,7 +142,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     private native String getTargetFolder() /*-{
 
-        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
+      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
 
     }-*/;
 }

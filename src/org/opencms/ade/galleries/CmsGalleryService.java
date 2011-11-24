@@ -545,21 +545,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String description = sResult.getDescription();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(description)) {
                     bean.setDescription(description);
-                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_DESCRIPTION_0), description);
+                    bean.addAdditionalInfo(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DESCRIPTION_0),
+                        description);
                 } else {
                     bean.setDescription(resourceTypeDisplayName);
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0), resourceTypeDisplayName);
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0),
+                    resourceTypeDisplayName);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
                     bean.addAdditionalInfo(
                         Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
                         sResult.getExcerpt(),
                         CmsListInfoBean.CSS_CLASS_MULTI_LINE);
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_SIZE_0), (sResult.getLength() / 1000) + " kb");
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
+                    (sResult.getLength() / 1000) + " kb");
                 if (type instanceof CmsResourceTypeImage) {
                     CmsProperty imageDimensionProp = cms.readPropertyObject(
                         path,
@@ -567,31 +570,26 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         false);
                     if (!imageDimensionProp.isNullProperty()) {
                         String temp = imageDimensionProp.getValue();
-                        bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                            Messages.GUI_RESULT_LABEL_DIMENSION_0), temp.substring(2).replace(",h:", " x "));
+                        bean.addAdditionalInfo(
+                            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
+                            temp.substring(2).replace(",h:", " x "));
                     }
                 }
                 if (sResult.getDateReleased().getTime() != CmsResource.DATE_RELEASED_DEFAULT) {
-                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_DATE_RELEASED_0), CmsDateUtil.getDate(
-                        sResult.getDateReleased(),
-                        DateFormat.SHORT,
-                        getWorkplaceLocale()));
+                    bean.addAdditionalInfo(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_RELEASED_0),
+                        CmsDateUtil.getDate(sResult.getDateReleased(), DateFormat.SHORT, getWorkplaceLocale()));
                 }
 
                 if (sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT) {
-                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0), CmsDateUtil.getDate(
-                        sResult.getDateExpired(),
-                        DateFormat.SHORT,
-                        getWorkplaceLocale()));
+                    bean.addAdditionalInfo(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0),
+                        CmsDateUtil.getDate(sResult.getDateExpired(), DateFormat.SHORT, getWorkplaceLocale()));
                 }
 
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_DATE_0), CmsDateUtil.getDate(
-                    sResult.getDateLastModified(),
-                    DateFormat.SHORT,
-                    getWorkplaceLocale()));
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_0),
+                    CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
                 bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(
                     path,
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
@@ -633,9 +631,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 list.add(bean);
             } catch (Exception e) {
                 if (type != null) {
-                    log(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.ERR_BUILD_TYPE_LIST_1,
-                        type.getTypeName()), e);
+                    log(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(
+                            Messages.ERR_BUILD_TYPE_LIST_1,
+                            type.getTypeName()),
+                        e);
                 }
             }
         }
@@ -787,19 +787,29 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             "/",
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
 
+        String siteRoot = getCmsObject().getRequestContext().getSiteRoot();
         // if the current site is NOT the root site - add all other galleries from the system path
-        if (!getCmsObject().getRequestContext().getSiteRoot().equals("")) {
+        if (!siteRoot.equals("")) {
             List<CmsResource> systemGalleries = null;
             // get the galleries in the /system/ folder
             systemGalleries = getCmsObject().readResources(
                 CmsWorkplace.VFS_PATH_SYSTEM,
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
-            if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
+            if (systemGalleries != null) {
                 // add the found system galleries to the result
                 galleries.addAll(systemGalleries);
             }
         }
 
+        if (!OpenCms.getSiteManager().isSharedFolder(siteRoot)) {
+            String shared = OpenCms.getSiteManager().getSharedFolder();
+            List<CmsResource> sharedGalleries = getCmsObject().readResources(
+                shared,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
+            if (sharedGalleries != null) {
+                galleries.addAll(sharedGalleries);
+            }
+        }
         return galleries;
     }
 

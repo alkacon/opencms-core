@@ -63,6 +63,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.commons.CmsPropertyAdvanced;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
@@ -329,9 +330,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     editorCssHandlerClassName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_CSSHANDLER_1,
-                editorCssHandlerClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_INVALID_EDITOR_CSSHANDLER_1, editorCssHandlerClassName),
+                e);
         }
     }
 
@@ -357,9 +358,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     editorCssHandlerClassName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_CSSHANDLER_1,
-                editorCssHandlerClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_INVALID_EDITOR_CSSHANDLER_1, editorCssHandlerClassName),
+                e);
         }
     }
 
@@ -500,9 +501,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     resourceTypeName));
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_INVALID_EDITOR_PRE_ACTION_1,
-                preEditorConditionDefinitionClassName), e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INVALID_EDITOR_PRE_ACTION_1,
+                    preEditorConditionDefinitionClassName),
+                e);
         }
     }
 
@@ -1122,6 +1125,38 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             m_toolManager = new CmsToolManager();
         }
         return m_toolManager;
+    }
+
+    /**
+     * Gets the upload hook URI which should be opened for an upload to a given folder.<p>
+     * This method will return null if no upload hook should be used for the given upload folder.<p>
+     * 
+     * The API for this upload hook is as follows:
+     * 
+     * The upload hook will be called with the following parameters:
+     * 
+     * resources (required): a comma separated list of the structure ids of the uploaded resources
+     *                       if this is omitted 
+     * closelink (optional): a link which should be opened once the upload hook has finished whatever
+     *                       it is doing
+     *                       
+     * If the parent frame of the frame in which the upload hook is opened contains a Javascript 
+     * function 'cmsCloseUploadPropertyDialog', this function should be called (with no parameters)
+     * rather than opening the 'closelink' page. 
+     * 
+     * @param cms the current CMS context 
+     * @param uploadFolder the folder for which the upload hook should be found
+     *  
+     * @return the URI of the upload hook or null 
+     */
+    public String getUploadHook(CmsObject cms, String uploadFolder) {
+
+        I_CmsDialogHandler handler = getDialogHandler(CmsPropertyAdvanced.DIALOG_TYPE);
+        if ((handler != null) && (handler instanceof I_CmsPostUploadDialogHandler)) {
+            return ((I_CmsPostUploadDialogHandler)handler).getUploadHook(cms, uploadFolder);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1750,9 +1785,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 m_defaultAccess.createAccessControlList(CmsExplorerTypeAccess.PRINCIPAL_DEFAULT);
             } catch (CmsException e) {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
-                        CmsExplorerTypeAccess.PRINCIPAL_DEFAULT), e);
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
+                            CmsExplorerTypeAccess.PRINCIPAL_DEFAULT),
+                        e);
                 }
             }
         }
@@ -1772,9 +1809,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 settings.getAccess().createAccessControlList(settings.getName());
             } catch (CmsException e) {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
-                        settings.getName()), e);
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(Messages.INIT_ADD_TYPE_SETTING_FAILED_1, settings.getName()),
+                        e);
                 }
             }
         }
@@ -1861,9 +1898,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);
         } catch (CmsException e) {
             if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1,
-                    CmsWorkplace.VFS_PATH_VIEWS), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, CmsWorkplace.VFS_PATH_VIEWS),
+                    e);
             }
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             viewFolders = new ArrayList<CmsResource>();

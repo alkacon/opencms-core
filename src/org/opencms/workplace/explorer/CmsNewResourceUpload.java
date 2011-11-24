@@ -55,6 +55,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceException;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -70,6 +72,8 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
+
+import com.google.common.base.Joiner;
 
 /**
  * The new resource upload dialog handles the upload of single files or zipped files.<p>
@@ -87,11 +91,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET = 140;
 
-    /** The value for the resource gwt upload action. */
-    public static final int ACTION_GWT = 160;
-
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET_CHECK_OVERWRITE = 141;
+
+    /** The value for the resource gwt upload action. */
+    public static final int ACTION_GWT = 160;
 
     /** The value for the resource name form action. */
     public static final int ACTION_NEWFORM2 = 120;
@@ -113,6 +117,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** Constant for pre selection of the file filter for web documents / snippets in the upload applet. */
     // Warning: keep in sync with org.opencms.applet.upload.WebFilter.FILTER_ID.
     public static final String APPLET_FILEFILTER_WEB = "webfilter";
+
+    /** The upload_folder session attribute key. */
+    public static final String ATTR_UPLOAD_FOLDER = "upload_folder";
 
     /** Default setting for the applet JSP page colors (windows style). */
     public static final Map DEFAULT_APPLET_WINDOW_COLORS = new HashMap();
@@ -136,11 +143,17 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** Request parameter name for the redirect url. */
     public static final String PARAM_REDIRECTURL = "redirecturl";
 
+    /** The name of the 'resources' parameter. */
+    public static final String PARAM_RESOURCES = "resources";
+
     /** Request parameter name for the redirect target frame name. */
     public static final String PARAM_TARGETFRAME = "targetframe";
 
     /** Request parameter name for the upload file unzip flag. */
     public static final String PARAM_UNZIPFILE = "unzipfile";
+
+    /** The name of the 'uploadapplet' parameter. */
+    public static final String PARAM_UPLOADAPPLET = "uploadapplet";
 
     /** Request parameter name for the upload file name. */
     public static final String PARAM_UPLOADERROR = "uploaderror";
@@ -151,11 +164,16 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** Request parameter name for the upload folder name. */
     public static final String PARAM_UPLOADFOLDER = "uploadfolder";
 
+    private static final String ATTR_UPLOADED_FILES = "uploaded_files";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResourceUpload.class);
 
     /** The configurable colors for the applet window (content frame JSP). */
     private Map m_appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
+
+    /** A flag which indicates whether we are closing the dialog after unzipping an upload. */
+    private boolean m_closingAfterUnzip;
     private String m_paramClientFolder;
     private String m_paramNewResourceName;
     private String m_paramRedirectUrl;
@@ -163,7 +181,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
     private String m_paramUnzipFile;
     private String m_paramUploadError;
     private String m_paramUploadFile;
+
     private String m_paramUploadFolder;
+
+    private List<String> m_uploadedFiles = new ArrayList<String>();
 
     /**
      * Public constructor with JSP action element.<p>
@@ -476,9 +497,20 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("<param name=\"overwriteDialogLocale\" value=\"");
         applet.append(locale.toString());
         applet.append(" \">\n");
+
         applet.append("<param name=\"certificateErrorMessage\" value=\"");
         applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_MESSAGE_0));
         applet.append(" \">\n");
+
+        applet.append("<param name=\"uriPrefix\" value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(path);
+        applet.append("\">\n");
+
         applet.append("<param name=\"clientFolder\" value=\"");
         applet.append(new CmsUserSettings(jsp.getCmsObject()).getUploadAppletClientFolder());
         applet.append(" \">\n");
@@ -566,33 +598,31 @@ public class CmsNewResourceUpload extends CmsNewResource {
             } catch (Exception e) {
                 // assume file was not present
             }
-        }
-        super.actionCloseDialog();
-    }
+        } else if (m_closingAfterUnzip) {
+            if (getJsp().getRequest().getParameter(PARAM_UPLOADAPPLET) == null) {
+                String uploadFolder = getJsp().getRequest().getParameter(PARAM_UPLOADFOLDER);
+                if (uploadFolder != null) {
+                    String uploadHook = OpenCms.getWorkplaceManager().getUploadHook(
+                        getJsp().getCmsObject(),
+                        uploadFolder);
+                    if (uploadHook != null) {
 
-    /**
-     * Returns the close link.<p>
-     * 
-     * @return the close link
-     */
-    public String getCloseLink() {
-
-        // create a map with empty "resource" parameter to avoid changing the folder when returning to explorer file list
-        if (getParamCloseLink() != null) {
-            return getParamCloseLink();
-        } else if (getParamFramename() != null) {
-            // no workplace frame mode (currently used for galleries)
-            // frame name parameter found, get URI
-            String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
-            if (frameUri != null) {
-                if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                    // remove context path from URI before inclusion
-                    frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                        Map params = new HashMap();
+                        params.put(
+                            PARAM_RESOURCES,
+                            getJsp().getRequest().getSession().getAttribute(ATTR_UPLOADED_FILES));
+                        params.put(PARAM_CLOSELINK, getParamCloseLink());
+                        try {
+                            forwardEditProperties(params);
+                            return;
+                        } catch (Exception e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
                 }
-                return frameUri;
             }
         }
-        return FILE_EXPLORER_FILELIST;
+        super.actionCloseDialog();
     }
 
     /**
@@ -697,9 +727,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         // no folder information found, guess upload folder
                         currentFolder = computeCurrentFolder();
                     }
+                    getJsp().getRequest().getSession().setAttribute(ATTR_UPLOAD_FOLDER, currentFolder);
                     // import the zip contents
-                    new CmsImportFolder(content, currentFolder, getCms(), false);
-
+                    CmsImportFolder importFolder = new CmsImportFolder(content, currentFolder, getCms(), false);
+                    for (CmsResource importedResource : importFolder.getImportedResources()) {
+                        m_uploadedFiles.add(importedResource.getStructureId().toString());
+                    }
                 } else {
                     // single file upload
                     String newResname = CmsResource.getName(fileName.replace('\\', '/'));
@@ -724,13 +757,25 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     // determine the resource type id from the given information
                     int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
                     int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+                    String uploadFolder = CmsResource.getParentFolder(getParamResource());
+                    getJsp().getRequest().getSession().setAttribute(ATTR_UPLOAD_FOLDER, uploadFolder);
                     if (!getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
                         try {
                             // create the resource
-                            getCms().createResource(getParamResource(), resTypeId, content, properties);
+                            CmsResource uploadedFile = getCms().createResource(
+                                getParamResource(),
+                                resTypeId,
+                                content,
+                                properties);
+                            m_uploadedFiles.add(uploadedFile.getStructureId().toString());
                         } catch (CmsSecurityException e) {
                             // in case of not enough permissions, try to create a plain text file
-                            getCms().createResource(getParamResource(), plainId, content, properties);
+                            CmsResource uploadedFile = getCms().createResource(
+                                getParamResource(),
+                                plainId,
+                                content,
+                                properties);
+                            m_uploadedFiles.add(uploadedFile.getStructureId().toString());
                         } catch (CmsDbSqlException sqlExc) {
                             // SQL error, probably the file is too large for the database settings, delete file
                             getCms().lockResource(getParamResource());
@@ -743,9 +788,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         byte[] contents = file.getContents();
                         try {
                             getCms().replaceResource(getParamResource(), resTypeId, content, null);
+                            m_uploadedFiles.add(file.getStructureId().toString());
                         } catch (CmsSecurityException e) {
                             // in case of not enough permissions, try to create a plain text file
                             getCms().replaceResource(getParamResource(), plainId, content, null);
+                            m_uploadedFiles.add(file.getStructureId().toString());
                         } catch (CmsDbSqlException sqlExc) {
                             // SQL error, probably the file is too large for the database settings, restore content
                             file.setContents(contents);
@@ -762,6 +809,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPLOAD_FILE_0));
             setAction(ACTION_SHOWERROR);
             includeErrorpage(this, e);
+        } finally {
+
+            if (!m_uploadedFiles.isEmpty()) {
+                String uploadedFilesString = Joiner.on(",").join(m_uploadedFiles);
+                getJsp().getRequest().getSession().setAttribute(ATTR_UPLOADED_FILES, uploadedFilesString);
+            }
         }
     }
 
@@ -789,6 +842,61 @@ public class CmsNewResourceUpload extends CmsNewResource {
             getParamRedirectUrl(),
             getParamTargetFrame(),
             m_appletWindowColors);
+    }
+
+    /**
+     * @see org.opencms.workplace.explorer.CmsNewResource#forwardEditProperties(java.util.Map)
+     */
+    @Override
+    public void forwardEditProperties(Map params) throws IOException, ServletException, JspException {
+
+        String uploadFolder = (String)(getJsp().getRequest().getSession().getAttribute(ATTR_UPLOAD_FOLDER));
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(uploadFolder)) {
+
+            String uploadHook = OpenCms.getWorkplaceManager().getUploadHook(getCms(), uploadFolder);
+            if (uploadHook != null) {
+                if (params.get(PARAM_CLOSELINK) == null) {
+                    params.put(
+                        PARAM_CLOSELINK,
+                        OpenCms.getLinkManager().getServerLink(
+                            getJsp().getCmsObject(),
+                            CmsWorkplace.FILE_EXPLORER_FILELIST));
+                }
+                String uploadedFilesString = (String)getJsp().getRequest().getSession().getAttribute(
+                    ATTR_UPLOADED_FILES);
+                if (uploadedFilesString != null) {
+                    params.put(PARAM_RESOURCES, uploadedFilesString);
+                }
+                sendForward(uploadHook, params);
+                return;
+            }
+        }
+        super.forwardEditProperties(params);
+    }
+
+    /**
+     * Returns the close link.<p>
+     * 
+     * @return the close link
+     */
+    public String getCloseLink() {
+
+        // create a map with empty "resource" parameter to avoid changing the folder when returning to explorer file list
+        if (getParamCloseLink() != null) {
+            return getParamCloseLink();
+        } else if (getParamFramename() != null) {
+            // no workplace frame mode (currently used for galleries)
+            // frame name parameter found, get URI
+            String frameUri = getSettings().getFrameUris().get(getParamFramename());
+            if (frameUri != null) {
+                if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    // remove context path from URI before inclusion
+                    frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                }
+                return frameUri;
+            }
+        }
+        return FILE_EXPLORER_FILELIST;
     }
 
     /**
@@ -875,6 +983,30 @@ public class CmsNewResourceUpload extends CmsNewResource {
         return m_paramUploadFolder;
     }
 
+    /**
+     * Gets a HTML comment string which contains the data about which files have been uploaded.<p>
+     * 
+     * @return a HTML comment containing the uploaded files data 
+     */
+    public String getUploadedFiles() {
+
+        return "<!--CMS_UPLOADED_FILES=" + Joiner.on(",").join(m_uploadedFiles) + "-->";
+    }
+
+    /**
+     * Gets a HTML comment string which contains the data about the upload hook to use.<p>
+     * 
+     * @return a HTML comment containing the upload hook data 
+     */
+    public String getUploadHook() {
+
+        String uploadHook = OpenCms.getWorkplaceManager().getUploadHook(getCms(), getParamUploadFolder());
+        if (uploadHook == null) {
+            return "";
+        }
+        return "<!--CMS_UPLOAD_HOOK=" + uploadHook + "-->";
+    }
+
     /** 
      * Replies on the request of the upload applet for checking potential overwrites of VFS resources 
      * with the line based resources that do exist on the host. <p> 
@@ -912,6 +1044,20 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
 
     /**
+     * Overrode this to pass along the upload folder parameter.
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#sendForward(java.lang.String, java.util.Map)
+     */
+    @Override
+    public void sendForward(String location, Map params) throws IOException, ServletException {
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_paramUploadFolder)) {
+            params.put(PARAM_UPLOADFOLDER, m_paramUploadFolder);
+        }
+        super.sendForward(location, params);
+    }
+
+    /**
      * Sets the configurable colors for the applet window (content frame JSP).<p>
      *
      * @param appletWindowColors the configurable colors for the applet window (content frame JSP).
@@ -919,6 +1065,16 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public final void setAppletWindowColors(final Map appletWindowColors) {
 
         m_appletWindowColors = appletWindowColors;
+    }
+
+    /**
+     * Sets the 'closing after unzip' flag.<p>
+     * 
+     * @param closingAfterUnzip the new value of the 'closing after unzip' flag 
+     */
+    public void setClosingAfterUnzip(boolean closingAfterUnzip) {
+
+        m_closingAfterUnzip = closingAfterUnzip;
     }
 
     /**

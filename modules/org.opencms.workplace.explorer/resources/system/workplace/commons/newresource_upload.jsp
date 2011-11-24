@@ -73,10 +73,16 @@ break;
 
 
 case CmsNewResourceUpload.ACTION_SUBMITFORM:
+
 //////////////////// ACTION: upload name specified and form submitted
 	wp.actionUpload();
+    // insert uploaded file data as a comment, which can then be parsed by the upload applet
+	out.println(wp.getUploadedFiles());
+    out.println(wp.getUploadHook());
+    
 	if (wp.unzipUpload()) {
 		if (wp.getAction() != CmsNewResourceUpload.ACTION_SHOWERROR) {
+		    wp.setClosingAfterUnzip(true); 
 			wp.actionCloseDialog();
 		}
 		break;

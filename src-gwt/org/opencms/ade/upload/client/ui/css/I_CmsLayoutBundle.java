@@ -188,4 +188,5 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("upload.css")
     I_CmsUploadCss uploadCss();
+
 }

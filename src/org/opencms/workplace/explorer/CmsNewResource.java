@@ -453,9 +453,8 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             } else {
                 params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
             }
-            sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
+            forwardEditProperties(params);
         } else {
-
             // edit properties not checked, close the dialog
             actionCloseDialog();
         }
@@ -904,6 +903,16 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             default:
                 super.dialogButtonsHtml(result, button, attribute);
         }
+    }
+
+    /**
+     * Forwards to a page for editing properties.<p>
+     * 
+     * @param parameters the request parameters which should be passed to the page which we forward to 
+     */
+    protected void forwardEditProperties(Map parameters) throws JspException, IOException, ServletException {
+
+        sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, parameters);
     }
 
     /**
