@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -48,6 +49,13 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @since 8.0.0
  */
 public interface I_CmsContainerpageService extends RemoteService {
+
+    /**
+     * This method is used for serialization purposes only.<p>
+     * 
+     * @return element info
+     */
+    public CmsContainerElement getElementInfo();
 
     /**
      * Adds an element specified by it's id to the favorite list.<p>
@@ -247,6 +255,24 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID pageStructureId,
         String reqParams,
         CmsGroupContainer groupContainer,
+        Collection<CmsContainer> containers,
+        String locale) throws CmsRpcException;
+
+    /**
+     * Saves an inheritance container.<p>
+     * 
+     * @param pageStructureId the current page's structure id
+     * @param inheritanceContainer the inheritance container to save
+     * @param containers the containers of the current page
+     * @param locale the requested locale
+     * 
+     * @return the element data of the saved container
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    Map<String, CmsContainerElementData> saveInheritanceContainer(
+        CmsUUID pageStructureId,
+        CmsInheritanceContainer inheritanceContainer,
         Collection<CmsContainer> containers,
         String locale) throws CmsRpcException;
 

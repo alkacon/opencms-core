@@ -140,7 +140,12 @@ public class CmsInheritanceReferenceParser {
         if (titleLocation != null) {
             title = titleLocation.asString(m_cms);
         }
-        return new CmsInheritanceReference(configName, title, m_resource, locale);
+        I_CmsXmlContentValueLocation descriptionLocation = location.getSubValue("Description");
+        String description = null;
+        if (descriptionLocation != null) {
+            description = descriptionLocation.asString(m_cms);
+        }
+        return new CmsInheritanceReference(configName, title, description, m_resource, locale);
     }
 
 }

@@ -99,6 +99,7 @@ public class CmsContainerConfigurationParser {
      * Parses the contents of a file.<p>
      * 
      * @param file the file to parse
+     * 
      * @throws CmsException if something goes wrong 
      */
     public void parse(CmsFile file) throws CmsException {
@@ -121,20 +122,13 @@ public class CmsContainerConfigurationParser {
     public void parse(CmsResource resource) throws CmsException {
 
         CmsFile file = m_cms.readFile(resource);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, file);
-        for (Locale locale : content.getLocales()) {
-            m_currentLocale = locale;
-            CmsXmlContentRootLocation rootLocation = new CmsXmlContentRootLocation(content, locale);
-            parseConfigurationGroup(rootLocation);
-        }
+        parse(file);
     }
 
     /**
-     * Parses a group of named configurations from a given XML content location.
-     * <p>
+     * Parses a group of named configurations from a given XML content location.<p>
      * 
-     * @param location
-     *            the location from which to read the configuration group
+     * @param location the location from which to read the configuration group
      */
     protected void parseConfigurationGroup(I_CmsXmlContentLocation location) {
 
@@ -147,11 +141,9 @@ public class CmsContainerConfigurationParser {
     }
 
     /**
-     * Parses a single inheritance configuration from an XML content node.
-     * <p>
+     * Parses a single inheritance configuration from an XML content node.<p>
      * 
-     * @param location
-     *            the node from which to read the single configuration
+     * @param location the node from which to read the single configuration
      */
     protected void parseSingleConfiguration(I_CmsXmlContentValueLocation location) {
 

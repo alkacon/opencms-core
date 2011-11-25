@@ -30,12 +30,17 @@ package org.opencms.ade.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
+import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
+import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
+import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
@@ -55,6 +60,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -248,6 +254,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             error(e);
         }
         return element;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementInfo()
+     */
+    public CmsContainerElement getElementInfo() {
+
+        throw new UnsupportedOperationException("This method is used for serialization only.");
     }
 
     /**
@@ -469,6 +483,50 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveInheritanceContainer(org.opencms.util.CmsUUID, org.opencms.ade.containerpage.shared.CmsInheritanceContainer, java.util.Collection, java.lang.String)
+     */
+    public Map<String, CmsContainerElementData> saveInheritanceContainer(
+        CmsUUID pageStructureId,
+        CmsInheritanceContainer inheritanceContainer,
+        Collection<CmsContainer> containers,
+        String locale) throws CmsRpcException {
+
+        try {
+            CmsResource containerPage = getCmsObject().readResource(pageStructureId);
+            String sitePath = getCmsObject().getSitePath(containerPage);
+            Locale requestedLocale = new Locale(locale);
+            List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
+            for (CmsContainerElement clientElement : inheritanceContainer.getElements()) {
+                CmsContainerElementBean elementBean = getCachedElement(clientElement.getClientId());
+                CmsInheritanceInfo inheritanceInfo = clientElement.getInheritanceInfo();
+                // if a local elements misses the key it was newly added
+                if (inheritanceInfo.isNew() && CmsStringUtil.isEmptyOrWhitespaceOnly(inheritanceInfo.getKey())) {
+                    // generating new key
+                    inheritanceInfo.setKey(CmsResource.getFolderPath(sitePath) + new CmsUUID().toString());
+                }
+                elementBean.setInheritanceInfo(inheritanceInfo);
+                elements.add(elementBean);
+            }
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setLocale(requestedLocale);
+            OpenCms.getADEManager().saveInheritedContainer(
+                cms,
+                containerPage,
+                inheritanceContainer.getName(),
+                true,
+                elements);
+            return getElements(
+                new ArrayList<String>(Collections.singletonList(inheritanceContainer.getClientId())),
+                sitePath,
+                containers,
+                requestedLocale);
+        } catch (Exception e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveRecentList(java.util.List)
      */
     public void saveRecentList(List<String> clientIds) throws CmsRpcException {
@@ -657,9 +715,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpage.getRootPath());
                 CmsFormatterConfiguration formatters = config.getFormatters(cms, resource);
+                String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
                 String containerType = null;
-                if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
-                    resource).getTypeName())) {
+
+                if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(typeName)
+                    || CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME.equals(typeName)) {
                     // always reference the preview formatter for group containers
                     containerType = CmsFormatterBean.PREVIEW_TYPE;
                 } else {
@@ -744,17 +804,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsContainerElementBean element = getCachedElement(elemId);
             CmsContainerElementData elementData = elemUtil.getElementData(element, containers);
             result.put(element.editorHash(), elementData);
-            if (elementData.isGroupContainer()) {
+            if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container 
                 CmsResource elementRes = cms.readResource(element.getId());
-                CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
-                    cms,
+                List<CmsContainerElementBean> subElements = elementData.isGroupContainer() ? getGroupContainerElements(
                     elementRes,
-                    getRequest());
-                CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(cms, locale);
-
+                    locale) : getInheritedElements(elementRes, locale, uriParam);
                 // adding all sub-items to the elements data
-                for (CmsContainerElementBean subElement : groupContainer.getElements()) {
+                for (CmsContainerElementBean subElement : subElements) {
+                    getSessionCache().setCacheContainerElement(subElement.editorHash(), subElement);
                     if (!ids.contains(subElement.getId())) {
                         String subId = subElement.editorHash();
                         if (ids.contains(subId)) {
@@ -813,6 +871,50 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             groupContainer.getDescription(),
             elements,
             groupContainer.getTypes());
+    }
+
+    /**
+     * Returns the sub-elements of this group container resource.<p>
+     * 
+     * @param resource the group container resource
+     * @param locale the requested locale
+     * 
+     * @return the sub-elements
+     * 
+     * @throws CmsException if something goes wrong reading the resource
+     */
+    private List<CmsContainerElementBean> getGroupContainerElements(CmsResource resource, Locale locale)
+    throws CmsException {
+
+        CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
+            getCmsObject(),
+            resource,
+            getRequest());
+        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(getCmsObject(), locale);
+        return groupContainer.getElements();
+    }
+
+    /**
+     * Returns the sub-elements of this inherit container resource.<p>
+     * 
+     * @param resource the inherit container resource
+     * @param locale the requested locale
+     * 
+     * @return the sub-elements
+     * 
+     * @throws CmsException if something goes wrong reading the resource
+     */
+    private List<CmsContainerElementBean> getInheritedElements(CmsResource resource, Locale locale, String uriParam)
+    throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(cms);
+        parser.parse(resource);
+        CmsInheritanceReference ref = parser.getReferences().get(locale);
+        String name = ref.getName();
+        CmsADEManager adeManager = OpenCms.getADEManager();
+        CmsInheritedContainerState result = adeManager.getInheritedContainerState(cms, cms.addSiteRoot(uriParam), name);
+        return result.getElements(true);
     }
 
     /**

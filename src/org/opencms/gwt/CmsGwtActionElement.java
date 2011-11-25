@@ -80,6 +80,36 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
+     * Serializes the result of the given method for RPC-prefetching.<p>
+     * 
+     * @param method the method
+     * @param data the result to serialize
+     * 
+     * @return the serialized data
+     * 
+     * @throws SerializationException if something goes wrong
+     */
+    public static String serialize(Method method, Object data) throws SerializationException {
+
+        return escape(RPC.encodeResponseForSuccess(method, data, CmsPrefetchSerializationPolicy.instance()));
+    }
+
+    /**
+     * Escapes the given string for serialization.<p>
+     * 
+     * @param s the string to escape
+     * 
+     * @return the escaped string
+     */
+    private static String escape(String s) {
+
+        // escape back slashes
+        String ret = s.replaceAll("\\\\", "\\\\\\\\");
+        // escape single quotation marks
+        return ret.replaceAll("'", "\\\\'");
+    }
+
+    /**
      * Returns the script tag for the "*.nocache.js".<p>
      * 
      * @param moduleName the module name to get the script tag for
@@ -183,21 +213,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
-     * Serializes the result of the given method for RPC-prefetching.<p>
-     * 
-     * @param method the method
-     * @param data the result to serialize
-     * 
-     * @return the serialized data
-     * 
-     * @throws SerializationException if something goes wrong
-     */
-    protected String serialize(Method method, Object data) throws SerializationException {
-
-        return escape(RPC.encodeResponseForSuccess(method, data, CmsPrefetchSerializationPolicy.instance()));
-    }
-
-    /**
      * Wraps the given buffer with surrounding script tags.<p> 
      * 
      * @param sb the string buffer to wrap
@@ -209,21 +224,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         sb.insert(0, SCRIPT_TAG_OPEN);
         sb.append(SCRIPT_TAG_CLOSE).append("\n");
         return sb;
-    }
-
-    /**
-     * Escapes the given string for serialization.<p>
-     * 
-     * @param s the string to escape
-     * 
-     * @return the escaped string
-     */
-    private String escape(String s) {
-
-        // escape back slashes
-        String ret = s.replaceAll("\\\\", "\\\\\\\\");
-        // escape single quotation marks
-        return ret.replaceAll("'", "\\\\'");
     }
 
     /**

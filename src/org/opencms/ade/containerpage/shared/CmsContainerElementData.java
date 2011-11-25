@@ -53,11 +53,11 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The group-container description. */
     private String m_description;
 
-    /** The inheritance info for this container element. */
-    private CmsInheritanceInfo m_inheritanceInfo;
+    /** The inheritance infos off all sub-items. */
+    private List<CmsInheritanceInfo> m_inheritanceInfos = new ArrayList<CmsInheritanceInfo>();
 
-    /** Flag for indicating whether this is a group-container. */
-    private boolean m_isGroupContainer;
+    /** The inheritance name. */
+    private String m_inheritanceName;
 
     /** The last user modifying the element. */
     private String m_lastModifiedByUser;
@@ -68,32 +68,20 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The element navText property. */
     private String m_navText;
 
-    /** The no edit reason. If empty editing is allowed. */
-    private String m_noEditReason;
-
     /** The setting for this container element. */
     private Map<String, CmsXmlContentProperty> m_settingConfig;
 
     /** The settings for this container entry. */
     private Map<String, String> m_settings;
 
-    /** The resource status. */
-    private char m_status;
-
     /** The contained sub-item id's. */
-    private List<String> m_subItems;
+    private List<String> m_subItems = new ArrayList<String>();
 
     /** The element title property. */
     private String m_title;
 
     /** The supported container types of a group-container. */
     private Set<String> m_types;
-
-    /** 
-     * Indicates if the current user has view permissions on the element resource. 
-     * Without view permissions, the element can neither be edited, nor moved. 
-     **/
-    private boolean m_viewPermission;
 
     /**
      * Returns the contents.<p>
@@ -148,9 +136,27 @@ public class CmsContainerElementData extends CmsContainerElement {
         return result;
     }
 
-    public CmsInheritanceInfo getInheritanceInfo() {
+    /**
+     * Returns the inheritance infos off all sub-items.
+     * @return the inheritance infos off all sub-items.
+     */
+    public List<CmsInheritanceInfo> getInheritanceInfos() {
 
-        return m_inheritanceInfo;
+        if (isInheritContainer()) {
+            return m_inheritanceInfos;
+        } else {
+            throw new UnsupportedOperationException("Only inherit containers have inheritance infos");
+        }
+    }
+
+    /**
+     * Returns the inheritance name.<p>
+     *
+     * @return the inheritance name
+     */
+    public String getInheritanceName() {
+
+        return m_inheritanceName;
     }
 
     /**
@@ -184,16 +190,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the no edit reason. If empty editing is allowed.<p>
-     *
-     * @return the no edit reason
-     */
-    public String getNoEditReason() {
-
-        return m_noEditReason;
-    }
-
-    /**
      * Gets the setting configuration for this container element.<p>
      * 
      * @return the setting configuration map 
@@ -214,23 +210,25 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the status.<p>
-     *
-     * @return the status
-     */
-    public char getStatus() {
-
-        return m_status;
-    }
-
-    /**
      * Returns the sub-items.<p>
      *
      * @return the sub-items
      */
     public List<String> getSubItems() {
 
-        return m_subItems;
+        if (isGroupContainer()) {
+            return m_subItems;
+        } else if (isInheritContainer()) {
+            List<String> result = new ArrayList<String>();
+            for (CmsInheritanceInfo info : m_inheritanceInfos) {
+                if (info.isVisibile()) {
+                    result.add(info.getClientId());
+                }
+            }
+            return result;
+        } else {
+            throw new UnsupportedOperationException("Only group or inherit containers have sub-items");
+        }
     }
 
     /**
@@ -254,26 +252,12 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns if the current user has view permissions for the element resource.<p>
-     *
-     * @return <code>true</code> if the current user has view permissions for the element resource
+     * @see org.opencms.ade.containerpage.shared.CmsContainerElement#hasSettings()
      */
-    public boolean hasViewPermission() {
+    @Override
+    public boolean hasSettings() {
 
-        return m_viewPermission;
-    }
-
-    /**
-     * Returns if the element is a group-container.<p>
-     *
-     * @return <code>true</code> if the element is a group-container
-     */
-    public boolean isGroupContainer() {
-
-        if (m_subItems == null) {
-            m_subItems = new ArrayList<String>();
-        }
-        return m_isGroupContainer;
+        return !getSettingConfig().isEmpty();
     }
 
     /**
@@ -307,18 +291,23 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Sets whether the element is a group-container.<p>
+     * Sets the inheritance infos.<p>
      *
-     * @param isGroupContainer <code>true</code> if the element is a group-container
+     * @param inheritanceInfos the inheritance infos to set
      */
-    public void setGroupContainer(boolean isGroupContainer) {
+    public void setInheritanceInfos(List<CmsInheritanceInfo> inheritanceInfos) {
 
-        m_isGroupContainer = isGroupContainer;
+        m_inheritanceInfos = inheritanceInfos;
     }
 
-    public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
+    /**
+     * Sets the inheritance name.<p>
+     *
+     * @param inheritanceName the inheritance name to set
+     */
+    public void setInheritanceName(String inheritanceName) {
 
-        m_inheritanceInfo = inheritanceInfo;
+        m_inheritanceName = inheritanceName;
     }
 
     /**
@@ -352,16 +341,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Sets the no edit reason.<p>
-     *
-     * @param noEditReason the no edit reason to set
-     */
-    public void setNoEditReason(String noEditReason) {
-
-        m_noEditReason = noEditReason;
-    }
-
-    /**
      * Sets the setting configuration of this container element.<p>
      * 
      * @param settingConfig the new setting configuration 
@@ -379,16 +358,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setSettings(Map<String, String> settings) {
 
         m_settings = settings;
-    }
-
-    /**
-     * Sets the status.<p>
-     *
-     * @param status the status to set
-     */
-    public void setStatus(char status) {
-
-        m_status = status;
     }
 
     /**
@@ -419,16 +388,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setTypes(Set<String> types) {
 
         m_types = types;
-    }
-
-    /**
-     * Sets if the current user has view permissions for the element resource.<p>
-     *
-     * @param viewPermission the view permission to set
-     */
-    public void setViewPermission(boolean viewPermission) {
-
-        m_viewPermission = viewPermission;
     }
 
     /**

@@ -176,7 +176,7 @@ public class CmsInheritedContainerState {
         List<CmsContainerElementBean> hiddenElements = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElementBean resultElement : result) {
             CmsInheritanceInfo info = resultElement.getInheritanceInfo();
-            if (info.getVisibility() == Boolean.FALSE) {
+            if (!info.isVisibile()) {
                 hiddenElements.add(resultElement);
             } else {
                 resultWithoutHidden.add(resultElement);
@@ -271,7 +271,7 @@ public class CmsInheritedContainerState {
                 inherited = true;
             }
         }
-        info.setVisibility(visible ? Boolean.TRUE : Boolean.FALSE);
+        info.setVisible(visible);
         info.setVisibilityInherited(inherited);
         info.setParentVisible(parentVisible);
     }

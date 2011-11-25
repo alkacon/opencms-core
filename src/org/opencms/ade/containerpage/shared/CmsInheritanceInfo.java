@@ -39,6 +39,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsInheritanceInfo implements IsSerializable {
 
+    /** The elements client id. */
+    private String m_clientId;
+
     /** True if this is a new element. */
     private boolean m_isNew;
 
@@ -49,7 +52,7 @@ public class CmsInheritanceInfo implements IsSerializable {
     private boolean m_parentVisible;
 
     /** The element's own visibility. */
-    private Boolean m_visibility;
+    private boolean m_visibility;
 
     /** True if the visibility has been inherited. */
     private boolean m_visibilityInherited;
@@ -68,11 +71,21 @@ public class CmsInheritanceInfo implements IsSerializable {
      * @param visibility the visibility of the container element 
      * @param isNew if true, the element is new 
      */
-    public CmsInheritanceInfo(String key, Boolean visibility, boolean isNew) {
+    public CmsInheritanceInfo(String key, boolean visibility, boolean isNew) {
 
         m_key = key;
         m_visibility = visibility;
         m_isNew = isNew;
+    }
+
+    /**
+     * Returns the elements client id.<p>
+     *
+     * @return the elements client id
+     */
+    public String getClientId() {
+
+        return m_clientId;
     }
 
     /**
@@ -86,11 +99,21 @@ public class CmsInheritanceInfo implements IsSerializable {
     }
 
     /**
+     * Returns true if this container element is new.<p>
+     * 
+     * @return true if the container element is new 
+     */
+    public boolean isNew() {
+
+        return m_isNew;
+    }
+
+    /**
      * Returns the parent configuration's visibility.<p>
      * 
      * @return the parent visibility 
      */
-    public boolean getParentVisibility() {
+    public boolean isParentVisible() {
 
         return m_parentVisible;
     }
@@ -100,19 +123,29 @@ public class CmsInheritanceInfo implements IsSerializable {
      * 
      * @return the container element's visibility 
      */
-    public Boolean getVisibility() {
+    public boolean isVisibile() {
 
         return m_visibility;
     }
 
     /**
-     * Returns true if this container element is new.<p>
-     * 
-     * @return true if the container element is new 
+     * Returns the visibilityInherited.<p>
+     *
+     * @return the visibilityInherited
      */
-    public boolean isNew() {
+    public boolean isVisibilityInherited() {
 
-        return m_isNew;
+        return m_visibilityInherited;
+    }
+
+    /**
+     * Sets the elements client id.<p>
+     *
+     * @param clientId the elements client id to set
+     */
+    public void setClientId(String clientId) {
+
+        m_clientId = clientId;
     }
 
     /**
@@ -145,16 +178,6 @@ public class CmsInheritanceInfo implements IsSerializable {
         m_parentVisible = parentVisible;
     }
 
-    /**
-     * Sets the new visibility.<p>
-     * 
-     * @param visibility the new value of the visibility 
-     */
-    public void setVisibility(Boolean visibility) {
-
-        m_visibility = visibility;
-    }
-
     /** 
      * Sets the 'visibilityInherited' attribute.<p>
      * 
@@ -163,6 +186,16 @@ public class CmsInheritanceInfo implements IsSerializable {
     public void setVisibilityInherited(boolean visibilityInherited) {
 
         m_visibilityInherited = visibilityInherited;
+    }
+
+    /**
+     * Sets the new visibility.<p>
+     * 
+     * @param visibility the new value of the visibility 
+     */
+    public void setVisible(boolean visibility) {
+
+        m_visibility = visibility;
     }
 
 }

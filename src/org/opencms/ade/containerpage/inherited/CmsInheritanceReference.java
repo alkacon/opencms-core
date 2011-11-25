@@ -41,6 +41,9 @@ import java.util.Locale;
  */
 public class CmsInheritanceReference {
 
+    /** The description. */
+    private String m_description;
+
     /** The locale. */
     private Locale m_locale;
 
@@ -58,15 +61,27 @@ public class CmsInheritanceReference {
      * 
      * @param name the container configuration name 
      * @param title the title 
+     * @param description the description
      * @param res the resource 
      * @param locale the locale 
      */
-    public CmsInheritanceReference(String name, String title, CmsResource res, Locale locale) {
+    public CmsInheritanceReference(String name, String title, String description, CmsResource res, Locale locale) {
 
         m_title = title;
         m_name = name;
+        m_description = description;
         m_resource = res;
         m_locale = locale;
+    }
+
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
     }
 
     /**

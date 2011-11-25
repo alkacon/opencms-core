@@ -202,7 +202,6 @@ public class CmsADEManager {
         // because during the setup the configuration resource types don't exist yet.
     }
 
-
     /**
      * Finds the entry point to a sitemap.<p>
      * 
@@ -372,8 +371,16 @@ public class CmsADEManager {
         return favList;
     }
 
-    public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, CmsResource resource, String name)
-    throws CmsException {
+    /**
+     * Returns the inheritance state for the given inheritance name and resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource
+     * @param name the inheritance name
+     * 
+     * @return the inheritance state
+     */
+    public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, CmsResource resource, String name) {
 
         String rootPath = resource.getRootPath();
         if (!resource.isFolder()) {
@@ -389,6 +396,17 @@ public class CmsADEManager {
 
     }
 
+    /**
+     * Returns the inheritance state for the given inheritance name and root path.<p>
+     * 
+     * @param cms the current cms context
+     * @param rootPath the root path
+     * @param name the inheritance name
+     * 
+     * @return the inheritance state
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, String rootPath, String name)
     throws CmsException {
 
@@ -620,6 +638,39 @@ public class CmsADEManager {
         cms.writeUser(user);
     }
 
+    /**
+     * Saves the inheritance container information.<p>
+     * 
+     * @param cms the current cms context
+     * @param pageResource the resource or parent folder
+     * @param name the inheritance name
+     * @param newOrder if the element have been reordered
+     * @param elements the elements
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void saveInheritedContainer(
+        CmsObject cms,
+        CmsResource pageResource,
+        String name,
+        boolean newOrder,
+        List<CmsContainerElementBean> elements) throws CmsException {
+
+        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
+        writer.save(cms, name, newOrder, pageResource, elements);
+    }
+
+    /**
+     * Saves the inheritance container information.<p>
+     * 
+     * @param cms the current cms context
+     * @param sitePath the site path of the resource or parent folder
+     * @param name the inheritance name
+     * @param newOrder if the element have been reordered
+     * @param elements the elements
+     * 
+     * @throws CmsException if something goes wrong
+     */
     public void saveInheritedContainer(
         CmsObject cms,
         String sitePath,
@@ -627,8 +678,7 @@ public class CmsADEManager {
         boolean newOrder,
         List<CmsContainerElementBean> elements) throws CmsException {
 
-        CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
-        writer.save(cms, name, newOrder, cms.readResource(sitePath), elements);
+        saveInheritedContainer(cms, cms.readResource(sitePath), name, newOrder, elements);
     }
 
     /**

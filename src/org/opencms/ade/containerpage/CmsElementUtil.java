@@ -28,8 +28,12 @@
 package org.opencms.ade.containerpage;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
+import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
+import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -104,6 +108,7 @@ public class CmsElementUtil {
     private Locale m_locale;
 
     /** The request parameters to use while rendering the elements. */
+    @SuppressWarnings("unused")
     private Map<String, Object> m_parameterMap;
 
     /** The http request. */
@@ -190,7 +195,7 @@ public class CmsElementUtil {
 
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
             m_cms,
-            m_cms.getRequestContext().addSiteRoot(m_currentPageUri));
+            m_cms.addSiteRoot(m_currentPageUri));
         CmsFormatterConfiguration configs = adeConfig.getFormatters(m_cms, element.getResource());
         Map<String, String> result = new HashMap<String, String>();
         for (CmsContainer container : containers) {
@@ -238,7 +243,6 @@ public class CmsElementUtil {
         }
 
         CmsContainerElementData elementBean = new CmsContainerElementData();
-        elementBean.setInheritanceInfo(element.getInheritanceInfo());
         elementBean.setReleasedAndNotExpired(element.isReleasedAndNotExpired());
         elementBean.setClientId(element.editorHash());
         elementBean.setSitePath(resUtil.getFullPath());
@@ -279,7 +283,6 @@ public class CmsElementUtil {
                 org.opencms.jsp.Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
         }
         elementBean.setNoEditReason(noEditReason);
-        elementBean.setStatus(resUtil.getStateAbbreviation());
 
         Map<String, String> contents = new HashMap<String, String>();
         if (element.isGroupContainer(m_cms)) {
@@ -294,11 +297,8 @@ public class CmsElementUtil {
                 element.getResource(),
                 m_req);
             CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(m_cms, m_locale);
-            elementBean.setGroupContainer(true);
-
             // make sure to use the content title and not the property title
             elementBean.setTitle(groupContainer.getTitle());
-
             elementBean.setTypes(groupContainer.getTypes());
             elementBean.setDescription(groupContainer.getDescription());
             if (groupContainer.getTypes().isEmpty()) {
@@ -328,6 +328,33 @@ public class CmsElementUtil {
                 subItems.add(subElement.editorHash());
             }
             elementBean.setSubItems(subItems);
+        } else if (element.isInheritedContainer(m_cms)) {
+            CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(m_cms);
+            parser.parse(element.getResource());
+            CmsInheritanceReference ref = parser.getReferences().get(m_locale);
+            String name = ref.getName();
+            elementBean.setDescription(ref.getDescription());
+            elementBean.setTitle(ref.getTitle());
+            for (CmsContainer container : containers) {
+                contents.put(container.getName(), "<div>should not be used</div>");
+            }
+            List<CmsInheritanceInfo> inheritanceInfos = new ArrayList<CmsInheritanceInfo>();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+                CmsInheritedContainerState result = OpenCms.getADEManager().getInheritedContainerState(
+                    m_cms,
+                    m_cms.addSiteRoot(m_currentPageUri),
+                    name);
+                for (CmsContainerElementBean subElement : result.getElements(true)) {
+                    CmsInheritanceInfo inheritanceInfo = subElement.getInheritanceInfo();
+                    inheritanceInfo.setClientId(subElement.editorHash());
+                    inheritanceInfos.add(inheritanceInfo);
+                }
+            } else {
+                // setting a new id for name, will be persisted once the inheritance reference is edited and saved
+                name = new CmsUUID().toString();
+            }
+            elementBean.setInheritanceInfos(inheritanceInfos);
+            elementBean.setInheritanceName(name);
         } else {
             // get the formatter configuration
             Map<String, String> contentsByName = getContentsByContainerName(element, containers);

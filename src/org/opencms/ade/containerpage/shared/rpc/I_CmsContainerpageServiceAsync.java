@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -99,6 +100,13 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID modelResourceStructureId,
         String locale,
         AsyncCallback<CmsContainerElement> callback);
+
+    /**
+     * This method is used for serialization purposes only.<p>
+     * 
+     * @param callback the callback
+     */
+    void getElementInfo(AsyncCallback<CmsContainerElement> callback);
 
     /**
      * Requests container element data by client id.<p>
@@ -223,6 +231,22 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID pageStructureId,
         String reqParams,
         CmsGroupContainer groupContainer,
+        Collection<CmsContainer> containers,
+        String locale,
+        AsyncCallback<Map<String, CmsContainerElementData>> callback);
+
+    /**
+     * Saves an inheritance container.<p>
+     * 
+     * @param pageStructureId the current page's structure id
+     * @param inheritanceContainer the inheritance container to save
+     * @param containers the containers of the current page
+     * @param locale the requested locale
+     * @param callback the callback
+     */
+    void saveInheritanceContainer(
+        CmsUUID pageStructureId,
+        CmsInheritanceContainer inheritanceContainer,
         Collection<CmsContainer> containers,
         String locale,
         AsyncCallback<Map<String, CmsContainerElementData>> callback);

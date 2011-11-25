@@ -36,11 +36,38 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContainerElement implements IsSerializable {
 
+    /** HTML class used to identify container elements. */
+    public static final String CLASS_CONTAINER_ELEMENT_END_MARKER = "cms_ade_element_end";
+
+    /** HTML class used to identify container elements. */
+    public static final String CLASS_CONTAINER_ELEMENT_START_MARKER = "cms_ade_element_start";
+
+    /** HTML class used to identify error message for elements where rendering failed to render. */
+    public static final String CLASS_ELEMENT_ERROR = "cms_ade_element_error";
+
+    /** HTML class used to identify group container elements. */
+    public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "cms_ade_groupcontainer";
+
+    /** The group container resource type name. */
+    public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";
+
+    /** The resource type name for inherited container references.  */
+    public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritref";
+
     /** The element client id. */
     private String m_clientId;
 
+    /** Flag to indicate that this element may have settings. */
+    private boolean m_hasSettings;
+
+    /** The inheritance info for this element. */
+    private CmsInheritanceInfo m_inheritanceInfo;
+
     /** Flag indicating a new element. */
     private boolean m_new;
+
+    /** The no edit reason. If empty editing is allowed. */
+    private String m_noEditReason;
 
     /** Flag indicating if the given resource is released and not expired. */
     private boolean m_releasedAndNotExpired = true;
@@ -51,6 +78,12 @@ public class CmsContainerElement implements IsSerializable {
     /** The full site path. */
     private String m_sitePath;
 
+    /** 
+     * Indicates if the current user has view permissions on the element resource. 
+     * Without view permissions, the element can neither be edited, nor moved. 
+     **/
+    private boolean m_viewPermission;
+
     /**
      * Returns the client id.<p>
      *
@@ -59,6 +92,26 @@ public class CmsContainerElement implements IsSerializable {
     public String getClientId() {
 
         return m_clientId;
+    }
+
+    /**
+     * Returns the inheritance info for this element.<p>
+     *
+     * @return the inheritance info for this element
+     */
+    public CmsInheritanceInfo getInheritanceInfo() {
+
+        return m_inheritanceInfo;
+    }
+
+    /**
+     * Returns the no edit reason. If empty editing is allowed.<p>
+     *
+     * @return the no edit reason
+     */
+    public String getNoEditReason() {
+
+        return m_noEditReason;
     }
 
     /**
@@ -79,6 +132,46 @@ public class CmsContainerElement implements IsSerializable {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * Returns if the element may have settings.<p>
+     *
+     * @return <code>true</code> if the element may have settings
+     */
+    public boolean hasSettings() {
+
+        return m_hasSettings;
+    }
+
+    /**
+     * Returns if the current user has view permissions for the element resource.<p>
+     *
+     * @return <code>true</code> if the current user has view permissions for the element resource
+     */
+    public boolean hasViewPermission() {
+
+        return m_viewPermission;
+    }
+
+    /**
+     * Returns if the given element is of the type group container.<p>
+     * 
+     * @return <code>true</code> if the given element is of the type group container
+     */
+    public boolean isGroupContainer() {
+
+        return GROUP_CONTAINER_TYPE_NAME.equals(m_resourceType);
+    }
+
+    /**
+     * Returns if the given element is of the type inherit container.<p>
+     * 
+     * @return <code>true</code> if the given element is of the type inherit container
+     */
+    public boolean isInheritContainer() {
+
+        return INHERIT_CONTAINER_TYPE_NAME.equals(m_resourceType);
     }
 
     /**
@@ -112,6 +205,26 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Sets if the element may have settings.<p>
+     *
+     * @param hasSettings <code>true</code> if the element may have settings
+     */
+    public void setHasSettings(boolean hasSettings) {
+
+        m_hasSettings = hasSettings;
+    }
+
+    /**
+     * Sets the inheritance info for this element.<p>
+     *
+     * @param inheritanceInfo the inheritance info for this element to set
+     */
+    public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
+
+        m_inheritanceInfo = inheritanceInfo;
+    }
+
+    /**
      * Sets the 'new' flag.<p>
      * 
      * @param isNew <code>true</code> on a new element
@@ -119,6 +232,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setNew(boolean isNew) {
 
         m_new = isNew;
+    }
+
+    /**
+     * Sets the no edit reason.<p>
+     *
+     * @param noEditReason the no edit reason to set
+     */
+    public void setNoEditReason(String noEditReason) {
+
+        m_noEditReason = noEditReason;
     }
 
     /**
@@ -149,6 +272,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setSitePath(String sitePath) {
 
         m_sitePath = sitePath;
+    }
+
+    /**
+     * Sets if the current user has view permissions for the element resource.<p>
+     *
+     * @param viewPermission the view permission to set
+     */
+    public void setViewPermission(boolean viewPermission) {
+
+        m_viewPermission = viewPermission;
     }
 
 }

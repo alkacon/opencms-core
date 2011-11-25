@@ -71,6 +71,7 @@ public class CmsContainerElementBean {
     /** The configured properties. */
     private final Map<String, String> m_individualSettings;
 
+    /** The inheritance info of this element. */
     private CmsInheritanceInfo m_inheritanceInfo;
 
     /** Indicates whether the represented resource is in memory only and not in the VFS. */

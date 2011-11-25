@@ -33,12 +33,15 @@ import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -108,18 +111,6 @@ public class CmsJspTagContainer extends TagSupport {
         /** The container width. */
         width;
     }
-
-    /** HTML class used to identify container elements. */
-    public static final String CLASS_CONTAINER_ELEMENT_END_MARKER = "cms_ade_element_end";
-
-    /** HTML class used to identify container elements. */
-    public static final String CLASS_CONTAINER_ELEMENT_START_MARKER = "cms_ade_element_start";
-
-    /** HTML class used to identify error message for elements where rendering failed to render. */
-    public static final String CLASS_ELEMENT_ERROR = "cms_ade_element_error";
-
-    /** HTML class used to identify group container elements. */
-    public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "cms_ade_groupcontainer";
 
     /** Default number of max elements in the container in case no value has been set. */
     public static final String DEFAULT_MAX_ELEMENTS = "100";
@@ -538,90 +529,6 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
-     * Returns the closing wrapper tag for a container element.<p>
-     * 
-     * @param isGroupcontainer <code>true</code> if element is a group-container
-     * 
-     * @return the closing tag
-     * 
-     * @see org.opencms.jsp.CmsJspTagContainer#getElementWrapperTagStart(CmsObject, CmsContainerElementBean, boolean)
-     */
-    protected String getElementWrapperTagEnd(boolean isGroupcontainer) {
-
-        if (isGroupcontainer) {
-            return "</div>";
-        }
-        return "<div class=\"" + CLASS_CONTAINER_ELEMENT_END_MARKER + "\" style=\"display:none\"></div>";
-
-    }
-
-    /**
-     * Returns the opening wrapper tag for elements in the offline project. The wrapper tag is needed by the container-page editor
-     * to identify elements within a container.<p>
-     * 
-     * @param cms the cms object
-     * @param elementBean the element
-     * @param isGroupcontainer <code>true</code> if element is a group-container
-     * 
-     * @return the opening tag
-     * 
-     * @throws CmsException if something goes wrong reading permissions and lock state
-     */
-    protected String getElementWrapperTagStart(
-        CmsObject cms,
-        CmsContainerElementBean elementBean,
-        boolean isGroupcontainer) throws CmsException {
-
-        StringBuffer result = new StringBuffer("<div class='");
-        if (isGroupcontainer) {
-            result.append(CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
-        } else {
-            result.append(CLASS_CONTAINER_ELEMENT_START_MARKER);
-        }
-        result.append("'");
-        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        String noEditReason = "";
-        // reinitializing resource to avoid caching issues
-        elementBean.initResource(cms);
-        if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
-            noEditReason = new CmsResourceUtil(cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
-        } else {
-            noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
-        }
-        result.append(" clientId='").append(elementBean.editorHash()).append("'");
-        result.append(" alt='").append(elementBean.getSitePath()).append("'");
-        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
-        if (elementBean.isCreateNew()) {
-            result.append(" newType='").append(typeName).append("'");
-            CmsResourceTypeConfig typeConfig = OpenCms.getADEManager().lookupConfiguration(
-                cms,
-                cms.getRequestContext().getRootUri()).getResourceType(typeName);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
-                && ((typeConfig == null) || !typeConfig.checkCreatable(cms))) {
-                String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-                noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
-            }
-        }
-        result.append(" hasprops='").append(hasProperties(cms, elementBean.getResource())).append("'");
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-        boolean viewPermission = cms.hasPermissions(
-            elementBean.getResource(),
-            CmsPermissionSet.ACCESS_VIEW,
-            false,
-            CmsResourceFilter.IGNORE_EXPIRATION)
-            && settings.getAccess().getPermissions(cms, elementBean.getResource()).requiresViewPermission();
-        result.append(" hasviewpermission='").append(viewPermission).append("'");
-        result.append(" releasedandnotexpired='").append(elementBean.isReleasedAndNotExpired()).append("'");
-        result.append(" rel='").append(CmsStringUtil.escapeHtml(noEditReason));
-        if (isGroupcontainer) {
-            result.append("'>");
-        } else {
-            result.append("' style='display:none;'></div>");
-        }
-        return result.toString();
-    }
-
-    /**
      * Prints the closing tag for an element wrapper if in online mode.<p>
      * 
      * @param isOnline if true, we are online 
@@ -632,7 +539,15 @@ public class CmsJspTagContainer extends TagSupport {
     protected void printElementWrapperTagEnd(boolean isOnline, boolean isGroupcontainer) throws IOException {
 
         if (!isOnline) {
-            pageContext.getOut().print(getElementWrapperTagEnd(isGroupcontainer));
+            String result;
+            if (isGroupcontainer) {
+                result = "</div>";
+            } else {
+                result = "<div class=\""
+                    + CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER
+                    + "\" style=\"display:none\"></div>";
+            }
+            pageContext.getOut().print(result);
         }
     }
 
@@ -644,17 +559,30 @@ public class CmsJspTagContainer extends TagSupport {
      * @param elementBean the element bean 
      * @param isGroupContainer true if the element is a group-container 
      * 
-     * @throws IOException if the IO fails
-     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
      */
     protected void printElementWrapperTagStart(
         boolean isOnline,
         CmsObject cms,
         CmsContainerElementBean elementBean,
-        boolean isGroupContainer) throws IOException, CmsException {
+        boolean isGroupContainer) throws Exception {
 
         if (!isOnline) {
-            pageContext.getOut().print(getElementWrapperTagStart(cms, elementBean, isGroupContainer));
+            StringBuffer result = new StringBuffer("<div class='");
+            if (isGroupContainer) {
+                result.append(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
+            } else {
+                result.append(CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER);
+            }
+            String serializedElement = getElementInfo(cms, elementBean);
+            result.append("'");
+            result.append(" rel='").append(CmsStringUtil.escapeHtml(serializedElement));
+            if (isGroupContainer) {
+                result.append("'>");
+            } else {
+                result.append("' style='display:none;'></div>");
+            }
+            pageContext.getOut().print(result);
         }
     }
 
@@ -705,6 +633,58 @@ public class CmsJspTagContainer extends TagSupport {
         return containerWidth;
     }
 
+    /**
+     * Returns the serialized element data.<p>
+     * 
+     * @param cms the current cms context
+     * @param elementBean the element to serialize
+     * 
+     * @return the serialized element data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    private String getElementInfo(CmsObject cms, CmsContainerElementBean elementBean) throws Exception {
+
+        CmsContainerElement result = new CmsContainerElement();
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        String noEditReason = "";
+        // reinitializing resource to avoid caching issues
+        elementBean.initResource(cms);
+        if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
+            noEditReason = new CmsResourceUtil(cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
+        } else {
+            noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
+        }
+        result.setClientId(elementBean.editorHash());
+        result.setSitePath(elementBean.getSitePath());
+        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
+        result.setResourceType(typeName);
+        result.setNew(elementBean.isCreateNew());
+        if (elementBean.isCreateNew()) {
+            CmsResourceTypeConfig typeConfig = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().getRootUri()).getResourceType(typeName);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
+                && ((typeConfig == null) || !typeConfig.checkCreatable(cms))) {
+                String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+                noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
+            }
+        }
+        result.setHasSettings(hasSettings(cms, elementBean.getResource()));
+        //    result.put("hasprops", hasProperties(cms, elementBean.getResource()));
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+        boolean viewPermission = cms.hasPermissions(
+            elementBean.getResource(),
+            CmsPermissionSet.ACCESS_VIEW,
+            false,
+            CmsResourceFilter.IGNORE_EXPIRATION)
+            && settings.getAccess().getPermissions(cms, elementBean.getResource()).requiresViewPermission();
+        result.setViewPermission(viewPermission);
+        result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
+        result.setNoEditReason(noEditReason);
+        return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
+    }
+
     private List<CmsContainerElementBean> getGroupContainerElements(
         CmsObject cms,
         CmsContainerElementBean element,
@@ -750,7 +730,7 @@ public class CmsJspTagContainer extends TagSupport {
                 cms,
                 cms.getRequestContext().getRootUri(),
                 name);
-            return result.getElements(!cms.getRequestContext().getCurrentProject().isOnlineProject());
+            return result.getElements(false);
         } catch (CmsException e) {
             return Collections.emptyList();
         }
@@ -817,7 +797,7 @@ public class CmsJspTagContainer extends TagSupport {
      * 
      * @throws CmsException if something goes wrong 
      */
-    private boolean hasProperties(CmsObject cms, CmsResource resource) throws CmsException {
+    private boolean hasSettings(CmsObject cms, CmsResource resource) throws CmsException {
 
         if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
             return false;
@@ -854,7 +834,7 @@ public class CmsJspTagContainer extends TagSupport {
             }
             StringBuffer errorBox = new StringBuffer(256);
             errorBox.append("<div style=\"display:block; padding: 5px; border: red solid 2px; color: black; background: white;\" class=\"");
-            errorBox.append(CLASS_ELEMENT_ERROR);
+            errorBox.append(CmsContainerElement.CLASS_ELEMENT_ERROR);
             errorBox.append("\">");
             errorBox.append(Messages.get().getBundle().key(
                 Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
@@ -890,7 +870,7 @@ public class CmsJspTagContainer extends TagSupport {
         CmsObject cms,
         CmsJspStandardContextBean standardContext,
         CmsContainerElementBean element,
-        Locale locale) throws CmsException, CmsXmlException, CmsLoaderException, IOException {
+        Locale locale) throws Exception {
 
         ServletRequest req = pageContext.getRequest();
         ServletResponse res = pageContext.getResponse();
@@ -955,12 +935,10 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                    subelement.getSitePath(),
-                                    subelementFormatter),
-                                e);
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                subelement.getSitePath(),
+                                subelementFormatter), e);
                         }
                         printElementErrorTag(
                             isOnline,
@@ -1016,12 +994,10 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                            element.getSitePath(),
-                            formatter),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                        element.getSitePath(),
+                        formatter), e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), formatter, e);
             }
