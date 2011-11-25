@@ -149,6 +149,7 @@
 		<xsd:sequence>
 			<xsd:element name="tab" type="OpenCmsDefaultAppinfoTab" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
+		<xsd:attribute name="useall" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoTab">
