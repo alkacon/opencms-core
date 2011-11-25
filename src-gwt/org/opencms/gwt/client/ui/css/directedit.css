@@ -173,8 +173,16 @@ div.optionBar div, div.optionBar span {
     gwt-image: "coreImages.icons.editIconActive";
 }
 @sprite .optionBar .cmsState-up .toolbarEdit, .optionBar .cmsState-up-disabled .toolbarEdit, .optionBar .cmsState-down-disabled .toolbarEdit {
-    gwt-image: "coreImages.icons.editIconDeactivated";
+    gwt-image: "coreImages.icons.lockIconDeactivated";
 }
+
+@sprite .optionBar .cmsState-up-hovering .toolbarInherited, .optionBar .cmsState-down-hovering .toolbarInherited, .optionBar .cmsState-down .toolbarInherited {
+    gwt-image: "coreImages.icons.editIconActive";
+}
+@sprite .optionBar .cmsState-up .toolbarInherited, .optionBar .cmsState-up-disabled .toolbarInherited, .optionBar .cmsState-down-disabled .toolbarInherited {
+    gwt-image: "coreImages.icons.lockIconDeactivated";
+}
+
 @sprite .optionBar .cmsState-up-hovering .toolbarMove, .optionBar .cmsState-down-hovering .toolbarMove, .optionBar .cmsState-down .toolbarMove {
     gwt-image: "coreImages.icons.moveIconActive";
 }

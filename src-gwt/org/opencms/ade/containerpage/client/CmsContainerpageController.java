@@ -38,6 +38,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -280,7 +281,7 @@ public final class CmsContainerpageController {
             if (m_elements.containsKey(m_clientId)) {
                 cached = true;
                 CmsContainerElementData elementData = m_elements.get(m_clientId);
-                if (elementData.isGroupContainer()) {
+                if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                     for (String subItemId : elementData.getSubItems()) {
                         if (!m_elements.containsKey(subItemId)) {
                             cached = false;
@@ -414,9 +415,21 @@ public final class CmsContainerpageController {
     public CmsContainerpageController() {
 
         INSTANCE = this;
-        m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObject(
+        m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
             getContainerpageService(),
             CmsCntPageData.DICT_NAME);
+    }
+
+    /**
+     * Returns the deserialized element data.<p>
+     * 
+     * @param data the data to deserialize
+     * 
+     * @return the container element
+     */
+    public CmsContainerElement getSerializedElement(String data) {
+
+        return (CmsContainerElement)CmsRpcPrefetcher.getSerializedObjectFromString(getContainerpageService(), data);
     }
 
     /**
@@ -1283,6 +1296,10 @@ public final class CmsContainerpageController {
                     replacer.setNewType(containerElement.getNewType());
                 }
             }
+            if (isGroupcontainerEditing() && (containerElement.getInheritanceInfo() != null)) {
+                // in case of inheritance container editing, keep the inheritance info
+                replacer.setInheritanceInfo(containerElement.getInheritanceInfo());
+            }
             parentContainer.insert(replacer, parentContainer.getWidgetIndex(containerElement));
             containerElement.removeFromParent();
         }
@@ -1475,6 +1492,56 @@ public final class CmsContainerpageController {
                         CmsCoreProvider.get().getStructureId(),
                         getRequestParams(),
                         groupContainer,
+                        m_containerBeans,
+                        getLocale(),
+                        this);
+                }
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+                 */
+                @Override
+                protected void onResponse(Map<String, CmsContainerElementData> result) {
+
+                    m_elements.putAll(result);
+                    try {
+                        replaceContainerElement(groupContainerElement, result.get(groupContainerElement.getId()));
+                    } catch (Exception e) {
+                        CmsDebugLog.getInstance().printLine("Error replacing group container element");
+                    }
+                    addToRecentList(groupContainerElement.getId());
+                    CmsNotification.get().send(
+                        Type.NORMAL,
+                        Messages.get().key(Messages.GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0));
+                }
+            };
+            action.execute();
+
+        }
+    }
+
+    /**
+     * Saves the inheritance container.<p>
+     * 
+     * @param inheritanceContainer the inheritance container data to save 
+     * @param groupContainerElement the group container widget
+     */
+    public void saveInheritContainer(
+        final CmsInheritanceContainer inheritanceContainer,
+        final CmsGroupContainerElementPanel groupContainerElement) {
+
+        if (getGroupcontainer() != null) {
+            CmsRpcAction<Map<String, CmsContainerElementData>> action = new CmsRpcAction<Map<String, CmsContainerElementData>>() {
+
+                /**
+                 * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+                 */
+                @Override
+                public void execute() {
+
+                    getContainerpageService().saveInheritanceContainer(
+                        CmsCoreProvider.get().getStructureId(),
+                        inheritanceContainer,
                         m_containerBeans,
                         getLocale(),
                         this);

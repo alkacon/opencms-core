@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
@@ -64,6 +65,9 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     /** The index of the current placeholder position. */
     private int m_placeholderIndex = -1;
 
+    /** The resource type name. */
+    private String m_resourceType;
+
     /**
      * Constructor.<p>
      * 
@@ -71,6 +75,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      * @param parent the drag parent
      * @param clientId the client id
      * @param sitePath the element site-path
+     * @param resourceType the resource type name
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
@@ -81,13 +86,14 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         I_CmsDropContainer parent,
         String clientId,
         String sitePath,
+        String resourceType,
         String noEditReason,
         boolean hasSettings,
         boolean hasViewPermission,
         boolean releasedAndNotExpired) {
 
         super(element, parent, clientId, sitePath, noEditReason, hasSettings, hasViewPermission, releasedAndNotExpired);
-
+        m_resourceType = resourceType;
     }
 
     /**
@@ -215,6 +221,26 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     }
 
     /**
+     * Returns if this element represents a group container.<p>
+     * 
+     * @return <code>true</code> if this element represents a group container
+     */
+    public boolean isGroupContainer() {
+
+        return CmsContainerElement.GROUP_CONTAINER_TYPE_NAME.equals(m_resourceType);
+    }
+
+    /**
+     * Returns if this element represents an inherit container.<p>
+     * 
+     * @return <code>true</code> if this element represents an inherit container
+     */
+    public boolean isInheritContainer() {
+
+        return CmsContainerElement.INHERIT_CONTAINER_TYPE_NAME.equals(m_resourceType);
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable)
      */
     public void onDrop(I_CmsDraggable draggable) {
@@ -236,7 +262,9 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             m_editingMarker.getStyle().setHeight(position.getHeight() + 4, Unit.PX);
             m_editingMarker.getStyle().setWidth(position.getWidth() + 4, Unit.PX);
         }
-        m_highlighting.setPosition(position);
+        if (m_highlighting != null) {
+            m_highlighting.setPosition(position);
+        }
     }
 
     /**

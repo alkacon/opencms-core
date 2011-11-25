@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
@@ -84,6 +85,9 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
 
     /** Indicates whether this element has settings to edit. */
     private boolean m_hasSettings;
+
+    /** The inheritance info for this element. */
+    private CmsInheritanceInfo m_inheritanceInfo;
 
     /** The is new element type. */
     private String m_newType;
@@ -197,6 +201,16 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     public String getId() {
 
         return m_clientId;
+    }
+
+    /**
+     * Returns the inheritance info for this element.<p>
+     *
+     * @return the inheritance info for this element
+     */
+    public CmsInheritanceInfo getInheritanceInfo() {
+
+        return m_inheritanceInfo;
     }
 
     /**
@@ -414,6 +428,16 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     }
 
     /**
+     * Sets the inheritance info for this element.<p>
+     *
+     * @param inheritanceInfo the inheritance info for this element to set
+     */
+    public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
+
+        m_inheritanceInfo = inheritanceInfo;
+    }
+
+    /**
      * Sets the new-type of the element.<p>
      * 
      * @param newType the new-type
@@ -627,28 +651,28 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     }
 
     private native void resetNodeInsertedHandler()/*-{
-      var $this = this;
-      var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-      var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-      if (handler == null) {
-         handler = function(event) {
-            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-         };
-         $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-      } else {
-         if (element.removeEventLister) {
-            element.removeEventListener("DOMNodeInserted", handler);
-         } else if (element.detachEvent) {
+        var $this = this;
+        var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+        var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+        if (handler == null) {
+            handler = function(event) {
+                $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+            };
+            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+        } else {
+            if (element.removeEventLister) {
+                element.removeEventListener("DOMNodeInserted", handler);
+            } else if (element.detachEvent) {
+                // IE specific
+                element.detachEvent("onDOMNodeInserted", handler);
+            }
+        }
+        if (element.addEventListener) {
+            element.addEventListener("DOMNodeInserted", handler, false);
+        } else if (element.attachEvent) {
             // IE specific
-            element.detachEvent("onDOMNodeInserted", handler);
-         }
-      }
-      if (element.addEventListener) {
-         element.addEventListener("DOMNodeInserted", handler, false);
-      } else if (element.attachEvent) {
-         // IE specific
-         element.attachEvent("onDOMNodeInserted", handler);
-      }
+            element.attachEvent("onDOMNodeInserted", handler);
+        }
     }-*/;
 
     /**

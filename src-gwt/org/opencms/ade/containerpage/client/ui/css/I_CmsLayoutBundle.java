@@ -109,6 +109,18 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String hiddenElement();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hideElements();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String menuTabContainer();
 
         /** Access method.<p>

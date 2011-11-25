@@ -136,7 +136,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public CmsSitemapController() {
 
         m_undone = new ArrayList<I_CmsClientSitemapChange>();
-        m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObject(getService(), CmsSitemapData.DICT_NAME);
+        m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(getService(), CmsSitemapData.DICT_NAME);
 
         m_hiddenProperties = new HashSet<String>();
         m_detailPageTable = m_data.getDetailPageTable();

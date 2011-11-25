@@ -46,18 +46,31 @@ public final class CmsRpcPrefetcher {
     }
 
     /**
-     * Deserializes the prefetched RPC data with the given name.<p>
+     * Deserializes the prefetched RPC data with the given dictionary name.<p>
      * 
      * @param asyncService the RPC service instance
-     * @param name the global variable name
+     * @param dictionaryName the global variable name
      * 
      * @return the prefetched RPC data
      */
-    public static Object getSerializedObject(Object asyncService, String name) {
+    public static Object getSerializedObjectFromDictionary(Object asyncService, String dictionaryName) {
+
+        return getSerializedObjectFromString(asyncService, getString(dictionaryName));
+    }
+
+    /**
+     * Deserializes the prefetched RPC data.<p>
+     * 
+     * @param asyncService the RPC service instance
+     * @param serializedData the serialized object data
+     * 
+     * @return the prefetched RPC data
+     */
+    public static Object getSerializedObjectFromString(Object asyncService, String serializedData) {
 
         try {
             SerializationStreamFactory ssf = (SerializationStreamFactory)asyncService;
-            return ssf.createStreamReader(getString(name)).readObject();
+            return ssf.createStreamReader(serializedData).readObject();
         } catch (SerializationException e) {
             // should never happen
             CmsLog.log(e.getLocalizedMessage());

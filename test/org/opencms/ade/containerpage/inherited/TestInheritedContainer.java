@@ -698,8 +698,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 cms,
                 x2,
                 "alpha").getElements(true);
-            elements.get(1).getInheritanceInfo().setVisibility(new Boolean(false));
-            elements.get(2).getInheritanceInfo().setVisibility(new Boolean(false));
+            elements.get(1).getInheritanceInfo().setVisible(false);
+            elements.get(2).getInheritanceInfo().setVisible(false);
             OpenCms.getADEManager().saveInheritedContainer(cms, "/system/x1/x2", "alpha", false, elements);
             checkConfigurationForPath(
                 "/system/x1/x2",
@@ -1018,7 +1018,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             String value = entry.getValue();
             if ("visible".equals(key)) {
                 boolean expectVisible = Boolean.parseBoolean(value);
-                assertEquals(expectVisible, element.getInheritanceInfo().getVisibility().booleanValue());
+                assertEquals(expectVisible, element.getInheritanceInfo().isVisibile());
             } else if ("key".equals(key)) {
                 String expectedKey = value;
                 assertEquals(expectedKey, element.getInheritanceInfo().getKey());

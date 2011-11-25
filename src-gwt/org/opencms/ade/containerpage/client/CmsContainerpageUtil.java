@@ -35,7 +35,9 @@ import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.ArrayList;
@@ -54,15 +56,6 @@ import com.google.gwt.user.client.Element;
  * @since 8.0.0
  */
 public class CmsContainerpageUtil {
-
-    /** HTML class used to identify container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_CONTAINER_ELEMENT_END_MARKER}. */
-    public static final String CLASS_CONTAINER_ELEMENT_END_MARKER = "cms_ade_element_end";
-
-    /** HTML class used to identify container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_CONTAINER_ELEMENT_START_MARKER}. */
-    public static final String CLASS_CONTAINER_ELEMENT_START_MARKER = "cms_ade_element_start";
-
-    /** HTML class used to identify group container elements. Has to be identical with {@link org.opencms.jsp.CmsJspTagContainer#CLASS_GROUP_CONTAINER_ELEMENT_MARKER}. */
-    public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "cms_ade_groupcontainer";
 
     /** The container page controller. */
     private CmsContainerpageController m_controller;
@@ -109,16 +102,15 @@ public class CmsContainerpageUtil {
         // the drag element widgets are created from the existing DOM elements,
         Element child = (Element)container.getElement().getFirstChildElement();
         while (child != null) {
-            boolean isContainerElement = CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, child);
-            boolean isGroupcontainerElement = CmsDomUtil.hasClass(CLASS_GROUP_CONTAINER_ELEMENT_MARKER, child);
+            boolean isContainerElement = CmsDomUtil.hasClass(
+                CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
+                child);
+            boolean isGroupcontainerElement = CmsDomUtil.hasClass(
+                CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER,
+                child);
             if (isContainerElement || isGroupcontainerElement) {
-                String clientId = child.getAttribute("clientId");
-                String sitePath = child.getAttribute("alt");
-                String noEditReason = child.getAttribute("rel");
-                String newType = child.getAttribute("newType");
-                boolean hasProps = Boolean.parseBoolean(child.getAttribute("hasprops"));
-                boolean hasViewPermission = Boolean.parseBoolean(child.getAttribute("hasviewpermission"));
-                boolean releasedAndNotExpired = Boolean.parseBoolean(child.getAttribute("releasedandnotexpired"));
+                String serializedData = child.getAttribute("rel");
+                CmsContainerElement elementData = m_controller.getSerializedElement(serializedData);
                 if (isContainerElement) {
                     // searching for content element root
                     Element elementRoot = (Element)child.getNextSibling();
@@ -132,13 +124,13 @@ public class CmsContainerpageUtil {
                         child = null;
                         continue;
                     }
-                    if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, elementRoot)) {
+                    if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER, elementRoot)) {
                         // broken element, already at next start marker
                         child.removeFromParent();
                         child = elementRoot;
                         continue;
                     }
-                    if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_END_MARKER, elementRoot)) {
+                    if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER, elementRoot)) {
                         // broken element, no content element root
                         child.removeFromParent();
                         child = (Element)elementRoot.getNextSiblingElement();
@@ -150,8 +142,10 @@ public class CmsContainerpageUtil {
                         // only if the end marker node is not null and has neither the end-marker class or start-marker class
                         // remove the current node and check the next sibling 
                         while (!((endMarker == null) || ((endMarker.getNodeType() == Node.ELEMENT_NODE) && (CmsDomUtil.hasClass(
-                            CLASS_CONTAINER_ELEMENT_END_MARKER,
-                            endMarker) || CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, endMarker))))) {
+                            CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER,
+                            endMarker) || CmsDomUtil.hasClass(
+                            CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
+                            endMarker))))) {
                             Element temp = endMarker;
                             endMarker = (Element)endMarker.getNextSibling();
                             temp.removeFromParent();
@@ -163,7 +157,7 @@ public class CmsContainerpageUtil {
                             child = null;
                             continue;
                         }
-                        if (CmsDomUtil.hasClass(CLASS_CONTAINER_ELEMENT_START_MARKER, endMarker)) {
+                        if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER, endMarker)) {
                             // broken element, end marker missing
                             elementRoot.removeFromParent();
                             child.removeFromParent();
@@ -173,14 +167,9 @@ public class CmsContainerpageUtil {
                         CmsContainerPageElementPanel containerElement = createElement(
                             elementRoot,
                             container,
-                            clientId,
-                            sitePath,
-                            noEditReason,
-                            hasProps,
-                            hasViewPermission,
-                            releasedAndNotExpired);
-                        if ((newType != null) && (newType.length() > 0)) {
-                            containerElement.setNewType(newType);
+                            elementData);
+                        if (elementData.isNew()) {
+                            containerElement.setNewType(elementData.getResourceType());
                         }
                         container.adoptElement(containerElement);
                         child.removeFromParent();
@@ -190,15 +179,7 @@ public class CmsContainerpageUtil {
                     }
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
                     CmsDomUtil.removeScriptTags(child);
-                    CmsGroupContainerElementPanel groupContainer = createGroupcontainer(
-                        child,
-                        container,
-                        clientId,
-                        sitePath,
-                        noEditReason,
-                        hasProps,
-                        hasViewPermission,
-                        releasedAndNotExpired);
+                    CmsGroupContainerElementPanel groupContainer = createGroupcontainer(child, container, elementData);
                     groupContainer.setContainerId(container.getContainerId());
                     container.adoptElement(groupContainer);
                     consumeContainerElements(groupContainer);
@@ -250,33 +231,27 @@ public class CmsContainerpageUtil {
      * 
      * @throws Exception if something goes wrong
      */
-    public CmsContainerPageElementPanel createElement(CmsContainerElementData containerElement, I_CmsDropContainer container)
-    throws Exception {
+    public CmsContainerPageElementPanel createElement(
+        CmsContainerElementData containerElement,
+        I_CmsDropContainer container) throws Exception {
 
-        if (containerElement.isGroupContainer()) {
+        if (containerElement.isGroupContainer() || containerElement.isInheritContainer()) {
             List<CmsContainerElementData> subElements = new ArrayList<CmsContainerElementData>();
             for (String subId : containerElement.getSubItems()) {
                 CmsContainerElementData element = m_controller.getCachedElement(subId);
                 if (element != null) {
                     subElements.add(element);
+                } else {
+                    CmsDebugLog.getInstance().printLine("Cached element not found");
                 }
             }
             return createGroupcontainerElement(containerElement, subElements, container);
         }
-        boolean hasProps = !containerElement.getSettingConfig().isEmpty();
         com.google.gwt.user.client.Element element = CmsDomUtil.createElement(containerElement.getContents().get(
             container.getContainerId()));
         // ensure any embedded flash players are set opaque so UI elements may be placed above them
         CmsDomUtil.fixFlashZindex(element);
-        return createElement(
-            element,
-            container,
-            containerElement.getClientId(),
-            containerElement.getSitePath(),
-            containerElement.getNoEditReason(),
-            hasProps,
-            containerElement.hasViewPermission(),
-            containerElement.isReleasedAndNotExpired());
+        return createElement(element, container, containerElement);
     }
 
     /**
@@ -296,18 +271,8 @@ public class CmsContainerpageUtil {
         I_CmsDropContainer container) throws Exception {
 
         com.google.gwt.user.client.Element element = DOM.createDiv();
-        element.addClassName(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
-        boolean hasProps = !containerElement.getSettingConfig().isEmpty();
-
-        CmsGroupContainerElementPanel groupContainer = createGroupcontainer(
-            element,
-            container,
-            containerElement.getClientId(),
-            containerElement.getSitePath(),
-            containerElement.getNoEditReason(),
-            hasProps,
-            containerElement.hasViewPermission(),
-            containerElement.isReleasedAndNotExpired());
+        element.addClassName(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
+        CmsGroupContainerElementPanel groupContainer = createGroupcontainer(element, container, containerElement);
         groupContainer.setContainerId(container.getContainerId());
         //adding sub-elements
         Iterator<CmsContainerElementData> it = subElements.iterator();
@@ -355,29 +320,23 @@ public class CmsContainerpageUtil {
     private CmsContainerPageElementPanel createElement(
         com.google.gwt.user.client.Element element,
         I_CmsDropContainer dragParent,
-        String clientId,
-        String sitePath,
-        String noEditReason,
-        boolean hasProps,
-        boolean hasViewPermission,
-        boolean releasedAndNotExpired) {
+        CmsContainerElement elementData) {
 
         CmsContainerPageElementPanel dragElement = new CmsContainerPageElementPanel(
             element,
             dragParent,
-            clientId,
-            sitePath,
-            noEditReason,
-            hasProps,
-            hasViewPermission,
-            releasedAndNotExpired);
-        //        enableDragHandler(dragElement);
+            elementData.getClientId(),
+            elementData.getSitePath(),
+            elementData.getNoEditReason(),
+            elementData.hasSettings(),
+            elementData.hasViewPermission(),
+            elementData.isReleasedAndNotExpired());
         addOptionBar(dragElement);
         return dragElement;
     }
 
     /**
-     * Creates an drag container element. This will not add an option-bar!<p>
+     * Creates a drag container element. This will not add an option-bar!<p>
      * 
      * @param element the DOM element
      * @param dragParent the drag parent
@@ -392,22 +351,18 @@ public class CmsContainerpageUtil {
     private CmsGroupContainerElementPanel createGroupcontainer(
         com.google.gwt.user.client.Element element,
         I_CmsDropContainer dragParent,
-        String clientId,
-        String sitePath,
-        String noEditReason,
-        boolean hasProps,
-        boolean hasViewPermission,
-        boolean releasedAndNotExpired) {
+        CmsContainerElement elementData) {
 
         CmsGroupContainerElementPanel groupContainer = new CmsGroupContainerElementPanel(
             element,
             dragParent,
-            clientId,
-            sitePath,
-            noEditReason,
-            hasProps,
-            hasViewPermission,
-            releasedAndNotExpired);
+            elementData.getClientId(),
+            elementData.getSitePath(),
+            elementData.getResourceType(),
+            elementData.getNoEditReason(),
+            elementData.hasSettings(),
+            elementData.hasViewPermission(),
+            elementData.isReleasedAndNotExpired());
         return groupContainer;
     }
 

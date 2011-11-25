@@ -363,7 +363,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         super(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_0));
 
         I_CmsLayoutBundle.INSTANCE.uploadCss().ensureInjected();
-        m_data = (CmsUploadData)CmsRpcPrefetcher.getSerializedObject(getUploadService(), CmsUploadData.DICT_NAME);
+        m_data = (CmsUploadData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(getUploadService(), CmsUploadData.DICT_NAME);
 
         setModal(true);
         setGlassEnabled(true);

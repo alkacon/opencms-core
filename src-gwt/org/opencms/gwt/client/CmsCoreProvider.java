@@ -76,7 +76,7 @@ public final class CmsCoreProvider extends CmsCoreData {
      */
     protected CmsCoreProvider() {
 
-        super((CmsCoreData)CmsRpcPrefetcher.getSerializedObject(getService(), DICT_NAME));
+        super((CmsCoreData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(getService(), DICT_NAME));
         m_clientTime = System.currentTimeMillis();
 
         I_CmsUserAgentInfo userAgentInfo = GWT.create(I_CmsUserAgentInfo.class);

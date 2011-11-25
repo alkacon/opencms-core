@@ -142,7 +142,14 @@ public interface I_CmsButton {
 
         /** Toolbar button. */
         BACK(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarBack(), Messages.get().key(
-            Messages.GUI_TOOLBAR_BACK_0));
+            Messages.GUI_TOOLBAR_BACK_0)),
+
+        /** Shows formerly hidden elements. */
+        SHOW(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarNew(), Messages.get().key(
+            Messages.GUI_TOOLBAR_ADD_0)),
+
+        /** Inherited element button. */
+        INHERITED(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarInherited(), "Inherited");
 
         /** The icon class name. */
         private String m_iconClass;

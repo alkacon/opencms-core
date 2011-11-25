@@ -29,7 +29,9 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
-import org.opencms.ade.containerpage.client.ui.CmsGroupcontainerEditor;
+import org.opencms.ade.containerpage.client.ui.groupeditor.CmsGroupContainerEditor;
+import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -565,8 +567,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             return;
         }
 
-        if (CmsDomUtil.hasClass(CmsContainerpageUtil.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
-            openGroupcontainerEditor((CmsGroupContainerElementPanel)element);
+        if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
+            openGroupEditor((CmsGroupContainerElementPanel)element);
         } else {
             m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
         }
@@ -918,9 +920,13 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * 
      * @param groupContainer the group-container element
      */
-    private void openGroupcontainerEditor(CmsGroupContainerElementPanel groupContainer) {
+    private void openGroupEditor(CmsGroupContainerElementPanel groupContainer) {
 
-        CmsGroupcontainerEditor.openGroupcontainerEditor(groupContainer, m_controller, this);
+        if (groupContainer.isGroupContainer()) {
+            CmsGroupContainerEditor.openGroupcontainerEditor(groupContainer, m_controller, this);
+        } else if (groupContainer.isInheritContainer()) {
+            CmsInheritanceContainerEditor.openInheritanceContainerEditor(groupContainer, m_controller, this);
+        }
     }
 
     /**

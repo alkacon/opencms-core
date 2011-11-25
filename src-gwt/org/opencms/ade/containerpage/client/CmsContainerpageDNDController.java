@@ -464,7 +464,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                     Element helper = null;
                     Element placeholder = null;
-                    if (elementData.isGroupContainer()) {
+                    if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                         helper = DOM.createDiv();
                         String content = "";
                         for (String groupId : elementData.getSubItems()) {

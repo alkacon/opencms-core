@@ -31,6 +31,9 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import java.util.Iterator;
+
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
@@ -42,6 +45,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A panel to be displayed inside a container element to provide optional functions like edit, move, remove... <p> 
@@ -156,6 +160,7 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
                 }
             }
         }
+        optionBar.initWidth();
         return optionBar;
     }
 
@@ -164,11 +169,9 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
      * 
      * @param w the button to add
      */
-    public void add(CmsElementOptionButton w) {
+    public void add(Widget w) {
 
         m_panel.add(w);
-        m_calculatedWidth = m_panel.getWidgetCount() * 20;
-        getElement().getStyle().setWidth(m_calculatedWidth, Unit.PX);
     }
 
     /**
@@ -205,6 +208,30 @@ public class CmsElementOptionBar extends Composite implements HasMouseOverHandle
     public int getCalculatedWidth() {
 
         return m_calculatedWidth;
+    }
+
+    /**
+     * Calculates and sets the width of the option bar.<p>
+     */
+    public void initWidth() {
+
+        m_calculatedWidth = 0;
+        for (Widget w : m_panel) {
+            if (!Display.NONE.getCssName().equalsIgnoreCase(w.getElement().getStyle().getDisplay())) {
+                m_calculatedWidth += 20;
+            }
+        }
+        getElement().getStyle().setWidth(m_calculatedWidth, Unit.PX);
+    }
+
+    /**
+     * Returns an iterator for the child widgets.<p>
+     * 
+     * @return the iterator
+     */
+    public Iterator<Widget> iterator() {
+
+        return m_panel.iterator();
     }
 
     /** 

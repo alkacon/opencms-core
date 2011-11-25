@@ -130,10 +130,10 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_handler = handler;
 
         // get initial search for gallery
-        m_searchObject = (CmsGallerySearchBean)CmsRpcPrefetcher.getSerializedObject(
+        m_searchObject = (CmsGallerySearchBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
             getGalleryService(),
             CmsGallerySearchBean.DICT_NAME);
-        m_dialogBean = (CmsGalleryDataBean)CmsRpcPrefetcher.getSerializedObject(
+        m_dialogBean = (CmsGalleryDataBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
             getGalleryService(),
             CmsGalleryDataBean.DICT_NAME);
         m_dialogMode = m_dialogBean.getMode();
