@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,7 +67,7 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
             return null;
         }
 
-        if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")) {
+        if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
             // exclude these for performance reasons 
             return null;
         }
