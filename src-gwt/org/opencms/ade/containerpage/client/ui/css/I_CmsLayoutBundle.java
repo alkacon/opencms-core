@@ -115,6 +115,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String hiddenElementOverlay();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String hideElements();
 
         /** Access method.<p>

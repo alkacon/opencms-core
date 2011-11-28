@@ -46,6 +46,7 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.ArrayList;
@@ -53,9 +54,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -71,6 +74,9 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /** Css class to hide elements. */
     private static final String HIDE_ELEMENTS_CLASS = I_CmsLayoutBundle.INSTANCE.containerpageCss().hideElements();
+
+    /** Css class to hide elements. */
+    private static final String HIDDEN_ELEMENT_OVERLAY_CLASS = I_CmsLayoutBundle.INSTANCE.containerpageCss().hiddenElementOverlay();
 
     /** The editor instance. */
     private static CmsInheritanceContainerEditor INSTANCE;
@@ -156,6 +162,9 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         } else {
             elementWidget.getInheritanceInfo().setVisible(false);
             elementWidget.addStyleName(HIDDEN_ELEMENT_CLASS);
+            Element elementOverlay = DOM.createDiv();
+            elementOverlay.setClassName(HIDDEN_ELEMENT_OVERLAY_CLASS);
+            elementWidget.getElement().appendChild(elementOverlay);
             getGroupContainerWidget().add(elementWidget);
             updateButtonVisibility(elementWidget);
         }
@@ -180,6 +189,13 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         elementWidget.removeStyleName(HIDDEN_ELEMENT_CLASS);
         updateButtonVisibility(elementWidget);
         getGroupContainerWidget().refreshHighlighting();
+        List<Element> elements = CmsDomUtil.getElementsByClass(
+            HIDDEN_ELEMENT_OVERLAY_CLASS,
+            Tag.div,
+            elementWidget.getElement());
+        for (Element element : elements) {
+            element.removeFromParent();
+        }
     }
 
     /**
@@ -372,6 +388,9 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                         elementWidget.setElementOptionBar(createOptionBar(elementWidget));
                         getGroupContainerWidget().add(elementWidget);
                         updateButtonVisibility(elementWidget);
+                        Element elementOverlay = DOM.createDiv();
+                        elementOverlay.setClassName(HIDDEN_ELEMENT_OVERLAY_CLASS);
+                        elementWidget.getElement().appendChild(elementOverlay);
                     } catch (Exception e) {
                         CmsDebugLog.getInstance().printLine(e.getMessage());
                     }

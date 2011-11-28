@@ -87,7 +87,7 @@ div.expired{
 	display: none;
 }
 
-@sprite .expired div.expiredOverlay{
+@sprite .expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay{
 	gwt-image: 'otherImages.invalidElement';
 	position: absolute;
 	height: auto;
@@ -99,15 +99,15 @@ div.expired{
 }
 
 @if user.agent ie6 {
-	.expired div.expiredOverlay {
+	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
 		filter: literal("alpha(opacity = 60)");
 	}
 } @elif user.agent ie8 {
-	.expired div.expiredOverlay {
+	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
 		-ms-filter: "alpha(opacity = 60)";
 	}
 } @else {
-	.expired div.expiredOverlay {
+	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay {
         opacity: 0.6;
 	}
 }

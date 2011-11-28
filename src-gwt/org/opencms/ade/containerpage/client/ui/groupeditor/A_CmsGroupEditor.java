@@ -183,6 +183,8 @@ public abstract class A_CmsGroupEditor extends Composite {
         m_containerMarker.getStyle().setTop(m_groupContainerPosition.getTop() - 4, Unit.PX);
         m_containerMarker.getStyle().setWidth(m_groupContainerPosition.getWidth() + 4, Unit.PX);
         m_containerMarker.getStyle().setHeight(m_groupContainerPosition.getHeight() + 4, Unit.PX);
+        m_containerMarker.getStyle().setBackgroundColor(
+            CmsDomUtil.getEffectiveBackgroundColor(m_parentContainer.getElement()));
         m_groupContainer.getElementOptionBar().setVisible(false);
         m_groupContainer.getElementOptionBar().removeStyleName(
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().cmsHovering());
