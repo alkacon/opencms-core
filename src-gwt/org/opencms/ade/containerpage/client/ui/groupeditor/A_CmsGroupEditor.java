@@ -153,7 +153,6 @@ public abstract class A_CmsGroupEditor extends Composite {
         m_handler = handler;
         m_editorWidget = uiBinder.createAndBindUi(this);
         initWidget(m_editorWidget);
-        m_overlayDiv.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexHighlighting());
         m_editorId = HTMLPanel.createUniqueId();
         m_editorWidget.getElement().setId(m_editorId);
         m_groupContainer = groupContainer;
@@ -434,10 +433,12 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Opens the group container edit dialog.<p>
+     * 
+     * @param dialogTitle the dialog title 
      */
-    protected void openDialog() {
+    protected void openDialog(String dialogTitle) {
 
-        m_editorDialog = new CmsPopup(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0), 500);
+        m_editorDialog = new CmsPopup(dialogTitle, 500);
         addButtons();
         int contentHeight = m_dialogContent.getOffsetHeight();
         m_editorDialog.setMainContent(m_dialogContent);

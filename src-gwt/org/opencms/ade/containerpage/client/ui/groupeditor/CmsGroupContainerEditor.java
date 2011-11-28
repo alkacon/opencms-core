@@ -110,7 +110,7 @@ public class CmsGroupContainerEditor extends A_CmsGroupEditor {
             if (controller.startEditingGroupcontainer(groupContainer)) {
                 INSTANCE = new CmsGroupContainerEditor(groupContainer, controller, handler);
                 RootPanel.get().add(INSTANCE);
-                INSTANCE.openDialog();
+                INSTANCE.openDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
                 INSTANCE.getGroupContainerWidget().refreshHighlighting();
             }
         }

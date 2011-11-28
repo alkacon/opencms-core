@@ -6,9 +6,8 @@
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel styleName="{containerpage.containerpageCss.groupcontainerEditor}">
-		<div ui:field="m_overlayDiv" class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.groupcontainerOverlay}">
+		<div ui:field="m_overlayDiv" class="{resources.dialogCss.popupOverlay} {containerpage.containerpageCss.groupcontainerOverlay}"></div>
 		<div ui:field="m_containerMarker" class="{containerpage.groupcontainerCss.containerMarker}"></div>
-		</div>
 		<g:FlowPanel ui:field="m_dialogContent"/>
 	</g:HTMLPanel>
 </ui:UiBinder>

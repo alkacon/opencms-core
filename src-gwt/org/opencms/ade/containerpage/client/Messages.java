@@ -37,6 +37,18 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_RESOURCE_CHANGED_BY_1 = "ERR_LOCK_RESOURCE_CHANGED_BY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_RESOURCE_LOCKED_BY_1 = "ERR_LOCK_RESOURCE_LOCKED_BY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_TITLE_RESOURCE_CHANGED_0 = "ERR_LOCK_TITLE_RESOURCE_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_TITLE_RESOURCE_LOCKED_0 = "ERR_LOCK_TITLE_RESOURCE_LOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_BREAK_UP_TEXT_0 = "GUI_BUTTON_BREAK_UP_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -82,10 +94,10 @@ public final class Messages {
     public static final String GUI_DIALOG_PUBLISH_NOT_SAVED_0 = "GUI_DIALOG_PUBLISH_NOT_SAVED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_RELOAD_TITLE_0 = "GUI_DIALOG_RELOAD_TITLE_0";
+    public static final String GUI_DIALOG_RELOAD_TEXT_0 = "GUI_DIALOG_RELOAD_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_RELOAD_TEXT_0 = "GUI_DIALOG_RELOAD_TEXT_0";
+    public static final String GUI_DIALOG_RELOAD_TITLE_0 = "GUI_DIALOG_RELOAD_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_RESET_TITLE_0 = "GUI_DIALOG_RESET_TITLE_0";
@@ -109,13 +121,25 @@ public final class Messages {
     public static final String GUI_GROUPCONTAINER_LOADING_DATA_0 = "GUI_GROUPCONTAINER_LOADING_DATA_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_SELECT_TITLE_0 = "GUI_MODEL_SELECT_TITLE_0";
+    public static final String GUI_INHERITANCECONTAINER_CAPTION_0 = "GUI_INHERITANCECONTAINER_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INHERITANCECONTAINER_CONFIG_NAME_0 = "GUI_INHERITANCECONTAINER_CONFIG_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INHERITANCECONTAINER_HIDE_ELEMENTS_0 = "GUI_INHERITANCECONTAINER_HIDE_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INHERITANCECONTAINER_SHOW_HIDDEN_0 = "GUI_INHERITANCECONTAINER_SHOW_HIDDEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_FAIL_0 = "GUI_LOCK_FAIL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_SELECT_MESSAGE_0 = "GUI_MODEL_SELECT_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCK_FAIL_0 = "GUI_LOCK_FAIL_0";
+    public static final String GUI_MODEL_SELECT_TITLE_0 = "GUI_MODEL_SELECT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_SETTINGS_0 = "GUI_NO_SETTINGS_0";
@@ -164,18 +188,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOCK_RESOURCE_CHANGED_BY_1 = "ERR_LOCK_RESOURCE_CHANGED_BY_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOCK_RESOURCE_LOCKED_BY_1 = "ERR_LOCK_RESOURCE_LOCKED_BY_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOCK_TITLE_RESOURCE_CHANGED_0 = "ERR_LOCK_TITLE_RESOURCE_CHANGED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOCK_TITLE_RESOURCE_LOCKED_0 = "ERR_LOCK_TITLE_RESOURCE_LOCKED_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

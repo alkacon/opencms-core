@@ -138,7 +138,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             if (controller.startEditingGroupcontainer(groupContainer)) {
                 INSTANCE = new CmsInheritanceContainerEditor(groupContainer, controller, handler);
                 RootPanel.get().add(INSTANCE);
-                INSTANCE.openDialog();
+                INSTANCE.openDialog(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_CAPTION_0));
                 INSTANCE.getGroupContainerWidget().refreshHighlighting();
             }
         }
@@ -191,8 +191,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         addCancelButton();
         addSaveButton();
         CmsToggleButton showElementsButton = new CmsToggleButton();
-        showElementsButton.setText("Show hidden elements");
-        showElementsButton.setDownFace("Hide elements", null);
+        showElementsButton.setText(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_SHOW_HIDDEN_0));
+        showElementsButton.setDownFace(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_HIDE_ELEMENTS_0), null);
         showElementsButton.setUseMinWidth(true);
         showElementsButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
         showElementsButton.addClickHandler(new ClickHandler() {
@@ -228,7 +228,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         m_inputDescription = new CmsTextBox();
         addInputField(Messages.get().key(Messages.GUI_GROUPCONTAINER_LABEL_DESCRIPTION_0), m_inputDescription);
         m_inputName = new CmsTextBox();
-        addInputField("Inheritance name:", m_inputName);
+        addInputField(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_CONFIG_NAME_0), m_inputName);
     }
 
     /**
@@ -318,6 +318,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             }
         }
         CmsInheritanceContainer container = new CmsInheritanceContainer();
+        container.setNew(getGroupContainerWidget().isNew());
         container.setClientId(getGroupContainerWidget().getId());
         container.setTitle(m_inputTitle.getText());
         container.setDescription(m_inputDescription.getText());
