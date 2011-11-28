@@ -119,7 +119,7 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
         String key = getCacheKey(rootPath);
         if (m_configurationsByPath.containsKey(key)) {
             CmsContainerConfigurationGroup group = m_configurationsByPath.get(key);
-            return group.getConfiguration(name, m_cms.getRequestContext().getLocale());
+            return group.getConfiguration(name, locale);
         }
         return null;
     }
