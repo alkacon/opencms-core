@@ -322,7 +322,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void refreshHighlighting() {
 
-        m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
+        if (m_highlighting != null) {
+            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
+        }
     }
 
     /**
