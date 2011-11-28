@@ -730,6 +730,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         m_isNew = false;
         m_controller.getHandler().deactivateMenuButton();
+        final List<I_CmsDropTarget> dragTargets = new ArrayList<I_CmsDropTarget>(m_dragInfos.keySet());
         m_dragInfos.clear();
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -740,6 +741,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                 handler.clearTargets();
                 m_controller.resetEditableListButtons();
+                // in case of group editing, this will refresh the container position and size
+                for (I_CmsDropTarget target : dragTargets) {
+                    if (target instanceof I_CmsDropContainer) {
+                        ((I_CmsDropContainer)target).refreshHighlighting();
+                    }
+                }
             }
         });
         if (handler.getDraggable() instanceof CmsContainerPageElementPanel) {
