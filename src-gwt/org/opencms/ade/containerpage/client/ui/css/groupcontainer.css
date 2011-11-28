@@ -21,26 +21,18 @@
 	background: #ffffff;
 	border: 1px dashed value("constants.css.borderColorHighlight");
 	position: absolute;
+	z-index: value("constants.css.zIndexHighlighting");
 }
 
 @if user.agent ie6 {
-	.containerMarker {
-		filter: literal("alpha(opacity = 60)");
-	}
 	.inputBox, .inputLabel{
 		display: inline;
 	}
 } @elif user.agent ie8 {
-	.containerMarker {
-		-ms-filter: "alpha(opacity = 60)";
-	}
 	.inputBox, .inputLabel{
 		display: inline-block;
 	}
 } @else {
-	.containerMarker {
-        opacity: 0.6;
-	}
 	.inputBox, .inputLabel{
 		display: inline-block;
 	}
