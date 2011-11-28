@@ -48,6 +48,9 @@ public class CmsInheritanceContainer implements IsSerializable {
     /** The name of the inheritance line. */
     private String m_name;
 
+    /** Flag indicating if this is a new inheritance reference. */
+    private boolean m_new;
+
     /** The title. */
     private String m_title;
 
@@ -102,6 +105,16 @@ public class CmsInheritanceContainer implements IsSerializable {
     }
 
     /**
+     * Returns if this is a new inheritance reference.<p>
+     *
+     * @return <code>true</code> if this is a new inheritance reference
+     */
+    public boolean isNew() {
+
+        return m_new;
+    }
+
+    /**
      * Sets the container reference client id.<p>
      *
      * @param clientId the container reference client id to set
@@ -139,6 +152,16 @@ public class CmsInheritanceContainer implements IsSerializable {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the if this is a new inheritance reference.<p>
+     *
+     * @param new1  <code>true</code> if this is a new inheritance reference
+     */
+    public void setNew(boolean new1) {
+
+        m_new = new1;
     }
 
     /**

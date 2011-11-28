@@ -76,6 +76,8 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
@@ -492,9 +494,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String locale) throws CmsRpcException {
 
         try {
-            CmsResource containerPage = getCmsObject().readResource(pageStructureId);
-            String sitePath = getCmsObject().getSitePath(containerPage);
+            CmsObject cms = getCmsObject();
+            CmsResource containerPage = cms.readResource(pageStructureId);
+            String sitePath = cms.getSitePath(containerPage);
             Locale requestedLocale = new Locale(locale);
+            CmsResource referenceResource = null;
+            if (inheritanceContainer.isNew()) {
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerPage.getRootPath());
+                CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME);
+                referenceResource = typeConfig.createNewElement(cms);
+                inheritanceContainer.setClientId(referenceResource.getStructureId().toString());
+            }
+            if (referenceResource == null) {
+                CmsUUID id = convertToServerId(inheritanceContainer.getClientId());
+                referenceResource = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            }
+            ensureLock(referenceResource);
+            saveInheritanceReference(referenceResource, inheritanceContainer, requestedLocale);
             List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
             for (CmsContainerElement clientElement : inheritanceContainer.getElements()) {
                 CmsContainerElementBean elementBean = getCachedElement(clientElement.getClientId());
@@ -507,7 +523,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 elementBean.setInheritanceInfo(inheritanceInfo);
                 elements.add(elementBean);
             }
-            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
             cms.getRequestContext().setLocale(requestedLocale);
             OpenCms.getADEManager().saveInheritedContainer(
                 cms,
@@ -908,9 +923,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsException {
 
         CmsObject cms = getCmsObject();
+        cms.getRequestContext().setLocale(locale);
         CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(cms);
         parser.parse(resource);
         CmsInheritanceReference ref = parser.getReferences().get(locale);
+        if (ref == null) {
+            // new inheritance reference, return an empty list
+            return Collections.emptyList();
+        }
         String name = ref.getName();
         CmsADEManager adeManager = OpenCms.getADEManager();
         CmsInheritedContainerState result = adeManager.getInheritedContainerState(cms, cms.addSiteRoot(uriParam), name);
@@ -1097,6 +1117,26 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         element.setSitePath(cms.getSitePath(groupContainerFile));
         element.setResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
         return element;
+    }
+
+    private void saveInheritanceReference(
+        CmsResource resource,
+        CmsInheritanceContainer inheritanceContainer,
+        Locale locale) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsFile file = cms.readFile(resource);
+        CmsXmlContent document = CmsXmlContentFactory.unmarshal(cms, file);
+        if (document.hasLocale(locale)) {
+            document.removeLocale(locale);
+        }
+        document.addLocale(cms, locale);
+        document.getValue("Title", locale).setStringValue(cms, inheritanceContainer.getTitle());
+        document.getValue("Description", locale).setStringValue(cms, inheritanceContainer.getDescription());
+        document.getValue("ConfigName", locale).setStringValue(cms, inheritanceContainer.getName());
+        byte[] content = document.marshal();
+        file.setContents(content);
+        cms.writeFile(file);
     }
 
     /**

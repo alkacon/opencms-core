@@ -332,9 +332,13 @@ public class CmsElementUtil {
             CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(m_cms);
             parser.parse(element.getResource());
             CmsInheritanceReference ref = parser.getReferences().get(m_locale);
-            String name = ref.getName();
-            elementBean.setDescription(ref.getDescription());
-            elementBean.setTitle(ref.getTitle());
+            String name = null;
+            // check for new inheritance reference
+            if (ref != null) {
+                name = ref.getName();
+                elementBean.setDescription(ref.getDescription());
+                elementBean.setTitle(ref.getTitle());
+            }
             for (CmsContainer container : containers) {
                 contents.put(container.getName(), "<div>should not be used</div>");
             }
