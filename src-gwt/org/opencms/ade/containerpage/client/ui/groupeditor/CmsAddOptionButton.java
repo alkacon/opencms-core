@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 
@@ -77,6 +78,7 @@ public class CmsAddOptionButton extends CmsPushButton implements I_CmsGroupEdito
      */
     public void onClick(ClickEvent event) {
 
+        CmsDomUtil.ensureMouseOut(m_elementWidget.getElementOptionBar().getElement());
         m_editor.showElement(m_elementWidget);
     }
 }
