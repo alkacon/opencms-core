@@ -49,7 +49,7 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsLockReportMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().mergeSitemap());
+        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().lock());
         setLabel("Lock Report");
         setActive(true);
 
