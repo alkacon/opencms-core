@@ -203,7 +203,6 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 CmsPushButton selection = new CmsPushButton();
                 selection.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 selection.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
-                selection.setTitle(I_CmsButton.ButtonData.SELECTION.getTitle());
                 selection.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
                 add(selection);
             }
@@ -295,9 +294,8 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         Element parent = CmsDomUtil.getPositioningParent(getElement());
 
         Style style = getElement().getStyle();
-        style.setRight(
-            parent.getOffsetWidth() - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()),
-            Unit.PX);
+        style.setRight(parent.getOffsetWidth()
+            - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()), Unit.PX);
         int top = m_position.getTop() - parent.getAbsoluteTop();
         if (top < 25) {
             // if top is <25 the buttons might overlap with the option bar, so increase to 25

@@ -78,4 +78,13 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarOptionButton {
             getHandler().deactivateCurrentButton();
         }
     }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsToggleButton#getTitle()
+     */
+    @Override
+    public String getTitle() {
+
+        return "";
+    }
 }
