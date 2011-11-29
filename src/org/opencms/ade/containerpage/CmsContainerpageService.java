@@ -511,6 +511,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             ensureLock(referenceResource);
             saveInheritanceReference(referenceResource, inheritanceContainer, requestedLocale);
+            tryUnlock(referenceResource);
             List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
             for (CmsContainerElement clientElement : inheritanceContainer.getElements()) {
                 CmsContainerElementBean elementBean = getCachedElement(clientElement.getClientId());
