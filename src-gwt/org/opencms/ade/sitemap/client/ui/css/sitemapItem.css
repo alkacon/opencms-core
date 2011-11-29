@@ -1,3 +1,5 @@
+@external cms_type_icon;
+
 .contentHide * {
 	visibility: hidden;
 }
@@ -48,7 +50,9 @@
 	color: value("constants.css.textColorDisabled");
 }
 
-@external vfsMode, navMode;
+.navMode .cms_type_icon, .vfsMode .cms_type_icon{
+	cursor: pointer;
+}
 
 .navMode {}  
 

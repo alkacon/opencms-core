@@ -113,7 +113,7 @@
 @sprite .cmsState-up-disabled .toolbarInherited, .cmsState-down-disabled .toolbarInherited{
 	gwt-image: "stateSecureBigIcon";
 }
-@sprite .cmsState-up .toolbarBack, .cmsState-up-hovering .toolbarInherited, .cmsState-down-hovering .toolbarInherited, .cmsState-down .toolbarInherited{
+@sprite .cmsState-up .toolbarInherited, .cmsState-up-hovering .toolbarInherited, .cmsState-down-hovering .toolbarInherited, .cmsState-down .toolbarInherited{
     gwt-image: "stateSecureBigIcon";
 }
 
