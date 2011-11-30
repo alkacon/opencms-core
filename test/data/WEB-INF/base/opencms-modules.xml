@@ -91,10 +91,10 @@
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="module_config" id="28">
                     <param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritref" id="303">
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritance_group" id="303">
                     <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inherit_ref.xsd</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritconfig" id="304">
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritance_config" id="304">
                     <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd</param>
                 </type>
                 

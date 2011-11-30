@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
 public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /** The standard file name for inherited container configurations. */
-    public static final String FILE_NAME = ".container-config";
+    public static final String INHERITANCE_CONFIG_FILE_NAME = ".inherited";
 
     /** The logger instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsContainerConfigurationCache.class);
@@ -175,8 +175,8 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
      */
     protected String getBasePath(String rootPath) {
 
-        if (rootPath.endsWith(FILE_NAME)) {
-            return rootPath.substring(0, rootPath.length() - FILE_NAME.length());
+        if (rootPath.endsWith(INHERITANCE_CONFIG_FILE_NAME)) {
+            return rootPath.substring(0, rootPath.length() - INHERITANCE_CONFIG_FILE_NAME.length());
         }
         return rootPath;
     }
@@ -190,7 +190,7 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
      */
     protected String getCacheKey(String basePath) {
 
-        assert !basePath.endsWith(FILE_NAME);
+        assert !basePath.endsWith(INHERITANCE_CONFIG_FILE_NAME);
         return CmsFileUtil.addTrailingSeparator(basePath);
     }
 
@@ -209,7 +209,7 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
                 CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId();
             return (type == expectedId)
                 && !CmsResource.isTemporaryFileName(rootPath)
-                && rootPath.endsWith("/" + FILE_NAME);
+                && rootPath.endsWith("/" + INHERITANCE_CONFIG_FILE_NAME);
         } catch (CmsLoaderException e) {
             return false;
         }

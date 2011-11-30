@@ -107,21 +107,21 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
 				</param>
 			</type>
-			    <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritref" id="303">
-                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inherit_ref.xsd</param>
+			    <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritance_group" id="303">
+                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritconfig" id="304">
-                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd</param>
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritance_config" id="304">
+                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd</param>
                 </type>
                 
-                <explorertype name="inheritref" key="fileicon.inheritref" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
-                    <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritref" order="27" autosetnavigation="false" autosettitle="false" info="desc.inheritref"/>
+                <explorertype name="inheritance_group" key="fileicon.inheritance_group" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
+                    <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_group" order="27" autosetnavigation="false" autosettitle="false" info="desc.inheritance_group"/>
                     <accesscontrol>
                         <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
                     </accesscontrol>
                 </explorertype>
-                <explorertype name="inheritconfig" key="fileicon.inheritconfig" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
-                    <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritconfig" order="28" autosetnavigation="false" autosettitle="false" info="desc.inheritconfig"/>
+                <explorertype name="inheritance_config" key="fileicon.inheritance_config" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
+                    <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config" order="28" autosetnavigation="false" autosettitle="false" info="desc.inheritance_config"/>
                     <accesscontrol>
                         <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
                     </accesscontrol>

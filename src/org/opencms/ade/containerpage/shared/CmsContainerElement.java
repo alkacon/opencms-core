@@ -52,7 +52,7 @@ public class CmsContainerElement implements IsSerializable {
     public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";
 
     /** The resource type name for inherited container references.  */
-    public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritref";
+    public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritance_group";
 
     /** The element client id. */
     private String m_clientId;

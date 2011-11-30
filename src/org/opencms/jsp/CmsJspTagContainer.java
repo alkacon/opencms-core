@@ -724,16 +724,19 @@ public class CmsJspTagContainer extends TagSupport {
         try {
             parser.parse(resource);
             CmsInheritanceReference ref = parser.getReferences().get(cms.getRequestContext().getLocale());
-            String name = ref.getName();
-            CmsADEManager adeManager = OpenCms.getADEManager();
-            CmsInheritedContainerState result = adeManager.getInheritedContainerState(
-                cms,
-                cms.getRequestContext().getRootUri(),
-                name);
-            return result.getElements(false);
+            if (ref != null) {
+                String name = ref.getName();
+                CmsADEManager adeManager = OpenCms.getADEManager();
+                CmsInheritedContainerState result = adeManager.getInheritedContainerState(
+                    cms,
+                    cms.getRequestContext().getRootUri(),
+                    name);
+                return result.getElements(false);
+            }
         } catch (CmsException e) {
-            return Collections.emptyList();
+            LOG.error(e.getLocalizedMessage(), e);
         }
+        return Collections.emptyList();
     }
 
     /**

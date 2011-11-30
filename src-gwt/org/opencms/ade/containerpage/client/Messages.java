@@ -130,6 +130,9 @@ public final class Messages {
     public static final String GUI_INHERITANCECONTAINER_HIDE_ELEMENTS_0 = "GUI_INHERITANCECONTAINER_HIDE_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_INHERITANCECONTAINER_NO_HIDDEN_ELEMENTS_0 = "GUI_INHERITANCECONTAINER_NO_HIDDEN_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_INHERITANCECONTAINER_SHOW_HIDDEN_0 = "GUI_INHERITANCECONTAINER_SHOW_HIDDEN_0";
 
     /** Message constant for key in the resource bundle. */
@@ -155,6 +158,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0 = "GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_INHERITANCE_CONTAINER_SAVED_0 = "GUI_NOTIFICATION_INHERITANCE_CONTAINER_SAVED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTIFICATION_PAGE_SAVED_0 = "GUI_NOTIFICATION_PAGE_SAVED_0";

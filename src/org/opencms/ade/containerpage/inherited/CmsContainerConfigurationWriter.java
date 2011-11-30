@@ -103,7 +103,7 @@ public class CmsContainerConfigurationWriter {
             root.addAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
             root.addAttribute(
                 "xsi:noNamespaceSchemaLocation",
-                "opencms://system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd");
+                "opencms://system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd");
             for (Map.Entry<Locale, Map<String, CmsContainerConfiguration>> groupEntry : group.getMap().entrySet()) {
                 Locale locale = groupEntry.getKey();
                 Map<String, CmsContainerConfiguration> configurations = groupEntry.getValue();
@@ -174,11 +174,13 @@ public class CmsContainerConfigurationWriter {
         cms.getRequestContext().setSiteRoot("");
         String configPath;
         if (pageResource.isFolder()) {
-            configPath = CmsStringUtil.joinPaths(pageResource.getRootPath(), CmsContainerConfigurationCache.FILE_NAME);
+            configPath = CmsStringUtil.joinPaths(
+                pageResource.getRootPath(),
+                CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         } else {
             configPath = CmsStringUtil.joinPaths(
                 CmsResource.getParentFolder(pageResource.getRootPath()),
-                CmsContainerConfigurationCache.FILE_NAME);
+                CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         }
         CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(
             cms,
@@ -248,12 +250,6 @@ public class CmsContainerConfigurationWriter {
         CmsContainerConfiguration config,
         Element parentElement) throws CmsException {
 
-        Element root = parentElement.addElement("Configuration");
-        root.addElement("Name").addCDATA(name);
-        List<String> ordering = config.getOrdering();
-        for (String orderKey : ordering) {
-            root.addElement(N_ORDERKEY).addCDATA(orderKey);
-        }
         List<String> visibles = new ArrayList<String>();
         List<String> invisibles = new ArrayList<String>();
         for (String key : config.getVisibility().keySet()) {
@@ -263,6 +259,18 @@ public class CmsContainerConfigurationWriter {
             } else {
                 invisibles.add(key);
             }
+        }
+        if (config.getOrdering().isEmpty()
+            && visibles.isEmpty()
+            && invisibles.isEmpty()
+            && config.getNewElements().isEmpty()) {
+            // don't add empty inheritance configurations
+            return null;
+        }
+        Element root = parentElement.addElement("Configuration");
+        root.addElement("Name").addCDATA(name);
+        for (String orderKey : config.getOrdering()) {
+            root.addElement(N_ORDERKEY).addCDATA(orderKey);
         }
         for (String visible : visibles) {
             root.addElement(N_VISIBLE).addCDATA(visible);

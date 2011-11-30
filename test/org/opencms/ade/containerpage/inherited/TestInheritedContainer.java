@@ -1328,7 +1328,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             byte[] newContent = data;
             cms.createResource(
                 configPath,
-                OpenCms.getResourceManager().getResourceType("inheritconfig").getTypeId(),
+                OpenCms.getResourceManager().getResourceType("inheritance_config").getTypeId(),
                 newContent,
                 new ArrayList<CmsProperty>());
         }
@@ -1357,7 +1357,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             byte[] newContent = generateTestConfig(name);
             cms.createResource(
                 configPath,
-                OpenCms.getResourceManager().getResourceType("inheritconfig").getTypeId(),
+                OpenCms.getResourceManager().getResourceType("inheritance_config").getTypeId(),
                 newContent,
                 new ArrayList<CmsProperty>());
         }
