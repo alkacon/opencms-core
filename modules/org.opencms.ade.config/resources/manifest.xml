@@ -107,27 +107,20 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
 				</param>
 			</type>
-			    <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritance_group" id="303">
-                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd</param>
-                </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="inheritance_config" id="304">
-                    <param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd</param>
-                </type>
-                
-                <explorertype name="inheritance_group" key="fileicon.inheritance_group" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
-                    <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_group" order="27" autosetnavigation="false" autosettitle="false" info="desc.inheritance_group"/>
-                    <accesscontrol>
-                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-                    </accesscontrol>
-                </explorertype>
-                <explorertype name="inheritance_config" key="fileicon.inheritance_config" icon="groupcontainer.png" bigicon="groupcontainer_big.png" reference="xmlcontent">
-                    <newresource uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config" order="28" autosetnavigation="false" autosettitle="false" info="desc.inheritance_config"/>
-                    <accesscontrol>
-                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-                    </accesscontrol>
-                </explorertype>
-                
-			
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="inheritance_group" id="303">
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="inheritance_config" id="304">
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd
+				</param>
+			</type>
+
+
+
+
 		</resourcetypes>
 		<explorertypes>
 
@@ -307,6 +300,30 @@
 					uri="newresource_xmlcontent.jsp?newresourcetype=module_config"
 					order="22" autosetnavigation="false" autosettitle="false"
 					info="desc.module_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="inheritance_group" key="fileicon.inheritance_group"
+				icon="groupcontainer.png" bigicon="groupcontainer_big.png"
+				reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_group"
+					order="27" autosetnavigation="false" autosettitle="false"
+					info="desc.inheritance_group" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="inheritance_config" key="fileicon.inheritance_config"
+				icon="groupcontainer.png" bigicon="groupcontainer_big.png"
+				reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config"
+					order="28" autosetnavigation="false" autosettitle="false"
+					info="desc.inheritance_config" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER"
 						permissions="+r+v+w+c" />
