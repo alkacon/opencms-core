@@ -19,7 +19,7 @@
 }
 .containerMarker{
 	background: #ffffff;
-	border: 1px dashed value("constants.css.borderColorHighlight");
+	border: 1px solid value("constants.css.borderColor");
 	position: absolute;
 	z-index: value("constants.css.zIndexHighlighting");
 }

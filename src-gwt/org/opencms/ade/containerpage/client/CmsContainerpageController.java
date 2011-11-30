@@ -1562,7 +1562,7 @@ public final class CmsContainerpageController {
                     addToRecentList(groupContainerElement.getId());
                     CmsNotification.get().send(
                         Type.NORMAL,
-                        Messages.get().key(Messages.GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0));
+                        Messages.get().key(Messages.GUI_NOTIFICATION_INHERITANCE_CONTAINER_SAVED_0));
                 }
             };
             action.execute();

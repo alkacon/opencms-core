@@ -52,7 +52,7 @@ public class CmsSelectionOptionButton extends CmsPushButton implements I_CmsGrou
         super();
         setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        setTitle(I_CmsButton.ButtonData.SELECTION.getTitle());
+        // no title for selection button
         addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
     }
 

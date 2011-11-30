@@ -290,10 +290,10 @@ div.groupcontainerPlaceholder{
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarInherited, .optionBar .cmsState-down-hovering .toolbarInherited, .optionBar .cmsState-down .toolbarInherited {
-    gwt-image: "images.lockIconActive";
+    gwt-image: "images.subSitemapIcon";
 }
 @sprite .optionBar .cmsState-up .toolbarInherited, .optionBar .cmsState-up-disabled .toolbarInherited, .optionBar .cmsState-down-disabled .toolbarInherited {
-    gwt-image: "images.lockIconDeactivated";
+    gwt-image: "images.subSitemapIconDeactivated";
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarSelection, .optionBar .cmsState-down-hovering .toolbarSelection, .optionBar .cmsState-down .toolbarSelection {

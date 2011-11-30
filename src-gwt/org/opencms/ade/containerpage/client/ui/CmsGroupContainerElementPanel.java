@@ -197,9 +197,15 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
                 CmsDomUtil.StyleValue.none.toString())) {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
         }
-        m_highlighting = new CmsHighlightingBorder(
-            CmsPositionBean.getInnerDimensions(getElement()),
-            CmsHighlightingBorder.BorderColor.red);
+        CmsPositionBean position = CmsPositionBean.getInnerDimensions(getElement());
+        if (m_editingPlaceholder != null) {
+            m_editingPlaceholder.getStyle().setHeight(position.getHeight() + 10, Unit.PX);
+        }
+        if (m_editingMarker != null) {
+            m_editingMarker.getStyle().setHeight(position.getHeight() + 4, Unit.PX);
+            m_editingMarker.getStyle().setWidth(position.getWidth() + 4, Unit.PX);
+        }
+        m_highlighting = new CmsHighlightingBorder(position, CmsHighlightingBorder.BorderColor.red);
         RootPanel.get().add(m_highlighting);
     }
 

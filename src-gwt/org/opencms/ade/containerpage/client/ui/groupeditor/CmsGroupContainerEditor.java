@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.dom.client.Style.Float;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -123,6 +125,7 @@ public class CmsGroupContainerEditor extends A_CmsGroupEditor {
     protected void addButtons() {
 
         addCancelButton();
+        addSaveButton();
         m_breakUpButton = new CmsPushButton();
         m_breakUpButton.setText(Messages.get().key(Messages.GUI_BUTTON_BREAK_UP_TEXT_0));
         m_breakUpButton.setUseMinWidth(true);
@@ -134,8 +137,10 @@ public class CmsGroupContainerEditor extends A_CmsGroupEditor {
                 breakUpContainer();
             }
         });
+        m_breakUpButton.getElement().getStyle().setFloat(Float.LEFT);
+        m_breakUpButton.getElement().getStyle().setMarginLeft(0, Unit.PX);
         addButton(m_breakUpButton);
-        addSaveButton();
+
     }
 
     /**

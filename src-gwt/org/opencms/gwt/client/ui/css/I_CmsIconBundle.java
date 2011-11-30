@@ -318,6 +318,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      * 
      * @return the image resource
      */
+    @Source("images/icons/subSitemapIconDeactivated.png")
+    ImageResource subSitemapIconDeactivated();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image resource
+     */
     @Source("images/icons/uploadIconActive.png")
     ImageResource uploadIconActive();
 

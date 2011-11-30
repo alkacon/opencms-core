@@ -56,6 +56,8 @@ import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Float;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -84,11 +86,10 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     /** The description input. */
     private CmsTextBox m_inputDescription;
 
-    /** The inheritance line name input. */
-    private CmsTextBox m_inputName;
-
     /** The title input. */
     private CmsTextBox m_inputTitle;
+
+    private CmsToggleButton m_showElementsButton;
 
     /** Click handler for the option buttons. */
     private ClickHandler m_optionClickHandler;
@@ -167,6 +168,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             elementWidget.getElement().appendChild(elementOverlay);
             getGroupContainerWidget().add(elementWidget);
             updateButtonVisibility(elementWidget);
+            m_showElementsButton.enable();
         }
         getGroupContainerWidget().refreshHighlighting();
     }
@@ -196,6 +198,10 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         for (Element element : elements) {
             element.removeFromParent();
         }
+        if (CmsDomUtil.getElementsByClass(HIDDEN_ELEMENT_OVERLAY_CLASS, Tag.div, getGroupContainerWidget().getElement()).isEmpty()) {
+            // if no other hidden elements present disable toggle button
+            m_showElementsButton.disable(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_NO_HIDDEN_ELEMENTS_0));
+        }
     }
 
     /**
@@ -206,19 +212,21 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
         addCancelButton();
         addSaveButton();
-        CmsToggleButton showElementsButton = new CmsToggleButton();
-        showElementsButton.setText(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_SHOW_HIDDEN_0));
-        showElementsButton.setDownFace(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_HIDE_ELEMENTS_0), null);
-        showElementsButton.setUseMinWidth(true);
-        showElementsButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
-        showElementsButton.addClickHandler(new ClickHandler() {
+        m_showElementsButton = new CmsToggleButton();
+        m_showElementsButton.setText(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_SHOW_HIDDEN_0));
+        m_showElementsButton.setDownFace(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_HIDE_ELEMENTS_0), null);
+        m_showElementsButton.setUseMinWidth(true);
+        m_showElementsButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
+        m_showElementsButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
                 toggleElementVisibility();
             }
         });
-        addButton(showElementsButton);
+        m_showElementsButton.disable(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_NO_HIDDEN_ELEMENTS_0));
+        m_showElementsButton.getElement().getStyle().setFloat(Float.LEFT);
+        addButton(m_showElementsButton);
         CmsPushButton breakUpButton = new CmsPushButton();
         breakUpButton.setText(Messages.get().key(Messages.GUI_BUTTON_BREAK_UP_TEXT_0));
         breakUpButton.setUseMinWidth(true);
@@ -230,6 +238,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                 breakUpContainer();
             }
         });
+        breakUpButton.getElement().getStyle().setFloat(Float.LEFT);
+        breakUpButton.getElement().getStyle().setMarginLeft(0, Unit.PX);
         addButton(breakUpButton);
     }
 
@@ -243,8 +253,6 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         addInputField(Messages.get().key(Messages.GUI_GROUPCONTAINER_LABEL_TITLE_0), m_inputTitle);
         m_inputDescription = new CmsTextBox();
         addInputField(Messages.get().key(Messages.GUI_GROUPCONTAINER_LABEL_DESCRIPTION_0), m_inputDescription);
-        m_inputName = new CmsTextBox();
-        addInputField(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_CONFIG_NAME_0), m_inputName);
     }
 
     /**
@@ -338,7 +346,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         container.setClientId(getGroupContainerWidget().getId());
         container.setTitle(m_inputTitle.getText());
         container.setDescription(m_inputDescription.getText());
-        container.setName(m_inputName.getText());
+        container.setName(m_elementData.getInheritanceName());
         container.setElements(elements);
         getController().saveInheritContainer(container, getGroupContainerWidget());
         closeDialog(false);
@@ -355,9 +363,6 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         if (m_elementData != null) {
             m_inputDescription.setFormValueAsString(m_elementData.getDescription());
             m_inputTitle.setFormValueAsString(m_elementData.getTitle());
-            m_inputName.setFormValueAsString(m_elementData.getInheritanceName());
-            // prevent editing the inheritance name
-            m_inputName.setEnabled(false);
             removeAllChildren();
             CmsContainerpageUtil util = getController().getContainerpageUtil();
             for (CmsInheritanceInfo info : m_elementData.getInheritanceInfos()) {
@@ -376,6 +381,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                     }
                 }
             }
+            boolean hasInvisible = false;
             for (CmsInheritanceInfo info : m_elementData.getInheritanceInfos()) {
                 if (!info.isVisibile()) {
                     CmsContainerElementData element = getController().getCachedElement(info.getClientId());
@@ -391,14 +397,19 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                         Element elementOverlay = DOM.createDiv();
                         elementOverlay.setClassName(HIDDEN_ELEMENT_OVERLAY_CLASS);
                         elementWidget.getElement().appendChild(elementOverlay);
+                        hasInvisible = true;
                     } catch (Exception e) {
                         CmsDebugLog.getInstance().printLine(e.getMessage());
                     }
                 }
             }
+            if (hasInvisible) {
+                m_showElementsButton.enable();
+            }
         }
+
         getGroupContainerWidget().refreshHighlighting();
-        this.setSaveEnabled(true, null);
+        setSaveEnabled(true, null);
     }
 
     /**
