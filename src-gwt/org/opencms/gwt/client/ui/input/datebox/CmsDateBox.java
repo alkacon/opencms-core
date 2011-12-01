@@ -198,6 +198,9 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     @UiField
     protected CmsTextBox m_time;
 
+    /** The initial date shown, when the date picker is opened and no date was set before. */
+    private Date m_initialDate;
+
     /** Signals whether the date box is valid or not. */
     private boolean m_isValidDateBox;
 
@@ -477,6 +480,16 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
+     * Sets the initial date shown, when the date picker is opened and no date was set before.<p>
+     * 
+     * @param initialDate the initial date
+     */
+    public void setInitialDate(Date initialDate) {
+
+        m_initialDate = initialDate;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     public void setValue(Date value) {
@@ -535,7 +548,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     protected void onDateBoxBlur() {
 
         if (!m_popup.isShowing()) {
-            updateFromTextBox();
+            updateFromTextBox(false);
         }
         updateCloseBehavior();
     }
@@ -571,7 +584,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
             case KeyCodes.KEY_TAB:
             case KeyCodes.KEY_ESCAPE:
             case KeyCodes.KEY_UP:
-                updateFromTextBox();
+                updateFromTextBox(false);
                 hidePopup();
                 break;
             case KeyCodes.KEY_DOWN:
@@ -782,7 +795,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
      */
     private void showPopup() {
 
-        updateFromTextBox();
+        updateFromTextBox(true);
         m_box.setPreventShowError(true);
         m_popup.showRelativeTo(m_box);
     }
@@ -807,9 +820,12 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * Updates the picker if the user manually modified the date of the text box.<p>
      */
-    private void updateFromTextBox() {
+    private void updateFromTextBox(boolean initial) {
 
         Date date = getValue();
+        if (initial && (date == null)) {
+            date = m_initialDate;
+        }
         setPickerValue(date, false);
         m_time.setErrorMessage(null);
         fireChange(m_oldValue, getValue());
