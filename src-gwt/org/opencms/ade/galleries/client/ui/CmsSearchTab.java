@@ -404,6 +404,7 @@ public class CmsSearchTab extends A_CmsTab {
      * @param availableLocales the available locales
      * @param scope the search scope 
      */
+    @SuppressWarnings("deprecation")
     public CmsSearchTab(
         CmsSearchTabHandler tabHandler,
         I_CmsAutoHider autoHideParent,
@@ -477,9 +478,16 @@ public class CmsSearchTab extends A_CmsTab {
         m_dateCreatedEndDateBox.addKeyPressHandler(handler);
         m_dateModifiedStartDateBox.addValueChangeHandler(handler);
         m_dateModifiedStartDateBox.addKeyPressHandler(handler);
+        Date initialStartDate = new Date();
+        initialStartDate.setHours(0);
+        initialStartDate.setMinutes(0);
+        m_dateModifiedStartDateBox.setInitialDate(initialStartDate);
         m_dateModifiedEndDateBox.addValueChangeHandler(handler);
         m_dateModifiedEndDateBox.addKeyPressHandler(handler);
-
+        Date initialEndDate = new Date();
+        initialEndDate.setHours(23);
+        initialEndDate.setMinutes(59);
+        m_dateModifiedEndDateBox.setInitialDate(initialEndDate);
         // add the clear button
         m_clearButton.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_BUTTON_CLEAR_0));
         m_clearButton.setUseMinWidth(true);
