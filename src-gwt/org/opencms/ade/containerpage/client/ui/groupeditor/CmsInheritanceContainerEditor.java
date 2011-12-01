@@ -146,7 +146,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                 INSTANCE = new CmsInheritanceContainerEditor(groupContainer, controller, handler);
                 RootPanel.get().add(INSTANCE);
                 INSTANCE.openDialog(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_CAPTION_0));
-                INSTANCE.getGroupContainerWidget().refreshHighlighting();
+                groupContainer.refreshHighlighting();
             }
         }
     }
@@ -169,8 +169,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             getGroupContainerWidget().add(elementWidget);
             updateButtonVisibility(elementWidget);
             m_showElementsButton.enable();
+            getGroupContainerWidget().refreshHighlighting();
         }
-        getGroupContainerWidget().refreshHighlighting();
     }
 
     /**

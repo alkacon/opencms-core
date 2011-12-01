@@ -1258,6 +1258,7 @@ public final class CmsContainerpageController {
                 // group-container is empty, mark it
                 getGroupcontainer().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
             }
+            getGroupcontainer().refreshHighlighting();
         } else {
             // only set changed if not editing a group container
             String id = dragElement.getId();
