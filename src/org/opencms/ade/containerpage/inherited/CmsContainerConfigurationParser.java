@@ -160,20 +160,27 @@ public class CmsContainerConfigurationParser {
         if (orderKeyLocs != null) {
             ordering = new ArrayList<String>();
             for (I_CmsXmlContentValueLocation orderKeyLoc : orderKeyLocs) {
-                ordering.add(orderKeyLoc.asString(m_cms));
+                String orderKey = orderKeyLoc.asString(m_cms);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(orderKey)) {
+                    ordering.add(orderKey.trim());
+                }
             }
         }
         Map<String, Boolean> visibilities = new HashMap<String, Boolean>();
         List<I_CmsXmlContentValueLocation> visibleLocs = location.getSubValues(N_VISIBLE);
         for (I_CmsXmlContentValueLocation visibleLoc : visibleLocs) {
-            String visibleStr = visibleLoc.asString(m_cms).trim();
-            visibilities.put(visibleStr, Boolean.TRUE);
+            String visibleStr = visibleLoc.asString(m_cms);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(visibleStr)) {
+                visibilities.put(visibleStr.trim(), Boolean.TRUE);
+            }
         }
 
         List<I_CmsXmlContentValueLocation> hiddenLocs = location.getSubValues(N_HIDDEN);
         for (I_CmsXmlContentValueLocation hiddenLoc : hiddenLocs) {
-            String hiddenStr = hiddenLoc.asString(m_cms).trim();
-            visibilities.put(hiddenStr, Boolean.FALSE);
+            String hiddenStr = hiddenLoc.asString(m_cms);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(hiddenStr)) {
+                visibilities.put(hiddenStr.trim(), Boolean.FALSE);
+            }
         }
 
         List<I_CmsXmlContentValueLocation> newElementLocs = location.getSubValues(N_NEWELEMENT);
@@ -184,13 +191,15 @@ public class CmsContainerConfigurationParser {
             I_CmsXmlContentValueLocation actualElementLoc = elementLoc.getSubValue("Element");
             I_CmsXmlContentValueLocation uriLoc = actualElementLoc.getSubValue("Uri");
             CmsUUID structureId = uriLoc.asId(m_cms);
-            Map<String, String> settings = CmsXmlContentPropertyHelper.readProperties(m_cms, actualElementLoc);
-            CmsContainerElementBean newElementBean = new CmsContainerElementBean(
-                structureId,
-                CmsUUID.getNullUUID(),
-                settings,
-                false);
-            newElementBeans.put(key, newElementBean);
+            if (structureId != null) {
+                Map<String, String> settings = CmsXmlContentPropertyHelper.readProperties(m_cms, actualElementLoc);
+                CmsContainerElementBean newElementBean = new CmsContainerElementBean(
+                    structureId,
+                    CmsUUID.getNullUUID(),
+                    settings,
+                    false);
+                newElementBeans.put(key, newElementBean);
+            }
         }
         CmsContainerConfiguration config = new CmsContainerConfiguration(ordering, visibilities, newElementBeans);
         m_currentConfigurationGroup.put(name, config);
