@@ -86,7 +86,7 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
 
     private Timer m_removeTimer;
 
-    private static final int REMOVE_SCHEDULE = 2000;
+    private static final int REMOVE_SCHEDULE = 10000;
 
     /**
      * Constructor. Adds the tool-tip handler to the target.<p>
