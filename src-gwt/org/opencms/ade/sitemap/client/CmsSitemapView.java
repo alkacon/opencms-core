@@ -45,12 +45,12 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.db.CmsResourceState;
-import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsInfoLoadingListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.AdditionalInfoItem;
+import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
@@ -244,7 +244,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         });
 
         CmsSitemapHoverbar.installOn(m_controller, treeItem);
-
+        // highlight the open path
+        if (((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode()))) || ((entry.getDefaultFileId() != null) && entry.getDefaultFileId().toString().equals(
+            m_controller.getData().getReturnCode())))) {
+            treeItem.setBackgroundColor(Background.RED);
+        }
         return treeItem;
     }
 
@@ -547,7 +551,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         }
         String openPath = m_controller.getData().getOpenPath();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
-            highlightPath(CmsResource.getFolderPath(openPath));
+            openItemsOnPath(openPath);
         }
     }
 
@@ -635,6 +639,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         String[] names = CmsStringUtil.splitAsArray(remainingPath, "/");
         for (String name : names) {
+            if (currentItem == null) {
+                break;
+            }
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
                 continue;
             }
