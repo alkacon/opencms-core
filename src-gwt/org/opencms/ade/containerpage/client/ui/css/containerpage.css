@@ -175,10 +175,10 @@ div.toolbarToggle{
 .cms_ade_groupcontainer .dragElement .optionBar{
 	display: none;
 }
-.emptyGroupContainer{
+@sprite .emptyGroupContainer{
 	min-height: 27px;
-	background: #ffffff;
-	border: 1px dashed value("constants.css.borderColorHighlight");
+	gwt-image: 'otherImages.placeholderImage';
+	border: 1px solid value("constants.css.borderColor");
 }
 
 div.groupcontainerPlaceholder{
