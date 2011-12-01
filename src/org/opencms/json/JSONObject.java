@@ -60,6 +60,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -183,7 +184,21 @@ public class JSONObject {
      */
     public JSONObject() {
 
-        this.m_map = new HashMap<String, Object>();
+        this(false);
+    }
+
+    /**
+     * Construct an empty sorted JSONObject.<p>
+     * 
+     * @param sorted true for sorted, false for none sorted
+     */
+    public JSONObject(boolean sorted) {
+
+        if (sorted) {
+            this.m_map = new LinkedHashMap<String, Object>();
+        } else {
+            this.m_map = new HashMap<String, Object>();
+        }
     }
 
     /**
