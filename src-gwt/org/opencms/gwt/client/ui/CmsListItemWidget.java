@@ -176,10 +176,10 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
          */
         public void truncate(String textMetricsPrefix, int widgetWidth) {
 
-            // width fixed by css to 90 see I_CmsListItemWidgetCss#itemAdditionalTitle
-            m_titleLabel.truncate(textMetricsPrefix + TMA_TITLE, 85);
+            int titleWidth = widgetWidth / 4;
+            m_titleLabel.truncate(textMetricsPrefix + TMA_TITLE, titleWidth);
             // the rest
-            m_valueLabel.truncate(textMetricsPrefix + TMA_VALUE, widgetWidth - 100);
+            m_valueLabel.truncate(textMetricsPrefix + TMA_VALUE, widgetWidth - titleWidth - 15);
         }
     }
 
