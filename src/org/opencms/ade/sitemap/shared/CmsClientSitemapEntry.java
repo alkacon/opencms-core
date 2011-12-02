@@ -29,7 +29,6 @@ package org.opencms.ade.sitemap.shared;
 
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsClientLock;
-import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -741,37 +740,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setPosition(int position) {
 
         m_position = position;
-    }
-
-    /**
-     * Sets the redirect target from a bean.<p>
-     * 
-     * @param info the bean containing the redirect target 
-     */
-    public void setRedirect(CmsLinkBean info) {
-
-        //        m_properties.remove(EXTERNAL_REDIRECT);
-        //        m_properties.remove(INTERNAL_REDIRECT);
-        //        if (info != null) {
-        //            String key = info.isInternal() ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
-        //            CmsSimplePropertyValue value = new CmsSimplePropertyValue(info.getLink(), info.getLink());
-        //            m_properties.put(key, value);
-        //        }
-    }
-
-    /**
-     * Sets the redirect target.<p>
-     * 
-     * @param link the redirect target
-     * @param internal if true, sets an internal redirect, else an external one 
-     */
-    public void setRedirect(String link, boolean internal) {
-
-        //
-        //        m_properties.remove(EXTERNAL_REDIRECT);
-        //        m_properties.remove(INTERNAL_REDIRECT);
-        //        String targetKey = internal ? INTERNAL_REDIRECT : EXTERNAL_REDIRECT;
-        //        m_properties.put(targetKey, new CmsSimplePropertyValue(link, link));
     }
 
     /**
