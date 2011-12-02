@@ -91,7 +91,7 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
         String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !controller.isRoot(sitePath) && (entry != null) && entry.isInNavigation();
+        boolean show = !controller.isRoot(sitePath) && (entry != null);
         setVisible(show);
         if (show && (entry != null) && !entry.isEditable()) {
             setActive(false);
