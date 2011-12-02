@@ -245,9 +245,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         CmsSitemapHoverbar.installOn(m_controller, treeItem);
         // highlight the open path
-        if (((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode()))) || ((entry.getDefaultFileId() != null) && entry.getDefaultFileId().toString().equals(
-            m_controller.getData().getReturnCode())))) {
-            treeItem.setBackgroundColor(Background.RED);
+        if (isLastPage(entry)) {
+            treeItem.setBackgroundColor(Background.YELLOW);
         }
         return treeItem;
     }
@@ -403,7 +402,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         openItemsOnPath(sitePath);
         CmsSitemapTreeItem item = getTreeItem(sitePath);
         if (item != null) {
-            item.highlightTemporarily(1500);
+            item.highlightTemporarily(1500, isLastPage(item.getSitemapEntry()) ? Background.YELLOW : Background.DEFAULT);
         }
     }
 
@@ -649,6 +648,19 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             result.add(currentItem);
         }
         return result;
+    }
+
+    /**
+     * Checks if the given entry represents the last opened page.<p>
+     * 
+     * @param entry the entry to check
+     * 
+     * @return <code>true</code> if the given entry is the last opened page
+     */
+    private boolean isLastPage(CmsClientSitemapEntry entry) {
+
+        return ((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode()))) || ((entry.getDefaultFileId() != null) && entry.getDefaultFileId().toString().equals(
+            m_controller.getData().getReturnCode())));
     }
 
     /**
