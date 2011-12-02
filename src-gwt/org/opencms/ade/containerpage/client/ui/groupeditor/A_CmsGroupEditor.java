@@ -191,6 +191,23 @@ public abstract class A_CmsGroupEditor extends Composite {
 
         RootPanel.get().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().groupcontainerEditing());
         addInputFields();
+        m_editorDialog = new CmsPopup(500);
+        addButtons();
+        if (m_saveButton != null) {
+            m_saveButton.disable(Messages.get().key(Messages.GUI_GROUPCONTAINER_LOADING_DATA_0));
+        }
+        m_editorDialog.setGlassEnabled(false);
+        m_editorDialog.setModal(false);
+        m_editorDialog.addDialogClose(new Command() {
+
+            /**
+             * @see com.google.gwt.user.client.Command#execute()
+             */
+            public void execute() {
+
+                cancelEdit();
+            }
+        });
     }
 
     /**
@@ -440,26 +457,9 @@ public abstract class A_CmsGroupEditor extends Composite {
      */
     protected void openDialog(String dialogTitle) {
 
-        m_editorDialog = new CmsPopup(dialogTitle, 500);
-        addButtons();
+        m_editorDialog.setCaption(dialogTitle);
         int contentHeight = m_dialogContent.getOffsetHeight();
         m_editorDialog.setMainContent(m_dialogContent);
-        if ((m_elementData == null) && (m_saveButton != null)) {
-            m_saveButton.disable(Messages.get().key(Messages.GUI_GROUPCONTAINER_LOADING_DATA_0));
-        }
-        m_editorDialog.setGlassEnabled(false);
-        m_editorDialog.setModal(false);
-        m_editorDialog.addDialogClose(new Command() {
-
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
-
-                cancelEdit();
-            }
-        });
-
         // position dialog and show it
         if (m_groupContainerPosition != null) {
             if (m_groupContainerPosition.getLeft() > 600) {
@@ -473,9 +473,9 @@ public abstract class A_CmsGroupEditor extends Composite {
                     - (contentHeight + 103));
             } else {
                 // else on the right
-                m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft()
-                    + m_groupContainerPosition.getWidth()
-                    + 20, m_groupContainerPosition.getTop() - 1);
+                m_editorDialog.setPopupPosition(
+                    m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth() + 20,
+                    m_groupContainerPosition.getTop() - 1);
             }
             m_editorDialog.show();
         } else {
