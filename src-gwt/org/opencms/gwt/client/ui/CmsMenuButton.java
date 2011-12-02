@@ -48,6 +48,7 @@ import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -224,6 +225,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void disable(String disabledReason) {
 
         m_button.disable(disabledReason);
+        DOM.setElementPropertyBoolean(getElement(), "disabled", true);
     }
 
     /**
@@ -232,6 +234,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void enable() {
 
         m_button.enable();
+        DOM.setElementPropertyBoolean(getElement(), "disabled", false);
     }
 
     /**
@@ -273,6 +276,19 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user.client.Event)
+     */
+    @Override
+    public void onBrowserEvent(Event event) {
+
+        // Should not act on button if disabled.
+        if (isEnabled() == false) {
+            return;
+        }
+        super.onBrowserEvent(event);
+    }
+
+    /**
      * Opens the menu and fires the on toggle event.<p>
      */
     public void openMenu() {
@@ -299,9 +315,10 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void setEnabled(boolean enabled) {
 
         if (enabled) {
-            m_button.enable();
+            enable();
         } else {
             m_button.setEnabled(enabled);
+            DOM.setElementPropertyBoolean(getElement(), "disabled", true);
         }
     }
 
@@ -381,12 +398,22 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     }
 
     /**
+     * Returns if this button is enabled.<p>
+     * 
+     * @return <code>true</code> if the button is enabled
+     */
+    protected boolean isEnabled() {
+
+        return !DOM.getElementPropertyBoolean(getElement(), "disabled");
+    }
+
+    /**
      * Positions the menu popup the button.<p>
      */
     protected void positionPopup() {
 
         int spaceAssurance = 20;
-        int space = getToolbarWidth() + 2 * spaceAssurance;
+        int space = getToolbarWidth() + (2 * spaceAssurance);
 
         // get the window client width
         int windowWidth = Window.getClientWidth();
@@ -399,26 +426,26 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         int maxRight = minLeft + space;
         // get the middle button position
         CmsPositionBean buttonPosition = CmsPositionBean.generatePositionInfo(m_button.getElement());
-        int buttonMiddle = buttonPosition.getLeft() - Window.getScrollLeft() + buttonPosition.getWidth() / 2;
+        int buttonMiddle = (buttonPosition.getLeft() - Window.getScrollLeft()) + (buttonPosition.getWidth() / 2);
         // get the content width
         int contentWidth = m_popup.getOffsetWidth();
 
         // the optimum left position is in the middle of the button minus the half content width
         // assume that the optimum fits into the space
-        int contentLeft = buttonMiddle - contentWidth / 2;
+        int contentLeft = buttonMiddle - (contentWidth / 2);
 
         if (minLeft > contentLeft) {
             // if the optimum left position of the popup is outside the min left position:
             // move the popup to the right (take the min left position as left)
             contentLeft = minLeft;
-        } else if (contentLeft + contentWidth > maxRight) {
+        } else if ((contentLeft + contentWidth) > maxRight) {
             // if the left position plus the content width is outside the max right position:
             // move the popup to the left (take the max right position minus the content width)
             contentLeft = maxRight - contentWidth;
         }
 
         // limit the right position if the popup is right outside the window 
-        if (contentLeft + contentWidth + spaceAssurance > windowWidth) {
+        if ((contentLeft + contentWidth + spaceAssurance) > windowWidth) {
             contentLeft = windowWidth - contentWidth - spaceAssurance;
         }
 
@@ -432,11 +459,11 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         int arrowHeight = I_CmsLayoutBundle.INSTANCE.gwtImages().menuArrowTopImage().getHeight();
 
         // the optimum position for the arrow is in the middle of the button
-        int arrowLeft = buttonMiddle - contentLeft - arrowWidth / 2;
-        if (arrowLeft + arrowWidth + arrowSpace > contentWidth) {
+        int arrowLeft = buttonMiddle - contentLeft - (arrowWidth / 2);
+        if ((arrowLeft + arrowWidth + arrowSpace) > contentWidth) {
             // limit the arrow position if the maximum is reached (content width 'minus x')
             arrowLeft = contentWidth - arrowWidth - arrowSpace;
-        } else if (arrowLeft - arrowSpace < 0) {
+        } else if ((arrowLeft - arrowSpace) < 0) {
             // limit the arrow position if the minimum is reached ('plus x')
             arrowLeft = arrowWidth + arrowSpace;
         }
@@ -444,20 +471,20 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         int arrowTop = -(arrowHeight - 2);
         String arrowClass = I_CmsLayoutBundle.INSTANCE.dialogCss().menuArrowTop();
 
-        int contentTop = buttonPosition.getTop() + buttonPosition.getHeight() - Window.getScrollTop() + arrowHeight - 2;
+        int contentTop = (((buttonPosition.getTop() + buttonPosition.getHeight()) - Window.getScrollTop()) + arrowHeight) - 2;
         if (!m_isToolbarMode) {
-            contentTop = buttonPosition.getTop() + buttonPosition.getHeight() + arrowHeight - 2;
+            contentTop = (buttonPosition.getTop() + buttonPosition.getHeight() + arrowHeight) - 2;
             int contentHeight = m_popup.getOffsetHeight();
             int windowHeight = Window.getClientHeight();
 
-            if ((contentHeight + spaceAssurance < windowHeight)
-                && (buttonPosition.getTop() - Window.getScrollTop() > contentHeight)
-                && (contentHeight + spaceAssurance + contentTop - Window.getScrollTop() > windowHeight)) {
+            if (((contentHeight + spaceAssurance) < windowHeight)
+                && ((buttonPosition.getTop() - Window.getScrollTop()) > contentHeight)
+                && (((contentHeight + spaceAssurance + contentTop) - Window.getScrollTop()) > windowHeight)) {
                 // content fits into the window height, 
                 // there is enough space above the button 
                 // and there is to little space below the button
                 // so show above
-                contentTop = buttonPosition.getTop() - arrowHeight + 2 - contentHeight;
+                contentTop = ((buttonPosition.getTop() - arrowHeight) + 2) - contentHeight;
                 arrowTop = contentHeight - 1;
                 arrowClass = I_CmsLayoutBundle.INSTANCE.dialogCss().menuArrowBottom();
             }
