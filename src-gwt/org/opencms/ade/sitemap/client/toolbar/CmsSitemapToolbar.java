@@ -102,7 +102,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
     public void setNewEnabled(boolean enabled, String disabledReason) {
 
         if (enabled) {
-            m_newMenuButton.setEnabled(true);
+            m_newMenuButton.enable();
         } else {
             m_newMenuButton.disable(disabledReason);
         }
