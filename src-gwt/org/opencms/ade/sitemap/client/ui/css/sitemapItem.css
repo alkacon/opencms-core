@@ -46,6 +46,11 @@
 
 .notInNavigationEntry .itemTitle{
 	color: value("constants.css.textColorDisabled");
+	cursor: default;
+}
+
+div.itemTitle{
+	cursor: text;
 }
 
 @external vfsMode, navMode;
