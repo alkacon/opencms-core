@@ -46,7 +46,7 @@ import org.apache.lucene.store.Directory;
 public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
     /** The threshold for the commits until optimize is called. */
-    public static final int COMMIT_OPTIMIZE_THRESHOLD = 1000;
+    public static final int COMMIT_OPTIMIZE_THRESHOLD = 10000;
 
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsLuceneIndexWriter.class);
@@ -131,8 +131,6 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
         if (m_optimizeCounter >= COMMIT_OPTIMIZE_THRESHOLD) {
             // optimize the search index when the threshold is reached
             optimize();
-            m_indexWriter.commit();
-            m_optimizeCounter = 0;
         }
     }
 
@@ -158,6 +156,7 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
      */
     public void optimize() throws IOException {
 
+        m_optimizeCounter = 0;
         if ((m_index != null) && LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_OPTIMIZE_2,

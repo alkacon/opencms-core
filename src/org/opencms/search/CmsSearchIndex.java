@@ -1181,6 +1181,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns <code>true</code> in case this index is updated incremental.<p>
+     * 
+     * An index is updated incremental if the index rebuild mode as defined by 
+     * {@link #getRebuildMode()} is either set to {@value #REBUILD_MODE_AUTO} or 
+     * {@value #REBUILD_MODE_OFFLINE}. Moreover, at least one update must have 
+     * been written to the index already.
+     * 
+     * @return <code>true</code> in case this index is updated incremental
+     */
+    public boolean isUpdatedIncremental() {
+
+        return m_indexWriter != null;
+    }
+
+    /**
      * Removes an index source from this search index.<p>
      * 
      * @param sourceName the index source name to remove
@@ -1848,11 +1863,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 oldDir.copy(newDir, fileName, fileName);
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_IO_INDEX_BACKUP_CREATE_3,
-                getName(),
-                getPath(),
-                backupPath), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_CREATE_3, getName(), getPath(), backupPath),
+                e);
             backupPath = null;
         }
         return backupPath;
