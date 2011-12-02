@@ -697,26 +697,6 @@ public class CmsTreeItem extends CmsListItem {
         }
         m_open = open;
         executeOpen();
-
-        //        if ((m_tree != null) && m_tree.isAnimationEnabled()) {
-        //            Command openCallback = new Command() {
-        //
-        //                /**
-        //                 * @see com.google.gwt.user.client.Command#execute()
-        //                 */
-        //                public void execute() {
-        //
-        //                    executeOpen();
-        //                }
-        //            };
-        //            if (m_open) {
-        //                CmsSlideAnimation.slideIn(m_children.getElement(), openCallback, ANIMATION_DURATION);
-        //            } else {
-        //                CmsSlideAnimation.slideOut(m_children.getElement(), openCallback, ANIMATION_DURATION);
-        //            }
-        //        } else {
-        //            executeOpen();
-        //        }
     }
 
     /**
