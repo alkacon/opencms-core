@@ -240,7 +240,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     @Override
     public Element getDragHelper(I_CmsDropTarget target) {
 
-        m_listItemWidget.setBackground(Background.DEFAULT);
         Element helper = super.getDragHelper(target);
         // ensure the proper CSS context for the drag helper
         m_provisionalParent.addClassName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
@@ -299,8 +298,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      * Temporarily highlights an item.<p>
      * 
      * @param duration the duration for which  
+     * @param background the background to color to set when finished
      */
-    public void highlightTemporarily(int duration) {
+    public void highlightTemporarily(int duration, final Background background) {
 
         int blinkInterval = 300;
         final int blinkCount = duration / blinkInterval;
@@ -317,6 +317,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                 boolean finish = m_counter > blinkCount;
                 highlight(((m_counter % 2) == 0) && !finish);
                 m_counter += 1;
+                if (finish) {
+                    setBackgroundColor(background);
+                }
                 return !finish;
             }
         }, blinkInterval);
