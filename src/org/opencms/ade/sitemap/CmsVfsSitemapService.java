@@ -303,8 +303,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsResource rootRes = cms.readResource(root.replaceAll("/$", ""));
             root = cms.getSitePath(rootRes);
             CmsJspNavElement navElement = getNavBuilder().getNavigationForResource(root);
-            entry = toClientEntry(navElement, false);
-            if (rootRes.isFolder() && (!isSubSitemap(navElement) || root.equals(entryPointUri))) {
+            boolean isRoot = root.equals(entryPointUri);
+            entry = toClientEntry(navElement, isRoot);
+            if (isRoot || (rootRes.isFolder() && (!isSubSitemap(navElement)))) {
                 entry.setSubEntries(getChildren(root, levels));
             }
         } catch (Throwable e) {
