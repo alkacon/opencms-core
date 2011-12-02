@@ -78,7 +78,7 @@ public class CmsLabel extends Label implements I_CmsTruncable {
      */
     public CmsLabel() {
 
-        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
+        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**
@@ -89,7 +89,7 @@ public class CmsLabel extends Label implements I_CmsTruncable {
     public CmsLabel(Element element) {
 
         super(element);
-        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
+        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**
@@ -100,7 +100,7 @@ public class CmsLabel extends Label implements I_CmsTruncable {
     public CmsLabel(String text) {
 
         super(text);
-        addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
+        setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().truncatingLabel());
     }
 
     /**

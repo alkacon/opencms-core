@@ -48,6 +48,11 @@
 
 .notInNavigationEntry .itemTitle{
 	color: value("constants.css.textColorDisabled");
+	cursor: default;
+}
+
+div.itemTitle{
+	cursor: text;
 }
 
 .navMode .cms_type_icon, .vfsMode .cms_type_icon{

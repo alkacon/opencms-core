@@ -3,6 +3,7 @@
 .truncatingLabel{
 	overflow: hidden;
 	white-space: nowrap;
+	cursor: default;
 }
 /** browser specific styles **/
 @if user.agent gecko1_8 gecko{
