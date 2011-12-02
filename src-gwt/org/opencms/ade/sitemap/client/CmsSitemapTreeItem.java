@@ -55,7 +55,7 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -174,12 +174,21 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                         CmsClientProperty.PROPERTY_NAVTEXT,
                         newTitle,
                         true);
-                    final List<CmsPropertyModification> propChanges = Collections.<CmsPropertyModification> singletonList(propMod);
+                    final List<CmsPropertyModification> propChanges = new ArrayList<CmsPropertyModification>();
+                    propChanges.add(propMod);
                     CmsSitemapController controller = CmsSitemapView.getInstance().getController();
                     if (m_entry.isNew() && !m_entry.isRoot()) {
                         String urlName = controller.ensureUniqueName(
                             CmsResource.getParentFolder(m_entry.getSitePath()),
                             newTitle);
+                        if (oldTitle.equals(m_entry.getPropertyValue(CmsClientProperty.PROPERTY_TITLE))) {
+                            CmsPropertyModification titleMod = new CmsPropertyModification(
+                                m_entry.getId(),
+                                CmsClientProperty.PROPERTY_TITLE,
+                                newTitle,
+                                true);
+                            propChanges.add(titleMod);
+                        }
                         controller.editAndChangeName(
                             m_entry,
                             urlName,

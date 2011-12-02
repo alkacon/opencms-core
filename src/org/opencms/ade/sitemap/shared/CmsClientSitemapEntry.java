@@ -306,6 +306,21 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the property value or null if not set.<p>
+     * 
+     * @param propertyName the property name
+     * 
+     * @return the property value
+     */
+    public String getPropertyValue(String propertyName) {
+
+        if (m_ownProperties.containsKey(propertyName)) {
+            return m_ownProperties.get(propertyName).getEffectiveValue();
+        }
+        return null;
+    }
+
+    /**
      * Returns the resource type name.<p>
      * 
      * @return the resource type name 
@@ -342,15 +357,14 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public String getTitle() {
 
-        CmsClientProperty navtext = m_ownProperties.get(CmsClientProperty.PROPERTY_NAVTEXT);
-        if (!CmsClientProperty.isPropertyEmpty(navtext)) {
-            return navtext.getEffectiveValue();
+        String title = getPropertyValue(CmsClientProperty.PROPERTY_NAVTEXT);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+            title = getPropertyValue(CmsClientProperty.PROPERTY_TITLE);
         }
-        CmsClientProperty title = m_ownProperties.get(CmsClientProperty.PROPERTY_TITLE);
-        if (!CmsClientProperty.isPropertyEmpty(title)) {
-            return title.getEffectiveValue();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+            title = m_name;
         }
-        return m_name;
+        return title;
     }
 
     /**
