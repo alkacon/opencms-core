@@ -39,6 +39,8 @@ import org.opencms.search.Messages;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.lucene.document.DateTools;
@@ -52,6 +54,9 @@ public class CmsSearchFieldMapping {
 
     /** Default for expiration date since Long.MAX_VALUE is to big. */
     protected static final String DATE_EXPIRED_DEFAULT_STR = "21000101";
+
+    /** The default expiration date. */
+    private static Date m_defaultDateExpired;
 
     /** The configured default value. */
     private String m_defaultValue;
@@ -84,6 +89,21 @@ public class CmsSearchFieldMapping {
         this();
         setType(type);
         setParam(param);
+    }
+
+    /**
+     * Returns the default expiration date, meaning the resource never expires.<p>
+     * 
+     * @return the default expiration date
+     * 
+     * @throws ParseException if something goes wrong parsing the default date string
+     */
+    public static Date getDefaultDateExpired() throws ParseException {
+
+        if (m_defaultDateExpired == null) {
+            m_defaultDateExpired = DateTools.stringToDate(DATE_EXPIRED_DEFAULT_STR);
+        }
+        return m_defaultDateExpired;
     }
 
     /**

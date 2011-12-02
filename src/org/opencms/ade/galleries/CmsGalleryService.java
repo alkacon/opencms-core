@@ -57,6 +57,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
@@ -545,14 +546,16 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 String description = sResult.getDescription();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(description)) {
                     bean.setDescription(description);
-                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_DESCRIPTION_0), description);
+                    bean.addAdditionalInfo(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DESCRIPTION_0),
+                        description);
                 } else {
                     bean.setDescription(resourceTypeDisplayName);
                 }
                 if (!type.getTypeName().equals(CmsResourceTypeImage.getStaticTypeName())) {
-                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0), resourceTypeDisplayName);
+                    bean.addAdditionalInfo(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0),
+                        resourceTypeDisplayName);
                 }
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
                     bean.addAdditionalInfo(
@@ -567,23 +570,22 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         false);
                     if (!imageDimensionProp.isNullProperty()) {
                         String temp = imageDimensionProp.getValue();
-                        bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                            Messages.GUI_RESULT_LABEL_DIMENSION_0), temp.substring(2).replace(",h:", " x "));
+                        bean.addAdditionalInfo(
+                            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
+                            temp.substring(2).replace(",h:", " x "));
                     }
                 }
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_SIZE_0), (sResult.getLength() / 1000) + " kb");
-                bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                    Messages.GUI_RESULT_LABEL_DATE_CHANGED_0), CmsDateUtil.getDate(
-                    sResult.getDateLastModified(),
-                    DateFormat.SHORT,
-                    getWorkplaceLocale()));
-                if (sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT) {
-                    bean.addAdditionalInfo(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0), CmsDateUtil.getDate(
-                        sResult.getDateExpired(),
-                        DateFormat.SHORT,
-                        getWorkplaceLocale()));
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
+                    (sResult.getLength() / 1000) + " kb");
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_CHANGED_0),
+                    CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
+                if ((sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT)
+                    && !sResult.getDateExpired().equals(CmsSearchFieldMapping.getDefaultDateExpired())) {
+                    bean.addAdditionalInfo(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0),
+                        CmsDateUtil.getDate(sResult.getDateExpired(), DateFormat.SHORT, getWorkplaceLocale()));
                 }
                 bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(
                     path,
@@ -626,9 +628,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 list.add(bean);
             } catch (Exception e) {
                 if (type != null) {
-                    log(Messages.get().getBundle(getWorkplaceLocale()).key(
-                        Messages.ERR_BUILD_TYPE_LIST_1,
-                        type.getTypeName()), e);
+                    log(
+                        Messages.get().getBundle(getWorkplaceLocale()).key(
+                            Messages.ERR_BUILD_TYPE_LIST_1,
+                            type.getTypeName()),
+                        e);
                 }
             }
         }
