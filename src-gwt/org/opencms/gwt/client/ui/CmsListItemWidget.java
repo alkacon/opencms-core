@@ -841,8 +841,14 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         }
         m_title.truncate(textMetricsPrefix + TM_TITLE, width - 10);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_subtitleSuffix.getText())) {
-            m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", 100);
-            m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 110);
+            m_subtitleSuffix.getElement().getStyle().clearWidth();
+            int suffixWidth = m_subtitleSuffix.getOffsetWidth();
+            if (suffixWidth <= 0) {
+                // in case the suffix is not rendered yet and no width is available, use truncation
+                m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", 100);
+                suffixWidth = 100;
+            }
+            m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - suffixWidth - 10);
         } else {
             m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 10);
         }
