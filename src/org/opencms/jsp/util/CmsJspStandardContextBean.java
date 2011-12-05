@@ -28,6 +28,7 @@
 package org.opencms.jsp.util;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
@@ -47,6 +48,8 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
 import org.opencms.xml.containerpage.CmsDynamicFunctionParser;
+import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.List;
@@ -368,6 +371,44 @@ public final class CmsJspStandardContextBean {
     public CmsContainerPageBean getPage() {
 
         return m_page;
+    }
+
+    /**
+     * JSP EL accessor method for retrieving the preview formatters.<p>
+     * 
+     * @return a lazy map for accessing preview formatters 
+     */
+    public Map<String, String> getPreviewFormatter() {
+
+        MapMaker mm = new MapMaker();
+        return mm.makeComputingMap(new Function<String, String>() {
+
+            public String apply(String uri) {
+
+                try {
+                    String rootPath = m_cms.getRequestContext().addSiteRoot(uri);
+                    CmsResource resource = m_cms.readResource(uri);
+                    CmsADEManager adeManager = OpenCms.getADEManager();
+                    CmsADEConfigData configData = adeManager.lookupConfiguration(m_cms, rootPath);
+                    CmsFormatterConfiguration formatterConfig = configData.getFormatters(m_cms, resource);
+                    if (formatterConfig == null) {
+                        return null;
+                    }
+                    CmsFormatterBean previewFormatter = formatterConfig.getPreviewFormatter();
+                    if (previewFormatter == null) {
+                        return null;
+                    }
+                    CmsUUID structureId = previewFormatter.getJspStructureId();
+                    m_cms.readResource(structureId);
+                    CmsResource formatterResource = m_cms.readResource(structureId);
+                    String formatterSitePath = m_cms.getRequestContext().removeSiteRoot(formatterResource.getRootPath());
+                    return formatterSitePath;
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                    return null;
+                }
+            }
+        });
     }
 
     /**

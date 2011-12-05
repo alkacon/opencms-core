@@ -1,9 +1,12 @@
-<%@page buffer="none" session="false" import="org.opencms.main.*,org.opencms.jsp.*,org.opencms.jsp.util.*" %>
+<%@page buffer="none" session="false" import="org.opencms.main.*,org.opencms.file.*,org.opencms.jsp.*,org.opencms.jsp.util.*,org.opencms.ade.galleries.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
 
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+	CmsObject cmsObj = cms.getCmsObject();
+	CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(request);
+	pageContext.setAttribute("standardContext", standardContext);
 	pageContext.setAttribute("navlist", cms.getNavigation().getNavigationForFolder());
 %>
 <cms:template element="head">
@@ -75,8 +78,12 @@
 <cms:template element="body">
 	<c:catch>
 		<c:set var="xml" value="${cms:vfs(pageContext).readXml[cms:vfs(pageContext).context.uri]}" />
+		<c:set var="preview" value="${standardContext.previewFormatter[cms:vfs(pageContext).context.uri]}" />
 	</c:catch>
 	<c:choose>
+		<c:when test="${!empty preview}">
+			<%=CmsPreviewService.getPreviewContent(request, response, cmsObj, cmsObj.readResource(cms.getRequestContext().getUri()),cms.getRequestContext().getLocale())%>
+		</c:when>
 		<c:when test="${!empty xml}">
 			<c:forEach items="${xml.names}" var="element">
 				<cms:template ifexists="${element}">

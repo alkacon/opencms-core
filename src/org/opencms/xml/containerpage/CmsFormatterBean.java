@@ -177,11 +177,12 @@ public class CmsFormatterBean {
      * 
      * @param jspRootPath the jsp root path 
      * @param jspStructureId the jsp structure id 
-     * @param location the formatter location 
+     * @param location the formatter location
+     * @param preview the preview formatter flag  
      */
-    CmsFormatterBean(String jspRootPath, CmsUUID jspStructureId, String location) {
+    CmsFormatterBean(String jspRootPath, CmsUUID jspStructureId, String location, boolean preview) {
 
-        this("*", jspRootPath, jspStructureId, -1, Integer.MAX_VALUE, false, false, location);
+        this("*", jspRootPath, jspStructureId, -1, Integer.MAX_VALUE, preview, false, location);
         m_matchAll = true;
     }
 

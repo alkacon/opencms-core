@@ -44,6 +44,7 @@ import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -63,6 +64,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+
 /**
  * Handles all RPC services related to the gallery preview dialog.<p>
  * 
@@ -70,8 +76,85 @@ import java.util.Map.Entry;
  */
 public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewService {
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPreviewService.class);
+
     /** Serialization uid. */
     private static final long serialVersionUID = -8175522641937277445L;
+
+    /**
+     * Renders the preview content for the given resource and locale.<p>
+     * 
+     * @param request the current servlet request 
+     * @param response the current servlet response 
+     * @param cms the cms context
+     * @param resource the resource
+     * @param locale the content locale
+     * 
+     * @return the rendered HTML preview content
+     */
+    public static String getPreviewContent(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        CmsObject cms,
+        CmsResource resource,
+        Locale locale) {
+
+        try {
+            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+                    cms,
+                    cms.getRequestContext().getRootUri());
+
+                CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, resource);
+                CmsFormatterBean formatter = formatters.getFormatter(CmsFormatterBean.PREVIEW_TYPE, -1);
+
+                if (formatter != null) {
+                    CmsObject tempCms = OpenCms.initCmsObject(cms);
+                    tempCms.getRequestContext().setLocale(locale);
+                    CmsResource formatterResource = tempCms.readResource(formatter.getJspStructureId());
+                    request.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, tempCms);
+                    CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(request);
+                    CmsContainerElementBean element = new CmsContainerElementBean(
+                        resource.getStructureId(),
+                        formatter.getJspStructureId(),
+                        null,
+                        false);
+                    element.initResource(tempCms);
+                    CmsContainerBean containerBean = new CmsContainerBean(
+                        "PREVIEW",
+                        CmsFormatterBean.PREVIEW_TYPE,
+                        1,
+                        Collections.<CmsContainerElementBean> emptyList());
+                    containerBean.setWidth(String.valueOf(CmsFormatterBean.PREVIEW_WIDTH));
+
+                    standardContext.setContainer(containerBean);
+                    standardContext.setElement(element);
+                    standardContext.setEdited(true);
+                    standardContext.setPage(new CmsContainerPageBean(
+                        locale,
+                        Collections.<CmsContainerBean> singletonList(containerBean)));
+                    String encoding = response.getCharacterEncoding();
+                    CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
+                        OpenCms.getResourceManager().getLoader(formatterResource),
+                        element.getResource(),
+                        formatterResource);
+                    CmsResource loaderRes = loaderFacade.getLoaderStartResource();
+                    return (new String(loaderFacade.getLoader().dump(
+                        tempCms,
+                        loaderRes,
+                        null,
+                        locale,
+                        request,
+                        response), encoding)).trim();
+                }
+            }
+        } catch (Exception e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            //TODO: logging
+        }
+        return null;
+    }
 
     /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService#getImageInfo(java.lang.String, java.lang.String)
@@ -230,58 +313,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
      */
     private String getPreviewContent(CmsObject cms, CmsResource resource, Locale locale) {
 
-        try {
-            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
-                    cms,
-                    cms.getRequestContext().getRootUri());
-
-                CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, resource);
-                CmsFormatterBean formatter = formatters.getFormatter(CmsFormatterBean.PREVIEW_TYPE, -1);
-
-                if (formatter != null) {
-                    CmsObject tempCms = OpenCms.initCmsObject(cms);
-                    tempCms.getRequestContext().setLocale(locale);
-                    CmsResource formatterResource = tempCms.readResource(formatter.getJspStructureId());
-                    CmsContainerElementBean element = new CmsContainerElementBean(
-                        resource.getStructureId(),
-                        formatter.getJspStructureId(),
-                        null,
-                        false);
-                    element.initResource(tempCms);
-                    CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
-                        OpenCms.getResourceManager().getLoader(formatterResource),
-                        element.getResource(),
-                        formatterResource);
-                    CmsResource loaderRes = loaderFacade.getLoaderStartResource();
-                    CmsContainerBean containerBean = new CmsContainerBean(
-                        "PREVIEW",
-                        CmsFormatterBean.PREVIEW_TYPE,
-                        1,
-                        Collections.<CmsContainerElementBean> emptyList());
-                    containerBean.setWidth(String.valueOf(CmsFormatterBean.PREVIEW_WIDTH));
-                    getRequest().setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, tempCms);
-                    CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(getRequest());
-                    standardContext.setContainer(containerBean);
-                    standardContext.setElement(element);
-                    standardContext.setEdited(true);
-                    standardContext.setPage(new CmsContainerPageBean(
-                        locale,
-                        Collections.<CmsContainerBean> singletonList(containerBean)));
-                    String encoding = getResponse().getCharacterEncoding();
-                    return (new String(loaderFacade.getLoader().dump(
-                        tempCms,
-                        loaderRes,
-                        null,
-                        locale,
-                        getRequest(),
-                        getResponse()), encoding)).trim();
-                }
-            }
-        } catch (Exception e) {
-            //TODO: logging
-        }
-        return null;
+        return getPreviewContent(getRequest(), getResponse(), cms, resource, locale);
     }
 
     /**

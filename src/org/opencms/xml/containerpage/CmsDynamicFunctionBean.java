@@ -226,11 +226,11 @@ public class CmsDynamicFunctionBean {
 
         IdentityHashMap<CmsFormatterBean, Format> formatsByFormatter = new IdentityHashMap<CmsFormatterBean, Format>();
         // relate formatters to formats so we can pick the corresponding format after a formatter has been selected  
-        CmsFormatterBean mainFormatter = createFormatterBean(m_mainFormat);
+        CmsFormatterBean mainFormatter = createFormatterBean(m_mainFormat, true);
         formatsByFormatter.put(mainFormatter, m_mainFormat);
         List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
         for (Format format : m_otherFormats) {
-            CmsFormatterBean formatter = createFormatterBean(format);
+            CmsFormatterBean formatter = createFormatterBean(format, false);
             formatsByFormatter.put(formatter, format);
             formatters.add(formatter);
         }
@@ -252,10 +252,10 @@ public class CmsDynamicFunctionBean {
      */
     public CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms) {
 
-        CmsFormatterBean mainFormatter = createFormatterBean(m_mainFormat);
+        CmsFormatterBean mainFormatter = createFormatterBean(m_mainFormat, true);
         List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
         for (Format format : m_otherFormats) {
-            formatters.add(createFormatterBean(format));
+            formatters.add(createFormatterBean(format, false));
         }
         formatters.add(0, mainFormatter);
         return CmsFormatterConfiguration.create(cms, formatters);
@@ -295,19 +295,25 @@ public class CmsDynamicFunctionBean {
      * Helper method to create a formatter bean from a format.<p>
      * 
      * @param format the format bean 
+     * @param isPreview if true, the formatter returned will be marked as a preview formatter 
+     * 
      * @return the formatter corresponding to the format 
      */
-    protected CmsFormatterBean createFormatterBean(Format format) {
+    protected CmsFormatterBean createFormatterBean(Format format, boolean isPreview) {
 
         if (format.hasNoContainerSettings()) {
-            return new CmsFormatterBean(FORMATTER_PATH, m_functionFormatter.getStructureId(), m_resource.getRootPath());
+            return new CmsFormatterBean(
+                FORMATTER_PATH,
+                m_functionFormatter.getStructureId(),
+                m_resource.getRootPath(),
+                isPreview);
         } else {
             CmsFormatterBean result = new CmsFormatterBean(
                 format.getType(),
                 FORMATTER_PATH,
                 format.getMinWidth(),
                 format.getMaxWidth(),
-                "false",
+                "" + isPreview,
                 "false",
                 m_resource.getRootPath());
             result.setJspStructureId(m_functionFormatter.getStructureId());
