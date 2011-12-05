@@ -57,6 +57,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
@@ -580,7 +581,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.addAdditionalInfo(
                     Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_CHANGED_0),
                     CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
-                if (sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT) {
+                if ((sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT)
+                    && !sResult.getDateExpired().equals(CmsSearchFieldMapping.getDefaultDateExpired())) {
                     bean.addAdditionalInfo(
                         Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0),
                         CmsDateUtil.getDate(sResult.getDateExpired(), DateFormat.SHORT, getWorkplaceLocale()));
