@@ -27,9 +27,13 @@
 
 package org.opencms.ade.publish.shared;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.List;
 
 public class CmsWorkflowResponse {
+
+    private CmsUUID m_workflowId;
 
     private boolean m_success;
 
@@ -38,5 +42,44 @@ public class CmsWorkflowResponse {
     private List<CmsPublishResource> m_resources;
 
     private List<CmsWorkflowActionBean> m_availableActions;
+
+    public CmsWorkflowResponse(
+        boolean isSuccess,
+        String message,
+        List<CmsPublishResource> resources,
+        List<CmsWorkflowActionBean> availableActions,
+        CmsUUID workflowId) {
+
+        m_success = isSuccess;
+        m_message = message;
+        m_resources = resources;
+        m_availableActions = availableActions;
+        m_workflowId = workflowId;
+    }
+
+    public List<CmsWorkflowActionBean> getAvailableActions() {
+
+        return m_availableActions;
+    }
+
+    public String getMessage() {
+
+        return m_message;
+    }
+
+    public List<CmsPublishResource> getResources() {
+
+        return m_resources;
+    }
+
+    public CmsUUID getWorkflowId() {
+
+        return m_workflowId;
+    }
+
+    public boolean isSuccess() {
+
+        return m_success;
+    }
 
 }
