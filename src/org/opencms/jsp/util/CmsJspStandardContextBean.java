@@ -392,11 +392,11 @@ public final class CmsJspStandardContextBean {
                     CmsADEConfigData configData = adeManager.lookupConfiguration(m_cms, rootPath);
                     CmsFormatterConfiguration formatterConfig = configData.getFormatters(m_cms, resource);
                     if (formatterConfig == null) {
-                        return null;
+                        return "";
                     }
                     CmsFormatterBean previewFormatter = formatterConfig.getPreviewFormatter();
                     if (previewFormatter == null) {
-                        return null;
+                        return "";
                     }
                     CmsUUID structureId = previewFormatter.getJspStructureId();
                     m_cms.readResource(structureId);
@@ -405,7 +405,7 @@ public final class CmsJspStandardContextBean {
                     return formatterSitePath;
                 } catch (CmsException e) {
                     LOG.warn(e.getLocalizedMessage(), e);
-                    return null;
+                    return "";
                 }
             }
         });

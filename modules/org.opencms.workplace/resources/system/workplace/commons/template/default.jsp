@@ -1,6 +1,4 @@
-<%@page buffer="none" session="false" import="org.opencms.main.*,org.opencms.file.*,org.opencms.jsp.*,org.opencms.jsp.util.*,org.opencms.ade.galleries.*" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
+<%@page taglibs="c,cms,fmt" buffer="none" session="false" import="org.opencms.main.*,org.opencms.file.*,org.opencms.jsp.*,org.opencms.jsp.util.*,org.opencms.ade.galleries.*" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
 
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
@@ -24,6 +22,16 @@
 
 	<cms:editable provider="org.opencms.workplace.editors.directedit.CmsDirectEditJQueryProvider"/>
 </head>
+
+
+<fmt:setBundle basename="org.opencms.workplace.messages" var="messages" scope="request" />
+<c:set var="warningMessage"><fmt:message key="ERR_DEFAULT_TEMPLATE_WARNING_0" bundle="${messages}"/></c:set>
+<c:set var="preview" value="${standardContext.previewFormatter[cms:vfs(pageContext).context.uri]}" />
+<c:choose>
+	<c:when test="${!empty preview}">
+		<c:set var="warningMessage"><fmt:message key="ERR_DEFAULT_TEMPLATE_ADE_WARNING_0" bundle="${messages}" /></c:set>
+	</c:when>
+</c:choose>
 
 <body>
 	<div id="window">
@@ -73,7 +81,7 @@
 					<div id="col2_content" class="clearfix">
 						<!-- anchor for accessible link to main content -->
 						<a id="content" name="content"></a>
-						<div id="warning">This is the default OpenCms template, since the template for this resource is not configured correctly.</div>
+						<div id="warning">${warningMessage}</div>
 </cms:template>
 <cms:template element="body">
 	<c:catch>

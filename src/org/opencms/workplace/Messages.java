@@ -63,6 +63,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_WORKPLACE_LOCK_RESOURCE_1 = "ERR_WORKPLACE_LOCK_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DEFAULT_TEMPLATE_WARNING_0 = "ERR_DEFAULT_TEMPLATE_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DEFAULT_TEMPLATE_ADE_WARNING_0 = "ERR_DEFAULT_TEMPLATE_ADE_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_AJAX_REPORT_ERROR_0 = "GUI_AJAX_REPORT_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
