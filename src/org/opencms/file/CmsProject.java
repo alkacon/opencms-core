@@ -54,6 +54,9 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
         /** Project type temporary. */
         protected static final CmsProjectType MODE_PROJECT_TEMPORARY = new CmsProjectType(1);
 
+        /** Project type 'workflow'. */
+        protected static final CmsProjectType MODE_PROJECT_WORKFLOW = new CmsProjectType(2);
+
         /** Serializable version id. */
         private static final long serialVersionUID = -8701314451776599534L;
 
@@ -81,9 +84,24 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
                     return CmsProjectType.MODE_PROJECT_NORMAL;
                 case 1:
                     return CmsProjectType.MODE_PROJECT_TEMPORARY;
+                case 2:
+                    return CmsProjectType.MODE_PROJECT_WORKFLOW;
                 default:
                     return CmsProjectType.MODE_PROJECT_NORMAL;
             }
+        }
+
+        /**
+         * Returns the default flags which should be set when a new project of this type is created.<p>
+         * 
+         * @return the default flags for the project type 
+         */
+        public int getDefaultFlags() {
+
+            //            if (getMode() == CmsProjectType.MODE_PROJECT_WORKFLOW.getMode()) {
+            //                return PROJECT_FLAG_HIDDEN;
+            //            }
+            return PROJECT_FLAG_NONE;
         }
     }
 
@@ -101,6 +119,9 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /** Indicates a normal project. */
     public static final CmsProjectType PROJECT_TYPE_NORMAL = CmsProjectType.MODE_PROJECT_NORMAL;
+
+    /** The project type for a workflow project. */
+    public static final CmsProjectType PROJECT_TYPE_WORKFLOW = CmsProjectType.MODE_PROJECT_WORKFLOW;
 
     /** Indicates a temporary project that is deleted after it is published. */
     public static final CmsProjectType PROJECT_TYPE_TEMPORARY = CmsProjectType.MODE_PROJECT_TEMPORARY;
