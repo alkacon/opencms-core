@@ -18,9 +18,9 @@
 			<g:InlineHTML ui:field="m_resourceCountLabel" />
 		</g:FlowPanel>
 		<g:Label ui:field="m_noResources" styleName="{res.publishCss.noResources}" />
-		<g:ScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
+		<cms:CmsScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
 			<g:FlowPanel ui:field="m_groupPanelContainer" styleName="{res.publishCss.groupPanel}"></g:FlowPanel>
-		</g:ScrollPanel>
+		</cms:CmsScrollPanel>
 		<cms:CmsSimplePanel styleName="{res.publishCss.checkboxes}">
 			<cmsi:CmsCheckBox ui:field="m_checkboxRelated"></cmsi:CmsCheckBox>
 		</cms:CmsSimplePanel>

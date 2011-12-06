@@ -265,6 +265,7 @@ public final class CmsContentEditorDialog {
         });
 
         m_dialog.add(editorFrame);
+        m_dialog.setPositionFixed();
         m_dialog.center();
         m_form = generateForm();
         RootPanel.getBodyElement().appendChild(m_form);
@@ -314,8 +315,11 @@ public final class CmsContentEditorDialog {
             formValues.put("newlink", m_editableData.getNewLink());
             formValues.put("editortitle", m_editableData.getNewTitle());
         }
-        FormElement formElement = CmsDomUtil.generateHiddenForm(CmsCoreProvider.get().link(
-            CmsCoreProvider.get().getContentEditorUrl()), Method.post, EDITOR_IFRAME_NAME, formValues);
+        FormElement formElement = CmsDomUtil.generateHiddenForm(
+            CmsCoreProvider.get().link(CmsCoreProvider.get().getContentEditorUrl()),
+            Method.post,
+            EDITOR_IFRAME_NAME,
+            formValues);
         return formElement;
     }
 

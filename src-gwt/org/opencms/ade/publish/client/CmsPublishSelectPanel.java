@@ -35,6 +35,7 @@ import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -68,7 +69,6 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -193,7 +193,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /** The scroll panel containing the group panel. */
     @UiField
-    protected ScrollPanel m_scrollPanel;
+    protected CmsScrollPanel m_scrollPanel;
 
     /** The button for selecting all resources for publishing. */
     @UiField
@@ -596,7 +596,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 if (found) {
                     return true;
                 }
-            } else if (m_currentGroupIndex < m_model.getGroups().size() - 1) {
+            } else if (m_currentGroupIndex < (m_model.getGroups().size() - 1)) {
                 // didn't find item in the current group, so skip to next group if available  
                 // and create the group widget 
                 m_currentGroupIndex += 1;

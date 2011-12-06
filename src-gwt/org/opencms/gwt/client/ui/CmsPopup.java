@@ -465,15 +465,24 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     @Override
     public void center() {
 
-        super.center();
-        if (m_resizeHandlerRegistration == null) {
-            m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
+        if (Position.FIXED.getCssName().equals(getElement().getStyle().getPosition())) {
+            show();
+            // keep position fixed, as may have been set to absolute
+            setPositionFixed();
+            int left = (Window.getClientWidth() - getOffsetWidth()) >> 1;
+            int top = (Window.getClientHeight() - getOffsetHeight()) >> 1;
+            setPopupPosition(Math.max(left, 0), Math.max(top, 0));
+        } else {
+            super.center();
+            if (m_resizeHandlerRegistration == null) {
+                m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
 
-                public void onResize(ResizeEvent event) {
+                    public void onResize(ResizeEvent event) {
 
-                    m_windowWidth = event.getWidth();
-                }
-            });
+                        m_windowWidth = event.getWidth();
+                    }
+                });
+            }
         }
     }
 
@@ -484,9 +493,17 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void centerHorizontally(int top) {
 
-        show();
-        int left = (Window.getClientWidth() - getOffsetWidth()) >> 1;
-        setPopupPosition(Math.max(Window.getScrollLeft() + left, 0), Math.max(Window.getScrollTop() + top, 0));
+        if (Position.FIXED.getCssName().equals(getElement().getStyle().getPosition())) {
+            show();
+            // keep position fixed, as may have been set to absolute
+            setPositionFixed();
+            int left = (Window.getClientWidth() - getOffsetWidth()) >> 1;
+            setPopupPosition(Math.max(left, 0), Math.max(top, 0));
+        } else {
+            show();
+            int left = (Window.getClientWidth() - getOffsetWidth()) >> 1;
+            setPopupPosition(Math.max(Window.getScrollLeft() + left, 0), Math.max(Window.getScrollTop() + top, 0));
+        }
     }
 
     /**
@@ -861,7 +878,12 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     @Override
     public void show() {
 
+        boolean fixed = Position.FIXED.getCssName().equals(getElement().getStyle().getPosition());
         super.show();
+        if (fixed) {
+            // keep position fixed as it may have been set to absolute
+            setPositionFixed();
+        }
         if (m_useAnimation) {
             CmsFadeAnimation.fadeIn(getElement(), null, 500);
         }

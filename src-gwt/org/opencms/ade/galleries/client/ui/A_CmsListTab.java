@@ -33,6 +33,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDia
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -58,7 +59,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -144,7 +144,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /** The borded panel to hold the scrollable list. */
     @UiField
-    protected ScrollPanel m_list;
+    protected CmsScrollPanel m_list;
 
     /** The option panel. */
     @UiField
@@ -224,7 +224,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      *
      * @return the list
      */
-    public ScrollPanel getList() {
+    public CmsScrollPanel getList() {
 
         return m_list;
     }
