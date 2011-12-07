@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsLabel;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
@@ -843,10 +844,15 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_subtitleSuffix.getText())) {
             m_subtitleSuffix.getElement().getStyle().clearWidth();
             int suffixWidth = m_subtitleSuffix.getOffsetWidth();
+            CmsDebugLog.getInstance().printLine("suffix '" + m_subtitleSuffix.getText() + "' width: " + suffixWidth);
             if (suffixWidth <= 0) {
                 // in case the suffix is not rendered yet and no width is available, use truncation
-                m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", 100);
                 suffixWidth = 100;
+                m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", suffixWidth);
+            }
+            if (suffixWidth > 200) {
+                suffixWidth = 200;
+                m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", suffixWidth);
             }
             m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - suffixWidth - 10);
         } else {
