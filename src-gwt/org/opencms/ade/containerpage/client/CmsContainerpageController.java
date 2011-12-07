@@ -46,6 +46,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -82,6 +83,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -415,9 +417,15 @@ public final class CmsContainerpageController {
     public CmsContainerpageController() {
 
         INSTANCE = this;
-        m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
-            getContainerpageService(),
-            CmsCntPageData.DICT_NAME);
+        try {
+            m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
+                getContainerpageService(),
+                CmsCntPageData.DICT_NAME);
+        } catch (SerializationException e) {
+            CmsErrorDialog.handleException(new Exception(
+                "Deserialization of page data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                e));
+        }
     }
 
     /**
@@ -426,8 +434,9 @@ public final class CmsContainerpageController {
      * @param data the data to deserialize
      * 
      * @return the container element
+     * @throws SerializationException if deserialization fails
      */
-    public CmsContainerElement getSerializedElement(String data) {
+    public CmsContainerElement getSerializedElement(String data) throws SerializationException {
 
         return (CmsContainerElement)CmsRpcPrefetcher.getSerializedObjectFromString(getContainerpageService(), data);
     }
@@ -967,7 +976,10 @@ public final class CmsContainerpageController {
         m_newElements = new HashMap<String, CmsContainerElementData>();
         m_containerTypes = new HashSet<String>();
         m_containers = new HashMap<String, CmsContainerJso>();
-
+        if (m_data == null) {
+            m_handler.m_editor.disableEditing("Editing is disabled due to deserialization errors.");
+            return;
+        }
         JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
         for (int i = 0; i < containers.length(); i++) {
             CmsContainerJso container = containers.get(i);

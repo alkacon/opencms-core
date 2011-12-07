@@ -85,6 +85,7 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -357,13 +358,18 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
 
     /**
      * Default constructor.<p>
+     * 
+     * @throws SerializationException if deserialization fails 
      */
-    public A_CmsUploadDialog() {
+    public A_CmsUploadDialog()
+    throws SerializationException {
 
         super(Messages.get().key(Messages.GUI_UPLOAD_DIALOG_TITLE_0));
 
         I_CmsLayoutBundle.INSTANCE.uploadCss().ensureInjected();
-        m_data = (CmsUploadData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(getUploadService(), CmsUploadData.DICT_NAME);
+        m_data = (CmsUploadData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
+            getUploadService(),
+            CmsUploadData.DICT_NAME);
 
         setModal(true);
         setGlassEnabled(true);

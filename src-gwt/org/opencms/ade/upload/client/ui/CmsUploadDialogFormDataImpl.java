@@ -41,6 +41,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
@@ -56,8 +57,11 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 
     /**
      * Default constructor.<p>
+     * 
+     * @throws SerializationException if deserialization falis 
      */
-    public CmsUploadDialogFormDataImpl() {
+    public CmsUploadDialogFormDataImpl()
+    throws SerializationException {
 
         super();
         addUploadZone(getContentWrapper().getElement(), this);

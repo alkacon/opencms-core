@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -51,6 +52,17 @@ import com.google.gwt.user.client.ui.Panel;
  * @since 8.0.0
  */
 public class CmsUploadDialogImpl extends A_CmsUploadDialog {
+
+    /**
+     * Constructor.<p>
+     * 
+     * @throws SerializationException if deserialization fails
+     */
+    public CmsUploadDialogImpl()
+    throws SerializationException {
+
+        super();
+    }
 
     /**
      * Implements the submit handler (Used for browsers that don't support file api).<p>

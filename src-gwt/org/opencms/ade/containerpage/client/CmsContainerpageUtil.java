@@ -37,6 +37,7 @@ import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
@@ -110,8 +111,16 @@ public class CmsContainerpageUtil {
                 child);
             if (isContainerElement || isGroupcontainerElement) {
                 String serializedData = child.getAttribute("rel");
-                CmsContainerElement elementData = m_controller.getSerializedElement(serializedData);
+                CmsContainerElement elementData = null;
+                try {
+                    elementData = m_controller.getSerializedElement(serializedData);
+                } catch (Exception e) {
+                    CmsErrorDialog.handleException(new Exception(
+                        "Deserialization of element data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                        e));
+                }
                 if (isContainerElement) {
+
                     // searching for content element root
                     Element elementRoot = (Element)child.getNextSibling();
                     while ((elementRoot != null) && (elementRoot.getNodeType() != Node.ELEMENT_NODE)) {
@@ -126,12 +135,18 @@ public class CmsContainerpageUtil {
                     }
                     if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER, elementRoot)) {
                         // broken element, already at next start marker
+                        if (elementData != null) {
+                            alertParsingError(elementData.getSitePath());
+                        }
                         child.removeFromParent();
                         child = elementRoot;
                         continue;
                     }
                     if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER, elementRoot)) {
                         // broken element, no content element root
+                        if (elementData != null) {
+                            alertParsingError(elementData.getSitePath());
+                        }
                         child.removeFromParent();
                         child = (Element)elementRoot.getNextSiblingElement();
                         elementRoot.removeFromParent();
@@ -151,6 +166,9 @@ public class CmsContainerpageUtil {
                             temp.removeFromParent();
                         }
                         if (endMarker == null) {
+                            if (elementData != null) {
+                                alertParsingError(elementData.getSitePath());
+                            }
                             // broken element, end marker missing
                             elementRoot.removeFromParent();
                             child.removeFromParent();
@@ -158,10 +176,21 @@ public class CmsContainerpageUtil {
                             continue;
                         }
                         if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER, endMarker)) {
+                            if (elementData != null) {
+                                alertParsingError(elementData.getSitePath());
+                            }
                             // broken element, end marker missing
                             elementRoot.removeFromParent();
                             child.removeFromParent();
                             child = endMarker;
+                        }
+                        if (elementData == null) {
+                            // deserialization failed, remove whole element
+                            child.removeFromParent();
+                            elementRoot.removeFromParent();
+                            child = (Element)endMarker.getNextSiblingElement();
+                            endMarker.removeFromParent();
+                            continue;
                         }
                         CmsDomUtil.removeScriptTags(elementRoot);
                         CmsContainerPageElementPanel containerElement = createElement(
@@ -173,11 +202,18 @@ public class CmsContainerpageUtil {
                         }
                         container.adoptElement(containerElement);
                         child.removeFromParent();
-                        child = (Element)endMarker.getNextSiblingElement(); //   (Element)container.getElement().getFirstChildElement();
+                        child = (Element)endMarker.getNextSiblingElement();
                         endMarker.removeFromParent();
 
                     }
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
+                    if (elementData == null) {
+                        // deserialization failed, remove whole group container 
+                        Element sibling = (Element)child.getNextSiblingElement();
+                        DOM.removeChild((Element)container.getElement(), child);
+                        child = sibling;
+                        continue;
+                    }
                     CmsDomUtil.removeScriptTags(child);
                     CmsGroupContainerElementPanel groupContainer = createGroupcontainer(child, container, elementData);
                     groupContainer.setContainerId(container.getContainerId());
@@ -213,9 +249,15 @@ public class CmsContainerpageUtil {
         Iterator<CmsContainerJso> it = containers.values().iterator();
         while (it.hasNext()) {
             CmsContainerJso container = it.next();
-            CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container);
-            consumeContainerElements(dragContainer);
-            result.put(container.getName(), dragContainer);
+            try {
+                CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container);
+                consumeContainerElements(dragContainer);
+                result.put(container.getName(), dragContainer);
+            } catch (Exception e) {
+                CmsErrorDialog.handleException(new Exception("Error parsing container "
+                    + container.getName()
+                    + ". Please check if your HTML is well formed.", e));
+            }
         }
 
         return result;
@@ -302,6 +344,18 @@ public class CmsContainerpageUtil {
         CmsMenuListItem listItem = new CmsMenuListItem(containerElement);
         listItem.initMoveHandle(m_controller.getDndHandler());
         return listItem;
+    }
+
+    /**
+     * Displays the element parsing error dialog.<p>
+     * 
+     * @param sitePath the element site path
+     */
+    private void alertParsingError(String sitePath) {
+
+        new CmsErrorDialog("Error parsing element "
+            + sitePath
+            + ". Please check if the HTML generated by the element formatter is well formed.", null).center();
     }
 
     /**

@@ -28,6 +28,7 @@
 package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
@@ -498,15 +499,20 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     protected void onChangeAction() {
 
         if (m_uploadDialog == null) {
-            m_uploadDialog = GWT.create(CmsUploadDialogImpl.class);
-            m_uploadDialog.setTargetFolder(m_targetFolder);
-            m_uploadDialog.addFileInput(m_fileInput);
-            if (m_closeHandler != null) {
-                m_uploadDialog.addCloseHandler(m_closeHandler);
+            try {
+                m_uploadDialog = GWT.create(CmsUploadDialogImpl.class);
+                m_uploadDialog.setTargetFolder(m_targetFolder);
+                if (m_closeHandler != null) {
+                    m_uploadDialog.addCloseHandler(m_closeHandler);
+                }
+            } catch (Exception e) {
+                CmsErrorDialog.handleException(new Exception(
+                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
+                return;
             }
-        } else {
-            m_uploadDialog.addFileInput(m_fileInput);
         }
+        m_uploadDialog.addFileInput(m_fileInput);
         createFileInput();
     }
 

@@ -45,6 +45,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsCategoryBean;
@@ -72,6 +73,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
@@ -130,23 +132,32 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_handler = handler;
 
         // get initial search for gallery
-        m_searchObject = (CmsGallerySearchBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
-            getGalleryService(),
-            CmsGallerySearchBean.DICT_NAME);
-        m_dialogBean = (CmsGalleryDataBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
-            getGalleryService(),
-            CmsGalleryDataBean.DICT_NAME);
-        m_dialogMode = m_dialogBean.getMode();
+        try {
+            m_searchObject = (CmsGallerySearchBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
+                getGalleryService(),
+                CmsGallerySearchBean.DICT_NAME);
+
+            m_dialogBean = (CmsGalleryDataBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
+                getGalleryService(),
+                CmsGalleryDataBean.DICT_NAME);
+            m_dialogMode = m_dialogBean.getMode();
+        } catch (SerializationException e) {
+            CmsErrorDialog.handleException(new Exception(
+                "Deserialization of gallery data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                e));
+        }
 
         if (m_searchObject == null) {
             m_searchObject = new CmsGallerySearchBean();
             m_searchObject.setLocale(m_dialogBean.getLocale());
             m_searchObject.setScope(m_dialogBean.getScope());
         }
-        m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
+        if (m_dialogBean != null) {
+            m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
 
-        m_eventBus = new SimpleEventBus();
-        addValueChangeHandler(handler);
+            m_eventBus = new SimpleEventBus();
+            addValueChangeHandler(handler);
+        }
     }
 
     /**

@@ -58,6 +58,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -87,6 +88,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -136,14 +138,23 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public CmsSitemapController() {
 
         m_undone = new ArrayList<I_CmsClientSitemapChange>();
-        m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(getService(), CmsSitemapData.DICT_NAME);
+        try {
+            m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
+                getService(),
+                CmsSitemapData.DICT_NAME);
+        } catch (SerializationException e) {
+            CmsErrorDialog.handleException(new Exception(
+                "Deserialization of sitemap data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                e));
+        }
 
         m_hiddenProperties = new HashSet<String>();
-        m_detailPageTable = m_data.getDetailPageTable();
-        m_data.getRoot().initializeAll(this);
-        m_eventBus = new SimpleEventBus();
-        initDetailPageInfos();
-
+        if (m_data != null) {
+            m_detailPageTable = m_data.getDetailPageTable();
+            m_data.getRoot().initializeAll(this);
+            m_eventBus = new SimpleEventBus();
+            initDetailPageInfos();
+        }
     }
 
     /**

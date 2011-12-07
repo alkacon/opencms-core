@@ -30,6 +30,7 @@ package org.opencms.gwt.client;
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsLockInfo;
@@ -42,6 +43,7 @@ import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
@@ -73,8 +75,11 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Prevent instantiation.<p> 
+     * 
+     * @throws SerializationException if deserialization failed 
      */
-    protected CmsCoreProvider() {
+    protected CmsCoreProvider()
+    throws SerializationException {
 
         super((CmsCoreData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(getService(), DICT_NAME));
         m_clientTime = System.currentTimeMillis();
@@ -91,7 +96,13 @@ public final class CmsCoreProvider extends CmsCoreData {
     public static CmsCoreProvider get() {
 
         if (INSTANCE == null) {
-            INSTANCE = new CmsCoreProvider();
+            try {
+                INSTANCE = new CmsCoreProvider();
+            } catch (SerializationException e) {
+                CmsErrorDialog.handleException(new Exception(
+                    "Deserialization of core data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
+            }
         }
         return INSTANCE;
     }

@@ -52,8 +52,11 @@ public final class CmsRpcPrefetcher {
      * @param dictionaryName the global variable name
      * 
      * @return the prefetched RPC data
+     * 
+     * @throws SerializationException if the deserialization fails 
      */
-    public static Object getSerializedObjectFromDictionary(Object asyncService, String dictionaryName) {
+    public static Object getSerializedObjectFromDictionary(Object asyncService, String dictionaryName)
+    throws SerializationException {
 
         return getSerializedObjectFromString(asyncService, getString(dictionaryName));
     }
@@ -65,17 +68,14 @@ public final class CmsRpcPrefetcher {
      * @param serializedData the serialized object data
      * 
      * @return the prefetched RPC data
+     * 
+     * @throws SerializationException if the deserialization fails 
      */
-    public static Object getSerializedObjectFromString(Object asyncService, String serializedData) {
+    public static Object getSerializedObjectFromString(Object asyncService, String serializedData)
+    throws SerializationException {
 
-        try {
-            SerializationStreamFactory ssf = (SerializationStreamFactory)asyncService;
-            return ssf.createStreamReader(serializedData).readObject();
-        } catch (SerializationException e) {
-            // should never happen
-            CmsLog.log(e.getLocalizedMessage());
-        }
-        return null;
+        SerializationStreamFactory ssf = (SerializationStreamFactory)asyncService;
+        return ssf.createStreamReader(serializedData).readObject();
     }
 
     /**

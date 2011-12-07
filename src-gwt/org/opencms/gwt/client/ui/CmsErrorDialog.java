@@ -27,8 +27,11 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -105,6 +108,46 @@ public class CmsErrorDialog extends CmsPopup {
     }
 
     /**
+     * Handles the exception by logging the exception to the server log and displaying an error dialog on the client.<p>
+     * 
+     * @param t the throwable
+     */
+    public static void handleException(Throwable t) {
+
+        String message;
+        StackTraceElement[] trace;
+        String cause = null;
+        String className;
+        if (t instanceof CmsRpcException) {
+            CmsRpcException ex = (CmsRpcException)t;
+            message = ex.getOriginalMessage();
+            trace = ex.getOriginalStackTrace();
+            cause = ex.getOriginalCauseMessage();
+            className = ex.getOriginalClassName();
+        } else {
+            message = CmsClientStringUtil.getMessage(t);
+            trace = t.getStackTrace();
+            if (t.getCause() != null) {
+                cause = CmsClientStringUtil.getMessage(t.getCause());
+            }
+            className = t.getClass().getName();
+        }
+        // send the ticket to the server
+        String ticket = CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTraceAsString(trace, "\n"));
+        String lineBreak = "<br />\n";
+        String errorMessage = message == null
+        ? className + ": " + Messages.get().key(Messages.GUI_NO_DESCIPTION_0)
+        : message;
+        if (cause != null) {
+            errorMessage += lineBreak + Messages.get().key(Messages.GUI_REASON_0) + ":" + cause;
+        }
+
+        String details = Messages.get().key(Messages.GUI_TICKET_MESSAGE_3, ticket, className, message)
+            + CmsClientStringUtil.getStackTraceAsString(trace, lineBreak);
+        new CmsErrorDialog(errorMessage, details).center();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.CmsPopup#center()
      */
     @Override
@@ -162,7 +205,7 @@ public class CmsErrorDialog extends CmsPopup {
 
         CmsMessageWidget widget = new CmsMessageWidget();
         widget.setIconClass(I_CmsLayoutBundle.INSTANCE.errorDialogCss().errorIcon());
-        widget.setMessageText(message);
+        widget.setMessageHtml(message);
         return widget;
     }
 

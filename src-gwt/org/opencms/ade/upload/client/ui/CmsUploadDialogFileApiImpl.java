@@ -38,6 +38,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Provides the upload dialog for file API support.<p>
@@ -45,6 +46,17 @@ import com.google.gwt.core.client.JsArray;
  * @since 8.0.0
  */
 public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
+
+    /**
+     * Constructor.<p>
+     * 
+     * @throws SerializationException if deserialization falis
+     */
+    public CmsUploadDialogFileApiImpl()
+    throws SerializationException {
+
+        super();
+    }
 
     /** The maximum upload size in bytes. (50 MB) */
     private static final long MAX_UPLOAD_SIZE = 51200000;

@@ -31,6 +31,7 @@ import org.opencms.ade.upload.client.ui.A_CmsUploadDialog;
 import org.opencms.ade.upload.client.ui.CmsUploadDialogImpl;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -53,10 +54,10 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     public static native void exportOpenUploadDialog() /*-{
 
-      $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
-            uploadTarget) {
-         @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
-      };
+        $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
+                uploadTarget) {
+            @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
+        };
 
     }-*/;
 
@@ -67,21 +68,27 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     private static void openDialog(String uploadTarget) {
 
-        A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
-        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+        try {
+            A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
+            dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
-            /**
-             * The on close action.<p>
-             * 
-             * @param event the event
-             */
-            public void onClose(CloseEvent<PopupPanel> event) {
+                /**
+                 * The on close action.<p>
+                 * 
+                 * @param event the event
+                 */
+                public void onClose(CloseEvent<PopupPanel> event) {
 
-                Window.Location.reload();
-            }
-        });
-        dialog.setTargetFolder(uploadTarget);
-        dialog.loadAndShow();
+                    Window.Location.reload();
+                }
+            });
+            dialog.setTargetFolder(uploadTarget);
+            dialog.loadAndShow();
+        } catch (Exception e) {
+            CmsErrorDialog.handleException(new Exception(
+                "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                e));
+        }
     }
 
     /**
@@ -94,22 +101,28 @@ public class CmsUpload extends A_CmsEntryPoint {
         if ((getDialogMode() != null) && getDialogMode().equals("button")) {
             exportOpenUploadDialog();
         } else {
-            A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
-            Runnable onFinish = new Runnable() {
+            try {
+                A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
+                Runnable onFinish = new Runnable() {
 
-                /**
-                 * The action to execute when the dialog has finished.<p>
-                 * @see java.lang.Runnable#run()
-                 */
-                public void run() {
+                    /**
+                     * The action to execute when the dialog has finished.<p>
+                     * @see java.lang.Runnable#run()
+                     */
+                    public void run() {
 
-                    String closeLink = getCloseLink() + "?resource=";
-                    Window.Location.assign(CmsCoreProvider.get().link(closeLink));
-                }
-            };
-            dialog.setFinishAction(onFinish);
-            dialog.setTargetFolder(getTargetFolder());
-            dialog.loadAndShow();
+                        String closeLink = getCloseLink() + "?resource=";
+                        Window.Location.assign(CmsCoreProvider.get().link(closeLink));
+                    }
+                };
+                dialog.setFinishAction(onFinish);
+                dialog.setTargetFolder(getTargetFolder());
+                dialog.loadAndShow();
+            } catch (Exception e) {
+                CmsErrorDialog.handleException(new Exception(
+                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
+            }
         }
     }
 
@@ -120,7 +133,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getCloseLink() /*-{
 
-      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
+        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 
@@ -131,7 +144,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getDialogMode() /*-{
 
-      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
+        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
 
     }-*/;
 
@@ -142,7 +155,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     private native String getTargetFolder() /*-{
 
-      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
+        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
 
     }-*/;
 }
