@@ -138,8 +138,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         /**
          * @see org.apache.lucene.index.IndexReader#reopen()
+         * 
+         * @deprecated since Lucene 3.5 but kept for backward compatibility
          */
         @Override
+        @Deprecated
         public synchronized IndexReader reopen() throws CorruptIndexException, IOException {
 
             return m_reader.reopen();
@@ -1194,7 +1197,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         return m_indexWriter != null;
     }
-
+    
     /**
      * Removes an index source from this search index.<p>
      * 
@@ -2120,8 +2123,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         // in case there is an index searcher available close it
         if ((m_indexSearcher != null) && (m_indexSearcher.getIndexReader() != null)) {
             try {
-                IndexReader newReader = m_indexSearcher.getIndexReader().reopen();
+                IndexReader oldReader = m_indexSearcher.getIndexReader();
+                IndexReader newReader = IndexReader.openIfChanged(oldReader);
                 m_indexSearcher = new IndexSearcher(newReader);
+                oldReader.close();
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_REOPEN_1, getName()), e);
             }

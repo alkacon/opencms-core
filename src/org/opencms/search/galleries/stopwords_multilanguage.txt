@@ -15,7 +15,7 @@
 #
 # English stopwords - obtained from http://ranks.nl/resources/stopwords.html    
 #       
-I
+i
 a
 about
 an

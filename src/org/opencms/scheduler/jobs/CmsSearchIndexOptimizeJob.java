@@ -28,7 +28,6 @@
 package org.opencms.scheduler.jobs;
 
 import org.opencms.file.CmsObject;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.search.CmsSearchIndex;
@@ -75,14 +74,14 @@ public class CmsSearchIndexOptimizeJob implements I_CmsScheduledJob {
         String oi = parameters.get(PARAM_INDEXES_OPTIMIZED);
         if (oi != null) {
             optimizeIndexes = CmsStringUtil.splitAsList(oi, ',', true);
-            if (CmsCollectionUtil.isEmptyOrNull(optimizeIndexes)) {
+            if (optimizeIndexes.isEmpty()) {
                 optimizeIndexes = null;
             }
         } else {
             oi = parameters.get(PARAM_INDEXES_EXCLUDED);
             if (oi != null) {
                 excludeIndexes = CmsStringUtil.splitAsList(oi, ',', true);
-                if (CmsCollectionUtil.isEmptyOrNull(excludeIndexes)) {
+                if (excludeIndexes.isEmpty()) {
                     excludeIndexes = null;
                 }
             }
