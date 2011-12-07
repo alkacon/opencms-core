@@ -31,17 +31,35 @@ import org.opencms.ade.publish.CmsPublish;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflowActionBean;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
+import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishEventAdapter;
+import org.opencms.publish.CmsPublishJobRunning;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class CmsWorkflowManager {
+import org.apache.commons.logging.Log;
+import org.apache.commons.mail.EmailException;
+
+/**
+ * The default workflow manager implementation, which supports 2 basic actions, Release and Publish.
+ */
+public class CmsWorkflowManager implements I_CmsEventListener {
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkflowManager.class);
 
     /** A CMS context with admin privileges. */
     private CmsObject m_adminCms;
@@ -56,12 +74,27 @@ public class CmsWorkflowManager {
     public static final String ACTION_RELEASE = "release";
 
     /**
-     * Creates a new workflow manager instance 
-     * @param adminCms
+     * Creates a new workflow manager instance.<p>
+     *  
+     * @param adminCms a CMS context with admin privileges 
      */
-    public CmsWorkflowManager(CmsObject adminCms) {
+    public CmsWorkflowManager(CmsObject adminCms, CmsPublishManager publishManager) {
 
         m_adminCms = adminCms;
+        publishManager.addPublishListener(new CmsPublishEventAdapter() {
+
+            @Override
+            public void onFinish(CmsPublishJobRunning publishJob) {
+
+                CmsWorkflowManager.this.onFinishPublishJob(publishJob);
+            }
+        });
+    }
+
+    public void cmsEvent(CmsEvent event) {
+
+        // TODO: Auto-generated method stub
+
     }
 
     /**
@@ -70,9 +103,11 @@ public class CmsWorkflowManager {
      * @param userCms the current user's CMS context
      * @param actionKey the key identifying the workflow action 
      * 
-     * @param resources
-     * @return
-     * @throws CmsException
+     * @param resources the resources to be processed 
+     * 
+     * @return the workflow response for the executed action 
+     * 
+     * @throws CmsException if something goes wrong 
      */
     public CmsWorkflowResponse executeAction(CmsObject userCms, String actionKey, List<CmsResource> resources)
     throws CmsException {
@@ -104,16 +139,53 @@ public class CmsWorkflowManager {
         return actions;
     }
 
+    /**
+     * Gets the group which should be used as the 'manager' group for newly created workflow projects.<p>
+     * @return
+     */
     public String getWorkflowProjectManagerGroup() {
 
-        return "Projectmanagers";
+        return OpenCms.getDefaultUsers().getGroupProjectmanagers();
     }
 
+    /**
+     * Gets the group which should be used as the 'user' group for newly created workflow projects.<p>
+     * 
+     * @return a group name 
+     */
     public String getWorkflowProjectUserGroup() {
 
-        return "Projectmanagers";
+        return OpenCms.getDefaultUsers().getGroupProjectmanagers();
     }
 
+    public void onFinishPublishJob(CmsPublishJobRunning publishJob) {
+
+        System.out.println("###CmsWorkflowManager: publish job finished!");
+        CmsPublishList publishList = publishJob.getPublishList();
+        Set<CmsUUID> projectIds = new HashSet<CmsUUID>();
+        for (CmsResource resource : publishList.getAllResources()) {
+            projectIds.add(resource.getProjectLastModified());
+        }
+        for (CmsUUID projectId : projectIds) {
+            try {
+                CmsProject project = m_adminCms.readProject(projectId);
+                cleanupProjectIfEmpty(project);
+            } catch (CmsException e) {
+                LOG.info("Project " + projectId + " doesn't exist anymore.");
+            }
+        }
+    }
+
+    /**
+     * Implemenation of the 'forcepublish' workflow action.<p>
+     * 
+     * @param userCms the user's current CMS context 
+     * @param resources the resources to be processed
+     *  
+     * @return the workflow response for this action
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     protected CmsWorkflowResponse actionForcePublish(CmsObject userCms, List<CmsResource> resources)
     throws CmsException {
 
@@ -123,6 +195,16 @@ public class CmsWorkflowManager {
         return getSuccessResponse();
     }
 
+    /**
+     * Implementation of the 'publish' workflow action.<p>
+     * 
+     * @param userCms the user's current CMS context 
+     * @param resources the resources to be processed 
+     * 
+     * @return the workflow response for this action 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     protected CmsWorkflowResponse actionPublish(CmsObject userCms, List<CmsResource> resources) throws CmsException {
 
         CmsPublish publish = new CmsPublish(userCms);
@@ -134,6 +216,16 @@ public class CmsWorkflowManager {
         return getPublishBrokenRelationsResponse(brokenLinkBeans);
     }
 
+    /**
+     * Implementation of the 'release' workflow action.<p>
+     * 
+     * @param userCms the current user's CMS context 
+     * @param resources the resources which should be released
+     *  
+     * @return the workflow response for this action 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     protected CmsWorkflowResponse actionRelease(CmsObject userCms, List<CmsResource> resources) throws CmsException {
 
         String projectName = generateProjectName(userCms);
@@ -152,6 +244,7 @@ public class CmsWorkflowManager {
             offlineAdminCms.writeProjectLastModified(resource, workflowProject);
             System.out.println("Releasing resource " + resource.getRootPath());
         }
+        sendNotification(userCms, workflowProject, resources);
         return new CmsWorkflowResponse(
             true,
             "ok",
@@ -160,16 +253,51 @@ public class CmsWorkflowManager {
             workflowProject.getUuid());
     }
 
+    /**
+     * Removes a project if there are no longer any resources which have been last modified in that project.<p>
+     * 
+     * @param project the project 
+     * @throws CmsException
+     */
+    protected void cleanupProjectIfEmpty(CmsProject project) throws CmsException {
+
+        if ((project.getType().getMode() == CmsProject.PROJECT_TYPE_WORKFLOW.getMode()) && isProjectEmpty(project)) {
+            LOG.info("Removing project " + project.getName() + " because it is an empty workflow project.");
+            m_adminCms.deleteProject(project.getUuid());
+        }
+    }
+
+    /**
+     * Generates the description for a new workflow project based on the user for whom it is created.<p>
+     * 
+     * @param userCms the user's current CMS context 
+     * 
+     * @return the workflow project description 
+     */
     protected String generateProjectDescription(CmsObject userCms) {
 
         return "Workflow project.";
     }
 
+    /**
+     * Generates the name for a new workflow project based on the user for whom it is created.<p>
+     * 
+     * @param userCms the user's current CMS context 
+     * 
+     * @return the workflow project name 
+     */
     protected String generateProjectName(CmsObject userCms) {
 
         return userCms.getRequestContext().getCurrentUser().getName() + "_" + (new CmsUUID()).toString();
     }
 
+    /**
+     * Helper method for generating the workflow response which should be sent when publishing the resources would break relations.<p>
+     * 
+     * @param publishResources the resources whose links would be broken
+     *  
+     * @return the workflow response 
+     */
     protected CmsWorkflowResponse getPublishBrokenRelationsResponse(List<CmsPublishResource> publishResources) {
 
         List<CmsWorkflowActionBean> actions = new ArrayList<CmsWorkflowActionBean>();
@@ -180,9 +308,13 @@ public class CmsWorkflowManager {
             publishResources,
             actions,
             null);
-
     }
 
+    /**
+     * Gets the workflow response which should be sent when the resources have successfully been published.<p>
+     * 
+     * @return the successful workflow response 
+     */
     protected CmsWorkflowResponse getSuccessResponse() {
 
         return new CmsWorkflowResponse(
@@ -191,6 +323,38 @@ public class CmsWorkflowManager {
             new ArrayList<CmsPublishResource>(),
             new ArrayList<CmsWorkflowActionBean>(),
             null);
+    }
+
+    protected boolean isProjectEmpty(CmsProject project) throws CmsException {
+
+        CmsPublishManager publishManager = OpenCms.getPublishManager();
+        CmsObject projectCms = OpenCms.initCmsObject(m_adminCms);
+        projectCms.getRequestContext().setCurrentProject(project);
+        CmsPublishList publishList = publishManager.getPublishList(projectCms);
+        List resourcesModifiedInProject = publishList.getAllResources();
+        return resourcesModifiedInProject.isEmpty();
+    }
+
+    /**
+     * Sends the notification for released resources.<p>
+     * 
+     * @param userCms the user's CMS context 
+     * @param workflowProject the workflow project which 
+     * @param resources
+     * @throws CmsException
+     */
+    protected void sendNotification(CmsObject userCms, CmsProject workflowProject, List<CmsResource> resources)
+    throws CmsException {
+
+        try {
+            CmsWorkflowNotification notification = new CmsWorkflowNotification(
+                userCms.getRequestContext().getCurrentUser(),
+                workflowProject,
+                resources);
+            notification.send();
+        } catch (EmailException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
 }

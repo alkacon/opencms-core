@@ -6362,8 +6362,17 @@ public final class CmsSecurityManager {
         }
     }
 
+    /**
+     * Writes the 'projectlastmodified' field of a resource record.<p>
+     * 
+     * @param context the current database context 
+     * @param resource the resource which should be modified 
+     * @param project the project whose project id should be written into the resource record 
+     * 
+     * @throws CmsException if something goes wrong
+     */
     public void writeResourceProjectLastModified(CmsRequestContext context, CmsResource resource, CmsProject project)
-    throws CmsException, CmsSecurityException {
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {

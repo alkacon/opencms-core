@@ -3661,6 +3661,14 @@ public final class CmsObject {
         m_securityManager.writeProject(m_context, project);
     }
 
+    /**
+     * Writes the 'projectlastmodified' field of a resource record.<p>
+     * 
+     * @param resource the resource which should be modified 
+     * @param project the project whose id should be written into the resource record
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public void writeProjectLastModified(CmsResource resource, CmsProject project) throws CmsException {
 
         m_securityManager.writeResourceProjectLastModified(getRequestContext(), resource, project);

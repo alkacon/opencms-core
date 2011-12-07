@@ -30,11 +30,16 @@ package org.opencms.workflow;
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
 
+/**
+ * The message bundle for the workflow package.<p>
+ * 
+ */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workflow.messages";
 
+    /** Message key for the resource bundle. */
     public static final String ERR_INVALID_WORKFLOW_ACTION_1 = "ERR_INVALID_WORKFLOW_ACTION_1";
 
     /** Static instance member. */

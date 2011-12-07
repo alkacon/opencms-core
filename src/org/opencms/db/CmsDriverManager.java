@@ -9420,7 +9420,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current database context 
      * @param resource the resource which should be modified 
-     * @param projectId the project id to write 
+     * @param projectId the project id to write
+     * 
+     * @throws CmsDataAccessException if the database access fails 
      */
     public void writeProjectLastModified(CmsDbContext dbc, CmsResource resource, CmsUUID projectId)
     throws CmsDataAccessException {
