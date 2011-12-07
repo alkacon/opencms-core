@@ -31,7 +31,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -75,16 +75,16 @@ public interface I_CmsPublishServiceAsync {
     void getPublishOptions(AsyncCallback<CmsPublishOptions> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#publishResources(List, List, boolean)}.<p>
+     * Asynchronous version of {@link I_CmsPublishService#publishResources(List, List, String)}.<p>
      * 
      * @param toPublish the resources to publish 
      * @param toRemove the resources to remove
-     * @param force if true, try to ignore broken links
+     * @param action the work flow action
      * @param callback the result callback 
      */
     void publishResources(
         List<CmsUUID> toPublish,
         List<CmsUUID> toRemove,
-        boolean force,
-        AsyncCallback<List<CmsPublishResource>> callback);
+        String action,
+        AsyncCallback<CmsWorkflowResponse> callback);
 }

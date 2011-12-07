@@ -30,7 +30,7 @@ package org.opencms.ade.publish.client;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -64,18 +64,18 @@ public class CmsPublishDialog extends CmsPopup {
     /**
      * The action for publishing and/or removing resources from the publish list.<p>
      */
-    private class CmsPublishAction extends CmsRpcAction<List<CmsPublishResource>> {
+    private class CmsPublishAction extends CmsRpcAction<CmsWorkflowResponse> {
 
         /** If true, try to ignore broken links when publishing. */
-        private boolean m_force;
+        private String m_action;
 
         /** Creates a new instance of this action. 
          * 
-         * @param force if true, try to ignore broken links when publishing
+         * @param action if true, try to ignore broken links when publishing
          */
-        public CmsPublishAction(boolean force) {
+        public CmsPublishAction(String action) {
 
-            m_force = force;
+            m_action = action;
         }
 
         /**
@@ -88,14 +88,14 @@ public class CmsPublishDialog extends CmsPopup {
             start(0, true);
             List<CmsUUID> resourcesToPublish = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToPublish());
             List<CmsUUID> resourcesToRemove = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToRemove());
-            getService().publishResources(resourcesToPublish, resourcesToRemove, m_force, this);
+            getService().publishResources(resourcesToPublish, resourcesToRemove, m_action, this);
         }
 
         /**
          * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
          */
         @Override
-        protected void onResponse(List<CmsPublishResource> result) {
+        protected void onResponse(CmsWorkflowResponse result) {
 
             onReceiveStatus(result);
             stop(true);
@@ -307,9 +307,9 @@ public class CmsPublishDialog extends CmsPopup {
      * 
      * @param brokenResources the list of broken resources
      */
-    public void onReceiveStatus(List<CmsPublishResource> brokenResources) {
+    public void onReceiveStatus(CmsWorkflowResponse brokenResources) {
 
-        if (brokenResources.isEmpty()) {
+        if (brokenResources) {
             hide();
         } else {
             m_brokenLinksPanel.setEntries(brokenResources);

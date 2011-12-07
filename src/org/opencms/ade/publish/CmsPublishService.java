@@ -31,7 +31,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -72,6 +72,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 options,
                 getProjects(),
                 getPublishGroups(options),
+                OpenCms.getWorkflowManager().getAvailableActions(getCmsObject()),
                 canPublishBrokenRelations(getCmsObject()));
         } catch (Throwable e) {
             error(e);
@@ -125,25 +126,24 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * 
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#publishResources(java.util.List, java.util.List, boolean)
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#publishResources(java.util.List, java.util.List, String)
      */
-    public List<CmsPublishResource> publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, boolean force)
+    public CmsWorkflowResponse publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
     throws CmsRpcException {
 
-        List<CmsPublishResource> brokenLinkBeans = null;
+        CmsWorkflowResponse response = null;
         try {
             CmsObject cms = getCmsObject();
+
             CmsPublish pub = new CmsPublish(cms, getCachedOptions());
             List<CmsResource> publishResources = idsToResources(cms, toPublish);
-            brokenLinkBeans = force ? new ArrayList<CmsPublishResource>() : pub.getBrokenResources(publishResources);
-            if (brokenLinkBeans.size() == 0) {
-                pub.publishResources(publishResources);
-                pub.removeResourcesFromPublishList(toRemove);
-            }
+            pub.removeResourcesFromPublishList(toRemove);
+            response = OpenCms.getWorkflowManager().executeAction(cms, action, publishResources);
+
         } catch (Throwable e) {
             error(e);
         }
-        return brokenLinkBeans;
+        return response;
     }
 
     /**

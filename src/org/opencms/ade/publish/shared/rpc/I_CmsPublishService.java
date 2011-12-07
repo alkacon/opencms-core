@@ -31,7 +31,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
-import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -89,13 +89,13 @@ public interface I_CmsPublishService extends RemoteService {
      * 
      * @param toPublish list of IDs of resources to publish
      * @param toRemove list of IDs of resources to remove from the publish list
-     * @param force if <code>true</code>, ignore "broken link" problems
+     * @param action the work flow action
      *  
-     * @return the resources with problems
+     * @return the workflow response
      * 
      * @throws CmsRpcException  if something goes wrong
      */
-    List<CmsPublishResource> publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, boolean force)
+    CmsWorkflowResponse publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
     throws CmsRpcException;
 
 }

@@ -50,23 +50,29 @@ public class CmsPublishData implements IsSerializable {
     /** The list of projects. */
     private List<CmsProjectBean> m_projects;
 
+    /** The available work flow actions. */
+    private List<CmsWorkflowActionBean> m_workfFlowActions;
+
     /** 
      * Creates a new instance.<p>
      * 
      * @param options the publish options 
      * @param projects the map of projects 
      * @param groups the publish groups
+     * @param workfFlowActions the available work flow actions
      * @param canPublishBrokenRelations the flag to indicate if the current user can publish broken relations
      */
     public CmsPublishData(
         CmsPublishOptions options,
         List<CmsProjectBean> projects,
         List<CmsPublishGroup> groups,
+        List<CmsWorkflowActionBean> workfFlowActions,
         boolean canPublishBrokenRelations) {
 
         m_options = options;
         m_projects = projects;
         m_groups = groups;
+        m_workfFlowActions = workfFlowActions;
         m_canPublishBrokenRelations = canPublishBrokenRelations;
     }
 
@@ -106,6 +112,16 @@ public class CmsPublishData implements IsSerializable {
     public List<CmsProjectBean> getProjects() {
 
         return m_projects;
+    }
+
+    /**
+     * Returns the available work flow actions.<p>
+     *
+     * @return the available work flow actions
+     */
+    public List<CmsWorkflowActionBean> getWorkfFlowActions() {
+
+        return m_workfFlowActions;
     }
 
     /**
