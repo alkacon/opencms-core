@@ -9416,6 +9416,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Writes a new project into the PROJECT_LASTMODIFIED field of a resource record.<p>
+     * 
+     * @param dbc the current database context 
+     * @param resource the resource which should be modified 
+     * @param projectId the project id to write 
+     */
+    public void writeProjectLastModified(CmsDbContext dbc, CmsResource resource, CmsUUID projectId)
+    throws CmsDataAccessException {
+
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
+        vfsDriver.writeLastModifiedProjectId(dbc, dbc.currentProject(), projectId, resource);
+    }
+
+    /**
      * Writes a property for a specified resource.<p>
      * 
      * @param dbc the current database context

@@ -1253,7 +1253,7 @@ public final class OpenCmsCore {
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
 
-            m_workflowManager = new CmsWorkflowManager();
+            m_workflowManager = new CmsWorkflowManager(adminCms);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }

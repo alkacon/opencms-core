@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,34 +25,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.publish.shared;
+package org.opencms.workflow;
 
-public class CmsWorkflowActionBean {
+import org.opencms.main.CmsException;
 
-    private String m_action;
+public class CmsInvalidActionException extends CmsException {
 
-    private String m_label;
-    private boolean m_enabled;
+    public CmsInvalidActionException(String action) {
 
-    public CmsWorkflowActionBean(String actionKey, String label, boolean isEnabled) {
-
-        m_action = actionKey;
-        m_label = label;
-        m_enabled = isEnabled;
+        super(Messages.get().container(Messages.ERR_INVALID_WORKFLOW_ACTION_1, action));
     }
 
-    public String getAction() {
-
-        return m_action;
-    }
-
-    public String getLabel() {
-
-        return m_label;
-    }
-
-    public boolean isEnabled() {
-
-        return m_enabled;
-    }
 }

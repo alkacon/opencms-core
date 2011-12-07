@@ -27,23 +27,170 @@
 
 package org.opencms.workflow;
 
+import org.opencms.ade.publish.CmsPublish;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflowActionBean;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CmsWorkflowManager {
 
-    public List<CmsWorkflowActionBean> getAvailableActions(CmsObject userCms) {
+    /** A CMS context with admin privileges. */
+    private CmsObject m_adminCms;
 
-        return null;
+    /** The publish workflow action. */
+    public static final String ACTION_PUBLISH = "publish";
+
+    /** The forced publish workflow action. */
+    public static final String ACTION_FORCE_PUBLISH = "forcepublish";
+
+    /** The release workflow action. */
+    public static final String ACTION_RELEASE = "release";
+
+    /**
+     * Creates a new workflow manager instance 
+     * @param adminCms
+     */
+    public CmsWorkflowManager(CmsObject adminCms) {
+
+        m_adminCms = adminCms;
     }
 
-    public CmsWorkflowResponse executeAction(CmsObject userCms, String actionKey, List<CmsResource> resources) {
+    /**
+     * Executes a workflow action in the context of the current user.<p>
+     * 
+     * @param userCms the current user's CMS context
+     * @param actionKey the key identifying the workflow action 
+     * 
+     * @param resources
+     * @return
+     * @throws CmsException
+     */
+    public CmsWorkflowResponse executeAction(CmsObject userCms, String actionKey, List<CmsResource> resources)
+    throws CmsException {
 
-        return null;
+        if (actionKey.equals(ACTION_PUBLISH)) {
+            return actionPublish(userCms, resources);
+        } else if (actionKey.equals(ACTION_RELEASE)) {
+            return actionRelease(userCms, resources);
+        } else if (actionKey.equals(ACTION_FORCE_PUBLISH)) {
+            return actionForcePublish(userCms, resources);
+        }
+        throw new CmsInvalidActionException(actionKey);
+    }
+
+    /**
+     * Returns the workflow actions which should be available to the user.<p>
+     * 
+     * @param userCms the user's CMS object 
+     * 
+     * @return the list of workflow actions which should be available to the user 
+     */
+    public List<CmsWorkflowActionBean> getAvailableActions(CmsObject userCms) {
+
+        List<CmsWorkflowActionBean> actions = new ArrayList<CmsWorkflowActionBean>();
+        CmsWorkflowActionBean publish = new CmsWorkflowActionBean(ACTION_PUBLISH, "Publish", true);
+        CmsWorkflowActionBean release = new CmsWorkflowActionBean(ACTION_RELEASE, "Release", true);
+        actions.add(publish);
+        actions.add(release);
+        return actions;
+    }
+
+    public String getWorkflowProjectManagerGroup() {
+
+        return "Projectmanagers";
+    }
+
+    public String getWorkflowProjectUserGroup() {
+
+        return "Projectmanagers";
+    }
+
+    protected CmsWorkflowResponse actionForcePublish(CmsObject userCms, List<CmsResource> resources)
+    throws CmsException {
+
+        CmsPublish publish = new CmsPublish(userCms);
+        List<CmsPublishResource> brokenLinkBeans = new ArrayList<CmsPublishResource>();
+        publish.publishResources(resources);
+        return getSuccessResponse();
+    }
+
+    protected CmsWorkflowResponse actionPublish(CmsObject userCms, List<CmsResource> resources) throws CmsException {
+
+        CmsPublish publish = new CmsPublish(userCms);
+        List<CmsPublishResource> brokenLinkBeans = publish.getBrokenResources(resources);
+        if (brokenLinkBeans.size() == 0) {
+            publish.publishResources(resources);
+            return getSuccessResponse();
+        }
+        return getPublishBrokenRelationsResponse(brokenLinkBeans);
+    }
+
+    protected CmsWorkflowResponse actionRelease(CmsObject userCms, List<CmsResource> resources) throws CmsException {
+
+        String projectName = generateProjectName(userCms);
+        String projectDescription = generateProjectDescription(userCms);
+        CmsObject offlineAdminCms = OpenCms.initCmsObject(m_adminCms);
+        offlineAdminCms.getRequestContext().setCurrentProject(userCms.getRequestContext().getCurrentProject());
+        String managerGroup = getWorkflowProjectManagerGroup();
+        String userGroup = getWorkflowProjectUserGroup();
+        CmsProject workflowProject = m_adminCms.createProject(
+            projectName,
+            projectDescription,
+            userGroup,
+            managerGroup,
+            CmsProject.PROJECT_TYPE_WORKFLOW);
+        for (CmsResource resource : resources) {
+            offlineAdminCms.writeProjectLastModified(resource, workflowProject);
+            System.out.println("Releasing resource " + resource.getRootPath());
+        }
+        return new CmsWorkflowResponse(
+            true,
+            "ok",
+            new ArrayList<CmsPublishResource>(),
+            new ArrayList<CmsWorkflowActionBean>(),
+            workflowProject.getUuid());
+    }
+
+    protected String generateProjectDescription(CmsObject userCms) {
+
+        return "Workflow project.";
+    }
+
+    protected String generateProjectName(CmsObject userCms) {
+
+        return userCms.getRequestContext().getCurrentUser().getName() + "_" + (new CmsUUID()).toString();
+    }
+
+    protected CmsWorkflowResponse getPublishBrokenRelationsResponse(List<CmsPublishResource> publishResources) {
+
+        List<CmsWorkflowActionBean> actions = new ArrayList<CmsWorkflowActionBean>();
+        CmsWorkflowActionBean forcePublish = new CmsWorkflowActionBean(ACTION_FORCE_PUBLISH, "Publish", true);
+        return new CmsWorkflowResponse(
+            false,
+            "$ broken relations - use message bundle here $",
+            publishResources,
+            actions,
+            null);
+
+    }
+
+    protected CmsWorkflowResponse getSuccessResponse() {
+
+        return new CmsWorkflowResponse(
+            true,
+            "",
+            new ArrayList<CmsPublishResource>(),
+            new ArrayList<CmsWorkflowActionBean>(),
+            null);
     }
 
 }

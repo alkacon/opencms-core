@@ -3661,6 +3661,11 @@ public final class CmsObject {
         m_securityManager.writeProject(m_context, project);
     }
 
+    public void writeProjectLastModified(CmsResource resource, CmsProject project) throws CmsException {
+
+        m_securityManager.writeResourceProjectLastModified(getRequestContext(), resource, project);
+    }
+
     /**
      * Writes a property for a specified resource.<p>
      * 
