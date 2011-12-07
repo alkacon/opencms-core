@@ -32,7 +32,6 @@ import org.opencms.gwt.client.util.CmsFocusedScrollingHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -65,17 +64,6 @@ public class CmsScrollPanel extends ScrollPanel {
     public CmsScrollPanel(Widget child) {
 
         super(child);
-        enableFocusedScrolling(true);
-    }
-
-    /**
-     * Constructor.<p>
-     * 
-     * @see ScrollPanel#ScrollPanel(Element, Element, Element)
-     */
-    protected CmsScrollPanel(Element root, Element scrollable, Element container) {
-
-        super(root, scrollable, container);
         enableFocusedScrolling(true);
     }
 
