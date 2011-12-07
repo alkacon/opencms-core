@@ -38,9 +38,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsPublishData implements IsSerializable {
 
-    /** Flag to indicate if the current user can publish broken relations. */
-    private boolean m_canPublishBrokenRelations;
-
     /** The publish groups. */
     private List<CmsPublishGroup> m_groups;
 
@@ -51,7 +48,7 @@ public class CmsPublishData implements IsSerializable {
     private List<CmsProjectBean> m_projects;
 
     /** The available work flow actions. */
-    private List<CmsWorkflowActionBean> m_workfFlowActions;
+    private List<CmsWorkflowActionBean> m_workFlowActions;
 
     /** 
      * Creates a new instance.<p>
@@ -59,21 +56,18 @@ public class CmsPublishData implements IsSerializable {
      * @param options the publish options 
      * @param projects the map of projects 
      * @param groups the publish groups
-     * @param workfFlowActions the available work flow actions
-     * @param canPublishBrokenRelations the flag to indicate if the current user can publish broken relations
+     * @param workFlowActions the available work flow actions
      */
     public CmsPublishData(
         CmsPublishOptions options,
         List<CmsProjectBean> projects,
         List<CmsPublishGroup> groups,
-        List<CmsWorkflowActionBean> workfFlowActions,
-        boolean canPublishBrokenRelations) {
+        List<CmsWorkflowActionBean> workFlowActions) {
 
         m_options = options;
         m_projects = projects;
         m_groups = groups;
-        m_workfFlowActions = workfFlowActions;
-        m_canPublishBrokenRelations = canPublishBrokenRelations;
+        m_workFlowActions = workFlowActions;
     }
 
     /**
@@ -119,18 +113,8 @@ public class CmsPublishData implements IsSerializable {
      *
      * @return the available work flow actions
      */
-    public List<CmsWorkflowActionBean> getWorkfFlowActions() {
+    public List<CmsWorkflowActionBean> getWorkFlowActions() {
 
-        return m_workfFlowActions;
-    }
-
-    /**
-     * Checks if the current user can publish broken relations.<p>
-     *
-     * @return <code>true</code> if the current user can publish broken relations
-     */
-    public boolean isCanPublishBrokenRelations() {
-
-        return m_canPublishBrokenRelations;
+        return m_workFlowActions;
     }
 }

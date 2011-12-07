@@ -88,7 +88,7 @@ public class CmsPublishDialog extends CmsPopup {
             start(0, true);
             List<CmsUUID> resourcesToPublish = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToPublish());
             List<CmsUUID> resourcesToRemove = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToRemove());
-            getService().publishResources(resourcesToPublish, resourcesToRemove, m_action, this);
+            getService().executeAction(resourcesToPublish, resourcesToRemove, m_action, this);
         }
 
         /**
@@ -127,7 +127,7 @@ public class CmsPublishDialog extends CmsPopup {
         public void execute() {
 
             start(0, true);
-            getService().getPublishGroups(m_options, this);
+            getService().getResourceGroups(m_options, this);
         }
 
         /**
@@ -181,8 +181,12 @@ public class CmsPublishDialog extends CmsPopup {
         setModal(true);
         addStyleName(CSS.publishDialog());
 
-        m_publishSelectPanel = new CmsPublishSelectPanel(this, initData.getProjects(), initData.getOptions());
-        m_brokenLinksPanel = new CmsBrokenLinksPanel(this, initData.isCanPublishBrokenRelations());
+        m_publishSelectPanel = new CmsPublishSelectPanel(
+            this,
+            initData.getProjects(),
+            initData.getOptions(),
+            initData.getWorkFlowActions());
+        m_brokenLinksPanel = new CmsBrokenLinksPanel(this);
 
         addDialogClose(null);
 
@@ -190,8 +194,6 @@ public class CmsPublishDialog extends CmsPopup {
         m_panel.add(m_publishSelectPanel);
         m_panel.add(m_brokenLinksPanel);
         setMainContent(m_panel);
-
-        setPanel(PANEL_SELECT);
         onReceivePublishList(initData.getGroups());
     }
 
@@ -256,6 +258,16 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
+     * Executes the specified action for the selected resources.<p>
+     * 
+     * @param actionKey the action key
+     */
+    public void executeAction(String actionKey) {
+
+        (new CmsPublishAction(actionKey)).execute();
+    }
+
+    /**
      * Ensures all style sheets are loaded.<p>
      */
     public void initCss() {
@@ -309,28 +321,12 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public void onReceiveStatus(CmsWorkflowResponse brokenResources) {
 
-        if (brokenResources) {
+        if (brokenResources.isSuccess()) {
             hide();
         } else {
-            m_brokenLinksPanel.setEntries(brokenResources);
+            m_brokenLinksPanel.setEntries(brokenResources.getResources(), brokenResources.getAvailableActions());
             setPanel(PANEL_BROKEN_LINKS);
         }
-    }
-
-    /**
-     * Method which is called when the "force publish" button is pressed.<p>    
-     */
-    public void onRequestForcePublish() {
-
-        (new CmsPublishAction(true)).execute();
-    }
-
-    /**
-     * Method which is called when the publish button is pressed.<p>     
-     */
-    public void onRequestPublish() {
-
-        (new CmsPublishAction(false)).execute();
     }
 
     /**

@@ -32,7 +32,6 @@
 		</cms:CmsSimplePanel>
 		<cms:CmsSimplePanel ui:field="m_problemsPanel" styleName="{res.publishCss.problemPanel}" />
 		<g:FlowPanel>
-			<cms:CmsPushButton ui:field="m_publishButton"></cms:CmsPushButton>
 			<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton>
 		</g:FlowPanel>
 	</g:FlowPanel>

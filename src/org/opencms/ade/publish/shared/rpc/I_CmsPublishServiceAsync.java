@@ -60,29 +60,29 @@ public interface I_CmsPublishServiceAsync {
     void getProjects(AsyncCallback<List<CmsProjectBean>> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#getPublishGroups(CmsPublishOptions)}.<p>
+     * Asynchronous version of {@link I_CmsPublishService#getResourceGroups(CmsPublishOptions)}.<p>
      * 
      * @param options the publish list options
      * @param callback the result callback
      */
-    void getPublishGroups(CmsPublishOptions options, AsyncCallback<List<CmsPublishGroup>> callback);
+    void getResourceGroups(CmsPublishOptions options, AsyncCallback<List<CmsPublishGroup>> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#getPublishOptions()}.<p>
+     * Asynchronous version of {@link I_CmsPublishService#getResourceOptions()}.<p>
      * 
      * @param callback the result callback
      */
-    void getPublishOptions(AsyncCallback<CmsPublishOptions> callback);
+    void getResourceOptions(AsyncCallback<CmsPublishOptions> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#publishResources(List, List, String)}.<p>
+     * Asynchronous version of {@link I_CmsPublishService#executeAction(List, List, String)}.<p>
      * 
      * @param toPublish the resources to publish 
      * @param toRemove the resources to remove
      * @param action the work flow action
      * @param callback the result callback 
      */
-    void publishResources(
+    void executeAction(
         List<CmsUUID> toPublish,
         List<CmsUUID> toRemove,
         String action,

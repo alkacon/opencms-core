@@ -73,7 +73,7 @@ public interface I_CmsPublishService extends RemoteService {
      *  
      * @throws CmsRpcException if something goes wrong
      */
-    List<CmsPublishGroup> getPublishGroups(CmsPublishOptions options) throws CmsRpcException;
+    List<CmsPublishGroup> getResourceGroups(CmsPublishOptions options) throws CmsRpcException;
 
     /**
      * Retrieves the publish options.<p>
@@ -82,7 +82,7 @@ public interface I_CmsPublishService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPublishOptions getPublishOptions() throws CmsRpcException;
+    CmsPublishOptions getResourceOptions() throws CmsRpcException;
 
     /**
      * Tries to publish a list of resources.<p>
@@ -95,7 +95,7 @@ public interface I_CmsPublishService extends RemoteService {
      * 
      * @throws CmsRpcException  if something goes wrong
      */
-    CmsWorkflowResponse publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
+    CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
     throws CmsRpcException;
 
 }

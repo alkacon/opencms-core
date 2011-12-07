@@ -31,17 +31,19 @@ import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
-public class CmsWorkflowResponse {
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-    private CmsUUID m_workflowId;
+public class CmsWorkflowResponse implements IsSerializable {
 
-    private boolean m_success;
+    private List<CmsWorkflowActionBean> m_availableActions;
 
     private String m_message;
 
     private List<CmsPublishResource> m_resources;
 
-    private List<CmsWorkflowActionBean> m_availableActions;
+    private boolean m_success;
+
+    private CmsUUID m_workflowId;
 
     public CmsWorkflowResponse(
         boolean isSuccess,
@@ -55,6 +57,10 @@ public class CmsWorkflowResponse {
         m_resources = resources;
         m_availableActions = availableActions;
         m_workflowId = workflowId;
+    }
+
+    protected CmsWorkflowResponse() {
+
     }
 
     public List<CmsWorkflowActionBean> getAvailableActions() {
@@ -81,5 +87,4 @@ public class CmsWorkflowResponse {
 
         return m_success;
     }
-
 }

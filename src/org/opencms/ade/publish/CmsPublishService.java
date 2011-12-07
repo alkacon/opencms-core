@@ -40,7 +40,6 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -71,9 +70,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             result = new CmsPublishData(
                 options,
                 getProjects(),
-                getPublishGroups(options),
-                OpenCms.getWorkflowManager().getAvailableActions(getCmsObject()),
-                canPublishBrokenRelations(getCmsObject()));
+                getResourceGroups(options),
+                OpenCms.getWorkflowManager().getAvailableActions(getCmsObject()));
         } catch (Throwable e) {
             error(e);
         }
@@ -95,9 +93,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishGroups(org.opencms.ade.publish.shared.CmsPublishOptions)
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceGroups(org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public List<CmsPublishGroup> getPublishGroups(CmsPublishOptions options) throws CmsRpcException {
+    public List<CmsPublishGroup> getResourceGroups(CmsPublishOptions options) throws CmsRpcException {
 
         List<CmsPublishGroup> results = null;
         try {
@@ -111,9 +109,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getPublishOptions()
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceOptions()
      */
-    public CmsPublishOptions getPublishOptions() throws CmsRpcException {
+    public CmsPublishOptions getResourceOptions() throws CmsRpcException {
 
         CmsPublishOptions result = null;
         try {
@@ -126,9 +124,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
     /**
      * 
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#publishResources(java.util.List, java.util.List, String)
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#executeAction(java.util.List, java.util.List, String)
      */
-    public CmsWorkflowResponse publishResources(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
+    public CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
     throws CmsRpcException {
 
         CmsWorkflowResponse response = null;
@@ -144,19 +142,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             error(e);
         }
         return response;
-    }
-
-    /**
-     * Checks whether the current user can publish resources even if it would break relations.<p>
-     * 
-     * @param cms the CmsObject for which the user should be checked
-     * 
-     * @return true if the user can publish resources even if it breaks relations 
-     */
-    private boolean canPublishBrokenRelations(CmsObject cms) {
-
-        return OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
-            || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
     }
 
     /**

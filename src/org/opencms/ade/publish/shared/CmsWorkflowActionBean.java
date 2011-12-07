@@ -27,13 +27,37 @@
 
 package org.opencms.ade.publish.shared;
 
-public class CmsWorkflowActionBean {
+import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * Work flow action information.<p>
+ */
+public class CmsWorkflowActionBean implements IsSerializable {
+
+    /** The action key. */
     private String m_action;
 
+    /** The action label. */
     private String m_label;
+
+    /** Action enabled flag. */
     private boolean m_enabled;
 
+    /**
+     * Constructor. For serialization only.<p>
+     */
+    protected CmsWorkflowActionBean() {
+
+        // nothing to do
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param actionKey the action key
+     * @param label the action label
+     * @param isEnabled <code>true</code> if the action is enabled
+     */
     public CmsWorkflowActionBean(String actionKey, String label, boolean isEnabled) {
 
         m_action = actionKey;
@@ -41,16 +65,31 @@ public class CmsWorkflowActionBean {
         m_enabled = isEnabled;
     }
 
+    /**
+     * Returns the action key.<p>
+     * 
+     * @return the action key
+     */
     public String getAction() {
 
         return m_action;
     }
 
+    /**
+     * Returns the action label.<p>
+     * 
+     * @return the action label
+     */
     public String getLabel() {
 
         return m_label;
     }
 
+    /**
+     * Returns if the action is enabled.<p>
+     * 
+     * @return <code>true</code> if the action is enabled
+     */
     public boolean isEnabled() {
 
         return m_enabled;

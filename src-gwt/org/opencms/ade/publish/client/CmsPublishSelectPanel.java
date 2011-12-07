@@ -32,6 +32,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsWorkflowActionBean;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -163,6 +164,12 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiField
     protected Panel m_groupPanelContainer;
 
+    /** Flag to indicate whether new items are currently being added to the list. */
+    protected boolean m_loading;
+
+    /** The data model for the publish dialog. */
+    protected CmsPublishDataModel m_model;
+
     /** The label which is displayed when there are no resources to publish. */
     @UiField
     protected Label m_noResources;
@@ -175,21 +182,15 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiField
     protected CmsSelectBox m_projectSelector;
 
-    /** The button for publishing. */
-    @UiField
-    protected CmsPushButton m_publishButton;
-
     /** The publish dialog which contains this panel. */
     protected CmsPublishDialog m_publishDialog;
 
-    /** The data model for the publish dialog. */
-    protected CmsPublishDataModel m_model;
-
-    /** The global map of selection controllers for all groups. */
-    protected Map<CmsUUID, CmsPublishItemSelectionController> m_selectionControllers = Maps.newHashMap();
-
     /** The current publish list options. */
     protected CmsPublishOptions m_publishOptions;
+
+    /** The label displaying the resource count. */
+    @UiField
+    protected InlineHTML m_resourceCountLabel;
 
     /** The scroll panel containing the group panel. */
     @UiField
@@ -198,6 +199,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** The button for selecting all resources for publishing. */
     @UiField
     protected CmsPushButton m_selectAll;
+
+    /** The global map of selection controllers for all groups. */
+    protected Map<CmsUUID, CmsPublishItemSelectionController> m_selectionControllers = Maps.newHashMap();
 
     /** The label in front of the "select all/none" buttons. */
     @UiField
@@ -219,24 +223,23 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiField
     protected Panel m_topBar;
 
-    /** The list of group panels for each publish list group. */
-    private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
+    /** The action buttons. */
+    private List<CmsPushButton> m_actionButtons;
 
-    /** The current group panel. */
-    private CmsPublishGroupPanel m_currentGroupPanel;
+    /** The available actions. */
+    private List<CmsWorkflowActionBean> m_actions;
 
     /** The current group index used for scrolling. */
     private int m_currentGroupIndex;
 
-    /** The label displaying the resource count. */
-    @UiField
-    protected InlineHTML m_resourceCountLabel;
+    /** The current group panel. */
+    private CmsPublishGroupPanel m_currentGroupPanel;
+
+    /** The list of group panels for each publish list group. */
+    private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
 
     /** Flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
-
-    /** Flag to indicate whether new items are currently being added to the list. */
-    protected boolean m_loading;
 
     /**
      * Creates a new instance.<p>
@@ -244,14 +247,17 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * @param publishDialog the publish dialog to which this panel should belong
      * @param projects a map of projects, where the keys are the project ids and the values are the names of the projects 
      * @param publishOptions the initial publish options
+     * @param actions the available actions
      */
     public CmsPublishSelectPanel(
         CmsPublishDialog publishDialog,
         List<CmsProjectBean> projects,
-        CmsPublishOptions publishOptions) {
+        CmsPublishOptions publishOptions,
+        List<CmsWorkflowActionBean> actions) {
 
         m_publishOptions = publishOptions;
-
+        m_actions = actions;
+        m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
         m_checkboxProblems.setVisible(false);
 
@@ -326,9 +332,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 setProblemMode(m_checkboxProblems.isChecked());
             }
         });
-
-        m_publishButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0));
-        m_publishButton.setUseMinWidth(true);
         m_cancelButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
         m_cancelButton.setUseMinWidth(true);
 
@@ -441,7 +444,26 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         List<CmsPushButton> result = new ArrayList<CmsPushButton>();
         result.add(m_cancelButton);
-        result.add(m_publishButton);
+        m_actionButtons.clear();
+        boolean enable = shouldEnablePublishButton();
+        if (m_actions != null) {
+            for (CmsWorkflowActionBean action : m_actions) {
+                CmsPushButton actionButton = new CmsPushButton();
+                actionButton.setText(action.getLabel());
+                actionButton.setUseMinWidth(true);
+                final String actionKey = action.getAction();
+                actionButton.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+
+                        executeAction(actionKey);
+                    }
+                });
+                actionButton.setEnabled(enable);
+                m_actionButtons.add(actionButton);
+            }
+        }
+        result.addAll(m_actionButtons);
         return result;
     }
 
@@ -490,8 +512,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      */
     public void onChangePublishSelection() {
 
-        m_publishButton.setEnabled(shouldEnablePublishButton());
-
+        enableActions(shouldEnablePublishButton());
     }
 
     /**
@@ -515,7 +536,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
         m_groupPanels.clear();
         m_groupPanelContainer.clear();
-        m_publishButton.setEnabled(false);
+        enableActions(false);
 
         int numGroups = groups.size();
         setResourcesVisible(numGroups > 0);
@@ -524,7 +545,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             return;
         }
 
-        m_publishButton.setEnabled(true);
+        enableActions(true);
         addMoreListItems();
         showProblemCount(m_model.countProblems());
         onChangePublishSelection();
@@ -609,6 +630,16 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
+     * Executes the given action.<p>
+     * 
+     * @param action the action to execute on the selected resources
+     */
+    protected void executeAction(String action) {
+
+        m_publishDialog.executeAction(action);
+    }
+
+    /**
      * The method to call when the items have finished being loaded into the list.<p>
      */
     protected void finishLoading() {
@@ -625,19 +656,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     protected void onClickCancel(ClickEvent e) {
 
         m_publishDialog.onCancel();
-    }
-
-    /**
-     * The event handler for the publish button.<p>
-     * 
-     * @param e the event 
-     */
-    @UiHandler("m_publishButton")
-    protected void onClickPublish(ClickEvent e) {
-
-        if (!checkForProblems(getResourcesToPublish())) {
-            m_publishDialog.onRequestPublish();
-        }
     }
 
     /**
@@ -702,6 +720,18 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             }
         }, SCROLL_THRESHOLD));
 
+    }
+
+    /**
+     * Enables action buttons.<p>
+     * 
+     * @param enable <code>true</code> to enable the action buttons
+     */
+    private void enableActions(boolean enable) {
+
+        for (CmsPushButton button : m_actionButtons) {
+            button.setEnabled(enable);
+        }
     }
 
     /**

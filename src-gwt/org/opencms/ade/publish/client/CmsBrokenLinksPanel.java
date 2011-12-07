@@ -28,6 +28,7 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsWorkflowActionBean;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -39,6 +40,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -81,12 +83,11 @@ public class CmsBrokenLinksPanel extends Composite {
     @UiField
     protected CmsList<CmsTreeItem> m_list;
 
-    /** The button which causes a "forced publish". */
-    @UiField
-    protected CmsPushButton m_publishButton;
+    /** The action buttons. */
+    private List<CmsPushButton> m_actionButtons;
 
-    /** If true, the publish button will be displayed even if there are broken links. */
-    private boolean m_allowPublish;
+    /** The available work flow actions. */
+    private List<CmsWorkflowActionBean> m_actions;
 
     /** The publish dialog containing this widget. */
     private CmsPublishDialog m_publishDialog;
@@ -95,21 +96,16 @@ public class CmsBrokenLinksPanel extends Composite {
      * Creates a new instance.<p>
      * 
      * @param publishDialog the publish dialog to which this broken links panel belongs.
-     * @param allowPublish if true, the button for publishing will appear even if there are broken links
      */
-    public CmsBrokenLinksPanel(CmsPublishDialog publishDialog, boolean allowPublish) {
+    public CmsBrokenLinksPanel(CmsPublishDialog publishDialog) {
 
         initWidget(UI_BINDER.createAndBindUi(this));
-        prepareButton(m_publishButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PUBLISH_0));
         prepareButton(m_cancelButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
         prepareButton(m_backButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_BACK_0));
         m_label.setText(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_BROKEN_LINKS_0));
         m_publishDialog = publishDialog;
-        m_allowPublish = allowPublish;
-        // We remove the publish button so that it only appears in the dialog
-        // when it's in the list returned by getButtons()
-        m_publishButton.removeFromParent();
         m_list.truncate(TM_PUBLISH_BROKEN, CmsPublishDialog.DIALOG_WIDTH);
+        m_actionButtons = new ArrayList<CmsPushButton>();
     }
 
     /**
@@ -140,9 +136,24 @@ public class CmsBrokenLinksPanel extends Composite {
         List<CmsPushButton> result = new ArrayList<CmsPushButton>();
         result.add(m_backButton);
         result.add(m_cancelButton);
-        if (m_allowPublish) {
-            result.add(m_publishButton);
+        m_actionButtons.clear();
+        if (m_actions != null) {
+            for (CmsWorkflowActionBean action : m_actions) {
+                CmsPushButton actionButton = new CmsPushButton();
+                actionButton.setText(action.getLabel());
+                actionButton.setUseMinWidth(true);
+                final String actionKey = action.getAction();
+                actionButton.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+
+                        executeAction(actionKey);
+                    }
+                });
+                m_actionButtons.add(actionButton);
+            }
         }
+        result.addAll(m_actionButtons);
         return result;
     }
 
@@ -150,13 +161,15 @@ public class CmsBrokenLinksPanel extends Composite {
      * Sets the resources to be displayed.<p> 
      * 
      * @param resourceBeans the resource beans to be displayed 
+     * @param actions the available actions
      */
-    public void setEntries(Collection<CmsPublishResource> resourceBeans) {
+    public void setEntries(Collection<CmsPublishResource> resourceBeans, List<CmsWorkflowActionBean> actions) {
 
         m_list.clear();
         for (CmsPublishResource res : resourceBeans) {
             addEntry(res);
         }
+        m_actions = actions;
     }
 
     /**
@@ -182,14 +195,13 @@ public class CmsBrokenLinksPanel extends Composite {
     }
 
     /**
-     * The event handler for the publish button.<p>
+     * Executes the given action.<p>
      * 
-     * @param e the click event 
+     * @param action the action to execute on the selected resources
      */
-    @UiHandler("m_publishButton")
-    protected void doClickPublish(ClickEvent e) {
+    protected void executeAction(String action) {
 
-        m_publishDialog.onRequestForcePublish();
+        m_publishDialog.executeAction(action);
     }
 
     /**
