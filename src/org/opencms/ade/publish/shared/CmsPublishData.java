@@ -38,6 +38,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsPublishData implements IsSerializable {
 
+    /** Name of the used dictionary. */
+    public static final String DICT_NAME = "org_opencms_ade_publish";
+
     /** The publish groups. */
     private List<CmsPublishGroup> m_groups;
 

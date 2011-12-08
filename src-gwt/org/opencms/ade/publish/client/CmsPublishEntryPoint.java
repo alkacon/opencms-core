@@ -27,7 +27,10 @@
 
 package org.opencms.ade.publish.client;
 
+import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.gwt.client.A_CmsEntryPoint;
+import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 
 /**
  * The entry point for the publish module.
@@ -43,7 +46,15 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        I_CmsPublishLayoutBundle.INSTANCE.publishCss().ensureInjected();
+        CmsPublishData initData = null;
+        try {
+            initData = (CmsPublishData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
+                CmsPublishDialog.getService(),
+                CmsPublishData.DICT_NAME);
+            CmsPublishDialog.showPublishDialog(initData, null);
+        } catch (Exception e) {
+            CmsErrorDialog.handleException(e);
+        }
     }
 
 }

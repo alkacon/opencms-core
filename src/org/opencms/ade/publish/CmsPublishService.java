@@ -36,14 +36,18 @@ import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * The implementation of the publish service.<p>
@@ -53,11 +57,51 @@ import java.util.List;
  */
 public class CmsPublishService extends CmsGwtService implements I_CmsPublishService {
 
+    /** The publish project id parameter name. */
+    public static final String PARAM_PUBLISH_PROJECT_ID = "publishProjectId";
+
     /** The version id for serialization. */
     private static final long serialVersionUID = 3852074177607037076L;
 
     /** Session attribute name constant. */
     private static final String SESSION_ATTR_ADE_PUB_OPTS_CACHE = "__OCMS_ADE_PUB_OPTS_CACHE__";
+
+    /**
+     * Returns a new publish service instance.<p>
+     * 
+     * @param request the servlet request
+     * 
+     * @return the service instance
+     */
+    public static CmsPublishService newInstance(HttpServletRequest request) {
+
+        CmsPublishService srv = new CmsPublishService();
+        srv.setCms(CmsFlexController.getCmsObject(request));
+        srv.setRequest(request);
+        return srv;
+    }
+
+    /**
+     * 
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#executeAction(java.util.List, java.util.List, String)
+     */
+    public CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
+    throws CmsRpcException {
+
+        CmsWorkflowResponse response = null;
+        try {
+            CmsObject cms = getCmsObject();
+
+            CmsPublish pub = new CmsPublish(cms, getCachedOptions());
+            List<CmsResource> publishResources = idsToResources(cms, toPublish);
+            pub.removeResourcesFromPublishList(toRemove);
+            response = OpenCms.getWorkflowManager().executeAction(cms, action, publishResources);
+
+        } catch (Throwable e) {
+            error(e);
+        }
+        return response;
+    }
 
     /**
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getInitData()
@@ -66,10 +110,22 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
         CmsPublishData result = null;
         try {
+            String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
             CmsPublishOptions options = getCachedOptions();
+            List<CmsProjectBean> projects = getProjects();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectParam) && CmsUUID.isValidUUID(projectParam)) {
+                CmsUUID selectedProject = new CmsUUID(projectParam);
+                // check if the selected project is a manageable project
+                for (CmsProjectBean project : projects) {
+                    if (selectedProject.equals(project.getId())) {
+                        options.setProjectId(selectedProject);
+                        break;
+                    }
+                }
+            }
             result = new CmsPublishData(
                 options,
-                getProjects(),
+                projects,
                 getResourceGroups(options),
                 OpenCms.getWorkflowManager().getAvailableActions(getCmsObject()));
         } catch (Throwable e) {
@@ -120,28 +176,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             error(e);
         }
         return result;
-    }
-
-    /**
-     * 
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#executeAction(java.util.List, java.util.List, String)
-     */
-    public CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
-    throws CmsRpcException {
-
-        CmsWorkflowResponse response = null;
-        try {
-            CmsObject cms = getCmsObject();
-
-            CmsPublish pub = new CmsPublish(cms, getCachedOptions());
-            List<CmsResource> publishResources = idsToResources(cms, toPublish);
-            pub.removeResourcesFromPublishList(toRemove);
-            response = OpenCms.getWorkflowManager().executeAction(cms, action, publishResources);
-
-        } catch (Throwable e) {
-            error(e);
-        }
-        return response;
     }
 
     /**

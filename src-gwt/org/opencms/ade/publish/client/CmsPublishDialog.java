@@ -165,6 +165,9 @@ public class CmsPublishDialog extends CmsPopup {
     /** The panel for showing the links that would be broken by publishing. */
     private CmsBrokenLinksPanel m_brokenLinksPanel;
 
+    /** Flag indicating if the CSS has been initialized. */
+    private static boolean CSS_INITIALIZED;
+
     /** The root panel of this dialog which contains both the selection panel and the panel for displaying broken links. */
     private DeckPanel m_panel = new DeckPanel();
 
@@ -176,6 +179,7 @@ public class CmsPublishDialog extends CmsPopup {
     public CmsPublishDialog(CmsPublishData initData) {
 
         super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), 800);
+        initCss();
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
@@ -228,18 +232,28 @@ public class CmsPublishDialog extends CmsPopup {
              * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
              */
             @Override
-            protected void onResponse(final CmsPublishData result) {
+            protected void onResponse(CmsPublishData result) {
 
-                CmsPublishDialog publishDialog = new CmsPublishDialog(result);
-                if (handler != null) {
-                    publishDialog.addCloseHandler(handler);
-                }
                 stop(false);
-                publishDialog.centerHorizontally(100);
-                // replace current notification widget by overlay
-                publishDialog.catchNotifications();
+                showPublishDialog(result, handler);
             }
         }).execute();
+    }
+
+    /**
+     * 
+     * @param result
+     * @param handler
+     */
+    public static void showPublishDialog(CmsPublishData result, CloseHandler<PopupPanel> handler) {
+
+        CmsPublishDialog publishDialog = new CmsPublishDialog(result);
+        if (handler != null) {
+            publishDialog.addCloseHandler(handler);
+        }
+        publishDialog.centerHorizontally(100);
+        // replace current notification widget by overlay
+        publishDialog.catchNotifications();
     }
 
     /**
@@ -270,9 +284,12 @@ public class CmsPublishDialog extends CmsPopup {
     /**
      * Ensures all style sheets are loaded.<p>
      */
-    public void initCss() {
+    private void initCss() {
 
-        I_CmsPublishLayoutBundle.INSTANCE.publishCss().ensureInjected();
+        if (!CSS_INITIALIZED) {
+            I_CmsPublishLayoutBundle.INSTANCE.publishCss().ensureInjected();
+            CSS_INITIALIZED = true;
+        }
     }
 
     /**
@@ -348,4 +365,5 @@ public class CmsPublishDialog extends CmsPopup {
             }
         }
     }
+
 }

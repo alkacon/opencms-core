@@ -27,6 +27,8 @@
 
 package org.opencms.ade.publish;
 
+import org.opencms.ade.publish.shared.CmsPublishData;
+import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.gwt.CmsGwtActionElement;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,10 +73,25 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
     public String exportAll() throws Exception {
 
         StringBuffer sb = new StringBuffer();
+
+        CmsPublishData initData = CmsPublishService.newInstance(getRequest()).getInitData();
+        String prefetchedData = serialize(I_CmsPublishService.class.getMethod("getInitData"), initData);
+        sb.append(CmsPublishData.DICT_NAME).append("='").append(prefetchedData).append("';");
+        wrapScript(sb);
         sb.append(super.export());
         sb.append(export());
         sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
+    }
+
+    /**
+     * Returns the dialog title.<p>
+     * 
+     * @return the dialog title
+     */
+    public String getTitle() {
+
+        return "Publish";
     }
 
 }
