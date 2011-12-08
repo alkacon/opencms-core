@@ -66,53 +66,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class CmsDomUtil {
 
-    /** Enumeration of link/form targets. */
-    public static enum Target {
-
-        /** Unspecified target. */
-        NONE(""),
-
-        /** Target top. */
-        TOP("_top"),
-
-        /** Target parent. */
-        PARENT("_parent"),
-
-        /** Target self. */
-        SELF("_self");
-
-        /** The target representation. */
-        private String m_representation;
-
-        /**
-         * Constructor.<p>
-         * 
-         * @param representation the target representation
-         */
-        Target(String representation) {
-
-            m_representation = representation;
-        }
-
-        /**
-         * Returns the target representation.<p>
-         * @return the target representation
-         */
-        public String getRepresentation() {
-
-            return m_representation;
-        }
-    }
-
-    /** Form methods. */
-    public static enum Method {
-
-        /** The post method. */
-        post,
-        /** The get method. */
-        get;
-    }
-
     /**
      * HTML tag attributes.<p>
      */
@@ -242,6 +195,15 @@ public final class CmsDomUtil {
 
             return "&" + super.name() + ";";
         }
+    }
+
+    /** Form methods. */
+    public static enum Method {
+
+        /** The get method. */
+        get,
+        /** The post method. */
+        post;
     }
 
     /**
@@ -461,6 +423,47 @@ public final class CmsDomUtil {
 
         /** HTML Tag. */
         ul;
+    }
+
+    /** Enumeration of link/form targets. */
+    public static enum Target {
+
+        /** Target blank. */
+        BLANK("_blank"),
+
+        /** Unspecified target. */
+        NONE(""),
+
+        /** Target parent. */
+        PARENT("_parent"),
+
+        /** Target self. */
+        SELF("_self"),
+
+        /** Target top. */
+        TOP("_top");
+
+        /** The target representation. */
+        private String m_representation;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param representation the target representation
+         */
+        Target(String representation) {
+
+            m_representation = representation;
+        }
+
+        /**
+         * Returns the target representation.<p>
+         * @return the target representation
+         */
+        public String getRepresentation() {
+
+            return m_representation;
+        }
     }
 
     /** Browser dependent DOM implementation. */
