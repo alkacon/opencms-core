@@ -363,11 +363,7 @@ public class CmsContainerpageUtil {
      * 
      * @param element the DOM element
      * @param dragParent the drag parent
-     * @param clientId the client id
-     * @param sitePath the element site-path
-     * @param noEditReason the no edit reason
-     * @param hasProps if true, the container element has properties which can be edited 
-     * @param hasViewPermission indicates if the current user has view permissions on the element resource
+     * @param elementData the element data
      * 
      * @return the draggable element
      */
@@ -394,11 +390,7 @@ public class CmsContainerpageUtil {
      * 
      * @param element the DOM element
      * @param dragParent the drag parent
-     * @param clientId the client id
-     * @param sitePath the element site-path
-     * @param noEditReason the no edit reason
-     * @param hasProps true if the group-container has properties to edit 
-     * @param hasViewPermission indicates if the current user has view permissions on the element resource
+     * @param elementData the element data
      * 
      * @return the draggable element
      */

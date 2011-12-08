@@ -77,6 +77,13 @@ public class CmsGroupContainerEditor extends A_CmsGroupEditor {
     /** The title input. */
     private CmsTextBox m_inputTitle;
 
+    /**
+     * Constructor.<p>
+     * 
+     * @param groupContainer the group container widget
+     * @param controller the container page controller
+     * @param handler the container page handler
+     */
     private CmsGroupContainerEditor(
         CmsGroupContainerElementPanel groupContainer,
         CmsContainerpageController controller,

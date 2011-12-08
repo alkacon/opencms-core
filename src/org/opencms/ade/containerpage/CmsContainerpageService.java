@@ -312,9 +312,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getResponse(),
                 new Locale(locale));
             CmsContainerElementBean elementBean = getCachedElement(clientId);
-            elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, convertSettingValues(
-                elementBean.getResource(),
-                settings));
+            elementBean = CmsContainerElementBean.cloneWithSettings(
+                elementBean,
+                convertSettingValues(elementBean.getResource(), settings));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -510,7 +510,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 referenceResource = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
             }
             ensureLock(referenceResource);
-            saveInheritanceReference(referenceResource, inheritanceContainer, requestedLocale);
+            saveInheritanceGroup(referenceResource, inheritanceContainer, requestedLocale);
             tryUnlock(referenceResource);
             List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
             for (CmsContainerElement clientElement : inheritanceContainer.getElements()) {
@@ -583,10 +583,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             for (Map.Entry<String, String> entry : settings.entrySet()) {
                 String settingName = entry.getKey();
                 String settingType = settingsConf.get(settingName).getType();
-                changedSettings.put(settingName, CmsXmlContentPropertyHelper.getPropValueIds(
-                    getCmsObject(),
-                    settingType,
-                    entry.getValue()));
+                changedSettings.put(
+                    settingName,
+                    CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));
             }
         }
         return changedSettings;
@@ -915,6 +914,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @param resource the inherit container resource
      * @param locale the requested locale
+     * @param uriParam the current URI
      * 
      * @return the sub-elements
      * 
@@ -1120,10 +1120,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         return element;
     }
 
-    private void saveInheritanceReference(
-        CmsResource resource,
-        CmsInheritanceContainer inheritanceContainer,
-        Locale locale) throws CmsException {
+    /**
+     * Saves the inheritance group.<p>
+     * 
+     * @param resource the inheritance group resource
+     * @param inheritanceContainer the inherited group container data
+     * @param locale the requested locale
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void saveInheritanceGroup(CmsResource resource, CmsInheritanceContainer inheritanceContainer, Locale locale)
+    throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsFile file = cms.readFile(resource);

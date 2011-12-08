@@ -69,6 +69,7 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
+    /** Flag indicating the the editables are currently being checked. */
     private boolean m_checkingEditables;
 
     /** The elements client id. */
@@ -650,6 +651,9 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
         return false;
     }
 
+    /**
+     * Resets the node inserted handler.<p>
+     */
     private native void resetNodeInsertedHandler()/*-{
         var $this = this;
         var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();

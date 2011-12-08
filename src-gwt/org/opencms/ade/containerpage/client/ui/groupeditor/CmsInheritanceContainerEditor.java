@@ -75,10 +75,10 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     private static final String HIDDEN_ELEMENT_CLASS = I_CmsLayoutBundle.INSTANCE.containerpageCss().hiddenElement();
 
     /** Css class to hide elements. */
-    private static final String HIDE_ELEMENTS_CLASS = I_CmsLayoutBundle.INSTANCE.containerpageCss().hideElements();
+    private static final String HIDDEN_ELEMENT_OVERLAY_CLASS = I_CmsLayoutBundle.INSTANCE.containerpageCss().hiddenElementOverlay();
 
     /** Css class to hide elements. */
-    private static final String HIDDEN_ELEMENT_OVERLAY_CLASS = I_CmsLayoutBundle.INSTANCE.containerpageCss().hiddenElementOverlay();
+    private static final String HIDE_ELEMENTS_CLASS = I_CmsLayoutBundle.INSTANCE.containerpageCss().hideElements();
 
     /** The editor instance. */
     private static CmsInheritanceContainerEditor INSTANCE;
@@ -89,10 +89,11 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     /** The title input. */
     private CmsTextBox m_inputTitle;
 
-    private CmsToggleButton m_showElementsButton;
-
     /** Click handler for the option buttons. */
     private ClickHandler m_optionClickHandler;
+
+    /** The show removed elements button. */
+    private CmsToggleButton m_showElementsButton;
 
     /**
      * Constructor.<p>
