@@ -42,6 +42,18 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message key for the resource bundle. */
     public static final String ERR_INVALID_WORKFLOW_ACTION_1 = "ERR_INVALID_WORKFLOW_ACTION_1";
 
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_ACTION_RELEASE_0 = "GUI_WORKFLOW_ACTION_RELEASE_0";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_ACTION_PUBLISH_0 = "GUI_WORKFLOW_ACTION_PUBLISH_0";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0 = "GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_BROKEN_LINKS_0 = "GUI_BROKEN_LINKS_0";
+
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 

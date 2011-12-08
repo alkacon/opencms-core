@@ -41,9 +41,10 @@ public class CmsWorkflowResponse implements IsSerializable {
     /** An internal workflow id. */
     private CmsUUID m_workflowId;
 
+    /** The list of workflow actions which should be available next in case of failure. */
     private List<CmsWorkflowActionBean> m_availableActions;
-    /** A flag indicating whether the workflow action was successful. */
 
+    /** A flag indicating whether the workflow action was successful. */
     private boolean m_success;
 
     /** The message text which should be displayed to the user in case of failure. */

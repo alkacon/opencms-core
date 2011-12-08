@@ -38,7 +38,11 @@ import org.apache.commons.mail.EmailException;
 
 public class CmsWorkflowNotification extends CmsHtmlMail {
 
-    public CmsWorkflowNotification(CmsUser user, CmsProject workflowProject, List<CmsResource> resources)
+    public CmsWorkflowNotification(
+        CmsUser recipient,
+        CmsUser user,
+        CmsProject workflowProject,
+        List<CmsResource> resources)
     throws EmailException {
 
         super();
@@ -51,11 +55,11 @@ public class CmsWorkflowNotification extends CmsHtmlMail {
             mainContent.append("<li>" + resource.getRootPath() + "</li>");
         }
         mainContent.append("</ul>");
-
+        mainContent.append("<div>" + workflowProject.getName() + "</div>");
         String htmlMain = "<div>" + mainContent.toString() + "</div>";
         setHtmlMsg(htmlStart + htmlMain + htmlEnd);
-        addTo(user.getEmail());
-        setSubject("Workflow notification!");
+        addTo(recipient.getEmail());
+        setSubject("Workflow notification (" + user.getName() + ")");
         send();
     }
 }
