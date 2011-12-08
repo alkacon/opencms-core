@@ -159,7 +159,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         wrapScript(sb);
         sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(iconCssClassPrefix)).append(
             "\");\n</style>\n");
-        sb.append("<meta name=\"gwt:property\" content=\"locale=").append(wpLocale).append("\">\n");
+        sb.append("<meta name=\"gwt:property\" content=\"locale=").append(wpLocale).append("\" />\n");
         return sb.toString();
     }
 
