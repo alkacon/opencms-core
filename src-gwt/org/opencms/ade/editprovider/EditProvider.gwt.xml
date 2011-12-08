@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.3//EN" "../../gwt-module.dtd">
 <module rename-to="editprovider">
-	<inherits name="org.opencms.ade.publish.Dialog" />
+	<inherits name="org.opencms.ade.publish.PublishDialogHeadless" />
 	<source path="client" />
 	<source path="shared" />
 	<entry-point class="org.opencms.ade.editprovider.client.CmsDirectEditEntryPoint" />
