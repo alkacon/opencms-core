@@ -51,6 +51,9 @@ public class CmsUploadHookDialog extends CmsPopup {
     /** The dialog height. */
     public static final int DIALOG_HEIGHT = 600;
 
+    /** The name of the close function. */
+    public static final String CLOSE_FUNCTION = "cmsCloseUploadHookDialog";
+
     /** The dialog width. */
     public static final int DIALOG_WIDTH = 800;
 
@@ -117,7 +120,7 @@ public class CmsUploadHookDialog extends CmsPopup {
      */
     public native void installCloseFunction() /*-{
       var self = this;
-      $wnd.cmsCloseUploadHookDialog = function() {
+      $wnd[@org.opencms.ade.upload.client.ui.CmsUploadHookDialog::CLOSE_FUNCTION] = function() {
          self.@org.opencms.ade.upload.client.ui.CmsUploadHookDialog::doClose()();
       };
     }-*/;

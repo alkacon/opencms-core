@@ -1141,7 +1141,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      *                       it is doing
      *                       
      * If the parent frame of the frame in which the upload hook is opened contains a Javascript 
-     * function 'cmsCloseUploadPropertyDialog', this function should be called (with no parameters)
+     * function {@link org.opencms.ade.upload.client.ui.CmsUploadHookDialog#CLOSE_FUNCTION}, this function should be called (with no parameters)
      * rather than opening the 'closelink' page. 
      * 
      * @param cms the current CMS context 
