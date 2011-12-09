@@ -3,7 +3,6 @@
 <project name="OpenCms Common Module" default="dist" basedir=".">
 
 	<property name="opencms.input" location="${basedir}/.." />
-	<property name="opencms.input.gwt" location="${opencms.input}/src-gwt" />
 	<property name="opencms.output" location="${opencms.input}/../BuildCms" />
 	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
 	<property name="opencms.input.libs.runtime" location="${opencms.input}/lib/runtime" />
@@ -119,6 +118,7 @@
 				</then>
 				<else>
 					<property name="module.input.src.shared" location="${opencms.input}/src-modules" />
+					<property name="module.input.src.gwt" location="${opencms.input}/src-gwt" />
 				</else>
 		</if>
 	</target>
@@ -439,7 +439,7 @@
 								<pathelement path="${module.dependencies.path}" />
 								<pathelement path="${module.libs.path}" />
 								<pathelement path="${opencms.input}/src" />
-								<pathelement path="${module.input.src.gwt}" />
+								<pathelement path="${opencms.input}/src-gwt" />
 								<pathelement path="${opencms.input.gwt}" />
 							</classpath>
 						</java>
