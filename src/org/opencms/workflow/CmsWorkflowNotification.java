@@ -27,10 +27,13 @@
 
 package org.opencms.workflow;
 
+import org.opencms.ade.publish.CmsPublishService;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.mail.CmsHtmlMail;
+import org.opencms.main.OpenCms;
 
 import java.util.List;
 
@@ -39,6 +42,7 @@ import org.apache.commons.mail.EmailException;
 public class CmsWorkflowNotification extends CmsHtmlMail {
 
     public CmsWorkflowNotification(
+        CmsObject cms,
         CmsUser recipient,
         CmsUser user,
         CmsProject workflowProject,
@@ -46,20 +50,18 @@ public class CmsWorkflowNotification extends CmsHtmlMail {
     throws EmailException {
 
         super();
+
         String htmlStart = "<html><head></head><body>";
         String htmlEnd = "</body></html>";
-
-        StringBuffer mainContent = new StringBuffer();
-        mainContent.append("<ul>");
-        for (CmsResource resource : resources) {
-            mainContent.append("<li>" + resource.getRootPath() + "</li>");
-        }
-        mainContent.append("</ul>");
-        mainContent.append("<div>" + workflowProject.getName() + "</div>");
-        String htmlMain = "<div>" + mainContent.toString() + "</div>";
+        String linkHref = OpenCms.getLinkManager().getServerLink(
+            cms,
+            "/system/modules/org.opencms.ade.publish/publish.jsp?"
+                + CmsPublishService.PARAM_PUBLISH_PROJECT_ID
+                + "="
+                + workflowProject.getUuid());
+        String htmlMain = "<div>" + linkHref + "</div>";
         setHtmlMsg(htmlStart + htmlMain + htmlEnd);
         addTo(recipient.getEmail());
         setSubject("Workflow notification (" + user.getName() + ")");
-        send();
     }
 }

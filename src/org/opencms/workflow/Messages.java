@@ -52,6 +52,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0 = "GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0";
 
     /** Message key for the resource bundle. */
+    public static final String ERR_NEW_PARENT_NOT_IN_WORKFLOW_1 = "ERR_NEW_PARENT_NOT_IN_WORKFLOW_1";
+
+    /** Message key for the resource bundle. */
     public static final String GUI_BROKEN_LINKS_0 = "GUI_BROKEN_LINKS_0";
 
     /** Static instance member. */

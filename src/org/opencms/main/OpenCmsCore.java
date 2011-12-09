@@ -1253,7 +1253,12 @@ public final class OpenCmsCore {
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
 
-            m_workflowManager = new CmsWorkflowManager(adminCms, m_publishManager);
+            m_workflowManager = systemConfiguration.getWorkflowManager();
+            if (m_workflowManager == null) {
+                m_workflowManager = new CmsWorkflowManager();
+                m_workflowManager.setParameters(new HashMap<String, String>());
+            }
+            m_workflowManager.initialize(adminCms, m_publishManager);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }

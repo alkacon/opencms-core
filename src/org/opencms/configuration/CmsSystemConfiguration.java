@@ -61,6 +61,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workflow.CmsWorkflowManager;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
 
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -387,6 +389,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the session-storageprovider node. */
     public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
 
+    public static final String N_WORKFLOW_MANAGER = "workflow-manager";
+
     /** Shared folder node name. */
     public static final String N_SHARED_FOLDER = "shared-folder";
 
@@ -404,6 +408,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The size of the memory monitor's cache for ACLS. */
     public static final String N_SIZE_ACLS = "size-accesscontrollists";
+
+    public static final String N_WORKFLOW = "workflow";
 
     /** The size of the memory monitor's cache for offline container pages. */
     public static final String N_SIZE_CONTAINERPAGE_OFFLINE = "size-containerpage-offline";
@@ -561,6 +567,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured publish manager. */
     private CmsPublishManager m_publishManager;
+
+    private CmsWorkflowManager m_workflowManager;
 
     /** A list of instantiated request handler classes. */
     private List<I_CmsRequestHandler> m_requestHandlers;
@@ -1133,6 +1141,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setMaxVisitedCount", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, 0, A_MAXVISITED);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setSubscriptionManager");
+
+        String workflowXpath = "*/" + N_SYSTEM + "/" + N_WORKFLOW;
+        digester.addObjectCreate(workflowXpath, CmsWorkflowManager.class.getName(), A_CLASS);
+        digester.addObjectCreate(workflowXpath + "/" + N_PARAMETERS, LinkedHashMap.class);
+        digester.addCallMethod(workflowXpath + "/" + N_PARAMETERS + "/" + N_PARAM, "put", 2);
+        digester.addCallParam(workflowXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 0, A_NAME);
+        digester.addCallParam(workflowXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 1);
+        digester.addSetNext(workflowXpath + "/" + N_PARAMETERS, "setParameters");
+        digester.addSetNext(workflowXpath, "setWorkflowManager");
     }
 
     /**
@@ -1545,6 +1562,18 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             subscrManElem.addAttribute(A_MAXVISITED, String.valueOf(getSubscriptionManager().getMaxVisitedCount()));
         }
 
+        CmsWorkflowManager workflowMan = getWorkflowManager();
+        if (workflowMan != null) {
+            Element workflowElem = systemElement.addElement(N_WORKFLOW);
+            workflowElem.addAttribute(A_CLASS, workflowMan.getClass().getName());
+            Map<String, String> parameters = workflowMan.getParameters();
+            Element parametersElem = workflowElem.addElement(N_PARAMETERS);
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                Element paramElem = parametersElem.addElement(N_PARAM);
+                paramElem.addAttribute(A_NAME, entry.getKey());
+                paramElem.addText(entry.getValue());
+            }
+        }
         // return the system node
         return systemElement;
     }
@@ -1948,6 +1977,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 t);
             return new CmsDefaultValidationHandler();
         }
+    }
+
+    public CmsWorkflowManager getWorkflowManager() {
+
+        return m_workflowManager;
     }
 
     /**
@@ -2409,6 +2443,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setValidationHandler(String validationHandlerClass) {
 
         m_validationHandler = validationHandlerClass;
+    }
+
+    public void setWorkflowManager(CmsWorkflowManager workflowManager) {
+
+        System.out.println("Setting workflow manager.");
+        m_workflowManager = workflowManager;
     }
 
     /**

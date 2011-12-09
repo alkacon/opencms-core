@@ -47,9 +47,12 @@ import org.opencms.publish.CmsPublishManager;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -75,28 +78,22 @@ public class CmsWorkflowManager {
     /** The release workflow action. */
     public static final String ACTION_RELEASE = "release";
 
+    /** The key for the configurable workflow project manager group. */
+    public static final String PARAM_WORKFLOW_PROJECT_MANAGER_GROUP = "workflowProjectManagerGroup";
+
+    /** The key for the configurable workflow project user group. */
+    public static final String PARAM_WORKFLOW_PROJECT_USER_GROUP = "workflowProjectUserGroup";
+
+    private Map<String, String> m_parameters;
+
     /**
      * Creates a new workflow manager instance.<p>
      *  
      * @param adminCms a CMS context with admin privileges 
      * @param publishManager the publish manager
      */
-    public CmsWorkflowManager(CmsObject adminCms, CmsPublishManager publishManager) {
+    public CmsWorkflowManager() {
 
-        m_adminCms = adminCms;
-        publishManager.addPublishListener(new CmsPublishEventAdapter() {
-
-            @Override
-            public void onFinish(CmsPublishJobRunning publishJob) {
-
-                CmsWorkflowManager.this.onFinishPublishJob(publishJob);
-            }
-
-            public void onStart(CmsPublishJobEnqueued publishJob) {
-
-                //CmsWorkflowManager.this.onStartPublishJob(publishJob);
-            }
-        });
     }
 
     /**
@@ -145,13 +142,23 @@ public class CmsWorkflowManager {
     }
 
     /**
+     * Gets the parameters of the workflow manager.<p>
+     * 
+     * @return the configuration parameters of the workflow manager 
+     */
+    public Map<String, String> getParameters() {
+
+        return Collections.unmodifiableMap(m_parameters);
+    }
+
+    /**
      * Gets the name of the group which should be used as the 'manager' group for newly created workflow projects.<p>
      * 
      * @return a group name 
      */
     public String getWorkflowProjectManagerGroup() {
 
-        return OpenCms.getDefaultUsers().getGroupProjectmanagers();
+        return getParameter(PARAM_WORKFLOW_PROJECT_MANAGER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
     }
 
     /**
@@ -161,7 +168,34 @@ public class CmsWorkflowManager {
      */
     public String getWorkflowProjectUserGroup() {
 
-        return OpenCms.getDefaultUsers().getGroupProjectmanagers();
+        return getParameter(PARAM_WORKFLOW_PROJECT_USER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
+    }
+
+    /**
+     * Initializes this workflow manager instance.<p>
+     * 
+     * @param adminCms the CMS context with admin privileges 
+     * @param publishManager the publish manager instance 
+     */
+    public void initialize(CmsObject adminCms, CmsPublishManager publishManager) {
+
+        if (m_adminCms != null) {
+            throw new IllegalStateException();
+        }
+        m_adminCms = adminCms;
+        publishManager.addPublishListener(new CmsPublishEventAdapter() {
+
+            @Override
+            public void onFinish(CmsPublishJobRunning publishJob) {
+
+                CmsWorkflowManager.this.onFinishPublishJob(publishJob);
+            }
+
+            public void onStart(CmsPublishJobEnqueued publishJob) {
+
+                //CmsWorkflowManager.this.onStartPublishJob(publishJob);
+            }
+        });
     }
 
     /**
@@ -183,6 +217,23 @@ public class CmsWorkflowManager {
             } catch (CmsException e) {
                 LOG.info("Project " + projectId + " doesn't exist anymore.");
             }
+        }
+    }
+
+    /**
+     * Sets the configuration parameters of the workflow manager.<p>
+     * 
+     * @param parameters the map of configuration parameters 
+     */
+    public void setParameters(Map<String, String> parameters) {
+
+        if (m_parameters != null) {
+            throw new IllegalStateException();
+        }
+        m_parameters = parameters;
+        System.out.println("setParameters");
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
         }
     }
 
@@ -238,6 +289,7 @@ public class CmsWorkflowManager {
      */
     protected CmsWorkflowResponse actionRelease(CmsObject userCms, List<CmsResource> resources) throws CmsException {
 
+        checkNewParentsInList(userCms, resources);
         String projectName = generateProjectName(userCms);
         String projectDescription = generateProjectDescription(userCms);
         CmsObject offlineAdminCms = OpenCms.initCmsObject(m_adminCms);
@@ -250,6 +302,10 @@ public class CmsWorkflowManager {
             userGroup,
             managerGroup,
             CmsProject.PROJECT_TYPE_WORKFLOW);
+        CmsObject newProjectCms = OpenCms.initCmsObject(offlineAdminCms);
+        newProjectCms.getRequestContext().setCurrentProject(workflowProject);
+        newProjectCms.getRequestContext().setSiteRoot("");
+        newProjectCms.copyResourceToProject("/");
         CmsUser admin = offlineAdminCms.getRequestContext().getCurrentUser();
         clearLocks(userCms.getRequestContext().getCurrentProject(), resources);
         for (CmsResource resource : resources) {
@@ -260,6 +316,7 @@ public class CmsWorkflowManager {
                 offlineAdminCms.changeLock(resource);
             }
             offlineAdminCms.writeProjectLastModified(resource, workflowProject);
+            offlineAdminCms.unlockResource(resource);
         }
         for (CmsUser user : getNotificationMailRecipients()) {
             sendNotification(userCms, user, workflowProject, resources);
@@ -270,6 +327,39 @@ public class CmsWorkflowManager {
             new ArrayList<CmsPublishResource>(),
             new ArrayList<CmsWorkflowActionBean>(),
             workflowProject.getUuid());
+    }
+
+    /**
+     * Checks that the parent folders of new resources which are released are either not new or are also released.<p>
+     *   
+     * @param userCms the user CMS context 
+     * @param resources the resources to check 
+     * 
+     * @throws CmsException if the check fails 
+     */
+    protected void checkNewParentsInList(CmsObject userCms, List<CmsResource> resources) throws CmsException {
+
+        Map<String, CmsResource> resourcesByPath = new HashMap<String, CmsResource>();
+        CmsObject rootCms = OpenCms.initCmsObject(m_adminCms);
+        rootCms.getRequestContext().setCurrentProject(userCms.getRequestContext().getCurrentProject());
+        rootCms.getRequestContext().setSiteRoot("");
+        for (CmsResource resource : resources) {
+            resourcesByPath.put(resource.getRootPath(), resource);
+        }
+        for (CmsResource resource : resources) {
+            if (resource.getState().isNew()) {
+                String parentPath = CmsResource.getParentFolder(resource.getRootPath());
+                CmsResource parent = resourcesByPath.get(parentPath);
+                if (parent == null) {
+                    parent = rootCms.readResource(parentPath);
+                    if (parent.getState().isNew()) {
+                        throw new CmsNewParentNotInWorkflowException(Messages.get().container(
+                            Messages.ERR_NEW_PARENT_NOT_IN_WORKFLOW_1,
+                            resource.getRootPath()));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -361,6 +451,15 @@ public class CmsWorkflowManager {
         }
     }
 
+    protected String getParameter(String key, String defaultValue) {
+
+        String result = m_parameters.get(key);
+        if (result == null) {
+            result = defaultValue;
+        }
+        return result;
+    }
+
     /**
      * Helper method for generating the workflow response which should be sent when publishing the resources would break relations.<p>
      * 
@@ -430,6 +529,7 @@ public class CmsWorkflowManager {
 
         try {
             CmsWorkflowNotification notification = new CmsWorkflowNotification(
+                m_adminCms,
                 recipient,
                 userCms.getRequestContext().getCurrentUser(),
                 workflowProject,
