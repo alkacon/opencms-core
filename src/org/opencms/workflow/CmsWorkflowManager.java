@@ -84,17 +84,8 @@ public class CmsWorkflowManager {
     /** The key for the configurable workflow project user group. */
     public static final String PARAM_WORKFLOW_PROJECT_USER_GROUP = "workflowProjectUserGroup";
 
+    /** The map of configuration parameters. */
     private Map<String, String> m_parameters;
-
-    /**
-     * Creates a new workflow manager instance.<p>
-     *  
-     * @param adminCms a CMS context with admin privileges 
-     * @param publishManager the publish manager
-     */
-    public CmsWorkflowManager() {
-
-    }
 
     /**
      * Executes a workflow action in the context of the current user.<p>
@@ -185,12 +176,19 @@ public class CmsWorkflowManager {
         m_adminCms = adminCms;
         publishManager.addPublishListener(new CmsPublishEventAdapter() {
 
+            /**
+             * @see org.opencms.publish.CmsPublishEventAdapter#onFinish(org.opencms.publish.CmsPublishJobRunning)
+             */
             @Override
             public void onFinish(CmsPublishJobRunning publishJob) {
 
                 CmsWorkflowManager.this.onFinishPublishJob(publishJob);
             }
 
+            /**
+             * @see org.opencms.publish.CmsPublishEventAdapter#onStart(org.opencms.publish.CmsPublishJobEnqueued)
+             */
+            @Override
             public void onStart(CmsPublishJobEnqueued publishJob) {
 
                 //CmsWorkflowManager.this.onStartPublishJob(publishJob);
@@ -251,7 +249,6 @@ public class CmsWorkflowManager {
     throws CmsException {
 
         CmsPublish publish = new CmsPublish(userCms);
-        List<CmsPublishResource> brokenLinkBeans = new ArrayList<CmsPublishResource>();
         publish.publishResources(resources);
         return getSuccessResponse();
     }
@@ -428,6 +425,13 @@ public class CmsWorkflowManager {
         return userCms.getRequestContext().getCurrentUser().getName() + "_" + (new CmsUUID()).toString();
     }
 
+    /**
+     * Gets the locale to use for a given CMS context.<p>
+     * 
+     * @param userCms the CMS context 
+     * 
+     * @return the locale to use 
+     */
     protected Locale getLocale(CmsObject userCms) {
 
         return OpenCms.getWorkplaceManager().getWorkplaceLocale(userCms);
@@ -451,6 +455,14 @@ public class CmsWorkflowManager {
         }
     }
 
+    /**
+     * Gets the configuration parameter for a given key, and if it doesn't find one, returns a default value.<p>
+     * 
+     * @param key the configuration key 
+     * @param defaultValue the default value to use when the configuration entry isn't found 
+     * 
+     * @return the configuration value 
+     */
     protected String getParameter(String key, String defaultValue) {
 
         String result = m_parameters.get(key);
@@ -462,7 +474,8 @@ public class CmsWorkflowManager {
 
     /**
      * Helper method for generating the workflow response which should be sent when publishing the resources would break relations.<p>
-     * 
+     *
+     * @param userCms the user's CMS context 
      * @param publishResources the resources whose links would be broken
      *  
      * @return the workflow response 
@@ -476,6 +489,7 @@ public class CmsWorkflowManager {
             Messages.GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0);
 
         CmsWorkflowActionBean forcePublish = new CmsWorkflowActionBean(ACTION_FORCE_PUBLISH, forcePublishLabel, true);
+        actions.add(forcePublish);
         return new CmsWorkflowResponse(false, Messages.get().getBundle(getLocale(userCms)).key(
             Messages.GUI_BROKEN_LINKS_0), publishResources, actions, null);
     }

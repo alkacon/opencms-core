@@ -30,8 +30,20 @@ package org.opencms.workflow;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
+/**
+ * An exception which indicates that the user tried to trigger a workflow action for a set of resources for which some parent folder
+ * is not included in the set, but has the resource state 'new'. 
+ */
 public class CmsNewParentNotInWorkflowException extends CmsException {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = 3543624167645734851L;
+
+    /**
+     * Creates a new exception instance.<p>
+     * 
+     * @param container the message container 
+     */
     public CmsNewParentNotInWorkflowException(CmsMessageContainer container) {
 
         super(container);

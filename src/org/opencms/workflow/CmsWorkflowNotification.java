@@ -39,8 +39,22 @@ import java.util.List;
 
 import org.apache.commons.mail.EmailException;
 
+/**
+ * A class used for sending mails about resources which have been released by a workflow action to the appropriate users.<p>
+ */
 public class CmsWorkflowNotification extends CmsHtmlMail {
 
+    /**
+     * Creates a new workflow notification instance.<p>
+     * 
+     * @param cms the CMS context 
+     * @param recipient the user to which the mail should be sent 
+     * @param user the user which triggered the workflow action 
+     * @param workflowProject the project which was affected by the workflow action 
+     * @param resources the list of resources affected by the workflow action 
+     * 
+     * @throws EmailException if sending the mail fails 
+     */
     public CmsWorkflowNotification(
         CmsObject cms,
         CmsUser recipient,

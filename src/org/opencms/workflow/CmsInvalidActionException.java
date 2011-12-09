@@ -29,8 +29,19 @@ package org.opencms.workflow;
 
 import org.opencms.main.CmsException;
 
+/**
+ * An exception which indicates that a user tried to execute an invalid workflow action.<p>
+ */
 public class CmsInvalidActionException extends CmsException {
 
+    /** The serial version uid. */
+    private static final long serialVersionUID = -2768811398590156214L;
+
+    /**
+     * Creates a new exception instance for a given action string.<p>
+     * 
+     * @param action the action string 
+     */
     public CmsInvalidActionException(String action) {
 
         super(Messages.get().container(Messages.ERR_INVALID_WORKFLOW_ACTION_1, action));

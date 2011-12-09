@@ -389,8 +389,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the session-storageprovider node. */
     public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
 
-    public static final String N_WORKFLOW_MANAGER = "workflow-manager";
-
     /** Shared folder node name. */
     public static final String N_SHARED_FOLDER = "shared-folder";
 
@@ -409,6 +407,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The size of the memory monitor's cache for ACLS. */
     public static final String N_SIZE_ACLS = "size-accesscontrollists";
 
+    /** The node name for the workflow configuration. */
     public static final String N_WORKFLOW = "workflow";
 
     /** The size of the memory monitor's cache for offline container pages. */
@@ -568,6 +567,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The configured publish manager. */
     private CmsPublishManager m_publishManager;
 
+    /** The configured workflow manager. */
     private CmsWorkflowManager m_workflowManager;
 
     /** A list of instantiated request handler classes. */
@@ -1979,6 +1979,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
     }
 
+    /**
+     * Gets the configured workflow manager instance.<p>
+     * 
+     * @return the configured workflow manager instance.
+     */
     public CmsWorkflowManager getWorkflowManager() {
 
         return m_workflowManager;
