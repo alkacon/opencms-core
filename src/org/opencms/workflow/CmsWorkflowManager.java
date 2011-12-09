@@ -32,7 +32,7 @@ import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
-import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -46,7 +46,6 @@ import org.opencms.publish.CmsPublishJobEnqueued;
 import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.publish.CmsPublishManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,11 +53,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
@@ -225,9 +222,6 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
         m_adminCms = adminCms;
         publishManager.addPublishListener(new CmsPublishEventAdapter() {
 
-            /**
-             * @see org.opencms.publish.CmsPublishEventAdapter#onFinish(org.opencms.publish.CmsPublishJobRunning)
-             */
             @Override
             public void onFinish(CmsPublishJobRunning publishJob) {
 
@@ -240,31 +234,9 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
             @Override
             public void onStart(CmsPublishJobEnqueued publishJob) {
 
-                //CmsWorkflowManager.this.onStartPublishJob(publishJob);
+                CmsWorkflowManager.this.onStartPublishJob(publishJob);
             }
         });
-    }
-
-    /**
-     * Handles finished publish jobs by removing projects of resources in the publish job if they are empty workflow projects.<p>
-     * 
-     * @param publishJob the finished published job 
-     */
-    public void onFinishPublishJob(CmsPublishJobRunning publishJob) {
-
-        CmsPublishList publishList = publishJob.getPublishList();
-        Set<CmsUUID> projectIds = new HashSet<CmsUUID>();
-        for (CmsResource resource : publishList.getAllResources()) {
-            projectIds.add(resource.getProjectLastModified());
-        }
-        for (CmsUUID projectId : projectIds) {
-            try {
-                CmsProject project = m_adminCms.readProject(projectId);
-                cleanupProjectIfEmpty(project);
-            } catch (CmsException e) {
-                LOG.info("Project " + projectId + " doesn't exist anymore.");
-            }
-        }
     }
 
     /**
@@ -399,6 +371,20 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
                             Messages.ERR_NEW_PARENT_NOT_IN_WORKFLOW_1,
                             resource.getRootPath()));
                     }
+                }
+            }
+        }
+    }
+
+    protected void cleanupEmptyWorkflowProjects(List<CmsProject> projects) throws CmsException {
+
+        if (projects == null) {
+            projects = OpenCms.getOrgUnitManager().getAllManageableProjects(m_adminCms, "", true);
+        }
+        for (CmsProject project : projects) {
+            if (project.getType().getMode() == CmsProject.PROJECT_TYPE_WORKFLOW.getMode()) {
+                if (isProjectEmpty(project)) {
+                    m_adminCms.deleteProject(project.getUuid());
                 }
             }
         }
@@ -580,11 +566,26 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
     protected boolean isProjectEmpty(CmsProject project) throws CmsException {
 
         CmsPublishManager publishManager = OpenCms.getPublishManager();
-        CmsObject projectCms = OpenCms.initCmsObject(m_adminCms);
-        projectCms.getRequestContext().setCurrentProject(project);
-        CmsPublishList publishList = publishManager.getPublishList(projectCms);
-        List<CmsResource> resourcesModifiedInProject = publishList.getAllResources();
-        return resourcesModifiedInProject.isEmpty();
+        List<CmsResource> resources = m_adminCms.readProjectView(project.getUuid(), CmsResourceState.STATE_KEEP);
+        return resources.isEmpty();
+    }
+
+    /**
+     * Handles finished publish jobs by removing projects of resources in the publish job if they are empty workflow projects.<p>
+     * 
+     * @param publishJob the finished published job 
+     */
+    protected void onFinishPublishJob(CmsPublishJobRunning publishJob) {
+
+        try {
+            cleanupEmptyWorkflowProjects(null);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    protected void onStartPublishJob(CmsPublishJobEnqueued publishJob) {
+
     }
 
     /**
