@@ -2450,9 +2450,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         m_validationHandler = validationHandlerClass;
     }
 
+    /**
+     * Sets the configured workflow manager instance.<p>
+     * 
+     * @param workflowManager the configured workflow manager 
+     */
     public void setWorkflowManager(CmsWorkflowManager workflowManager) {
 
-        System.out.println("Setting workflow manager.");
         m_workflowManager = workflowManager;
     }
 

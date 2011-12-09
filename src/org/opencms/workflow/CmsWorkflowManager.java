@@ -44,10 +44,14 @@ import org.opencms.publish.CmsPublishEventAdapter;
 import org.opencms.publish.CmsPublishJobEnqueued;
 import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.publish.CmsPublishManager;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -84,6 +88,9 @@ public class CmsWorkflowManager {
     /** The key for the configurable workflow project user group. */
     public static final String PARAM_WORKFLOW_PROJECT_USER_GROUP = "workflowProjectUserGroup";
 
+    /** The project counter, used for generating project names. */
+    private int m_projectCounter;
+
     /** The map of configuration parameters. */
     private Map<String, String> m_parameters;
 
@@ -99,15 +106,31 @@ public class CmsWorkflowManager {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public CmsWorkflowResponse executeAction(CmsObject userCms, String actionKey, List<CmsResource> resources)
-    throws CmsException {
+    public synchronized CmsWorkflowResponse executeAction(
+        CmsObject userCms,
+        String actionKey,
+        List<CmsResource> resources) throws CmsException {
 
-        if (actionKey.equals(ACTION_PUBLISH)) {
-            return actionPublish(userCms, resources);
-        } else if (actionKey.equals(ACTION_RELEASE)) {
-            return actionRelease(userCms, resources);
-        } else if (actionKey.equals(ACTION_FORCE_PUBLISH)) {
-            return actionForcePublish(userCms, resources);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("workflow action: " + userCms.getRequestContext().getCurrentUser().getName() + " " + actionKey);
+            List<String> resourceNames = new ArrayList<String>();
+            for (CmsResource resource : resources) {
+                resourceNames.add(resource.getRootPath());
+            }
+            LOG.info("Resources: " + CmsStringUtil.listAsString(resourceNames, ","));
+        }
+        try {
+            if (actionKey.equals(ACTION_PUBLISH)) {
+                return actionPublish(userCms, resources);
+            } else if (actionKey.equals(ACTION_RELEASE)) {
+                return actionRelease(userCms, resources);
+            } else if (actionKey.equals(ACTION_FORCE_PUBLISH)) {
+                return actionForcePublish(userCms, resources);
+            }
+        } catch (CmsException e) {
+            LOG.info("workflow action failed");
+            LOG.info(e.getLocalizedMessage(), e);
+            throw e;
         }
         throw new CmsInvalidActionException(actionKey);
     }
@@ -229,10 +252,6 @@ public class CmsWorkflowManager {
             throw new IllegalStateException();
         }
         m_parameters = parameters;
-        System.out.println("setParameters");
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
-        }
     }
 
     /**
@@ -410,7 +429,14 @@ public class CmsWorkflowManager {
      */
     protected String generateProjectDescription(CmsObject userCms) {
 
-        return "Workflow project.";
+        CmsUser user = userCms.getRequestContext().getCurrentUser();
+        Calendar calendar = Calendar.getInstance();
+        long time = System.currentTimeMillis();
+        calendar.setTimeInMillis(time);
+        Date date = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd k:m:s");
+        String dateString = format.format(date);
+        return "Workflow project created by " + user.getName() + " at " + dateString;
     }
 
     /**
@@ -422,7 +448,15 @@ public class CmsWorkflowManager {
      */
     protected String generateProjectName(CmsObject userCms) {
 
-        return userCms.getRequestContext().getCurrentUser().getName() + "_" + (new CmsUUID()).toString();
+        CmsUser user = userCms.getRequestContext().getCurrentUser();
+        Calendar calendar = Calendar.getInstance();
+        long time = System.currentTimeMillis();
+        calendar.setTimeInMillis(time);
+        Date date = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_k_m_s");
+        String dateStr = format.format(date);
+        dateStr = dateStr + "_" + time;
+        return "WF_" + user.getName() + "_" + dateStr;
     }
 
     /**
