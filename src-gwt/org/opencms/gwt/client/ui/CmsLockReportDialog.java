@@ -112,6 +112,7 @@ public final class CmsLockReportDialog extends CmsPopup {
      * Constructor.<p>
      * 
      * @param structureId the structure id of the resource to unlock
+     * @param onUnlock command to execute after unlocking
      * @param the command to execute on unlock of the resource
      */
     private CmsLockReportDialog(CmsUUID structureId, Command onUnlock) {

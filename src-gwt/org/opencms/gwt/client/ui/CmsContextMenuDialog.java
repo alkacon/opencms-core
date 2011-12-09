@@ -198,7 +198,7 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
      * Generates the form to post to the dialog frame.<p>
      * 
      * @param structureId the structure id of the current content
-     * @param the context menu entry bean
+     * @param menuEntryBean the context menu entry bean
      * 
      * @return the form element
      */

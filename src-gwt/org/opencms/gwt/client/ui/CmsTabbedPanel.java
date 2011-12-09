@@ -90,6 +90,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
          * Constructor.<p>
          * 
          * @param barHeight the height of the bar
+         * @param styleClass the tab style class
+         * @param tabColorClass the tab color
          */
         private CmsTabbedPanelStyle(int barHeight, String styleClass, String tabColorClass) {
 
@@ -132,6 +134,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite {
     /** Stores the indexes and the title of disabled tabs. */
     private Map<Integer, String> m_disabledTabIndexes = new HashMap<Integer, String>();
 
+    /** The tab panel style. */
     private CmsTabbedPanelStyle m_panelStyle;
 
     /** The TabLayoutPanel widget. */

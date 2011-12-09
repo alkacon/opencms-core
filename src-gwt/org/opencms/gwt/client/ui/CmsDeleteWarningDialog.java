@@ -42,6 +42,7 @@ import com.google.gwt.user.client.Command;
  */
 public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
+    /** Text metrics key. */
     private static final String TM_DIALOG_LIST = "dialogList";
 
     /** The callback command. */

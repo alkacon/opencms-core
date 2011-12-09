@@ -638,6 +638,7 @@ public class CmsLinkManager {
      * 
      * @param cms the current OpenCms user context
      * @param link the resource to generate the online link for
+     * @param resourceName the resource name
      * 
      * @return the link for the given resource in the current project, with full server prefix
      */

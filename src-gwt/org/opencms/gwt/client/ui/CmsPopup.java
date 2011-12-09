@@ -195,16 +195,25 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             // nothing to do
         }
 
+        /**
+         * @see com.google.gwt.event.dom.client.MouseDownHandler#onMouseDown(com.google.gwt.event.dom.client.MouseDownEvent)
+         */
         public void onMouseDown(MouseDownEvent event) {
 
             beginDragging(event);
         }
 
+        /**
+         * @see com.google.gwt.event.dom.client.MouseMoveHandler#onMouseMove(com.google.gwt.event.dom.client.MouseMoveEvent)
+         */
         public void onMouseMove(MouseMoveEvent event) {
 
             continueDragging(event);
         }
 
+        /**
+         * @see com.google.gwt.event.dom.client.MouseUpHandler#onMouseUp(com.google.gwt.event.dom.client.MouseUpEvent)
+         */
         public void onMouseUp(MouseUpEvent event) {
 
             endDragging(event);
@@ -223,6 +232,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /** The dialog caption. */
     private Caption m_caption;
 
+    /** The child widgets. */
     private WidgetCollection m_children;
 
     /** Body offset left. */
@@ -523,6 +533,21 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             }
         }
         m_children = new WidgetCollection(this);
+    }
+
+    /**
+     * Returns the maximum available height inside the popup.<p>
+     * 
+     * @param fixedContentHeight fixed content height to deduct from the available height
+     * 
+     * @return the maximum available height
+     */
+    public int getAvailableHeight(int fixedContentHeight) {
+
+        if (m_buttonPanel.isVisible()) {
+            fixedContentHeight += m_buttonPanel.getOffsetHeight();
+        }
+        return Window.getClientHeight() - 150 - fixedContentHeight;
     }
 
     /**
@@ -1196,20 +1221,5 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             return m_caption.getElement().isOrHasChild(com.google.gwt.dom.client.Element.as(target));
         }
         return false;
-    }
-
-    /**
-     * Returns the maximum available height inside the popup.<p>
-     * 
-     * @param fixedContentHeight fixed content height to deduct from the available height
-     * 
-     * @return the maximum available height
-     */
-    public int getAvailableHeight(int fixedContentHeight) {
-
-        if (m_buttonPanel.isVisible()) {
-            fixedContentHeight += m_buttonPanel.getOffsetHeight();
-        }
-        return Window.getClientHeight() - 150 - fixedContentHeight;
     }
 }

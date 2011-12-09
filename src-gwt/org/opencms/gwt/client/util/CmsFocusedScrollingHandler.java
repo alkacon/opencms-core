@@ -39,8 +39,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsFocusedScrollingHandler implements NativePreviewHandler {
 
+    /** The scroll panel. */
     private ScrollPanel m_scrollPanel;
 
+    /** The scroll handler registration. */
     private HandlerRegistration m_handlerRegistration;
 
     /**

@@ -57,6 +57,9 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
     /** The default tool-tip top offset. */
     private static final int DEFAULT_OFFSET_TOP = 10;
 
+    /** Time to wait before removing the tool tip. */
+    private static final int REMOVE_SCHEDULE = 10000;
+
     /** The mouse move handler registration. */
     private HandlerRegistration m_moveHandlerRegistration;
 
@@ -72,6 +75,9 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
     /** The mouse over handler registration. */
     private HandlerRegistration m_overHandlerRegistration;
 
+    /** Timer to remove the tool tip again. */
+    private Timer m_removeTimer;
+
     /** Flag indicating if the tool-tip is currently showing. */
     private boolean m_showing;
 
@@ -83,10 +89,6 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
 
     /** The tool-tip HTML to show. */
     private String m_toolTipHtml;
-
-    private Timer m_removeTimer;
-
-    private static final int REMOVE_SCHEDULE = 10000;
 
     /**
      * Constructor. Adds the tool-tip handler to the target.<p>
@@ -101,6 +103,27 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
         m_offsetLeft = DEFAULT_OFFSET_LEFT;
         m_offsetTop = DEFAULT_OFFSET_TOP;
         m_overHandlerRegistration = m_target.addMouseOverHandler(this);
+    }
+
+    /**
+     * Removes the tool-tip and mouse move and out handlers.<p>
+     */
+    public void clearShowing() {
+
+        m_showing = false;
+        if (m_toolTip != null) {
+            m_toolTip.removeFromParent();
+            m_toolTip = null;
+        }
+        if (m_moveHandlerRegistration != null) {
+            m_moveHandlerRegistration.removeHandler();
+            m_moveHandlerRegistration = null;
+        }
+        if (m_outHandlerRegistration != null) {
+            m_outHandlerRegistration.removeHandler();
+            m_outHandlerRegistration = null;
+        }
+        m_removeTimer = null;
     }
 
     /**
@@ -217,26 +240,8 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
     }
 
     /**
-     * Removes the tool-tip and mouse move and out handlers.<p>
+     * Creates the remove tool tip timer.<p>
      */
-    public void clearShowing() {
-
-        m_showing = false;
-        if (m_toolTip != null) {
-            m_toolTip.removeFromParent();
-            m_toolTip = null;
-        }
-        if (m_moveHandlerRegistration != null) {
-            m_moveHandlerRegistration.removeHandler();
-            m_moveHandlerRegistration = null;
-        }
-        if (m_outHandlerRegistration != null) {
-            m_outHandlerRegistration.removeHandler();
-            m_outHandlerRegistration = null;
-        }
-        m_removeTimer = null;
-    }
-
     private void createTimer() {
 
         m_removeTimer = new Timer() {
