@@ -31,9 +31,11 @@ import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPreviewDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -155,7 +157,7 @@ public class CmsPublishGroupPanel extends Composite {
      * 
      * @return the list item widget representing the publish resource bean 
      */
-    public static CmsListItemWidget createListItemWidget(CmsPublishResource resourceBean) {
+    public static CmsListItemWidget createListItemWidget(final CmsPublishResource resourceBean) {
 
         CmsListInfoBean info = new CmsListInfoBean();
         info.setTitle(getTitle(resourceBean));
@@ -172,9 +174,21 @@ public class CmsPublishGroupPanel extends Composite {
         if (resourceBean.getInfo() != null) {
             Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
             warningImage.setTitle(resourceBean.getInfo().getValue());
-            String permaVisible = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible();
-            warningImage.addStyleName(permaVisible);
+            warningImage.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             itemWidget.addButton(warningImage);
+        }
+        if (!resourceBean.isFolder()) {
+            CmsPushButton previewButton = new CmsPushButton();
+            previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
+            previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            previewButton.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    CmsPreviewDialog.showPreviewForResource(resourceBean.getId());
+                }
+            });
+            itemWidget.addButton(previewButton);
         }
         itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType(), false));
         return itemWidget;
@@ -235,8 +249,9 @@ public class CmsPublishGroupPanel extends Composite {
      */
     protected boolean hasNoProblemResources() {
 
-        return 0 == m_model.countResourcesInGroup(new CmsPublishDataModel.HasProblems(), m_model.getGroups().get(
-            m_groupIndex).getResources());
+        return 0 == m_model.countResourcesInGroup(
+            new CmsPublishDataModel.HasProblems(),
+            m_model.getGroups().get(m_groupIndex).getResources());
     }
 
     /**

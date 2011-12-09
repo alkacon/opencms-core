@@ -459,6 +459,7 @@ public class CmsPublish {
             relation.getTargetPath(),
             CmsResourceTypePlain.getStaticTypeName(),
             CmsResourceState.STATE_UNCHANGED,
+            CmsResource.isFolder(relation.getTargetPath()),
             false,
             null,
             null);
@@ -874,6 +875,7 @@ public class CmsPublish {
             resUtil.getTitle(),
             resUtil.getResourceTypeName(),
             resource.getState(),
+            resource.isFolder(),
             removable,
             info,
             related);

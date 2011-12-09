@@ -33,6 +33,7 @@ import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
+import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
@@ -143,6 +144,30 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if the RPC call goes wrong 
      */
     CmsListInfoBean getPageInfo(String vfsPath) throws CmsRpcException;
+
+    /**
+     * Returns the preview info for the given resource.<p>
+     * 
+     * @param structureId the resource structure id
+     * @param locale the requested locale
+     * 
+     * @return the preview info
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsPreviewInfo getPreviewInfo(CmsUUID structureId, String locale) throws CmsRpcException;
+
+    /**
+     * Returns the preview info for the given resource.<p>
+     * 
+     * @param sitePath the resource site path
+     * @param locale the requested locale
+     * 
+     * @return the preview info
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsPreviewInfo getPreviewInfo(String sitePath, String locale) throws CmsRpcException;
 
     /**
      * Returns the root entries of the VFS.<p>

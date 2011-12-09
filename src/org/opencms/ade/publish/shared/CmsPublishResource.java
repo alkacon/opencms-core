@@ -54,6 +54,9 @@ public class CmsPublishResource implements IsSerializable {
     /** The resource name.*/
     private String m_name;
 
+    /** Flag indicating if this resource is a folder. */
+    private boolean m_isFolder;
+
     /** The related resources.*/
     private List<CmsPublishResource> m_related;
 
@@ -74,6 +77,7 @@ public class CmsPublishResource implements IsSerializable {
      * @param title the resource title
      * @param resourceType the resource type name
      * @param state the resource state
+     * @param isFolder flag indicating if this resource is a folder
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
      * @param related the related resources
@@ -84,16 +88,15 @@ public class CmsPublishResource implements IsSerializable {
         String title,
         String resourceType,
         CmsResourceState state,
+        boolean isFolder,
         boolean removable,
         CmsPublishResourceInfo info,
         List<CmsPublishResource> related) {
 
-        super();
         m_resourceType = resourceType;
         m_id = id;
         m_name = name;
-        // m_related = ((related == null) ? Collections.<CmsPublishResource> emptyList() : related);
-        // HACK: GWT serialization does not like unmodifiable collections :(
+        m_isFolder = isFolder;
         m_related = ((related == null) ? new ArrayList<CmsPublishResource>() : related);
         m_state = state;
         m_title = title;
@@ -107,6 +110,16 @@ public class CmsPublishResource implements IsSerializable {
     protected CmsPublishResource() {
 
         // for serialization
+    }
+
+    /**
+     * Returns if this resource is a folder.<p>
+     * 
+     * @return <code>true</code> if the resource is a folder
+     */
+    public boolean isFolder() {
+
+        return m_isFolder;
     }
 
     /**
