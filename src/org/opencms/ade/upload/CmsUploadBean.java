@@ -113,6 +113,7 @@ public class CmsUploadBean extends CmsJspBean {
     /** The server side upload delay. */
     private int m_uploadDelay;
 
+    /** The upload hook URI. */
     private String m_uploadHook;
 
     /**
@@ -227,6 +228,7 @@ public class CmsUploadBean extends CmsJspBean {
      * Creates the resources.<p>
      * @param listener the listener
      * 
+     * @throws CmsException if something goes wrong 
      * @throws UnsupportedEncodingException 
      */
     private void createResources(CmsUploadListener listener) throws CmsException, UnsupportedEncodingException {
@@ -276,12 +278,13 @@ public class CmsUploadBean extends CmsJspBean {
     }
 
     /**
-     * Creates a single resource and returns the site path of the new resource.<p>
+     * Creates a single resource and returns the new resource.<p>
      * 
-     * @param newResname the name of the resource to create
+     * @param fileName the name of the resource to create
+     * @param targetFolder the folder to store the new resource
      * @param content the content of the resource to create
      * 
-     * @return the new resource site path
+     * @return the new resource
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsLoaderException if something goes wrong
@@ -382,6 +385,10 @@ public class CmsUploadBean extends CmsJspBean {
 
     /**
      * Generates a JSON object and returns its String representation for the response.<p>
+     * 
+     * @param success <code>true</code> if the upload was successful
+     * @param message the message to display
+     * @param stacktrace the stack trace in case of an error
      * 
      * @return the the response String
      */
@@ -486,6 +493,10 @@ public class CmsUploadBean extends CmsJspBean {
      * Parses the request.<p>
      * 
      * Stores the file items and the request parameters in a local variable if present.<p>
+     * 
+     * @param listener the upload listener 
+     * 
+     * @throws Exception if anything goes wrong
      */
     private void parseRequest(CmsUploadListener listener) throws Exception {
 
@@ -522,6 +533,8 @@ public class CmsUploadBean extends CmsJspBean {
      * 
      * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request has no file items
+     *      
+     * @throws Exception if anything goes wrong
      */
     private List<FileItem> readMultipartFileItems(CmsUploadListener listener) throws Exception {
 

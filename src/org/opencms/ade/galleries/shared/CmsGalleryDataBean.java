@@ -84,6 +84,7 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
 
+    /** The search scope. */
     private CmsGallerySearchScope m_scope;
 
     /**

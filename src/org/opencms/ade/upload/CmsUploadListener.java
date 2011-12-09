@@ -47,6 +47,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUploadListener.class);
 
+    /** The serial version id. */
     private static final long serialVersionUID = -6431275569719042836L;
 
     /** The content length of the request (larger than the sum of file sizes). */
@@ -182,7 +183,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
      */
     public long getPercent() {
 
-        return m_contentLength != 0 ? m_bytesRead * 100 / m_contentLength : 0;
+        return m_contentLength != 0 ? (m_bytesRead * 100) / m_contentLength : 0;
     }
 
     /**
@@ -293,10 +294,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
                 m_watcher = new CmsUploadTimeoutWatcher(this);
                 m_watcher.start();
             } catch (Exception e) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_UPLOAD_CREATE_WATCH_DOG_2,
-                    getId(),
-                    e.getMessage()));
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_UPLOAD_CREATE_WATCH_DOG_2, getId(), e.getMessage()));
             }
         }
     }

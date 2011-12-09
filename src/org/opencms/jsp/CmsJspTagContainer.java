@@ -47,7 +47,6 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
@@ -59,7 +58,6 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -587,10 +585,13 @@ public class CmsJspTagContainer extends TagSupport {
     }
 
     /**
-     * Adds a detail view element to a list of elements if necessary.<p>
+     * Generates the detail view element.<p>
      * 
      * @param cms the CMS context
+     * @param detailContent the detail content resource
      * @param allElems the list to which the element should be added
+     * 
+     * @return the detail view element 
      */
     private CmsContainerElementBean generateDetailViewElement(CmsObject cms, CmsResource detailContent) {
 
@@ -685,11 +686,23 @@ public class CmsJspTagContainer extends TagSupport {
         return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
     }
 
+    /**
+     * Returns the element group elements.<p>
+     * 
+     * @param cms the current cms context
+     * @param element group element
+     * @param req the servlet request
+     * @param containerType the container type
+     * 
+     * @return the elements of this group
+     * 
+     * @throws CmsException if something goes wrong
+     */
     private List<CmsContainerElementBean> getGroupContainerElements(
         CmsObject cms,
         CmsContainerElementBean element,
         ServletRequest req,
-        String containerType) throws CmsXmlException, CmsLoaderException, CmsException {
+        String containerType) throws CmsException {
 
         List<CmsContainerElementBean> subElements;
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
@@ -865,9 +878,11 @@ public class CmsJspTagContainer extends TagSupport {
      * Renders a container element.<p>
      * 
      * @param cms the CMS context 
+     * @param standardContext the current standard contxt bean
      * @param element the container element to render
-     * @throws CmsException if something goes wrong reading the resources
-     * @throws IOException if something goes wrong writing to the response
+     * @param locale the requested locale
+     * 
+     * @throws Exception if something goes wrong 
      */
     private void renderContainerElement(
         CmsObject cms,
@@ -938,10 +953,12 @@ public class CmsJspTagContainer extends TagSupport {
                             res);
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                subelement.getSitePath(),
-                                subelementFormatter), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    subelement.getSitePath(),
+                                    subelementFormatter),
+                                e);
                         }
                         printElementErrorTag(
                             isOnline,
@@ -997,10 +1014,12 @@ public class CmsJspTagContainer extends TagSupport {
                     res);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                        element.getSitePath(),
-                        formatter), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                            element.getSitePath(),
+                            formatter),
+                        e);
                 }
                 printElementErrorTag(isOnline, element.getSitePath(), formatter, e);
             }
