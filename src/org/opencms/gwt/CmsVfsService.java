@@ -38,6 +38,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
@@ -81,6 +82,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.logging.Log;
@@ -97,6 +100,21 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
+
+    /**
+     * Returns a new configured service instance.<p>
+     * 
+     * @param request the current request
+     * 
+     * @return a new service instance
+     */
+    public static CmsVfsService newInstance(HttpServletRequest request) {
+
+        CmsVfsService service = new CmsVfsService();
+        service.setCms(CmsFlexController.getCmsObject(request));
+        service.setRequest(request);
+        return service;
+    }
 
     /**
      * Processes a file path, which may have macros in it, so it can be opened by the XML content editor.<p>
@@ -316,6 +334,35 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
             return null; // will never be reached 
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getPreviewInfo(org.opencms.util.CmsUUID, java.lang.String)
+     */
+    public CmsPreviewInfo getPreviewInfo(CmsUUID structureId, String locale) throws CmsRpcException {
+
+        CmsPreviewInfo result = null;
+        try {
+            result = getPreviewInfo(getCmsObject().readResource(structureId), new Locale(locale));
+        } catch (Exception e) {
+            error(e);
+        }
+        return result;
+
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getPreviewInfo(java.lang.String, java.lang.String)
+     */
+    public CmsPreviewInfo getPreviewInfo(String sitePath, String locale) throws CmsRpcException {
+
+        CmsPreviewInfo result = null;
+        try {
+            result = getPreviewInfo(getCmsObject().readResource(sitePath), new Locale(locale));
+        } catch (Exception e) {
+            error(e);
+        }
+        return result;
     }
 
     /**
@@ -777,6 +824,57 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Returns the preview info for the given resource.<p>
+     * 
+     * @param resource the resource
+     * @param locale the requested locale
+     * 
+     * @return the preview info
+     */
+    private CmsPreviewInfo getPreviewInfo(CmsResource resource, Locale locale) {
+
+        CmsObject cms = getCmsObject();
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
+            return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                cms,
+                resource.getRootPath())
+                + "?__disableDirectEdit=true", false);
+        }
+        if (CmsResourceTypeImage.getStaticTypeId() == resource.getTypeId()) {
+            CmsImageScaler scaler = new CmsImageScaler(cms, resource);
+            String title = "";
+            CmsProperty titleProperty;
+            try {
+                titleProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+                title = titleProperty.getValue("");
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            String content = "<img src=\""
+                + OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
+                + "\" title=\""
+                + title
+                + "\" style=\"display:block\" />";
+            CmsPreviewInfo result = new CmsPreviewInfo(content, null, false);
+            result.setHeight(scaler.getHeight());
+            result.setWidth(scaler.getWidth());
+            return result;
+        }
+        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            String previewContent = CmsPreviewService.getPreviewContent(
+                getRequest(),
+                getResponse(),
+                cms,
+                resource,
+                locale);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
+                return new CmsPreviewInfo(previewContent, null, false);
+            }
+        }
+        return new CmsPreviewInfo(null, cms.getSitePath(resource) + "?__disableDirectEdit=true", true);
+    }
+
+    /**
      * Returns a map of principals of responsible users together with the resource path where the
      * responsibility was found.<p> 
      * 
@@ -897,85 +995,5 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             || ((properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null) && properties.get(
                 CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
                 properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getPreviewInfo(org.opencms.util.CmsUUID, java.lang.String)
-     */
-    public CmsPreviewInfo getPreviewInfo(CmsUUID structureId, String locale) throws CmsRpcException {
-
-        CmsPreviewInfo result = null;
-        try {
-            result = getPreviewInfo(getCmsObject().readResource(structureId), new Locale(locale));
-        } catch (Exception e) {
-            error(e);
-        }
-        return result;
-
-    }
-
-    /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getPreviewInfo(java.lang.String, java.lang.String)
-     */
-    public CmsPreviewInfo getPreviewInfo(String sitePath, String locale) throws CmsRpcException {
-
-        CmsPreviewInfo result = null;
-        try {
-            result = getPreviewInfo(getCmsObject().readResource(sitePath), new Locale(locale));
-        } catch (Exception e) {
-            error(e);
-        }
-        return result;
-    }
-
-    /**
-     * Returns the preview info for the given resource.<p>
-     * 
-     * @param resource the resource
-     * @param locale the requested locale
-     * 
-     * @return the preview info
-     */
-    private CmsPreviewInfo getPreviewInfo(CmsResource resource, Locale locale) {
-
-        CmsObject cms = getCmsObject();
-        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
-            return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                cms,
-                resource.getRootPath())
-                + "?__disableDirectEdit=true", false);
-        }
-        if (CmsResourceTypeImage.getStaticTypeId() == resource.getTypeId()) {
-            CmsImageScaler scaler = new CmsImageScaler(cms, resource);
-            String title = "";
-            CmsProperty titleProperty;
-            try {
-                titleProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
-                title = titleProperty.getValue("");
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
-            String content = "<img src=\""
-                + OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
-                + "\" title=\""
-                + title
-                + "\" style=\"display:block\" />";
-            CmsPreviewInfo result = new CmsPreviewInfo(content, null, false);
-            result.setHeight(scaler.getHeight());
-            result.setWidth(scaler.getWidth());
-            return result;
-        }
-        if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-            String previewContent = CmsPreviewService.getPreviewContent(
-                getRequest(),
-                getResponse(),
-                cms,
-                resource,
-                locale);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
-                return new CmsPreviewInfo(previewContent, null, false);
-            }
-        }
-        return new CmsPreviewInfo(null, cms.getSitePath(resource) + "?__disableDirectEdit=true", true);
     }
 }
