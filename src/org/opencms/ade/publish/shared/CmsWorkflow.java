@@ -27,6 +27,65 @@
 
 package org.opencms.ade.publish.shared;
 
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * A bean which represents a possible workflow, containing an identifier, a user-readable name
+ * and a list of workflow actions.<p>
+ */
 public class CmsWorkflow {
 
+    /** An identifier for the workflow type. */
+    private String m_id;
+
+    /** A user-readable nice name for the workflow. */
+    private String m_niceName;
+
+    /** The list of actions which are possible in this workflow. */
+    private List<CmsWorkflowAction> m_actions;
+
+    /**
+     * Creates a new workflow bean instance.<p>
+     * 
+     * @param id the identifier for the workflow type 
+     * @param niceName the nice name for the workflow which is displayed to the user 
+     * @param actions the actions which are possible in this workflow 
+     */
+    public CmsWorkflow(String id, String niceName, List<CmsWorkflowAction> actions) {
+
+        m_id = id;
+        m_niceName = niceName;
+        m_actions = actions;
+    }
+
+    /**
+     * Returns the list of actions which are possible in this workflow.<p>
+     * 
+     * @return the actions possible in this workflow 
+     */
+    public List<CmsWorkflowAction> getActions() {
+
+        return Collections.unmodifiableList(m_actions);
+    }
+
+    /**
+     * Gets the workflow identifier.<p>
+     * 
+     * @return the workflow identifier 
+     */
+    public String getId() {
+
+        return m_id;
+    }
+
+    /**
+     * Gets the user-readable nice name for the workflow.<p>
+     * 
+     * @return the nice name for the workflow 
+     */
+    public String getNiceName() {
+
+        return m_niceName;
+    }
 }
