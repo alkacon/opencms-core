@@ -62,6 +62,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -79,6 +80,9 @@ public abstract class A_CmsGroupEditor extends Composite {
     interface I_CmsGroupEditorUiBinder extends UiBinder<HTMLPanel, A_CmsGroupEditor> {
         // GWT interface, nothing to do here
     }
+
+    /** The dialog base height. The height without any content. */
+    private static final int DIALOG_BASE_HEIGHT = 103;
 
     /** The ui-binder for this widget. */
     private static I_CmsGroupEditorUiBinder uiBinder = GWT.create(I_CmsGroupEditorUiBinder.class);
@@ -467,10 +471,11 @@ public abstract class A_CmsGroupEditor extends Composite {
                 m_editorDialog.setPopupPosition(
                     m_groupContainerPosition.getLeft() - 530,
                     m_groupContainerPosition.getTop() - 1);
-            } else if (m_groupContainerPosition.getTop() > (contentHeight + 103 + 40)) {
+            } else if ((m_groupContainerPosition.getTop() - Window.getScrollTop()) > (contentHeight
+                + DIALOG_BASE_HEIGHT + 50)) {
                 // else place above if there is enough space
                 m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft(), m_groupContainerPosition.getTop()
-                    - (contentHeight + 103));
+                    - (contentHeight + DIALOG_BASE_HEIGHT));
             } else {
                 // else on the right
                 m_editorDialog.setPopupPosition(
