@@ -32,7 +32,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * Work flow action information.<p>
  */
-public class CmsWorkflowActionBean implements IsSerializable {
+public class CmsWorkflowAction implements IsSerializable {
 
     /** The action key. */
     private String m_action;
@@ -46,7 +46,7 @@ public class CmsWorkflowActionBean implements IsSerializable {
     /**
      * Constructor. For serialization only.<p>
      */
-    protected CmsWorkflowActionBean() {
+    protected CmsWorkflowAction() {
 
         // nothing to do
     }
@@ -58,7 +58,7 @@ public class CmsWorkflowActionBean implements IsSerializable {
      * @param label the action label
      * @param isEnabled <code>true</code> if the action is enabled
      */
-    public CmsWorkflowActionBean(String actionKey, String label, boolean isEnabled) {
+    public CmsWorkflowAction(String actionKey, String label, boolean isEnabled) {
 
         m_action = actionKey;
         m_label = label;

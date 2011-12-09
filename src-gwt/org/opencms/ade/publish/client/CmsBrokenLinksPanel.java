@@ -28,7 +28,7 @@
 package org.opencms.ade.publish.client;
 
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.ade.publish.shared.CmsWorkflowActionBean;
+import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -87,7 +87,7 @@ public class CmsBrokenLinksPanel extends Composite {
     private List<CmsPushButton> m_actionButtons;
 
     /** The available work flow actions. */
-    private List<CmsWorkflowActionBean> m_actions;
+    private List<CmsWorkflowAction> m_actions;
 
     /** The publish dialog containing this widget. */
     private CmsPublishDialog m_publishDialog;
@@ -138,7 +138,7 @@ public class CmsBrokenLinksPanel extends Composite {
         result.add(m_cancelButton);
         m_actionButtons.clear();
         if (m_actions != null) {
-            for (CmsWorkflowActionBean action : m_actions) {
+            for (CmsWorkflowAction action : m_actions) {
                 CmsPushButton actionButton = new CmsPushButton();
                 actionButton.setText(action.getLabel());
                 actionButton.setUseMinWidth(true);
@@ -163,7 +163,7 @@ public class CmsBrokenLinksPanel extends Composite {
      * @param resourceBeans the resource beans to be displayed 
      * @param actions the available actions
      */
-    public void setEntries(Collection<CmsPublishResource> resourceBeans, List<CmsWorkflowActionBean> actions) {
+    public void setEntries(Collection<CmsPublishResource> resourceBeans, List<CmsWorkflowAction> actions) {
 
         m_list.clear();
         for (CmsPublishResource res : resourceBeans) {

@@ -51,7 +51,7 @@ public class CmsPublishData implements IsSerializable {
     private List<CmsProjectBean> m_projects;
 
     /** The available work flow actions. */
-    private List<CmsWorkflowActionBean> m_workFlowActions;
+    private List<CmsWorkflowAction> m_workFlowActions;
 
     /** 
      * Creates a new instance.<p>
@@ -65,7 +65,7 @@ public class CmsPublishData implements IsSerializable {
         CmsPublishOptions options,
         List<CmsProjectBean> projects,
         List<CmsPublishGroup> groups,
-        List<CmsWorkflowActionBean> workFlowActions) {
+        List<CmsWorkflowAction> workFlowActions) {
 
         m_options = options;
         m_projects = projects;
@@ -116,7 +116,7 @@ public class CmsPublishData implements IsSerializable {
      *
      * @return the available work flow actions
      */
-    public List<CmsWorkflowActionBean> getWorkFlowActions() {
+    public List<CmsWorkflowAction> getWorkFlowActions() {
 
         return m_workFlowActions;
     }

@@ -29,7 +29,8 @@ package org.opencms.workflow;
 
 import org.opencms.ade.publish.CmsPublish;
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.ade.publish.shared.CmsWorkflowActionBean;
+import org.opencms.ade.publish.shared.CmsWorkflow;
+import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
@@ -65,19 +66,13 @@ import org.apache.commons.mail.EmailException;
 /**
  * The default workflow manager implementation, which supports 2 basic actions, Release and Publish.
  */
-public class CmsWorkflowManager {
-
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWorkflowManager.class);
-
-    /** A CMS context with admin privileges. */
-    private CmsObject m_adminCms;
-
-    /** The publish workflow action. */
-    public static final String ACTION_PUBLISH = "publish";
+public class CmsWorkflowManager implements I_CmsWorkflowManager {
 
     /** The forced publish workflow action. */
     public static final String ACTION_FORCE_PUBLISH = "forcepublish";
+
+    /** The publish workflow action. */
+    public static final String ACTION_PUBLISH = "publish";
 
     /** The release workflow action. */
     public static final String ACTION_RELEASE = "release";
@@ -88,11 +83,24 @@ public class CmsWorkflowManager {
     /** The key for the configurable workflow project user group. */
     public static final String PARAM_WORKFLOW_PROJECT_USER_GROUP = "workflowProjectUserGroup";
 
-    /** The project counter, used for generating project names. */
-    private int m_projectCounter;
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkflowManager.class);
+
+    /** A CMS context with admin privileges. */
+    private CmsObject m_adminCms;
 
     /** The map of configuration parameters. */
     private Map<String, String> m_parameters;
+
+    /** The project counter, used for generating project names. */
+    private int m_projectCounter;
+
+    public CmsWorkflowResponse executeAction(CmsObject userCms, CmsWorkflowAction action, List<CmsResource> resources)
+    throws CmsException {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
 
     /**
      * Executes a workflow action in the context of the current user.<p>
@@ -142,14 +150,14 @@ public class CmsWorkflowManager {
      * 
      * @return the list of workflow actions which should be available to the user 
      */
-    public List<CmsWorkflowActionBean> getAvailableActions(CmsObject userCms) {
+    public List<CmsWorkflowAction> getAvailableActions(CmsObject userCms) {
 
-        List<CmsWorkflowActionBean> actions = new ArrayList<CmsWorkflowActionBean>();
+        List<CmsWorkflowAction> actions = new ArrayList<CmsWorkflowAction>();
         Locale locale = getLocale(userCms);
         String publishLabel = Messages.get().getBundle(locale).key(Messages.GUI_WORKFLOW_ACTION_PUBLISH_0);
         String releaseLabel = Messages.get().getBundle(locale).key(Messages.GUI_WORKFLOW_ACTION_RELEASE_0);
-        CmsWorkflowActionBean publish = new CmsWorkflowActionBean(ACTION_PUBLISH, publishLabel, true);
-        CmsWorkflowActionBean release = new CmsWorkflowActionBean(ACTION_RELEASE, releaseLabel, true);
+        CmsWorkflowAction publish = new CmsWorkflowAction(ACTION_PUBLISH, publishLabel, true);
+        CmsWorkflowAction release = new CmsWorkflowAction(ACTION_RELEASE, releaseLabel, true);
         actions.add(publish);
         actions.add(release);
         return actions;
@@ -183,6 +191,24 @@ public class CmsWorkflowManager {
     public String getWorkflowProjectUserGroup() {
 
         return getParameter(PARAM_WORKFLOW_PROJECT_USER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
+    }
+
+    public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsProject project) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    public List<CmsWorkflow> getWorkflows(CmsObject cms) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    public void initialize(CmsObject adminCms) {
+
+        // TODO: Auto-generated method stub
+
     }
 
     /**
@@ -341,7 +367,7 @@ public class CmsWorkflowManager {
             true,
             "",
             new ArrayList<CmsPublishResource>(),
-            new ArrayList<CmsWorkflowActionBean>(),
+            new ArrayList<CmsWorkflowAction>(),
             workflowProject.getUuid());
     }
 
@@ -518,11 +544,11 @@ public class CmsWorkflowManager {
         CmsObject userCms,
         List<CmsPublishResource> publishResources) {
 
-        List<CmsWorkflowActionBean> actions = new ArrayList<CmsWorkflowActionBean>();
+        List<CmsWorkflowAction> actions = new ArrayList<CmsWorkflowAction>();
         String forcePublishLabel = Messages.get().getBundle(getLocale(userCms)).key(
             Messages.GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0);
 
-        CmsWorkflowActionBean forcePublish = new CmsWorkflowActionBean(ACTION_FORCE_PUBLISH, forcePublishLabel, true);
+        CmsWorkflowAction forcePublish = new CmsWorkflowAction(ACTION_FORCE_PUBLISH, forcePublishLabel, true);
         actions.add(forcePublish);
         return new CmsWorkflowResponse(false, Messages.get().getBundle(getLocale(userCms)).key(
             Messages.GUI_BROKEN_LINKS_0), publishResources, actions, null);
@@ -539,7 +565,7 @@ public class CmsWorkflowManager {
             true,
             "",
             new ArrayList<CmsPublishResource>(),
-            new ArrayList<CmsWorkflowActionBean>(),
+            new ArrayList<CmsWorkflowAction>(),
             null);
     }
 

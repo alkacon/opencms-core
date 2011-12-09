@@ -32,7 +32,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
-import org.opencms.ade.publish.shared.CmsWorkflowActionBean;
+import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -227,7 +227,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     private List<CmsPushButton> m_actionButtons;
 
     /** The available actions. */
-    private List<CmsWorkflowActionBean> m_actions;
+    private List<CmsWorkflowAction> m_actions;
 
     /** The current group index used for scrolling. */
     private int m_currentGroupIndex;
@@ -253,7 +253,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         CmsPublishDialog publishDialog,
         List<CmsProjectBean> projects,
         CmsPublishOptions publishOptions,
-        List<CmsWorkflowActionBean> actions) {
+        List<CmsWorkflowAction> actions) {
 
         m_publishOptions = publishOptions;
         m_actions = actions;
@@ -447,7 +447,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actionButtons.clear();
         boolean enable = shouldEnablePublishButton();
         if (m_actions != null) {
-            for (CmsWorkflowActionBean action : m_actions) {
+            for (CmsWorkflowAction action : m_actions) {
                 CmsPushButton actionButton = new CmsPushButton();
                 actionButton.setText(action.getLabel());
                 actionButton.setUseMinWidth(true);

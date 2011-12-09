@@ -42,7 +42,7 @@ public class CmsWorkflowResponse implements IsSerializable {
     private CmsUUID m_workflowId;
 
     /** The list of workflow actions which should be available next in case of failure. */
-    private List<CmsWorkflowActionBean> m_availableActions;
+    private List<CmsWorkflowAction> m_availableActions;
 
     /** A flag indicating whether the workflow action was successful. */
     private boolean m_success;
@@ -66,7 +66,7 @@ public class CmsWorkflowResponse implements IsSerializable {
         boolean isSuccess,
         String message,
         List<CmsPublishResource> resources,
-        List<CmsWorkflowActionBean> availableActions,
+        List<CmsWorkflowAction> availableActions,
         CmsUUID workflowId) {
 
         m_success = isSuccess;
@@ -76,8 +76,12 @@ public class CmsWorkflowResponse implements IsSerializable {
         m_workflowId = workflowId;
     }
 
+    /**
+     * Constructor needed for serialization only.<p>
+     */
     protected CmsWorkflowResponse() {
 
+        // nothing to do
     }
 
     /**
@@ -85,7 +89,7 @@ public class CmsWorkflowResponse implements IsSerializable {
      * 
      * @return a list of beans representing the next possible workflow actions 
      */
-    public List<CmsWorkflowActionBean> getAvailableActions() {
+    public List<CmsWorkflowAction> getAvailableActions() {
 
         return m_availableActions;
     }
