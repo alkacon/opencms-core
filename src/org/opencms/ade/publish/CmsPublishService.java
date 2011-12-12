@@ -31,6 +31,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
@@ -49,6 +50,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -143,7 +145,12 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                     }
                 }
             }
-            result = new CmsPublishData(options, projects, null, workflows, workflowId);
+            result = new CmsPublishData(
+                options,
+                projects,
+                getResourceGroups(workflows.get(workflowId), options),
+                workflows,
+                workflowId);
         } catch (Throwable e) {
             error(e);
         }
@@ -171,10 +178,17 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     throws CmsRpcException {
 
         List<CmsPublishGroup> results = null;
+        CmsObject cms = getCmsObject();
         try {
-            CmsPublish pub = new CmsPublish(getCmsObject(), options);
+            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            List<CmsPublishResource> publishResources = OpenCms.getWorkflowManager().getWorkflowPublishResources(
+                cms,
+                workflow,
+                options);
+            A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper = new CmsDefaultPublishGroupHelper(
+                locale);
+            results = groupHelper.getGroups(publishResources);
             setCachedOptions(options);
-            results = pub.getPublishGroups();
         } catch (Throwable e) {
             error(e);
         }
