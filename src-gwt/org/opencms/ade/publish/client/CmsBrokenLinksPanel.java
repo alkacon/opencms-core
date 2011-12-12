@@ -32,7 +32,9 @@ import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,6 +85,10 @@ public class CmsBrokenLinksPanel extends Composite {
     @UiField
     protected CmsList<CmsTreeItem> m_list;
 
+    /** The scroll panel containing the group panel. */
+    @UiField
+    protected CmsScrollPanel m_scrollPanel;
+
     /** The action buttons. */
     private List<CmsPushButton> m_actionButtons;
 
@@ -96,10 +102,12 @@ public class CmsBrokenLinksPanel extends Composite {
      * Creates a new instance.<p>
      * 
      * @param publishDialog the publish dialog to which this broken links panel belongs.
+     * @param scrollPanelHeight the available scroll panel height
      */
-    public CmsBrokenLinksPanel(CmsPublishDialog publishDialog) {
+    public CmsBrokenLinksPanel(CmsPublishDialog publishDialog, int scrollPanelHeight) {
 
         initWidget(UI_BINDER.createAndBindUi(this));
+        m_scrollPanel.getElement().getStyle().setPropertyPx(CmsDomUtil.Style.maxHeight.toString(), scrollPanelHeight);
         prepareButton(m_cancelButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
         prepareButton(m_backButton, Messages.get().key(Messages.GUI_PUBLISH_DIALOG_BACK_0));
         m_label.setText(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_BROKEN_LINKS_0));

@@ -9,9 +9,9 @@
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel>
 		<g:Label ui:field="m_label" styleName="{res.publishCss.label}" /> 
-		<g:ScrollPanel styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
+		<cms:CmsScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
 			<cms:CmsList ui:field="m_list"></cms:CmsList>
-		</g:ScrollPanel> 
+		</cms:CmsScrollPanel> 
 		<g:FlowPanel styleName="{res.publishCss.spacer}" />
 		<!-- The buttons aren't actually displayed here, we just declare them in this file to simplify the code -->
 		<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton>

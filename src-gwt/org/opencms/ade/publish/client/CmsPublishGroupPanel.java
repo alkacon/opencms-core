@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -185,6 +186,8 @@ public class CmsPublishGroupPanel extends Composite {
 
                 public void onClick(ClickEvent event) {
 
+                    CmsPushButton button = (CmsPushButton)event.getSource();
+                    CmsDomUtil.ensureMouseOut(button.getElement());
                     CmsPreviewDialog.showPreviewForResource(resourceBean.getId());
                 }
             });

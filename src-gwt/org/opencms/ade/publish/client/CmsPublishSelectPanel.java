@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsUUID;
@@ -255,18 +256,21 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * @param publishOptions the initial publish options
      * @param workflows the available workflows
      * @param selectedWorkflowId the selected workflow id
+     * @param scrollPanelHeight the available scroll panel height
      */
     public CmsPublishSelectPanel(
         CmsPublishDialog publishDialog,
         List<CmsProjectBean> projects,
         CmsPublishOptions publishOptions,
         Map<String, CmsWorkflow> workflows,
-        String selectedWorkflowId) {
+        String selectedWorkflowId,
+        int scrollPanelHeight) {
 
         m_publishDialog = publishDialog;
         m_actions = workflows.get(selectedWorkflowId).getActions();
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
+        m_scrollPanel.getElement().getStyle().setPropertyPx(CmsDomUtil.Style.maxHeight.toString(), scrollPanelHeight);
         m_checkboxProblems.setVisible(false);
         LinkedHashMap<String, String> workflowItems = new LinkedHashMap<String, String>();
         for (CmsWorkflow workflow : workflows.values()) {
@@ -275,9 +279,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_workflowSelector.setItems(workflowItems);
         m_workflowSelector.setFormValueAsString(selectedWorkflowId);
         m_workflowSelector.addStyleName(CSS.selector());
-        m_workflowsLabel.setText("Workflows:");
-        LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
         CmsMessages messages = Messages.get();
+        m_workflowsLabel.setText(messages.key(Messages.GUI_PUBLISH_WORKFLOW_SELECT_0));
+        LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
         items.put(CmsUUID.getNullUUID().toString(), messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
         boolean foundOldProject = false;
         for (CmsProjectBean project : projects) {
@@ -691,6 +695,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         if (m_initialized) {
             m_publishDialog.setWorkflowId(event.getValue());
+            m_actions = m_publishDialog.getSelectedWorkflow().getActions();
             m_publishDialog.onChangeOptions();
         }
     }

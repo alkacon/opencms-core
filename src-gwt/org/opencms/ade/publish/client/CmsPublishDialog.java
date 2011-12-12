@@ -47,6 +47,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -187,19 +188,22 @@ public class CmsPublishDialog extends CmsPopup {
         super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), 800);
         initCss();
         setGlassEnabled(true);
+        setPositionFixed();
         setAutoHideEnabled(false);
         setModal(true);
         addStyleName(CSS.publishDialog());
         m_workflows = initData.getWorkflows();
         m_workflowId = initData.getSelectedWorkflowId();
         m_publishOptions = initData.getOptions();
+        int availableHeight = Window.getClientHeight() - 290;
         m_publishSelectPanel = new CmsPublishSelectPanel(
             this,
             initData.getProjects(),
             initData.getOptions(),
             initData.getWorkflows(),
-            initData.getSelectedWorkflowId());
-        m_brokenLinksPanel = new CmsBrokenLinksPanel(this);
+            initData.getSelectedWorkflowId(),
+            availableHeight);
+        m_brokenLinksPanel = new CmsBrokenLinksPanel(this, availableHeight);
 
         addDialogClose(null);
 
@@ -260,7 +264,7 @@ public class CmsPublishDialog extends CmsPopup {
         if (handler != null) {
             publishDialog.addCloseHandler(handler);
         }
-        publishDialog.centerHorizontally(100);
+        publishDialog.centerHorizontally(50);
         // replace current notification widget by overlay
         publishDialog.catchNotifications();
     }
