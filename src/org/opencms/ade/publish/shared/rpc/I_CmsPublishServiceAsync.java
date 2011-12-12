@@ -31,6 +31,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.util.CmsUUID;
@@ -61,12 +62,16 @@ public interface I_CmsPublishServiceAsync {
     void getProjects(AsyncCallback<List<CmsProjectBean>> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#getResourceGroups(CmsPublishOptions)}.<p>
+     * Asynchronous version of {@link I_CmsPublishService#getResourceGroups(CmsWorkflow,CmsPublishOptions)}.<p>
      * 
+     * @param workflow the selected workflow 
      * @param options the publish list options
      * @param callback the result callback
      */
-    void getResourceGroups(CmsPublishOptions options, AsyncCallback<List<CmsPublishGroup>> callback);
+    void getResourceGroups(
+        CmsWorkflow workflow,
+        CmsPublishOptions options,
+        AsyncCallback<List<CmsPublishGroup>> callback);
 
     /**
      * Asynchronous version of {@link I_CmsPublishService#getResourceOptions()}.<p>
@@ -76,7 +81,7 @@ public interface I_CmsPublishServiceAsync {
     void getResourceOptions(AsyncCallback<CmsPublishOptions> callback);
 
     /**
-     * Asynchronous version of {@link I_CmsPublishService#executeAction(List, List, String)}.<p>
+     * Asynchronous version of {@link I_CmsPublishService#executeAction(List, List, CmsWorkflowAction)}.<p>
      * 
      * @param toPublish the resources to publish 
      * @param toRemove the resources to remove

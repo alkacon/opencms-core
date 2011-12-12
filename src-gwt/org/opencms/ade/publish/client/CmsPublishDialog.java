@@ -30,6 +30,7 @@ package org.opencms.ade.publish.client;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
@@ -108,17 +109,12 @@ public class CmsPublishDialog extends CmsPopup {
      */
     private class CmsPublishListAction extends CmsRpcAction<List<CmsPublishGroup>> {
 
-        /** The publish list options which should be used. */
-        private CmsPublishOptions m_options;
-
         /**
-         * Creates a new publish list action.<p>
-         * 
-         * @param options the publish list options which should be used 
+         * Constructor.<p>
          */
-        public CmsPublishListAction(CmsPublishOptions options) {
+        protected CmsPublishListAction() {
 
-            m_options = options;
+            // nothing to do
         }
 
         /**
@@ -128,7 +124,7 @@ public class CmsPublishDialog extends CmsPopup {
         public void execute() {
 
             start(0, true);
-            getService().getResourceGroups(m_options, this);
+            getService().getResourceGroups(getSelectedWorkflow(), getPublishOptions(), this);
         }
 
         /**
@@ -151,6 +147,9 @@ public class CmsPublishDialog extends CmsPopup {
     /** The CSS bundle used for this widget. */
     private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
+    /** Flag indicating if the CSS has been initialized. */
+    private static boolean CSS_INITIALIZED;
+
     /** The index of the "broken links" panel. */
     private static final int PANEL_BROKEN_LINKS = 1;
 
@@ -166,11 +165,17 @@ public class CmsPublishDialog extends CmsPopup {
     /** The panel for showing the links that would be broken by publishing. */
     private CmsBrokenLinksPanel m_brokenLinksPanel;
 
-    /** Flag indicating if the CSS has been initialized. */
-    private static boolean CSS_INITIALIZED;
-
     /** The root panel of this dialog which contains both the selection panel and the panel for displaying broken links. */
     private DeckPanel m_panel = new DeckPanel();
+
+    /** The current publish list options. */
+    private CmsPublishOptions m_publishOptions;
+
+    /** The id of the current workflow. */
+    private String m_workflowId;
+
+    /** The available workflows. */
+    private Map<String, CmsWorkflow> m_workflows;
 
     /**
      * Constructs a new publish dialog.<p>
@@ -185,12 +190,14 @@ public class CmsPublishDialog extends CmsPopup {
         setAutoHideEnabled(false);
         setModal(true);
         addStyleName(CSS.publishDialog());
-
+        m_workflows = initData.getWorkflows();
+        m_workflowId = initData.getSelectedWorkflowId();
         m_publishSelectPanel = new CmsPublishSelectPanel(
             this,
             initData.getProjects(),
             initData.getOptions(),
-            initData.getWorkflows().get(initData.getSelectedWorkflowId()).getActions());
+            initData.getWorkflows(),
+            initData.getSelectedWorkflowId());
         m_brokenLinksPanel = new CmsBrokenLinksPanel(this);
 
         addDialogClose(null);
@@ -283,14 +290,13 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
-     * Ensures all style sheets are loaded.<p>
+     * Returns the current publish options.<p>
+     * 
+     * @return a publish options bean
      */
-    private void initCss() {
+    public CmsPublishOptions getPublishOptions() {
 
-        if (!CSS_INITIALIZED) {
-            I_CmsPublishLayoutBundle.INSTANCE.publishCss().ensureInjected();
-            CSS_INITIALIZED = true;
-        }
+        return m_publishOptions;
     }
 
     /**
@@ -306,8 +312,7 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public void onChangeOptions() {
 
-        CmsPublishOptions options = m_publishSelectPanel.getPublishOptions();
-        (new CmsPublishListAction(options)).execute();
+        (new CmsPublishListAction()).execute();
     }
 
     /**
@@ -348,6 +353,26 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
+     * Sets the include related resources option.<p>
+     * 
+     * @param includeRelated the include related option
+     */
+    public void setIncludeRelated(boolean includeRelated) {
+
+        m_publishOptions.setIncludeRelated(includeRelated);
+    }
+
+    /**
+     * Sets the include sibling resources option.<p>
+     * 
+     * @param includeSiblings the include siblings option
+     */
+    public void setIncludeSiblings(boolean includeSiblings) {
+
+        m_publishOptions.setIncludeSiblings(includeSiblings);
+    }
+
+    /**
      * Changes the currently active panel.<p>
      * 
      * @param panelId the number of the panel to show
@@ -364,6 +389,47 @@ public class CmsPublishDialog extends CmsPopup {
             for (CmsPushButton button : m_brokenLinksPanel.getButtons()) {
                 addButton(button);
             }
+        }
+    }
+
+    /**
+     * Sets the selected project id.<p>
+     * 
+     * @param projectId the project id
+     */
+    public void setProjectId(CmsUUID projectId) {
+
+        m_publishOptions.setProjectId(projectId);
+    }
+
+    /**
+     * Sets the selected workflow id.<p>
+     * 
+     * @param workflowId the workflow id
+     */
+    public void setWorkflowId(String workflowId) {
+
+        m_workflowId = workflowId;
+    }
+
+    /**
+     * Returns the selected workflow.<p>
+     * 
+     * @return the selected workflow
+     */
+    protected CmsWorkflow getSelectedWorkflow() {
+
+        return m_workflows.get(m_workflowId);
+    }
+
+    /**
+     * Ensures all style sheets are loaded.<p>
+     */
+    private void initCss() {
+
+        if (!CSS_INITIALIZED) {
+            I_CmsPublishLayoutBundle.INSTANCE.publishCss().ensureInjected();
+            CSS_INITIALIZED = true;
         }
     }
 

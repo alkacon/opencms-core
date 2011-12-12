@@ -31,6 +31,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.gwt.CmsRpcException;
@@ -68,13 +69,14 @@ public interface I_CmsPublishService extends RemoteService {
     /**
      * Retrieves the publish list, subdivided into groups based on the time of their last change.<p>
      * 
+     * @param workflow the selected workflow 
      * @param options the publish options for which the publish list should be fetched
      * 
      * @return the publish list groups 
      *  
      * @throws CmsRpcException if something goes wrong
      */
-    List<CmsPublishGroup> getResourceGroups(CmsPublishOptions options) throws CmsRpcException;
+    List<CmsPublishGroup> getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options) throws CmsRpcException;
 
     /**
      * Retrieves the publish options.<p>

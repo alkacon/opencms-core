@@ -61,11 +61,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CmsPublishService extends CmsGwtService implements I_CmsPublishService {
 
-    /** The workflow id parameter name. */
-    public static final String PARAM_WORKFLOW_ID = "workflowId";
-
     /** The publish project id parameter name. */
     public static final String PARAM_PUBLISH_PROJECT_ID = "publishProjectId";
+
+    /** The workflow id parameter name. */
+    public static final String PARAM_WORKFLOW_ID = "workflowId";
 
     /** The version id for serialization. */
     private static final long serialVersionUID = 3852074177607037076L;
@@ -165,9 +165,10 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceGroups(org.opencms.ade.publish.shared.CmsPublishOptions)
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceGroups(org.opencms.ade.publish.shared.CmsWorkflow,org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public List<CmsPublishGroup> getResourceGroups(CmsPublishOptions options) throws CmsRpcException {
+    public List<CmsPublishGroup> getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options)
+    throws CmsRpcException {
 
         List<CmsPublishGroup> results = null;
         try {
@@ -212,6 +213,17 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
+     * Returns the id of the last used workflow for the current user.<p>
+     * 
+     * @return the workflow id
+     */
+    private String getLastWorklowForUser() {
+
+        CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
+        return (String)user.getAdditionalInfo(PARAM_WORKFLOW_ID);
+    }
+
+    /**
      * Converts a list of IDs to resources.<p>
      * 
      * @param cms the CmObject used for reading the resources 
@@ -235,14 +247,13 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * Returns the id of the last used workflow for the current user.<p>
+     * Saves the given options to the session.<p>
      * 
-     * @return the workflow id
+     * @param options the options to save
      */
-    private String getLastWorklowForUser() {
+    private void setCachedOptions(CmsPublishOptions options) {
 
-        CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
-        return (String)user.getAdditionalInfo(PARAM_WORKFLOW_ID);
+        getRequest().getSession().setAttribute(SESSION_ATTR_ADE_PUB_OPTS_CACHE, options);
     }
 
     /**
@@ -257,15 +268,5 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
         user.setAdditionalInfo(PARAM_WORKFLOW_ID, workflowId);
         getCmsObject().writeUser(user);
-    }
-
-    /**
-     * Saves the given options to the session.<p>
-     * 
-     * @param options the options to save
-     */
-    private void setCachedOptions(CmsPublishOptions options) {
-
-        getRequest().getSession().setAttribute(SESSION_ATTR_ADE_PUB_OPTS_CACHE, options);
     }
 }

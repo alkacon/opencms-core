@@ -32,6 +32,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
@@ -42,11 +43,11 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -138,9 +139,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** The scroll threshold for the list of problem resources. */
     private static final int SCROLL_THRESHOLD = 100;
 
-    /** Text metrics key. */
-    private static final String TM_PUBLISH = "Publish";
-
     /** The UiBinder instance used for this widget. */
     private static final I_CmsPublishSelectPanelUiBinder UI_BINDER = GWT.create(I_CmsPublishSelectPanelUiBinder.class);
 
@@ -185,9 +183,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** The publish dialog which contains this panel. */
     protected CmsPublishDialog m_publishDialog;
 
-    /** The current publish list options. */
-    protected CmsPublishOptions m_publishOptions;
-
     /** The label displaying the resource count. */
     @UiField
     protected InlineHTML m_resourceCountLabel;
@@ -223,6 +218,14 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiField
     protected Panel m_topBar;
 
+    /** The workflow selector. */
+    @UiField
+    protected CmsSelectBox m_workflowSelector;
+
+    /** The workflow selector label. */
+    @UiField
+    protected InlineLabel m_workflowsLabel;
+
     /** The action buttons. */
     private List<CmsPushButton> m_actionButtons;
 
@@ -247,28 +250,34 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * @param publishDialog the publish dialog to which this panel should belong
      * @param projects a map of projects, where the keys are the project ids and the values are the names of the projects 
      * @param publishOptions the initial publish options
-     * @param actions the available actions
+     * @param workflows the available workflows
+     * @param selectedWorkflowId the selected workflow id
      */
     public CmsPublishSelectPanel(
         CmsPublishDialog publishDialog,
         List<CmsProjectBean> projects,
         CmsPublishOptions publishOptions,
-        List<CmsWorkflowAction> actions) {
+        Map<String, CmsWorkflow> workflows,
+        String selectedWorkflowId) {
 
-        m_publishOptions = publishOptions;
-        m_actions = actions;
+        m_actions = workflows.get(selectedWorkflowId).getActions();
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
         m_checkboxProblems.setVisible(false);
-
-        List<CmsPair<String, String>> items = new ArrayList<CmsPair<String, String>>();
+        LinkedHashMap<String, String> workflowItems = new LinkedHashMap<String, String>();
+        for (CmsWorkflow workflow : workflows.values()) {
+            workflowItems.put(workflow.getId(), workflow.getNiceName());
+        }
+        m_workflowSelector.setItems(workflowItems);
+        m_workflowSelector.setFormValueAsString(selectedWorkflowId);
+        m_workflowSelector.addStyleName(CSS.selector());
+        m_workflowsLabel.setText("Workflows:");
+        LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
         CmsMessages messages = Messages.get();
-        items.add(new CmsPair<String, String>(
-            CmsUUID.getNullUUID().toString(),
-            messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0)));
+        items.put(CmsUUID.getNullUUID().toString(), messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
         boolean foundOldProject = false;
         for (CmsProjectBean project : projects) {
-            items.add(new CmsPair<String, String>(project.getId().toString(), project.getName()));
+            items.put(project.getId().toString(), project.getName());
 
             // look if the project id from the last publish list is among the available projects.
             // (this might not be the case if the project has been deleted in the meantime.)
@@ -279,6 +288,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
         m_projectSelector.setItems(items);
         m_projectSelector.addStyleName(CSS.selector());
+        if (!publishOptions.getProjectId().isNullUUID()) {
+            m_projectSelector.setFormValueAsString(publishOptions.getProjectId().toString());
+        }
         m_publishDialog = publishDialog;
         m_checkboxRelated.setChecked(publishOptions.isIncludeRelated());
         m_checkboxSiblings.setChecked(publishOptions.isIncludeSiblings());
@@ -286,52 +298,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_projectSelector.selectValue(publishOptions.getProjectId().toString());
         }
 
-        m_projectSelector.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            /**
-             * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
-             */
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                m_publishOptions.setProjectId(new CmsUUID(event.getValue()));
-                m_publishDialog.onChangeOptions();
-            }
-        });
-        m_projectSelector.truncate(TM_PUBLISH, 200);
-
-        m_checkboxRelated.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent e) {
-
-                m_publishOptions.setIncludeRelated(m_checkboxRelated.isChecked());
-                m_publishDialog.onChangeOptions();
-            }
-        });
-        m_checkboxSiblings.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent e) {
-
-                m_publishOptions.setIncludeSiblings(m_checkboxSiblings.isChecked());
-                m_publishDialog.onChangeOptions();
-            }
-        });
-
-        m_checkboxProblems.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent e) {
-
-                setProblemMode(m_checkboxProblems.isChecked());
-            }
-        });
         m_cancelButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
         m_cancelButton.setUseMinWidth(true);
 
@@ -344,29 +310,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_selectNone.setUseMinWidth(true);
 
         m_noResources.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
-        m_selectAll.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent e) {
-
-                m_model.signalAll(Signal.publish);
-                CmsPublishSelectPanel.this.onChangePublishSelection();
-            }
-        });
-
-        m_selectNone.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent e) {
-
-                m_model.signalAll(Signal.unpublish);
-                CmsPublishSelectPanel.this.onChangePublishSelection();
-            }
-        });
 
         m_checkboxSiblings.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
         m_checkboxRelated.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
@@ -464,16 +407,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
         result.addAll(m_actionButtons);
         return result;
-    }
-
-    /**
-     * Returns the current publish options.<p>
-     * 
-     * @return a publish options bean
-     */
-    public CmsPublishOptions getPublishOptions() {
-
-        return m_publishOptions;
     }
 
     /**
@@ -655,6 +588,103 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     protected void onClickCancel(ClickEvent e) {
 
         m_publishDialog.onCancel();
+    }
+
+    /**
+     * Handles the click event for problem resources check box.<p>
+     * 
+     * @param event the click event
+     * 
+     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     */
+    @UiHandler("m_checkboxProblems")
+    protected void onProblemClick(ClickEvent event) {
+
+        setProblemMode(m_checkboxProblems.isChecked());
+    }
+
+    /**
+     * Handling the value change event for the project selector.<p>
+     * 
+     * @param event the change event
+     *  
+     * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
+     */
+    @UiHandler("m_projectSelector")
+    protected void onProjectChange(ValueChangeEvent<String> event) {
+
+        m_publishDialog.setProjectId(new CmsUUID(event.getValue()));
+        m_publishDialog.onChangeOptions();
+    }
+
+    /**
+     * Handles the click event for related resources check box.<p>
+     * 
+     * @param event the click event
+     * 
+     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     */
+    @UiHandler("m_checkboxRelated")
+    protected void onRelatedClick(ClickEvent event) {
+
+        m_publishDialog.setIncludeRelated(m_checkboxRelated.isChecked());
+        m_publishDialog.onChangeOptions();
+    }
+
+    /**
+     * Handles the click event for select all button.<p>
+     * 
+     * @param event the click event
+     * 
+     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     */
+    @UiHandler("m_selectAll")
+    protected void onSelectAllClick(ClickEvent event) {
+
+        m_model.signalAll(Signal.publish);
+        CmsPublishSelectPanel.this.onChangePublishSelection();
+    }
+
+    /**
+     * Handles the click event for select none button.<p>
+     * 
+     * @param event the click event
+     * 
+     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     */
+    @UiHandler("m_selectNone")
+    protected void onSelectNoneClick(ClickEvent event) {
+
+        m_model.signalAll(Signal.unpublish);
+        CmsPublishSelectPanel.this.onChangePublishSelection();
+    }
+
+    /**
+     * Handles the click event for sibling resources check box.<p>
+     * 
+     * @param event the click event
+     * 
+     * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+     */
+    @UiHandler("m_checkboxSiblings")
+    protected void onSiblingClick(ClickEvent event) {
+
+        m_publishDialog.setIncludeSiblings(m_checkboxSiblings.isChecked());
+        m_publishDialog.onChangeOptions();
+    }
+
+    /**
+     * Handling the value change event for the project selector.<p>
+     * 
+     * @param event the change event
+     *  
+     * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
+     */
+    @UiHandler("m_workflowSelector")
+    protected void onWorkflowChange(ValueChangeEvent<String> event) {
+
+        m_publishDialog.setWorkflowId(event.getValue());
+        m_publishDialog.onChangeOptions();
     }
 
     /**
