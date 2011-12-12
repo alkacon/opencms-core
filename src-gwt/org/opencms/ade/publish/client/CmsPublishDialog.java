@@ -192,6 +192,7 @@ public class CmsPublishDialog extends CmsPopup {
         addStyleName(CSS.publishDialog());
         m_workflows = initData.getWorkflows();
         m_workflowId = initData.getSelectedWorkflowId();
+        m_publishOptions = initData.getOptions();
         m_publishSelectPanel = new CmsPublishSelectPanel(
             this,
             initData.getProjects(),
