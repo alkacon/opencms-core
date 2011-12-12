@@ -28,9 +28,11 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsPreviewInfo;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.dom.client.Style;
@@ -40,6 +42,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Resource preview dialog.<p>
@@ -47,21 +50,27 @@ import com.google.gwt.user.client.ui.HTML;
 public class CmsPreviewDialog extends CmsPopup {
 
     /** The dialog width. */
-    private static final int DIALOG_WIDTH = 400;
+    private static final int DIALOG_WIDTH = 1200;
+
+    /** The dialog preview content width. */
+    private static final int DIALOG_PREVIEW_CONTENT_WIDTH = 642;
 
     /** The dialog height. */
-    private static final int DIALOG_HEIGHT = 500;
+    private static final int DIALOG_HEIGHT = 900;
 
     /**
      * Constructor.<p>
      * 
+     * @param caption the dialog caption 
      * @param width the dialog width
      */
-    private CmsPreviewDialog(int width) {
+    private CmsPreviewDialog(String caption, int width) {
 
-        super(width);
+        super(caption, width);
+        setGlassEnabled(true);
+        setPositionFixed();
         CmsPushButton closeButton = new CmsPushButton();
-        closeButton.setText("Close");
+        closeButton.setText(Messages.get().key(Messages.GUI_CLOSE_0));
         closeButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -86,7 +95,7 @@ public class CmsPreviewDialog extends CmsPopup {
             @Override
             public void execute() {
 
-                CmsCoreProvider.getVfsService().getPreviewInfo(structureId, "en", this);
+                CmsCoreProvider.getVfsService().getPreviewInfo(structureId, CmsCoreProvider.get().getLocale(), this);
                 this.start(0, true);
             }
 
@@ -112,7 +121,7 @@ public class CmsPreviewDialog extends CmsPopup {
             @Override
             public void execute() {
 
-                CmsCoreProvider.getVfsService().getPreviewInfo(sitePath, "en", this);
+                CmsCoreProvider.getVfsService().getPreviewInfo(sitePath, CmsCoreProvider.get().getLocale(), this);
                 this.start(0, true);
             }
 
@@ -144,6 +153,11 @@ public class CmsPreviewDialog extends CmsPopup {
             if (previewInfo.hasPreviewContent()) {
                 content.setHTML(previewInfo.getPreviewContent());
                 style.setOverflow(Overflow.AUTO);
+                // try to measure dimensions
+                width = DIALOG_PREVIEW_CONTENT_WIDTH;
+                style.setWidth(width, Unit.PX);
+                RootPanel.get().add(content);
+                height = content.getOffsetHeight();
             } else {
                 content.setHTML("<iframe src=\""
                     + previewInfo.getPreviewUrl()
@@ -153,9 +167,22 @@ public class CmsPreviewDialog extends CmsPopup {
                 height = previewInfo.getHeight();
                 width = previewInfo.getWidth();
             }
+            // check if window is big enough for requested dimensions
+            int availableHeight = Window.getClientHeight() - 200;
+            if (height > availableHeight) {
+                height = availableHeight;
+            }
+            int availableWidth = Window.getClientWidth() - 50;
+            if (width > availableWidth) {
+                width = availableWidth;
+            }
             style.setHeight(height, Unit.PX);
             style.setWidth(width, Unit.PX);
-            CmsPreviewDialog dialog = new CmsPreviewDialog(width + 12);
+            String caption = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewInfo.getTitle()) ? previewInfo.getTitle()
+                + " / " : "")
+                + previewInfo.getSitePath();
+
+            CmsPreviewDialog dialog = new CmsPreviewDialog(caption, width + 12);
             dialog.setMainContent(content);
             dialog.center();
         }
