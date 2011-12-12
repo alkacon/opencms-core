@@ -28,6 +28,7 @@
 package org.opencms.ade.publish;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.I_CmsResource;
 import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
@@ -148,6 +149,32 @@ public class CmsPublishGroupHelper {
             result += 1;
         }
         return result;
+    }
+
+    public List<CmsResourceGroup> getGroups(List<CmsResource> resources) {
+
+        List<CmsResource> sortedResources = new ArrayList<CmsResource>(resources);
+        Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
+
+        Map<Long, Integer> daysMap = computeDaysForResources(sortedResources);
+        Map<GroupAge, List<CmsResource>> resourcesByAge = partitionPublishResourcesByAge(sortedResources, daysMap);
+        List<List<CmsResource>> youngGroups = partitionYoungResources(resourcesByAge.get(GroupAge.young));
+        List<List<CmsResource>> mediumGroups = partitionMediumResources(resourcesByAge.get(GroupAge.medium), daysMap);
+        List<CmsResource> oldGroup = resourcesByAge.get(GroupAge.old);
+        List<CmsResourceGroup> resultGroups = new ArrayList<CmsResourceGroup>();
+        for (List<CmsResource> groupRes : youngGroups) {
+            String name = getPublishGroupName(groupRes, GroupAge.young);
+            resultGroups.add(new CmsResourceGroup(name, groupRes));
+        }
+        for (List<CmsResource> groupRes : mediumGroups) {
+            String name = getPublishGroupName(groupRes, GroupAge.medium);
+            resultGroups.add(new CmsResourceGroup(name, groupRes));
+        }
+        if (!oldGroup.isEmpty()) {
+            String oldName = getPublishGroupName(oldGroup, GroupAge.old);
+            resultGroups.add(new CmsResourceGroup(oldName, oldGroup));
+        }
+        return resultGroups;
     }
 
     /**
@@ -306,7 +333,7 @@ public class CmsPublishGroupHelper {
         for (CmsResource res : resources) {
             LOG.debug("Processing young resource " + res.getRootPath());
             long resDate = res.getDateLastModified();
-            if (lastDate - resDate > GROUP_SESSIONS_GAP) {
+            if ((lastDate - resDate) > GROUP_SESSIONS_GAP) {
                 LOG.debug("=== new group ===");
                 currentGroup = new ArrayList<CmsResource>();
                 result.add(currentGroup);
@@ -316,5 +343,4 @@ public class CmsPublishGroupHelper {
         }
         return result;
     }
-
 }

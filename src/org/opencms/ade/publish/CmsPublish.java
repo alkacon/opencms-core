@@ -27,7 +27,6 @@
 
 package org.opencms.ade.publish;
 
-import org.opencms.ade.publish.CmsPublishGroupHelper.GroupAge;
 import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
@@ -40,7 +39,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.file.I_CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
@@ -60,7 +58,6 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -343,10 +340,6 @@ public class CmsPublish {
             }
         }
 
-        // sort the list
-        List<CmsResource> sortedResources = new ArrayList<CmsResource>(resourcesWithoutTempfiles);
-        Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
-
         // the resources the user can really publish
         Set<CmsResource> allPubRes = new HashSet<CmsResource>(pubResources.getRelatedResources());
         allPubRes.addAll(pubResources.getResources());
@@ -360,66 +353,18 @@ public class CmsPublish {
         }
 
         CmsPublishGroupHelper groupHelper = new CmsPublishGroupHelper(m_workplaceLocale);
-
-        Map<Long, Integer> daysMap = groupHelper.computeDaysForResources(sortedResources);
-        Map<GroupAge, List<CmsResource>> resourcesByAge = groupHelper.partitionPublishResourcesByAge(
-            sortedResources,
-            daysMap);
-        List<List<CmsResource>> youngGroups = groupHelper.partitionYoungResources(resourcesByAge.get(GroupAge.young));
-        List<List<CmsResource>> mediumGroups = groupHelper.partitionMediumResources(
-            resourcesByAge.get(GroupAge.medium),
-            daysMap);
-        List<CmsResource> oldGroup = resourcesByAge.get(GroupAge.old);
-
+        List<CmsResourceGroup> resourceGroups = groupHelper.getGroups(resourcesWithoutTempfiles);
         List<CmsPublishGroup> resultGroups = new ArrayList<CmsPublishGroup>();
-        for (List<CmsResource> groupRes : youngGroups) {
-            List<CmsPublishResource> groupPubRes = new ArrayList<CmsPublishResource>();
-            for (CmsResource res : groupRes) {
-                CmsPublishResource pubRes = createPublishResource(
-                    res,
-                    pubList,
-                    allPubRes,
-                    published,
-                    permissions,
-                    locked);
-                groupPubRes.add(pubRes);
-            }
-            String name = groupHelper.getPublishGroupName(groupRes, GroupAge.young);
-            resultGroups.add(new CmsPublishGroup(name, groupPubRes));
+        for (CmsResourceGroup resGroup : resourceGroups) {
+            CmsPublishGroup publishGroup = convertResourceGroup(
+                resGroup,
+                pubList,
+                allPubRes,
+                published,
+                permissions,
+                locked);
+            resultGroups.add(publishGroup);
         }
-
-        for (List<CmsResource> groupRes : mediumGroups) {
-            List<CmsPublishResource> groupPubRes = new ArrayList<CmsPublishResource>();
-            for (CmsResource res : groupRes) {
-                CmsPublishResource pubRes = createPublishResource(
-                    res,
-                    pubList,
-                    allPubRes,
-                    published,
-                    permissions,
-                    locked);
-                groupPubRes.add(pubRes);
-            }
-            String name = groupHelper.getPublishGroupName(groupRes, GroupAge.medium);
-            resultGroups.add(new CmsPublishGroup(name, groupPubRes));
-        }
-
-        if (!oldGroup.isEmpty()) {
-            String oldName = groupHelper.getPublishGroupName(oldGroup, GroupAge.old);
-            List<CmsPublishResource> oldRes = new ArrayList<CmsPublishResource>();
-            for (CmsResource res : oldGroup) {
-                CmsPublishResource pubRes = createPublishResource(
-                    res,
-                    pubList,
-                    allPubRes,
-                    published,
-                    permissions,
-                    locked);
-                oldRes.add(pubRes);
-            }
-            resultGroups.add(new CmsPublishGroup(oldName, oldRes));
-        }
-
         return resultGroups;
     }
 
@@ -475,6 +420,22 @@ public class CmsPublish {
     public void removeResourcesFromPublishList(Collection<CmsUUID> idsToRemove) throws CmsException {
 
         OpenCms.getPublishManager().removeResourceFromUsersPubList(m_cms, idsToRemove);
+    }
+
+    protected CmsPublishGroup convertResourceGroup(
+        CmsResourceGroup resGroup,
+        List<CmsResource> pubList,
+        Set<CmsResource> allPubRes,
+        Set<CmsResource> published,
+        ResourcesAndRelated permissions,
+        ResourcesAndRelated locked) {
+
+        List<CmsResource> resources = resGroup.getResources();
+        List<CmsPublishResource> publishResources = new ArrayList<CmsPublishResource>();
+        for (CmsResource resource : resources) {
+            publishResources.add(createPublishResource(resource, pubList, allPubRes, published, permissions, locked));
+        }
+        return new CmsPublishGroup(resGroup.getName(), publishResources);
     }
 
     /**
