@@ -62,7 +62,7 @@ import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workflow.CmsDefaultWorkflowManager;
-import org.opencms.workflow.CmsWorkflowManager;
+import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
 
 import java.util.ArrayList;
@@ -569,7 +569,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     private CmsPublishManager m_publishManager;
 
     /** The configured workflow manager. */
-    private CmsWorkflowManager m_workflowManager;
+    private I_CmsWorkflowManager m_workflowManager;
 
     /** A list of instantiated request handler classes. */
     private List<I_CmsRequestHandler> m_requestHandlers;
@@ -1563,7 +1563,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             subscrManElem.addAttribute(A_MAXVISITED, String.valueOf(getSubscriptionManager().getMaxVisitedCount()));
         }
 
-        CmsWorkflowManager workflowMan = getWorkflowManager();
+        I_CmsWorkflowManager workflowMan = getWorkflowManager();
         if (workflowMan != null) {
             Element workflowElem = systemElement.addElement(N_WORKFLOW);
             workflowElem.addAttribute(A_CLASS, workflowMan.getClass().getName());
@@ -1985,7 +1985,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * 
      * @return the configured workflow manager instance.
      */
-    public CmsWorkflowManager getWorkflowManager() {
+    public I_CmsWorkflowManager getWorkflowManager() {
 
         return m_workflowManager;
     }
@@ -2456,7 +2456,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * 
      * @param workflowManager the configured workflow manager 
      */
-    public void setWorkflowManager(CmsWorkflowManager workflowManager) {
+    public void setWorkflowManager(I_CmsWorkflowManager workflowManager) {
 
         m_workflowManager = workflowManager;
     }

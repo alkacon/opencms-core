@@ -96,7 +96,7 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         CmsWorkflow workflow,
         CmsPublishOptions options) {
 
-        CmsPublish publish = new CmsPublish(cms);
+        CmsPublish publish = new CmsPublish(cms, options);
         return publish.getPublishResourceBeans();
     }
 
@@ -105,7 +105,7 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
      */
     public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
 
-        CmsPublish publish = new CmsPublish(cms);
+        CmsPublish publish = new CmsPublish(cms, options);
         return publish.getPublishResources();
     }
 

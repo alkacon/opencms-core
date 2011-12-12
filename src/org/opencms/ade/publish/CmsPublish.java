@@ -568,65 +568,75 @@ public class CmsPublish {
             return m_resourceList;
         }
         if (m_options.isIncludeSiblings()) {
-            for (CmsResource resource : new HashSet<CmsResource>(m_resourceList.getResources())) {
-                // we are interested just in changed resources
-                if (resource.getState().isUnchanged()) {
-                    continue;
-                }
-                try {
-                    m_resourceList.getResources().addAll(
-                        m_cms.readSiblings(m_cms.getSitePath(resource), CmsResourceFilter.ALL_MODIFIED));
-                } catch (CmsException e) {
-                    // error reading resource siblings, should usually never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                    continue;
-                }
-            }
+            addSiblings();
         }
         if (m_options.isIncludeRelated()) {
-            for (CmsResource resource : m_resourceList.getResources()) {
-                // we are interested just in changed resources
-                if (resource.getState().isUnchanged()) {
-                    continue;
-                }
-                try {
-                    // get and iterate over all related resources
-                    for (CmsRelation relation : m_cms.getRelationsForResource(
-                        resource,
-                        CmsRelationFilter.TARGETS.filterStrong())) {
-
-                        CmsResource target = null;
-                        try {
-                            target = relation.getTarget(m_cms, CmsResourceFilter.ALL);
-                        } catch (CmsException e) {
-                            // error reading a resource, should usually never happen
-                            if (LOG.isErrorEnabled()) {
-                                LOG.error(e.getLocalizedMessage(), e);
-                            }
-                            continue;
-                        }
-                        // we are interested just in changed resources
-                        if (target.getState().isUnchanged()) {
-                            continue;
-                        }
-                        // if already selected
-                        if (m_resourceList.contains(target)) {
-                            continue;
-                        }
-                        m_resourceList.getRelatedResources().add(target);
-                    }
-                } catch (CmsException e) {
-                    // error reading a resource relations, should usually never happen
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                    continue;
-                }
-            }
+            addRelated();
         }
         return m_resourceList;
+    }
+
+    protected void addRelated() {
+
+        for (CmsResource resource : m_resourceList.getResources()) {
+            // we are interested just in changed resources
+            if (resource.getState().isUnchanged()) {
+                continue;
+            }
+            try {
+                // get and iterate over all related resources
+                for (CmsRelation relation : m_cms.getRelationsForResource(
+                    resource,
+                    CmsRelationFilter.TARGETS.filterStrong())) {
+
+                    CmsResource target = null;
+                    try {
+                        target = relation.getTarget(m_cms, CmsResourceFilter.ALL);
+                    } catch (CmsException e) {
+                        // error reading a resource, should usually never happen
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                        continue;
+                    }
+                    // we are interested just in changed resources
+                    if (target.getState().isUnchanged()) {
+                        continue;
+                    }
+                    // if already selected
+                    if (m_resourceList.contains(target)) {
+                        continue;
+                    }
+                    m_resourceList.getRelatedResources().add(target);
+                }
+            } catch (CmsException e) {
+                // error reading a resource relations, should usually never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+                continue;
+            }
+        }
+    }
+
+    protected void addSiblings() {
+
+        for (CmsResource resource : new HashSet<CmsResource>(m_resourceList.getResources())) {
+            // we are interested just in changed resources
+            if (resource.getState().isUnchanged()) {
+                continue;
+            }
+            try {
+                m_resourceList.getResources().addAll(
+                    m_cms.readSiblings(m_cms.getSitePath(resource), CmsResourceFilter.ALL_MODIFIED));
+            } catch (CmsException e) {
+                // error reading resource siblings, should usually never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+                continue;
+            }
+        }
     }
 
     /**
