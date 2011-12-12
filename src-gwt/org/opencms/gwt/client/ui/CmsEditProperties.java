@@ -97,11 +97,11 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             @Override
             protected void onResponse(CmsPropertiesBean result) {
 
-                stop(false);
                 CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(contextMenuHandler);
                 handler.setPropertiesBean(result);
                 CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
                 editor.setShowResourceProperties(!handler.isFolder());
+                stop(false);
                 editor.start();
             }
         };
