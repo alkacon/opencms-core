@@ -40,11 +40,10 @@ import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -246,8 +245,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
                     categoryBean.getTitle(),
                     CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryBean.getDescription())
                     ? categoryBean.getDescription()
-                    : categoryBean.getPath(),
-                    null));
+                    : categoryBean.getPath(), null));
                 listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
                 // the checkbox
                 CmsCheckBox checkBox = new CmsCheckBox();
@@ -297,15 +295,12 @@ public class CmsCategoriesTab extends A_CmsListTab {
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
     @Override
-    protected List<CmsPair<String, String>> getSortList() {
+    protected LinkedHashMap<String, String> getSortList() {
 
-        List<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
-        list.add(new CmsPair<String, String>(SortParams.tree.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_HIERARCHIC_0)));
-        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
+        LinkedHashMap<String, String> list = new LinkedHashMap<String, String>();
+        list.put(SortParams.tree.name(), Messages.get().key(Messages.GUI_SORT_LABEL_HIERARCHIC_0));
+        list.put(SortParams.title_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_ASC_0));
+        list.put(SortParams.title_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_DECS_0));
 
         return list;
     }
@@ -366,8 +361,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
             category.getTitle(),
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()
-            : category.getPath(),
-            null);
+            : category.getPath(), null);
         m_categories.put(category.getPath(), category);
         // set the list item widget
         CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);

@@ -33,10 +33,8 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsMessages;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,19 +74,6 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
 
         super();
 
-    }
-
-    /**
-     * Constructs a new select box from a list of key-value pairs.<p>
-     * 
-     * The first component of each pair is the option value, the second is the text to be displayed for the option value.<p>
-     * 
-     * @param items the items
-     */
-    public CmsSelectBox(List<CmsPair<String, String>> items) {
-
-        super();
-        setItems(items);
     }
 
     /**
@@ -205,21 +190,6 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
         if (ghostMode) {
             selectValue("");
             m_ghostValue = value;
-        }
-    }
-
-    /**
-     * Sets the items as key-value pairs.<p>
-     * 
-     * The first component of each pair is the option value, the second is the text to be displayed for the option value.<p>
-     * 
-     * @param items the items
-     */
-    public void setItems(List<CmsPair<String, String>> items) {
-
-        clearItems();
-        for (CmsPair<String, String> item : items) {
-            addOption(item.getFirst(), item.getSecond());
         }
     }
 

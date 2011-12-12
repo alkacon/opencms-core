@@ -41,10 +41,9 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.List;
+import java.util.LinkedHashMap;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -186,7 +185,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         super(tabId);
         uiBinder.createAndBindUi(this);
         initWidget(uiBinder.createAndBindUi(this));
-        List<CmsPair<String, String>> sortList = getSortList();
+        LinkedHashMap<String, String> sortList = getSortList();
         if (sortList != null) {
             m_sortSelectBox = new CmsSelectBox(sortList);
             m_sortSelectBox.addValueChangeHandler(this);
@@ -331,7 +330,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * 
      * @return list of sort order value/text pairs
      */
-    protected abstract List<CmsPair<String, String>> getSortList();
+    protected abstract LinkedHashMap<String, String> getSortList();
 
     /**
      * Returns if this tab has quick filter enabled.<p>

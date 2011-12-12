@@ -40,10 +40,9 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.util.CmsPair;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -486,7 +485,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
     @Override
-    protected ArrayList<CmsPair<String, String>> getSortList() {
+    protected LinkedHashMap<String, String> getSortList() {
 
         return getSortList(true);
     }
@@ -604,26 +603,22 @@ public class CmsResultsTab extends A_CmsListTab {
      * 
      * @return the sort list
      */
-    private ArrayList<CmsPair<String, String>> getSortList(boolean includeType) {
+    private LinkedHashMap<String, String> getSortList(boolean includeType) {
 
-        ArrayList<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
-        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
-        list.add(new CmsPair<String, String>(SortParams.dateLastModified_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.dateLastModified_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0)));
-        list.add(new CmsPair<String, String>(SortParams.path_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_PATH_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.path_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_PATH_DESC_0)));
+        LinkedHashMap<String, String> list = new LinkedHashMap<String, String>();
+        list.put(SortParams.title_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_ASC_0));
+        list.put(SortParams.title_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_DECS_0));
+        list.put(
+            SortParams.dateLastModified_asc.name(),
+            Messages.get().key(Messages.GUI_SORT_LABEL_DATELASTMODIFIED_ASC_0));
+        list.put(
+            SortParams.dateLastModified_desc.name(),
+            Messages.get().key(Messages.GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0));
+        list.put(SortParams.path_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_PATH_ASC_0));
+        list.put(SortParams.path_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_PATH_DESC_0));
         if (includeType) {
-            list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
-                Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
-            list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
-                Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
+            list.put(SortParams.type_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_ASC_0));
+            list.put(SortParams.type_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_DESC_0));
         }
         return list;
     }

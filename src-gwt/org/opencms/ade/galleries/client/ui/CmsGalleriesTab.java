@@ -42,12 +42,12 @@ import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -475,19 +475,14 @@ public class CmsGalleriesTab extends A_CmsListTab {
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
     @Override
-    protected List<CmsPair<String, String>> getSortList() {
+    protected LinkedHashMap<String, String> getSortList() {
 
-        List<CmsPair<String, String>> list = new ArrayList<CmsPair<String, String>>();
-        list.add(new CmsPair<String, String>(SortParams.title_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.title_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TITLE_DECS_0)));
-        list.add(new CmsPair<String, String>(SortParams.type_asc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TYPE_ASC_0)));
-        list.add(new CmsPair<String, String>(SortParams.type_desc.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_TYPE_DESC_0)));
-        list.add(new CmsPair<String, String>(SortParams.tree.name(), Messages.get().key(
-            Messages.GUI_SORT_LABEL_HIERARCHIC_0)));
+        LinkedHashMap<String, String> list = new LinkedHashMap<String, String>();
+        list.put(SortParams.title_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_ASC_0));
+        list.put(SortParams.title_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_DECS_0));
+        list.put(SortParams.type_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_ASC_0));
+        list.put(SortParams.type_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_DESC_0));
+        list.put(SortParams.tree.name(), Messages.get().key(Messages.GUI_SORT_LABEL_HIERARCHIC_0));
         return list;
     }
 

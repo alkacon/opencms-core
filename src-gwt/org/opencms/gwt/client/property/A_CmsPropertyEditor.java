@@ -44,11 +44,9 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
-import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -330,7 +328,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
         if (m_handler.useAdeTemplates()) {
 
-            CmsSelectBox selectBox = new CmsSelectBox(new ArrayList<CmsPair<String, String>>());
+            CmsSelectBox selectBox = null;
             Map<String, String> values = new LinkedHashMap<String, String>();
             for (Map.Entry<String, CmsClientTemplateBean> templateEntry : m_handler.getPossibleTemplates().entrySet()) {
                 CmsClientTemplateBean template = templateEntry.getValue();
