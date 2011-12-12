@@ -244,6 +244,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** Flag which indicates whether only resources with problems should be shown. */
     private boolean m_showProblemsOnly;
 
+    /** Flag indicating that the panel has been initialized. */
+    private boolean m_initialized;
+
     /**
      * Creates a new instance.<p>
      * 
@@ -260,6 +263,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         Map<String, CmsWorkflow> workflows,
         String selectedWorkflowId) {
 
+        m_publishDialog = publishDialog;
         m_actions = workflows.get(selectedWorkflowId).getActions();
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
@@ -291,7 +295,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         if (!publishOptions.getProjectId().isNullUUID()) {
             m_projectSelector.setFormValueAsString(publishOptions.getProjectId().toString());
         }
-        m_publishDialog = publishDialog;
+
         m_checkboxRelated.setChecked(publishOptions.isIncludeRelated());
         m_checkboxSiblings.setChecked(publishOptions.isIncludeSiblings());
         if (foundOldProject) {
@@ -318,7 +322,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_selectLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
         m_selectorLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
         addScrollHandler();
-
+        m_initialized = true;
     }
 
     /** 
@@ -613,8 +617,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiHandler("m_projectSelector")
     protected void onProjectChange(ValueChangeEvent<String> event) {
 
-        m_publishDialog.setProjectId(new CmsUUID(event.getValue()));
-        m_publishDialog.onChangeOptions();
+        if (m_initialized) {
+            m_publishDialog.setProjectId(new CmsUUID(event.getValue()));
+            m_publishDialog.onChangeOptions();
+        }
     }
 
     /**
@@ -683,8 +689,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     @UiHandler("m_workflowSelector")
     protected void onWorkflowChange(ValueChangeEvent<String> event) {
 
-        m_publishDialog.setWorkflowId(event.getValue());
-        m_publishDialog.onChangeOptions();
+        if (m_initialized) {
+            m_publishDialog.setWorkflowId(event.getValue());
+            m_publishDialog.onChangeOptions();
+        }
     }
 
     /**
