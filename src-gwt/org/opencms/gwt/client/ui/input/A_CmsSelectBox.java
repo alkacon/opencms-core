@@ -408,8 +408,12 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      */
     protected void onValueSelect(String value) {
 
+        String oldValue = m_selectedValue;
         selectValue(value);
-        ValueChangeEvent.<String> fire(this, value);
+        if ((oldValue == null) || !oldValue.equals(value)) {
+            // fire value change only if the the value really changed
+            ValueChangeEvent.<String> fire(this, value);
+        }
     }
 
     /**
