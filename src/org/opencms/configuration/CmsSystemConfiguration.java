@@ -61,6 +61,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workflow.CmsDefaultWorkflowManager;
 import org.opencms.workflow.CmsWorkflowManager;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
 
@@ -1143,7 +1144,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SUBSCRIPTIONMANAGER, "setSubscriptionManager");
 
         String workflowXpath = "*/" + N_SYSTEM + "/" + N_WORKFLOW;
-        digester.addObjectCreate(workflowXpath, CmsWorkflowManager.class.getName(), A_CLASS);
+        digester.addObjectCreate(workflowXpath, CmsDefaultWorkflowManager.class.getName(), A_CLASS);
         digester.addObjectCreate(workflowXpath + "/" + N_PARAMETERS, LinkedHashMap.class);
         digester.addCallMethod(workflowXpath + "/" + N_PARAMETERS + "/" + N_PARAM, "put", 2);
         digester.addCallParam(workflowXpath + "/" + N_PARAMETERS + "/" + N_PARAM, 0, A_NAME);

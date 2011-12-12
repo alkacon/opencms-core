@@ -300,6 +300,24 @@ public class CmsPublish {
      */
     public List<CmsPublishGroup> getPublishGroups() {
 
+        if (getPublishResourcesInternal().getResources().isEmpty()) {
+            // nothing to do
+            return new ArrayList<CmsPublishGroup>();
+        }
+        List<CmsPublishResource> publishResources = getPublishResourceBeans();
+        A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper = new CmsDefaultPublishGroupHelper(
+            m_workplaceLocale);
+        List<CmsPublishGroup> resultGroups = groupHelper.getGroups(publishResources);
+        return resultGroups;
+    }
+
+    /**
+     * Gets the publish resources as a list of CmsPublishResource beans.<p>
+     * 
+     * @return the publish resource beans 
+     */
+    public List<CmsPublishResource> getPublishResourceBeans() {
+
         // first look for already published resources
         Set<CmsResource> published = getAlreadyPublishedResources();
 
@@ -322,19 +340,13 @@ public class CmsPublish {
 
         // update the publish list
         ResourcesAndRelated pubResources = new ResourcesAndRelated();
-        pubResources.getResources().addAll(getPublishResources().getResources());
+        pubResources.getResources().addAll(getPublishResourcesInternal().getResources());
         pubResources.getResources().removeAll(exclude);
-        pubResources.getRelatedResources().addAll(getPublishResources().getRelatedResources());
+        pubResources.getRelatedResources().addAll(getPublishResourcesInternal().getRelatedResources());
         pubResources.getRelatedResources().removeAll(permissions.getRelatedResources());
         pubResources.getRelatedResources().removeAll(locked.getRelatedResources());
-
-        if (getPublishResources().getResources().isEmpty()) {
-            // nothing to do
-            return new ArrayList<CmsPublishGroup>();
-        }
-
         List<CmsResource> resourcesWithoutTempfiles = new ArrayList<CmsResource>();
-        for (CmsResource res : getPublishResources().getResources()) {
+        for (CmsResource res : getPublishResourcesInternal().getResources()) {
             if (!CmsResource.isTemporaryFileName(res.getRootPath())) {
                 resourcesWithoutTempfiles.add(res);
             }
@@ -364,10 +376,18 @@ public class CmsPublish {
             publishResources.add(pubRes);
         }
 
-        A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper = new CmsDefaultPublishGroupHelper(
-            m_workplaceLocale);
-        List<CmsPublishGroup> resultGroups = groupHelper.getGroups(publishResources);
-        return resultGroups;
+        return publishResources;
+
+    }
+
+    /**
+     * Gets the publish resources as a list of {@link CmsResource} objects.<p>
+     * 
+     * @return the publish resources 
+     */
+    public List<CmsResource> getPublishResources() {
+
+        return new ArrayList<CmsResource>(getPublishResourcesInternal().getResources());
     }
 
     /**
@@ -433,7 +453,7 @@ public class CmsPublish {
     protected Set<CmsResource> getAlreadyPublishedResources() {
 
         Set<CmsResource> resources = new HashSet<CmsResource>();
-        for (CmsResource resource : getPublishResources().getResources()) {
+        for (CmsResource resource : getPublishResourcesInternal().getResources()) {
             // we are interested just in not-changed resources
             if (!resource.getState().isUnchanged()) {
                 continue;
@@ -460,7 +480,7 @@ public class CmsPublish {
 
         ResourcesAndRelated result = new ResourcesAndRelated();
         Map<String, CmsResource> cache1 = Maps.newHashMap();
-        for (CmsResource resource : getPublishResources().getResources()) {
+        for (CmsResource resource : getPublishResourcesInternal().getResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;
@@ -474,7 +494,7 @@ public class CmsPublish {
                 }
             }
         }
-        for (CmsResource resource : getPublishResources().getRelatedResources()) {
+        for (CmsResource resource : getPublishResourcesInternal().getRelatedResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;
@@ -512,7 +532,7 @@ public class CmsPublish {
      * 
      * @return the resources stored in the user's publish list
      */
-    protected ResourcesAndRelated getPublishResources() {
+    protected ResourcesAndRelated getPublishResourcesInternal() {
 
         if (m_resourceList != null) {
             return m_resourceList;
@@ -763,7 +783,7 @@ public class CmsPublish {
         }
 
         ResourcesAndRelated result = new ResourcesAndRelated();
-        for (CmsResource resource : getPublishResources().getResources()) {
+        for (CmsResource resource : getPublishResourcesInternal().getResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;
@@ -780,7 +800,7 @@ public class CmsPublish {
                 }
             }
         }
-        for (CmsResource resource : getPublishResources().getRelatedResources()) {
+        for (CmsResource resource : getPublishResourcesInternal().getRelatedResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;

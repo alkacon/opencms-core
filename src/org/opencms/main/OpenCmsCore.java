@@ -92,7 +92,8 @@ import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workflow.CmsWorkflowManager;
+import org.opencms.workflow.CmsDefaultWorkflowManager;
+import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
@@ -203,7 +204,7 @@ public final class OpenCmsCore {
     private I_CmsPasswordHandler m_passwordHandler;
 
     /** The workflow manager instance. */
-    private CmsWorkflowManager m_workflowManager;
+    private I_CmsWorkflowManager m_workflowManager;
 
     /** The publish engine. */
     private CmsPublishEngine m_publishEngine;
@@ -764,7 +765,7 @@ public final class OpenCmsCore {
      * 
      * @return the workflow manager
      */
-    protected CmsWorkflowManager getWorkflowManager() {
+    protected I_CmsWorkflowManager getWorkflowManager() {
 
         return m_workflowManager;
     }
@@ -1255,10 +1256,10 @@ public final class OpenCmsCore {
 
             m_workflowManager = systemConfiguration.getWorkflowManager();
             if (m_workflowManager == null) {
-                m_workflowManager = new CmsWorkflowManager();
+                m_workflowManager = new CmsDefaultWorkflowManager();
                 m_workflowManager.setParameters(new HashMap<String, String>());
             }
-            m_workflowManager.initialize(adminCms, m_publishManager);
+            m_workflowManager.initialize(adminCms);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
