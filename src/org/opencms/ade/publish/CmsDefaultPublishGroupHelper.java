@@ -64,7 +64,7 @@ public class CmsDefaultPublishGroupHelper extends A_CmsPublishGroupHelper<CmsPub
     @Override
     protected long getDateLastModified(CmsPublishResource res) {
 
-        return 0;
+        return res.getDateLastModified();
     }
 
     /**

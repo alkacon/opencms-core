@@ -52,7 +52,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -110,26 +109,6 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     }
 
     /**
-     * Returns the workflow actions which should be available to the user.<p>
-     * 
-     * @param userCms the user's CMS object 
-     * 
-     * @return the list of workflow actions which should be available to the user 
-     */
-    public List<CmsWorkflowAction> getAvailableActions(CmsObject userCms) {
-
-        List<CmsWorkflowAction> actions = new ArrayList<CmsWorkflowAction>();
-        Locale locale = getLocale(userCms);
-        String publishLabel = Messages.get().getBundle(locale).key(Messages.GUI_WORKFLOW_ACTION_PUBLISH_0);
-        String releaseLabel = Messages.get().getBundle(locale).key(Messages.GUI_WORKFLOW_ACTION_RELEASE_0);
-        CmsWorkflowAction publish = new CmsWorkflowAction(ACTION_PUBLISH, publishLabel, true);
-        CmsWorkflowAction release = new CmsWorkflowAction(ACTION_RELEASE, releaseLabel, true);
-        actions.add(publish);
-        actions.add(release);
-        return actions;
-    }
-
-    /**
      * Gets the name of the group which should be used as the 'manager' group for newly created workflow projects.<p>
      * 
      * @return a group name 
@@ -156,7 +135,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
         String workflowKey = workflow.getId();
         if (WORKFLOW_RELEASE.equals(workflowKey)) {
-            return new ArrayList<CmsPublishResource>();
+            CmsRelease release = new CmsRelease(cms, options);
+            return release.getPublishResourceBeans();
         } else {
             return super.getWorkflowPublishResources(cms, workflow, options);
         }
@@ -170,8 +150,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
         String workflowKey = workflow.getId();
         if (WORKFLOW_RELEASE.equals(workflowKey)) {
-            return new ArrayList<CmsResource>();
-
+            CmsRelease release = new CmsRelease(cms, options);
+            return release.getPublishResources();
         } else {
             return super.getWorkflowResources(cms, workflow, options);
         }

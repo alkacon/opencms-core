@@ -79,7 +79,7 @@ public class CmsPublish {
     /**
      * Just for passing around resources and their related together but not mixed up.<p>
      */
-    private class ResourcesAndRelated {
+    public class ResourcesAndRelated {
 
         /** The related resources. */
         private Set<CmsResource> m_relatedResources = new HashSet<CmsResource>();
@@ -141,13 +141,13 @@ public class CmsPublish {
     private static final Log LOG = CmsLog.getLog(CmsPublish.class);
 
     /** The current cms context. */
-    private final CmsObject m_cms;
+    protected final CmsObject m_cms;
 
     /** The current user workplace locale. */
-    private final Locale m_workplaceLocale;
+    protected final Locale m_workplaceLocale;
 
     /** The options. */
-    private final CmsPublishOptions m_options;
+    protected final CmsPublishOptions m_options;
 
     /** The user's resource publish list. */
     private ResourcesAndRelated m_resourceList;
@@ -300,11 +300,12 @@ public class CmsPublish {
      */
     public List<CmsPublishGroup> getPublishGroups() {
 
-        if (getPublishResourcesInternal().getResources().isEmpty()) {
+        ResourcesAndRelated rawPublishResources = getPublishResourcesInternal();
+        if (rawPublishResources.getResources().isEmpty()) {
             // nothing to do
             return new ArrayList<CmsPublishGroup>();
         }
-        List<CmsPublishResource> publishResources = getPublishResourceBeans();
+        List<CmsPublishResource> publishResources = getPublishResourceBeans(rawPublishResources);
         A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper = new CmsDefaultPublishGroupHelper(
             m_workplaceLocale);
         List<CmsPublishGroup> resultGroups = groupHelper.getGroups(publishResources);
@@ -312,25 +313,37 @@ public class CmsPublish {
     }
 
     /**
-     * Gets the publish resources as a list of CmsPublishResource beans.<p>
+     * Gets the list of publish resource beans.<p>
      * 
-     * @return the publish resource beans 
+     * @return the list of publish resource beans 
      */
     public List<CmsPublishResource> getPublishResourceBeans() {
 
+        return getPublishResourceBeans(getPublishResourcesInternal());
+    }
+
+    /**
+     * Gets the publish resources as a list of CmsPublishResource beans.<p>
+     * 
+     * @param rawPublishResources the publish resources which should be converted to publish resource beans 
+     * 
+     * @return the publish resource beans 
+     */
+    public List<CmsPublishResource> getPublishResourceBeans(ResourcesAndRelated rawPublishResources) {
+
         // first look for already published resources
-        Set<CmsResource> published = getAlreadyPublishedResources();
+        Set<CmsResource> published = getAlreadyPublishedResources(rawPublishResources);
 
         // then for resources without permission
         Set<CmsResource> exclude = new HashSet<CmsResource>(published);
 
-        ResourcesAndRelated permissions = getResourcesWithoutPermissions(exclude);
+        ResourcesAndRelated permissions = getResourcesWithoutPermissions(rawPublishResources, exclude);
 
         // and finally for locked resources
         exclude.addAll(permissions.getResources());
         exclude.addAll(permissions.getRelatedResources());
 
-        ResourcesAndRelated locked = getBlockingLockedResources(exclude);
+        ResourcesAndRelated locked = getBlockingLockedResources(rawPublishResources, exclude);
 
         // collect all direct resources that can not be published
         exclude.clear();
@@ -340,13 +353,13 @@ public class CmsPublish {
 
         // update the publish list
         ResourcesAndRelated pubResources = new ResourcesAndRelated();
-        pubResources.getResources().addAll(getPublishResourcesInternal().getResources());
+        pubResources.getResources().addAll(rawPublishResources.getResources());
         pubResources.getResources().removeAll(exclude);
-        pubResources.getRelatedResources().addAll(getPublishResourcesInternal().getRelatedResources());
+        pubResources.getRelatedResources().addAll(rawPublishResources.getRelatedResources());
         pubResources.getRelatedResources().removeAll(permissions.getRelatedResources());
         pubResources.getRelatedResources().removeAll(locked.getRelatedResources());
         List<CmsResource> resourcesWithoutTempfiles = new ArrayList<CmsResource>();
-        for (CmsResource res : getPublishResourcesInternal().getResources()) {
+        for (CmsResource res : rawPublishResources.getResources()) {
             if (!CmsResource.isTemporaryFileName(res.getRootPath())) {
                 resourcesWithoutTempfiles.add(res);
             }
@@ -388,6 +401,36 @@ public class CmsPublish {
     public List<CmsResource> getPublishResources() {
 
         return new ArrayList<CmsResource>(getPublishResourcesInternal().getResources());
+    }
+
+    /**
+     * Returns the resources stored in the user's publish list.<p>
+     * 
+     * @return the resources stored in the user's publish list
+     */
+    public ResourcesAndRelated getPublishResourcesInternal() {
+
+        if (m_resourceList != null) {
+            return m_resourceList;
+        }
+        m_resourceList = new ResourcesAndRelated();
+        try {
+            List<CmsResource> rawResourceList = getRawPublishResources();
+            m_resourceList.getResources().addAll(rawResourceList);
+        } catch (CmsException e) {
+            // error reading the publish list, should usually never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            return m_resourceList;
+        }
+        if (m_options.isIncludeSiblings()) {
+            addSiblings(m_resourceList);
+        }
+        if (m_options.isIncludeRelated()) {
+            addRelated(m_resourceList);
+        }
+        return m_resourceList;
     }
 
     /**
@@ -445,6 +488,11 @@ public class CmsPublish {
         OpenCms.getPublishManager().removeResourceFromUsersPubList(m_cms, idsToRemove);
     }
 
+    /**
+     * Adds related resource to a publish list.<p>
+     * 
+     * @param resourceList the publish listto which the related resources should be added 
+     */
     protected void addRelated(ResourcesAndRelated resourceList) {
 
         for (CmsResource resource : resourceList.getResources()) {
@@ -488,6 +536,11 @@ public class CmsPublish {
         }
     }
 
+    /**
+     * Adds siblings to a publish list.<p>
+     * 
+     * @param resourceList the publish list to which siblings should be added 
+     */
     protected void addSiblings(ResourcesAndRelated resourceList) {
 
         for (CmsResource resource : new HashSet<CmsResource>(resourceList.getResources())) {
@@ -509,14 +562,42 @@ public class CmsPublish {
     }
 
     /**
+     * Creates a {@link CmsPublishResource} from a {@link CmsResource}.<p> 
+     * 
+     * @param resource the resource to convert
+     * @param pubList a publish list
+     * @param allPubRes a set of all publish resources
+     * @param published a set of already published resources
+     * @param permissions resources for which we don't have the permissions
+     * @param locked resources which are locked by another user 
+     * 
+     * @return a publish resource bean 
+     */
+    protected CmsPublishResource createPublishResource(
+        CmsResource resource,
+        List<CmsResource> pubList,
+        Set<CmsResource> allPubRes,
+        Set<CmsResource> published,
+        ResourcesAndRelated permissions,
+        ResourcesAndRelated locked) {
+
+        List<CmsPublishResource> related = getRelatedResources(resource, allPubRes, published, permissions, locked);
+        CmsPublishResourceInfo info = getResourceInfo(resource, published, permissions, locked);
+        CmsPublishResource pubResource = resourceToBean(resource, info, pubList.contains(resource), related);
+        return pubResource;
+    }
+
+    /**
      * Returns already published resources.<p>
      * 
+     * @param publishResources the resources from which we should find the already published resources
+     *  
      * @return already published resources
      */
-    protected Set<CmsResource> getAlreadyPublishedResources() {
+    protected Set<CmsResource> getAlreadyPublishedResources(ResourcesAndRelated publishResources) {
 
         Set<CmsResource> resources = new HashSet<CmsResource>();
-        for (CmsResource resource : getPublishResourcesInternal().getResources()) {
+        for (CmsResource resource : publishResources.getResources()) {
             // we are interested just in not-changed resources
             if (!resource.getState().isUnchanged()) {
                 continue;
@@ -529,13 +610,16 @@ public class CmsPublish {
     /**
      * Returns locked resources that do not belong to the current user.<p>
      * 
+     * @param publishResources the publish resources for which we should find the locked resources 
      * @param exclude the resources to exclude
      * 
      * @return the locked and related resources
      * 
      * @see org.opencms.workplace.commons.CmsLock#getBlockingLockedResources
      */
-    protected ResourcesAndRelated getBlockingLockedResources(Set<CmsResource> exclude) {
+    protected ResourcesAndRelated getBlockingLockedResources(
+        ResourcesAndRelated publishResources,
+        Set<CmsResource> exclude) {
 
         CmsUser user = m_cms.getRequestContext().getCurrentUser();
         CmsLockFilter blockingFilter = CmsLockFilter.FILTER_ALL;
@@ -543,7 +627,7 @@ public class CmsPublish {
 
         ResourcesAndRelated result = new ResourcesAndRelated();
         Map<String, CmsResource> cache1 = Maps.newHashMap();
-        for (CmsResource resource : getPublishResourcesInternal().getResources()) {
+        for (CmsResource resource : publishResources.getResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;
@@ -557,7 +641,7 @@ public class CmsPublish {
                 }
             }
         }
-        for (CmsResource resource : getPublishResourcesInternal().getRelatedResources()) {
+        for (CmsResource resource : publishResources.getRelatedResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;
@@ -591,52 +675,37 @@ public class CmsPublish {
     }
 
     /**
-     * Returns the resources stored in the user's publish list.<p>
+     * Gets the raw list of publish resources without any related resources or siblings.<p>
      * 
-     * @return the resources stored in the user's publish list
+     * @return the raw list of publish resources
+     *  
+     * @throws CmsException if something goes wrong 
      */
-    protected ResourcesAndRelated getPublishResourcesInternal() {
+    protected List<CmsResource> getRawPublishResources() throws CmsException {
 
-        if (m_resourceList != null) {
-            return m_resourceList;
-        }
-        m_resourceList = new ResourcesAndRelated();
-        try {
-            if ((m_options.getProjectId() == null) || m_options.getProjectId().isNullUUID()) {
-                // get the users publish list
-                m_resourceList.getResources().addAll(OpenCms.getPublishManager().getUsersPubList(m_cms));
-            } else {
-                CmsProject project = m_cms.getRequestContext().getCurrentProject();
-                try {
-                    project = m_cms.readProject(m_options.getProjectId());
-                } catch (Exception e) {
-                    // can happen if the cached project was deleted
-                    // so ignore and use current project
-                }
-                // get the project publish list
-                CmsProject originalProject = m_cms.getRequestContext().getCurrentProject();
-                try {
-                    m_cms.getRequestContext().setCurrentProject(project);
-                    m_resourceList.getResources().addAll(
-                        OpenCms.getPublishManager().getPublishList(m_cms).getAllResources());
-                } finally {
-                    m_cms.getRequestContext().setCurrentProject(originalProject);
-                }
+        List<CmsResource> rawResourceList = new ArrayList<CmsResource>();
+
+        if ((m_options.getProjectId() == null) || m_options.getProjectId().isNullUUID()) {
+            // get the users publish list
+            rawResourceList.addAll(OpenCms.getPublishManager().getUsersPubList(m_cms));
+        } else {
+            CmsProject project = m_cms.getRequestContext().getCurrentProject();
+            try {
+                project = m_cms.readProject(m_options.getProjectId());
+            } catch (Exception e) {
+                // can happen if the cached project was deleted
+                // so ignore and use current project
             }
-        } catch (CmsException e) {
-            // error reading the publish list, should usually never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
+            // get the project publish list
+            CmsProject originalProject = m_cms.getRequestContext().getCurrentProject();
+            try {
+                m_cms.getRequestContext().setCurrentProject(project);
+                rawResourceList.addAll(OpenCms.getPublishManager().getPublishList(m_cms).getAllResources());
+            } finally {
+                m_cms.getRequestContext().setCurrentProject(originalProject);
             }
-            return m_resourceList;
         }
-        if (m_options.isIncludeSiblings()) {
-            addSiblings(m_resourceList);
-        }
-        if (m_options.isIncludeRelated()) {
-            addRelated(m_resourceList);
-        }
-        return m_resourceList;
+        return rawResourceList;
     }
 
     /**
@@ -776,11 +845,14 @@ public class CmsPublish {
     /**
      * Returns the sublist of the publish list with resources without publish permissions.<p>
      * 
+     * @param publishResources the publish resources for which we should get the resources without permission
      * @param exclude the resources to exclude
      * 
      * @return the list with resources without publish permissions
      */
-    protected ResourcesAndRelated getResourcesWithoutPermissions(Set<CmsResource> exclude) {
+    protected ResourcesAndRelated getResourcesWithoutPermissions(
+        ResourcesAndRelated publishResources,
+        Set<CmsResource> exclude) {
 
         Set<CmsUUID> projectIds = new HashSet<CmsUUID>();
         try {
@@ -793,7 +865,7 @@ public class CmsPublish {
         }
 
         ResourcesAndRelated result = new ResourcesAndRelated();
-        for (CmsResource resource : getPublishResourcesInternal().getResources()) {
+        for (CmsResource resource : publishResources.getResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;
@@ -810,7 +882,7 @@ public class CmsPublish {
                 }
             }
         }
-        for (CmsResource resource : getPublishResourcesInternal().getRelatedResources()) {
+        for (CmsResource resource : publishResources.getRelatedResources()) {
             // skip already blocking resources
             if (exclude.contains(resource)) {
                 continue;
@@ -858,32 +930,6 @@ public class CmsPublish {
             removable,
             info,
             related);
-        return pubResource;
-    }
-
-    /**
-     * Creates a {@link CmsPublishResource} from a {@link CmsResource}.<p> 
-     * 
-     * @param resource the resource to convert
-     * @param pubList a publish list
-     * @param allPubRes a set of all publish resources
-     * @param published a set of already published resources
-     * @param permissions resources for which we don't have the permissions
-     * @param locked resources which are locked by another user 
-     * 
-     * @return a publish resource bean 
-     */
-    private CmsPublishResource createPublishResource(
-        CmsResource resource,
-        List<CmsResource> pubList,
-        Set<CmsResource> allPubRes,
-        Set<CmsResource> published,
-        ResourcesAndRelated permissions,
-        ResourcesAndRelated locked) {
-
-        List<CmsPublishResource> related = getRelatedResources(resource, allPubRes, published, permissions, locked);
-        CmsPublishResourceInfo info = getResourceInfo(resource, published, permissions, locked);
-        CmsPublishResource pubResource = resourceToBean(resource, info, pubList.contains(resource), related);
         return pubResource;
     }
 
