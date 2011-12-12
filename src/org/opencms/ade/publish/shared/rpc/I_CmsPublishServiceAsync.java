@@ -31,6 +31,7 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.util.CmsUUID;
 
@@ -85,6 +86,6 @@ public interface I_CmsPublishServiceAsync {
     void executeAction(
         List<CmsUUID> toPublish,
         List<CmsUUID> toRemove,
-        String action,
+        CmsWorkflowAction action,
         AsyncCallback<CmsWorkflowResponse> callback);
 }

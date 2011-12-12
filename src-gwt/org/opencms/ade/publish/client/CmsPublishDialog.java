@@ -30,6 +30,7 @@ package org.opencms.ade.publish.client;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
@@ -67,13 +68,13 @@ public class CmsPublishDialog extends CmsPopup {
     private class CmsPublishAction extends CmsRpcAction<CmsWorkflowResponse> {
 
         /** If true, try to ignore broken links when publishing. */
-        private String m_action;
+        private CmsWorkflowAction m_action;
 
         /** Creates a new instance of this action. 
          * 
-         * @param action if true, try to ignore broken links when publishing
+         * @param action the workflow action to execute
          */
-        public CmsPublishAction(String action) {
+        public CmsPublishAction(CmsWorkflowAction action) {
 
             m_action = action;
         }
@@ -189,7 +190,7 @@ public class CmsPublishDialog extends CmsPopup {
             this,
             initData.getProjects(),
             initData.getOptions(),
-            initData.getWorkFlowActions());
+            initData.getWorkflows().get(initData.getSelectedWorkflowId()).getActions());
         m_brokenLinksPanel = new CmsBrokenLinksPanel(this);
 
         addDialogClose(null);
@@ -274,9 +275,9 @@ public class CmsPublishDialog extends CmsPopup {
     /**
      * Executes the specified action for the selected resources.<p>
      * 
-     * @param actionKey the action key
+     * @param actionKey the workflow action
      */
-    public void executeAction(String actionKey) {
+    public void executeAction(CmsWorkflowAction actionKey) {
 
         (new CmsPublishAction(actionKey)).execute();
     }

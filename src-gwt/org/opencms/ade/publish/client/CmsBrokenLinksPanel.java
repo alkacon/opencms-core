@@ -138,16 +138,15 @@ public class CmsBrokenLinksPanel extends Composite {
         result.add(m_cancelButton);
         m_actionButtons.clear();
         if (m_actions != null) {
-            for (CmsWorkflowAction action : m_actions) {
+            for (final CmsWorkflowAction action : m_actions) {
                 CmsPushButton actionButton = new CmsPushButton();
                 actionButton.setText(action.getLabel());
                 actionButton.setUseMinWidth(true);
-                final String actionKey = action.getAction();
                 actionButton.addClickHandler(new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
 
-                        executeAction(actionKey);
+                        executeAction(action);
                     }
                 });
                 m_actionButtons.add(actionButton);
@@ -199,7 +198,7 @@ public class CmsBrokenLinksPanel extends Composite {
      * 
      * @param action the action to execute on the selected resources
      */
-    protected void executeAction(String action) {
+    protected void executeAction(CmsWorkflowAction action) {
 
         m_publishDialog.executeAction(action);
     }

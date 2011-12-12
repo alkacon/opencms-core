@@ -447,16 +447,15 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actionButtons.clear();
         boolean enable = shouldEnablePublishButton();
         if (m_actions != null) {
-            for (CmsWorkflowAction action : m_actions) {
+            for (final CmsWorkflowAction action : m_actions) {
                 CmsPushButton actionButton = new CmsPushButton();
                 actionButton.setText(action.getLabel());
                 actionButton.setUseMinWidth(true);
-                final String actionKey = action.getAction();
                 actionButton.addClickHandler(new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
 
-                        executeAction(actionKey);
+                        executeAction(action);
                     }
                 });
                 actionButton.setEnabled(enable);
@@ -634,7 +633,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * 
      * @param action the action to execute on the selected resources
      */
-    protected void executeAction(String action) {
+    protected void executeAction(CmsWorkflowAction action) {
 
         m_publishDialog.executeAction(action);
     }

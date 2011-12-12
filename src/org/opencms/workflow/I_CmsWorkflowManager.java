@@ -27,6 +27,7 @@
 
 package org.opencms.workflow;
 
+import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
@@ -66,7 +67,7 @@ public interface I_CmsWorkflowManager {
     Map<String, String> getParameters();
 
     /**
-     * Returns the resource for the given workflow and project.<p>
+     * Returns the resources for the given workflow and project.<p>
      * 
      * @param cms the user cms context
      * @param workflow the workflow
@@ -77,13 +78,24 @@ public interface I_CmsWorkflowManager {
     List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsProject project);
 
     /**
+     * Returns the publish resource beans for the given workflow and project.<p>
+     * 
+     * @param cms the user cms context
+     * @param workflow the workflow
+     * @param project the project
+     * 
+     * @return the workflow publish resource beans
+     */
+    List<CmsPublishResource> getWorkflowPublishResources(CmsObject cms, CmsWorkflow workflow, CmsProject project);
+
+    /**
      * Returns the available workflows for the current user.<p>
      * 
      * @param cms  the user cms context
      * 
      * @return the available workflows
      */
-    List<CmsWorkflow> getWorkflows(CmsObject cms);
+    Map<String, CmsWorkflow> getWorkflows(CmsObject cms);
 
     /**
      * Initializes this workflow manager instance.<p>

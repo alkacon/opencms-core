@@ -30,20 +30,22 @@ package org.opencms.ade.publish.shared;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * A bean which represents a possible workflow, containing an identifier, a user-readable name
  * and a list of workflow actions.<p>
  */
-public class CmsWorkflow {
+public class CmsWorkflow implements IsSerializable {
+
+    /** The list of actions which are possible in this workflow. */
+    private List<CmsWorkflowAction> m_actions;
 
     /** An identifier for the workflow type. */
     private String m_id;
 
     /** A user-readable nice name for the workflow. */
     private String m_niceName;
-
-    /** The list of actions which are possible in this workflow. */
-    private List<CmsWorkflowAction> m_actions;
 
     /**
      * Creates a new workflow bean instance.<p>
@@ -57,6 +59,26 @@ public class CmsWorkflow {
         m_id = id;
         m_niceName = niceName;
         m_actions = actions;
+    }
+
+    /**
+     * Constructor. For serialization only.<p>
+     */
+    protected CmsWorkflow() {
+
+        // nothing to do
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof CmsWorkflow) {
+            return getId().equals(((CmsWorkflow)obj).getId());
+        }
+        return false;
     }
 
     /**
@@ -88,4 +110,14 @@ public class CmsWorkflow {
 
         return m_niceName;
     }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return getId().hashCode();
+    }
+
 }

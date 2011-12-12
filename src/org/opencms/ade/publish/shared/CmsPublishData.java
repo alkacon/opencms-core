@@ -28,6 +28,7 @@
 package org.opencms.ade.publish.shared;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -50,8 +51,11 @@ public class CmsPublishData implements IsSerializable {
     /** The list of projects. */
     private List<CmsProjectBean> m_projects;
 
+    /** The currently selected workflow. */
+    private String m_selectedWorkflowId;
+
     /** The available work flow actions. */
-    private List<CmsWorkflowAction> m_workFlowActions;
+    private Map<String, CmsWorkflow> m_workflows;
 
     /** 
      * Creates a new instance.<p>
@@ -59,18 +63,21 @@ public class CmsPublishData implements IsSerializable {
      * @param options the publish options 
      * @param projects the map of projects 
      * @param groups the publish groups
-     * @param workFlowActions the available work flow actions
+     * @param workflows the available work flows
+     * @param selectedWorkflowId the selected workflow id
      */
     public CmsPublishData(
         CmsPublishOptions options,
         List<CmsProjectBean> projects,
         List<CmsPublishGroup> groups,
-        List<CmsWorkflowAction> workFlowActions) {
+        Map<String, CmsWorkflow> workflows,
+        String selectedWorkflowId) {
 
         m_options = options;
         m_projects = projects;
         m_groups = groups;
-        m_workFlowActions = workFlowActions;
+        m_workflows = workflows;
+        m_selectedWorkflowId = selectedWorkflowId;
     }
 
     /**
@@ -112,12 +119,22 @@ public class CmsPublishData implements IsSerializable {
     }
 
     /**
+     * Returns the selected workflow.<p>
+     * 
+     * @return the selected workflow
+     */
+    public String getSelectedWorkflowId() {
+
+        return m_selectedWorkflowId;
+    }
+
+    /**
      * Returns the available work flow actions.<p>
      *
      * @return the available work flow actions
      */
-    public List<CmsWorkflowAction> getWorkFlowActions() {
+    public Map<String, CmsWorkflow> getWorkflows() {
 
-        return m_workFlowActions;
+        return m_workflows;
     }
 }

@@ -31,11 +31,14 @@ import org.opencms.ade.publish.shared.CmsProjectBean;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.publish.shared.CmsWorkflow;
+import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
@@ -46,6 +49,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,6 +60,9 @@ import javax.servlet.http.HttpServletRequest;
  * 
  */
 public class CmsPublishService extends CmsGwtService implements I_CmsPublishService {
+
+    /** The workflow id parameter name. */
+    public static final String PARAM_WORKFLOW_ID = "workflowId";
 
     /** The publish project id parameter name. */
     public static final String PARAM_PUBLISH_PROJECT_ID = "publishProjectId";
@@ -82,10 +89,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     }
 
     /**
-     * 
-     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#executeAction(java.util.List, java.util.List, String)
+     * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#executeAction(java.util.List, java.util.List, org.opencms.ade.publish.shared.CmsWorkflowAction)
      */
-    public CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, String action)
+    public CmsWorkflowResponse executeAction(List<CmsUUID> toPublish, List<CmsUUID> toRemove, CmsWorkflowAction action)
     throws CmsRpcException {
 
         CmsWorkflowResponse response = null;
@@ -109,7 +115,21 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     public CmsPublishData getInitData() throws CmsRpcException {
 
         CmsPublishData result = null;
+        CmsObject cms = getCmsObject();
         try {
+            Map<String, CmsWorkflow> workflows = OpenCms.getWorkflowManager().getWorkflows(cms);
+            if (workflows.isEmpty()) {
+                throw new Exception("No workflow available for the current user");
+            }
+            String workflowId = getRequest().getParameter(PARAM_WORKFLOW_ID);
+
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
+                workflowId = getLastWorklowForUser();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
+                    workflowId = workflows.values().iterator().next().getId();
+                }
+            }
+            setLastWorkflowForUser(workflowId);
             String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
             CmsPublishOptions options = getCachedOptions();
             List<CmsProjectBean> projects = getProjects();
@@ -123,11 +143,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                     }
                 }
             }
-            result = new CmsPublishData(
-                options,
-                projects,
-                getResourceGroups(options),
-                OpenCms.getWorkflowManager().getAvailableActions(getCmsObject()));
+            result = new CmsPublishData(options, projects, null, workflows, workflowId);
         } catch (Throwable e) {
             error(e);
         }
@@ -216,6 +232,31 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the id of the last used workflow for the current user.<p>
+     * 
+     * @return the workflow id
+     */
+    private String getLastWorklowForUser() {
+
+        CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
+        return (String)user.getAdditionalInfo(PARAM_WORKFLOW_ID);
+    }
+
+    /**
+     * Writes the id of the last used workflow to the current user.<p>
+     * 
+     * @param workflowId the workflow id
+     * 
+     * @throws CmsException if something goes wrong writing the user object
+     */
+    private void setLastWorkflowForUser(String workflowId) throws CmsException {
+
+        CmsUser user = getCmsObject().getRequestContext().getCurrentUser();
+        user.setAdditionalInfo(PARAM_WORKFLOW_ID, workflowId);
+        getCmsObject().writeUser(user);
     }
 
     /**

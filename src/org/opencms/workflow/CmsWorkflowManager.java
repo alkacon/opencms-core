@@ -92,6 +92,9 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
     /** The project counter, used for generating project names. */
     private int m_projectCounter;
 
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, java.util.List)
+     */
     public CmsWorkflowResponse executeAction(CmsObject userCms, CmsWorkflowAction action, List<CmsResource> resources)
     throws CmsException {
 
@@ -190,18 +193,36 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
         return getParameter(PARAM_WORKFLOW_PROJECT_USER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
     }
 
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowPublishResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.file.CmsProject)
+     */
+    public List<CmsPublishResource> getWorkflowPublishResources(CmsObject cms, CmsWorkflow workflow, CmsProject project) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.file.CmsProject)
+     */
     public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsProject project) {
 
         // TODO: Auto-generated method stub
         return null;
     }
 
-    public List<CmsWorkflow> getWorkflows(CmsObject cms) {
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflows(org.opencms.file.CmsObject)
+     */
+    public Map<String, CmsWorkflow> getWorkflows(CmsObject cms) {
 
         // TODO: Auto-generated method stub
         return null;
     }
 
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#initialize(org.opencms.file.CmsObject)
+     */
     public void initialize(CmsObject adminCms) {
 
         // TODO: Auto-generated method stub

@@ -53,7 +53,7 @@ import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
-import org.opencms.workflow.CmsWorkflowManager;
+import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
 
@@ -526,7 +526,7 @@ public final class OpenCms {
      *  
      * @return the initialized workflow manager 
      */
-    public static CmsWorkflowManager getWorkflowManager() {
+    public static I_CmsWorkflowManager getWorkflowManager() {
 
         return OpenCmsCore.getInstance().getWorkflowManager();
     }
