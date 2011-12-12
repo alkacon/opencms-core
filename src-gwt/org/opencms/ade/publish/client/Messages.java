@@ -37,6 +37,9 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_WORKFLOW_SELECT_0 = "GUI_PUBLISH_WORKFLOW_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_CANT_PUBLISH_RESOURCE_TITLE_0 = "ERR_CANT_PUBLISH_RESOURCE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
