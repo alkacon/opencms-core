@@ -27,12 +27,12 @@
 
 package org.opencms.workflow;
 
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
@@ -71,22 +71,22 @@ public interface I_CmsWorkflowManager {
      * 
      * @param cms the user cms context
      * @param workflow the workflow
-     * @param project the project
+     * @param options the resource options
      * 
      * @return the workflow resources
      */
-    List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsProject project);
+    List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
 
     /**
      * Returns the publish resource beans for the given workflow and project.<p>
      * 
      * @param cms the user cms context
      * @param workflow the workflow
-     * @param project the project
+     * @param options the resource options
      * 
      * @return the workflow publish resource beans
      */
-    List<CmsPublishResource> getWorkflowPublishResources(CmsObject cms, CmsWorkflow workflow, CmsProject project);
+    List<CmsPublishResource> getWorkflowPublishResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
 
     /**
      * Returns the available workflows for the current user.<p>

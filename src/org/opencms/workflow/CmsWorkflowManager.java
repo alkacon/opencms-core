@@ -28,6 +28,7 @@
 package org.opencms.workflow;
 
 import org.opencms.ade.publish.CmsPublish;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
@@ -173,18 +174,21 @@ public class CmsWorkflowManager extends A_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowPublishResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.file.CmsProject)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowPublishResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public List<CmsPublishResource> getWorkflowPublishResources(CmsObject cms, CmsWorkflow workflow, CmsProject project) {
+    public List<CmsPublishResource> getWorkflowPublishResources(
+        CmsObject cms,
+        CmsWorkflow workflow,
+        CmsPublishOptions options) {
 
         // TODO: Auto-generated method stub
         return null;
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.file.CmsProject)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsProject project) {
+    public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
 
         // TODO: Auto-generated method stub
         return null;
