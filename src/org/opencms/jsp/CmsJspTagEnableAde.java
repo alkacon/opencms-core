@@ -81,6 +81,12 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             // don't display advanced direct edit buttons if a temporary file is displayed
             return;
         }
+
+        if (CmsJspTagEditable.isDirectEditDisabled(req)) {
+            // direct edit has been disabled for this request
+            return;
+        }
+
         I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
         eb.init(cms, CmsDirectEditMode.TRUE, "");
         CmsJspTagEditable.setDirectEditProvider(context, eb);

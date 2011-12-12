@@ -55,6 +55,7 @@ import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -838,7 +839,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                 cms,
                 resource.getRootPath())
-                + "?__disableDirectEdit=true", false);
+                + "?"
+                + CmsJspTagEditable.PARAM_DISABLE_DIRECT_EDIT
+                + "=true", false);
         }
         if (CmsResourceTypeImage.getStaticTypeId() == resource.getTypeId()) {
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
@@ -871,7 +874,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 return new CmsPreviewInfo(previewContent, null, false);
             }
         }
-        return new CmsPreviewInfo(null, cms.getSitePath(resource) + "?__disableDirectEdit=true", true);
+        return new CmsPreviewInfo(null, cms.getSitePath(resource)
+            + "?"
+            + CmsJspTagEditable.PARAM_DISABLE_DIRECT_EDIT
+            + "=true", true);
     }
 
     /**

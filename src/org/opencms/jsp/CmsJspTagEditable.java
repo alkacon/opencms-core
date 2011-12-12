@@ -72,6 +72,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspTagEditable extends BodyTagSupport {
 
+    /** Parameter to disable direct edit. */
+    public static final String PARAM_DISABLE_DIRECT_EDIT = "__disableDirectEdit";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagEditable.class);
 
@@ -127,6 +130,11 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
         if (CmsResource.isTemporaryFileName(cms.getRequestContext().getUri())) {
             // don't display direct edit buttons if a temporary file is displayed
+            return;
+        }
+
+        if (isDirectEditDisabled(req)) {
+            // direct edit has been disabled for this request
             return;
         }
 
@@ -317,6 +325,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
     public int doStartTag() throws JspException {
 
         if (!CmsFlexController.isCmsOnlineRequest(pageContext.getRequest())
+            && !isDirectEditDisabled(pageContext.getRequest())
             && !CmsResource.isTemporaryFileName(CmsFlexController.getCmsObject(pageContext.getRequest()).getRequestContext().getUri())) {
             // all this does NOT apply to the "online" project, or for temporary files
             I_CmsDirectEditProvider eb = getDirectEditProvider(pageContext);
@@ -340,6 +349,19 @@ public class CmsJspTagEditable extends BodyTagSupport {
             m_manualPlacement = false;
         }
         return EVAL_BODY_INCLUDE;
+    }
+
+    /**
+     * Returns if direct edit is disabled for the current request.<p>
+     * 
+     * @param request the servlet request
+     * 
+     * @return <code>true</code> if direct edit is disabled for the current request
+     */
+    public static boolean isDirectEditDisabled(ServletRequest request) {
+
+        String disabledParam = request.getParameter(PARAM_DISABLE_DIRECT_EDIT);
+        return Boolean.parseBoolean(disabledParam);
     }
 
     /**
