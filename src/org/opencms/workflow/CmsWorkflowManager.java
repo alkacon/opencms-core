@@ -50,7 +50,6 @@ import org.opencms.util.CmsStringUtil;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +62,7 @@ import org.apache.commons.mail.EmailException;
 /**
  * The default workflow manager implementation, which supports 2 basic actions, Release and Publish.
  */
-public class CmsWorkflowManager implements I_CmsWorkflowManager {
+public class CmsWorkflowManager extends A_CmsWorkflowManager {
 
     /** The forced publish workflow action. */
     public static final String ACTION_FORCE_PUBLISH = "forcepublish";
@@ -83,20 +82,10 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkflowManager.class);
 
-    /** A CMS context with admin privileges. */
-    private CmsObject m_adminCms;
-
-    /** The map of configuration parameters. */
-    private Map<String, String> m_parameters;
-
-    /** The project counter, used for generating project names. */
-    private int m_projectCounter;
-
     /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, java.util.List)
      */
-    public CmsWorkflowResponse executeAction(CmsObject userCms, CmsWorkflowAction action, List<CmsResource> resources)
-    throws CmsException {
+    public CmsWorkflowResponse executeAction(CmsObject userCms, CmsWorkflowAction action, List<CmsResource> resources) {
 
         // TODO: Auto-generated method stub
         return null;
@@ -164,16 +153,6 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
     }
 
     /**
-     * Gets the parameters of the workflow manager.<p>
-     * 
-     * @return the configuration parameters of the workflow manager 
-     */
-    public Map<String, String> getParameters() {
-
-        return Collections.unmodifiableMap(m_parameters);
-    }
-
-    /**
      * Gets the name of the group which should be used as the 'manager' group for newly created workflow projects.<p>
      * 
      * @return a group name 
@@ -221,15 +200,6 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#initialize(org.opencms.file.CmsObject)
-     */
-    public void initialize(CmsObject adminCms) {
-
-        // TODO: Auto-generated method stub
-
-    }
-
-    /**
      * Initializes this workflow manager instance.<p>
      * 
      * @param adminCms the CMS context with admin privileges 
@@ -258,19 +228,6 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
                 CmsWorkflowManager.this.onStartPublishJob(publishJob);
             }
         });
-    }
-
-    /**
-     * Sets the configuration parameters of the workflow manager.<p>
-     * 
-     * @param parameters the map of configuration parameters 
-     */
-    public void setParameters(Map<String, String> parameters) {
-
-        if (m_parameters != null) {
-            throw new IllegalStateException();
-        }
-        m_parameters = parameters;
     }
 
     /**
@@ -397,6 +354,13 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
         }
     }
 
+    /**
+     * Cleans up empty workflow projects.<p>
+     * 
+     * @param projects the workflow projects to clean up
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     protected void cleanupEmptyWorkflowProjects(List<CmsProject> projects) throws CmsException {
 
         if (projects == null) {
@@ -493,18 +457,6 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
     }
 
     /**
-     * Gets the locale to use for a given CMS context.<p>
-     * 
-     * @param userCms the CMS context 
-     * 
-     * @return the locale to use 
-     */
-    protected Locale getLocale(CmsObject userCms) {
-
-        return OpenCms.getWorkplaceManager().getWorkplaceLocale(userCms);
-    }
-
-    /**
      * Gets the list of recipients for the notifications.<p>
      * 
      * @return the list of users which should be notified when resources are released
@@ -520,23 +472,6 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
             LOG.error(e.getLocalizedMessage(), e);
             return new ArrayList<CmsUser>();
         }
-    }
-
-    /**
-     * Gets the configuration parameter for a given key, and if it doesn't find one, returns a default value.<p>
-     * 
-     * @param key the configuration key 
-     * @param defaultValue the default value to use when the configuration entry isn't found 
-     * 
-     * @return the configuration value 
-     */
-    protected String getParameter(String key, String defaultValue) {
-
-        String result = m_parameters.get(key);
-        if (result == null) {
-            result = defaultValue;
-        }
-        return result;
     }
 
     /**
@@ -586,7 +521,6 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
      */
     protected boolean isProjectEmpty(CmsProject project) throws CmsException {
 
-        CmsPublishManager publishManager = OpenCms.getPublishManager();
         List<CmsResource> resources = m_adminCms.readProjectView(project.getUuid(), CmsResourceState.STATE_KEEP);
         return resources.isEmpty();
     }
@@ -605,8 +539,14 @@ public class CmsWorkflowManager implements I_CmsWorkflowManager {
         }
     }
 
+    /**
+     * This is called when a publish job is started.<p>
+     * 
+     * @param publishJob the publish job being started 
+     */
     protected void onStartPublishJob(CmsPublishJobEnqueued publishJob) {
 
+        // do nothing 
     }
 
     /**
