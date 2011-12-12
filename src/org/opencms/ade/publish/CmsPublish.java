@@ -352,19 +352,21 @@ public class CmsPublish {
             LOG.error(e.getLocalizedMessage(), e);
         }
 
-        CmsPublishGroupHelper groupHelper = new CmsPublishGroupHelper(m_workplaceLocale);
-        List<CmsResourceGroup> resourceGroups = groupHelper.getGroups(resourcesWithoutTempfiles);
-        List<CmsPublishGroup> resultGroups = new ArrayList<CmsPublishGroup>();
-        for (CmsResourceGroup resGroup : resourceGroups) {
-            CmsPublishGroup publishGroup = convertResourceGroup(
-                resGroup,
+        List<CmsPublishResource> publishResources = new ArrayList<CmsPublishResource>();
+        for (CmsResource resource : resourcesWithoutTempfiles) {
+            CmsPublishResource pubRes = createPublishResource(
+                resource,
                 pubList,
                 allPubRes,
                 published,
                 permissions,
                 locked);
-            resultGroups.add(publishGroup);
+            publishResources.add(pubRes);
         }
+
+        A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper = new CmsDefaultPublishGroupHelper(
+            m_workplaceLocale);
+        List<CmsPublishGroup> resultGroups = groupHelper.getGroups(publishResources);
         return resultGroups;
     }
 
@@ -404,6 +406,7 @@ public class CmsPublish {
             relation.getTargetPath(),
             CmsResourceTypePlain.getStaticTypeName(),
             CmsResourceState.STATE_UNCHANGED,
+            0,
             CmsResource.isFolder(relation.getTargetPath()),
             false,
             null,
@@ -420,22 +423,6 @@ public class CmsPublish {
     public void removeResourcesFromPublishList(Collection<CmsUUID> idsToRemove) throws CmsException {
 
         OpenCms.getPublishManager().removeResourceFromUsersPubList(m_cms, idsToRemove);
-    }
-
-    protected CmsPublishGroup convertResourceGroup(
-        CmsResourceGroup resGroup,
-        List<CmsResource> pubList,
-        Set<CmsResource> allPubRes,
-        Set<CmsResource> published,
-        ResourcesAndRelated permissions,
-        ResourcesAndRelated locked) {
-
-        List<CmsResource> resources = resGroup.getResources();
-        List<CmsPublishResource> publishResources = new ArrayList<CmsPublishResource>();
-        for (CmsResource resource : resources) {
-            publishResources.add(createPublishResource(resource, pubList, allPubRes, published, permissions, locked));
-        }
-        return new CmsPublishGroup(resGroup.getName(), publishResources);
     }
 
     /**
@@ -836,6 +823,7 @@ public class CmsPublish {
             resUtil.getTitle(),
             resUtil.getResourceTypeName(),
             resource.getState(),
+            resource.getDateLastModified(),
             resource.isFolder(),
             removable,
             info,

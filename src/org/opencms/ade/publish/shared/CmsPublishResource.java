@@ -69,6 +69,9 @@ public class CmsPublishResource implements IsSerializable {
     /** The resource title.*/
     private String m_title;
 
+    /** The last modification date. */
+    private long m_dateLastModified;
+
     /** 
      * Creates a new publish group bean.<p> 
      * 
@@ -77,6 +80,7 @@ public class CmsPublishResource implements IsSerializable {
      * @param title the resource title
      * @param resourceType the resource type name
      * @param state the resource state
+     * @param dateLastModified the last modification date 
      * @param isFolder flag indicating if this resource is a folder
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
@@ -88,6 +92,7 @@ public class CmsPublishResource implements IsSerializable {
         String title,
         String resourceType,
         CmsResourceState state,
+        long dateLastModified,
         boolean isFolder,
         boolean removable,
         CmsPublishResourceInfo info,
@@ -102,6 +107,7 @@ public class CmsPublishResource implements IsSerializable {
         m_title = title;
         m_removable = removable;
         m_info = info;
+        m_dateLastModified = dateLastModified;
     }
 
     /**
@@ -113,23 +119,13 @@ public class CmsPublishResource implements IsSerializable {
     }
 
     /**
-     * Returns if this resource is a folder.<p>
+     * Gets the last modification date.<p>
      * 
-     * @return <code>true</code> if the resource is a folder
+     * @return the last modification date 
      */
-    public boolean isFolder() {
+    public long getDateLastModified() {
 
-        return m_isFolder;
-    }
-
-    /**
-     * Returns the resource type name.<p>
-     *
-     * @return the resource type name
-     */
-    public String getResourceType() {
-
-        return m_resourceType;
+        return m_dateLastModified;
     }
 
     /**
@@ -173,6 +169,16 @@ public class CmsPublishResource implements IsSerializable {
     }
 
     /**
+     * Returns the resource type name.<p>
+     *
+     * @return the resource type name
+     */
+    public String getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
      * Returns the state.<p>
      *
      * @return the state
@@ -190,6 +196,16 @@ public class CmsPublishResource implements IsSerializable {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns if this resource is a folder.<p>
+     * 
+     * @return <code>true</code> if the resource is a folder
+     */
+    public boolean isFolder() {
+
+        return m_isFolder;
     }
 
     /**

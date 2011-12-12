@@ -27,13 +27,12 @@
 
 package org.opencms.ade.publish;
 
-import org.opencms.file.CmsResource;
-import org.opencms.file.I_CmsResource;
 import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,9 +44,12 @@ import org.apache.commons.logging.Log;
 /**
  * Helper class for splitting a publish list into publish groups.<p>
  * 
+ * @param <RESOURCE> the resource class type
+ * @param <GROUP> the resource group class type
+ * 
  * @since 8.0.0
  */
-public class CmsPublishGroupHelper {
+public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
 
     /** An enum representing the age of a publish list resource. */
     public enum GroupAge {
@@ -60,7 +62,7 @@ public class CmsPublishGroupHelper {
     }
 
     /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsPublishGroupHelper.class);
+    private static final Log LOG = CmsLog.getLog(A_CmsPublishGroupHelper.class);
 
     /** The gap between session groups. */
     protected static final int GROUP_SESSIONS_GAP = 8 * 60 * 60 * 1000;
@@ -73,7 +75,7 @@ public class CmsPublishGroupHelper {
      * 
      * @param locale the locale to use 
      */
-    public CmsPublishGroupHelper(Locale locale) {
+    public A_CmsPublishGroupHelper(Locale locale) {
 
         m_locale = locale;
     }
@@ -111,15 +113,15 @@ public class CmsPublishGroupHelper {
      * 
      * @return a map from modification dates to the number of days since the modification date 
      */
-    public Map<Long, Integer> computeDaysForResources(List<CmsResource> resources) {
+    public Map<Long, Integer> computeDaysForResources(List<RESOURCE> resources) {
 
         Map<Long, Integer> result = computeDays(getModificationDates(resources));
         if (LOG.isDebugEnabled()) {
-            for (CmsResource res : resources) {
+            for (RESOURCE res : resources) {
                 LOG.debug("Resource "
-                    + res.getRootPath()
+                    + getRootPath(res)
                     + " is "
-                    + result.get(new Long(res.getDateLastModified()))
+                    + result.get(new Long(getDateLastModified(res)))
                     + " days old.");
             }
         }
@@ -151,28 +153,48 @@ public class CmsPublishGroupHelper {
         return result;
     }
 
-    public List<CmsResourceGroup> getGroups(List<CmsResource> resources) {
+    /**
+     * Splits a list of resources into groups.<p>
+     * 
+     * @param resources the list of resources
+     *  
+     * @return the list of groups 
+     */
+    public List<GROUP> getGroups(List<RESOURCE> resources) {
 
-        List<CmsResource> sortedResources = new ArrayList<CmsResource>(resources);
-        Collections.sort(sortedResources, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
+        List<RESOURCE> sortedResources = new ArrayList<RESOURCE>(resources);
+        Collections.sort(sortedResources, new Comparator<RESOURCE>() {
+
+            public int compare(RESOURCE r1, RESOURCE r2) {
+
+                if (r1 == r2) {
+                    return 0;
+                }
+
+                long date1 = getDateLastModified(r1);
+                long date2 = getDateLastModified(r2);
+
+                return (date1 > date2) ? -1 : (date1 < date2) ? 1 : 0;
+            }
+        });
 
         Map<Long, Integer> daysMap = computeDaysForResources(sortedResources);
-        Map<GroupAge, List<CmsResource>> resourcesByAge = partitionPublishResourcesByAge(sortedResources, daysMap);
-        List<List<CmsResource>> youngGroups = partitionYoungResources(resourcesByAge.get(GroupAge.young));
-        List<List<CmsResource>> mediumGroups = partitionMediumResources(resourcesByAge.get(GroupAge.medium), daysMap);
-        List<CmsResource> oldGroup = resourcesByAge.get(GroupAge.old);
-        List<CmsResourceGroup> resultGroups = new ArrayList<CmsResourceGroup>();
-        for (List<CmsResource> groupRes : youngGroups) {
+        Map<GroupAge, List<RESOURCE>> resourcesByAge = partitionPublishResourcesByAge(sortedResources, daysMap);
+        List<List<RESOURCE>> youngGroups = partitionYoungResources(resourcesByAge.get(GroupAge.young));
+        List<List<RESOURCE>> mediumGroups = partitionMediumResources(resourcesByAge.get(GroupAge.medium), daysMap);
+        List<RESOURCE> oldGroup = resourcesByAge.get(GroupAge.old);
+        List<GROUP> resultGroups = new ArrayList<GROUP>();
+        for (List<RESOURCE> groupRes : youngGroups) {
             String name = getPublishGroupName(groupRes, GroupAge.young);
-            resultGroups.add(new CmsResourceGroup(name, groupRes));
+            resultGroups.add(createGroup(name, groupRes));
         }
-        for (List<CmsResource> groupRes : mediumGroups) {
+        for (List<RESOURCE> groupRes : mediumGroups) {
             String name = getPublishGroupName(groupRes, GroupAge.medium);
-            resultGroups.add(new CmsResourceGroup(name, groupRes));
+            resultGroups.add(createGroup(name, groupRes));
         }
         if (!oldGroup.isEmpty()) {
             String oldName = getPublishGroupName(oldGroup, GroupAge.old);
-            resultGroups.add(new CmsResourceGroup(oldName, oldGroup));
+            resultGroups.add(createGroup(oldName, oldGroup));
         }
         return resultGroups;
     }
@@ -184,11 +206,11 @@ public class CmsPublishGroupHelper {
      *  
      * @return the modification dates of the resources, in the same order as the resources 
      */
-    public List<Long> getModificationDates(List<CmsResource> resources) {
+    public List<Long> getModificationDates(List<RESOURCE> resources) {
 
         List<Long> result = new ArrayList<Long>();
-        for (CmsResource res : resources) {
-            result.add(new Long(res.getDateLastModified()));
+        for (RESOURCE res : resources) {
+            result.add(new Long(getDateLastModified(res)));
         }
         return result;
     }
@@ -201,9 +223,9 @@ public class CmsPublishGroupHelper {
      * 
      * @return the localized name of the publish group 
      */
-    public String getPublishGroupName(List<CmsResource> resources, GroupAge age) {
+    public String getPublishGroupName(List<RESOURCE> resources, GroupAge age) {
 
-        long groupDate = resources.get(0).getDateLastModified();
+        long groupDate = getDateLastModified(resources.get(0));
         String groupName;
         switch (age) {
             case young:
@@ -252,22 +274,22 @@ public class CmsPublishGroupHelper {
      * 
      * @return a list of publish groups 
      */
-    public List<List<CmsResource>> partitionMediumResources(List<CmsResource> resources, Map<Long, Integer> days) {
+    public List<List<RESOURCE>> partitionMediumResources(List<RESOURCE> resources, Map<Long, Integer> days) {
 
         if (resources.isEmpty()) {
-            return Collections.<List<CmsResource>> emptyList();
+            return Collections.<List<RESOURCE>> emptyList();
         }
-        CmsResource firstRes = resources.get(0);
-        int lastDay = days.get(new Long(firstRes.getDateLastModified())).intValue();
-        List<List<CmsResource>> result = new ArrayList<List<CmsResource>>();
-        List<CmsResource> currentGroup = new ArrayList<CmsResource>();
+        RESOURCE firstRes = resources.get(0);
+        int lastDay = days.get(new Long(getDateLastModified(firstRes))).intValue();
+        List<List<RESOURCE>> result = new ArrayList<List<RESOURCE>>();
+        List<RESOURCE> currentGroup = new ArrayList<RESOURCE>();
         result.add(currentGroup);
-        for (CmsResource res : resources) {
-            LOG.debug("Processing medium-aged resource " + res.getRootPath());
-            int day = days.get(new Long(res.getDateLastModified())).intValue();
+        for (RESOURCE res : resources) {
+            LOG.debug("Processing medium-aged resource " + getRootPath(res));
+            int day = days.get(new Long(getDateLastModified(res))).intValue();
             if (day != lastDay) {
                 LOG.debug("=== new group ===");
-                currentGroup = new ArrayList<CmsResource>();
+                currentGroup = new ArrayList<RESOURCE>();
                 result.add(currentGroup);
             }
             lastDay = day;
@@ -284,29 +306,29 @@ public class CmsPublishGroupHelper {
      * 
      * @return a map from age enum values to the list of resources which fall into the corresponding age group  
      */
-    public Map<GroupAge, List<CmsResource>> partitionPublishResourcesByAge(
-        List<CmsResource> resources,
+    public Map<GroupAge, List<RESOURCE>> partitionPublishResourcesByAge(
+        List<RESOURCE> resources,
         Map<Long, Integer> days) {
 
-        List<CmsResource> youngRes = new ArrayList<CmsResource>();
-        List<CmsResource> mediumRes = new ArrayList<CmsResource>();
-        List<CmsResource> oldRes = new ArrayList<CmsResource>();
-        for (CmsResource res : resources) {
-            int day = days.get(new Long(res.getDateLastModified())).intValue();
-            List<CmsResource> listToAddTo = null;
+        List<RESOURCE> youngRes = new ArrayList<RESOURCE>();
+        List<RESOURCE> mediumRes = new ArrayList<RESOURCE>();
+        List<RESOURCE> oldRes = new ArrayList<RESOURCE>();
+        for (RESOURCE res : resources) {
+            int day = days.get(new Long(getDateLastModified(res))).intValue();
+            List<RESOURCE> listToAddTo = null;
             if (day < 7) {
                 listToAddTo = youngRes;
-                LOG.debug("Classifying publish resource " + res.getRootPath() + " as young");
+                LOG.debug("Classifying publish resource " + getRootPath(res) + " as young");
             } else if (day < 28) {
                 listToAddTo = mediumRes;
-                LOG.debug("Classifying publish resource " + res.getRootPath() + " as medium-aged");
+                LOG.debug("Classifying publish resource " + getRootPath(res) + " as medium-aged");
             } else {
                 listToAddTo = oldRes;
-                LOG.debug("Classifying publish resource " + res.getRootPath() + " as old");
+                LOG.debug("Classifying publish resource " + getRootPath(res) + " as old");
             }
             listToAddTo.add(res);
         }
-        Map<GroupAge, List<CmsResource>> result = new HashMap<GroupAge, List<CmsResource>>();
+        Map<GroupAge, List<RESOURCE>> result = new HashMap<GroupAge, List<RESOURCE>>();
         result.put(GroupAge.young, youngRes);
         result.put(GroupAge.medium, mediumRes);
         result.put(GroupAge.old, oldRes);
@@ -320,22 +342,22 @@ public class CmsPublishGroupHelper {
      * 
      * @return a partition of the resources into publish groups 
      */
-    public List<List<CmsResource>> partitionYoungResources(List<CmsResource> resources) {
+    public List<List<RESOURCE>> partitionYoungResources(List<RESOURCE> resources) {
 
         if (resources.isEmpty()) {
-            return Collections.<List<CmsResource>> emptyList();
+            return Collections.<List<RESOURCE>> emptyList();
         }
-        List<List<CmsResource>> result = new ArrayList<List<CmsResource>>();
-        List<CmsResource> currentGroup = new ArrayList<CmsResource>();
+        List<List<RESOURCE>> result = new ArrayList<List<RESOURCE>>();
+        List<RESOURCE> currentGroup = new ArrayList<RESOURCE>();
         result.add(currentGroup);
 
-        long lastDate = resources.get(0).getDateLastModified();
-        for (CmsResource res : resources) {
-            LOG.debug("Processing young resource " + res.getRootPath());
-            long resDate = res.getDateLastModified();
+        long lastDate = getDateLastModified(resources.get(0));
+        for (RESOURCE res : resources) {
+            LOG.debug("Processing young resource " + getRootPath(res));
+            long resDate = getDateLastModified(res);
             if ((lastDate - resDate) > GROUP_SESSIONS_GAP) {
                 LOG.debug("=== new group ===");
-                currentGroup = new ArrayList<CmsResource>();
+                currentGroup = new ArrayList<RESOURCE>();
                 result.add(currentGroup);
             }
             lastDate = resDate;
@@ -343,4 +365,32 @@ public class CmsPublishGroupHelper {
         }
         return result;
     }
+
+    /**
+     * Creates a named group of resources.<p>
+     * 
+     * @param name the name of the group 
+     * @param resources the resources which should be put in the group 
+     * 
+     * @return the named group 
+     */
+    protected abstract GROUP createGroup(String name, List<RESOURCE> resources);
+
+    /**
+     * Gets the last modification date of a resource.<p>
+     * 
+     * @param res the resource
+     * 
+     * @return the last modification date of res 
+     */
+    protected abstract long getDateLastModified(RESOURCE res);
+
+    /**
+     * Gets the root path of a resource.<p>
+     * 
+     * @param res the resource
+     *  
+     * @return the root path of res 
+     */
+    protected abstract String getRootPath(RESOURCE res);
 }
