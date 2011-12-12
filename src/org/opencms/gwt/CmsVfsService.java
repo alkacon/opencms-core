@@ -835,30 +835,29 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     private CmsPreviewInfo getPreviewInfo(CmsResource resource, Locale locale) {
 
         CmsObject cms = getCmsObject();
+        String title = "";
+        try {
+            CmsProperty titleProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+            title = titleProperty.getValue("");
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
             return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                 cms,
                 resource.getRootPath())
                 + "?"
                 + CmsJspTagEditable.PARAM_DISABLE_DIRECT_EDIT
-                + "=true", false);
+                + "=true", false, title, cms.getSitePath(resource));
         }
         if (CmsResourceTypeImage.getStaticTypeId() == resource.getTypeId()) {
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
-            String title = "";
-            CmsProperty titleProperty;
-            try {
-                titleProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
-                title = titleProperty.getValue("");
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
             String content = "<img src=\""
                 + OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
                 + "\" title=\""
                 + title
                 + "\" style=\"display:block\" />";
-            CmsPreviewInfo result = new CmsPreviewInfo(content, null, false);
+            CmsPreviewInfo result = new CmsPreviewInfo(content, null, false, title, cms.getSitePath(resource));
             result.setHeight(scaler.getHeight());
             result.setWidth(scaler.getWidth());
             return result;
@@ -871,13 +870,15 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 resource,
                 locale);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
-                return new CmsPreviewInfo(previewContent, null, false);
+                return new CmsPreviewInfo(previewContent, null, false, title, cms.getSitePath(resource));
             }
         }
-        return new CmsPreviewInfo(null, cms.getSitePath(resource)
+        return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            cms,
+            resource.getRootPath())
             + "?"
             + CmsJspTagEditable.PARAM_DISABLE_DIRECT_EDIT
-            + "=true", true);
+            + "=true", true, title, cms.getSitePath(resource));
     }
 
     /**

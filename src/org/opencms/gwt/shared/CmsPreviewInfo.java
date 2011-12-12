@@ -48,6 +48,12 @@ public class CmsPreviewInfo implements IsSerializable {
     /** The URL to call for the preview. */
     private String m_previewUrl;
 
+    /** The site path. */
+    private String m_sitePath;
+
+    /** The title. */
+    private String m_title;
+
     /** The required width. */
     private int m_width;
 
@@ -57,12 +63,16 @@ public class CmsPreviewInfo implements IsSerializable {
      * @param content the preview content
      * @param url the preview URL
      * @param newWindowRequired flag indicating that the preview should be opened in a new window
+     * @param title the title
+     * @param sitePath the site path
      */
-    public CmsPreviewInfo(String content, String url, boolean newWindowRequired) {
+    public CmsPreviewInfo(String content, String url, boolean newWindowRequired, String title, String sitePath) {
 
         m_previewContent = content;
         m_previewUrl = url;
         m_newWindowRequired = newWindowRequired;
+        m_title = title;
+        m_sitePath = sitePath;
     }
 
     /**
@@ -101,6 +111,26 @@ public class CmsPreviewInfo implements IsSerializable {
     public String getPreviewUrl() {
 
         return m_previewUrl;
+    }
+
+    /**
+     * Returns the site path.<p>
+     *
+     * @return the site path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
+    }
+
+    /**
+     * Returns the title.<p>
+     *
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
     }
 
     /**
