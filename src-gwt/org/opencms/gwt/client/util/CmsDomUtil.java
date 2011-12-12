@@ -282,6 +282,9 @@ public final class CmsDomUtil {
         marginTop,
 
         /** CSS Property. */
+        maxHeight,
+
+        /** CSS Property. */
         minHeight,
 
         /** CSS Property. */
