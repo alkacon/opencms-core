@@ -57,6 +57,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     /** Tile view flag. */
     private boolean m_hasTileView;
 
+    /** The tool tip handler. */
     private CmsToolTipHandler m_tooltipHandler;
 
     /**

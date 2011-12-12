@@ -49,6 +49,7 @@ public class CmsImageFormatsTab extends A_CmsPreviewDetailTab {
     /** The preview handler. */
     private CmsImagePreviewHandler m_handler;
 
+    /** The content panel. */
     private FlowPanel m_content;
 
     /**

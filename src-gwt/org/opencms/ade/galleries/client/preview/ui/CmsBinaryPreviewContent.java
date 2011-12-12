@@ -140,6 +140,8 @@ public class CmsBinaryPreviewContent extends Composite {
      * Creates the list item for the resource information bean.<p>
      * 
      * @param resourceInfo the resource information bean
+     * @param dndHandler the drag and drop handler
+     * 
      * @return the list item widget 
      */
     private CmsListItem createListItem(CmsResourceInfoBean resourceInfo, CmsDNDHandler dndHandler) {

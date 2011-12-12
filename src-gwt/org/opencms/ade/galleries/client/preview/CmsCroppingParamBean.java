@@ -66,6 +66,7 @@ public class CmsCroppingParamBean {
     /** Scale parameter name. */
     private static final String SCALE_PARAM_TARGETWIDTH = "w";
 
+    /** Format parameter name. */
     private static final String SCALE_FORMAT_NAME_PARAM = "__formatName";
 
     /** The cropping height parameter. */
@@ -83,8 +84,10 @@ public class CmsCroppingParamBean {
     /** The used format name. */
     private String m_formatName;
 
+    /** The original image height. */
     private int m_orgHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
+    /** The original image width. */
     private int m_orgWidth = I_CmsFormatRestriction.DIMENSION_NOT_SET;
 
     /** The target height. */

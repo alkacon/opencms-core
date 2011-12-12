@@ -68,6 +68,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     /** The reference to the gallery dialog. */
     protected CmsGalleryDialog m_galleryDialog;
 
+    /** The gallery mode. */
     private I_CmsGalleryProviderConstants.GalleryMode m_mode;
 
     /**
@@ -395,7 +396,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 

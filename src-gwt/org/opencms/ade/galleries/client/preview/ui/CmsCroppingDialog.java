@@ -107,7 +107,7 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
     @UiField
     protected Label m_widthLabel;
 
-    /* The cropping parameters. */
+    /** The cropping parameters. */
     private CmsCroppingParamBean m_croppingParam;
 
     /** The cropping parameters of the displayed image. */

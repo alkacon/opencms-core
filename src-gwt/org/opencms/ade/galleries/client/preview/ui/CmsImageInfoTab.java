@@ -41,6 +41,7 @@ public class CmsImageInfoTab extends A_CmsPreviewDetailTab {
     /** The preview handler. */
     private CmsImagePreviewHandler m_handler;
 
+    /** The image info display widget. */
     private CmsImageInfoDisplay m_display;
 
     /**

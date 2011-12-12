@@ -56,7 +56,16 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /** Default image formats. */
     private enum DefaultRestriction {
-        big, free, original, small, user
+        /** Big image format. */
+        big,
+        /** Free image format. */
+        free,
+        /** Original format. */
+        original,
+        /** Small image format. */
+        small,
+        /** User defined image format. */
+        user
     }
 
     /** Default format configuration. */
@@ -75,6 +84,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         DefaultRestriction.small.name(),
         DefaultRestriction.big.name()};
 
+    /** The cropping dialog instance. */
     private CmsCroppingDialog m_croppingDialog;
 
     /** The current cropping parameter. */
@@ -583,6 +593,9 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         }
     }
 
+    /**
+     * Adjusts the current format to the cropping parameter.<p>
+     */
     private void adjustToCurrentFormat() {
 
         // in case of a locked or fixed image ratio height and width need to be reset
