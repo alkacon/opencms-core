@@ -44,13 +44,17 @@ public class CmsProjectBean implements IsSerializable {
     /** The project name.*/
     private String m_name;
 
+    /** The project description. */
+    private String m_description;
+
     /** 
      * Creates a new project bean.<p> 
      *
      * @param id the project id
      * @param name the project name
+     * @param description the project description
      **/
-    public CmsProjectBean(CmsUUID id, String name) {
+    public CmsProjectBean(CmsUUID id, String name, String description) {
 
         m_id = id;
         m_name = name;
@@ -62,6 +66,16 @@ public class CmsProjectBean implements IsSerializable {
     protected CmsProjectBean() {
 
         // for serialization
+    }
+
+    /**
+     * Returns the project description.<p>
+     * 
+     * @return the project description
+     */
+    public String getDescription() {
+
+        return m_description;
     }
 
     /**
