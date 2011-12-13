@@ -27,17 +27,20 @@
 
 package org.opencms.workflow;
 
+import org.opencms.ade.publish.CmsPublishService;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.lock.CmsLock;
+import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -51,11 +54,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.mail.EmailException;
 
 /**
  * The default workflow manager implementation, which supports 2 basic actions, Release and Publish.
@@ -80,6 +83,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     /**
      * @see org.opencms.workflow.CmsDefaultWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, java.util.List)
      */
+    @Override
     public CmsWorkflowResponse executeAction(CmsObject userCms, CmsWorkflowAction action, List<CmsResource> resources)
     throws CmsException {
 
@@ -95,6 +99,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
             LOG.info("Resources: " + CmsStringUtil.listAsString(resourceNames, ","));
         }
         try {
+
             String actionKey = action.getAction();
             if (ACTION_RELEASE.equals(actionKey)) {
                 return actionRelease(userCms, resources);
@@ -128,6 +133,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         return getParameter(PARAM_WORKFLOW_PROJECT_USER_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers());
     }
 
+    /**
+     * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowPublishResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    @Override
     public List<CmsPublishResource> getWorkflowPublishResources(
         CmsObject cms,
         CmsWorkflow workflow,
@@ -146,6 +155,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     /**
      * @see org.opencms.workflow.CmsDefaultWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
      */
+    @Override
     public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
 
         String workflowKey = workflow.getId();
@@ -160,21 +170,37 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflows(org.opencms.file.CmsObject)
      */
+    @Override
     public Map<String, CmsWorkflow> getWorkflows(CmsObject cms) {
 
-        Map<String, CmsWorkflow> workflows = super.getWorkflows(cms);
+        Map<String, CmsWorkflow> parentWorkflows = super.getWorkflows(cms);
+        Map<String, CmsWorkflow> result = new LinkedHashMap<String, CmsWorkflow>();
         String releaseLabel = getLabel(cms, Messages.GUI_WORKFLOW_ACTION_RELEASE_0);
         CmsWorkflowAction release = new CmsWorkflowAction(ACTION_RELEASE, releaseLabel, true);
         List<CmsWorkflowAction> actions = new ArrayList<CmsWorkflowAction>();
         actions.add(release);
         CmsWorkflow releaseWorkflow = new CmsWorkflow(WORKFLOW_RELEASE, releaseLabel, actions);
-        workflows.put(WORKFLOW_RELEASE, releaseWorkflow);
-        return workflows;
+        try {
+            boolean isProjectManager = isProjectManager(cms);
+            // make release action always available, but make it the default if the user
+            // isn't a project manager.
+            if (isProjectManager) {
+                result.putAll(parentWorkflows);
+                result.put(WORKFLOW_RELEASE, releaseWorkflow);
+            } else {
+                result.put(WORKFLOW_RELEASE, releaseWorkflow);
+                result.putAll(parentWorkflows);
+            }
+        } catch (CmsException e) {
+            result = parentWorkflows;
+        }
+        return result;
     }
 
     /**
      * @see org.opencms.workflow.A_CmsWorkflowManager#initialize(org.opencms.file.CmsObject)
      */
+    @Override
     public void initialize(CmsObject adminCms) {
 
         super.initialize(adminCms);
@@ -378,7 +404,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         long time = System.currentTimeMillis();
         calendar.setTimeInMillis(time);
         Date date = calendar.getTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_k_m_s");
+        SimpleDateFormat format = new SimpleDateFormat("yyMMdd_kms");
         String dateStr = format.format(date);
         dateStr = dateStr + "_" + time;
         return "WF_" + user.getName() + "_" + dateStr;
@@ -454,6 +480,23 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     }
 
     /**
+     * Checks whether the user for a given CMS context can manage workflow projects.<p>
+     * 
+     * @param userCms the user CMS Context 
+     * @return true if this user can manage workflow projects 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected boolean isProjectManager(CmsObject userCms) throws CmsException {
+
+        CmsGroup managerGroup = m_adminCms.readGroup(getWorkflowProjectManagerGroup());
+        List<CmsGroup> groups = m_adminCms.getGroupsOfUser(
+            userCms.getRequestContext().getCurrentUser().getName(),
+            false);
+        return groups.contains(managerGroup);
+    }
+
+    /**
      * Handles finished publish jobs by removing projects of resources in the publish job if they are empty workflow projects.<p>
      * 
      * @param publishJob the finished published job 
@@ -492,14 +535,34 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         List<CmsResource> resources) {
 
         try {
-            CmsWorkflowNotification notification = new CmsWorkflowNotification(
-                m_adminCms,
-                recipient,
-                userCms.getRequestContext().getCurrentUser(),
-                workflowProject,
-                resources);
-            notification.send();
-        } catch (EmailException e) {
+
+            CmsHtmlMail mail = new CmsHtmlMail();
+
+            String linkHref = OpenCms.getLinkManager().getServerLink(
+                userCms,
+                "/system/modules/org.opencms.ade.publish/publish.jsp?"
+                    + CmsPublishService.PARAM_PUBLISH_PROJECT_ID
+                    + "="
+                    + workflowProject.getUuid());
+            // CmsResource template = m_adminCms.readResource("/system/temp.jsp");
+            //            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(template);
+            //            userCms.getRequestContext().setAttribute("workflowUser", userCms.getRequestContext().getCurrentUser());
+            //            userCms.getRequestContext().setAttribute("workflowProject", workflowProject);
+            //            userCms.getRequestContext().setAttribute("workflowResources", resources);
+            //            userCms.getRequestContext().setAttribute("workflowPublishLink", linkHref);
+            //            byte[] data = loader.dump(
+            //                userCms,
+            //                template,
+            //                null,
+            //                userCms.getRequestContext().getLocale(),
+            //                OpenCmsServlet.getOriginalRequest(),
+            //                OpenCmsServlet.getOriginalResponse());
+            // String contentString = new String(data, OpenCms.getSystemInfo().getDefaultEncoding());
+            mail.setHtmlMsg(linkHref);
+            mail.addTo(recipient.getEmail());
+            mail.setSubject("Workflow notification (" + userCms.getRequestContext().getCurrentUser().getName() + ")");
+            mail.send();
+        } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
     }
