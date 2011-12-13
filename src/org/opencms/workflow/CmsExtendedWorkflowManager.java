@@ -47,6 +47,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishEventAdapter;
 import org.opencms.publish.CmsPublishJobEnqueued;
 import org.opencms.publish.CmsPublishJobRunning;
+import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 
 import java.text.SimpleDateFormat;
@@ -385,7 +386,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         long time = System.currentTimeMillis();
         calendar.setTimeInMillis(time);
         Date date = calendar.getTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd k:m:s");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
         String dateString = format.format(date);
         return "Workflow project created by " + user.getName() + " at " + dateString;
     }
@@ -404,10 +405,13 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         long time = System.currentTimeMillis();
         calendar.setTimeInMillis(time);
         Date date = calendar.getTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyMMdd_kms");
+        SimpleDateFormat format = new SimpleDateFormat("yyMMdd_kkmmss");
         String dateStr = format.format(date);
-        dateStr = dateStr + "_" + time;
-        return "WF_" + user.getName() + "_" + dateStr;
+        String username = user.getName();
+        CmsResourceTranslator translator = OpenCms.getResourceManager().getFileTranslator();
+        username = translator.translateResource(username);
+        username = username.replaceAll("[/\\\\]", "_");
+        return "WF_" + username + "_" + dateStr;
     }
 
     /**
