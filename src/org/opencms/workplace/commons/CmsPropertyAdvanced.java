@@ -465,7 +465,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // there are properties defined for this resource, build the form list
             result.append("<table border=\"0\">\n");
             result.append("<tr>\n");
-            result.append("\t<td class=\"textbold\">");
+            result.append("\t<td class=\"textbold\" nowrap>");
             result.append(key(Messages.GUI_PROPERTY_0));
             result.append("</td>\n");
             result.append("\t<td class=\"textbold\">");
@@ -1004,6 +1004,11 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }
         }
         result.append("<tr>\n");
+        String propertyName = key("workplace.property."+propName);
+        if (CmsMessages.isUnknownKey(propertyName)) {
+            propertyName = propName;
+        }
+        result.append("\t<td style=\"white-space: nowrap;\">" + propertyName);
         result.append("\t<td style=\"white-space: nowrap;\">" + propName);
         result.append("</td>\n");
         result.append("\t<td class=\"maxwidth\">");
