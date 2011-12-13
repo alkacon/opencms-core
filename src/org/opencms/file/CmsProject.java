@@ -466,6 +466,16 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
     }
 
     /**
+     * Returns true if this is a workflow project.<p>
+     * 
+     * @return true if this is a workflow project
+     */
+    public boolean isWorkflowProject() {
+
+        return getType().getMode() == PROJECT_TYPE_WORKFLOW.getMode();
+    }
+
+    /**
      * Sets the delete After Publishing flag.<p>
      *
      * @param deleteAfterPublishing the delete After Publishing flag to set

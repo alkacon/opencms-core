@@ -105,6 +105,24 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
+     * Performs additional filtering on the list of projects for the project selector.<p>
+     * 
+     * @param projects the original project list
+     *  
+     * @return the filtered project list 
+     */
+    public List<CmsProject> filterProjectsForSelector(List<CmsProject> projects) {
+
+        List<CmsProject> result = new ArrayList<CmsProject>();
+        for (CmsProject project : projects) {
+            if (!project.isWorkflowProject()) {
+                result.add(project);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the javascript code for the broadcast message alert in the foot of the workplace.<p>
      * 
      * @return javascript code showing an alert box when the foot load
@@ -198,6 +216,7 @@ public class CmsFrameset extends CmsWorkplace {
             }
             allProjects = Collections.emptyList();
         }
+        allProjects = filterProjectsForSelector(allProjects);
 
         boolean singleOu = true;
         String ouFqn = null;
