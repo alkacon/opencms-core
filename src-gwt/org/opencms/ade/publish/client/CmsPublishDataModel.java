@@ -58,8 +58,7 @@ public class CmsPublishDataModel {
          */
         public boolean check(CmsPublishResource res) {
 
-            boolean result = res.getInfo() != null;
-            return result;
+            return hasProblems(res);
         }
     }
 
@@ -78,8 +77,11 @@ public class CmsPublishDataModel {
 
     }
 
-    /** The item status bean, indexed by structure id. */
-    private Map<CmsUUID, CmsPublishItemStatus> m_status = Maps.newHashMap();
+    /** The original publish groups. */
+    private List<CmsPublishGroup> m_groups;
+
+    /** The structure ids for each group. */
+    private List<List<CmsUUID>> m_idsByGroup = Lists.newArrayList();
 
     /** The publish resources indexed by UUID. */
     private Map<CmsUUID, CmsPublishResource> m_publishResources = Maps.newHashMap();
@@ -87,11 +89,8 @@ public class CmsPublishDataModel {
     /** The publish resources indexed by path. */
     private Map<String, CmsPublishResource> m_publishResourcesByPath = Maps.newHashMap();
 
-    /** The structure ids for each group. */
-    private List<List<CmsUUID>> m_idsByGroup = Lists.newArrayList();
-
-    /** The original publish groups. */
-    private List<CmsPublishGroup> m_groups;
+    /** The item status bean, indexed by structure id. */
+    private Map<CmsUUID, CmsPublishItemStatus> m_status = Maps.newHashMap();
 
     /**
      * Creates and initializes a new publish resource data model from a list of publish groups.<p>
@@ -109,7 +108,7 @@ public class CmsPublishDataModel {
                 CmsPublishItemStatus status = new CmsPublishItemStatus(
                     res.getId(),
                     State.normal,
-                    res.getInfo() != null,
+                    hasProblems(res),
                     handler);
                 m_status.put(res.getId(), status);
                 m_publishResources.put(res.getId(), res);
@@ -117,6 +116,18 @@ public class CmsPublishDataModel {
                 idList.add(res.getId());
             }
         }
+    }
+
+    /**
+     * Returns if the given publish resource has problems preventing it from being published.<p>
+     * 
+     * @param publishResource the publish resource
+     * 
+     * @return <code>true</code> if the publish resource has problems
+     */
+    public static boolean hasProblems(CmsPublishResource publishResource) {
+
+        return (publishResource.getInfo() != null) && publishResource.getInfo().hasProblemType();
     }
 
     /**

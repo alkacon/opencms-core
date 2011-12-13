@@ -46,6 +46,7 @@ import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -172,27 +173,30 @@ public class CmsPublishGroupPanel extends Composite {
             info.addAdditionalInfo(stateLabel, stateName, CmsResourceStateUtil.getStateStyle(resourceBean.getState()));
         }
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
-        if (resourceBean.getInfo() != null) {
+        if (CmsPublishDataModel.hasProblems(resourceBean)) {
             Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
             warningImage.setTitle(resourceBean.getInfo().getValue());
             warningImage.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             itemWidget.addButton(warningImage);
         }
-        if (!resourceBean.isFolder()) {
-            CmsPushButton previewButton = new CmsPushButton();
-            previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-            previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-            previewButton.addClickHandler(new ClickHandler() {
+        String noPreviewReason = resourceBean.getInfo() == null ? null : resourceBean.getInfo().getNoPreviewReason();
+        CmsPushButton previewButton = new CmsPushButton();
+        previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
+        previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        previewButton.addClickHandler(new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
+            public void onClick(ClickEvent event) {
 
-                    CmsPushButton button = (CmsPushButton)event.getSource();
-                    CmsDomUtil.ensureMouseOut(button.getElement());
-                    CmsPreviewDialog.showPreviewForResource(resourceBean.getId());
-                }
-            });
-            itemWidget.addButton(previewButton);
+                CmsPushButton button = (CmsPushButton)event.getSource();
+                CmsDomUtil.ensureMouseOut(button.getElement());
+                CmsPreviewDialog.showPreviewForResource(resourceBean.getId());
+            }
+        });
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noPreviewReason)) {
+            previewButton.disable(noPreviewReason);
         }
+        itemWidget.addButton(previewButton);
+
         itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType(), false));
         return itemWidget;
     }
@@ -227,7 +231,7 @@ public class CmsPublishGroupPanel extends Composite {
         }
         CmsPublishResource res = m_publishResources.get(m_itemIndex);
         m_itemIndex += 1;
-        if ((res.getInfo() == null) && m_showProblemsOnly) {
+        if (m_showProblemsOnly && (!CmsPublishDataModel.hasProblems(res))) {
             return false;
         } else {
             addItem(res);
@@ -325,7 +329,7 @@ public class CmsPublishGroupPanel extends Composite {
             };
             checkbox.addClickHandler(checkboxHandler);
 
-            final boolean hasProblem = (resourceBean.getInfo() != null);
+            final boolean hasProblem = CmsPublishDataModel.hasProblems(resourceBean);
             if (hasProblem) {
                 // can't select resource with problems
                 checkbox.setChecked(false);

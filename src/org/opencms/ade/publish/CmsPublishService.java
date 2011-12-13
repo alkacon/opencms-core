@@ -32,6 +32,7 @@ import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsPublishResourceInfo;
 import org.opencms.ade.publish.shared.CmsWorkflow;
 import org.opencms.ade.publish.shared.CmsWorkflowAction;
 import org.opencms.ade.publish.shared.CmsWorkflowResponse;
@@ -43,6 +44,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.CmsVfsService;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -185,6 +187,9 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 cms,
                 workflow,
                 options);
+            for (CmsPublishResource publishResource : publishResources) {
+                checkPreview(publishResource);
+            }
             A_CmsPublishGroupHelper<CmsPublishResource, CmsPublishGroup> groupHelper = new CmsDefaultPublishGroupHelper(
                 locale);
             results = groupHelper.getGroups(publishResources);
@@ -207,6 +212,26 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             error(e);
         }
         return result;
+    }
+
+    /**
+     * Checks if there is any reason to deactivate the preview function.<p>
+     * 
+     * @param publishResource the publish resource to check
+     * 
+     * @throws CmsException if something goes wrong reading the resource
+     */
+    private void checkPreview(CmsPublishResource publishResource) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsResource resource = cms.readResource(publishResource.getId());
+        String noPreviewReason = CmsVfsService.getNoPreviewReason(cms, resource);
+        if (noPreviewReason != null) {
+            if (publishResource.getInfo() == null) {
+                publishResource.setInfo(new CmsPublishResourceInfo(null, null));
+            }
+            publishResource.getInfo().setNoPreviewReason(noPreviewReason);
+        }
     }
 
     /**
