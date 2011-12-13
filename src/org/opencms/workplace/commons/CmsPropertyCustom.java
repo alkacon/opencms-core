@@ -140,7 +140,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // create the column heads
         result.append("<table border=\"0\">\n");
         result.append("<tr>\n");
-        result.append("\t<td class=\"textbold\">");
+        result.append("\t<td class=\"textbold\" nowrap>");
         result.append(key(Messages.GUI_PROPERTY_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\">");
