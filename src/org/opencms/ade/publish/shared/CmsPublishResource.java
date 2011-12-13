@@ -54,9 +54,6 @@ public class CmsPublishResource implements IsSerializable {
     /** The resource name.*/
     private String m_name;
 
-    /** Flag indicating if this resource is a folder. */
-    private boolean m_isFolder;
-
     /** The related resources.*/
     private List<CmsPublishResource> m_related;
 
@@ -81,7 +78,6 @@ public class CmsPublishResource implements IsSerializable {
      * @param resourceType the resource type name
      * @param state the resource state
      * @param dateLastModified the last modification date 
-     * @param isFolder flag indicating if this resource is a folder
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
      * @param related the related resources
@@ -93,7 +89,6 @@ public class CmsPublishResource implements IsSerializable {
         String resourceType,
         CmsResourceState state,
         long dateLastModified,
-        boolean isFolder,
         boolean removable,
         CmsPublishResourceInfo info,
         List<CmsPublishResource> related) {
@@ -101,7 +96,6 @@ public class CmsPublishResource implements IsSerializable {
         m_resourceType = resourceType;
         m_id = id;
         m_name = name;
-        m_isFolder = isFolder;
         m_related = ((related == null) ? new ArrayList<CmsPublishResource>() : related);
         m_state = state;
         m_title = title;
@@ -126,6 +120,16 @@ public class CmsPublishResource implements IsSerializable {
     public long getDateLastModified() {
 
         return m_dateLastModified;
+    }
+
+    /**
+     * Sets the publish resource info.<p>
+     * 
+     * @param info the publish resource info
+     */
+    public void setInfo(CmsPublishResourceInfo info) {
+
+        m_info = info;
     }
 
     /**
@@ -196,16 +200,6 @@ public class CmsPublishResource implements IsSerializable {
     public String getTitle() {
 
         return m_title;
-    }
-
-    /**
-     * Returns if this resource is a folder.<p>
-     * 
-     * @return <code>true</code> if the resource is a folder
-     */
-    public boolean isFolder() {
-
-        return m_isFolder;
     }
 
     /**
