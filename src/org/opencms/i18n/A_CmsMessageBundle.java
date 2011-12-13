@@ -60,6 +60,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.file.types.Messages.get(),
             org.opencms.file.wrapper.Messages.get(),
             org.opencms.flex.Messages.get(),
+            org.opencms.gwt.Messages.get(),
             org.opencms.i18n.Messages.get(),
             org.opencms.importexport.Messages.get(),
             org.opencms.jsp.Messages.get(),
