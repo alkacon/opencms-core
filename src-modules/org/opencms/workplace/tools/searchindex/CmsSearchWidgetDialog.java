@@ -554,7 +554,19 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
         String query = m_searchParams.getQuery();
         StringBuffer result = new StringBuffer();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(query) && (query.length() > 3)) {
+        // for CJK language, min length can be 0; others, 3.
+        int minLength = 3;
+        for (int i=0; i<query.length(); i++) {
+            int c = query.charAt(i);
+        	Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        	if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS || 
+        	    ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS || 
+        	    ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT) {
+        	    minLength = 0;
+        	    break;
+        	}
+        }
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(query) && (query.length() > minLength)) {
             CmsSearchResultView resultView = new CmsSearchResultView(getJsp());
             // proprietary workplace admin link for pagelinks of search: 
             resultView.setSearchRessourceUrl(getJsp().link(
