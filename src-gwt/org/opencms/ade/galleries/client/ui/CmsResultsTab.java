@@ -369,7 +369,7 @@ public class CmsResultsTab extends A_CmsListTab {
             buf.append("\">");
             buf.append("<table cellpadding=\"0\" cellspacing=\"0\">");
             buf.append("<tr><td></td><td>");
-            buf.append("Please select at least one search parameter!");
+            buf.append(Messages.get().key(Messages.GUI_RESULT_NO_PARAMS_0));
             buf.append("</td></tr>");
             buf.append("</table>");
             buf.append("</div>");

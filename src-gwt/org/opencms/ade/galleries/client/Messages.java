@@ -265,6 +265,9 @@ public final class Messages {
     public static final String GUI_RESULT_BUTTON_DELETE_0 = "GUI_RESULT_BUTTON_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESULT_NO_PARAMS_0 = "GUI_RESULT_NO_PARAMS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SCOPE_SHARED_0 = "GUI_SCOPE_SHARED_0";
 
     /** Message constant for key in the resource bundle. */

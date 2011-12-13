@@ -106,7 +106,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    {
+    /** Initialize the preview mime types. */
+    static {
         CollectionUtils.addAll(m_previewMimeTypes, (new String[] {
             "application/msword",
             "application/pdf",
@@ -127,14 +128,17 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         String noPreviewReason = null;
         if (resource.isFolder()) {
-            noPreviewReason = "Can't preview a folder";
-        } else if (!cms.getRequestContext().getSiteRoot().equals(
-            OpenCms.getSiteManager().getSiteRoot(resource.getName()))) {
-            noPreviewReason = "Can't preview resource from another site";
-        } else if (resource.getTypeId() == CmsResourceTypeBinary.getStaticTypeId()) {
-            String mimeType = OpenCms.getResourceManager().getMimeType(resource.getName(), null, "empty");
-            if (!m_previewMimeTypes.contains(mimeType)) {
-                noPreviewReason = "No preview available for this mime type";
+            noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_FOLDER_0);
+        } else {
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(resource.getRootPath());
+            // previewing only resources that are in the same site or don't have a site root at all
+            if ((siteRoot != null) && !siteRoot.equals(cms.getRequestContext().getSiteRoot())) {
+                noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_OTHER_SITE_0);
+            } else if (resource.getTypeId() == CmsResourceTypeBinary.getStaticTypeId()) {
+                String mimeType = OpenCms.getResourceManager().getMimeType(resource.getName(), null, "empty");
+                if (!m_previewMimeTypes.contains(mimeType)) {
+                    noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_WRONG_MIME_TYPE_0);
+                }
             }
         }
         return noPreviewReason;
@@ -906,10 +910,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         } else if (CmsResourceTypePlain.getStaticTypeId() == resource.getTypeId()) {
             try {
-                previewContent = "<pre><code>" + cms.readFile(resource).getContents().toString() + "</code></pre>";
+                previewContent = "<pre><code>" + new String(cms.readFile(resource).getContents()) + "</code></pre>";
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
-                previewContent = "<div>Could not read file content</div>";
+                previewContent = "<div>"
+                    + Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
+                    + "</div>";
             }
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
