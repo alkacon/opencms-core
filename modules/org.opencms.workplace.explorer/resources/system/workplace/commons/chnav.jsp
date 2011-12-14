@@ -52,8 +52,8 @@ case CmsDialog.ACTION_LOCKS_CONFIRMED:
 	<td class="maxwidth"><input type="text" name="<%= CmsChnav.PARAM_NAVTEXT %>" class="maxwidth" value="<%= wp.getCurrentNavText() %>"></td>
 </tr>
 <tr>
-	<td><%= wp.key(Messages.GUI_CHNAV_INSERT_AFTER_0) %></td>
-	<td><%= wp.buildNavPosSelector() %></td>
+	<td nowrap><%= wp.key(Messages.GUI_CHNAV_INSERT_AFTER_0) %></td>
+	<td nowrap><%= wp.buildNavPosSelector() %></td>
 </tr>
 </table>
 
