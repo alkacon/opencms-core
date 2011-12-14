@@ -30,11 +30,14 @@ package org.opencms.workflow;
 import org.opencms.ade.publish.CmsPublish;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsPublishResourceInfo;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -133,6 +136,19 @@ public class CmsRelease extends CmsPublish {
     }
 
     /**
+     * Gets a message from the message bundle.<p>
+     * 
+     * @param key the message key 
+     * @param args the message parameters
+     *  
+     * @return the message from the message bundle 
+     */
+    protected String getMessage(String key, String... args) {
+
+        return Messages.get().getBundle(m_cms.getRequestContext().getLocale()).key(key, args);
+    }
+
+    /**
      * @see org.opencms.ade.publish.CmsPublish#getRawPublishResources()
      */
     @Override
@@ -147,6 +163,48 @@ public class CmsRelease extends CmsPublish {
             rawResourceList.addAll(m_cms.readProjectView(m_options.getProjectId(), CmsResource.STATE_KEEP));
         }
         return rawResourceList;
+
+    }
+
+    /**
+     * @see org.opencms.ade.publish.CmsPublish#getResourceInfo(org.opencms.file.CmsResource, java.util.Set, org.opencms.ade.publish.CmsPublish.ResourcesAndRelated, org.opencms.ade.publish.CmsPublish.ResourcesAndRelated)
+     */
+    @Override
+    protected CmsPublishResourceInfo getResourceInfo(
+        CmsResource resource,
+        Set<CmsResource> published,
+        ResourcesAndRelated permissions,
+        ResourcesAndRelated locked) {
+
+        CmsPublishResourceInfo info = super.getResourceInfo(resource, published, permissions, locked);
+        if (info == null) {
+            CmsUUID projectId = resource.getProjectLastModified();
+            if (isWorkflowProject(projectId)) {
+                info = new CmsPublishResourceInfo(
+                    getMessage(Messages.GUI_ALREADY_IN_WORKFLOW_0),
+                    CmsPublishResourceInfo.Type.WORKFLOW);
+
+            }
+        }
+        return info;
+    }
+
+    /**
+     * Checks whether the project with the given id is a workflow project.<p>
+     * 
+     * @param projectId the project id 
+     * 
+     * @return true if the project with the given id is a workflow project 
+     */
+    private boolean isWorkflowProject(CmsUUID projectId) {
+
+        try {
+            CmsProject project = m_cms.readProject(projectId);
+            return project.isWorkflowProject();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return false;
+        }
 
     }
 }

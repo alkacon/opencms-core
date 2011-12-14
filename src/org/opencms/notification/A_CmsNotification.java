@@ -68,7 +68,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
     private CmsMacroResolver m_macroResolver;
 
     /** The xml-content to read subject, header and footer of the notification. */
-    private CmsXmlContent m_mailContent;
+    protected CmsXmlContent m_mailContent;
 
     /** The receiver of the notification. */
     private CmsUser m_receiver;

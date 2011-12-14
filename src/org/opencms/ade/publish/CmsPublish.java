@@ -278,6 +278,7 @@ public class CmsPublish {
         for (CmsProject project : projects) {
             CmsProjectBean manProj = new CmsProjectBean(
                 project.getUuid(),
+                project.getType().getMode(),
                 getOuAwareName(project.getName()),
                 project.getDescription());
             manProjs.add(manProj);

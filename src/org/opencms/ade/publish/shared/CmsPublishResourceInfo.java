@@ -50,7 +50,9 @@ public class CmsPublishResourceInfo implements IsSerializable {
         /** Resource has been already published. */
         PUBLISHED,
         /** Changed related resource can not be published. */
-        RELATED;
+        RELATED,
+        /** Resource is already in the workflow. */
+        WORKFLOW;
     }
 
     /** The additional info type.*/

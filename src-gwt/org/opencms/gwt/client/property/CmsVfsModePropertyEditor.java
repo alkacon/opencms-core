@@ -123,7 +123,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     public void buildFields() {
 
         internalBuildConfiguredFields();
-        internalBuildOtherFields();
+        //internalBuildOtherFields();
     }
 
     /**

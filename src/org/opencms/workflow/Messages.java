@@ -55,6 +55,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_NEW_PARENT_NOT_IN_WORKFLOW_1 = "ERR_NEW_PARENT_NOT_IN_WORKFLOW_1";
 
     /** Message key for the resource bundle. */
+    public static final String MAIL_PUBLISH_LINK_1 = "MAIL_PUBLISH_LINK_1";
+
+    /** Message key for the resource bundle. */
     public static final String GUI_WORKFLOW_PUBLISH_0 = "GUI_WORKFLOW_PUBLISH_0";
 
     /** Message key for the resource bundle. */
@@ -62,6 +65,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /** Message key for the resource bundle. */
+    public static final String MAIL_USER_LINE_1 = "MAIL_USER_LINE_1";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_ALREADY_IN_WORKFLOW_0 = "GUI_ALREADY_IN_WORKFLOW_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

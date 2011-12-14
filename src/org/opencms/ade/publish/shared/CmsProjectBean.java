@@ -41,6 +41,9 @@ public class CmsProjectBean implements IsSerializable {
     /** The project id.*/
     private CmsUUID m_id;
 
+    /** The project type. */
+    private int m_type;
+
     /** The project name.*/
     private String m_name;
 
@@ -51,13 +54,15 @@ public class CmsProjectBean implements IsSerializable {
      * Creates a new project bean.<p> 
      *
      * @param id the project id
+     * @param type the project type 
      * @param name the project name
      * @param description the project description
      **/
-    public CmsProjectBean(CmsUUID id, String name, String description) {
+    public CmsProjectBean(CmsUUID id, int type, String name, String description) {
 
         m_id = id;
         m_name = name;
+        m_type = type;
     }
 
     /**
@@ -96,5 +101,15 @@ public class CmsProjectBean implements IsSerializable {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the project type.<p>
+     * 
+     * @return the project type 
+     */
+    public int getType() {
+
+        return m_type;
     }
 }

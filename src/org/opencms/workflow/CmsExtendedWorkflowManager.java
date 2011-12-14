@@ -39,8 +39,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLock;
-import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -50,13 +50,14 @@ import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -74,6 +75,9 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
     /** The key for the configurable workflow project manager group. */
     public static final String PARAM_WORKFLOW_PROJECT_MANAGER_GROUP = "workflowProjectManagerGroup";
+
+    /** The parameter which points to the XML content used for notifications. */
+    public static final String PARAM_NOTIFICATION_CONTENT = "notificationContent";
 
     /** The key for the configurable workflow project user group. */
     public static final String PARAM_WORKFLOW_PROJECT_USER_GROUP = "workflowProjectUserGroup";
@@ -322,7 +326,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
             projects = OpenCms.getOrgUnitManager().getAllManageableProjects(m_adminCms, "", true);
         }
         for (CmsProject project : projects) {
-            if (project.getType().getMode() == CmsProject.PROJECT_TYPE_WORKFLOW.getMode()) {
+            if (project.isWorkflowProject()) {
                 if (isProjectEmpty(project)) {
                     m_adminCms.deleteProject(project.getUuid());
                 }
@@ -373,6 +377,23 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     }
 
     /**
+     * Helper method to check whether a project exists.<p>
+     * 
+     * @param projectName the project name 
+     * 
+     * @return true if the project exists 
+     */
+    protected boolean existsProject(String projectName) {
+
+        try {
+            m_adminCms.readProject(projectName);
+            return true;
+        } catch (CmsException e) {
+            return false;
+        }
+    }
+
+    /**
      * Generates the description for a new workflow project based on the user for whom it is created.<p>
      * 
      * @param userCms the user's current CMS context 
@@ -386,7 +407,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         long time = System.currentTimeMillis();
         calendar.setTimeInMillis(time);
         Date date = calendar.getTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
+        DateFormat format = DateFormat.getDateTimeInstance();
         String dateString = format.format(date);
         return "Workflow project created by " + user.getName() + " at " + dateString;
     }
@@ -400,18 +421,37 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
      */
     protected String generateProjectName(CmsObject userCms) {
 
+        String projectName = generateProjectName(userCms, true);
+        if (existsProject(projectName)) {
+            projectName = generateProjectName(userCms, false);
+        }
+        return projectName;
+    }
+
+    /**
+     * Generates the name for a new workflow project based on the user for whom it is created.<p>
+     * 
+     * @param userCms the user's current CMS context
+     * @param shortTime if true, the short time format will be used, else the medium time format  
+     * 
+     * @return the workflow project name 
+     */
+    protected String generateProjectName(CmsObject userCms, boolean shortTime) {
+
         CmsUser user = userCms.getRequestContext().getCurrentUser();
-        Calendar calendar = Calendar.getInstance();
         long time = System.currentTimeMillis();
-        calendar.setTimeInMillis(time);
-        Date date = calendar.getTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyMMdd_kkmmss");
-        String dateStr = format.format(date);
+        Date date = new Date(time);
+        OpenCms.getLocaleManager();
+        Locale locale = CmsLocaleManager.getDefaultLocale();
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+        DateFormat timeFormat = DateFormat.getTimeInstance(shortTime ? DateFormat.SHORT : DateFormat.MEDIUM, locale);
+        String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
         String username = user.getName();
         CmsResourceTranslator translator = OpenCms.getResourceManager().getFileTranslator();
         username = translator.translateResource(username);
-        username = username.replaceAll("[/\\\\]", "_");
-        return "WF_" + username + "_" + dateStr;
+        String result = "WF " + username + " " + dateStr;
+        result = result.replaceAll("[/\\\\]", "_");
+        return result;
     }
 
     /**
@@ -430,6 +470,19 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
             LOG.error(e.getLocalizedMessage(), e);
             return new ArrayList<CmsUser>();
         }
+    }
+
+    /** 
+     * Gets the resource  notification content path.<p>
+     *   
+     * @return the resource notification content path  
+     */
+    protected String getNotificationResource() {
+
+        String result = getParameter(
+            PARAM_NOTIFICATION_CONTENT,
+            "/system/workplace/admin/notification/workplace-notification");
+        return result;
     }
 
     /**
@@ -539,33 +592,22 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         List<CmsResource> resources) {
 
         try {
-
-            CmsHtmlMail mail = new CmsHtmlMail();
-
             String linkHref = OpenCms.getLinkManager().getServerLink(
                 userCms,
                 "/system/modules/org.opencms.ade.publish/publish.jsp?"
                     + CmsPublishService.PARAM_PUBLISH_PROJECT_ID
                     + "="
                     + workflowProject.getUuid());
-            // CmsResource template = m_adminCms.readResource("/system/temp.jsp");
-            //            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(template);
-            //            userCms.getRequestContext().setAttribute("workflowUser", userCms.getRequestContext().getCurrentUser());
-            //            userCms.getRequestContext().setAttribute("workflowProject", workflowProject);
-            //            userCms.getRequestContext().setAttribute("workflowResources", resources);
-            //            userCms.getRequestContext().setAttribute("workflowPublishLink", linkHref);
-            //            byte[] data = loader.dump(
-            //                userCms,
-            //                template,
-            //                null,
-            //                userCms.getRequestContext().getLocale(),
-            //                OpenCmsServlet.getOriginalRequest(),
-            //                OpenCmsServlet.getOriginalResponse());
-            // String contentString = new String(data, OpenCms.getSystemInfo().getDefaultEncoding());
-            mail.setHtmlMsg(linkHref);
-            mail.addTo(recipient.getEmail());
-            mail.setSubject("Workflow notification (" + userCms.getRequestContext().getCurrentUser().getName() + ")");
-            mail.send();
+
+            CmsWorkflowNotification notification = new CmsWorkflowNotification(
+                m_adminCms,
+                userCms,
+                recipient,
+                getNotificationResource(),
+                workflowProject,
+                resources,
+                linkHref);
+            notification.send();
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

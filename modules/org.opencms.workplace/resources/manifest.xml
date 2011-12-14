@@ -33,6 +33,7 @@
 			<resource uri="/system/workplace/admin/notification/notification"/>
 			<resource uri="/system/workplace/admin/notification/notification.xsd"/>
 			<resource uri="/system/workplace/admin/notification/publish-notification"/>
+			<resource uri="/system/workplace/admin/notification/workflow-notification"/>
 			<resource uri="/system/workplace/commons/includes/"/>
 			<resource uri="/system/workplace/commons/style/"/>
 			<resource uri="/system/workplace/commons/template/"/>
@@ -768,6 +769,31 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/admin/notification/workflow-notification</source>
+			<destination>system/workplace/admin/notification/workflow-notification</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>74563c65-4a30-45b1-a729-69157d6a2208</uuidstructure>
+			<uuidresource>c39d20c8-62ac-4a9e-b9f4-490477b2d467</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:25:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Sep 2006 13:19:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Workflow Notification]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
 		<file>
 			<destination>system/workplace/commons</destination>
 			<type>folder</type>
