@@ -313,14 +313,6 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
-     * Method which is called when the publish options are changed.<p>
-     */
-    public void onChangeOptions() {
-
-        (new CmsPublishListAction()).execute();
-    }
-
-    /**
      * Method which is  called when the back button is pressed.<p>
      */
     public void onGoBack() {
@@ -417,6 +409,17 @@ public class CmsPublishDialog extends CmsPopup {
     public void setWorkflowId(String workflowId) {
 
         m_workflowId = workflowId;
+        if (!m_workflows.containsKey(workflowId)) {
+            m_workflowId = "WORKFLOW_PUBLISH";
+        }
+    }
+
+    /**
+     * Method which is called when the publish options are changed.<p>
+     */
+    public void updateResourceList() {
+
+        (new CmsPublishListAction()).execute();
     }
 
     /**

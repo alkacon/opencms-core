@@ -38,17 +38,17 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsProjectBean implements IsSerializable {
 
+    /** The project description. */
+    private String m_description;
+
     /** The project id.*/
     private CmsUUID m_id;
-
-    /** The project type. */
-    private int m_type;
 
     /** The project name.*/
     private String m_name;
 
-    /** The project description. */
-    private String m_description;
+    /** The project type. */
+    private int m_type;
 
     /** 
      * Creates a new project bean.<p> 
@@ -111,5 +111,15 @@ public class CmsProjectBean implements IsSerializable {
     public int getType() {
 
         return m_type;
+    }
+
+    /**
+     * Returns if the project is of the type workflow project.<p>
+     * 
+     * @return <code>true</code> if the project is of the type workflow project
+     */
+    public boolean isWorkflowProject() {
+
+        return m_type == 2;
     }
 }

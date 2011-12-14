@@ -233,11 +233,11 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
 
-    /** Flag which indicates whether only resources with problems should be shown. */
-    private boolean m_showProblemsOnly;
-
     /** Flag indicating that the panel has been initialized. */
     private boolean m_initialized;
+
+    /** Flag which indicates whether only resources with problems should be shown. */
+    private boolean m_showProblemsOnly;
 
     /**
      * Creates a new instance.<p>
@@ -263,39 +263,53 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         initWidget(UI_BINDER.createAndBindUi(this));
         m_scrollPanel.getElement().getStyle().setPropertyPx(CmsDomUtil.Style.maxHeight.toString(), scrollPanelHeight);
         m_checkboxProblems.setVisible(false);
-        LinkedHashMap<String, String> workflowItems = new LinkedHashMap<String, String>();
+        CmsMessages messages = Messages.get();
+        LinkedHashMap<String, String> workflowSelectorItems = new LinkedHashMap<String, String>();
         for (CmsWorkflow workflow : workflows.values()) {
-            workflowItems.put(workflow.getId(), workflow.getNiceName());
+            workflowSelectorItems.put(workflow.getId(), workflow.getNiceName());
         }
-        m_workflowSelector.setItems(workflowItems);
-        m_workflowSelector.setFormValueAsString(selectedWorkflowId);
+        LinkedHashMap<String, String> projectSelectItems = new LinkedHashMap<String, String>();
+        projectSelectItems.put(CmsUUID.getNullUUID().toString(), messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
+        boolean foundOldProject = false;
+        boolean selectedWorkflowProject = false;
+        for (CmsProjectBean project : projects) {
+            if (project.isWorkflowProject()) {
+                workflowSelectorItems.put(project.getId().toString(), project.getName());
+                if (project.getId().equals(publishOptions.getProjectId())) {
+                    selectedWorkflowProject = true;
+                }
+            } else {
+                projectSelectItems.put(project.getId().toString(), project.getName());
+                // look if the project id from the last publish list is among the available projects.
+                // (this might not be the case if the project has been deleted in the meantime.)
+                if (project.getId().equals(publishOptions.getProjectId())) {
+                    foundOldProject = true;
+                }
+            }
+        }
+
+        m_workflowSelector.setItems(workflowSelectorItems);
+
         m_workflowSelector.addStyleName(CSS.selector());
         if (!(workflows.size() > 1)) {
             m_workflowSelector.setEnabled(false);
         }
-        CmsMessages messages = Messages.get();
+
         m_workflowsLabel.setText(messages.key(Messages.GUI_PUBLISH_WORKFLOW_SELECT_0));
-        LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
-        items.put(CmsUUID.getNullUUID().toString(), messages.key(Messages.GUI_PUBLISH_DIALOG_MY_CHANGES_0));
-        boolean foundOldProject = false;
-        for (CmsProjectBean project : projects) {
-            items.put(project.getId().toString(), project.getName());
-            // look if the project id from the last publish list is among the available projects.
-            // (this might not be the case if the project has been deleted in the meantime.)
-            if (project.getId().equals(publishOptions.getProjectId())) {
-                foundOldProject = true;
-            }
-        }
-        m_projectSelector.setItems(items);
+
+        m_projectSelector.setItems(projectSelectItems);
         m_projectSelector.addStyleName(CSS.selector());
-        if (!publishOptions.getProjectId().isNullUUID()) {
+        if (!publishOptions.getProjectId().isNullUUID() && foundOldProject) {
             m_projectSelector.setFormValueAsString(publishOptions.getProjectId().toString());
         }
 
         m_checkboxRelated.setChecked(publishOptions.isIncludeRelated());
         m_checkboxSiblings.setChecked(publishOptions.isIncludeSiblings());
-        if (foundOldProject) {
-            m_projectSelector.selectValue(publishOptions.getProjectId().toString());
+        if (selectedWorkflowProject) {
+            m_projectSelector.setEnabled(false);
+            m_workflowSelector.setFormValueAsString(publishOptions.getProjectId().toString());
+        } else {
+            m_workflowSelector.setFormValueAsString(selectedWorkflowId);
         }
         m_cancelButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
         m_cancelButton.setUseMinWidth(true);
@@ -499,6 +513,24 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
+     * Updates the dialog title.<p>
+     **/
+    public void updateDialogTitle() {
+
+        String title;
+        if (m_model.getGroups().size() > 1) {
+            title = Messages.get().key(
+                Messages.GUI_PUBLISH_DIALOG_TITLE_3,
+                m_publishDialog.getSelectedWorkflow().getNiceName(),
+                String.valueOf(m_model.getGroups().size()),
+                String.valueOf(m_model.getPublishResources().size()));
+        } else {
+            title = m_publishDialog.getSelectedWorkflow().getNiceName();
+        }
+        m_publishDialog.setCaption(title);
+    }
+
+    /**
      * Adds more groups if there are still undisplayed groups left.<p>
      */
     protected void addMoreGroups() {
@@ -607,7 +639,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         if (m_initialized) {
             m_publishDialog.setProjectId(new CmsUUID(event.getValue()));
-            m_publishDialog.onChangeOptions();
+            m_publishDialog.updateResourceList();
         }
     }
 
@@ -622,7 +654,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     protected void onRelatedClick(ClickEvent event) {
 
         m_publishDialog.setIncludeRelated(m_checkboxRelated.isChecked());
-        m_publishDialog.onChangeOptions();
+        m_publishDialog.updateResourceList();
     }
 
     /**
@@ -664,7 +696,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     protected void onSiblingClick(ClickEvent event) {
 
         m_publishDialog.setIncludeSiblings(m_checkboxSiblings.isChecked());
-        m_publishDialog.onChangeOptions();
+        m_publishDialog.updateResourceList();
     }
 
     /**
@@ -679,8 +711,16 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         if (m_initialized) {
             m_publishDialog.setWorkflowId(event.getValue());
+            // check for workflow project
+            if (!m_publishDialog.getSelectedWorkflow().getId().equals(event.getValue())) {
+                m_publishDialog.setProjectId(new CmsUUID(event.getValue()));
+                m_projectSelector.setEnabled(false);
+            } else {
+                m_projectSelector.setEnabled(true);
+                m_publishDialog.setProjectId(new CmsUUID(m_projectSelector.getFormValueAsString()));
+            }
             m_actions = m_publishDialog.getSelectedWorkflow().getActions();
-            m_publishDialog.onChangeOptions();
+            m_publishDialog.updateResourceList();
         }
     }
 
@@ -793,23 +833,5 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_problemsPanel.setVisible(true);
         }
         m_checkboxProblems.setVisible(numProblems > 0);
-    }
-
-    /**
-     * Updates the dialog title.<p>
-     **/
-    public void updateDialogTitle() {
-
-        String title;
-        if (m_model.getGroups().size() > 1) {
-            title = Messages.get().key(
-                Messages.GUI_PUBLISH_DIALOG_TITLE_3,
-                m_publishDialog.getSelectedWorkflow().getNiceName(),
-                String.valueOf(m_model.getGroups().size()),
-                String.valueOf(m_model.getPublishResources().size()));
-        } else {
-            title = m_publishDialog.getSelectedWorkflow().getNiceName();
-        }
-        m_publishDialog.setCaption(title);
     }
 }
