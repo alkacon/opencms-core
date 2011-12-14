@@ -127,7 +127,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public static String getNoPreviewReason(CmsObject cms, CmsResource resource) {
 
         String noPreviewReason = null;
-        if (resource.isFolder()) {
+        if (resource.getState().isDeleted()) {
+            noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_DELETED_0);
+        } else if (resource.isFolder()) {
             noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_FOLDER_0);
         } else {
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(resource.getRootPath());
