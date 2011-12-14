@@ -35,8 +35,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.notification.A_CmsNotification;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
+
+import org.apache.commons.mail.EmailException;
 
 /**
  * Notification class for the workflow 'release' action.<p>
@@ -71,6 +74,8 @@ public class CmsWorkflowNotification extends A_CmsNotification {
      * @param project the workflow project 
      * @param resources the workflow resources 
      * @param link the link used for publishing the resources 
+     * 
+     * @throws EmailException if an email error occurs 
      */
     public CmsWorkflowNotification(
         CmsObject adminCms,
@@ -79,9 +84,9 @@ public class CmsWorkflowNotification extends A_CmsNotification {
         String notificationContent,
         CmsProject project,
         List<CmsResource> resources,
-        String link) {
+        String link)
+    throws EmailException {
 
-        // TODO: Auto-generated constructor stub
         super(userCms, receiver);
         m_notificationContent = notificationContent;
         m_adminCms = adminCms;
@@ -89,6 +94,10 @@ public class CmsWorkflowNotification extends A_CmsNotification {
         m_project = project;
         m_resources = resources;
         m_link = link;
+        String userAddress = userCms.getRequestContext().getCurrentUser().getEmail();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(userAddress)) {
+            setFrom(userAddress);
+        }
     }
 
     /**
@@ -132,12 +141,12 @@ public class CmsWorkflowNotification extends A_CmsNotification {
 
         StringBuffer buffer = new StringBuffer();
         //----------INTRODUCTION LINE---------------------------------
-        buffer.append("<div class='user_line'>");
+        buffer.append("<div class=\"user_line\">");
         buffer.append(getMessage(Messages.MAIL_USER_LINE_1, m_userCms.getRequestContext().getCurrentUser().getName()));
         buffer.append("</div>");
 
         //----------RESOURCE TABLE-------------------------------------
-        buffer.append("<table cellspacing='0' cellpadding='4' class='resource_table'>");
+        buffer.append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"4\" class=\"resource_table\">");
         String[] tableHeaders = getResourceInfoHeaders();
         buffer.append("<tr>");
         for (String header : tableHeaders) {
@@ -160,7 +169,7 @@ public class CmsWorkflowNotification extends A_CmsNotification {
         buffer.append("</table>");
 
         //---------PUBLISH LINK-----------------------------------------
-        buffer.append("<div class='publish_link'>");
+        buffer.append("<div class=\"publish_link\">");
         buffer.append(getMessage(Messages.MAIL_PUBLISH_LINK_1, m_link));
         buffer.append("</div>");
         return buffer.toString();

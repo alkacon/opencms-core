@@ -150,9 +150,9 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
             CmsRelease release = new CmsRelease(cms, options);
             return release.getPublishResourceBeans();
         } else {
-            return super.getWorkflowPublishResources(cms, workflow, options);
+            CmsExtendedPublish publish = new CmsExtendedPublish(cms, options);
+            return publish.getPublishResourceBeans();
         }
-
     }
 
     /**
@@ -166,7 +166,8 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
             CmsRelease release = new CmsRelease(cms, options);
             return release.getPublishResources();
         } else {
-            return super.getWorkflowResources(cms, workflow, options);
+            CmsExtendedPublish publish = new CmsExtendedPublish(cms, options);
+            return publish.getPublishResources();
         }
     }
 
@@ -450,7 +451,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
         String username = user.getName();
         String result = Messages.get().getBundle(locale).key(Messages.GUI_WORKFLOW_PROJECT_NAME_2, username, dateStr);
-        result = result.replaceAll("[/\\\\]", "_");
+        result = result.replaceAll("/", "|");
 
         return result;
     }
