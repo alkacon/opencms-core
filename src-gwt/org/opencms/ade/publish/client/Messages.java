@@ -85,7 +85,10 @@ public final class Messages {
     public static final String GUI_PUBLISH_DIALOG_PUBLISH_0 = "GUI_PUBLISH_DIALOG_PUBLISH_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_DIALOG_TITLE_0 = "GUI_PUBLISH_DIALOG_TITLE_0";
+    public static final String GUI_PUBLISH_DIALOG_TITLE_3 = "GUI_PUBLISH_DIALOG_TITLE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DIALOG_PROBLEMS_2 = "GUI_PUBLISH_DIALOG_PROBLEMS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_REMOVE_BUTTON_0 = "GUI_PUBLISH_REMOVE_BUTTON_0";

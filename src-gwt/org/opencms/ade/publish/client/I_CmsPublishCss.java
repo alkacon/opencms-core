@@ -154,6 +154,13 @@ public interface I_CmsPublishCss extends CssResource {
      * 
      * @return the CSS class name
      */
+    String selectorLabel();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return the CSS class name
+     */
     String selectorPanel();
 
     /** 

@@ -180,6 +180,17 @@ public class CmsBrokenLinksPanel extends Composite {
     }
 
     /**
+     * Updates the dialog title.<p>
+     **/
+    public void updateTitle() {
+
+        m_publishDialog.setCaption(Messages.get().key(
+            Messages.GUI_PUBLISH_DIALOG_PROBLEMS_2,
+            m_publishDialog.getSelectedWorkflow().getNiceName(),
+            String.valueOf(m_list.getWidgetCount())));
+    }
+
+    /**
      * The event handler for the back button.<p>
      * 
      * @param e the click event

@@ -68,7 +68,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -184,10 +183,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /** The publish dialog which contains this panel. */
     protected CmsPublishDialog m_publishDialog;
 
-    /** The label displaying the resource count. */
-    @UiField
-    protected InlineHTML m_resourceCountLabel;
-
     /** The scroll panel containing the group panel. */
     @UiField
     protected CmsScrollPanel m_scrollPanel;
@@ -198,10 +193,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /** The global map of selection controllers for all groups. */
     protected Map<CmsUUID, CmsPublishItemSelectionController> m_selectionControllers = Maps.newHashMap();
-
-    /** The label in front of the "select all/none" buttons. */
-    @UiField
-    protected InlineLabel m_selectLabel;
 
     /** The button for de-selecting all resources for publishing. */
     @UiField
@@ -279,6 +270,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_workflowSelector.setItems(workflowItems);
         m_workflowSelector.setFormValueAsString(selectedWorkflowId);
         m_workflowSelector.addStyleName(CSS.selector());
+        if (!(workflows.size() > 1)) {
+            m_workflowSelector.setEnabled(false);
+        }
         CmsMessages messages = Messages.get();
         m_workflowsLabel.setText(messages.key(Messages.GUI_PUBLISH_WORKFLOW_SELECT_0));
         LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
@@ -286,13 +280,11 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         boolean foundOldProject = false;
         for (CmsProjectBean project : projects) {
             items.put(project.getId().toString(), project.getName());
-
             // look if the project id from the last publish list is among the available projects.
             // (this might not be the case if the project has been deleted in the meantime.)
             if (project.getId().equals(publishOptions.getProjectId())) {
                 foundOldProject = true;
             }
-
         }
         m_projectSelector.setItems(items);
         m_projectSelector.addStyleName(CSS.selector());
@@ -305,25 +297,18 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         if (foundOldProject) {
             m_projectSelector.selectValue(publishOptions.getProjectId().toString());
         }
-
         m_cancelButton.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_CANCEL_BUTTON_0));
         m_cancelButton.setUseMinWidth(true);
-
         m_selectAll.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_ALL_BUTTON_0));
         m_selectAll.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageChecked());
         m_selectAll.setUseMinWidth(true);
-
         m_selectNone.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_NONE_BUTTON_0));
         m_selectNone.setImageClass(I_CmsInputLayoutBundle.INSTANCE.inputCss().checkBoxImageUnchecked());
         m_selectNone.setUseMinWidth(true);
-
         m_noResources.setText(messages.key(Messages.GUI_PUBLISH_DIALOG_NO_RES_0));
-
         m_checkboxSiblings.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_SIBLINGS_0));
         m_checkboxRelated.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_REL_RES_0));
         m_checkboxProblems.setText(messages.key(Messages.GUI_PUBLISH_CHECKBOXES_PROBLEMS_0));
-
-        m_selectLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_LEFT_LABEL_0));
         m_selectorLabel.setText(messages.key(Messages.GUI_PUBLISH_TOP_PANEL_RIGHT_LABEL_0));
         addScrollHandler();
         m_initialized = true;
@@ -464,7 +449,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public void setGroups(List<CmsPublishGroup> groups, boolean newData) {
 
         m_model = new CmsPublishDataModel(groups, this);
-        m_resourceCountLabel.setHTML(formatResourceCount(m_model.getPublishResources().size()));
         m_currentGroupIndex = 0;
         m_currentGroupPanel = null;
         m_problemsPanel.clear();
@@ -809,5 +793,23 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_problemsPanel.setVisible(true);
         }
         m_checkboxProblems.setVisible(numProblems > 0);
+    }
+
+    /**
+     * Updates the dialog title.<p>
+     **/
+    public void updateDialogTitle() {
+
+        String title;
+        if (m_model.getGroups().size() > 1) {
+            title = Messages.get().key(
+                Messages.GUI_PUBLISH_DIALOG_TITLE_3,
+                m_publishDialog.getSelectedWorkflow().getNiceName(),
+                String.valueOf(m_model.getGroups().size()),
+                String.valueOf(m_model.getPublishResources().size()));
+        } else {
+            title = m_publishDialog.getSelectedWorkflow().getNiceName();
+        }
+        m_publishDialog.setCaption(title);
     }
 }

@@ -61,6 +61,10 @@
 	width: 10px;
 }
 
+span.selectorLabel{
+	margin-left:5px;
+}
+
 .selectorPanel {
 	float: right;
 }
@@ -104,11 +108,10 @@
 
 .topBar {
 	margin-bottom: 5px;
-	margin-left: 5px;
 }
 
 .topBar > div {
-	margin-left: 4px;
+	margin-right: 4px;
 }
 	
 .selector {

@@ -185,7 +185,7 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public CmsPublishDialog(CmsPublishData initData) {
 
-        super(Messages.get().key(Messages.GUI_PUBLISH_DIALOG_TITLE_0), 800);
+        super(800);
         initCss();
         setGlassEnabled(true);
         setPositionFixed();
@@ -390,10 +390,12 @@ public class CmsPublishDialog extends CmsPopup {
             for (CmsPushButton button : m_publishSelectPanel.getButtons()) {
                 addButton(button);
             }
+            m_publishSelectPanel.updateDialogTitle();
         } else if (panelId == PANEL_BROKEN_LINKS) {
             for (CmsPushButton button : m_brokenLinksPanel.getButtons()) {
                 addButton(button);
             }
+            m_brokenLinksPanel.updateTitle();
         }
     }
 
