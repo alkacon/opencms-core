@@ -58,6 +58,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String MAIL_PUBLISH_LINK_1 = "MAIL_PUBLISH_LINK_1";
 
     /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_PROJECT_NAME_2 = "GUI_WORKFLOW_PROJECT_NAME_2";
+
+    /** Message key for the resource bundle. */
+    public static final String GUI_WORKFLOW_PROJECT_DESCRIPTION_2 = "GUI_WORKFLOW_PROJECT_DESCRIPTION_2";
+
+    /** Message key for the resource bundle. */
     public static final String GUI_WORKFLOW_PUBLISH_0 = "GUI_WORKFLOW_PUBLISH_0";
 
     /** Message key for the resource bundle. */

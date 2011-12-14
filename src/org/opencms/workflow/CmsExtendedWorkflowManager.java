@@ -47,12 +47,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishEventAdapter;
 import org.opencms.publish.CmsPublishJobEnqueued;
 import org.opencms.publish.CmsPublishJobRunning;
-import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -403,13 +401,17 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     protected String generateProjectDescription(CmsObject userCms) {
 
         CmsUser user = userCms.getRequestContext().getCurrentUser();
-        Calendar calendar = Calendar.getInstance();
+        OpenCms.getLocaleManager();
+        Locale locale = CmsLocaleManager.getDefaultLocale();
         long time = System.currentTimeMillis();
-        calendar.setTimeInMillis(time);
-        Date date = calendar.getTime();
-        DateFormat format = DateFormat.getDateTimeInstance();
+        Date date = new Date(time);
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale);
         String dateString = format.format(date);
-        return "Workflow project created by " + user.getName() + " at " + dateString;
+        String result = Messages.get().getBundle(locale).key(
+            Messages.GUI_WORKFLOW_PROJECT_DESCRIPTION_2,
+            user.getName(),
+            dateString);
+        return result;
     }
 
     /**
@@ -447,10 +449,9 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         DateFormat timeFormat = DateFormat.getTimeInstance(shortTime ? DateFormat.SHORT : DateFormat.MEDIUM, locale);
         String dateStr = dateFormat.format(date) + " " + timeFormat.format(date);
         String username = user.getName();
-        CmsResourceTranslator translator = OpenCms.getResourceManager().getFileTranslator();
-        username = translator.translateResource(username);
-        String result = "WF " + username + " " + dateStr;
+        String result = Messages.get().getBundle(locale).key(Messages.GUI_WORKFLOW_PROJECT_NAME_2, username, dateStr);
         result = result.replaceAll("[/\\\\]", "_");
+
         return result;
     }
 
@@ -481,7 +482,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
         String result = getParameter(
             PARAM_NOTIFICATION_CONTENT,
-            "/system/workplace/admin/notification/workplace-notification");
+            "/system/workplace/admin/notification/workflow-notification");
         return result;
     }
 
