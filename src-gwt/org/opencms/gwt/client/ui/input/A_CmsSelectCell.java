@@ -27,10 +27,15 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.util.CmsDomUtil;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * An abstract class for widgets which represent options for select boxes.<p>
@@ -39,6 +44,21 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  */
 public abstract class A_CmsSelectCell extends Composite {
+
+    /**
+     * Measures the required width for this cell.<p>
+     * 
+     * @return the required width
+     */
+    public int getRequiredWidth() {
+
+        Element clone = CmsDomUtil.clone(getElement());
+        clone.getStyle().setPosition(Position.ABSOLUTE);
+        RootPanel.getBodyElement().appendChild(clone);
+        int result = clone.getOffsetWidth();
+        clone.removeFromParent();
+        return result;
+    }
 
     /**
      * Returns the value of the select option as a string.<p>

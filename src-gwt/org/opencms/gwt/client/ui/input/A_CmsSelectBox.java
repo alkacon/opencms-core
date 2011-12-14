@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
@@ -86,9 +87,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /** The layout bundle. */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
-    /** Text metrics key. */
-    private static final String TM_OPTION = "Option";
-
     /** The UiBinder instance used for this widget. */
     private static I_CmsSelectBoxUiBinder uiBinder = GWT.create(I_CmsSelectBoxUiBinder.class);
 
@@ -133,6 +131,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
 
     /** The value of the first select option. */
     private String m_firstValue;
+
+    /** The maximum cell width. */
+    private int m_maxCellWidth;
 
     /** The text metrics prefix. */
     private String m_textMetricsPrefix;
@@ -345,12 +346,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         m_textMetricsPrefix = textMetricsPrefix;
         m_widgetWidth = widgetWidth;
         truncateOpener(textMetricsPrefix, widgetWidth);
-        int labelWidth = widgetWidth - 2 - 5; // 2px border left/right + 5px left margin
-        for (Widget widget : m_selector) {
-            if (widget instanceof I_CmsTruncable) {
-                ((I_CmsTruncable)widget).truncate(textMetricsPrefix + TM_OPTION, labelWidth);
-            }
-        }
     }
 
     /**
@@ -396,6 +391,24 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         toggleOpen();
     }
 
+    /**
+     * Initializes the selector width.<p>
+     */
+    protected void initMaxCellWidth() {
+
+        m_maxCellWidth = m_opener.getOffsetWidth() - 2 /*border*/;
+        for (Widget widget : m_selector) {
+            if (widget instanceof A_CmsSelectCell) {
+                int cellWidth = ((A_CmsSelectCell)widget).getRequiredWidth();
+                CmsDebugLog.getInstance().printLine(
+                    "Measure for " + ((A_CmsSelectCell)widget).getElement().getInnerText() + ": " + cellWidth);
+                if (cellWidth > m_maxCellWidth) {
+                    m_maxCellWidth = cellWidth;
+                }
+            }
+        }
+    }
+
     /** 
      * The implementation of this method should initialize the opener of the select box.<p>
      */
@@ -426,18 +439,34 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         }
 
         m_openClose.setDown(true);
-        int newWidth = m_opener.getOffsetWidth() - 2 /*border*/;
-        m_popup.setWidth(newWidth + "px");
+        if (m_maxCellWidth == 0) {
+            initMaxCellWidth();
+        }
+        int selectorWidth = m_maxCellWidth;
+        // should not be any wider than the actual window
+        int windowWidth = Window.getClientWidth();
+        if (m_maxCellWidth > windowWidth) {
+            selectorWidth = windowWidth - 10;
+        }
+        m_popup.setWidth(selectorWidth + "px");
         m_popup.show();
         int panelTop = m_panel.getElement().getAbsoluteTop();
         int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
         int popupHeight = m_popup.getOffsetHeight();
+        int dx = 0;
+        if (selectorWidth > (m_opener.getOffsetWidth() - 2)) {
+            int spaceOnTheRight = (Window.getClientWidth() + Window.getScrollLeft())
+                - m_opener.getAbsoluteLeft()
+                - selectorWidth
+                - 2;
+            dx = spaceOnTheRight < 0 ? spaceOnTheRight : 0;
+        }
         if (((Window.getClientHeight() - (panelTop + openerHeight)) < popupHeight) && (panelTop > popupHeight)) {
-            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), 0, -(popupHeight - 2));
+            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, -(popupHeight - 2));
             m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
             m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
         } else {
-            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), 0, openerHeight);
+            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, openerHeight);
             m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
             m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
         }
@@ -500,8 +529,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      */
     private void initSelectCell(final A_CmsSelectCell cell) {
 
-        cell.addStyleName(CSS.selectBoxCell());
-
         cell.registerDomHandler(new ClickHandler() {
 
             /**
@@ -536,7 +563,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
                 cell.removeStyleName(CSS.selectHover());
             }
         }, MouseOutEvent.getType());
-
     }
 
     /**

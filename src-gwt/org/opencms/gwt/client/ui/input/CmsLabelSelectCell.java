@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.I_CmsTruncable;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
 /**
  * This class represents a single select option in the selector of the select box.
@@ -61,6 +62,7 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
         m_value = value;
         m_text = text;
         initWidget(m_label);
+        addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectBoxCell());
         m_label.setText(m_text);
         m_label.setTitle(m_text);
     }

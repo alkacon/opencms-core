@@ -83,6 +83,7 @@ public class CmsTemplateSelectCell extends A_CmsSelectCell implements I_CmsTrunc
     public CmsTemplateSelectCell() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectBoxCell());
     }
 
     /**
