@@ -58,6 +58,8 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -262,6 +264,19 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Composite#onBrowserEvent(com.google.gwt.user.client.Event)
+     */
+    @Override
+    public void onBrowserEvent(Event event) {
+
+        // Should not act on button if disabled.
+        if (isEnabled() == false) {
+            return;
+        }
+        super.onBrowserEvent(event);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
      */
     public void reset() {
@@ -298,6 +313,13 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
 
         close();
         m_enabled = enabled;
+        DOM.setElementPropertyBoolean(getElement(), "disabled", !enabled);
+        m_openClose.setEnabled(enabled);
+        if (enabled) {
+            removeStyleName(CSS.selectBoxDisabled());
+        } else {
+            addStyleName(CSS.selectBoxDisabled());
+        }
     }
 
     /**

@@ -252,6 +252,13 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String selectBoxDisabled();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String selectBoxOpener();
 
     /**

@@ -183,6 +183,14 @@ input.textBoxReadOnly {
     z-index: value("constants.css.zIndexInline");
 }
 
+.selectBoxRoot.selectBoxDisabled .selectBoxSelected{
+	background-color: value("constants.css.backgroundColorStateDisabled");
+	color: value("constants.css.textColorDisabled");
+}
+.selectBoxRoot.selectBoxDisabled .selectBoxSelected *{
+	color: value("constants.css.textColorDisabled");
+}
+
 @sprite .openerNoHover.selectBoxSelected {
 	width: auto; 
 	height:auto;
