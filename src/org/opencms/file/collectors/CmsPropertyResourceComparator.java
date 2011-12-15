@@ -50,17 +50,17 @@ import java.util.Map;
  * Serves as {@link java.util.Comparator} for resources and as comparator key for the resource
  * at the same time. Uses lazy initializing of comparator keys in a resource.<p>
  *  
- * @since 8.0.3 
+ * @since 8.0.4
  */
 public class CmsPropertyResourceComparator implements Serializable, Comparator<CmsResource> {
 
     /** Serial version UID required for safe serialization. */
-	private static final long serialVersionUID = -7943213182160054552L;
-	
+    private static final long serialVersionUID = -7943213182160054552L;
+
     /** The sort order. */
     private boolean m_asc;
 
-	/** The current OpenCms user context. */
+    /** The current OpenCms user context. */
     private transient CmsObject m_cms;
 
     /** The internal map of comparator keys. */
@@ -68,7 +68,7 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
 
     /** The property name of this comparator key. */
     private String m_property;
-    
+
     /** The property value of this comparator key. */
     private String m_propertyValue;
 
@@ -79,12 +79,12 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
      * @param property the name of the sort property (case sensitive)  
      * @param asc the sort order (true=asc, false=desc)
      */
-    public CmsPropertyResourceComparator (CmsObject cms, String  property, boolean asc) {
-    	
-    	m_property = property;
-    	m_asc = asc;
-    	m_cms = cms;        
-    	m_keys = new HashMap<CmsUUID, CmsPropertyResourceComparator>();
+    public CmsPropertyResourceComparator(CmsObject cms, String property, boolean asc) {
+
+        m_property = property;
+        m_asc = asc;
+        m_cms = cms;
+        m_keys = new HashMap<CmsUUID, CmsPropertyResourceComparator>();
     }
 
     /**
@@ -96,7 +96,7 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
      * 
      * @return a new instance of this comparator key
      */
-     private static CmsPropertyResourceComparator create(CmsResource resource, CmsObject cms, String property) {
+    private static CmsPropertyResourceComparator create(CmsResource resource, CmsObject cms, String property) {
 
         CmsPropertyResourceComparator result = new CmsPropertyResourceComparator(null, null, false);
         result.init(resource, cms, property);
@@ -125,14 +125,14 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
             key1 = CmsPropertyResourceComparator.create(res1, m_cms, m_property);
             m_keys.put(res1.getStructureId(), key1);
         }
-       
+
         // select a different sort methode for strings or number values                
-        if (isNumeric( key0.getPropertyValue() ) && isNumeric( key1.getPropertyValue() ) ) {
-        	// double can do it all.... ;-)
-        	double dKey0 = Double.parseDouble( key0.getPropertyValue() );
-        	double dKey1 = Double.parseDouble( key1.getPropertyValue() );
-        	
-        	if (m_asc) {
+        if (isNumeric(key0.getPropertyValue()) && isNumeric(key1.getPropertyValue())) {
+            // double can do it all.... ;-)
+            double dKey0 = Double.parseDouble(key0.getPropertyValue());
+            double dKey1 = Double.parseDouble(key1.getPropertyValue());
+
+            if (m_asc) {
                 // sort in ascending order
                 if (dKey0 > dKey1) {
                     return 1;
@@ -151,15 +151,15 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
             }
 
         } else {
-	        // sort by property value depending on the locale
-	        Collator collator = Collator.getInstance(m_cms.getRequestContext().getLocale());        
-	        if (m_asc) {
-	        	// sort in ascending order
-	        	return collator.compare(key0.getPropertyValue(), key1.getPropertyValue());
-	        } else {
-	        	// sort in descending order
-	        	return collator.compare(key1.getPropertyValue(), key0.getPropertyValue());
-	        }
+            // sort by property value depending on the locale
+            Collator collator = Collator.getInstance(m_cms.getRequestContext().getLocale());
+            if (m_asc) {
+                // sort in ascending order
+                return collator.compare(key0.getPropertyValue(), key1.getPropertyValue());
+            } else {
+                // sort in descending order
+                return collator.compare(key1.getPropertyValue(), key0.getPropertyValue());
+            }
         }
         return 0;
     }
@@ -169,15 +169,15 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
      * 
      * @return property value of this resource comparator key
      */
-     public String getPropertyValue() {
-    	 
-    	if (!CmsStringUtil.isEmpty(m_propertyValue)) {
-    		return m_propertyValue.trim();
-    	} else {
-    		return "";
-    	}    	 
-     }
-         
+    public String getPropertyValue() {
+
+        if (!CmsStringUtil.isEmpty(m_propertyValue)) {
+            return m_propertyValue.trim();
+        } else {
+            return "";
+        }
+    }
+
     /**
      * Initializes the comparator key based on the member variables.<p> 
      * 
@@ -185,43 +185,45 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
      * @param cms the current OpenCms user contxt
      * @param property the name of the sort property (case sensitive)  
      */
-    private void init(CmsResource resource, CmsObject cms, String property)  {	
-    	    	
-		try {		
-			cms.readPropertyDefinition(property);
-			CmsProperty prop = cms.readPropertyObject(resource, property, false);
-			
-			if (prop == CmsProperty.getNullProperty()) {		
-				m_propertyValue ="";				
-			} else {
-				m_propertyValue = prop.getValue();
-			}			
-		}  catch (CmsDbEntryNotFoundException dbe)   {				
-			// property are not configured
-			throw new CmsIllegalArgumentException(Messages.get().container( Messages.ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_0 , property));
-		} catch (CmsException cmse) {				
-			// something's gone wrong...
-			cmse.printStackTrace();       	
-		}
+    private void init(CmsResource resource, CmsObject cms, String property) {
+
+        try {
+            cms.readPropertyDefinition(property);
+            CmsProperty prop = cms.readPropertyObject(resource, property, false);
+
+            if (prop == CmsProperty.getNullProperty()) {
+                m_propertyValue = "";
+            } else {
+                m_propertyValue = prop.getValue();
+            }
+        } catch (CmsDbEntryNotFoundException dbe) {
+            // property are not configured
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_0,
+                property));
+        } catch (CmsException cmse) {
+            // something's gone wrong...
+            cmse.printStackTrace();
+        }
     }
-    
+
     /**
      * Check if a string contains a numeric value.<p> 
      * 
      * @param string to check if is a numeric value
      *
      * @return true for a numeric value in the string
-     */    
-    private boolean isNumeric (String value) {
+     */
+    private boolean isNumeric(String value) {
 
-    	if ( !CmsStringUtil.isEmpty(value) ) {
-    		NumberFormat formatter = NumberFormat.getInstance();
-    		ParsePosition pos = new ParsePosition(0);
-    		formatter.parse(value, pos);
-    		return value.length() == pos.getIndex();
-    	} else {
-    		return false;
-    	}
+        if (!CmsStringUtil.isEmpty(value)) {
+            NumberFormat formatter = NumberFormat.getInstance();
+            ParsePosition pos = new ParsePosition(0);
+            formatter.parse(value, pos);
+            return value.length() == pos.getIndex();
+        } else {
+            return false;
+        }
     }
-           
+
 }
