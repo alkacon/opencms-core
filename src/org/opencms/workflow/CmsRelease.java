@@ -42,9 +42,13 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * A subclass of CmsPublish which builds resource lists for resources which can be released, rather than published.<p>
@@ -53,6 +57,22 @@ public class CmsRelease extends CmsPublish {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublish.class);
+
+    /** Computing map which keeps track of which projects are workflow projects. */
+    private Map<CmsUUID, Boolean> m_workflowProjectStatus = new MapMaker().makeComputingMap(new Function<CmsUUID, Boolean>() {
+
+        public Boolean apply(CmsUUID projectId) {
+
+            try {
+                CmsProject project = m_cms.readProject(projectId);
+                return new Boolean(project.isWorkflowProject());
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                return Boolean.FALSE;
+            }
+        }
+
+    });
 
     /**
      * Creates a new instance.<p>
@@ -198,14 +218,7 @@ public class CmsRelease extends CmsPublish {
      */
     private boolean isWorkflowProject(CmsUUID projectId) {
 
-        try {
-            CmsProject project = m_cms.readProject(projectId);
-            return project.isWorkflowProject();
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-            return false;
-        }
-
+        return m_workflowProjectStatus.get(projectId).booleanValue();
     }
 
 }
