@@ -184,6 +184,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         try {
             CmsResource permissionCheckFolder = cms.readResource(folderPath);
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
+            if (settings == null) {
+                return false;
+            }
             boolean editable = settings.isEditable(cms, permissionCheckFolder);
             boolean controlPermission = settings.getAccess().getPermissions(cms, permissionCheckFolder).requiresControlPermission();
             boolean hasWritePermission = cms.hasPermissions(
@@ -199,27 +202,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return false;
         } finally {
             cms.getRequestContext().setSiteRoot(oldSiteRoot);
-        }
-    }
-
-    /**
-     * Checks if a resource type is viewable for the current user. 
-     * If not, this resource type should not be available at all within the ADE 'add-wizard'.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param referenceUri the resource URI to check permissions for
-     * 
-     * @return <code>true</code> if the resource type is viewable 
-     */
-    public boolean checkViewable(CmsObject cms, String referenceUri) {
-
-        try {
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
-            CmsResource siteRoot = cms.readResource(referenceUri);
-            return settings.getAccess().getPermissions(cms, siteRoot).requiresViewPermission();
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            return false;
         }
     }
 
@@ -241,6 +223,31 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Checks if a resource type is viewable for the current user. 
+     * If not, this resource type should not be available at all within the ADE 'add-wizard'.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param referenceUri the resource URI to check permissions for
+     * 
+     * @return <code>true</code> if the resource type is viewable 
+     */
+    public boolean checkViewable(CmsObject cms, String referenceUri) {
+
+        try {
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
+            CmsResource siteRoot = cms.readResource(referenceUri);
+            if (settings == null) {
+                // no explorer type
+                return false;
+            }
+            return settings.getAccess().getPermissions(cms, siteRoot).requiresViewPermission();
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return false;
         }
     }
 
