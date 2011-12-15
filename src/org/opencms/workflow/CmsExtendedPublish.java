@@ -51,7 +51,7 @@ import com.google.common.collect.MapMaker;
 public class CmsExtendedPublish extends CmsPublish {
 
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsExtendedPublish.class);
+    protected static final Log LOG = CmsLog.getLog(CmsExtendedPublish.class);
 
     /** Computing map which keeps track of which projects are workflow projects. */
     private Map<CmsUUID, Boolean> m_workflowProjectStatus = new MapMaker().makeComputingMap(new Function<CmsUUID, Boolean>() {
@@ -59,6 +59,7 @@ public class CmsExtendedPublish extends CmsPublish {
         public Boolean apply(CmsUUID projectId) {
 
             try {
+                @SuppressWarnings("synthetic-access")
                 CmsProject project = m_cms.readProject(projectId);
                 return new Boolean(project.isWorkflowProject());
             } catch (CmsException e) {
