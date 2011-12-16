@@ -47,23 +47,19 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.util.CmsUUID;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FilterClause;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermsFilter;
 import org.apache.lucene.search.TopDocs;
 
@@ -122,29 +118,18 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     }
 
     /**
-     * Returns the Lucene document with the given root path from the index.<p>
+     * Returns the Lucene document with the given structure id from the index.<p>
      * 
      * @param structureId the structure id of the document to retrieve  
      * 
      * @return the Lucene document with the given root path from the index
+     * 
+     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link CmsGallerySearchFieldMapping#FIELD_RESOURCE_STRUCTURE_ID} as field to search in
      */
+    @Deprecated
     public Document getDocument(CmsUUID structureId) {
 
-        Document result = null;
-        IndexSearcher searcher = getSearcher();
-        if (searcher != null) {
-            // search for an exact match on the document root path
-            Term idTerm = new Term(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID, structureId.toString());
-            try {
-                TopDocs hits = searcher.search(new TermQuery(idTerm), 1);
-                if (hits.scoreDocs.length > 0) {
-                    result = searcher.doc(hits.scoreDocs[0].doc);
-                }
-            } catch (IOException e) {
-                // ignore, return null and assume document was not found
-            }
-        }
-        return result;
+        return getDocument(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID, structureId.toString());
     }
 
     /**
