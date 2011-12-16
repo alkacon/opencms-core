@@ -214,7 +214,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
 
     /** The Lucene Version used to create Query parsers and such. */
-    public static final Version LUCENE_VERSION = Version.LUCENE_34;
+    public static final Version LUCENE_VERSION = Version.LUCENE_35;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
     public static final String MAX_HITS = CmsSearchIndex.class.getName() + ".maxHits";
@@ -730,16 +730,34 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @param rootPath the root path of the document to get 
      * 
      * @return the Lucene document with the given root path from the index
+     * 
+     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link CmsSearchField#FIELD_PATH} as field to search in
      */
+    @Deprecated
     public Document getDocument(String rootPath) {
+
+        return getDocument(CmsSearchField.FIELD_PATH, rootPath);
+    }
+
+    /**
+     * Returns the first Lucene document where the given term matches the selected index field.<p>
+     * 
+     * Use this method to search for documents which have unique field values, like a unique id.<p>
+     * 
+     * @param field the field to search in
+     * @param term the term to search for
+     * 
+     * @return the first Lucene document where the given term matches the selected index field
+     */
+    public synchronized Document getDocument(String field, String term) {
 
         Document result = null;
         IndexSearcher searcher = getSearcher();
         if (searcher != null) {
-            // search for an exact match on the document root path
-            Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
+            // search for an exact match on the selected field
+            Term resultTerm = new Term(field, term);
             try {
-                TopDocs hits = searcher.search(new TermQuery(pathTerm), 1);
+                TopDocs hits = searcher.search(new TermQuery(resultTerm), 1);
                 if (hits.scoreDocs.length > 0) {
                     result = searcher.doc(hits.scoreDocs[0].doc);
                 }
@@ -1197,7 +1215,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         return m_indexWriter != null;
     }
-    
+
     /**
      * Removes an index source from this search index.<p>
      * 

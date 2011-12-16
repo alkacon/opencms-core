@@ -135,7 +135,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                 // extraction result has not been found in the cache
                 // compare "date of last modification of content" from Lucene index and OpenCms VFS
                 // if this is identical, then the data from the Lucene index can be re-used 
-                Document oldDoc = index.getDocument(resource.getRootPath());
+                Document oldDoc = index.getDocument(CmsSearchField.FIELD_PATH, resource.getRootPath());
                 // first check if the document is already in the index
                 if (oldDoc != null) {
                     // first obtain content date from Lucene index
