@@ -137,15 +137,32 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
             CmsPublishOptions options = getCachedOptions();
             List<CmsProjectBean> projects = getProjects();
+            boolean foundProject = false;
+            CmsUUID selectedProject = null;
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectParam) && CmsUUID.isValidUUID(projectParam)) {
-                CmsUUID selectedProject = new CmsUUID(projectParam);
+                selectedProject = new CmsUUID(projectParam);
                 // check if the selected project is a manageable project
                 for (CmsProjectBean project : projects) {
                     if (selectedProject.equals(project.getId())) {
-                        options.setProjectId(selectedProject);
+                        foundProject = true;
                         break;
                     }
                 }
+            }
+            if (!foundProject) {
+                selectedProject = options.getProjectId();
+                // check if the selected project is a manageable project
+                for (CmsProjectBean project : projects) {
+                    if (selectedProject.equals(project.getId())) {
+                        foundProject = true;
+                        break;
+                    }
+                }
+            }
+            if (foundProject) {
+                options.setProjectId(selectedProject);
+            } else {
+                options.setProjectId(CmsUUID.getNullUUID());
             }
             result = new CmsPublishData(
                 options,
