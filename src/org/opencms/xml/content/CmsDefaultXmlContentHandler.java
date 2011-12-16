@@ -90,6 +90,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -332,6 +333,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultXmlContentHandler.class);
+
+    /** The principal list separator. */
+    private static final String PRINCIPAL_LIST_SEPARATOR = ",";
 
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map<String, String> m_configurationValues;
@@ -1015,14 +1019,32 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         }
 
                         // set permission(s) using the element value(s)
+                        // the set with all selected principals
+                        TreeSet<String> allPrincipals = new TreeSet<String>();
                         String path = CmsXmlUtils.removeXpathIndex(value.getPath());
                         List<I_CmsXmlContentValue> values = content.getValues(path, locale);
                         Iterator<I_CmsXmlContentValue> j = values.iterator();
                         while (j.hasNext()) {
                             I_CmsXmlContentValue val = j.next();
                             String principalName = val.getStringValue(rootCms);
-                            rootCms.chacc(filename, principalType, principalName, permissionString);
-
+                            // the prinicipal name can be a principal list
+                            List<String> principalNames = CmsStringUtil.splitAsList(
+                                principalName,
+                                PRINCIPAL_LIST_SEPARATOR);
+                            // iterate over the principals
+                            Iterator<String> iterPrincipals = principalNames.iterator();
+                            while (iterPrincipals.hasNext()) {
+                                // get the next principal
+                                String principal = iterPrincipals.next();
+                                allPrincipals.add(principal);
+                            }
+                        }
+                        // iterate over the set with all principals and set the permissions
+                        Iterator<String> iterAllPricinipals = allPrincipals.iterator();
+                        while (iterAllPricinipals.hasNext()) {
+                            // get the next principal
+                            String principal = iterAllPricinipals.next();
+                            rootCms.chacc(filename, principalType, principal, permissionString);
                         }
                         // special case: permissions are written only to one sibling, end loop
                         i = 0;
@@ -2332,8 +2354,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             CmsCategoryService.getInstance().readCategory(cms, catPath, refPath);
             if (((CmsCategoryWidget)widget).isOnlyLeafs()) {
                 if (!CmsCategoryService.getInstance().readCategories(cms, catPath, false, refPath).isEmpty()) {
-                    errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                        Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
+                    errorHandler.addError(
+                        value,
+                        Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
                 }
             }
         } catch (CmsDataAccessException e) {
@@ -2342,8 +2365,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-            errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
+            errorHandler.addError(
+                value,
+                Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
         } catch (CmsException e) {
             // unexpected error
             if (LOG.isErrorEnabled()) {
@@ -2398,15 +2422,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 if (!res.isReleased(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
+                        errorHandler.addWarning(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
                     }
                     return true;
                 } else if (res.isExpired(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
+                        errorHandler.addWarning(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
                     }
                     return true;
                 }
@@ -2414,8 +2442,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         } catch (CmsException e) {
             if (errorHandler != null) {
                 // generate error message
-                errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                    Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
+                errorHandler.addError(
+                    value,
+                    Messages.get().getBundle(value.getLocale()).key(Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
             }
             return true;
         }

@@ -28,6 +28,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -103,44 +104,31 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    @Override
-    public void setEditorValue(
-        CmsObject cms,
-        Map<String, String[]> formParameters,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) {
-
-        String[] values = formParameters.get(param.getId());
-        if ((values != null) && (values.length > 0)) {
-            StringBuffer value = new StringBuffer(128);
-            for (int i = 0; i < values.length; i++) {
-                if (i > 0) {
-                    value.append(',');
-                }
-                value.append(values[i]);
-            }
-            // set the value
-            param.setStringValue(cms, value.toString());
-        } else {
-            // erase:
-            param.setStringValue(cms, "");
-        }
-    }
-
-    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
-    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+    public static String getMultiSelectDialogWidget(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param,
+        A_CmsSelectWidget widget,
+        boolean asCheckBoxes,
+        String height) {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
 
-        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
+        List options = widget.parseSelectOptions(cms, widgetDialog, param);
         result.append("<td class=\"xmlTd\">");
-        if (!m_asCheckBoxes) {
-            result.append("<select multiple size='");
+        // the configured select widget height start element
+        if (asCheckBoxes && CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
+            result.append("<div style=\"height: " + height + "; overflow: auto;\">");
+        }
+        if (!asCheckBoxes) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
+                result.append("<select style=\"height: " + height + ";\" multiple size='");
+            } else {
+                result.append("<select multiple size='");
+            }
             result.append(options.size());
             result.append("' class=\"xmlInput");
             if (param.hasError()) {
@@ -154,12 +142,12 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
         }
 
         // get select box options from default value String
-        List<String> selected = getSelectedValues(cms, param);
-        Iterator<CmsSelectWidgetOption> i = options.iterator();
+        List selected = widget.getSelectedValues(cms, param);
+        Iterator i = options.iterator();
         while (i.hasNext()) {
-            CmsSelectWidgetOption option = i.next();
+            CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
             // create the option
-            if (!m_asCheckBoxes) {
+            if (!asCheckBoxes) {
                 result.append("<option value=\"");
                 result.append(option.getValue());
                 result.append("\"");
@@ -183,12 +171,50 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
                 result.append("<br>");
             }
         }
-        if (!m_asCheckBoxes) {
+        if (!asCheckBoxes) {
             result.append("</select>");
+        }
+        // the configured select widget height end element
+        if (asCheckBoxes && CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
+            result.append("</div>");
         }
         result.append("</td>");
 
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public static void setMultiSelectEditorValue(
+        CmsObject cms,
+        Map formParameters,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        String[] values = (String[])formParameters.get(param.getId());
+        if ((values != null) && (values.length > 0)) {
+            StringBuffer value = new StringBuffer(128);
+            for (int i = 0; i < values.length; i++) {
+                if (i > 0) {
+                    value.append(',');
+                }
+                value.append(values[i]);
+            }
+            // set the value
+            param.setStringValue(cms, value.toString());
+        } else {
+            // erase:
+            param.setStringValue(cms, "");
+        }
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        return getMultiSelectDialogWidget(cms, widgetDialog, param, this, m_asCheckBoxes, null);
     }
 
     /**
@@ -197,5 +223,18 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
     public I_CmsWidget newInstance() {
 
         return new CmsMultiSelectWidget(getConfiguration());
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
+    public void setEditorValue(
+        CmsObject cms,
+        Map<String, String[]> formParameters,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        setMultiSelectEditorValue(cms, formParameters, widgetDialog, param);
     }
 }
