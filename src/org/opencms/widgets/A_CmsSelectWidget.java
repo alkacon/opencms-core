@@ -45,6 +45,12 @@ import java.util.List;
  */
 public abstract class A_CmsSelectWidget extends A_CmsWidget {
 
+    /** Configuration parameter to set the height from the select widget in pixel. */
+    public static final String CONFIGURATION_HEIGHT = "height";
+
+    /** The select widget height in pixel. */
+    private String m_height;
+
     /** The possible options for the select box. */
     private List<CmsSelectWidgetOption> m_selectOptions;
 
@@ -110,6 +116,37 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
             return super.getConfiguration();
         }
         return CmsSelectWidgetOption.createConfigurationString(m_selectOptions);
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
+     */
+    @Override
+    public void setConfiguration(String configuration) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
+            int heightIndex = configuration.indexOf(CONFIGURATION_HEIGHT);
+            if (heightIndex != -1) {
+                // the height is set
+                String height = configuration.substring(heightIndex + CONFIGURATION_HEIGHT.length() + 1);
+                if (height.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    height = height.substring(0, height.indexOf('|'));
+                }
+                m_height = height;
+            }
+        }
+        super.setConfiguration(configuration);
+    }
+
+    /**
+     * Gets the configured select widget height.<p>
+     * 
+     * @return the configured select widget height
+     */
+    protected String getHeight() {
+
+        return m_height;
     }
 
     /**
