@@ -1,7 +1,8 @@
+Italian localization of OpenCms
+Version 1.0.0
+November 2, 2011
 
-	Coranto Informatica di Antonio Cordeddu
-	Italian localization of OpenCms
-                       Version 1.0; Nov 2, 2011
+Provided by: Coranto Informatica di Antonio Cordeddu
 
 
 1. Module overview
@@ -18,6 +19,7 @@ The quotation mark  character (") is been substituted by the correspondent Unico
 The apostrophe character (') is been substituted by the correspondent Unicode format \u2019 to avoid issues in some circumstances (e.g.: messages in table 
 heading). 
 
+
 2. Compatibility
 The module is consistent with OpenCms versions 8.0.x, 7.5.x and 7.0.x.  
 
@@ -30,18 +32,13 @@ I-09047 Selargius (CA), Italy
 http://www.coranto.it
 
 
-4. Installation
-
-Only import the module and restart OpenCms.
-
-
-5. History of changes
+4. History of changes
 
 1.0.0 - November 2, 2011
 - First public release
 
 
-6. Glossary
+5. Glossary
 
 In this section you can find the selected translation for some technical term.
 
