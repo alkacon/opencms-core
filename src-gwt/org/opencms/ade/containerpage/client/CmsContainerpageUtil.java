@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,8 +49,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Utility class for the container-page editor.<p>
@@ -339,11 +343,35 @@ public class CmsContainerpageUtil {
      * 
      * @return the list item widget
      */
-    public CmsMenuListItem createListItem(CmsContainerElementData containerElement) {
+    public CmsMenuListItem createListItem(final CmsContainerElementData containerElement) {
 
         CmsMenuListItem listItem = new CmsMenuListItem(containerElement);
         listItem.initMoveHandle(m_controller.getDndHandler());
+        if (!containerElement.isGroupContainer()
+            && !containerElement.isInheritContainer()
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(containerElement.getNoEditReason())) {
+            listItem.enableEdit(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    CmsDomUtil.ensureMouseOut((Widget)event.getSource());
+                    getController().getContentEditorHandler().openDialog(
+                        containerElement.getClientId(),
+                        containerElement.getSitePath());
+                }
+            });
+        }
         return listItem;
+    }
+
+    /**
+     * Returns the container page controller.<p>
+     * 
+     * @return the container page controller
+     */
+    protected CmsContainerpageController getController() {
+
+        return m_controller;
     }
 
     /**

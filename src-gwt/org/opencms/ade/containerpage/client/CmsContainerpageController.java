@@ -245,6 +245,7 @@ public final class CmsContainerpageController {
                 }
 
             }
+            m_handler.updateClipboard(result);
             resetEditableListButtons();
         }
     }

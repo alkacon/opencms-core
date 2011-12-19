@@ -50,6 +50,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
  */
 public class CmsMenuListItem extends CmsListItem {
 
+    /** The element edit button. */
+    protected CmsPushButton m_editButton;
+
     /** The element delete button. */
     private CmsPushButton m_removeButton;
 
@@ -70,6 +73,7 @@ public class CmsMenuListItem extends CmsListItem {
         }
         setId(element.getClientId());
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
+
         m_removeButton = new CmsPushButton();
         m_removeButton.setImageClass(I_CmsImageBundle.INSTANCE.style().removeIcon());
         m_removeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
@@ -93,6 +97,35 @@ public class CmsMenuListItem extends CmsListItem {
     public void deleteElement() {
 
         removeFromParent();
+    }
+
+    /**
+     * Enables the edit button with the given click handler.<p>
+     * 
+     * @param editClickHandler the edit click handler
+     */
+    public void enableEdit(ClickHandler editClickHandler) {
+
+        if (m_editButton != null) {
+            m_editButton.removeFromParent();
+        }
+
+        m_editButton = new CmsPushButton();
+        m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
+        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_editButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+        m_editButton.addClickHandler(editClickHandler);
+        getListItemWidget().addButton(m_editButton);
+    }
+
+    /**
+     * Hides the edit button.<p>
+     */
+    public void hideEditButton() {
+
+        if (m_editButton != null) {
+            getListItemWidget().removeButton(m_editButton);
+        }
     }
 
     /**
@@ -131,6 +164,16 @@ public class CmsMenuListItem extends CmsListItem {
 
         super.onStartDrag(target);
         getElement().getStyle().setOpacity(0.5);
+    }
+
+    /**
+     * Shows the element edit button.<p>
+     */
+    public void showEditButton() {
+
+        if (m_editButton != null) {
+            getListItemWidget().addButton(m_editButton);
+        }
     }
 
     /**

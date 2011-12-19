@@ -131,6 +131,26 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
     }
 
     /**
+     * Replaces old versions of the given item with the new one.<p>
+     * 
+     * @param listItem the list item
+     */
+    public void replaceFavoriteItem(CmsListItem listItem) {
+
+        m_favorites.replaceItem(listItem);
+    }
+
+    /**
+     * Replaces old versions of the given item with the new one.<p>
+     * 
+     * @param listItem the list item
+     */
+    public void replaceRecentItem(CmsListItem listItem) {
+
+        m_recent.replaceItem(listItem);
+    }
+
+    /**
      * Clears the contents of the favorite list widget.<p>
      */
     public void clearFavorites() {
@@ -157,8 +177,10 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         while (it.hasNext()) {
 
             CmsMenuListItem element = (CmsMenuListItem)it.next();
-            element.setMoveIconStyle(I_CmsImageBundle.INSTANCE.style().changeOrderIcon(), Messages.get().key(
-                Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
+            element.setMoveIconStyle(
+                I_CmsImageBundle.INSTANCE.style().changeOrderIcon(),
+                Messages.get().key(Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
+            element.hideEditButton();
             element.showRemoveButton();
         }
     }
@@ -207,6 +229,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
             try {
                 CmsMenuListItem element = (CmsMenuListItem)it.next();
                 element.hideRemoveButton();
+                element.showEditButton();
                 element.setMoveIconStyle(
                     I_CmsImageBundle.INSTANCE.style().moveIcon(),
                     org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TOOLBAR_MOVE_TO_0));

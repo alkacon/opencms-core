@@ -148,6 +148,25 @@ public class CmsFavoriteTab extends Composite {
     }
 
     /**
+     * Replaces the item with the same id if present.<p>
+     * 
+     * @param item the new item
+     */
+    public void replaceItem(CmsListItem item) {
+
+        CmsListItem oldItem = m_listPanel.getItem(item.getId());
+        if (oldItem != null) {
+            int index = m_listPanel.getWidgetIndex(oldItem);
+            m_listPanel.removeItem(oldItem);
+            if (index >= m_listPanel.getWidgetCount()) {
+                m_listPanel.addItem(item);
+            } else {
+                m_listPanel.insertItem(item, index);
+            }
+        }
+    }
+
+    /**
      * Saves the favorites.<p>
      */
     public void saveFavorites() {

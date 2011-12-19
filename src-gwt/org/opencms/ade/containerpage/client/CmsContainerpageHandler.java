@@ -837,6 +837,23 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Updates the clip board elements is necessary.<p>
+     * 
+     * @param elements the elements data  
+     */
+    public void updateClipboard(Map<String, CmsContainerElementData> elements) {
+
+        if (m_editor.getClipboard().isOpen()) {
+            for (CmsContainerElementData elementData : elements.values()) {
+                m_editor.getClipboard().replaceFavoriteItem(
+                    m_controller.getContainerpageUtil().createListItem(elementData));
+                m_editor.getClipboard().replaceRecentItem(
+                    m_controller.getContainerpageUtil().createListItem(elementData));
+            }
+        }
+    }
+
+    /**
      * Helper method for getting the error message for a locking error.<p>
      * 
      * @param lockInfo the lock information 
