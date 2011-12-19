@@ -385,8 +385,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
                 continue;
             }
-
             result = (CmsSitemapTreeItem)result.getChild(name);
+            if (result == null) {
+                return null;
+            }
         }
         return result;
 
@@ -645,7 +647,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 continue;
             }
             currentItem = (CmsSitemapTreeItem)currentItem.getChild(name);
-            result.add(currentItem);
+            if (currentItem != null) {
+                result.add(currentItem);
+            }
         }
         return result;
     }
@@ -671,8 +675,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     private void openItemsOnPath(String path) {
 
         List<CmsSitemapTreeItem> itemsOnPath = getItemsOnPath(path);
-        // the last item on the path shouldn't be opened 
-        itemsOnPath.remove(itemsOnPath.size() - 1);
         for (CmsSitemapTreeItem item : itemsOnPath) {
             item.setOpen(true);
         }

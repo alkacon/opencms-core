@@ -306,7 +306,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             boolean isRoot = root.equals(entryPointUri);
             entry = toClientEntry(navElement, isRoot);
             if (isRoot || (rootRes.isFolder() && (!isSubSitemap(navElement)))) {
-                entry.setSubEntries(getChildren(root, levels));
+                entry.setSubEntries(getChildren(root, levels, null));
             }
         } catch (Throwable e) {
             error(e);
@@ -363,8 +363,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 // if no path is supplied, start from root
                 openPath = "/";
             }
-            openPath = cms.getRequestContext().addSiteRoot(openPath);
-            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(cms, openPath);
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().addSiteRoot(openPath));
             Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
                 configData.getPropertyConfigurationAsMap());
             Map<String, CmsClientProperty> parentProperties = generateParentProperties(configData.getBasePath());
@@ -433,8 +434,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 createResourceTypeInfo(OpenCms.getResourceManager().getResourceType(RECOURCE_TYPE_NAME_REDIRECT), null),
                 getSitemapInfo(configData.getBasePath()),
                 parentSitemap,
-                getRootEntry(configData.getBasePath()),
-                getRequest().getParameter(CmsCoreData.PARAM_PATH),
+                getRootEntry(configData.getBasePath(), openPath),
+                openPath,
                 30,
                 detailPages,
                 resourceTypeInfos,
@@ -1151,18 +1152,19 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Returns the sitemap children for the given path with all descendants up to the given level, ie. 
+     * Returns the sitemap children for the given path with all descendants up to the given level or to the given target path, ie. 
      * <dl><dt>levels=1 </dt><dd>only children</dd><dt>levels=2</dt><dd>children and great children</dd></dl>
      * and so on.<p>
      * 
      * @param root the site relative root
      * @param levels the levels to recurse
+     * @param targetPath the target path
      * 
      * @return the sitemap children
      * 
      * @throws CmsException if something goes wrong 
      */
-    private List<CmsClientSitemapEntry> getChildren(String root, int levels) throws CmsException {
+    private List<CmsClientSitemapEntry> getChildren(String root, int levels, String targetPath) throws CmsException {
 
         List<CmsClientSitemapEntry> children = new ArrayList<CmsClientSitemapEntry>();
         int i = 0;
@@ -1171,8 +1173,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             if (child != null) {
                 child.setPosition(i);
                 children.add(child);
-                if (child.isFolderType() && ((levels > 1) || (levels == -1)) && !isSubSitemap(navElement)) {
-                    child.setSubEntries(getChildren(child.getSitePath(), levels - 1));
+                int nextLevels = levels;
+                if ((nextLevels == 1) && (targetPath != null) && targetPath.startsWith(child.getSitePath())) {
+                    nextLevels = 2;
+                }
+                if (child.isFolderType() && ((nextLevels > 1) || (nextLevels == -1)) && !isSubSitemap(navElement)) {
+
+                    child.setSubEntries(getChildren(child.getSitePath(), nextLevels - 1, targetPath));
                     child.setChildrenLoadedInitially(true);
                 }
                 i++;
@@ -1451,25 +1458,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * Reeds the site root entry.<p>
      * 
      * @param rootPath the root path of the sitemap root
+     * @param targetPath the target path to open
      * 
      * @return the site root entry
      * 
      * @throws CmsSecurityException in case of insufficient permissions
      * @throws CmsException if something goes wrong
      */
-    private CmsClientSitemapEntry getRootEntry(String rootPath) throws CmsSecurityException, CmsException {
+    private CmsClientSitemapEntry getRootEntry(String rootPath, String targetPath)
+    throws CmsSecurityException, CmsException {
 
         String sitePath = "/";
         if (rootPath != null) {
             sitePath = getCmsObject().getRequestContext().removeSiteRoot(rootPath);
         }
         CmsJspNavElement navElement = getNavBuilder().getNavigationForResource(sitePath);
-
         CmsClientSitemapEntry result = toClientEntry(navElement, true);
         if (result != null) {
             result.setPosition(0);
             result.setChildrenLoadedInitially(true);
-            result.setSubEntries(getChildren(sitePath, 1));
+            result.setSubEntries(getChildren(sitePath, 1, targetPath));
         }
         return result;
     }
