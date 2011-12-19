@@ -276,11 +276,13 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             } else {
                 // the error was database related, there may be an issue with the setup 
                 // write the exception to the log as well
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_LOGIN_FAILED_DB_REASON_3,
-                    userName,
-                    getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                    getRequestContext().getRemoteAddress()), m_loginException);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_LOGIN_FAILED_DB_REASON_3,
+                        userName,
+                        getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                        getRequestContext().getRemoteAddress()),
+                    m_loginException);
             }
         }
     }
@@ -323,6 +325,9 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         HttpSession session = getRequest().getSession(false);
         if (session != null) {
             session.invalidate();
+            /* we need this because a new session might be created after this method, 
+             but before the session info is updated in OpenCmsCore.showResource. */
+            getCmsObject().getRequestContext().setUpdateSessionEnabled(false);
         }
         // logout was successful
         if (LOG.isInfoEnabled()) {
