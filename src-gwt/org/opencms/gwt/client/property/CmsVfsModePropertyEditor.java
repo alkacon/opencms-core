@@ -466,17 +466,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
-     * Builds the fields for the "structure" and "resource" tabs.<p>
-     */
-    private void internalBuildOtherFields() {
-
-        internalBuildFields(Mode.structure);
-        if (m_showResourceProperties) {
-            internalBuildFields(Mode.resource);
-        }
-    }
-
-    /**
      * Moves the given property name to the top of the keys if present.<p>
      * 
      * @param keys the list of keys
