@@ -379,7 +379,14 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         String resourcename,
         List<CmsProperty> properties) {
 
-        return OpenCms.getLocaleManager().getDefaultLocales(cms, CmsResource.getParentFolder(resourcename)).get(0);
+        Locale locale = (Locale)(cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_NEW_RESOURCE_LOCALE));
+        if (locale != null) {
+            return locale;
+        }
+        List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(
+            cms,
+            CmsResource.getParentFolder(resourcename));
+        return locales.get(0);
     }
 
     /**
