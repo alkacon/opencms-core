@@ -437,7 +437,8 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
                 int pos = m_value.indexOf('=');
                 if ((pos > 0) && (pos < (m_value.length() - 1))) {
                     String key = m_value.substring(0, pos);
-                    String value = m_value.substring(pos + 1);
+                    // it is assumed strings starting or ending with white-spaces are faulty inputs 
+                    String value = m_value.substring(pos + 1).trim();
                     @SuppressWarnings("rawtypes")
                     SortedMap map = (SortedMap)m_baseCollection;
                     if (map.containsKey(key)) {
@@ -611,10 +612,10 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * Prepares this widget dialog parameter to be commited.<p>
+     * Prepares this widget dialog parameter to be committed.<p>
      * 
      * This is required if the base type is mapped to a Collection object,
-     * becasue the collection needs to be cleared before the new values are set.<p>
+     * because the collection needs to be cleared before the new values are set.<p>
      */
     public void prepareCommit() {
 
