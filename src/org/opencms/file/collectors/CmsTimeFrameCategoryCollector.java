@@ -530,6 +530,16 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         }
     }
 
+    /**
+     * Returns a list of resources according to the given parameter.<p>
+     * 
+     * @param cms the current cms context
+     * @param param the parameter
+     * 
+     * @return the resulting list of resources
+     * 
+     * @throws CmsException if something goes wrong reading the resources
+     */
     private List<CmsResource> getTimeFrameAndCategories(CmsObject cms, String param) throws CmsException {
 
         List<CmsResource> result = null;

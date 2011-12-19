@@ -129,10 +129,13 @@ public final class CmsResourceFilter {
      */
     public static final CmsResourceFilter ONLY_VISIBLE_NO_DELETED = ONLY_VISIBLE.addExcludeState(CmsResource.STATE_DELETED);
 
+    /** The excluded flag value. */
     private static final int EXCLUDED = 2;
 
+    /** The ignored flag value. */
     private static final int IGNORED = 0;
 
+    /** The required flag value. */
     private static final int REQUIRED = 1;
 
     /** The cache id for this filter. */

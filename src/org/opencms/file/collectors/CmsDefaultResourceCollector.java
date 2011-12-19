@@ -262,7 +262,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         // from the map in the correct order into a list
         // only resources with the NavPos property set are used here 
         List<CmsJspNavElement> navElementList = new ArrayList<CmsJspNavElement>(navElementMap.keySet());
-        List result = new ArrayList<CmsResource>();
+        List<CmsResource> result = new ArrayList<CmsResource>();
 
         Collections.sort(navElementList);
         for (int i = 0, n = navElementList.size(); i < n; i++) {

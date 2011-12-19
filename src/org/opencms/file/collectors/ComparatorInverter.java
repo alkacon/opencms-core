@@ -63,6 +63,7 @@ import java.util.Comparator;
  */
 public final class ComparatorInverter implements Comparator<I_CmsResource> {
 
+    /** The comparator to invert. */
     private Comparator<I_CmsResource> m_delegate;
 
     /**
@@ -73,7 +74,7 @@ public final class ComparatorInverter implements Comparator<I_CmsResource> {
      */
     public ComparatorInverter(Comparator<I_CmsResource> toInvert) {
 
-        this.m_delegate = toInvert;
+        m_delegate = toInvert;
     }
 
     /**
@@ -81,7 +82,7 @@ public final class ComparatorInverter implements Comparator<I_CmsResource> {
      */
     public int compare(I_CmsResource o1, I_CmsResource o2) {
 
-        int result = this.m_delegate.compare(o1, o2);
+        int result = m_delegate.compare(o1, o2);
         return -result;
     }
 }

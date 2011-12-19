@@ -1018,12 +1018,12 @@ public class CmsModule implements Comparable<CmsModule> {
      * <i>Please note:</i>It's not possible to set the module parameters once the module
      * configuration has been frozen.<p>
      * 
-     * @param value the module parameters to set
+     * @param parameters the module parameters to set
      */
-    public void setParameters(SortedMap<String, String> value) {
+    public void setParameters(SortedMap<String, String> parameters) {
 
         checkFrozen();
-        m_parameters = value;
+        m_parameters = parameters;
     }
 
     /**
