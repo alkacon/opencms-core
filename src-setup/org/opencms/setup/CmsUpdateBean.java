@@ -205,6 +205,16 @@ public class CmsUpdateBean extends CmsSetupBean {
                     false);
                 OpenCms.getPublishManager().waitWhileRunning();
             }
+            try {
+                m_cms.lockResourceTemporary("/shared");
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            try {
+                m_cms.chacc("/shared", "group", "Users", "+v+w+r+i");
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         } finally {
             m_cms.getRequestContext().setSiteRoot(originalSiteRoot);
             m_cms.getRequestContext().setCurrentProject(originalProject);
