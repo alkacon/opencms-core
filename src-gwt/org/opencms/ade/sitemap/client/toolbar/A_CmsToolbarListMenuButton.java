@@ -47,6 +47,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implements I_CmsToolbarActivatable {
 
+    /** The dialog width. */
+    public static final int DIALOG_WIDTH = 600;
+
+    /** Text metrics key for truncation. */
+    public static final String TM_LITST_MENU = "TM_LITST_MENU";
+
     /** Flag to indicate if the menu tabs have been initialized. */
     protected boolean m_initialized;
 
@@ -138,6 +144,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
         list.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
         list.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().clipboardList());
         tab.add(list);
+        list.truncate(TM_LITST_MENU, DIALOG_WIDTH);
         return tab;
     }
 
