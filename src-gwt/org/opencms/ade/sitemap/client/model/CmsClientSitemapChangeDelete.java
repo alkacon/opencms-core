@@ -196,10 +196,10 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
     }
 
     /**
-     * Removes delted entry and all it's sub-entries from the modified list.<p>
+     * Removes deleted entry and all it's sub-entries from the modified list.<p>
      * 
      * @param entry the deleted entry
-     * @param modified the modified list
+     * @param clipboardData the clip board data
      */
     private void removeDeletedFromModified(CmsClientSitemapEntry entry, CmsSitemapClipboardData clipboardData) {
 

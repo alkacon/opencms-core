@@ -51,8 +51,10 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 
+    /** The highlighted state color. */
     private String m_hightLightColor = I_CmsConstantsBundle.INSTANCE.css().backgroundColorHighlight();
 
+    /** The normal state color. */
     private String m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
 
     /**

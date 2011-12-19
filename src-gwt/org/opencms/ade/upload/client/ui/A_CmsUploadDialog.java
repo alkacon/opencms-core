@@ -1086,9 +1086,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     }
 
     /**
-     * Adds a click handler for the given checkbox.<p>
+     * Adds a click handler for the given check box.<p>
      * 
-     * @param check the checkbox
+     * @param check the check box
+     * @param unzip the un-zip check box
      * @param file the file
      */
     private void addClickHandlerToCheckBox(final CmsCheckBox check, final CmsCheckBox unzip, final CmsFileInfo file) {
@@ -1465,6 +1466,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      * Used while client is loading files from hard disk into memory.<p>
      * 
      * @param msg the message that should be displayed below the loading animation (can also be HTML as String)
+     * @param delayMillis the delay to start the animation with
      */
     private void startLoadingAnimation(final String msg, int delayMillis) {
 

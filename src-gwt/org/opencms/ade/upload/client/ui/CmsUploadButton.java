@@ -516,6 +516,11 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         createFileInput();
     }
 
+    /**
+     * Updates the CSS classes according to the button state.<p>
+     * 
+     * @param styleDependent the dependent style name
+     */
     private void updateState(String styleDependent) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(styleDependent)) {
