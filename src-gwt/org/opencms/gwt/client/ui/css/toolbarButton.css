@@ -117,5 +117,11 @@
     gwt-image: "sitemapBigIconActive";
 }
 
+@sprite .toolbarShowSmall {
+	gwt-image: "showSmallElementsIcon";
+}
+
+
+
 .cmsState-up .toolbarDelete, .cmsState-up-hovering .toolbarDelete, .cmsState-down-hovering .toolbarDelete, .cmsState-down .toolbarDelete, .cmsState-up-disabled .toolbarDelete, .cmsState-down-disabled .toolbarDelete{
 }

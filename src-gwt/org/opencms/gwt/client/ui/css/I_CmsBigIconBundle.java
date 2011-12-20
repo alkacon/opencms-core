@@ -268,6 +268,13 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
+    @Source("images/icons/big/showSmallElementsBigIcon.png")
+    ImageResource showSmallElementsIcon();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
     @Source("images/icons/big/sitemapBigIconActive.png")
     ImageResource sitemapBigIconActive();
 
@@ -326,9 +333,10 @@ public interface I_CmsBigIconBundle extends ClientBundle {
     ImageResource undoBigIconActive();
 
     /** 
-     * Access method.<p>
-     * @return an image resource
-     */
+    * Access method.<p>
+    * @return an image resource
+    */
     @Source("images/icons/big/undoBigIconDeactivated.png")
     ImageResource undoBigIconDeactivated();
+
 }

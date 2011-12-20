@@ -39,6 +39,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarResetButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSaveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSettingsButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarShowSmallElementsButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
@@ -68,8 +69,6 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -137,6 +136,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** Sitemap button. */
     private CmsToolbarSitemapButton m_sitemap;
 
+    /** The style variable for the display mode for small elements. */
+    private CmsStyleVariable m_smallElementsStyle;
+
+    /** The button for changing the display mode for small elements. */
+    private CmsToolbarShowSmallElementsButton m_showSmall;
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
 
@@ -378,6 +382,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_sitemap.addClickHandler(clickHandler);
         m_toolbar.addRight(m_sitemap);
 
+        m_showSmall = new CmsToolbarShowSmallElementsButton(containerpageHandler);
+        m_showSmall.addClickHandler(clickHandler);
+        m_toolbar.addRight(m_showSmall);
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(controller.getData().getSitemapUri())) {
             m_sitemap.setEnabled(false);
         }
@@ -405,14 +413,17 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         // export open stack trace dialog function
         exportStacktraceDialogMethod();
-        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+        //        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+        //
+        //            public boolean execute() {
+        //
+        //                updateAllElements();
+        //                return true;
+        //            }
+        //        }, 1000);
+        m_smallElementsStyle = new CmsStyleVariable(RootPanel.get());
+        setEnlargeSmallElements(false);
 
-            public boolean execute() {
-
-                updateAllElements();
-                return true;
-            }
-        }, 1000);
     }
 
     /**
@@ -427,6 +438,19 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
+     * Sets the mode for displaying small elements.<p>
+     * 
+     * @param visible if true, small elements will be enlarged and their edit buttons shown; if false, the edit buttons will be hidden
+     */
+    public void setEnlargeSmallElements(boolean visible) {
+
+        String newClass = visible
+        ? I_CmsLayoutBundle.INSTANCE.containerpageCss().enlargeSmallElements()
+        : I_CmsLayoutBundle.INSTANCE.containerpageCss().ignoreSmallElements();
+        m_smallElementsStyle.setValue(newClass);
+    }
+
+    /**
      * Shows the tool-bar.<p>
      * 
      * @param show if <code>true</code> the tool-bar will be shown
@@ -434,17 +458,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void showToolbar(boolean show) {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
-    }
-
-    /**
-     * Perform layout corrections for the current container elements.<p>
-     */
-    public void updateAllElements() {
-
-        List<CmsContainerPageElementPanel> pageElements = getAllContainerPageElements();
-        for (CmsContainerPageElementPanel pageElement : pageElements) {
-            pageElement.update();
-        }
     }
 
     /**
@@ -474,18 +487,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
+      $wnd.__openStacktraceDialog = function(event) {
+         event = (event) ? event : ((window.event) ? window.event : "");
+         var elem = (event.target) ? event.target : event.srcElement;
+         if (elem != null) {
+            var children = elem.getElementsByTagName("span");
+            if (children.length > 0) {
+               var title = children[0].getAttribute("title");
+               var content = children[0].innerHTML;
+               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
             }
-        }
+         }
+      }
     }-*/;
 
 }

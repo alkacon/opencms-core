@@ -304,3 +304,20 @@ div.groupcontainerPlaceholder{
 }
 
 .toolbarBack{}
+.toolbarShowSmall{}
+
+.enlargeSmallElements {}
+.ignoreSmallElements {}
+.smallElement {}
+
+.enlargeSmallElements .smallElement {
+	min-height: 24px !important; 
+}
+
+.ignoreSmallElements .smallElement .optionBar {
+	visibility: hidden; 
+}
+
+
+
+

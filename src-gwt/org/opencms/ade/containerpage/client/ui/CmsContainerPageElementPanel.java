@@ -148,19 +148,6 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     }
 
     /**
-     * Make sure that the element has at least a certain minimum height so that option bars of subsequent elements
-     * in a container don't overlap.<p>
-     */
-    public void applyMinHeight() {
-
-        if (isAttached()) {
-            if (getOffsetHeight() < NECESSARY_HEIGHT) {
-                getElement().getStyle().setProperty("minHeight", NECESSARY_HEIGHT + "px");
-            }
-        }
-    }
-
-    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(org.opencms.gwt.client.dnd.I_CmsDropTarget)
      */
     public Element getDragHelper(I_CmsDropTarget target) {
@@ -562,16 +549,6 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     }
 
     /**
-     * Perform layout corrections.<p>
-     * 
-     * This method will be called in regular intervals by the containerpage editor.<p>
-     */
-    public void update() {
-
-        applyMinHeight();
-    }
-
-    /**
      * Checks for changes in the list collector direct edit content.<p>
      */
     protected void checkForEditableChanges() {
@@ -609,12 +586,14 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Widget#onAttach()
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
      */
     @Override
-    protected void onAttach() {
+    protected void onLoad() {
 
-        super.onAttach();
+        if (getOffsetHeight() < NECESSARY_HEIGHT) {
+            addStyleName(org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
+        }
         resetOptionbar();
     }
 
@@ -655,28 +634,28 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
      * Resets the node inserted handler.<p>
      */
     private native void resetNodeInsertedHandler()/*-{
-        var $this = this;
-        var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-        var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-        if (handler == null) {
-            handler = function(event) {
-                $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-            };
-            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-        } else {
-            if (element.removeEventLister) {
-                element.removeEventListener("DOMNodeInserted", handler);
-            } else if (element.detachEvent) {
-                // IE specific
-                element.detachEvent("onDOMNodeInserted", handler);
-            }
-        }
-        if (element.addEventListener) {
-            element.addEventListener("DOMNodeInserted", handler, false);
-        } else if (element.attachEvent) {
+      var $this = this;
+      var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+      var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+      if (handler == null) {
+         handler = function(event) {
+            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+         };
+         $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+      } else {
+         if (element.removeEventLister) {
+            element.removeEventListener("DOMNodeInserted", handler);
+         } else if (element.detachEvent) {
             // IE specific
-            element.attachEvent("onDOMNodeInserted", handler);
-        }
+            element.detachEvent("onDOMNodeInserted", handler);
+         }
+      }
+      if (element.addEventListener) {
+         element.addEventListener("DOMNodeInserted", handler, false);
+      } else if (element.attachEvent) {
+         // IE specific
+         element.attachEvent("onDOMNodeInserted", handler);
+      }
     }-*/;
 
     /**

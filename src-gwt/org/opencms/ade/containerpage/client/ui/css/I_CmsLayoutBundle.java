@@ -67,6 +67,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String emptyGroupContainer();
 
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String enlargeSmallElements();
+
         /** 
          * Access method.<p>
          * 
@@ -127,7 +133,19 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String ignoreSmallElements();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String menuTabContainer();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String smallElement();
 
         /** Access method.<p>
          * 

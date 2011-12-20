@@ -298,6 +298,15 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Enlarges small elements on the page.<p>
+     */
+    public void enlargeSmallElements() {
+
+        m_editor.setEnlargeSmallElements(true);
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID)
      */
     public boolean ensureLockOnResource(CmsUUID structureId) {

@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsToolbarButtonCss;
 
 /**
  * Interface to hold button related enumerations. To be used with {@link org.opencms.gwt.client.ui.CmsPushButton}
@@ -81,75 +82,61 @@ public interface I_CmsButton {
     public enum ButtonData {
 
         /** Toolbar button. */
-        ADD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarAdd(), Messages.get().key(
-            Messages.GUI_TOOLBAR_ADD_0)),
+        ADD(BUTTON_CSS.toolbarAdd(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
 
         /** Toolbar button. */
-        ADD_TO_FAVORITES(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(),
-        Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
+        ADD_TO_FAVORITES(BUTTON_CSS.toolbarClipboard(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
 
         /** Toolbar button. */
-        CLIPBOARD(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarClipboard(), Messages.get().key(
-            Messages.GUI_TOOLBAR_CLIPBOARD_0)),
+        CLIPBOARD(BUTTON_CSS.toolbarClipboard(), Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_0)),
 
         /** Toolbar button. */
-        CONTEXT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarContext(), Messages.get().key(
-            Messages.GUI_TOOLBAR_CONTEXT_0)),
+        CONTEXT(BUTTON_CSS.toolbarContext(), Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0)),
 
         /** Toolbar button. */
-        DELETE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarDelete(), Messages.get().key(
-            Messages.GUI_TOOLBAR_DELETE_0)),
+        DELETE(BUTTON_CSS.toolbarDelete(), Messages.get().key(Messages.GUI_TOOLBAR_DELETE_0)),
 
         /** Toolbar button. */
-        EDIT(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarEdit(), Messages.get().key(
-            Messages.GUI_TOOLBAR_EDIT_0)),
+        EDIT(BUTTON_CSS.toolbarEdit(), Messages.get().key(Messages.GUI_TOOLBAR_EDIT_0)),
 
         /** Toolbar button. */
-        MOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarMove(), Messages.get().key(
-            Messages.GUI_TOOLBAR_MOVE_IN_0)),
+        MOVE(BUTTON_CSS.toolbarMove(), Messages.get().key(Messages.GUI_TOOLBAR_MOVE_IN_0)),
 
         /** Toolbar button. */
-        NEW(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarNew(), Messages.get().key(
-            Messages.GUI_TOOLBAR_NEW_0)),
+        NEW(BUTTON_CSS.toolbarNew(), Messages.get().key(Messages.GUI_TOOLBAR_NEW_0)),
 
         /** Toolbar button. */
-        PROPERTIES(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarProperties(), Messages.get().key(
-            Messages.GUI_TOOLBAR_PROPERTIES_0)),
+        PROPERTIES(BUTTON_CSS.toolbarProperties(), Messages.get().key(Messages.GUI_TOOLBAR_PROPERTIES_0)),
 
         /** Toolbar button. */
-        PUBLISH(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarPublish(), Messages.get().key(
-            Messages.GUI_TOOLBAR_PUBLISH_0)),
+        PUBLISH(BUTTON_CSS.toolbarPublish(), Messages.get().key(Messages.GUI_TOOLBAR_PUBLISH_0)),
 
         /** Toolbar button. */
-        REMOVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRemove(), Messages.get().key(
-            Messages.GUI_TOOLBAR_REMOVE_0)),
+        REMOVE(BUTTON_CSS.toolbarRemove(), Messages.get().key(Messages.GUI_TOOLBAR_REMOVE_0)),
 
         /** Toolbar button. */
-        RESET(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarReset(), Messages.get().key(
-            Messages.GUI_TOOLBAR_RESET_0)),
+        RESET(BUTTON_CSS.toolbarReset(), Messages.get().key(Messages.GUI_TOOLBAR_RESET_0)),
 
         /** Toolbar button. */
-        SAVE(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSave(), Messages.get().key(
-            Messages.GUI_TOOLBAR_SAVE_0)),
+        SAVE(BUTTON_CSS.toolbarSave(), Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0)),
 
         /** Toolbar button. */
-        SELECTION(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSelection(), Messages.get().key(
-            Messages.GUI_TOOLBAR_SELECTION_0)),
+        SELECTION(BUTTON_CSS.toolbarSelection(), Messages.get().key(Messages.GUI_TOOLBAR_SELECTION_0)),
 
         /** Toolbar button. */
-        SITEMAP(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSitemap(), Messages.get().key(
-            Messages.GUI_TOOLBAR_SITEMAP_0)),
+        SITEMAP(BUTTON_CSS.toolbarSitemap(), Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
 
         /** Toolbar button. */
-        BACK(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarBack(), Messages.get().key(
-            Messages.GUI_TOOLBAR_BACK_0)),
+        BACK(BUTTON_CSS.toolbarBack(), Messages.get().key(Messages.GUI_TOOLBAR_BACK_0)),
 
         /** Shows formerly hidden elements. */
-        SHOW(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarNew(), Messages.get().key(
-            Messages.GUI_TOOLBAR_ADD_0)),
+        SHOW(BUTTON_CSS.toolbarNew(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
 
         /** Inherited element button. */
-        INHERITED(I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarInherited(), "Inherited");
+        INHERITED(BUTTON_CSS.toolbarInherited(), "Inherited"),
+
+        /** Toolbar button. */
+        SHOWSMALL(BUTTON_CSS.toolbarShowSmall(), Messages.get().key(Messages.GUI_TOOLBAR_SHOWSMALL_0));
 
         /** The icon class name. */
         private String m_iconClass;
@@ -282,4 +269,7 @@ public interface I_CmsButton {
             return m_cssClassName;
         }
     }
+
+    /** The CSS bundle for the toolbar buttons. */
+    I_CmsToolbarButtonCss BUTTON_CSS = I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss();
 }
