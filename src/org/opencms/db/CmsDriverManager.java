@@ -680,7 +680,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS, CmsMemoryMonitor.CacheType.USER_LIST);
 
-        if (!dbc.getProjectId().isNullUUID()) {
+        if (!dbc.getProjectId().isNullUUID() && !CmsProject.ONLINE_PROJECT_ID.equals(dbc.getProjectId())) {
             // user modified event is not needed
             return;
         }
