@@ -148,6 +148,16 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     }
 
     /**
+     * Returns the necessary height as a CSS height string in pixels.<p>
+     * 
+     * @return the necessary height as a CSS string 
+     */
+    public static String getNecessaryHeight() {
+
+        return NECESSARY_HEIGHT + "px !important";
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(org.opencms.gwt.client.dnd.I_CmsDropTarget)
      */
     public Element getDragHelper(I_CmsDropTarget target) {

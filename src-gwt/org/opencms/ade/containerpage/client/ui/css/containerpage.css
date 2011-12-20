@@ -310,8 +310,10 @@ div.groupcontainerPlaceholder{
 .ignoreSmallElements {}
 .smallElement {}
 
+@eval enlargedMinHeight org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel.getNecessaryHeight();
+
 .enlargeSmallElements .smallElement {
-	min-height: 24px !important; 
+	min-height: enlargedMinHeight; 
 }
 
 .ignoreSmallElements .smallElement .optionBar {
