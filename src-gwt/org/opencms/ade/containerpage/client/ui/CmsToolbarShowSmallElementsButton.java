@@ -61,8 +61,11 @@ public class CmsToolbarShowSmallElementsButton extends A_CmsToolbarButton<CmsCon
     @Override
     public void onToolbarClick() {
 
-        getHandler().enlargeSmallElements();
-        setDown(false);
+        if (isDown()) {
+            getHandler().setEnlargeSmallElements(true);
+        } else {
+            getHandler().setEnlargeSmallElements(false);
+        }
     }
 
     /**

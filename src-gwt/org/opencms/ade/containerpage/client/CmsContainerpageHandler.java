@@ -734,6 +734,16 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Sets the display mode for small elements.<p>
+     * 
+     * @param enabled if true, small elements will be enlarged and editable
+     */
+    public void setEnlargeSmallElements(boolean enabled) {
+
+        m_editor.setEnlargeSmallElements(enabled);
+    }
+
+    /**
      * Shows a page overlay preventing user actions.<p>
      */
     public void showPageOverlay() {
