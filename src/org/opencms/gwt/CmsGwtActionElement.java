@@ -91,7 +91,25 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     public static String serialize(Method method, Object data) throws SerializationException {
 
-        return escape(RPC.encodeResponseForSuccess(method, data, CmsPrefetchSerializationPolicy.instance()));
+        String result = RPC.encodeResponseForSuccess(method, data, CmsPrefetchSerializationPolicy.instance());
+        return result;
+    }
+
+    /**
+     * Serializes the result of the given method for RPC-prefetching.<p>
+     * 
+     * @param method the method
+     * @param data the result to serialize
+     * 
+     * @return the serialized data
+     * 
+     * @throws SerializationException if something goes wrong
+     */
+    public static String serializeForJavascript(Method method, Object data) throws SerializationException {
+
+        String result = serialize(method, data);
+        result = escape(result);
+        return result;
     }
 
     /**
@@ -153,7 +171,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             wpLocale = Locale.ENGLISH.getLanguage();
         }
         StringBuffer sb = new StringBuffer();
-        String prefetchedData = serialize(I_CmsCoreService.class.getMethod("prefetch"), getCoreData());
+        String prefetchedData = serializeForJavascript(I_CmsCoreService.class.getMethod("prefetch"), getCoreData());
         sb.append(CmsCoreData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(ClientMessages.get().export(getRequest()));
         wrapScript(sb);

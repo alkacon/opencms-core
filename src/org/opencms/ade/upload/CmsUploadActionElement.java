@@ -95,7 +95,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     public String export() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        String prefetchedData = serialize(I_CmsUploadService.class.getMethod("prefetch"), getUploadData());
+        String prefetchedData = serializeForJavascript(I_CmsUploadService.class.getMethod("prefetch"), getUploadData());
         sb.append(CmsUploadData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(ClientMessages.get().export(getRequest()));
         wrapScript(sb);

@@ -178,10 +178,10 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
         sb.append(CmsGalleryDataBean.DICT_NAME).append("='");
-        sb.append(serialize(I_CmsGalleryService.class.getMethod("getInitialSettings"), data));
+        sb.append(serializeForJavascript(I_CmsGalleryService.class.getMethod("getInitialSettings"), data));
         sb.append("';");
         sb.append(CmsGallerySearchBean.DICT_NAME).append("='").append(
-            serialize(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));
+            serializeForJavascript(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));
         sb.append("';");
         wrapScript(sb);
         return sb.toString();

@@ -73,7 +73,9 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
-        String prefetchedData = serialize(I_CmsContainerpageService.class.getMethod("prefetch"), getCntPageData());
+        String prefetchedData = serializeForJavascript(
+            I_CmsContainerpageService.class.getMethod("prefetch"),
+            getCntPageData());
         sb.append(CmsCntPageData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(CmsContainer.KEY_CONTAINER_DATA).append("= new Array();");
         return wrapScript(sb).toString();

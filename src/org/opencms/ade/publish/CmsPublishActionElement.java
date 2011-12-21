@@ -75,7 +75,7 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
 
         CmsPublishData initData = CmsPublishService.newInstance(getRequest()).getInitData();
-        String prefetchedData = serialize(I_CmsPublishService.class.getMethod("getInitData"), initData);
+        String prefetchedData = serializeForJavascript(I_CmsPublishService.class.getMethod("getInitData"), initData);
         sb.append(CmsPublishData.DICT_NAME).append("='").append(prefetchedData).append("';");
         wrapScript(sb);
         sb.append(super.export());

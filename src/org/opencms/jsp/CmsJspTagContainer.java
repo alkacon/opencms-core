@@ -574,7 +574,8 @@ public class CmsJspTagContainer extends TagSupport {
             }
             String serializedElement = getElementInfo(cms, elementBean);
             result.append("'");
-            result.append(" rel='").append(CmsStringUtil.escapeHtml(serializedElement));
+            String data = CmsEncoder.escapeXml(serializedElement);
+            result.append(" rel='").append(data);
             if (isGroupContainer) {
                 result.append("'>");
             } else {
@@ -589,7 +590,6 @@ public class CmsJspTagContainer extends TagSupport {
      * 
      * @param cms the CMS context
      * @param detailContent the detail content resource
-     * @param allElems the list to which the element should be added
      * 
      * @return the detail view element 
      */

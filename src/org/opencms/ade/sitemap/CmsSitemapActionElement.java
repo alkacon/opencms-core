@@ -71,7 +71,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     public String export() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        String prefetchedData = serialize(
+        String prefetchedData = serializeForJavascript(
             I_CmsSitemapService.class.getMethod("prefetch", String.class),
             getSitemapData());
         sb.append(CmsSitemapData.DICT_NAME).append("='").append(prefetchedData).append("';");
