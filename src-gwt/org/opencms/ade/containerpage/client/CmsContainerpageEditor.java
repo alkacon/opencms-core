@@ -384,7 +384,12 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         m_showSmall = new CmsToolbarShowSmallElementsButton(containerpageHandler);
         m_showSmall.addClickHandler(clickHandler);
+        String buttonStyle = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarButtonShowSmallElements();
+        m_showSmall.addStyleName(buttonStyle);
         m_toolbar.addRight(m_showSmall);
+
+        RootPanel.get().addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(controller.getData().getSitemapUri())) {
             m_sitemap.setEnabled(false);
@@ -413,14 +418,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         // export open stack trace dialog function
         exportStacktraceDialogMethod();
-        //        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-        //
-        //            public boolean execute() {
-        //
-        //                updateAllElements();
-        //                return true;
-        //            }
-        //        }, 1000);
         m_smallElementsStyle = new CmsStyleVariable(RootPanel.get());
         setEnlargeSmallElements(false);
 

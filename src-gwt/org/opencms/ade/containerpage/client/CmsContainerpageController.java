@@ -430,19 +430,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns the deserialized element data.<p>
-     * 
-     * @param data the data to deserialize
-     * 
-     * @return the container element
-     * @throws SerializationException if deserialization fails
-     */
-    public CmsContainerElement getSerializedElement(String data) throws SerializationException {
-
-        return (CmsContainerElement)CmsRpcPrefetcher.getSerializedObjectFromString(getContainerpageService(), data);
-    }
-
-    /**
      * Returns the data provider instance.<p>
      * 
      * @return the data provider
@@ -657,6 +644,15 @@ public final class CmsContainerpageController {
             m_dndHandler.setController(m_cntDndController);
         }
 
+    }
+
+    /**
+     * Enables the  "show small elements" button.<p>
+     */
+    public void enableShowSmallElementsButton() {
+
+        RootPanel.get().removeStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());
     }
 
     /**
@@ -931,6 +927,19 @@ public final class CmsContainerpageController {
         } else {
             return "" + ownId;
         }
+    }
+
+    /**
+     * Returns the deserialized element data.<p>
+     * 
+     * @param data the data to deserialize
+     * 
+     * @return the container element
+     * @throws SerializationException if deserialization fails
+     */
+    public CmsContainerElement getSerializedElement(String data) throws SerializationException {
+
+        return (CmsContainerElement)CmsRpcPrefetcher.getSerializedObjectFromString(getContainerpageService(), data);
     }
 
     /**

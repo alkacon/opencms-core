@@ -108,6 +108,14 @@ div.toolbarToggle{
 	max-width: none;
 }
 
+.toolbarButtonShowSmallElements { 
+	
+}
+
+.hideButtonShowSmallElements .toolbarButtonShowSmallElements {
+	display: none; 
+}
+
 
 
 
