@@ -164,6 +164,16 @@ public final class CmsNotification {
     }
 
     /**
+     * Returns if the notification widget is set. Only if the widget is set, notifications can be shown.<p>
+     * 
+     * @return <code>true</code> if the notification widget is set
+     */
+    public boolean hasWidget() {
+
+        return m_widget != null;
+    }
+
+    /**
      * Hides the notification message.<p>
      */
     public void hide() {
