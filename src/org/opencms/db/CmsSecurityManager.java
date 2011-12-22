@@ -1241,7 +1241,7 @@ public final class CmsSecurityManager {
             // this is needed because 
             // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
             // expects an offline project, if not, data will become inconsistent
-            checkOfflineProject(dbc);
+            checkProjectForDeletePrincipal(dbc);
             m_driverManager.deleteGroup(dbc, group, replacementId);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, group.getName()), e);
@@ -1276,7 +1276,7 @@ public final class CmsSecurityManager {
             // this is needed because 
             // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
             // expects an offline project, if not data will become inconsistent
-            checkOfflineProject(dbc);
+            checkProjectForDeletePrincipal(dbc);
             m_driverManager.deleteGroup(dbc, group, null);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, name), e);
@@ -6569,28 +6569,29 @@ public final class CmsSecurityManager {
      * @param username the name of the user to modify
      * @param role the needed role
      * 
-     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong accessing the database
      * @throws CmsRoleViolationException if the user has not the needed permissions
      */
     protected void checkRoleForUserModification(CmsDbContext dbc, String username, CmsRole role)
     throws CmsDataAccessException, CmsRoleViolationException {
 
-        CmsUser user = m_driverManager.readUser(dbc, CmsOrganizationalUnit.removeLeadingSeparator(username));
-        // a user is allowed to write his own data
-        if (!dbc.currentUser().equals(user)) {
-            // check if the user to be modified is root admin
-            if (hasRole(dbc, user, CmsRole.ROOT_ADMIN)) {
-                // check the user that is going to do the modification is root admin
-                checkRole(dbc, CmsRole.ROOT_ADMIN);
-                // check if the user to be modified is administrator
-            } else if (hasRole(dbc, user, CmsRole.ADMINISTRATOR)) {
-                // check the user that is going to do the modification is administrator
-                checkRole(dbc, CmsRole.ADMINISTRATOR);
-            } else {
-                // check the user that is going to do the modification has the given role
-                checkRole(dbc, role);
-            }
+        CmsUser userToModify = m_driverManager.readUser(dbc, CmsOrganizationalUnit.removeLeadingSeparator(username));
+        if (dbc.currentUser().equals(userToModify)) {
+            // a user is allowed to write his own data
+            return;
         }
+        if (hasRole(dbc, dbc.currentUser(), CmsRole.ROOT_ADMIN)) {
+            // a user with the ROOT_ADMIN role may change any other user
+            return;
+        }
+        if (hasRole(dbc, userToModify, CmsRole.ADMINISTRATOR)) {
+            // check the user that is going to do the modification is administrator
+            checkRole(dbc, CmsRole.ADMINISTRATOR);
+        } else {
+            // check the user that is going to do the modification has the given role
+            checkRole(dbc, role);
+        }
+
     }
 
     /**
@@ -6687,7 +6688,7 @@ public final class CmsSecurityManager {
             // this is needed because 
             // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
             // expects an offline project, if not data will become inconsistent
-            checkOfflineProject(dbc);
+            checkProjectForDeletePrincipal(dbc);
             if (replacement == null) {
                 m_driverManager.deleteUser(dbc, context.getCurrentProject(), user.getName(), null);
             } else {
@@ -6949,6 +6950,42 @@ public final class CmsSecurityManager {
 
         // access was granted - return the resource
         return resource;
+    }
+
+    /**
+     * Checks if the current project allows deletion of a principal.<p>
+     * 
+     * @param dbc the database context
+     * 
+     * @throws CmsDataAccessException if the current project can not be used to delete a principal
+     */
+    private void checkProjectForDeletePrincipal(CmsDbContext dbc) throws CmsDataAccessException {
+
+        CmsProject currentProject = dbc.currentProject();
+        // principal modifications are allowed if the current project is not the online project
+        if (currentProject.isOnlineProject()) {
+            try {
+                // if the current project is the online project, check if there is a valid offline project at all
+                List<CmsProject> projects = m_driverManager.getProjectDriver(dbc).readProjects(dbc, "");
+                for (CmsProject project : projects) {
+                    if (!project.isOnlineProject()) {
+                        CmsResource root = null;
+                        try {
+                            dbc.setProjectId(project.getUuid());
+                            root = m_driverManager.readResource(dbc, "/", CmsResourceFilter.ALL);
+                        } catch (Exception e) {
+                            // ignore
+                        }
+                        if (root != null) {
+                            throw new CmsVfsException(org.opencms.file.Messages.get().container(
+                                org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
+                        }
+                    }
+                }
+            } finally {
+                dbc.setProjectId(currentProject.getUuid());
+            }
+        }
     }
 
 }
