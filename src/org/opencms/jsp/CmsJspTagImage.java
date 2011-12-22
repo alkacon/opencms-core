@@ -58,38 +58,82 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamParent {
 
-    // optional HTML attribute constants
+    /** Optional HTML attribute constant. */
     private static final String ATTR_ALIGN = "align";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_ALT = "alt";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_BORDER = "border";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_CLASS = "class";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_HSPACE = "hspace";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_ID = "id";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_LONGDESC = "longdesc";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_NAME = "name";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_STYLE = "style";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_TITLE = "title";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_USEMAP = "usemap";
+
+    /** Optional HTML attribute constant. */
     private static final String ATTR_VSPACE = "vspace";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagImage.class);
 
-    // image scaler required attribute constants
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_COLOR = "scalecolor";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_FILTER = "scalefilter";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_HEIGHT = "height";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_MAXHEIGHT = "maxHeight";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_MAXWIDTH = "maxWidth";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_PARTIALTAG = "partialtag";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_POSITION = "scaleposition";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_QUALITY = "scalequality";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_RENDERMODE = "scalerendermode";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_SRC = "src";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_TYPE = "scaletype";
+
+    /** Required image scaler attributes constant. */
     private static final String SCALE_ATTR_WIDTH = "width";
 
-    // lists for fast lookup
+    /** Lists for fast lookup. */
     private static final String[] SCALER_ATTRS = {
         SCALE_ATTR_COLOR,
         SCALE_ATTR_FILTER,
@@ -104,6 +148,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         SCALE_ATTR_MAXHEIGHT,
         SCALE_ATTR_MAXWIDTH};
 
+    /** Image scaler attribute list. */
     private static final List<String> SCALER_ATTRS_LIST = Arrays.asList(SCALER_ATTRS);
 
     /** Serial version UID required for safe serialization. */

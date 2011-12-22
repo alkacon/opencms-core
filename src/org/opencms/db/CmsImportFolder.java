@@ -118,6 +118,11 @@ public class CmsImportFolder {
         importFolder(importFolderName, importPath, cms);
     }
 
+    /**
+     * Returns the list of imported resources.<p>
+     * 
+     * @return the list of imported resources
+     */
     public List<CmsResource> getImportedResources() {
 
         return m_importedResources;

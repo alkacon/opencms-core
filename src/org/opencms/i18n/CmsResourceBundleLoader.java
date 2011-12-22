@@ -69,8 +69,13 @@ public final class CmsResourceBundleLoader {
      */
     private static class BundleKey {
 
+        /** The base bundle name. */
         private String m_baseName;
+
+        /** The hash code. */
         private int m_hashcode;
+
+        /** The locale. */
         private Locale m_locale;
 
         /**

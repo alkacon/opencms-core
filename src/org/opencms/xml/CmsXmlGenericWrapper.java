@@ -63,6 +63,14 @@ public final class CmsXmlGenericWrapper {
         return element.content();
     }
 
+    /**
+     * Returns an element iterator.<p>
+     * 
+     * @param element the element
+     * @param name the name
+     * 
+     * @return the iterator
+     */
     public static Iterable<Element> elementIterable(final Element element, final String name) {
 
         return new Iterable<Element>() {

@@ -52,9 +52,6 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     /** The filename/path of the SQL query properties. */
     private static final String QUERY_PROPERTIES = "org/opencms/db/oracle/query.properties";
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -6823428215978645371L;
-
     /**
      * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager()
      */

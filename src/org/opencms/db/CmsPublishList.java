@@ -198,6 +198,7 @@ public class CmsPublishList implements Externalizable {
      * @param directPublishResources the list of direct publish resources
      * @param publishSiblings indicates if all siblings of the selected resources should be published
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
+     * @param all if <code>true</code> the publish list will not be filtered for redundant resources
      */
     private CmsPublishList(
         CmsProject project,

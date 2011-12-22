@@ -34,9 +34,6 @@ package org.opencms.db.postgresql;
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 525126179172222238L;
-
     /** The filename/path of the SQL query properties. */
     private static final String QUERY_PROPERTIES = "org/opencms/db/postgresql/query.properties";
 

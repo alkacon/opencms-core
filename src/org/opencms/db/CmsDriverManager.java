@@ -9956,6 +9956,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         return getUserDriver(dbc).countUsers(dbc, searchParams);
     }
 
+    /**
+     * Adds all sub-resources of the given resource to the publish list.<p>
+     * 
+     * @param dbc the database context
+     * @param publishList the publish list
+     * @param directPublishResource the resource to get the sub-resources for
+     * 
+     * @throws CmsDataAccessException if something goes wrong accessing the database
+     */
     private void addSubResources(CmsDbContext dbc, CmsPublishList publishList, CmsResource directPublishResource)
     throws CmsDataAccessException {
 

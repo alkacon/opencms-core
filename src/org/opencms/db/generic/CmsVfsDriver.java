@@ -113,7 +113,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * 
      * @see #publishVersions(CmsDbContext, CmsResource, boolean) 
      */
-    protected List m_resOp = new ArrayList();
+    protected List<CmsUUID> m_resOp = new ArrayList<CmsUUID>();
 
     /** The sql manager. */
     protected CmsSqlManager m_sqlManager;
@@ -646,7 +646,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 newState = CmsResource.STATE_CHANGED;
 
                 // remove the existing file and it's properties
-                List modifiedResources = m_driverManager.getVfsDriver(dbc).readSiblings(
+                List<CmsResource> modifiedResources = m_driverManager.getVfsDriver(dbc).readSiblings(
                     dbc,
                     projectId,
                     existingResource,
@@ -876,7 +876,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 newStructureId = existingSibling.getStructureId();
 
                 // remove the existing file and it's properties
-                List modifiedResources = readSiblings(dbc, project.getUuid(), existingSibling, false);
+                List<CmsResource> modifiedResources = readSiblings(dbc, project.getUuid(), existingSibling, false);
                 int propertyDeleteOption = (existingSibling.getSiblingCount() > 1)
                 ? CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES
                 : CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
@@ -1070,7 +1070,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conn = m_sqlManager.getConnection(dbc);
 
             if (filter.isSource()) {
-                List params = new ArrayList(7);
+                List<Object> params = new ArrayList<Object>(7);
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_DELETE_RELATIONS"));
@@ -1088,7 +1088,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 m_sqlManager.closeAll(dbc, null, stmt, null);
             }
             if (filter.isTarget()) {
-                List params = new ArrayList(7);
+                List<Object> params = new ArrayList<Object>(7);
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_DELETE_RELATIONS"));
@@ -1240,7 +1240,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public void init(
         CmsDbContext dbc,
         CmsConfigurationManager configurationManager,
-        List successiveDrivers,
+        List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
         CmsParameterConfiguration configuration = configurationManager.getConfiguration();
@@ -1361,9 +1361,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             String deletedResourceRootPath = source.getRootPath();
             dbc.getRequestContext().setAttribute(CmsProjectDriver.DBC_ATTR_READ_PROJECT_FOR_RESOURCE, Boolean.TRUE);
             I_CmsProjectDriver projectDriver = m_driverManager.getProjectDriver(dbc);
-            Iterator itProjects = projectDriver.readProjects(dbc, deletedResourceRootPath).iterator();
+            Iterator<CmsProject> itProjects = projectDriver.readProjects(dbc, deletedResourceRootPath).iterator();
             while (itProjects.hasNext()) {
-                CmsProject project = (CmsProject)itProjects.next();
+                CmsProject project = itProjects.next();
                 projectDriver.deleteProjectResource(dbc, project.getUuid(), deletedResourceRootPath);
                 projectDriver.createProjectResource(dbc, project.getUuid(), destinationPath);
             }
@@ -1522,13 +1522,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // read the offline version numbers
-        Map versions = readVersions(
+        Map<String, Integer> versions = readVersions(
             dbc,
             dbc.currentProject().getUuid(),
             resource.getResourceId(),
             resource.getStructureId());
-        int strVersion = ((Integer)versions.get("structure")).intValue();
-        int resVersion = ((Integer)versions.get("resource")).intValue();
+        int strVersion = versions.get("structure").intValue();
+        int resVersion = versions.get("resource").intValue();
 
         if (resOp) {
             if (resource.getSiblingCount() > 1) {
@@ -1581,14 +1581,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readChildResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource, boolean, boolean)
      */
-    public List readChildResources(
+    public List<CmsResource> readChildResources(
         CmsDbContext dbc,
         CmsProject currentProject,
         CmsResource resource,
         boolean getFolders,
         boolean getFiles) throws CmsDataAccessException {
 
-        List result = new ArrayList();
+        List<CmsResource> result = new ArrayList<CmsResource>();
         CmsUUID projectId = currentProject.getUuid();
 
         String resourceTypeClause;
@@ -1834,9 +1834,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinitions(org.opencms.db.CmsDbContext, CmsUUID)
      */
-    public List readPropertyDefinitions(CmsDbContext dbc, CmsUUID projectId) throws CmsDataAccessException {
+    public List<CmsPropertyDefinition> readPropertyDefinitions(CmsDbContext dbc, CmsUUID projectId)
+    throws CmsDataAccessException {
 
-        ArrayList propertyDefinitions = new ArrayList();
+        ArrayList<CmsPropertyDefinition> propertyDefinitions = new ArrayList<CmsPropertyDefinition>();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1934,7 +1935,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyObjects(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
-    public List readPropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource)
+    public List<CmsProperty> readPropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource)
     throws CmsDataAccessException {
 
         CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
@@ -1945,7 +1946,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
         int mappingType = -1;
-        Map propertyMap = new HashMap();
+        Map<String, CmsProperty> propertyMap = new HashMap<String, CmsProperty>();
 
         String propertyKey;
         String propertyValue;
@@ -1967,7 +1968,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 propertyValue = res.getString(2);
                 mappingType = res.getInt(3);
 
-                property = (CmsProperty)propertyMap.get(propertyKey);
+                property = propertyMap.get(propertyKey);
                 if (property == null) {
                     // there doesn't exist a property object for this key yet
                     property = new CmsProperty();
@@ -1998,16 +1999,19 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
-        return new ArrayList(propertyMap.values());
+        return new ArrayList<CmsProperty>(propertyMap.values());
     }
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readRelations(org.opencms.db.CmsDbContext, CmsUUID, CmsResource, org.opencms.relations.CmsRelationFilter)
      */
-    public List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
-    throws CmsDataAccessException {
+    public List<CmsRelation> readRelations(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        CmsResource resource,
+        CmsRelationFilter filter) throws CmsDataAccessException {
 
-        Set relations = new HashSet();
+        Set<CmsRelation> relations = new HashSet<CmsRelation>();
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2016,7 +2020,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
             if (filter.isSource()) {
-                List params = new ArrayList(7);
+                List<Object> params = new ArrayList<Object>(7);
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_READ_RELATIONS"));
@@ -2041,7 +2045,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
 
             if (filter.isTarget()) {
-                List params = new ArrayList(7);
+                List<Object> params = new ArrayList<Object>(7);
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_READ_RELATIONS"));
@@ -2072,7 +2076,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
-        List result = new ArrayList(relations);
+        List<CmsRelation> result = new ArrayList<CmsRelation>(relations);
         Collections.sort(result, CmsRelation.COMPARATOR);
         return result;
     }
@@ -2185,10 +2189,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResources(org.opencms.db.CmsDbContext, CmsUUID, CmsResourceState, int)
      */
-    public List readResources(CmsDbContext dbc, CmsUUID projectId, CmsResourceState state, int mode)
+    public List<CmsResource> readResources(CmsDbContext dbc, CmsUUID projectId, CmsResourceState state, int mode)
     throws CmsDataAccessException {
 
-        List result = new ArrayList();
+        List<CmsResource> result = new ArrayList<CmsResource>();
 
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -2241,14 +2245,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourcesForPrincipalACE(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
-    public List readResourcesForPrincipalACE(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    public List<CmsResource> readResourcesForPrincipalACE(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
     throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
         CmsResource currentResource = null;
-        List resources = new ArrayList();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -2274,14 +2278,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourcesForPrincipalAttr(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
-    public List readResourcesForPrincipalAttr(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    public List<CmsResource> readResourcesForPrincipalAttr(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
     throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
         CmsResource currentResource = null;
-        List resources = new ArrayList();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -2308,14 +2312,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.util.CmsUUID, String, String)
      */
-    public List readResourcesWithProperty(
+    public List<CmsResource> readResourcesWithProperty(
         CmsDbContext dbc,
         CmsUUID projectId,
         CmsUUID propertyDef,
         String path,
         String value) throws CmsDataAccessException {
 
-        List resources = new ArrayList();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -2360,7 +2364,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourceTree(org.opencms.db.CmsDbContext, CmsUUID, java.lang.String, int, CmsResourceState, long, long, long, long, long, long, int)
      */
-    public List readResourceTree(
+    public List<CmsResource> readResourceTree(
         CmsDbContext dbc,
         CmsUUID projectId,
         String parentPath,
@@ -2374,10 +2378,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long expiredBefore,
         int mode) throws CmsDataAccessException {
 
-        List result = new ArrayList();
+        List<CmsResource> result = new ArrayList<CmsResource>();
 
         StringBuffer conditions = new StringBuffer();
-        List params = new ArrayList(5);
+        List<Object> params = new ArrayList<Object>(5);
 
         // prepare the selection criteria
         prepareProjectCondition(projectId, mode, conditions, params);
@@ -2433,14 +2437,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readSiblings(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsResource, boolean)
      */
-    public List readSiblings(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, boolean includeDeleted)
-    throws CmsDataAccessException {
+    public List<CmsResource> readSiblings(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        CmsResource resource,
+        boolean includeDeleted) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
         CmsResource currentResource = null;
-        List vfsLinks = new ArrayList();
+        List<CmsResource> vfsLinks = new ArrayList<CmsResource>();
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -2510,8 +2517,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readVersions(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
-    public Map readVersions(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, CmsUUID structureId)
-    throws CmsDataAccessException {
+    public Map<String, Integer> readVersions(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        CmsUUID resourceId,
+        CmsUUID structureId) throws CmsDataAccessException {
 
         int structureVersion = -1;
         int resourceVersion = -1;
@@ -2551,7 +2561,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-        Map result = new HashMap();
+        Map<String, Integer> result = new HashMap<String, Integer>();
         result.put("structure", new Integer(structureVersion));
         result.put(I_CmsEventListener.KEY_RESOURCE, new Integer(resourceVersion));
         return result;
@@ -2646,7 +2656,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // check if the folder has any resources in it
-        Iterator childResources = readChildResources(dbc, currentProject, resource, true, true).iterator();
+        Iterator<CmsResource> childResources = readChildResources(dbc, currentProject, resource, true, true).iterator();
 
         CmsUUID projectId = CmsProject.ONLINE_PROJECT_ID;
         if (currentProject.isOnlineProject()) {
@@ -2657,7 +2667,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver(dbc);
         StringBuffer errorResNames = new StringBuffer(128);
         while (childResources.hasNext()) {
-            CmsResource errorRes = (CmsResource)childResources.next();
+            CmsResource errorRes = childResources.next();
             // if deleting offline, or not moved, or just renamed inside the deleted folder
             // so, it may remain some orphan online entries for moved resources
             // which will be fixed during the publishing of the moved resources
@@ -2694,9 +2704,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         if (dbc.getRequestContext() != null) {
             dbc.getRequestContext().setAttribute(CmsProjectDriver.DBC_ATTR_READ_PROJECT_FOR_RESOURCE, Boolean.TRUE);
             I_CmsProjectDriver projectDriver = m_driverManager.getProjectDriver(dbc);
-            Iterator itProjects = projectDriver.readProjects(dbc, deletedResourceRootPath).iterator();
+            Iterator<CmsProject> itProjects = projectDriver.readProjects(dbc, deletedResourceRootPath).iterator();
             while (itProjects.hasNext()) {
-                CmsProject project = (CmsProject)itProjects.next();
+                CmsProject project = itProjects.next();
                 projectDriver.deleteProjectResource(dbc, project.getUuid(), deletedResourceRootPath);
             }
         }
@@ -2807,14 +2817,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // copy offline to online relations
         CmsUUID dbcProjectId = dbc.getProjectId();
         dbc.setProjectId(CmsUUID.getNullUUID());
-        Iterator itRelations = m_driverManager.getVfsDriver(dbc).readRelations(
+        Iterator<CmsRelation> itRelations = m_driverManager.getVfsDriver(dbc).readRelations(
             dbc,
             projectId,
             offlineResource,
             CmsRelationFilter.TARGETS).iterator();
         dbc.setProjectId(dbcProjectId);
         while (itRelations.hasNext()) {
-            vfsDriver.createRelation(dbc, onlineProject.getUuid(), (CmsRelation)itRelations.next());
+            vfsDriver.createRelation(dbc, onlineProject.getUuid(), itRelations.next());
         }
     }
 
@@ -3093,13 +3103,16 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writePropertyObjects(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.List)
      */
-    public void writePropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource, List properties)
-    throws CmsDataAccessException {
+    public void writePropertyObjects(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsResource resource,
+        List<CmsProperty> properties) throws CmsDataAccessException {
 
         CmsProperty property = null;
 
         for (int i = 0; i < properties.size(); i++) {
-            property = (CmsProperty)properties.get(i);
+            property = properties.get(i);
             writePropertyObject(dbc, project, resource, property);
         }
     }
@@ -3302,7 +3315,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsUUID projectId = dbc.getRequestContext().getCurrentProject().getUuid();
 
         // first read all subresources with ACEs
-        List resources = new ArrayList();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_WITH_ACE_1");
@@ -3321,9 +3334,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // check current user write permission for each of these resources
-        Iterator itResources = resources.iterator();
+        Iterator<CmsResource> itResources = resources.iterator();
         while (itResources.hasNext()) {
-            CmsResource resource = (CmsResource)itResources.next();
+            CmsResource resource = itResources.next();
             try {
                 m_driverManager.getSecurityManager().checkPermissions(
                     dbc.getRequestContext(),
@@ -3352,7 +3365,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             filter.getExpireBefore(),
             CmsDriverManager.READMODE_INCLUDE_TREE).iterator();
         while (itResources.hasNext()) {
-            CmsResource resource = (CmsResource)itResources.next();
+            CmsResource resource = itResources.next();
             try {
                 m_driverManager.getSecurityManager().checkPermissions(
                     dbc.getRequestContext(),
@@ -3727,13 +3740,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // read the online version numbers
-        Map onlineVersions = readVersions(
+        Map<String, Integer> onlineVersions = readVersions(
             dbc,
             CmsProject.ONLINE_PROJECT_ID,
             resource.getResourceId(),
             resource.getStructureId());
-        int onlineStructureVersion = ((Integer)onlineVersions.get("structure")).intValue();
-        int onlineResourceVersion = ((Integer)onlineVersions.get("resource")).intValue();
+        int onlineStructureVersion = onlineVersions.get("structure").intValue();
+        int onlineResourceVersion = onlineVersions.get("resource").intValue();
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -3843,7 +3856,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long startTime,
         long endTime,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
         if (startTime > 0L) {
             // READ_IGNORE_TIME: if NOT set, add condition to match expired date against startTime
@@ -3871,7 +3884,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param conditions buffer to append the selection criteria
      * @param params list to append the selection parameters
      */
-    protected void preparePathCondition(CmsUUID projectId, String parent, int mode, StringBuffer conditions, List params) {
+    protected void preparePathCondition(
+        CmsUUID projectId,
+        String parent,
+        int mode,
+        StringBuffer conditions,
+        List<Object> params) {
 
         if (parent == CmsDriverManager.READ_IGNORE_PARENT) {
             // parent can be ignored
@@ -3907,7 +3925,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param conditions buffer to append the selection criteria
      * @param params list to append the selection parameters
      */
-    protected void prepareProjectCondition(CmsUUID projectId, int mode, StringBuffer conditions, List params) {
+    protected void prepareProjectCondition(CmsUUID projectId, int mode, StringBuffer conditions, List<Object> params) {
 
         if ((mode & CmsDriverManager.READMODE_INCLUDE_PROJECT) > 0) {
             // C_READMODE_INCLUDE_PROJECT: add condition to match the PROJECT_ID
@@ -3933,7 +3951,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsUUID projectId,
         CmsRelationFilter filter,
         CmsResource resource,
-        List params,
+        List<Object> params,
         boolean checkSource) {
 
         StringBuffer conditions = new StringBuffer(128);
@@ -4006,7 +4024,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // relation type filter
-        Set types = filter.getTypes();
+        Set<CmsRelationType> types = filter.getTypes();
         if (!types.isEmpty()) {
             if (conditions.length() == 0) {
                 conditions.append(BEGIN_CONDITION);
@@ -4015,9 +4033,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
             conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TYPE"));
             conditions.append(BEGIN_CONDITION);
-            Iterator it = types.iterator();
+            Iterator<CmsRelationType> it = types.iterator();
             while (it.hasNext()) {
-                CmsRelationType type = (CmsRelationType)it.next();
+                CmsRelationType type = it.next();
                 conditions.append("?");
                 params.add(new Integer(type.getId()));
                 if (it.hasNext()) {
@@ -4044,7 +4062,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long startTime,
         long endTime,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
         if (startTime > 0L) {
             // READ_IGNORE_TIME: if NOT set, add condition to match released date against startTime
@@ -4099,7 +4117,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsResourceState state,
         int mode,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
         if (state != null) {
             if ((mode & CmsDriverManager.READMODE_EXCLUDE_STATE) > 0) {
@@ -4130,7 +4148,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long startTime,
         long endTime,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
         if (startTime > 0L) {
             // READ_IGNORE_TIME: if NOT set, add condition to match last modified date against startTime
@@ -4158,7 +4176,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param conditions buffer to append the selection criteria
      * @param params list to append the selection parameters
      */
-    protected void prepareTypeCondition(CmsUUID projectId, int type, int mode, StringBuffer conditions, List params) {
+    protected void prepareTypeCondition(
+        CmsUUID projectId,
+        int type,
+        int mode,
+        StringBuffer conditions,
+        List<Object> params) {
 
         if (type != CmsDriverManager.READ_IGNORE_TYPE) {
             if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
@@ -4191,28 +4214,26 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List<Integer> types,
         int mode,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
-        if ((types == null) || types.isEmpty()) {
-            if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
-                // C_READ_FILE_TYPES: add condition to match against any type, but not given type
-                conditions.append(BEGIN_EXCLUDE_CONDITION);
+        if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
+            // C_READ_FILE_TYPES: add condition to match against any type, but not given type
+            conditions.append(BEGIN_EXCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
+            conditions.append(END_CONDITION);
+            params.add(new Integer(CmsDriverManager.READ_IGNORE_TYPE));
+        } else if (!((types == null) || types.isEmpty())) {
+            //otherwise add condition to match against given type if necessary
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            Iterator<Integer> typeIt = types.iterator();
+            while (typeIt.hasNext()) {
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
-                conditions.append(END_CONDITION);
-                params.add(new Integer(CmsDriverManager.READ_IGNORE_TYPE));
-            } else {
-                //otherwise add condition to match against given type if necessary
-                conditions.append(BEGIN_INCLUDE_CONDITION);
-                Iterator<Integer> typeIt = types.iterator();
-                while (typeIt.hasNext()) {
-                    conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
-                    params.add(typeIt.next());
-                    if (typeIt.hasNext()) {
-                        conditions.append(OR_CONDITION);
-                    }
+                params.add(typeIt.next());
+                if (typeIt.hasNext()) {
+                    conditions.append(OR_CONDITION);
                 }
-                conditions.append(END_CONDITION);
             }
+            conditions.append(END_CONDITION);
         }
     }
 
@@ -4224,12 +4245,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the project id for matching resources
-     * @param parent the path to the resource used as root of the searched subtree or {@link CmsDriverManager#READ_IGNORE_PARENT}, 
+     * @param parentPath the path to the resource used as root of the searched subtree or {@link CmsDriverManager#READ_IGNORE_PARENT}, 
      *               {@link CmsDriverManager#READMODE_EXCLUDE_TREE} means to read immediate children only 
      * @param types the resource types of matching resources or <code>null</code> (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_TYPE}
      * @param state the state of matching resources (meaning inverted by {@link CmsDriverManager#READMODE_EXCLUDE_STATE} or <code>null</code> to ignore
-     * @param startTime the start of the time range for the last modification date of matching resources or READ_IGNORE_TIME 
-     * @param endTime the end of the time range for the last modification date of matching resources or READ_IGNORE_TIME
+     * @param lastModifiedAfter the start of the time range for the last modification date of matching resources or READ_IGNORE_TIME 
+     * @param lastModifiedBefore the end of the time range for the last modification date of matching resources or READ_IGNORE_TIME
      * @param releasedAfter the start of the time range for the release date of matching resources
      * @param releasedBefore the end of the time range for the release date of matching resources
      * @param expiredAfter the start of the time range for the expire date of matching resources
@@ -4247,7 +4268,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected List readTypesInResourceTree(
+    protected List<CmsResource> readTypesInResourceTree(
         CmsDbContext dbc,
         CmsUUID projectId,
         String parentPath,
@@ -4261,10 +4282,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long expiredBefore,
         int mode) throws CmsDataAccessException {
 
-        List result = new ArrayList();
+        List<CmsResource> result = new ArrayList<CmsResource>();
 
         StringBuffer conditions = new StringBuffer();
-        List params = new ArrayList(5);
+        List<Object> params = new ArrayList<Object>(5);
 
         // prepare the selection criteria
         prepareProjectCondition(projectId, mode, conditions, params);
@@ -4382,6 +4403,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
     }
 
+    /**
+     * Wrap a SQL exception into a CmsDbSqlException.<p>
+     * 
+     * @param stmt the used statement
+     * @param e the exception
+     * 
+     * @return the CmsDbSqlException
+     */
     protected CmsDbSqlException wrapException(PreparedStatement stmt, SQLException e) {
 
         return new CmsDbSqlException(Messages.get().container(

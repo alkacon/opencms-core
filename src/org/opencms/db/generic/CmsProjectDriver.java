@@ -940,7 +940,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             // if the folder in the online-project contains any files, these need to be removed.
             // this can occur if these files were moved in the offline-project   
-            List movedFiles = null;
+            List<CmsResource> movedFiles = null;
             I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver(dbc);
             movedFiles = vfsDriver.readResourceTree(
                 dbc,
@@ -956,8 +956,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READMODE_ONLY_FILES);
 
-            for (Iterator it = movedFiles.iterator(); it.hasNext();) {
-                CmsResource delFile = (CmsResource)it.next();
+            for (Iterator<CmsResource> it = movedFiles.iterator(); it.hasNext();) {
+                CmsResource delFile = it.next();
                 try {
                     CmsResource offlineResource = vfsDriver.readResource(
                         dbc,
@@ -1060,9 +1060,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             // remove project resources
             String deletedResourceRootPath = currentFolder.getRootPath();
-            Iterator itProjects = readProjectsForResource(dbc, deletedResourceRootPath).iterator();
+            Iterator<CmsProject> itProjects = readProjectsForResource(dbc, deletedResourceRootPath).iterator();
             while (itProjects.hasNext()) {
-                CmsProject project = (CmsProject)itProjects.next();
+                CmsProject project = itProjects.next();
                 deleteProjectResource(dbc, project.getUuid(), deletedResourceRootPath);
             }
 
@@ -1488,7 +1488,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
             }
 
-            List offlineProperties = null;
+            List<CmsProperty> offlineProperties = null;
             try {
                 // write the properties online
                 m_driverManager.getVfsDriver(dbc).deletePropertyObjects(
@@ -2053,12 +2053,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject)
      */
-    public List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
+    public List<String> readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
-        List result = new ArrayList();
+        List<String> result = new ArrayList<String>();
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -2083,7 +2083,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjects(org.opencms.db.CmsDbContext, String)
      */
-    public List readProjects(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException {
+    public List<CmsProject> readProjects(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException {
 
         if ((dbc.getRequestContext() != null)
             && (dbc.getRequestContext().getAttribute(DBC_ATTR_READ_PROJECT_FOR_RESOURCE) != null)) {
@@ -2091,7 +2091,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // TODO: this should get its own method in the interface
             return readProjectsForResource(dbc, ouFqn);
         }
-        List projects = new ArrayList();
+        List<CmsProject> projects = new ArrayList<CmsProject>();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -2121,9 +2121,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
+    public List<CmsProject> readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
 
-        List projects = new ArrayList();
+        List<CmsProject> projects = new ArrayList<CmsProject>();
         ResultSet res = null;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2153,9 +2153,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForManagerGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
+    public List<CmsProject> readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
 
-        List projects = new ArrayList();
+        List<CmsProject> projects = new ArrayList<CmsProject>();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -2191,10 +2191,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    public List readProjectsForResource(CmsDbContext dbc, String rootPath) throws CmsDataAccessException {
+    public List<CmsProject> readProjectsForResource(CmsDbContext dbc, String rootPath) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
-        List projects = new ArrayList();
+        List<CmsProject> projects = new ArrayList<CmsProject>();
         ResultSet res = null;
         Connection conn = null;
 
@@ -2225,9 +2225,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
-    public List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
+    public List<CmsProject> readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
 
-        List projects = new ArrayList();
+        List<CmsProject> projects = new ArrayList<CmsProject>();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -2256,12 +2256,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
-    public List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException {
+    public List<CmsPublishedResource> readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
-        List publishedResources = new ArrayList();
+        List<CmsPublishedResource> publishedResources = new ArrayList<CmsPublishedResource>();
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -2350,13 +2351,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishJobs(org.opencms.db.CmsDbContext, long, long)
      */
-    public List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsDataAccessException {
+    public List<CmsPublishJobInfoBean> readPublishJobs(CmsDbContext dbc, long startTime, long endTime)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
 
-        List result = null;
+        List<CmsPublishJobInfoBean> result = null;
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_JOBS_IN_TIMERANGE");
@@ -2364,7 +2366,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setLong(2, endTime);
             res = stmt.executeQuery();
 
-            result = new ArrayList();
+            result = new ArrayList<CmsPublishJobInfoBean>();
             while (res.next()) {
                 result.add(createPublishJobInfoBean(res));
             }
@@ -2495,13 +2497,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readStaticExportResources(org.opencms.db.CmsDbContext, int, long)
      */
-    public List readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
+    public List<String> readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
     throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
-        List returnValue = new ArrayList();
+        List<String> returnValue = new ArrayList<String>();
 
         if (parameterResources == CmsStaticExportManager.EXPORT_LINK_WITHOUT_PARAMETER) {
             timestamp = 0;
@@ -2585,10 +2587,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("SQL :" + m_sqlManager.readQuery("C_RESOURCE_LOCK_WRITE"));
             }
-            Iterator i = locks.iterator();
+            Iterator<CmsLock> i = locks.iterator();
             int count = 0;
             while (i.hasNext()) {
-                CmsLock lock = (CmsLock)i.next();
+                CmsLock lock = i.next();
                 // only persist locks that should be written to the DB
                 CmsLock sysLock = lock.getSystemLock();
                 if (sysLock.isPersistent()) {
@@ -3033,7 +3035,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsDbContext dbc,
         CmsResource resource,
         CmsResourceState state,
-        List properties,
+        List<CmsProperty> properties,
         CmsUUID publishHistoryId,
         int publishTag) throws CmsDataAccessException {
 
@@ -3187,7 +3189,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsDbContext dbc,
         CmsProject onlineProject,
         CmsResource offlineResource,
-        Set publishedResourceIds,
+        Set<CmsUUID> publishedResourceIds,
         CmsUUID publishHistoryId,
         int publishTag) throws CmsDataAccessException {
 
@@ -3231,13 +3233,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 // ID's do match, but the resource ID's are different. structure IDs are reused
                 // to prevent orphan structure records in the online project.
                 if (!onlineResource.getResourceId().equals(offlineResource.getResourceId())) {
-                    List offlineProperties = m_driverManager.getVfsDriver(dbc).readPropertyObjects(
+                    List<CmsProperty> offlineProperties = m_driverManager.getVfsDriver(dbc).readPropertyObjects(
                         dbc,
                         dbc.currentProject(),
                         onlineResource);
                     if (offlineProperties.size() > 0) {
                         for (int i = 0; i < offlineProperties.size(); i++) {
-                            CmsProperty property = (CmsProperty)offlineProperties.get(i);
+                            CmsProperty property = offlineProperties.get(i);
                             property.setStructureValue(null);
                             property.setResourceValue(CmsProperty.DELETE_VALUE);
                         }
@@ -3279,7 +3281,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             throw e;
         }
 
-        List offlineProperties;
+        List<CmsProperty> offlineProperties;
         try {
             // write the properties online
             offlineProperties = m_driverManager.getVfsDriver(dbc).readPropertyObjects(
@@ -3543,7 +3545,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsDbContext dbc,
         CmsProject onlineProject,
         CmsResource offlineResource,
-        Set publishedContentIds,
+        Set<CmsUUID> publishedContentIds,
         CmsUUID publishHistoryId,
         int publishTag) throws CmsDataAccessException {
 
@@ -3605,7 +3607,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             throw e;
         }
 
-        List offlineProperties;
+        List<CmsProperty> offlineProperties;
         try {
             // write the properties online
             offlineProperties = m_driverManager.getVfsDriver(dbc).readPropertyObjects(

@@ -38,10 +38,19 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
+    /** Attribute name. */
     private static final String ATTR_ATTRIBUTE = "attribute";
+
+    /** Attribute name. */
     private static final String ATTR_FILE = "file";
+
+    /** Attribute name. */
     private static final String ATTR_PAGE = "page";
+
+    /** Attribute name. */
     private static final String ATTR_PROPERTY = "property";
+
+    /** Attribute name. */
     private static final String ATTR_SUFFIX = "suffix";
 
     /**

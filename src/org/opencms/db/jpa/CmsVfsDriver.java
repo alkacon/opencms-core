@@ -1294,7 +1294,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             if (filter.isSource()) {
-                List params = new ArrayList(7);
+                List<Object> params = new ArrayList<Object>(7);
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, C_DELETE_RELATIONS));
@@ -1311,7 +1311,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
             }
             if (filter.isTarget()) {
-                List params = new ArrayList(7);
+                List<Object> params = new ArrayList<Object>(7);
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, C_DELETE_RELATIONS));
@@ -2153,7 +2153,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             if (filter.isSource()) {
-                List<String> params = new ArrayList<String>(7);
+                List<Object> params = new ArrayList<Object>(7);
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, C_READ_RELATIONS));
@@ -2174,7 +2174,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
 
             if (filter.isTarget()) {
-                List<String> params = new ArrayList<String>(7);
+                List<Object> params = new ArrayList<Object>(7);
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, C_READ_RELATIONS));
@@ -2386,6 +2386,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.util.CmsUUID, String, String)
      */
+    @SuppressWarnings("unchecked")
     public List<CmsResource> readResourcesWithProperty(
         CmsDbContext dbc,
         CmsUUID projectId,
@@ -2443,7 +2444,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List<CmsResource> result = new ArrayList<CmsResource>();
 
         StringBuffer conditions = new StringBuffer();
-        List params = new ArrayList(5);
+        List<Object> params = new ArrayList<Object>(5);
 
         // prepare the selection criteria
         prepareProjectCondition(projectId, mode, conditions, params);
@@ -3750,7 +3751,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long startTime,
         long endTime,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
         if (startTime > 0L) {
             // READ_IGNORE_TIME: if NOT set, add condition to match expired date against startTime
@@ -3778,7 +3779,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param conditions buffer to append the selection criteria
      * @param params list to append the selection parameters
      */
-    protected void preparePathCondition(CmsUUID projectId, String parent, int mode, StringBuffer conditions, List params) {
+    protected void preparePathCondition(
+        CmsUUID projectId,
+        String parent,
+        int mode,
+        StringBuffer conditions,
+        List<Object> params) {
 
         if (parent == CmsDriverManager.READ_IGNORE_PARENT) {
             // parent can be ignored
@@ -3814,7 +3820,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param conditions buffer to append the selection criteria
      * @param params list to append the selection parameters
      */
-    protected void prepareProjectCondition(CmsUUID projectId, int mode, StringBuffer conditions, List params) {
+    protected void prepareProjectCondition(CmsUUID projectId, int mode, StringBuffer conditions, List<Object> params) {
 
         if ((mode & CmsDriverManager.READMODE_INCLUDE_PROJECT) > 0) {
             // C_READMODE_INCLUDE_PROJECT: add condition to match the PROJECT_ID
@@ -3840,7 +3846,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsUUID projectId,
         CmsRelationFilter filter,
         CmsResource resource,
-        List params,
+        List<Object> params,
         boolean checkSource) {
 
         StringBuffer conditions = new StringBuffer(128);
@@ -3913,7 +3919,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // relation type filter
-        Set types = filter.getTypes();
+        Set<CmsRelationType> types = filter.getTypes();
         if (!types.isEmpty()) {
             if (conditions.length() == 0) {
                 conditions.append(BEGIN_CONDITION);
@@ -3922,9 +3928,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
             conditions.append(m_sqlManager.readQuery(projectId, C_RELATION_FILTER_TYPE));
             conditions.append(BEGIN_CONDITION);
-            Iterator it = types.iterator();
+            Iterator<CmsRelationType> it = types.iterator();
             while (it.hasNext()) {
-                CmsRelationType type = (CmsRelationType)it.next();
+                CmsRelationType type = it.next();
                 conditions.append("?");
                 params.add(Integer.valueOf(type.getId()));
                 if (it.hasNext()) {
@@ -3951,7 +3957,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long startTime,
         long endTime,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
         if (startTime > 0L) {
             // READ_IGNORE_TIME: if NOT set, add condition to match released date against startTime
@@ -4006,7 +4012,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsResourceState state,
         int mode,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
         if (state != null) {
             if ((mode & CmsDriverManager.READMODE_EXCLUDE_STATE) > 0) {
@@ -4037,7 +4043,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long startTime,
         long endTime,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
         if (startTime > 0L) {
             // READ_IGNORE_TIME: if NOT set, add condition to match last modified date against startTime
@@ -4065,7 +4071,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param conditions buffer to append the selection criteria
      * @param params list to append the selection parameters
      */
-    protected void prepareTypeCondition(CmsUUID projectId, int type, int mode, StringBuffer conditions, List params) {
+    protected void prepareTypeCondition(
+        CmsUUID projectId,
+        int type,
+        int mode,
+        StringBuffer conditions,
+        List<Object> params) {
 
         if (type != CmsDriverManager.READ_IGNORE_TYPE) {
             if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
@@ -4098,28 +4109,26 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List<Integer> types,
         int mode,
         StringBuffer conditions,
-        List params) {
+        List<Object> params) {
 
-        if ((types == null) || types.isEmpty()) {
-            if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
-                // C_READ_FILE_TYPES: add condition to match against any type, but not given type
-                conditions.append(BEGIN_EXCLUDE_CONDITION);
+        if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
+            // C_READ_FILE_TYPES: add condition to match against any type, but not given type
+            conditions.append(BEGIN_EXCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, C_RESOURCES_SELECT_BY_RESOURCE_TYPE));
+            conditions.append(END_CONDITION);
+            params.add(Integer.valueOf(CmsDriverManager.READ_IGNORE_TYPE));
+        } else if (!((types == null) || types.isEmpty())) {
+            //otherwise add condition to match against given type if necessary
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            Iterator<Integer> typeIt = types.iterator();
+            while (typeIt.hasNext()) {
                 conditions.append(m_sqlManager.readQuery(projectId, C_RESOURCES_SELECT_BY_RESOURCE_TYPE));
-                conditions.append(END_CONDITION);
-                params.add(Integer.valueOf(CmsDriverManager.READ_IGNORE_TYPE));
-            } else {
-                //otherwise add condition to match against given type if necessary
-                conditions.append(BEGIN_INCLUDE_CONDITION);
-                Iterator<Integer> typeIt = types.iterator();
-                while (typeIt.hasNext()) {
-                    conditions.append(m_sqlManager.readQuery(projectId, C_RESOURCES_SELECT_BY_RESOURCE_TYPE));
-                    params.add(typeIt.next());
-                    if (typeIt.hasNext()) {
-                        conditions.append(OR_CONDITION);
-                    }
+                params.add(typeIt.next());
+                if (typeIt.hasNext()) {
+                    conditions.append(OR_CONDITION);
                 }
-                conditions.append(END_CONDITION);
             }
+            conditions.append(END_CONDITION);
         }
     }
 
@@ -4154,6 +4163,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
+    @SuppressWarnings("unchecked")
     protected List<CmsResource> readTypesInResourceTree(
         CmsDbContext dbc,
         CmsUUID projectId,
@@ -4171,7 +4181,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List<CmsResource> result = new ArrayList<CmsResource>();
 
         StringBuffer conditions = new StringBuffer();
-        List params = new ArrayList(5);
+        List<Object> params = new ArrayList<Object>(5);
 
         // prepare the selection criteria
         prepareProjectCondition(projectId, mode, conditions, params);
@@ -4195,13 +4205,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             Query q = m_sqlManager.createQueryFromJPQL(dbc, queryBuf.toString());
 
             for (int i = 0; i < params.size(); i++) {
-                if (params.get(i) instanceof Integer) {
-                    q.setParameter(i + 1, ((Integer)params.get(i)).intValue());
-                } else if (params.get(i) instanceof Long) {
-                    q.setParameter(i + 1, ((Long)params.get(i)).longValue());
-                } else {
-                    q.setParameter(i + 1, params.get(i));
-                }
+                q.setParameter(i + 1, params.get(i));
             }
 
             res = q.getResultList();

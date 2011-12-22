@@ -1934,6 +1934,14 @@ public class CmsUserDriver implements I_CmsUserDriver {
         }
     }
 
+    /**
+     * Creates a query from the given parameters.<p>
+     * 
+     * @param queryString the query string
+     * @param queryParams the parameters
+     * 
+     * @return the query
+     */
     protected Query createQueryFromStringAndParams(String queryString, List<Object> queryParams) {
 
         return null;

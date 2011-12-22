@@ -403,7 +403,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     public void init(
         CmsDbContext dbc,
         CmsConfigurationManager configurationManager,
-        List successiveDrivers,
+        List<String> successiveDrivers,
         CmsDriverManager driverManager) {
 
         CmsParameterConfiguration configuration = configurationManager.getConfiguration();
@@ -453,10 +453,11 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#readAllAvailableVersions(CmsDbContext, CmsUUID)
      */
-    public List readAllAvailableVersions(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException {
+    public List<I_CmsHistoryResource> readAllAvailableVersions(CmsDbContext dbc, CmsUUID structureId)
+    throws CmsDataAccessException {
 
         ResultSet res = null;
-        List result = new ArrayList();
+        List<I_CmsHistoryResource> result = new ArrayList<I_CmsHistoryResource>();
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -465,7 +466,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             // get all direct versions (where the structure entry has been written)
             // sorted from the NEWEST to the OLDEST version (publish tag descendant)
-            List historyResources = new ArrayList();
+            List<I_CmsHistoryResource> historyResources = new ArrayList<I_CmsHistoryResource>();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_ALL_VERSIONS");
             stmt.setString(1, structureId.toString());
             res = stmt.executeQuery();
@@ -477,7 +478,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             if (!historyResources.isEmpty()) {
                 // look for newer versions
                 // this is the NEWEST version, with the HIGHEST publish tag
-                I_CmsHistoryResource histRes = (I_CmsHistoryResource)historyResources.get(0);
+                I_CmsHistoryResource histRes = historyResources.get(0);
 
                 // look for later resource entries
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_NEW_VERSIONS");
@@ -502,11 +503,11 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             }
             // iterate from the NEWEST to the OLDEST versions (publish tag descendant)
             for (int i = 0; i < historyResources.size(); i++) {
-                I_CmsHistoryResource histRes = (I_CmsHistoryResource)historyResources.get(i);
+                I_CmsHistoryResource histRes = historyResources.get(i);
                 result.add(histRes);
                 if (i < (historyResources.size() - 1)) {
                     // this is one older direct version than histRes (histRes.getPublishTag() > histRes2.getPublishTag())
-                    I_CmsHistoryResource histRes2 = (I_CmsHistoryResource)historyResources.get(i + 1);
+                    I_CmsHistoryResource histRes2 = historyResources.get(i + 1);
 
                     // look for resource changes in between of the direct versions in ascendent order                    
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_BTW_VERSIONS");
@@ -533,7 +534,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             }
             if (!result.isEmpty()) {
                 // get the oldest version
-                I_CmsHistoryResource histRes = (I_CmsHistoryResource)result.get(result.size() - 1);
+                I_CmsHistoryResource histRes = result.get(result.size() - 1);
 
                 if (histRes.getVersion() > 1) {
                     // look for older resource versions, in descendant order
@@ -695,48 +696,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             result.add(histRes);
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsHistoryDriver#readFile(CmsDbContext, CmsUUID, int)
-     * 
-     * @deprecated use {@link #readResource(CmsDbContext, CmsUUID, int)} instead
-     *             but notice that the <code>publishTag != version</code>
-     */
-    public I_CmsHistoryResource readFile(CmsDbContext dbc, CmsUUID structureId, int tagId)
-    throws CmsDataAccessException {
-
-        I_CmsHistoryResource file = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_READ_HISTORY_BYID");
-            stmt.setString(1, structureId.toString());
-            stmt.setInt(2, tagId);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                file = internalCreateResource(res);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_HISTORY_FILE_NOT_FOUND_1,
-                    structureId));
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        ((CmsFile)file).setContents(readContent(dbc, file.getResourceId(), file.getPublishTag()));
-        return file;
     }
 
     /**
@@ -1087,13 +1046,14 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     /** 
      * @see org.opencms.db.I_CmsHistoryDriver#readProperties(org.opencms.db.CmsDbContext, org.opencms.file.history.I_CmsHistoryResource)
      */
-    public List readProperties(CmsDbContext dbc, I_CmsHistoryResource resource) throws CmsDataAccessException {
+    public List<CmsProperty> readProperties(CmsDbContext dbc, I_CmsHistoryResource resource)
+    throws CmsDataAccessException {
 
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        Map propertyMap = new HashMap();
+        Map<String, CmsProperty> propertyMap = new HashMap<String, CmsProperty>();
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -1153,7 +1113,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
-        return new ArrayList(propertyMap.values());
+        return new ArrayList<CmsProperty>(propertyMap.values());
     }
 
     /**
@@ -1334,7 +1294,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         CmsProject currentProject = dbc.currentProject();
         CmsUser currentUser = dbc.currentUser();
 
-        List projectresources = m_driverManager.getProjectDriver(dbc).readProjectResources(dbc, currentProject);
+        List<String> projectresources = m_driverManager.getProjectDriver(dbc).readProjectResources(dbc, currentProject);
 
         // write historical project to the database
         Connection conn = null;
@@ -1362,11 +1322,11 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             // now write the projectresources
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_HISTORY_CREATE");
-            Iterator i = projectresources.iterator();
+            Iterator<String> i = projectresources.iterator();
             while (i.hasNext()) {
                 stmt.setInt(1, publishTag);
                 stmt.setString(2, currentProject.getUuid().toString());
-                stmt.setString(3, (String)i.next());
+                stmt.setString(3, i.next());
                 stmt.executeUpdate();
                 stmt.clearParameters();
             }
@@ -1582,13 +1542,13 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      * @throws CmsDbConsistencyException if the mapping type is wrong
      */
     protected void internalAddToPropMap(
-        Map propertyMap,
+        Map<String, CmsProperty> propertyMap,
         I_CmsHistoryResource resource,
         String propertyKey,
         String propertyValue,
         int mappingType) throws CmsDbConsistencyException {
 
-        CmsProperty property = (CmsProperty)propertyMap.get(propertyKey);
+        CmsProperty property = propertyMap.get(propertyKey);
         if (property != null) {
             // there exists already a property for this key in the result
             switch (mappingType) {
@@ -1735,7 +1695,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      *  
      * @throws SQLException if something goes wrong
      */
-    protected CmsHistoryProject internalCreateProject(ResultSet res, List resources) throws SQLException {
+    protected CmsHistoryProject internalCreateProject(ResultSet res, List<String> resources) throws SQLException {
 
         String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_OU_0")));
         CmsUUID publishedById = new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECT_PUBLISHED_BY_0")));

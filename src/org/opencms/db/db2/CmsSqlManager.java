@@ -36,9 +36,6 @@ package org.opencms.db.db2;
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -10490536414546280L;
-
     /** The filename/path of the SQL query properties. */
     private static final String QUERY_PROPERTIES = "org/opencms/db/db2/query.properties";
 

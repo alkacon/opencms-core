@@ -52,6 +52,7 @@ public class CmsPublishedResource implements Serializable, Comparable<CmsPublish
      */
     public static class CmsPublishedResourceState extends CmsResourceState {
 
+        /** The serial version id. */
         private static final long serialVersionUID = -2901049208546972463L;
 
         /**
