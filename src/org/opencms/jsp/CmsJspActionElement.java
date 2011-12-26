@@ -753,7 +753,7 @@ public class CmsJspActionElement extends CmsJspBean {
             return getMessage(NOT_INITIALIZED);
         }
         try {
-            return CmsJspTagLink.linkTagAction(target, getRequest());
+            return CmsJspTagLink.linkTagAction(target, getRequest(), detailPage);
         } catch (Throwable t) {
             handleException(t);
         }
