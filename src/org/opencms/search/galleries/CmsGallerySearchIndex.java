@@ -58,6 +58,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FilterClause;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermsFilter;
@@ -253,6 +254,10 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             // store separate fields query for excerpt highlighting  
             Query fieldsQuery = null;
 
+            // get an index searcher that is certainly up to date
+            indexSearcherUpdate();
+            IndexSearcher searcher = getSearcher();
+
             Locale locale = params.getLocale() == null ? null : CmsLocaleManager.getLocale(params.getLocale());
             if (params.getSearchWords() != null) {
                 // this search contains a full text search component
@@ -266,7 +271,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                     QueryParser p = new QueryParser(CmsSearchIndex.LUCENE_VERSION, field, getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getSearchWords()), BooleanClause.Occur.SHOULD);
                 }
-                fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
+                fieldsQuery = searcher.rewrite(booleanFieldsQuery);
             }
 
             // finally set the main query to the fields query
@@ -279,8 +284,8 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             }
 
             // perform the search operation          
-            getSearcher().setDefaultFieldSortScoring(true, true);
-            hits = getSearcher().search(query, filter, getMaxHits(), params.getSort());
+            searcher.setDefaultFieldSortScoring(true, true);
+            hits = searcher.search(query, filter, getMaxHits(), params.getSort());
 
             if (hits != null) {
                 int hitCount = hits.totalHits > hits.scoreDocs.length ? hits.scoreDocs.length : hits.totalHits;
@@ -306,7 +311,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
-                        doc = getSearcher().doc(hits.scoreDocs[i].doc);
+                        doc = searcher.doc(hits.scoreDocs[i].doc);
                         if (hasReadPermission(searchCms, doc)) {
                             // user has read permission
                             if (cnt >= start) {
