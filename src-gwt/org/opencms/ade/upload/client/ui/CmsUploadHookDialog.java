@@ -30,7 +30,7 @@ package org.opencms.ade.upload.client.ui;
 import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsIFrame;
-import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
 
@@ -40,13 +40,15 @@ import java.util.Map;
 
 import com.google.common.base.Joiner;
 import com.google.gwt.dom.client.FormElement;
+import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A dialog which contains an IFRAME for displaying the upload hook JSP page.<p>
  */
-public class CmsUploadHookDialog extends CmsPopup {
+public class CmsUploadHookDialog extends PopupPanel {
 
     /** The dialog height. */
     public static final int DIALOG_HEIGHT = 600;
@@ -73,15 +75,21 @@ public class CmsUploadHookDialog extends CmsPopup {
      */
     protected CmsUploadHookDialog(String title, String uploadHook, List<String> uploadedFiles) {
 
-        super(title);
+        super();
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
-        setWidth(DIALOG_WIDTH);
-        setHeight(DIALOG_HEIGHT);
+        getContainerElement().getStyle().setProperty("width", "800px");
+        getContainerElement().getStyle().setProperty("height", "600px");
+        getContainerElement().getStyle().setProperty("background-color", "white");
+
         CmsIFrame frame = new CmsIFrame(IFRAME_NAME);
         frame.getElement().getStyle().setWidth(100, Unit.PCT);
         frame.getElement().getStyle().setHeight(100, Unit.PCT);
+        frame.getElement().getStyle().setBorderStyle(BorderStyle.NONE);
+        frame.getElement().getStyle().setBackgroundColor(
+            I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog());
+        frame.getElement().setAttribute("frameborder", "0");
         String frameUri = CmsCoreProvider.get().link(uploadHook);
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(I_CmsUploadConstants.PARAM_RESOURCES, Joiner.on(",").join(uploadedFiles));
@@ -119,11 +127,11 @@ public class CmsUploadHookDialog extends CmsPopup {
      * Installs the Javascript function which should be called by the child iframe when the dialog should be closed.<p>
      */
     public native void installCloseFunction() /*-{
-      var self = this;
-      $wnd[@org.opencms.ade.upload.client.ui.CmsUploadHookDialog::CLOSE_FUNCTION] = function() {
-         self.@org.opencms.ade.upload.client.ui.CmsUploadHookDialog::doClose()();
-      };
-    }-*/;
+                                              var self = this;
+                                              $wnd[@org.opencms.ade.upload.client.ui.CmsUploadHookDialog::CLOSE_FUNCTION] = function() {
+                                              self.@org.opencms.ade.upload.client.ui.CmsUploadHookDialog::doClose()();
+                                              };
+                                              }-*/;
 
     /**
      * Initializes the IFRAME content of the dialog.<p>
