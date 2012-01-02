@@ -63,7 +63,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.commons.CmsPropertyAdvanced;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
@@ -1151,7 +1150,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     public String getUploadHook(CmsObject cms, String uploadFolder) {
 
-        I_CmsDialogHandler handler = getDialogHandler(CmsPropertyAdvanced.DIALOG_TYPE);
+        I_CmsDialogHandler handler = getDialogHandler(CmsDialogSelector.DIALOG_PROPERTY);
         if ((handler != null) && (handler instanceof I_CmsPostUploadDialogHandler)) {
             return ((I_CmsPostUploadDialogHandler)handler).getUploadHook(cms, uploadFolder);
         } else {
