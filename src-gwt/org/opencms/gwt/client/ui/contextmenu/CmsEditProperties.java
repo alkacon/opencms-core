@@ -25,15 +25,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;

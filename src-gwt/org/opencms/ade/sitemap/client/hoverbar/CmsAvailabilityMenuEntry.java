@@ -31,7 +31,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.CmsAvailabilityDialog;
+import org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
