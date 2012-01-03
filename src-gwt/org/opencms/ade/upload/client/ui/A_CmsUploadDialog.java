@@ -873,36 +873,39 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
                 displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
                 JSONValue uploadedFilesVal = jsonObject.get(I_CmsUploadConstants.KEY_UPLOADED_FILES);
                 JSONValue uploadHook = jsonObject.get(I_CmsUploadConstants.KEY_UPLOAD_HOOK);
-                JSONArray uploadedFilesArray = uploadedFilesVal.isArray();
-                if (uploadedFilesArray != null) {
-                    for (int i = 0; i < uploadedFilesArray.size(); i++) {
-                        JSONString entry = uploadedFilesArray.get(i).isString();
-                        if (entry != null) {
-                            uploadedFilesList.add(entry.stringValue());
+                String hookUri = null;
+                if ((uploadHook != null) && (uploadHook.isString() != null)) {
+                    hookUri = uploadHook.isString().stringValue();
+                    JSONArray uploadedFilesArray = uploadedFilesVal.isArray();
+                    if (uploadedFilesArray != null) {
+                        for (int i = 0; i < uploadedFilesArray.size(); i++) {
+                            JSONString entry = uploadedFilesArray.get(i).isString();
+                            if (entry != null) {
+                                uploadedFilesList.add(entry.stringValue());
+                            }
                         }
                     }
                 }
                 m_progressInfo.finish();
                 final Runnable finishAction = getFinishAction();
-                if (uploadHook != null) {
+                if (hookUri != null) {
                     // clear finish action; we want to show another dialog, assign it our finish action instead 
                     setFinishAction(null);
                 }
                 closeOnSuccess();
-                if (uploadHook != null) {
-                    String title = Messages.get().key(Messages.GUI_UPLOAD_HOOK_DIALOG_TITLE_0);
-                    CmsUploadHookDialog dialog = CmsUploadHookDialog.openDialog(
-
-                    title, uploadHook.isString().stringValue(), uploadedFilesList);
+                if (hookUri != null) {
+                    CloseHandler<PopupPanel> closeHandler = null;
                     if (finishAction != null) {
-                        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+                        closeHandler = new CloseHandler<PopupPanel>() {
 
                             public void onClose(CloseEvent<PopupPanel> event) {
 
                                 finishAction.run();
                             }
-                        });
+                        };
                     }
+                    String title = Messages.get().key(Messages.GUI_UPLOAD_HOOK_DIALOG_TITLE_0);
+                    CmsUploadHookDialog.openDialog(title, hookUri, uploadedFilesList, closeHandler);
                 }
             } else {
                 String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
