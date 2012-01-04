@@ -28,13 +28,9 @@
 package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsIFrame;
+import org.opencms.gwt.client.ui.CmsFrameDialog;
 import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
-import org.opencms.gwt.client.util.CmsDebugLog;
-import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Method;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsMenuCommandParameters;
 import org.opencms.util.CmsUUID;
@@ -44,10 +40,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.FormElement;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A context menu entry command to open any dialog within an iFrame.<p>
@@ -66,20 +59,8 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
     /** The parameter name for the content structure id. */
     public static final String PARAM_CONTENT_STRUCTURE_ID = "contentStructureId";
 
-    /** The iFrame name prefix. */
-    private static final String FRAME_NAME_PREFIX = "DIALOG_FRAME_";
-
     /** The context menu handler for this command instance. */
     protected I_CmsContextMenuHandler m_menuHandler;
-
-    /** The popup instance. */
-    private CmsPopup m_dialog;
-
-    /** The form element. */
-    private FormElement m_form;
-
-    /** The name of the currently used iFrame. */
-    private String m_iFrameName;
 
     /**
      * Constructor.<p>
@@ -106,10 +87,6 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
     public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean menuEntryBean) {
 
         m_menuHandler = handler;
-        if ((m_dialog != null) && m_dialog.isShowing()) {
-            CmsDebugLog.getInstance().printLine("Dialog is already open, cannot open another one.");
-            return;
-        }
         int height = 400;
         int width = 300;
         if (menuEntryBean.getParams().containsKey(CmsMenuCommandParameters.PARAM_DIALOG_HEIGHT)) {
@@ -120,30 +97,17 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
             width = CmsClientStringUtil.parseInt(menuEntryBean.getParams().get(
                 CmsMenuCommandParameters.PARAM_DIALOG_WIDTH));
         }
-        m_iFrameName = FRAME_NAME_PREFIX + menuEntryBean.getName();
-        exportClosingMethod();
-        m_dialog = new CmsPopup(menuEntryBean.getLabel());
-        m_dialog.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
-        m_dialog.removePadding();
-        m_dialog.setHeight(height);
-        m_dialog.setWidth(width);
-        m_dialog.setGlassEnabled(true);
-        CmsIFrame editorFrame = new CmsIFrame(m_iFrameName, "");
-        m_dialog.addDialogClose(new Command() {
-
-            /**
-             * @see com.google.gwt.user.client.Command#execute()
-             */
-            public void execute() {
-
-                onClose(false);
-            }
-        });
-        m_dialog.add(editorFrame);
-        m_dialog.center();
-        m_form = generateForm(structureId, menuEntryBean);
-        RootPanel.getBodyElement().appendChild(m_form);
-        m_form.submit();
+        String fileName = menuEntryBean.getParams().get(CmsMenuCommandParameters.PARAM_DIALOG_URI);
+        CmsPopup popup = CmsFrameDialog.showFrameDialog(
+            menuEntryBean.getLabel(),
+            CmsCoreProvider.get().link(fileName),
+            getDialogParameters(structureId, menuEntryBean),
+            null);
+        popup.setHeight(height);
+        popup.setWidth(width);
+        popup.addDialogClose(null);
+        popup.center();
+        exportClosingMethod(popup);
     }
 
     /**
@@ -156,19 +120,11 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
     }
 
     /**
-     * Execute
-     * @param reload
+     * Executed on dialog close.<p>
+     * @param reload <code>true</code> if the page should be reloaded
      */
     protected void onClose(boolean reload) {
 
-        if (m_dialog != null) {
-            m_dialog.hide();
-            m_dialog = null;
-        }
-        if (m_form != null) {
-            m_form.removeFromParent();
-            m_form = null;
-        }
         if (reload) {
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -184,37 +140,33 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
 
     /**
      * Exports the close method to the window object, so it can be accessed from within the content editor iFrame.<p>
+     * 
+     * @param popup the popup instance 
      */
-    private native void exportClosingMethod() /*-{
+    private native void exportClosingMethod(final CmsPopup popup) /*-{
         var self = this;
         $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
                 reload) {
+            popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
             self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
+            $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
         };
     }-*/;
 
     /**
-     * Generates the form to post to the dialog frame.<p>
+     * Generates the dialog parameters.<p>
      * 
      * @param structureId the structure id of the current content
      * @param menuEntryBean the context menu entry bean
-     * 
-     * @return the form element
+     * @return the dialog parameters
      */
-    private FormElement generateForm(CmsUUID structureId, CmsContextMenuEntryBean menuEntryBean) {
+    private Map<String, String> getDialogParameters(CmsUUID structureId, CmsContextMenuEntryBean menuEntryBean) {
 
-        String fileName = menuEntryBean.getParams().get(CmsMenuCommandParameters.PARAM_DIALOG_URI);
-        // create a form to submit a post request to the editor JSP
-        Map<String, String> formValues = new HashMap<String, String>();
+        HashMap<String, String> parameters = new HashMap<String, String>();
         if (structureId != null) {
-            formValues.put(PARAM_CONTENT_STRUCTURE_ID, structureId.toString());
+            parameters.put(PARAM_CONTENT_STRUCTURE_ID, structureId.toString());
         }
-        formValues.putAll(menuEntryBean.getParams());
-        FormElement formElement = CmsDomUtil.generateHiddenForm(
-            CmsCoreProvider.get().link(fileName),
-            Method.post,
-            m_iFrameName,
-            formValues);
-        return formElement;
+        parameters.putAll(menuEntryBean.getParams());
+        return parameters;
     }
 }
