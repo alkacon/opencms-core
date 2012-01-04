@@ -146,6 +146,9 @@ public class CmsFrameDialog {
         CloseHandler<PopupPanel> closeHandler) {
 
         CmsPopup popup = new CmsPopup(title);
+        popup.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
+        popup.removePadding();
+        popup.setGlassEnabled(true);
         CmsIFrame editorFrame = new CmsIFrame(IFRAME_NAME, "");
         popup.add(editorFrame);
         final FormElement formElement = CmsDomUtil.generateHiddenForm(dialogUri, Method.post, IFRAME_NAME, parameters);
