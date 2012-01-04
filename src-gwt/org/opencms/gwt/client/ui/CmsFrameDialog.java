@@ -33,6 +33,8 @@ import org.opencms.gwt.client.util.CmsDomUtil.Method;
 
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -63,6 +65,9 @@ public class CmsFrameDialog {
 
     /** The dialog width. */
     public static final int DIALOG_WIDTH = 200;
+
+    /** The name of the enable dialog close function. */
+    public static final String ENABLE_CLOSE_FUNCTION = "cmsEnableDialogClose";
 
     /** The name of the dialog height function. */
     public static final String HEIGHT_FUNCTION = "cmsDialogHeight";
@@ -105,6 +110,7 @@ public class CmsFrameDialog {
         m_isFrame = hasParentFrame();
         if (m_isFrame) {
             m_main = new FlowPanel();
+            m_main.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().frameDialog());
             m_contentPanel = new SimplePanel();
             m_contentPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupMainContent());
             m_contentPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
@@ -146,8 +152,8 @@ public class CmsFrameDialog {
         CloseHandler<PopupPanel> closeHandler) {
 
         CmsPopup popup = new CmsPopup(title);
-        popup.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
         popup.removePadding();
+        popup.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
         popup.setGlassEnabled(true);
         CmsIFrame editorFrame = new CmsIFrame(IFRAME_NAME, "");
         popup.add(editorFrame);
@@ -162,7 +168,9 @@ public class CmsFrameDialog {
                 removeExportedFunctions();
             }
         });
-        popup.addCloseHandler(closeHandler);
+        if (closeHandler != null) {
+            popup.addCloseHandler(closeHandler);
+        }
         popup.center();
         formElement.submit();
         return popup;
@@ -206,6 +214,10 @@ public class CmsFrameDialog {
                 title) {
             popup.@org.opencms.gwt.client.ui.CmsPopup::setCaption(Ljava/lang/String;)(title);
         };
+        $wnd[@org.opencms.gwt.client.ui.CmsFrameDialog::ENABLE_CLOSE_FUNCTION] = function(
+                title) {
+            popup.@org.opencms.gwt.client.ui.CmsPopup::addDialogClose(Lcom/google/gwt/user/client/Command;)(null);
+        };
     }-*/;
 
     /**
@@ -216,11 +228,7 @@ public class CmsFrameDialog {
     public void addButton(Widget button) {
 
         if (m_isFrame) {
-            if (m_buttonPanel == null) {
-                m_buttonPanel = new FlowPanel();
-                m_buttonPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
-                m_main.add(m_buttonPanel);
-            }
+            initButtonPanel();
             m_buttonPanel.add(button);
         } else {
             m_popup.addButton(button);
@@ -236,14 +244,22 @@ public class CmsFrameDialog {
     public void addButton(Widget button, int index) {
 
         if (m_isFrame) {
-            if (m_buttonPanel == null) {
-                m_buttonPanel = new FlowPanel();
-                m_buttonPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
-                m_main.add(m_buttonPanel);
-            }
+            initButtonPanel();
             m_buttonPanel.insert(button, index);
         } else {
             m_popup.addButton(button, index);
+        }
+    }
+
+    /**
+     * Enables the dialog close button on the popup.<p>
+     */
+    public void enableDialogClose() {
+
+        if (m_isFrame) {
+            enableParentDialogClose();
+        } else {
+            m_popup.addDialogClose(null);
         }
     }
 
@@ -366,11 +382,40 @@ public class CmsFrameDialog {
             root.getElement().getStyle().setPadding(0, Unit.PX);
             RootPanel.get().add(m_main);
             m_isShowing = true;
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                public void execute() {
+
+                    adjustContentSize();
+                }
+            });
         } else {
             m_popup.center();
         }
 
     }
+
+    /**
+     * Adjusts the content panel size according to the button panel height.<p>
+     */
+    protected void adjustContentSize() {
+
+        if (m_isFrame && m_isShowing) {
+            if (m_buttonPanel != null) {
+                m_contentPanel.getElement().getStyle().setBottom(m_buttonPanel.getOffsetHeight() + 6, Unit.PX);
+            } else {
+                m_contentPanel.getElement().getStyle().clearBottom();
+            }
+        }
+    }
+
+    /**
+     * Enables the dialog close button on the parent frame popup.<p>
+     */
+    private native void enableParentDialogClose() /*-{
+        $wnd.parent[@org.opencms.gwt.client.ui.CmsFrameDialog::ENABLE_CLOSE_FUNCTION]
+                ();
+    }-*/;
 
     /**
      * Hides the parent dialog.<p>
@@ -379,6 +424,18 @@ public class CmsFrameDialog {
         $wnd.parent[@org.opencms.gwt.client.ui.CmsFrameDialog::CLOSE_FUNCTION]
                 ();
     }-*/;
+
+    /**
+     * Initializes the button panel within frame mode.<p>
+     */
+    private void initButtonPanel() {
+
+        if ((m_buttonPanel == null) && m_isFrame) {
+            m_buttonPanel = new FlowPanel();
+            m_buttonPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popupButtonPanel());
+            m_main.add(m_buttonPanel);
+        }
+    }
 
     /**
      * Sets the parent dialog height.<p>

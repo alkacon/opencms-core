@@ -237,6 +237,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /** The popup container element. */
     private com.google.gwt.user.client.Element m_containerElement;
 
+    /** The content height correction, used when explicitly setting the dialog height. */
+    private int m_contentHeightCorrection = 6;
+
     /** Flag if dragging. */
     private boolean m_dragging;
 
@@ -710,6 +713,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     public void removePadding() {
 
         m_main.removeClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().contentPadding());
+        m_contentHeightCorrection = -6;
     }
 
     /**
@@ -754,7 +758,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             if (hasButtons()) {
                 contentHeight = contentHeight - 34;
             }
-            contentHeight = contentHeight - 6;
+            contentHeight = contentHeight - m_contentHeightCorrection;
             m_containerElement.getStyle().setProperty("height", height + Unit.PX.toString());
             m_main.getStyle().setProperty("height", contentHeight + Unit.PX.toString());
         }

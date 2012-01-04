@@ -59,6 +59,22 @@
     overflow: visible;
 }
 
+.frameDialog .popupMainContent {
+	position: absolute;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	overflow: auto;
+}
+
+.frameDialog .popupButtonPanel {
+	position:absolute;
+	left:0px;
+	right:0px;
+	bottom:0px;
+}
+
 /** browser specific styles **/
 @if user.agent gecko1_8 gecko{
 	.popupContent{

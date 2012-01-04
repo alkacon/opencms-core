@@ -423,6 +423,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String frameDialog();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String hideButtonPanel();
 
         /** 
