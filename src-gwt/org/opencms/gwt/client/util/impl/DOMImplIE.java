@@ -43,6 +43,10 @@ public class DOMImplIE extends DOMImpl {
      */
     @Override
     public native com.google.gwt.dom.client.Element createIFrameElement(Document doc, String name) /*-{
-        return doc.createElement("<iframe name='"+name+"'/>");
+        // attributes need to be set at creation of the iframe DOM element to take effect in rendering
+        return doc
+                .createElement("<iframe name='"
+                        + name
+                        + "' allowtransparency='true' frameborder='0' scrolling='no' framespacing='0' />");
     }-*/;
 }

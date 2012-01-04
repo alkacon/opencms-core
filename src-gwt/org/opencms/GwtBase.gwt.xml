@@ -86,6 +86,11 @@
         <any>
         	<when-property-is name="user.agent" value="ie6"/>
         	<when-property-is name="user.agent" value="ie8"/>
+        </any>
+    </replace-with>
+    <replace-with class="org.opencms.gwt.client.util.impl.DOMImpl">
+        <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
+        <any>
         	<when-property-is name="user.agent" value="ie9"/>
         </any>
     </replace-with>
@@ -135,12 +140,12 @@
 
 
 	<!-- down here only debugging stuff, should be commented out for release building -->   
-<!--
+<!-- 
 	<set-configuration-property name="CssResource.style" value="pretty" /> 
 	<set-configuration-property name="CssResource.obfuscationPrefix" value="empty" /> 
 
 	<set-property name="compiler.emulatedStack" value="true" />
 
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
-	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />  -->
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" /> -->
 </module>
