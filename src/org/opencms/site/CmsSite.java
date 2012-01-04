@@ -310,9 +310,10 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
-     * Returns the server URL prefix to which this site is mapped.<p>
+     * Returns the path of this site's root directory in the OpenCms VFS without tailing slash.<p>
+     * <ul><li><code>e.g. /sites/default</code></li></ul>
      * 
-     * @return the server URL prefix to which this site is mapped
+     * @return the path of this site's root directory in the OpenCms VFS without tailing slash
      */
     public String getSiteRoot() {
 
