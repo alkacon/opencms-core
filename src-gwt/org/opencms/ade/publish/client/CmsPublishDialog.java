@@ -64,6 +64,20 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class CmsPublishDialog extends CmsPopup {
 
+    /** 
+     * A type which represents the state of a publish action.<p>
+     */
+    public enum State {
+        /** The publish dialog was cancelled. */
+        cancel,
+
+        /** The publish dialog has succeeded. */
+        success,
+
+        /** The publish dialog has failed. */
+        failure;
+    }
+
     /**
      * The action for publishing and/or removing resources from the publish list.<p>
      */
@@ -91,7 +105,9 @@ public class CmsPublishDialog extends CmsPopup {
             start(0, true);
             List<CmsUUID> resourcesToPublish = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToPublish());
             List<CmsUUID> resourcesToRemove = new ArrayList<CmsUUID>(m_publishSelectPanel.getResourcesToRemove());
+            setLastAction(m_action);
             getService().executeAction(resourcesToPublish, resourcesToRemove, m_action, this);
+
         }
 
         /**
@@ -139,12 +155,20 @@ public class CmsPublishDialog extends CmsPopup {
         }
     }
 
+    /** Stores the last workflow action. */
+    private CmsWorkflowAction m_lastAction;
+
+    /** Stores a failure message. */
+    private String m_failureMessage;
+
+    /** Stores the state. */
+    private State m_state = State.cancel;
+
     /** The dialog width in pixels. */
     public static final int DIALOG_WIDTH = 766;
 
     /** The project map used by showPublishDialog. */
     public static Map<String, String> m_staticProjects;
-
     /** The CSS bundle used for this widget. */
     private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
@@ -295,6 +319,26 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
+     * Gets the failure message.<p>
+     * 
+     * @return the failure message 
+     */
+    public String getFailureMessage() {
+
+        return m_failureMessage;
+    }
+
+    /**
+     * Gets the last workflow action.<p>
+     * 
+     * @return the last workflow action 
+     */
+    public CmsWorkflowAction getLastAction() {
+
+        return m_lastAction;
+    }
+
+    /**
      * Returns the current publish options.<p>
      * 
      * @return a publish options bean
@@ -302,6 +346,36 @@ public class CmsPublishDialog extends CmsPopup {
     public CmsPublishOptions getPublishOptions() {
 
         return m_publishOptions;
+    }
+
+    /**
+     * Gets the publish dialog state.<p>
+     * 
+     * @return the publish dialog state 
+     */
+    public State getState() {
+
+        return m_state;
+    }
+
+    /**
+     * Checks whether the publish dialog has failed.<p>
+     * 
+     * @return checks whether the publish dialog has succeeded 
+     */
+    public boolean hasFailed() {
+
+        return m_state == State.failure;
+    }
+
+    /**
+     * Checks whether the publish dialog has succeeded.<p>
+     * 
+     * @return true if the publish dialog has succeeded 
+     */
+    public boolean hasSucceeded() {
+
+        return m_state == State.success;
     }
 
     /**
@@ -342,6 +416,7 @@ public class CmsPublishDialog extends CmsPopup {
     public void onReceiveStatus(CmsWorkflowResponse brokenResources) {
 
         if (brokenResources.isSuccess()) {
+            succeed();
             hide();
         } else {
             m_brokenLinksPanel.setEntries(brokenResources.getResources(), brokenResources.getAvailableActions());
@@ -415,6 +490,14 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
+     * Sets the publish dialog state to 'success'.<p>
+     */
+    public void succeed() {
+
+        m_state = State.success;
+    }
+
+    /**
      * Method which is called when the publish options are changed.<p>
      */
     public void updateResourceList() {
@@ -430,6 +513,16 @@ public class CmsPublishDialog extends CmsPopup {
     protected CmsWorkflow getSelectedWorkflow() {
 
         return m_workflows.get(m_workflowId);
+    }
+
+    /**
+     * Sets the last workflow action.<p>
+     * 
+     * @param action a workflow action 
+     */
+    protected void setLastAction(CmsWorkflowAction action) {
+
+        m_lastAction = action;
     }
 
     /**

@@ -503,7 +503,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         String forcePublishLabel = Messages.get().getBundle(getLocale(userCms)).key(
             Messages.GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0);
 
-        CmsWorkflowAction forcePublish = new CmsWorkflowAction(ACTION_FORCE_PUBLISH, forcePublishLabel, true);
+        CmsWorkflowAction forcePublish = new CmsWorkflowAction(ACTION_FORCE_PUBLISH, forcePublishLabel, true, true);
         actions.add(forcePublish);
         return new CmsWorkflowResponse(false, Messages.get().getBundle(getLocale(userCms)).key(
             Messages.GUI_BROKEN_LINKS_0), publishResources, actions, null);

@@ -501,6 +501,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (CmsException e) {
             log(e.getLocalizedMessage(), e);
         }
+        String defaultWorkplaceLink = CmsExplorer.getWorkplaceExplorerLink(cms, cms.getRequestContext().getSiteRoot());
 
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
@@ -516,7 +517,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             structureId,
             new HashMap<String, String>(OpenCms.getResourceManager().getExtensionMapping()),
             System.currentTimeMillis(),
-            toolbarVisible);
+            toolbarVisible,
+            defaultWorkplaceLink);
         return data;
     }
 

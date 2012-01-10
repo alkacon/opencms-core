@@ -442,6 +442,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             DOM.appendChild(m_containerElement, m_close.getElement());
             adopt(m_close);
         }
+
     }
 
     /**
@@ -452,7 +453,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         // remember current notification widget
         final I_CmsNotificationWidget widget = CmsNotification.get().getWidget();
         // create our own notification overlay
-        final CmsDialogNotificationWidget notificationWidget = new CmsDialogNotificationWidget();
+        final A_CmsNotificationWidget notificationWidget = createDialogNotificationWidget();
         add(notificationWidget);
         CmsNotification.get().setWidget(notificationWidget);
 
@@ -1043,6 +1044,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
             setPopupPosition(absX - m_dragStartX, absY - m_dragStartY);
         }
+    }
+
+    /** 
+     * Creates a new notification widget for this dialog.<p>
+     * 
+     * @return the notification widget for this dialog 
+     */
+    protected A_CmsNotificationWidget createDialogNotificationWidget() {
+
+        return new CmsDialogNotificationWidget();
     }
 
     /**

@@ -117,7 +117,7 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         Map<String, CmsWorkflow> result = new LinkedHashMap<String, CmsWorkflow>();
         List<CmsWorkflowAction> actions = new ArrayList<CmsWorkflowAction>();
         String publishLabel = getLabel(cms, Messages.GUI_WORKFLOW_ACTION_PUBLISH_0);
-        CmsWorkflowAction publishAction = new CmsWorkflowAction(ACTION_PUBLISH, publishLabel, true);
+        CmsWorkflowAction publishAction = new CmsWorkflowAction(ACTION_PUBLISH, publishLabel, true, true);
         actions.add(publishAction);
         String workflowLabel = getLabel(cms, Messages.GUI_WORKFLOW_PUBLISH_0);
         CmsWorkflow publishWorkflow = new CmsWorkflow(WORKFLOW_PUBLISH, workflowLabel, actions);
@@ -177,7 +177,7 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             List<CmsWorkflowAction> actions = new ArrayList<CmsWorkflowAction>();
             if (canForcePublish) {
                 String forceLabel = getLabel(userCms, Messages.GUI_WORKFLOW_ACTION_FORCE_PUBLISH_0);
-                actions.add(new CmsWorkflowAction(ACTION_FORCE_PUBLISH, forceLabel, true));
+                actions.add(new CmsWorkflowAction(ACTION_FORCE_PUBLISH, forceLabel, true, true));
             }
             CmsWorkflowResponse response = new CmsWorkflowResponse(
                 false,

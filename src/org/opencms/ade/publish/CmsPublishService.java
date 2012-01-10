@@ -235,8 +235,6 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      * Checks if there is any reason to deactivate the preview function.<p>
      * 
      * @param publishResource the publish resource to check
-     * 
-     * @throws CmsException if something goes wrong reading the resource
      */
     private void checkPreview(CmsPublishResource publishResource) {
 

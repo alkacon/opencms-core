@@ -114,6 +114,18 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_COUNT_1 = "GUI_RESOURCE_COUNT_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMATION_PUBLISH_0 = "GUI_CONFIRMATION_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMATION_WORKFLOW_1 = "GUI_CONFIRMATION_WORKFLOW_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMATION_WORKPLACE_BUTTON_0 = "GUI_CONFIRMATION_WORKPLACE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMATION_CAPTION_0 = "GUI_CONFIRMATION_CAPTION_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.publish.clientmessages";
 

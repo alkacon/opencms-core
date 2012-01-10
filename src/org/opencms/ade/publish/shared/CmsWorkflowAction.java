@@ -43,13 +43,8 @@ public class CmsWorkflowAction implements IsSerializable {
     /** Action enabled flag. */
     private boolean m_enabled;
 
-    /**
-     * Constructor. For serialization only.<p>
-     */
-    protected CmsWorkflowAction() {
-
-        // nothing to do
-    }
+    /** A flag which indicates whether this workflow action is actually a publish action. */
+    private boolean m_isPublish;
 
     /**
      * Constructor.<p>
@@ -63,6 +58,30 @@ public class CmsWorkflowAction implements IsSerializable {
         m_action = actionKey;
         m_label = label;
         m_enabled = isEnabled;
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param actionKey the action key
+     * @param label the action label
+     * @param isEnabled <code>true</code> if the action is enabled
+     * @param isPublish a flag to distinguish publish actions from other workflow actions 
+     */
+    public CmsWorkflowAction(String actionKey, String label, boolean isEnabled, boolean isPublish) {
+
+        m_action = actionKey;
+        m_label = label;
+        m_enabled = isEnabled;
+        m_isPublish = isPublish;
+    }
+
+    /**
+     * Constructor. For serialization only.<p>
+     */
+    protected CmsWorkflowAction() {
+
+        // nothing to do
     }
 
     /**
@@ -93,5 +112,15 @@ public class CmsWorkflowAction implements IsSerializable {
     public boolean isEnabled() {
 
         return m_enabled;
+    }
+
+    /** 
+     * Check whether this action is a publish action.<p>
+     * 
+     * @return true if this is a publish action 
+     */
+    public boolean isPublish() {
+
+        return m_isPublish;
     }
 }

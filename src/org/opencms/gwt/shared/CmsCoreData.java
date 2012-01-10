@@ -101,6 +101,9 @@ public class CmsCoreData implements IsSerializable {
     /** The current workplace locale. */
     private String m_wpLocale;
 
+    /** The default link to use for opening the workplace. */
+    private String m_defaultWorkplaceLink;
+
     /**
      * Constructor.<p>
      */
@@ -130,7 +133,8 @@ public class CmsCoreData implements IsSerializable {
             clone.getStructureId(),
             clone.getExtensionMapping(),
             clone.getServerTime(),
-            clone.isToolbarVisible());
+            clone.isToolbarVisible(),
+            clone.getDefaultWorkplaceLink());
     }
 
     /**
@@ -149,7 +153,8 @@ public class CmsCoreData implements IsSerializable {
      * @param navigationUri the current navigation URI
      * @param extensionMapping the mappings of file extensions to resource types
      * @param serverTime the current time  
-     * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially 
+     * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
+     * @param defaultWorkplaceLink the default link to use for opening the workplace  
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -165,7 +170,8 @@ public class CmsCoreData implements IsSerializable {
         CmsUUID structureId,
         Map<String, String> extensionMapping,
         long serverTime,
-        boolean toolbarVisible) {
+        boolean toolbarVisible,
+        String defaultWorkplaceLink) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -181,6 +187,7 @@ public class CmsCoreData implements IsSerializable {
         m_serverTime = serverTime;
         m_toolbarVisible = toolbarVisible;
         m_structureId = structureId;
+        m_defaultWorkplaceLink = defaultWorkplaceLink;
     }
 
     /**
@@ -211,6 +218,16 @@ public class CmsCoreData implements IsSerializable {
     public String getContentEditorUrl() {
 
         return m_contentEditorUrl;
+    }
+
+    /**
+     * Gets the default link to use for opening the workplace.<p>
+     * 
+     * @return the default workplace link 
+     */
+    public String getDefaultWorkplaceLink() {
+
+        return m_defaultWorkplaceLink;
     }
 
     /**
