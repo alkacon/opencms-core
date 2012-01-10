@@ -238,11 +238,16 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      * 
      * @throws CmsException if something goes wrong reading the resource
      */
-    private void checkPreview(CmsPublishResource publishResource) throws CmsException {
+    private void checkPreview(CmsPublishResource publishResource) {
 
         CmsObject cms = getCmsObject();
-        CmsResource resource = cms.readResource(publishResource.getId());
-        String noPreviewReason = CmsVfsService.getNoPreviewReason(cms, resource);
+        String noPreviewReason = null;
+        try {
+            CmsResource resource = cms.readResource(publishResource.getId(), CmsResourceFilter.ONLY_VISIBLE);
+            noPreviewReason = CmsVfsService.getNoPreviewReason(cms, resource);
+        } catch (CmsException e) {
+            noPreviewReason = e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        }
         if (noPreviewReason != null) {
             if (publishResource.getInfo() == null) {
                 publishResource.setInfo(new CmsPublishResourceInfo(null, null));
