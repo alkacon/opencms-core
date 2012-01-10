@@ -29,6 +29,9 @@ package org.opencms.gwt.shared;
 
 import org.opencms.util.CmsStringUtil;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -38,6 +41,12 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /** The required height. */
     private int m_height;
+
+    /** The preview locale. */
+    private String m_locale;
+
+    /** The available preview locales. */
+    private LinkedHashMap<String, String> m_locales;
 
     /** Flag indicating that the preview should be opened in a new window. */
     private boolean m_newWindowRequired;
@@ -65,14 +74,22 @@ public class CmsPreviewInfo implements IsSerializable {
      * @param newWindowRequired flag indicating that the preview should be opened in a new window
      * @param title the title
      * @param sitePath the site path
+     * @param locale the preview locale
      */
-    public CmsPreviewInfo(String content, String url, boolean newWindowRequired, String title, String sitePath) {
+    public CmsPreviewInfo(
+        String content,
+        String url,
+        boolean newWindowRequired,
+        String title,
+        String sitePath,
+        String locale) {
 
         m_previewContent = content;
         m_previewUrl = url;
         m_newWindowRequired = newWindowRequired;
         m_title = title;
         m_sitePath = sitePath;
+        m_locale = locale;
     }
 
     /**
@@ -91,6 +108,26 @@ public class CmsPreviewInfo implements IsSerializable {
     public int getHeight() {
 
         return m_height;
+    }
+
+    /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return m_locale;
+    }
+
+    /**
+     * Returns the locales.<p>
+     *
+     * @return the locales
+     */
+    public Map<String, String> getLocales() {
+
+        return m_locales;
     }
 
     /**
@@ -144,6 +181,16 @@ public class CmsPreviewInfo implements IsSerializable {
     }
 
     /**
+     * Returns if the given preview content has additional locales.<p>
+     * 
+     * @return <code>true</code> if the given preview content has additional locales
+     */
+    public boolean hasAdditionalLocales() {
+
+        return (m_locales != null) && (m_locales.size() > 1);
+    }
+
+    /**
      * Returns if the preview requires specific dimensions.<p>
      * 
      * @return <code>true</code> if the dialog requires dimensions
@@ -191,6 +238,16 @@ public class CmsPreviewInfo implements IsSerializable {
     public void setHeight(int height) {
 
         m_height = height;
+    }
+
+    /**
+     * Sets the locales.<p>
+     *
+     * @param locales the locales to set
+     */
+    public void setLocales(LinkedHashMap<String, String> locales) {
+
+        m_locales = locales;
     }
 
     /**

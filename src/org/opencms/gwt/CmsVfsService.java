@@ -56,6 +56,7 @@ import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.loader.CmsImageScaler;
@@ -73,7 +74,10 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -727,6 +731,39 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Returns the available locales mapped to there display name for the given resource 
+     * or <code>null</code> in case of non xml-content/xml-page resources.<p>
+     * 
+     * @param resource the resource
+     * 
+     * @return the available locales
+     */
+    private LinkedHashMap<String, String> getAvailableLocales(CmsResource resource) {
+
+        LinkedHashMap<String, String> result = null;
+        List<Locale> locales = null;
+        try {
+            if (CmsResourceTypeXmlPage.isXmlPage(resource)) {
+                locales = CmsXmlPageFactory.unmarshal(getCmsObject(), resource, getRequest()).getLocales();
+            } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                locales = CmsXmlContentFactory.unmarshal(getCmsObject(), resource, getRequest()).getLocales();
+            } else if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                locales = CmsXmlContainerPageFactory.unmarshal(getCmsObject(), resource).getLocales();
+            }
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        if (locales != null) {
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+            result = new LinkedHashMap<String, String>();
+            for (Locale locale : locales) {
+                result.put(locale.toString(), locale.getDisplayName(wpLocale));
+            }
+        }
+        return result;
+    }
+
+    /**
      * Helper method for converting a map which maps resources to resources to a list of "broken link" beans,
      * which have beans representing the source of the corresponding link as children.<p>  
      * 
@@ -890,6 +927,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         String previewContent = null;
         int height = 0;
         int width = 0;
+        LinkedHashMap<String, String> locales = getAvailableLocales(resource);
         if (noPreviewReason != null) {
             previewContent = "<div>" + noPreviewReason + "</div>";
             return new CmsPreviewInfo(
@@ -897,7 +935,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 null,
                 false,
                 title,
-                cms.getSitePath(resource));
+                cms.getSitePath(resource),
+                locale.toString());
         } else if (CmsResourceTypeImage.getStaticTypeId() == resource.getTypeId()) {
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
             previewContent = "<img src=\""
@@ -908,6 +947,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             height = scaler.getHeight();
             width = scaler.getWidth();
         } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            if (!locales.containsKey(locale.toString())) {
+                locale = CmsLocaleManager.getMainLocale(cms, resource);
+            }
             previewContent = CmsPreviewService.getPreviewContent(getRequest(), getResponse(), cms, resource, locale);
 
         } else if (CmsResourceTypePlain.getStaticTypeId() == resource.getTypeId()) {
@@ -921,25 +963,36 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewContent)) {
-            CmsPreviewInfo result = new CmsPreviewInfo(previewContent, null, false, title, cms.getSitePath(resource));
+            CmsPreviewInfo result = new CmsPreviewInfo(
+                previewContent,
+                null,
+                false,
+                title,
+                cms.getSitePath(resource),
+                locale.toString());
             result.setHeight(height);
             result.setWidth(width);
+            result.setLocales(locales);
             return result;
         }
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
-            return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            CmsPreviewInfo result = new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                 cms,
                 resource.getRootPath())
                 + "?"
                 + CmsJspTagEditable.PARAM_DISABLE_DIRECT_EDIT
-                + "=true", false, title, cms.getSitePath(resource));
+                + "=true"
+                + "&__locale="
+                + locale.toString(), false, title, cms.getSitePath(resource), locale.toString());
+            result.setLocales(locales);
+            return result;
         }
         return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
             cms,
             resource.getRootPath())
             + "?"
             + CmsJspTagEditable.PARAM_DISABLE_DIRECT_EDIT
-            + "=true", true, title, cms.getSitePath(resource));
+            + "=true", true, title, cms.getSitePath(resource), locale.toString());
     }
 
     /**

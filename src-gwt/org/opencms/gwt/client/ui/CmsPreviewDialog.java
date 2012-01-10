@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.util.CmsStringUtil;
@@ -40,6 +41,8 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -49,14 +52,26 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class CmsPreviewDialog extends CmsPopup {
 
-    /** The dialog width. */
-    private static final int DIALOG_WIDTH = 1200;
+    /** The dialog height. */
+    private static final int DIALOG_HEIGHT = 900;
 
     /** The dialog preview content width. */
     private static final int DIALOG_PREVIEW_CONTENT_WIDTH = 642;
 
-    /** The dialog height. */
-    private static final int DIALOG_HEIGHT = 900;
+    /** The dialog width. */
+    private static final int DIALOG_WIDTH = 1200;
+
+    /** The select-box width. */
+    private static final int SELECTBOX_WIDTH = 120;
+
+    /** The truncation prefix. */
+    private static final String TRUNCATION_PREFIX = "PREVIEW_DIALOG";
+
+    /** The locale select box. */
+    private CmsSelectBox m_localeSelect;
+
+    /** The site path of the preview resource. */
+    private String m_sitePath;
 
     /**
      * Constructor.<p>
@@ -69,6 +84,7 @@ public class CmsPreviewDialog extends CmsPopup {
         super(caption, width);
         setGlassEnabled(true);
         setPositionFixed();
+        catchNotifications();
         CmsPushButton closeButton = new CmsPushButton();
         closeButton.setText(Messages.get().key(Messages.GUI_CLOSE_0));
         closeButton.addClickHandler(new ClickHandler() {
@@ -81,6 +97,25 @@ public class CmsPreviewDialog extends CmsPopup {
         });
         addButton(closeButton);
         addDialogClose(null);
+    }
+
+    /**
+     * Shows the preview for the given resource.<p>
+     * 
+     * @param previewInfo the resource preview info
+     */
+    public static void showPreviewForResource(CmsPreviewInfo previewInfo) {
+
+        if (previewInfo.isNewWindowRequired()) {
+            Window.open(previewInfo.getPreviewUrl(), CmsDomUtil.Target.BLANK.getRepresentation(), "");
+        } else {
+
+            String caption = generateCaption(previewInfo);
+            CmsPreviewDialog dialog = new CmsPreviewDialog(caption, DIALOG_WIDTH + 12);
+            dialog.initContent(previewInfo);
+            dialog.initLocales(previewInfo);
+            dialog.center();
+        }
     }
 
     /**
@@ -136,55 +171,147 @@ public class CmsPreviewDialog extends CmsPopup {
     }
 
     /**
-     * Shows the preview for the given resource.<p>
+     * Generates the dialog caption.<p>
      * 
-     * @param previewInfo the resource preview info
+     * @param previewInfo the preview info
+     * 
+     * @return the caption
      */
-    public static void showPreviewForResource(CmsPreviewInfo previewInfo) {
+    private static String generateCaption(CmsPreviewInfo previewInfo) {
 
-        if (previewInfo.isNewWindowRequired()) {
-            Window.open(previewInfo.getPreviewUrl(), CmsDomUtil.Target.BLANK.getRepresentation(), "");
-        } else {
+        return (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewInfo.getTitle()) ? previewInfo.getTitle() + " / " : "")
+            + previewInfo.getSitePath();
+    }
 
-            HTML content = new HTML();
-            Style style = content.getElement().getStyle();
-            int height = DIALOG_HEIGHT;
-            int width = DIALOG_WIDTH;
-            if (previewInfo.hasPreviewContent()) {
-                content.setHTML(previewInfo.getPreviewContent());
-                style.setOverflow(Overflow.AUTO);
-                // try to measure dimensions
-                width = DIALOG_PREVIEW_CONTENT_WIDTH;
-                style.setWidth(width, Unit.PX);
-                RootPanel.get().add(content);
-                height = content.getOffsetHeight();
-            } else {
-                content.setHTML("<iframe src=\""
-                    + previewInfo.getPreviewUrl()
-                    + "\" style=\"height:100%; width:100%;\" />");
+    /**
+     * Returns the site path.<p>
+     *
+     * @return the site path
+     */
+    protected String getSitePath() {
+
+        return m_sitePath;
+    }
+
+    /**
+     * Loads preview for another locale.<p>
+     * 
+     * @param locale the locale to load
+     */
+    protected void loadOtherLocale(final String locale) {
+
+        CmsRpcAction<CmsPreviewInfo> previewAction = new CmsRpcAction<CmsPreviewInfo>() {
+
+            @Override
+            public void execute() {
+
+                CmsCoreProvider.getVfsService().getPreviewInfo(getSitePath(), locale, this);
+                this.start(0, true);
             }
-            if (previewInfo.hasDimensions()) {
-                height = previewInfo.getHeight();
-                width = previewInfo.getWidth();
+
+            @Override
+            protected void onResponse(CmsPreviewInfo result) {
+
+                stop(false);
+                updatePreviewContent(result);
             }
-            // check if window is big enough for requested dimensions
-            int availableHeight = Window.getClientHeight() - 200;
-            if (height > availableHeight) {
-                height = availableHeight;
-            }
-            int availableWidth = Window.getClientWidth() - 50;
-            if (width > availableWidth) {
-                width = availableWidth;
-            }
-            style.setHeight(height, Unit.PX);
+        };
+        previewAction.execute();
+    }
+
+    /**
+     * Updates the preview content of the dialog.<p>
+     * 
+     * @param previewInfo the preview info
+     */
+    protected void updatePreviewContent(CmsPreviewInfo previewInfo) {
+
+        setCaption(generateCaption(previewInfo));
+        initContent(previewInfo);
+        initLocales(previewInfo);
+        center();
+    }
+
+    /**
+     * Initializes the preview content.<p>
+     * 
+     * @param previewInfo the preview info
+     */
+    private void initContent(CmsPreviewInfo previewInfo) {
+
+        setSitePath(previewInfo.getSitePath());
+        HTML content = new HTML();
+        Style style = content.getElement().getStyle();
+        int height = DIALOG_HEIGHT;
+        int width = DIALOG_WIDTH;
+        if (previewInfo.hasPreviewContent()) {
+            content.setHTML(previewInfo.getPreviewContent());
+            style.setOverflow(Overflow.AUTO);
+            // try to measure dimensions
+            width = DIALOG_PREVIEW_CONTENT_WIDTH;
             style.setWidth(width, Unit.PX);
-            String caption = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewInfo.getTitle()) ? previewInfo.getTitle()
-                + " / " : "")
-                + previewInfo.getSitePath();
-
-            CmsPreviewDialog dialog = new CmsPreviewDialog(caption, width + 12);
-            dialog.setMainContent(content);
-            dialog.center();
+            RootPanel.get().add(content);
+            height = content.getOffsetHeight();
+        } else {
+            content.setHTML("<iframe src=\"" + previewInfo.getPreviewUrl() + "\" style=\"height:100%; width:100%;\" />");
         }
+        if (previewInfo.hasDimensions()) {
+            height = previewInfo.getHeight();
+            width = previewInfo.getWidth();
+        }
+        // check if window is big enough for requested dimensions
+        int availableHeight = Window.getClientHeight() - 200;
+        if (height > availableHeight) {
+            height = availableHeight;
+        }
+        int availableWidth = Window.getClientWidth() - 50;
+        if (width > availableWidth) {
+            width = availableWidth;
+        }
+        style.setHeight(height, Unit.PX);
+        style.setWidth(width, Unit.PX);
+        setWidth(width + 12);
+        setMainContent(content);
+    }
+
+    /**
+     * Initializes the locale selector if needed.<p>
+     * 
+     * @param previewInfo the preview info
+     */
+    private void initLocales(CmsPreviewInfo previewInfo) {
+
+        if (m_localeSelect != null) {
+            removeButton(m_localeSelect);
+            m_localeSelect = null;
+        }
+        if (previewInfo.hasAdditionalLocales()) {
+            m_localeSelect = new CmsSelectBox(previewInfo.getLocales());
+            m_localeSelect.setFormValueAsString(previewInfo.getLocale());
+            m_localeSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+
+                    loadOtherLocale(event.getValue());
+                }
+            });
+            Style style = m_localeSelect.getElement().getStyle();
+            style.setWidth(SELECTBOX_WIDTH, Unit.PX);
+            style.setFloat(com.google.gwt.dom.client.Style.Float.LEFT);
+            style.setMargin(0, Unit.PX);
+            m_localeSelect.truncate(TRUNCATION_PREFIX, SELECTBOX_WIDTH - 20);
+            addButton(m_localeSelect);
+
+        }
+    }
+
+    /**
+     * Sets the site path.<p>
+     *
+     * @param sitePath the site path to set
+     */
+    private void setSitePath(String sitePath) {
+
+        m_sitePath = sitePath;
     }
 }
