@@ -2,7 +2,7 @@
     z-index: value("constants.css.zIndexPopup");
 }
 
-.popup, .popup *, .popup table tr td{
+.popup, .popup *, .frameDialog *, .popup table tr td{
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -59,7 +59,7 @@
     overflow: visible;
 }
 
-.frameDialog .popupMainContent {
+div.frameDialog div.popupMainContent {
 	position: absolute;
 	top:0px;
 	left:0px;
@@ -68,7 +68,7 @@
 	overflow: auto;
 }
 
-.frameDialog .popupButtonPanel {
+div.frameDialog div.popupButtonPanel {
 	position:absolute;
 	left:0px;
 	right:0px;
