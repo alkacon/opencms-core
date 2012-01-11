@@ -578,7 +578,7 @@ public class CmsForm {
      * 
      * @param formField the form field whose widget should be initialized 
      */
-    @SuppressWarnings( {"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void initializeFormFieldWidget(final I_CmsFormField formField) {
 
         final I_CmsFormWidget widget = formField.getWidget();

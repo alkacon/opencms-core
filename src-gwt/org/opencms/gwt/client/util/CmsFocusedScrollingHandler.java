@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Native preview handler that focuses the on scroll wheel mouse event on the given scroll panel.<p>
  */
-public class CmsFocusedScrollingHandler implements NativePreviewHandler {
+public final class CmsFocusedScrollingHandler implements NativePreviewHandler {
 
     /** The scroll panel. */
     private ScrollPanel m_scrollPanel;

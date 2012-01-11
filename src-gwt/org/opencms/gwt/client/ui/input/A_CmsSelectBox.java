@@ -270,7 +270,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     public void onBrowserEvent(Event event) {
 
         // Should not act on button if disabled.
-        if (isEnabled() == false) {
+        if (!isEnabled()) {
             return;
         }
         super.onBrowserEvent(event);

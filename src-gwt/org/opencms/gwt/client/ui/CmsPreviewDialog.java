@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Resource preview dialog.<p>
  */
-public class CmsPreviewDialog extends CmsPopup {
+public final class CmsPreviewDialog extends CmsPopup {
 
     /** The dialog height. */
     private static final int DIALOG_HEIGHT = 900;

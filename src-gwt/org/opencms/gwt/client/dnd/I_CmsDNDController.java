@@ -28,7 +28,9 @@
 package org.opencms.gwt.client.dnd;
 
 /**
- * Drag and drop controller. Implement and assign to the <link>CmsDNDHandler</link> to control the drag process as well as the underlying model.<p>
+ * Drag and drop controller.<p>
+ * 
+ * Implement and assign to the {@link CmsDNDHandler} to control the drag process as well as the underlying model.<p>
  * 
  * @since 8.0.0
  */

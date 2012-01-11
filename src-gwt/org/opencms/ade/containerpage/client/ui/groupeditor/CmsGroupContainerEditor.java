@@ -60,7 +60,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @since 8.0.0
  */
-public class CmsGroupContainerEditor extends A_CmsGroupEditor {
+public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
 
     /** The editor instance. */
     private static CmsGroupContainerEditor INSTANCE;

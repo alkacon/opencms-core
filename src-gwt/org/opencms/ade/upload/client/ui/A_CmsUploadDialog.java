@@ -1137,7 +1137,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      * @param file the file to add
      * @param invalid signals if the filename is invalid
      * @param isTooLarge signals if the file size limit is exceeded
-     * @param isFolder signals if the file is a folder
      */
     private void addFileToList(final CmsFileInfo file, boolean invalid, boolean isTooLarge) {
 

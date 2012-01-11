@@ -46,7 +46,7 @@ public interface I_CmsPreviewHandler<T extends CmsResourceInfoBean> extends I_Cm
      *
      * @return the gallery dialog
      */
-    public CmsGalleryDialog getGalleryDialog();
+    CmsGalleryDialog getGalleryDialog();
 
     /**
      * Closes the preview.<p>

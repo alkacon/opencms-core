@@ -282,7 +282,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void onBrowserEvent(Event event) {
 
         // Should not act on button if disabled.
-        if (isEnabled() == false) {
+        if (!isEnabled()) {
             return;
         }
         super.onBrowserEvent(event);

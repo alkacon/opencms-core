@@ -51,7 +51,7 @@ import com.google.gwt.user.client.Window;
  * To close the dialog call from within the dialog frame context 
  * window.parent[{@link #CLOSING_METHOD_NAME}](boolean reload).<p>
  */
-public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
+public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
 
     /** The name of the dialog close method exported to the window context. */
     public static final String CLOSING_METHOD_NAME = "closeContextMenuDialog";
@@ -144,13 +144,13 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
      * @param popup the popup instance 
      */
     private native void exportClosingMethod(final CmsPopup popup) /*-{
-        var self = this;
-        $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
-                reload) {
-            popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
-            self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
-            $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
-        };
+		var self = this;
+		$wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
+				reload) {
+			popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
+			self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
+			$wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
+		};
     }-*/;
 
     /**

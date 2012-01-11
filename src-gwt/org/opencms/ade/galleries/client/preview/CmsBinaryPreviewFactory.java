@@ -40,7 +40,7 @@ import java.util.Map;
  * 
  * @since 8.0.3
  */
-public class CmsBinaryPreviewFactory implements I_CmsPreviewFactory, I_CmsHasInit {
+public final class CmsBinaryPreviewFactory implements I_CmsPreviewFactory, I_CmsHasInit {
 
     /** The preview registry. */
     private Map<String, CmsBinaryResourcePreview> m_previewRegistry;

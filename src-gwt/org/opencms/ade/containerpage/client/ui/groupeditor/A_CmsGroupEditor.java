@@ -239,7 +239,7 @@ public abstract class A_CmsGroupEditor extends Composite {
     /**
      * Adds the buttons to the dialog.<p>
      */
-    abstract protected void addButtons();
+    protected abstract void addButtons();
 
     /**
      * Adds a cancel button to the dialog.<p>
@@ -283,7 +283,7 @@ public abstract class A_CmsGroupEditor extends Composite {
     /**
      * Adds the required input fields to the dialog.<p>
      */
-    abstract protected void addInputFields();
+    protected abstract void addInputFields();
 
     /**
      * Adds the save button to the dialog.<p>

@@ -802,8 +802,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
     /**
      * Sets the value of the date box.<p>
-     * 
-     * @param date the new date
      */
     private void updateFromPicker() {
 

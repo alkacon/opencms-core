@@ -43,13 +43,21 @@ import com.google.gwt.user.client.ui.PopupPanel;
 /**
  * A opens a dialog which contains an IFRAME for displaying the upload hook JSP page.<p>
  */
-public class CmsUploadHookDialog {
+public final class CmsUploadHookDialog {
 
     /** The dialog height. */
     public static final int DIALOG_HEIGHT = 300;
 
     /** The dialog width. */
     public static final int DIALOG_WIDTH = 200;
+
+    /**
+     * Hide public constructor.<p>
+     */
+    private CmsUploadHookDialog() {
+
+        // noop
+    }
 
     /**
      * Opens a new upload property dialog.<p>
