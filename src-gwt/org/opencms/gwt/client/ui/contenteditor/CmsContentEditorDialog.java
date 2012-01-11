@@ -46,6 +46,8 @@ import org.opencms.util.CmsStringUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
@@ -236,7 +238,7 @@ public final class CmsContentEditorDialog {
 
         m_dialog.setGlassEnabled(true);
         m_dialog.setUseAnimation(false);
-        CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, "");
+        final CmsIFrame editorFrame = new CmsIFrame(EDITOR_IFRAME_NAME, "");
         m_dialog.addDialogClose(new Command() {
 
             /**
@@ -255,7 +257,15 @@ public final class CmsContentEditorDialog {
 
                     public void onOk() {
 
-                        CmsContentEditorDialog.this.close();
+                        // make sure the onunload event is triggered within the editor frames for ALL browsers
+                        editorFrame.setUrl("about:blank");
+                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                            public void execute() {
+
+                                CmsContentEditorDialog.this.close();
+                            }
+                        });
                     }
                 });
                 confirmDlg.center();
