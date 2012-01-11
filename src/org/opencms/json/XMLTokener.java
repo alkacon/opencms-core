@@ -63,7 +63,7 @@ public class XMLTokener extends JSONTokener {
     /** The table of ENTITY values. It initially contains Character values for
      * amp, apos, gt, lt, quot.
      */
-    public static final java.util.HashMap ENTITY;
+    public static final java.util.HashMap<String, Character> ENTITY;
 
     /**
      * Construct an XMLTokener from a string.<p>
@@ -76,7 +76,7 @@ public class XMLTokener extends JSONTokener {
     }
 
     static {
-        ENTITY = new java.util.HashMap(8);
+        ENTITY = new java.util.HashMap<String, Character>(8);
         ENTITY.put("amp", XML.AMP);
         ENTITY.put("apos", XML.APOS);
         ENTITY.put("gt", XML.GT);
@@ -102,7 +102,7 @@ public class XMLTokener extends JSONTokener {
             }
             sb.append(c);
             i = sb.length() - 3;
-            if (i >= 0 && sb.charAt(i) == ']' && sb.charAt(i + 1) == ']' && sb.charAt(i + 2) == '>') {
+            if ((i >= 0) && (sb.charAt(i) == ']') && (sb.charAt(i + 1) == ']') && (sb.charAt(i + 2) == '>')) {
                 sb.setLength(i);
                 return sb.toString();
             }
@@ -133,7 +133,7 @@ public class XMLTokener extends JSONTokener {
         }
         sb = new StringBuffer();
         for (;;) {
-            if (c == '<' || c == 0) {
+            if ((c == '<') || (c == 0)) {
                 back();
                 return sb.toString().trim();
             }
@@ -159,7 +159,7 @@ public class XMLTokener extends JSONTokener {
         StringBuffer sb = new StringBuffer();
         for (;;) {
             char c = next();
-            if (Character.isLetterOrDigit(c) || c == '#') {
+            if (Character.isLetterOrDigit(c) || (c == '#')) {
                 sb.append(Character.toLowerCase(c));
             } else if (c == ';') {
                 break;

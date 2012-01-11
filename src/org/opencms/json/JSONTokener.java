@@ -68,9 +68,16 @@ import java.io.StringReader;
  */
 public class JSONTokener {
 
+    /** The index. */
     private int m_index;
+
+    /** The last character. */
     private char m_lastChar;
+
+    /** The reader. */
     private Reader m_reader;
+
+    /** Flag indicating if the last character should be used. */
     private boolean m_useLastChar;
 
     /**
@@ -544,6 +551,7 @@ public class JSONTokener {
      *
      * @return " at character [this.index]"
      */
+    @Override
     public String toString() {
 
         return " at character " + m_index;

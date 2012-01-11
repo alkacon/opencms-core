@@ -56,7 +56,6 @@ package org.opencms.json;
 import java.io.IOException;
 import java.io.Writer;
 
-
 /**
  * JSONWriter provides a quick and convenient way of producing JSON text.
  * The texts produced strictly conform to JSON syntax rules. No whitespace is
@@ -87,6 +86,7 @@ import java.io.Writer;
  */
 public class JSONWriter {
 
+    /** The maximum depth. */
     private static final int MAXDEPTH = 20;
 
     /**
@@ -150,7 +150,7 @@ public class JSONWriter {
      */
     public JSONWriter array() throws JSONException {
 
-        if (this.m_mode == 'i' || this.m_mode == 'o' || this.m_mode == 'a') {
+        if ((this.m_mode == 'i') || (this.m_mode == 'o') || (this.m_mode == 'a')) {
             this.push('a');
             this.append("[");
             this.m_comma = false;
@@ -231,7 +231,7 @@ public class JSONWriter {
         if (this.m_mode == 'i') {
             this.m_mode = 'o';
         }
-        if (this.m_mode == 'o' || this.m_mode == 'a') {
+        if ((this.m_mode == 'o') || (this.m_mode == 'a')) {
             this.append("{");
             this.push('k');
             this.m_comma = false;
@@ -304,9 +304,9 @@ public class JSONWriter {
         if (s == null) {
             throw new JSONException("Null pointer");
         }
-        if (this.m_mode == 'o' || this.m_mode == 'a') {
+        if ((this.m_mode == 'o') || (this.m_mode == 'a')) {
             try {
-                if (this.m_comma && this.m_mode == 'a') {
+                if (this.m_comma && (this.m_mode == 'a')) {
                     this.m_writer.write(',');
                 }
                 this.m_writer.write(s);
@@ -353,7 +353,7 @@ public class JSONWriter {
      */
     private void pop(char c) throws JSONException {
 
-        if (this.m_top <= 0 || this.m_stack[this.m_top - 1] != c) {
+        if ((this.m_top <= 0) || (this.m_stack[this.m_top - 1] != c)) {
             throw new JSONException("Nesting error.");
         }
         this.m_top -= 1;

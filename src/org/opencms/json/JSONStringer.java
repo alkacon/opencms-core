@@ -101,6 +101,7 @@ public class JSONStringer extends JSONWriter {
      * <code>endArray</code>).
      * @return The JSON text.
      */
+    @Override
     public String toString() {
 
         return this.m_mode == 'd' ? this.m_writer.toString() : null;

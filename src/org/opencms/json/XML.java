@@ -189,7 +189,7 @@ public final class XML {
         JSONArray ja;
         JSONObject jo;
         String k;
-        Iterator keys;
+        Iterator<String> keys;
         int len;
         String s;
         Object v;
@@ -208,7 +208,7 @@ public final class XML {
             jo = (JSONObject)o;
             keys = jo.keys();
             while (keys.hasNext()) {
-                k = keys.next().toString();
+                k = keys.next();
                 v = jo.get(k);
                 if (v instanceof String) {
                     s = (String)v;
@@ -431,7 +431,7 @@ public final class XML {
                             if (parse(x, o, n)) {
                                 if (o.length() == 0) {
                                     context.accumulate(n, "");
-                                } else if (o.length() == 1 && o.opt("content") != null) {
+                                } else if ((o.length() == 1) && (o.opt("content") != null)) {
                                     context.accumulate(n, o.opt("content"));
                                 } else {
                                     context.accumulate(n, o);

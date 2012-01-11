@@ -73,6 +73,9 @@ package org.opencms.json;
  */
 public final class CDL {
 
+    /**
+     * Hidden constructor.<p>
+     */
     private CDL() {
 
         // hidden constructor
@@ -90,7 +93,7 @@ public final class CDL {
         JSONArray ja = new JSONArray();
         for (;;) {
             String value = getValue(x);
-            if (value == null || (ja.length() == 0 && value.length() == 0)) {
+            if ((value == null) || ((ja.length() == 0) && (value.length() == 0))) {
                 return null;
             }
             ja.put(value);
@@ -100,7 +103,7 @@ public final class CDL {
                     break;
                 }
                 if (c != ' ') {
-                    if (c == '\n' || c == '\r' || c == 0) {
+                    if ((c == '\n') || (c == '\r') || (c == 0)) {
                         return ja;
                     }
                     throw x.syntaxError("Bad character '" + c + "' (" + (int)c + ").");
@@ -174,7 +177,7 @@ public final class CDL {
      */
     public static JSONArray toJSONArray(JSONArray names, JSONTokener x) throws JSONException {
 
-        if (names == null || names.length() == 0) {
+        if ((names == null) || (names.length() == 0)) {
             return null;
         }
         JSONArray ja = new JSONArray();
@@ -264,7 +267,7 @@ public final class CDL {
      */
     public static String toString(JSONArray names, JSONArray ja) throws JSONException {
 
-        if (names == null || names.length() == 0) {
+        if ((names == null) || (names.length() == 0)) {
             return null;
         }
         StringBuffer sb = new StringBuffer();
@@ -290,7 +293,7 @@ public final class CDL {
         char c;
         do {
             c = x.next();
-        } while (c == ' ' || c == '\t');
+        } while ((c == ' ') || (c == '\t'));
         switch (c) {
             case 0:
                 return null;

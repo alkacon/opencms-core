@@ -167,7 +167,7 @@ public final class JSONML {
                             x.back();
                         } else if (c == '[') {
                             t = x.nextToken();
-                            if (t.equals("CDATA") && x.next() == '[') {
+                            if (t.equals("CDATA") && (x.next() == '[')) {
                                 x.nextCDATA();
                             } else {
                                 throw x.syntaxError("Expected 'CDATA['");
@@ -290,7 +290,7 @@ public final class JSONML {
         int i;
         JSONObject jo;
         String k;
-        Iterator keys;
+        Iterator<String> keys;
         int len;
         Object o;
         Object v;

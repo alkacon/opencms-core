@@ -59,8 +59,10 @@ package org.opencms.json;
  */
 public class JSONException extends Exception {
 
+    /** The serial version id. */
     private static final long serialVersionUID = 5155325235329055833L;
 
+    /** The cause. */
     private Throwable m_cause;
 
     /**
@@ -89,6 +91,7 @@ public class JSONException extends Exception {
      *  
      *  @return the cause
      */
+    @Override
     public Throwable getCause() {
 
         return this.m_cause;
