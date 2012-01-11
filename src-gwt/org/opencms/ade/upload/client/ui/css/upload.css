@@ -13,10 +13,10 @@
 	margin: 20px auto;
 }
 
-.uploadFileInput {
+div.uploadButton input.uploadFileInput {
 	position: absolute;
-	font-size: 40px;
-	right: -10px;
+	font-size: 200px;
+	right: -1px;
 	top: -10px;
 }
 
