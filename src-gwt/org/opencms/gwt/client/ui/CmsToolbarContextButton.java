@@ -141,7 +141,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
                     setActive(false);
                 }
             });
-            positionPopup();
+            m_popup.position();
         } else {
             if (m_noEntriesLabel.getParent() != null) {
                 m_noEntriesLabel.removeFromParent();
@@ -149,7 +149,8 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
             m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
             m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
             getPopup().add(m_noEntriesLabel);
-            positionPopup();
+            m_popup.position();
+
         }
     }
 }

@@ -298,6 +298,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Enables the 'show small elements' button.<p>
+     */
+    public void enableShowSmallElements() {
+
+        m_editor.getSelectionButtonMenu().activate();
+    }
+
+    /**
      * Enlarges small elements on the page.<p>
      */
     public void enlargeSmallElements() {

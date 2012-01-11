@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsSelectionButtonMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
@@ -48,8 +49,11 @@ import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
@@ -143,6 +147,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     private CmsToolbarShowSmallElementsButton m_showSmall;
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
+
+    /** The selection button menu. */
+    protected CmsSelectionButtonMenu m_selectionButtonMenu;
 
     /** 
      * Returns the Z index manager for the container page editor.<p> 
@@ -268,6 +275,16 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
+     * Gets the selection button menu.<p>
+     * 
+     * @return the selection button menu
+     */
+    public CmsSelectionButtonMenu getSelectionButtonMenu() {
+
+        return m_selectionButtonMenu;
+    }
+
+    /**
      * Returns the tool-bar widget.<p>
      * 
      * @return the tool-bar widget
@@ -382,11 +399,25 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_sitemap.addClickHandler(clickHandler);
         m_toolbar.addRight(m_sitemap);
 
-        m_showSmall = new CmsToolbarShowSmallElementsButton(containerpageHandler);
-        m_showSmall.addClickHandler(clickHandler);
-        String buttonStyle = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarButtonShowSmallElements();
-        m_showSmall.addStyleName(buttonStyle);
-        m_toolbar.addRight(m_showSmall);
+        m_selectionButtonMenu = new CmsSelectionButtonMenu(m_selection, true, m_selection.getElement());
+        m_selectionButtonMenu.setWidth(40);
+        m_selectionButtonMenu.setHeight(40);
+        final CmsToggleButton showSmall = new CmsToggleButton(I_CmsButton.ButtonData.SHOWSMALL);
+        showSmall.setButtonStyle(ButtonStyle.IMAGE, ButtonColor.GRAY);
+        showSmall.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent e) {
+
+                if (showSmall.isDown()) {
+                    containerpageHandler.setEnlargeSmallElements(true);
+                } else {
+                    containerpageHandler.setEnlargeSmallElements(false);
+                }
+            }
+        });
+        m_selectionButtonMenu.addToPanel(showSmall);
+        // the selection button menu isn't activated by default, this happens only when its
+        // activate() method is called.
 
         RootPanel.get().addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());

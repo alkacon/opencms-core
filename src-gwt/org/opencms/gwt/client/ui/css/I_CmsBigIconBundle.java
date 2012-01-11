@@ -268,8 +268,15 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/icons/big/showSmallElementsBigIcon.png")
-    ImageResource showSmallElementsIcon();
+    @Source("images/icons/big/showSmallElementsBigIconActive.png")
+    ImageResource showSmallElementsIconActive();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/showSmallElementsBigIconDeactivated.png")
+    ImageResource showSmallElementsIconDeactivated();
 
     /** 
      * Access method.<p>

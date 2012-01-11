@@ -647,15 +647,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Enables the  "show small elements" button.<p>
-     */
-    public void enableShowSmallElementsButton() {
-
-        RootPanel.get().removeStyleName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());
-    }
-
-    /**
      * Returns all drag elements of the page.<p>
      * 
      * @return the drag elements

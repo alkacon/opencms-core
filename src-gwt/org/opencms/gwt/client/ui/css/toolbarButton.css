@@ -117,8 +117,12 @@
     gwt-image: "sitemapBigIconActive";
 }
 
-@sprite .toolbarShowSmall {
-	gwt-image: "showSmallElementsIcon";
+@sprite .cmsState-down .toolbarShowSmall, .cmsState-down-hovering .toolbarShowSmall {
+	gwt-image: "showSmallElementsIconActive";
+}
+
+@sprite .cmsState-up .toolbarShowSmall, .cmsState-up-hovering .toolbarShowSmall {
+	gwt-image: "showSmallElementsIconDeactivated";
 }
 
 

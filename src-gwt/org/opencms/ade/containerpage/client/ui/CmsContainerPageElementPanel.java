@@ -602,7 +602,9 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     protected void onLoad() {
 
         if (getOffsetHeight() < NECESSARY_HEIGHT) {
-            CmsContainerpageController.get().enableShowSmallElementsButton();
+            CmsContainerpageController.get().getHandler().enableShowSmallElements();
+
+            //            CmsContainerpageController.get().enableShowSmallElementsButton();
             addStyleName(org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
         }
         resetOptionbar();
