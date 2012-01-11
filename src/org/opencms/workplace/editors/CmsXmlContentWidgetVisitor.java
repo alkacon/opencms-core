@@ -100,7 +100,7 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
      * 
      * @return the unique widgets that were found in the content
      */
-    public List getUniqueWidgets() {
+    public List<I_CmsWidget> getUniqueWidgets() {
 
         return m_uniqueWidgets;
     }
