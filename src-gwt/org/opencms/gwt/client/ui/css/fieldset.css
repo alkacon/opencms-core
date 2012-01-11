@@ -2,6 +2,8 @@
 	border: solid 1px value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 	min-height: 8px;
+	position: relative;
+	overflow: visible;
 }
 .fieldsetInvisible {
 	/** Use the same color as the background to make this border invisible. */
@@ -9,13 +11,15 @@
 	border-top: solid 1px value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 	min-height: 8px;
+	position: relative;
+	overflow: visible;
 }
 .image {
 	left: 5px;
 	position: absolute;
 	padding: 0;
 	cursor: pointer;
-	margin: -8px 0px 0px 5px;
+	margin: -8px 0px 0px 2px;
 }
 .legend {
 	left: 20px;
