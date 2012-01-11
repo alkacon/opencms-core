@@ -40,7 +40,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Panel;
 public class CmsPublishConfirmationDialog extends CmsPopup {
 
     /** The panel which contains the dialog contents. */
-    private Panel m_panel = new FlowPanel();
+    private Panel m_panel = new HorizontalPanel();
 
     /**
      * Creates a new publish confirmation dialog.<p>
@@ -75,9 +75,14 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
             message = dialog.getFailureMessage();
         }
         Label label = new Label(message);
+        label.getElement().getStyle().setPaddingLeft(10, Unit.PX);
         m_panel.getElement().getStyle().setPadding(10, Unit.PX);
         m_panel.getElement().getStyle().setHeight(150, Unit.PX);
+        Label checkmark = new Label();
+        checkmark.addStyleName(I_CmsPublishLayoutBundle.INSTANCE.publishCss().checkmark());
+        m_panel.add(checkmark);
         m_panel.add(label);
+
         setMainContent(m_panel);
         setCaption(getMessage(Messages.GUI_CONFIRMATION_CAPTION_0));
         for (CmsPushButton button : getButtons()) {

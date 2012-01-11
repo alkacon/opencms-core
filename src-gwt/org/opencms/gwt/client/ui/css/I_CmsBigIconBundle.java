@@ -76,6 +76,13 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
+    @Source("images/icons/big/checkmark.png")
+    ImageResource checkmark();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
     @Source("images/icons/big/clipboardBigIconActive.png")
     ImageResource clipboardBigIconActive();
 

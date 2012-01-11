@@ -26,6 +26,10 @@
 	gwt-image: "images.warningSmallImage";
 }
 
+@sprite .checkmark {
+	gwt-image: "bigIcons.checkmark"
+}
+
 .itemToKeep {
 }
 
@@ -132,6 +136,8 @@ span.selectorLabel{
  /* this fixes the 'content vanishes while dragging' problem in IE */	
 zoom: 1;
 }
+
+
 
 
 
