@@ -28,6 +28,7 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -45,6 +46,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
@@ -321,9 +323,12 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             if (!hasValidationErrors()) {
                 // save content of the editor only to the temporary file
                 writeContent();
+                CmsObject cloneCms = getCloneCms();
+                CmsUUID tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
+                cloneCms.getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
                 // remove eventual release & expiration date from temporary file to make preview work
-                getCms().setDateReleased(getParamTempfile(), CmsResource.DATE_RELEASED_DEFAULT, false);
-                getCms().setDateExpired(getParamTempfile(), CmsResource.DATE_EXPIRED_DEFAULT, false);
+                cloneCms.setDateReleased(getParamTempfile(), CmsResource.DATE_RELEASED_DEFAULT, false);
+                cloneCms.setDateExpired(getParamTempfile(), CmsResource.DATE_EXPIRED_DEFAULT, false);
             }
         } catch (CmsException e) {
             // show error page
@@ -562,9 +567,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // save content of the editor only to the temporary file
             setEditorValues(getElementLocale());
             writeContent();
+            CmsObject cloneCms = getCloneCms();
+            CmsUUID tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
+            cloneCms.getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
             // remove eventual release & expiration date from temporary file to make preview work
-            getCms().setDateReleased(getParamTempfile(), CmsResource.DATE_RELEASED_DEFAULT, false);
-            getCms().setDateExpired(getParamTempfile(), CmsResource.DATE_EXPIRED_DEFAULT, false);
+            cloneCms.setDateReleased(getParamTempfile(), CmsResource.DATE_RELEASED_DEFAULT, false);
+            cloneCms.setDateExpired(getParamTempfile(), CmsResource.DATE_EXPIRED_DEFAULT, false);
+
         } catch (CmsException e) {
             // show error page
             showErrorPage(this, e);
@@ -1194,6 +1203,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @param locale the locale of the content to save
      * @throws CmsXmlException if something goes wrong
      */
+    @SuppressWarnings("unchecked")
     public void setEditorValues(Locale locale) throws CmsXmlException {
 
         List<String> names = m_content.getNames(locale);
@@ -1708,6 +1718,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @param contentDefinition the content definition to start with
      * @param pathPrefix for nested xml content
      * @param showHelpBubble if the code for a help bubble should be generated
+     * @param superTabOpened if the super tab is opened
      * 
      * @return the HTML that generates the form for the XML editor
      */
@@ -2013,7 +2024,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
                     } else {
                         // element is enabled, show it
-                        if (value.isSimpleType()) {
+                        if ((widget != null) && value.isSimpleType()) {
                             // this is a simple type, display widget
                             result.append(widget.getDialogWidget(getCms(), this, (I_CmsWidgetParameter)value));
                         } else {
@@ -2109,7 +2120,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
         }
         // the file content might have been modified during the write operation    
-        m_file = getCloneCms().writeFile(m_file);
-        m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
+        CmsObject cloneCms = getCloneCms();
+        CmsUUID tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
+        cloneCms.getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
+        m_file = cloneCms.writeFile(m_file);
+        m_content = CmsXmlContentFactory.unmarshal(cloneCms, m_file);
+
     }
 }

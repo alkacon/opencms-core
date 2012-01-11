@@ -104,9 +104,9 @@ public final class CmsCollectionsGenericWrapper {
      * @return a {@link Enumeration} with the required generic type
      */
     @SuppressWarnings("unchecked")
-    public static <K> Enumeration<K> enumeration(Enumeration enumeration) {
+    public static <K> Enumeration<K> enumeration(Enumeration<?> enumeration) {
 
-        return enumeration;
+        return (Enumeration<K>)enumeration;
     }
 
     /**

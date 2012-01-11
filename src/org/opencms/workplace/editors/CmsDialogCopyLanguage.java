@@ -28,12 +28,14 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.content.CmsXmlContent;
@@ -81,19 +83,19 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDialogCopyLanguage.class);
-    
+
     /** The element locale. */
     private Locale m_elementLocale;
 
-    // Special parameters used by this dialog
+    /** Element language parameter. */
     private String m_paramElementlanguage;
-    
-    // private String m_paramElementname;
+
+    /** The selected languages. */
+    private Set<String> m_paramSelectedLanguages;
+
+    /** Temporary file parameter. */
     private String m_paramTempFile;
-    
-    // the map of selected languages
-    private Set m_paramSelectedLanguages;
-    
+
     /**
      * Public constructor.<p>
      * 
@@ -123,30 +125,35 @@ public class CmsDialogCopyLanguage extends CmsDialog {
      */
     public void actionUpdateLanguages() throws JspException {
 
-        if (m_paramSelectedLanguages != null && !m_paramSelectedLanguages.isEmpty()) {
+        if ((m_paramSelectedLanguages != null) && !m_paramSelectedLanguages.isEmpty()) {
             try {
                 CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCms(), file);
-                
-                List toLocales = new ArrayList();
-                for (Iterator i = m_paramSelectedLanguages.iterator(); i.hasNext();) {
-                    String language = (String)i.next(); 
-                    toLocales.add(CmsLocaleManager.getLocale(language)); 
+
+                List<Locale> toLocales = new ArrayList<Locale>();
+                for (Iterator<String> i = m_paramSelectedLanguages.iterator(); i.hasNext();) {
+                    String language = i.next();
+                    toLocales.add(CmsLocaleManager.getLocale(language));
                 }
-                
+
                 // now transfer the contents
                 transferContents(content, getElementLocale(), toLocales);
-                
+
                 // write the temporary file
                 String decodedContent = content.toString();
                 try {
                     file.setContents(decodedContent.getBytes(content.getEncoding()));
                 } catch (UnsupportedEncodingException e) {
-                    throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
+                    throw new CmsException(Messages.get().container(
+                        Messages.ERR_INVALID_CONTENT_ENC_1,
+                        getParamResource()), e);
                 }
-                // the file content might have been modified during the write operation    
-                getCms().writeFile(file);
-                
+                // the file content might have been modified during the write operation   
+                CmsObject cloneCms = OpenCms.initCmsObject(getCms());
+                CmsUUID tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
+                cloneCms.getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
+                cloneCms.writeFile(file);
+
             } catch (Throwable e) {
                 // show error dialog
                 setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPDATE_LANGUAGES_0));
@@ -165,28 +172,28 @@ public class CmsDialogCopyLanguage extends CmsDialog {
         try {
             StringBuffer retValue = new StringBuffer(512);
             retValue.append("<table border=\"0\">\n");
-                
+
             // get locale for current element
             Locale elLocale = getElementLocale();
-            
+
             // get locale names based on properties and global settings
-            List localeList = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getParamTempfile());
-    
+            List<Locale> localeList = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getParamTempfile());
+
             // read xml content for checking locale availability
             CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCms(), file);
-            
+
             // show all possible elements
-            Iterator i = localeList.iterator();
+            Iterator<Locale> i = localeList.iterator();
             while (i.hasNext()) {
                 // get the current list element
-                Locale curLocale = (Locale)i.next();
-                
+                Locale curLocale = i.next();
+
                 // skip locale of current element
                 if (elLocale.equals(curLocale)) {
                     continue;
                 }
-                
+
                 // build an element row
                 retValue.append("<tr>\n");
                 retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\"");
@@ -197,18 +204,19 @@ public class CmsDialogCopyLanguage extends CmsDialog {
                 retValue.append("</td>\n");
                 retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">");
                 retValue.append(curLocale.getDisplayName(getLocale()));
-                retValue.append(!content.hasLocale(curLocale) ? " [-]":"");
+                retValue.append(!content.hasLocale(curLocale) ? " [-]" : "");
                 retValue.append("</td>\n");
                 retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">");
-                retValue.append(!content.hasLocale(curLocale) ? Messages.get().getBundle(getLocale()).key(Messages.GUI_EDITOR_DIALOG_COPYLANGUAGE_NEW_0):"");
+                retValue.append(!content.hasLocale(curLocale) ? Messages.get().getBundle(getLocale()).key(
+                    Messages.GUI_EDITOR_DIALOG_COPYLANGUAGE_NEW_0) : "");
                 retValue.append("</td>\n");
-    
+
                 retValue.append("</tr>\n");
             }
-    
+
             retValue.append("</table>\n");
             return retValue.toString();
-            
+
         } catch (Throwable e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
@@ -267,13 +275,13 @@ public class CmsDialogCopyLanguage extends CmsDialog {
      * @param language a selected language
      */
     public void setParamLanguage(String language) {
-    
+
         if (language != null) {
             if (m_paramSelectedLanguages == null) {
-                m_paramSelectedLanguages = new HashSet();
+                m_paramSelectedLanguages = new HashSet<String>();
             }
             // add all available values here
-            String[] values = (String[])getParameterMap().get(PARAM_LANGUAGE);
+            String[] values = getParameterMap().get(PARAM_LANGUAGE);
             for (int i = 0; i < values.length; i++) {
                 m_paramSelectedLanguages.add(decodeParamValue(PARAM_LANGUAGE, values[i]));
             }
@@ -293,6 +301,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -305,11 +314,10 @@ public class CmsDialogCopyLanguage extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key(
-                Messages.GUI_EDITOR_DIALOG_COPYLANGUAGE_TITLE_0));
+            setParamTitle(key(Messages.GUI_EDITOR_DIALOG_COPYLANGUAGE_TITLE_0));
         }
     }
-    
+
     /**
      * Copies the contents from a source locale to a number of destination locales by overwriting them.<p>
      *  
@@ -318,10 +326,11 @@ public class CmsDialogCopyLanguage extends CmsDialog {
      * @param destLocales a list of destination locales
      * @throws CmsException if something goes wrong
      */
-    protected void transferContents(CmsXmlContent content, Locale sourceLocale, List destLocales) throws CmsException {
-        
-        for (Iterator i = destLocales.iterator(); i.hasNext();) {
-            Locale to = (Locale)i.next();
+    protected void transferContents(CmsXmlContent content, Locale sourceLocale, List<Locale> destLocales)
+    throws CmsException {
+
+        for (Iterator<Locale> i = destLocales.iterator(); i.hasNext();) {
+            Locale to = i.next();
             if (content.hasLocale(to)) {
                 content.removeLocale(to);
             }
