@@ -225,12 +225,12 @@ public class CmsCroppingParamBean {
      * @return the value
      */
     private static native int parseValue(String paramName, String param)/*-{
-		param = param.substr(paramName.length + 1);
-		var result = parseInt(param);
-		if (isNaN(result)) {
-			return I_CmsFormatRestriction.DIMENSION_NOT_SET;
-		}
-		return result;
+        param = param.substr(paramName.length + 1);
+        var result = parseInt(param);
+        if (isNaN(result)) {
+            return I_CmsFormatRestriction.DIMENSION_NOT_SET;
+        }
+        return result;
     }-*/;
 
     /**

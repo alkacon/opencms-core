@@ -48,12 +48,12 @@ public interface I_CmsResourceBundle {
      * 
      * @param l the locale to set
      */
-    public void setLocale(Locale l);
+    void setLocale(Locale l);
 
     /**
      * Sets the parent bundle.<p>
      * 
      * @param parent the parent bundle to set
      */
-    public void setParent(ResourceBundle parent);
+    void setParent(ResourceBundle parent);
 }

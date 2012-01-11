@@ -129,7 +129,7 @@ public class JSONArray {
      * 
      * @param collection a Collection.
      */
-    public JSONArray(Collection<Object> collection) {
+    public JSONArray(Collection<?> collection) {
 
         this.m_myArrayList = (collection == null) ? new ArrayList<Object>() : new ArrayList<Object>(collection);
     }

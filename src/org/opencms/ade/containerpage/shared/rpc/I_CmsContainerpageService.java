@@ -55,7 +55,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @return element info
      */
-    public CmsContainerElement getElementInfo();
+    CmsContainerElement getElementInfo();
 
     /**
      * Adds an element specified by it's id to the favorite list.<p>

@@ -215,31 +215,31 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
      */
     private native void addUploadZone(JavaScriptObject element, CmsUploadDialogFormDataImpl dialog)/*-{
 
-		function dragover(event) {
-			event.stopPropagation();
-			event.preventDefault();
-			element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_hightLightColor;
-		}
+        function dragover(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_hightLightColor;
+        }
 
-		function dragleave(event) {
-			event.stopPropagation();
-			event.preventDefault();
-			element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
-		}
+        function dragleave(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
+        }
 
-		function drop(event) {
-			event.preventDefault();
-			var dt = event.dataTransfer;
-			var files = dt.files;
-			element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
-			dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::addJsFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
-		}
+        function drop(event) {
+            event.preventDefault();
+            var dt = event.dataTransfer;
+            var files = dt.files;
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
+            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::addJsFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+        }
 
-		element.addEventListener("dragover", dragover, false);
-		element.addEventListener("dragexit", dragleave, false);
-		element.addEventListener("dragleave", dragleave, false);
-		element.addEventListener("dragend", dragleave, false);
-		element.addEventListener("drop", drop, false);
+        element.addEventListener("dragover", dragover, false);
+        element.addEventListener("dragexit", dragleave, false);
+        element.addEventListener("dragleave", dragleave, false);
+        element.addEventListener("dragend", dragleave, false);
+        element.addEventListener("drop", drop, false);
 
     }-*/;
 
@@ -251,7 +251,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
      * @return a JsArray of CmsFileInfo objects
      */
     private native JsArray<CmsFileInfo> getFiles(JavaScriptObject files) /*-{
-		return files;
+        return files;
     }-*/;
 
     /**
@@ -270,41 +270,41 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         JavaScriptObject filesToUnzip,
         CmsUploadDialogFormDataImpl dialog) /*-{
 
-		var data = new FormData();
+        var data = new FormData();
 
-		for (i = 0; i < filesToUpload.length; i++) {
-			var fieldName = "file_" + i;
-			data.append(fieldName, filesToUpload[i]);
-			data
-					.append(
-							fieldName
-									+ @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
-							encodeURI(filesToUpload[i].name));
-		}
-		data
-				.append(
-						@org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
-						targetFolder);
+        for (i = 0; i < filesToUpload.length; i++) {
+            var fieldName = "file_" + i;
+            data.append(fieldName, filesToUpload[i]);
+            data
+                    .append(
+                            fieldName
+                                    + @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
+                            encodeURI(filesToUpload[i].name));
+        }
+        data
+                .append(
+                        @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
+                        targetFolder);
 
-		for ( var i = 0; i < filesToUnzip.length; ++i) {
-			data
-					.append(
-							@org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
-							encodeURI(filesToUnzip[i]));
-		}
+        for ( var i = 0; i < filesToUnzip.length; ++i) {
+            data
+                    .append(
+                            @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
+                            encodeURI(filesToUnzip[i]));
+        }
 
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", uploadUri, true);
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4) {
-				if (xhr.status == 200) {
-					dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::parseResponse(Ljava/lang/String;)(xhr.responseText);
-				} else {
-					dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
-				}
-			}
-		}
-		xhr.send(data);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", uploadUri, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::parseResponse(Ljava/lang/String;)(xhr.responseText);
+                } else {
+                    dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
+                }
+            }
+        }
+        xhr.send(data);
 
     }-*/;
 

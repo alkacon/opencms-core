@@ -62,9 +62,6 @@ public interface I_CmsVfsDriver {
     /** The internal request attribute to indicate that resource organizational units have to be retrieved. */
     String REQ_ATTR_RESOURCE_OUS = "RETRIEVE_RESOURCE_OUS";
 
-    /** Add the methods that use these constants to the interface as soon as possible. */
-    int todo = 0;
-
     /**
      * Adds a new URL name mapping entry.<p>
      * 

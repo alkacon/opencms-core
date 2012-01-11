@@ -61,7 +61,6 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -632,7 +631,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * 
      * @param event the change event
      *  
-     * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent)
      */
     @UiHandler("m_projectSelector")
     protected void onProjectChange(ValueChangeEvent<String> event) {
@@ -704,7 +703,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      * 
      * @param event the change event
      *  
-     * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent)
      */
     @UiHandler("m_workflowSelector")
     protected void onWorkflowChange(ValueChangeEvent<String> event) {

@@ -144,13 +144,13 @@ public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I
      * @param popup the popup instance 
      */
     private native void exportClosingMethod(final CmsPopup popup) /*-{
-		var self = this;
-		$wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
-				reload) {
-			popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
-			self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
-			$wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
-		};
+        var self = this;
+        $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
+                reload) {
+            popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
+            self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
+            $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
+        };
     }-*/;
 
     /**
