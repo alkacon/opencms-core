@@ -168,9 +168,6 @@ public abstract class CmsEditor extends CmsEditorBase {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditor.class);
 
-    /** A cloned cms instance that prevents the broken link remotion during unmarshalling. */
-    private CmsObject m_cloneCms;
-
     /** The editor session info bean. */
     private CmsEditorSessionInfo m_editorSessionInfo;
 
@@ -954,11 +951,9 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     protected CmsObject getCloneCms() throws CmsException {
 
-        if (m_cloneCms == null) {
-            m_cloneCms = OpenCms.initCmsObject(getCms());
-            m_cloneCms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
-        }
-        return m_cloneCms;
+        CmsObject cloneCms = OpenCms.initCmsObject(getCms());
+        cloneCms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+        return cloneCms;
     }
 
     /**
