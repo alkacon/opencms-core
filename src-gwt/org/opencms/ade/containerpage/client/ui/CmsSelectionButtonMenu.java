@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsSelectionButtonMenu extends CmsToolbarPopup {
 
     /** The delay for showing the popup. */
-    public static final int SHOW_DELAY = 1000;
+    public static final int SHOW_DELAY = 150;
 
     /** The delay for hiding the popup. */
     public static final int HIDE_DELAY = 750;

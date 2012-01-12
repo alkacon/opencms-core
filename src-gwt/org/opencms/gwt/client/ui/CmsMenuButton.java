@@ -154,7 +154,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_button.setButtonStyle(ButtonStyle.MENU, null);
         m_isOpen = false;
 
-        m_popup = new CmsToolbarPopup(m_button, true, this.getElement());
+        m_popup = new CmsToolbarPopup(m_button, false, this.getElement());
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {
@@ -193,7 +193,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void closeMenu() {
 
         m_popup.hide();
-        m_isOpen = false;
         setButtonUp();
         if (m_resizeRegistration != null) {
             m_resizeRegistration.removeHandler();
@@ -350,7 +349,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     protected void autoClose() {
 
-        m_isOpen = false;
         setButtonUp();
     }
 
@@ -399,6 +397,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     protected void setButtonUp() {
 
+        m_isOpen = false;
         m_button.setDown(false);
     }
 
