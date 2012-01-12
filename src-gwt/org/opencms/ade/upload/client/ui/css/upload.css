@@ -1,3 +1,5 @@
+@external html-face;
+
 .popup, .popupContent {}
 
 .mainContentWidget {
@@ -15,7 +17,6 @@
 
 div.uploadButton input.uploadFileInput {
 	position: absolute;
-	font-size: 200px;
 	right: -1px;
 	top: -10px;
 }
@@ -39,7 +40,7 @@ div.uploadButton input.uploadFileInput {
 	}
     .uploadButton {
     	display: inline;
-    } 
+    }
 } @else {
     .uploadFileInput{
         opacity: 0;

@@ -40,6 +40,7 @@ import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -155,6 +156,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         setSize(I_CmsButton.Size.medium);
         // create the push button
         setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
+        setTitle(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
         createFileInput();
     }
@@ -441,6 +443,8 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
             m_fileInput.getElement().getStyle().setDisplay(Display.NONE);
         }
         m_fileInput = new CmsFileInput();
+        // important to set font-size as inline style, as IE7 and IE8 will not accept it otherwise
+        m_fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
         m_fileInput.addChangeHandler(m_handler);
         m_fileInput.setAllowMultipleFiles(true);
         m_fileInput.setName("upload");
