@@ -29,7 +29,9 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbarPopup;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -83,8 +85,11 @@ public class CmsSelectionButtonMenu extends CmsToolbarPopup {
 
         super(button, isToolbarMode, baseElement);
         m_toggleButton = button;
-        m_buttonPanel.getElement().getStyle().setMarginLeft(3, Unit.PX);
-        m_buttonPanel.getElement().getStyle().setMarginTop(3, Unit.PX);
+        Style buttonPanelStyle = m_buttonPanel.getElement().getStyle();
+        buttonPanelStyle.setPadding(4, Unit.PX);
+        buttonPanelStyle.setBackgroundColor("white");
+        String cornerAll = I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll();
+        m_buttonPanel.addStyleName(cornerAll);
         setGlassEnabled(false);
         add(m_buttonPanel);
     }
@@ -185,8 +190,8 @@ public class CmsSelectionButtonMenu extends CmsToolbarPopup {
      */
     protected void adaptSize() {
 
-        setWidth(Math.max(m_buttonPanel.getOffsetWidth(), 40));
-        setHeight(Math.max(m_buttonPanel.getOffsetHeight(), 40));
+        setWidth(m_buttonPanel.getOffsetWidth());
+        setHeight(m_buttonPanel.getOffsetHeight());
     }
 
     /**
