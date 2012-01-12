@@ -54,6 +54,7 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.io.StringReader;
@@ -75,8 +76,6 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-
-import com.google.common.collect.Maps;
 
 /**
  * Test case for inherited containers.
@@ -268,10 +267,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         writeConfiguration(1, "a");
         writeConfiguration(2, "b");
         writeConfiguration(3, "c");
-        CmsObject cms = getCmsObject();
         String level3 = "/system/level1/level2/level3";
-        CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, level3, "alpha");
-        List<CmsContainerElementBean> elementBeans = state.getElements(true);
         // a, b, c
         checkConfigurationForPath(level3, "alpha", false, "key=c", "key=a", "key=b");
 
@@ -307,9 +303,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         writeConfiguration(2, "b");
         writeConfiguration(3, "c");
         publish();
-        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
         String level3 = "/system/level1/level2/level3";
-        CmsInheritedContainerState state = OpenCms.getADEManager().getInheritedContainerState(cms, level3, "alpha");
 
         // OFFLINE: a, b, c       ONLINE: a, b, c 
         checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
@@ -582,7 +576,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
             + "\r\n"
-            + "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd\">\r\n"
+            + "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd\">\r\n"
             + "  <AlkaconInheritConfigGroup language=\"en\">\r\n"
             + "    <Configuration>\r\n"
             + "      <Name><![CDATA[blubb]]></Name>\r\n"
@@ -691,7 +685,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         try {
 
             CmsContainerConfiguration config = buildConfiguration("a b c|||a b c");
-            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            saveConfiguration(
+                "/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME,
+                config,
+                "alpha");
             CmsObject cms = getCmsObject();
             CmsResource x2 = cms.readResource("/system/x1/x2");
             List<CmsContainerElementBean> elements = OpenCms.getADEManager().getInheritedContainerState(
@@ -710,8 +707,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 "key=c new=false visible=false");
 
         } finally {
-            deleteConfiguration("/system/x1/.container-config");
-            deleteConfiguration("/system/x1/x2/.container-config");
+            deleteConfiguration("/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         }
 
     }
@@ -725,7 +722,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         try {
 
             CmsContainerConfiguration config = buildConfiguration("a b c|||a b c");
-            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            saveConfiguration(
+                "/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME,
+                config,
+                "alpha");
             CmsObject cms = getCmsObject();
             CmsResource x2 = cms.readResource("/system/x1/x2");
             List<CmsContainerElementBean> elements = OpenCms.getADEManager().getInheritedContainerState(
@@ -734,7 +734,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 "alpha").getElements(true);
 
             CmsContainerElementBean newElement = generateDummyElement("d");
-            CmsInheritanceInfo info = new CmsInheritanceInfo("d", new Boolean(true), true);
+            CmsInheritanceInfo info = new CmsInheritanceInfo("d", true, true);
             newElement.setInheritanceInfo(info);
             elements.add(newElement);
             OpenCms.getADEManager().saveInheritedContainer(cms, "/system/x1/x2", "alpha", true, elements);
@@ -747,8 +747,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 "key=c new=false",
                 "key=d new=true");
         } finally {
-            deleteConfiguration("/system/x1/.container-config");
-            deleteConfiguration("/system/x1/x2/.container-config");
+            deleteConfiguration("/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         }
 
     }
@@ -758,7 +758,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         try {
 
             CmsContainerConfiguration config = buildConfiguration("a b c|||a b c");
-            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            saveConfiguration(
+                "/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME,
+                config,
+                "alpha");
             CmsObject cms = getCmsObject();
             CmsResource x2 = cms.readResource("/system/x1/x2");
             List<CmsContainerElementBean> elements = OpenCms.getADEManager().getInheritedContainerState(
@@ -766,7 +769,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 x2,
                 "alpha").getElements(true);
             config = buildConfiguration("a b|||a b");
-            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            saveConfiguration(
+                "/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME,
+                config,
+                "alpha");
 
             CmsContainerElementBean elementBean = elements.get(0);
             elements.remove(0);
@@ -779,7 +785,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 "key=b new=false visible=true",
                 "key=a new=false visible=true");
 
-            CmsResource configResource = cms.readResource("/system/x1/x2/.container-config");
+            CmsResource configResource = cms.readResource("/system/x1/x2/"
+                + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
             CmsFile file = cms.readFile(configResource);
             String content = new String(file.getContents());
             assertTrue(content.contains("<![CDATA[a]]>"));
@@ -787,8 +794,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             // should have been removed when saving 
             assertFalse(content.contains("<![CDATA[c]]>"));
         } finally {
-            deleteConfiguration("/system/x1/x2/.container-config");
-            deleteConfiguration("/system/x1/.container-config");
+            deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            deleteConfiguration("/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         }
     }
 
@@ -802,7 +809,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         try {
 
             CmsContainerConfiguration config = buildConfiguration("a b c|||a b c");
-            saveConfiguration("/system/x1/.container-config", config, "alpha");
+            saveConfiguration(
+                "/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME,
+                config,
+                "alpha");
             CmsObject cms = getCmsObject();
             CmsResource x2 = cms.readResource("/system/x1/x2");
             List<CmsContainerElementBean> elements = OpenCms.getADEManager().getInheritedContainerState(
@@ -821,8 +831,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 "key=c new=false",
                 "key=a new=false");
         } finally {
-            deleteConfiguration("/system/x1/.container-config");
-            deleteConfiguration("/system/x1/x2/.container-config");
+            deleteConfiguration("/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         }
 
     }
@@ -858,7 +868,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 CmsResource resource) {
 
                 return settingDefs;
-            };
+            }
         };
         Element element = writer.serializeSingleConfiguration(
             getCmsObject(),
@@ -1074,6 +1084,14 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         checkConfiguration(elementBeans, specs);
     }
 
+    /**
+     * Creates a document given a root element as a string.<p>
+     * 
+     * @param rootElement the root element string 
+     * @return the created document 
+     * 
+     * @throws Exception
+     */
     protected Document createDocument(String rootElement) throws Exception {
 
         SAXReader reader = new SAXReader();
@@ -1091,7 +1109,9 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     protected void deleteConfiguration(int level) throws CmsException {
 
         String dirPath = getLevelPath(level);
-        String configPath = CmsStringUtil.joinPaths(dirPath, ".container-config");
+        String configPath = CmsStringUtil.joinPaths(
+            dirPath,
+            CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         deleteConfiguration(configPath);
     }
 
@@ -1153,7 +1173,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
             + "\r\n"
-            + "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inherit_config_group.xsd\">\r\n"
+            + "<AlkaconInheritConfigGroups xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd\">\r\n"
             + "  <AlkaconInheritConfigGroup language=\"en\">\r\n"
             + "    <Configuration>\r\n"
             + "      <Name><![CDATA[alpha]]></Name>\r\n"
@@ -1232,6 +1252,12 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Helper method to create dummy structure ids from a name.<p>
+     * 
+     * @param name the name 
+     * @return the dummy structure id 
+     */
     protected CmsUUID makeStructureId(String name) {
 
         CmsUUID id = CmsUUID.getConstantUUID(name);
@@ -1276,16 +1302,20 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         return new String(file.getContents(), "UTF-8");
     }
 
+    /**
+     * Saves a configuration object to a file.<p>
+     * 
+     * @param path the path of the configuration file  
+     * @param config the container configuration
+     * @param name the name under which the configuration object should be saved
+     *  
+     * @throws Exception if something goes wrong 
+     */
     protected void saveConfiguration(String path, CmsContainerConfiguration config, String name) throws Exception {
 
-        Map<Locale, Map<String, CmsContainerConfiguration>> map = Maps.newHashMap();
-        Map<String, CmsContainerConfiguration> configMap = Maps.newHashMap();
-        map.put(new Locale("en"), configMap);
-        configMap.put(name, config);
-        CmsContainerConfigurationGroup group = new CmsContainerConfigurationGroup(map);
         CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter();
-        String xml = writer.createXmlString(group, getCmsObject(), "UTF-8");
-        byte[] data = xml.getBytes("UTF-8");
+        CmsXmlContent content = writer.saveInContentObject(getCmsObject(), null, new Locale("en"), name, config);
+        byte[] data = content.marshal();
         writeConfiguration(path, data);
     }
 
@@ -1301,7 +1331,9 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     protected void writeConfiguration(int level, String name) throws CmsException, UnsupportedEncodingException {
 
         String dirPath = getLevelPath(level);
-        String configPath = CmsStringUtil.joinPaths(dirPath, ".container-config");
+        String configPath = CmsStringUtil.joinPaths(
+            dirPath,
+            CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
         writeConfiguration(configPath, name);
     }
 
@@ -1309,12 +1341,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * Writes a dummy configuration file to a given path.<p>
      * 
      * @param path the path where the configuration file should be written
-     * @param name the name contained in the configuration file 
+     * @param data the configuration data to write  
      * 
      * @throws CmsException if something goes wrong 
-     * @throws UnsupportedEncodingException 
      */
-    protected void writeConfiguration(String path, byte[] data) throws CmsException, UnsupportedEncodingException {
+    protected void writeConfiguration(String path, byte[] data) throws CmsException {
 
         String configPath = path;
         CmsObject cms = getCmsObject();

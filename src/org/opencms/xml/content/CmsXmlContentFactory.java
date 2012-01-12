@@ -66,6 +66,30 @@ public final class CmsXmlContentFactory {
     }
 
     /**
+     * Creates a new XML content based on a resource type.<p>
+     * 
+     * @param cms the current OpenCms context 
+     * @param locale the locale to generate the default content for 
+     * @param resourceType the resource type for which the document should be created 
+     * 
+     * @return the created XML content 
+     * 
+     * @throws CmsXmlException if something goes wrong 
+     */
+    public static CmsXmlContent createDocument(CmsObject cms, Locale locale, CmsResourceTypeXmlContent resourceType)
+    throws CmsXmlException {
+
+        String schema = resourceType.getSchema();
+        CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+        CmsXmlContent xmlContent = CmsXmlContentFactory.createDocument(
+            cms,
+            locale,
+            OpenCms.getSystemInfo().getDefaultEncoding(),
+            contentDefinition);
+        return xmlContent;
+    }
+
+    /**
      * Create a new instance of an XML content based on the given default content,
      * hat will have all language nodes of the default content and ensures the presence of the given locale.<p> 
      * 

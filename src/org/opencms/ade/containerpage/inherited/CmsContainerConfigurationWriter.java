@@ -31,34 +31,37 @@
 
 package org.opencms.ade.containerpage.inherited;
 
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_CONFIGURATION;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ELEMENT;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_HIDDEN;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_KEY;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_NAME;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_NEWELEMENT;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ORDERKEY;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_URI;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_VISIBLE;
 
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.lock.CmsLock;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,12 +71,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-
-import com.google.common.collect.Maps;
 
 /**
  * A helper class for writing inherited container configuration back to a VFS file.<p>
@@ -81,66 +79,8 @@ import com.google.common.collect.Maps;
 public class CmsContainerConfigurationWriter {
 
     /** The logger instance for this class. */
+    @SuppressWarnings("unused")
     private static final Log LOG = CmsLog.getLog(CmsContainerConfigurationWriter.class);
-
-    /**
-     * Creates the xml for the whole bean.<p>
-     * 
-     * @param group the configuration group to be serialized 
-     * @param cms the current CMS context 
-     * 
-     * @return the XML document containing all the data from this bean 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public Document createXml(CmsContainerConfigurationGroup group, CmsObject cms) throws CmsException {
-
-        String rootElementString = "<AlkaconInheritConfigGroups></AlkaconInheritConfigGroups>";
-        SAXReader saxReader = new SAXReader();
-        try {
-            Document doc = saxReader.read(new StringReader(rootElementString));
-            Element root = doc.getRootElement();
-            root.addAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-            root.addAttribute(
-                "xsi:noNamespaceSchemaLocation",
-                "opencms://system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd");
-            for (Map.Entry<Locale, Map<String, CmsContainerConfiguration>> groupEntry : group.getMap().entrySet()) {
-                Locale locale = groupEntry.getKey();
-                Map<String, CmsContainerConfiguration> configurations = groupEntry.getValue();
-                Element localeElement = root.addElement("AlkaconInheritConfigGroup").addAttribute(
-                    "language",
-                    locale.toString());
-                for (Map.Entry<String, CmsContainerConfiguration> entry : configurations.entrySet()) {
-                    String name = entry.getKey();
-                    CmsContainerConfiguration containerConfig = entry.getValue();
-                    serializeSingleConfiguration(cms, name, containerConfig, localeElement);
-                }
-
-            }
-            return doc;
-        } catch (DocumentException e) {
-            //should never happen, but still log it
-            LOG.error(e.getLocalizedMessage(), e);
-            return null;
-        }
-
-    }
-
-    /**
-     * Serializes a configuration group into an XML string.<p>
-     * 
-     * @param group the group to serialize 
-     * @param cms the CMS context 
-     * @param encoding the encoding 
-     * @return the configuration group converted to XML 
-     * @throws CmsException if something goes wrong 
-     */
-    public String createXmlString(CmsContainerConfigurationGroup group, CmsObject cms, String encoding)
-    throws CmsException {
-
-        Document doc = createXml(group, cms);
-        return CmsXmlUtils.marshal(doc, encoding);
-    }
 
     /**
      * Saves a list of container element beans to a file in the VFS.<p>
@@ -160,16 +100,6 @@ public class CmsContainerConfigurationWriter {
         CmsResource pageResource,
         List<CmsContainerElementBean> elements) throws CmsException {
 
-        String encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-        try {
-            CmsProperty encodingProperty = cms.readPropertyObject(
-                pageResource,
-                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                true);
-            encoding = CmsEncoder.lookupEncoding(encodingProperty.getValue(), encoding);
-        } catch (CmsException e) {
-            // ignore 
-        }
         cms = OpenCms.initCmsObject(cms);
         cms.getRequestContext().setSiteRoot("");
         String configPath;
@@ -188,49 +118,29 @@ public class CmsContainerConfigurationWriter {
             name);
         Set<String> keys = state.getNewElementKeys();
 
+        if (!cms.existsResource(configPath)) {
+            // create it
+            cms.createResource(
+                configPath,
+                OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId());
+        }
+        CmsResource configRes = cms.readResource(configPath);
+        CmsFile configFile = cms.readFile(configRes);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
+        removeExistingEntry(cms, content, cms.getRequestContext().getLocale(), name);
         CmsContainerConfiguration configuration = createConfigurationBean(newOrdering, elements, keys);
-        CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(cms);
-        CmsResource configResource = null;
-        Map<Locale, Map<String, CmsContainerConfiguration>> oldGroups = null;
-        try {
-            configResource = cms.readResource(configPath);
-            parser.parse(configResource);
-        } catch (CmsVfsResourceNotFoundException e) {
-            oldGroups = Maps.newHashMap();
 
-        }
-        oldGroups = parser.getParsedResults();
         Locale locale = cms.getRequestContext().getLocale();
-        Map<String, CmsContainerConfiguration> groupForLocale = oldGroups.get(locale);
-        if (groupForLocale == null) {
-            groupForLocale = Maps.newHashMap();
-            oldGroups.put(locale, groupForLocale);
+        if (!content.hasLocale(locale)) {
+            content.addLocale(cms, locale);
         }
-        groupForLocale.put(name, configuration);
-        CmsContainerConfigurationGroup newGroups = new CmsContainerConfigurationGroup(oldGroups);
-        Document doc = createXml(newGroups, cms);
-        String newContentString = CmsXmlUtils.marshal(doc, encoding);
-
-        byte[] contentBytes;
-        try {
-            contentBytes = newContentString.getBytes(encoding);
-        } catch (UnsupportedEncodingException e) {
-            contentBytes = newContentString.getBytes();
-        }
-        if (configResource == null) {
-            // file didn't exist, so create it 
-            int typeId = OpenCms.getResourceManager().getResourceType(
-                CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId();
-            cms.createResource(configPath, typeId, contentBytes, new ArrayList<CmsProperty>());
-        } else {
-            CmsFile file = cms.readFile(configResource);
-            file.setContents(contentBytes);
-            CmsLock lock = cms.getLock(configResource);
-            if (lock.isUnlocked() || !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
-                cms.lockResource(configResource);
-            }
-            cms.writeFile(file);
-        }
+        Element parentElement = content.getLocaleNode(locale);
+        serializeSingleConfiguration(cms, name, configuration, parentElement);
+        byte[] contentBytes = content.marshal();
+        configFile.setContents(contentBytes);
+        cms.lockResource(configRes);
+        cms.writeFile(configFile);
     }
 
     /**
@@ -267,8 +177,8 @@ public class CmsContainerConfigurationWriter {
             // don't add empty inheritance configurations
             return null;
         }
-        Element root = parentElement.addElement("Configuration");
-        root.addElement("Name").addCDATA(name);
+        Element root = parentElement.addElement(N_CONFIGURATION);
+        root.addElement(N_NAME).addCDATA(name);
         for (String orderKey : config.getOrdering()) {
             root.addElement(N_ORDERKEY).addCDATA(orderKey);
         }
@@ -290,11 +200,9 @@ public class CmsContainerConfigurationWriter {
             Map<String, String> settings = elementBean.getIndividualSettings();
             Element newElementElement = root.addElement(N_NEWELEMENT);
             newElementElement.addElement(N_KEY).addCDATA(key);
-            Element elementElement = newElementElement.addElement("Element");
-            Element linkElement = elementElement.addElement("Uri").addElement("link");
-            linkElement.addAttribute("type", "STRONG");
-            linkElement.addElement("target"); // leave it empty, will be corrected when saved 
-            linkElement.addElement("uuid").addText(structureId.toString());
+            Element elementElement = newElementElement.addElement(N_ELEMENT);
+            Element uriElement = elementElement.addElement(N_URI);
+            CmsXmlVfsFileValue.fillEntry(uriElement, structureId, "", CmsRelationType.XML_STRONG);
             CmsXmlContentPropertyHelper.saveProperties(cms, elementElement, settings, settingConfiguration);
         }
         return root;
@@ -356,6 +264,75 @@ public class CmsContainerConfigurationWriter {
     throws CmsException {
 
         return OpenCms.getADEManager().getElementSettings(cms, resource);
+    }
+
+    /**
+     * Removes an existing inheritance container entry with a given name from the configuration file.<p>
+     * 
+     * This does nothing if no such entry actually exists.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param content the XML content 
+     * @param locale the locale from which to remove the entry 
+     * @param name the name of the entry 
+     * 
+     */
+    protected void removeExistingEntry(CmsObject cms, CmsXmlContent content, Locale locale, String name) {
+
+        if (!content.hasLocale(locale)) {
+            return;
+        }
+        String entriesXpath = N_CONFIGURATION;
+        List<I_CmsXmlContentValue> values = content.getValues(entriesXpath, locale);
+        int valueIndex = 0;
+        for (I_CmsXmlContentValue value : values) {
+            String valueXpath = value.getPath();
+            I_CmsXmlContentValue nameValue = content.getValue(CmsXmlUtils.concatXpath(valueXpath, N_NAME), locale);
+            String currentName = nameValue.getStringValue(cms);
+            if (currentName.equals(name)) {
+                content.removeValue(valueXpath, locale, valueIndex);
+                break;
+            }
+            valueIndex += 1;
+        }
+    }
+
+    /**
+     * Saves a single container configuration in an XML content object, but doesn't write it to the VFS.<p>
+     * 
+     * If the XML content passed as a parameter is null, a new XML content object will be created 
+     * 
+     * @param cms the current CMS context 
+     * @param content the XML content 
+     * @param locale the locale in which the configuration should be written 
+     * @param name the name of the configuration 
+     * @param configuration the configuration to write
+     *  
+     * @return the modified or new XML content 
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsXmlContent saveInContentObject(
+        CmsObject cms,
+        CmsXmlContent content,
+        Locale locale,
+        String name,
+        CmsContainerConfiguration configuration) throws CmsException {
+
+        if (content == null) {
+            content = CmsXmlContentFactory.createDocument(
+                cms,
+                locale,
+                (CmsResourceTypeXmlContent)OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME));
+        }
+
+        if (!content.hasLocale(locale)) {
+            content.addLocale(cms, locale);
+        }
+        Element parentElement = content.getLocaleNode(locale);
+        serializeSingleConfiguration(cms, name, configuration, parentElement);
+        return content;
     }
 
 }

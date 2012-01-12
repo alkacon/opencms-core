@@ -31,10 +31,14 @@
 
 package org.opencms.ade.containerpage.inherited;
 
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_CONFIGURATION;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ELEMENT;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_HIDDEN;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_KEY;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_NAME;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_NEWELEMENT;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_ORDERKEY;
+import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_URI;
 import static org.opencms.ade.containerpage.inherited.CmsContainerConfiguration.N_VISIBLE;
 
 import org.opencms.file.CmsFile;
@@ -132,7 +136,7 @@ public class CmsContainerConfigurationParser {
      */
     protected void parseConfigurationGroup(I_CmsXmlContentLocation location) {
 
-        List<I_CmsXmlContentValueLocation> locations = location.getSubValues("Configuration");
+        List<I_CmsXmlContentValueLocation> locations = location.getSubValues(N_CONFIGURATION);
         m_currentConfigurationGroup = new HashMap<String, CmsContainerConfiguration>();
         m_results.put(m_currentLocale, m_currentConfigurationGroup);
         for (I_CmsXmlContentValueLocation configLocation : locations) {
@@ -186,10 +190,10 @@ public class CmsContainerConfigurationParser {
         List<I_CmsXmlContentValueLocation> newElementLocs = location.getSubValues(N_NEWELEMENT);
         Map<String, CmsContainerElementBean> newElementBeans = new HashMap<String, CmsContainerElementBean>();
         for (I_CmsXmlContentValueLocation elementLoc : newElementLocs) {
-            I_CmsXmlContentValueLocation keyLoc = elementLoc.getSubValue("Key");
+            I_CmsXmlContentValueLocation keyLoc = elementLoc.getSubValue(N_KEY);
             String key = keyLoc.asString(m_cms).trim();
-            I_CmsXmlContentValueLocation actualElementLoc = elementLoc.getSubValue("Element");
-            I_CmsXmlContentValueLocation uriLoc = actualElementLoc.getSubValue("Uri");
+            I_CmsXmlContentValueLocation actualElementLoc = elementLoc.getSubValue(N_ELEMENT);
+            I_CmsXmlContentValueLocation uriLoc = actualElementLoc.getSubValue(N_URI);
             CmsUUID structureId = uriLoc.asId(m_cms);
             if (structureId != null) {
                 Map<String, String> settings = CmsXmlContentPropertyHelper.readProperties(m_cms, actualElementLoc);

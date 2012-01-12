@@ -487,6 +487,30 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
+     * Returns the XML root element node for the given locale.<p>
+     * 
+     * @param locale the locale to get the root element for
+     * 
+     * @return the XML root element node for the given locale
+     * 
+     * @throws CmsRuntimeException if no language element is found in the document
+     */
+    public Element getLocaleNode(Locale locale) throws CmsRuntimeException {
+
+        String localeStr = locale.toString();
+        Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement());
+        while (i.hasNext()) {
+            Element element = i.next();
+            if (localeStr.equals(element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE))) {
+                // language element found, return it
+                return element;
+            }
+        }
+        // language element was not found
+        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_LOCALE_1, locale));
+    }
+
+    /**
      * Returns the list of sub-value for the given xpath in the selected locale.<p>
      * 
      * @param path the xpath to look up the sub-value for
@@ -693,9 +717,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         CmsXmlContentDefinition parentDef) {
 
         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(parent));
-        String elemPath = CmsXmlUtils.concatXpath(parentPath, CmsXmlUtils.createXpathElement(
-            element.getName(),
-            elemIndex));
+        String elemPath = CmsXmlUtils.concatXpath(
+            parentPath,
+            CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
         I_CmsXmlSchemaType elemSchemaType = parentDef.getSchemaType(element.getName());
         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
         addBookmark(elemPath, locale, true, elemValue);
@@ -804,31 +828,6 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_1, schemaLocation),
                 e);
         }
-    }
-
-    /**
-     * Returns the XML root element node for the given locale.<p>
-     * 
-     * @param locale the locale to get the root element for
-     * 
-     * @return the XML root element node for the given locale
-     * 
-     * @throws CmsRuntimeException if no language element is found in the document
-     */
-    protected Element getLocaleNode(Locale locale) throws CmsRuntimeException {
-
-        String localeStr = locale.toString();
-        Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement());
-        while (i.hasNext()) {
-            Element element = i.next();
-            if (localeStr.equals(element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE))) {
-                // language element found, return it
-                return element;
-            }
-        }
-
-        // language element was not found
-        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_LOCALE_1, locale));
     }
 
     /**

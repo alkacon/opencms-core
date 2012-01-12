@@ -67,6 +67,9 @@ public class CmsContainerConfiguration {
     public static final String N_ORDERKEY = "OrderKey";
 
     /** Node name. **/
+    public static final String N_URI = "Uri";
+
+    /** Node name. **/
     public static final String N_VISIBLE = "Visible";
 
     /** A map containing the new elements. */
