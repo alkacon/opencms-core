@@ -30,6 +30,7 @@ package org.opencms.main;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.security.CmsPermissionViolationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +60,7 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException {
+    throws CmsResourceInitException, CmsPermissionViolationException {
 
         // only do something if the resource was not found 
         if (resource == null) {
@@ -81,6 +82,8 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
 
                     // read the resource
                     resource = cms.readDefaultFile(id);
+                } catch (CmsPermissionViolationException e) {
+                    throw e;
                 } catch (Throwable e) {
                     CmsMessageContainer msg = Messages.get().container(Messages.ERR_PERMALINK_1, id);
                     if (LOG.isErrorEnabled()) {
