@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
@@ -68,12 +69,17 @@ public class CmsAddToNavMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow(CmsHoverbarShowEvent event) {
 
         String sitePath = getHoverbar().getSitePath();
+        CmsResource.getParentFolder(sitePath);
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !controller.isRoot(sitePath)
-            && (entry != null)
-            && !entry.isInNavigation()
-            && !entry.isFolderDefaultPage();
+        boolean show = !controller.isRoot(sitePath) && (entry != null) && !entry.isInNavigation();
+        if (show && (entry != null) && entry.isFolderDefaultPage()) {
+            // hide this option for all default pages that are not in the first level of the root sitemap
+            if ((controller.getData().getParentSitemap() != null)
+                || !controller.isRoot(CmsResource.getParentFolder(sitePath))) {
+                show = false;
+            }
+        }
         setVisible(show);
         if (show && (entry != null) && !entry.isEditable()) {
             setActive(false);
