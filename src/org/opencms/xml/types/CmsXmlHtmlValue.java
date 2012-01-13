@@ -307,6 +307,15 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
     private String createStringValue(CmsObject cms, I_CmsXmlDocument document) {
 
         Element data = m_element.element(CmsXmlPage.NODE_CONTENT);
+        if (data == null) {
+            String content = m_element.getText();
+            m_element.clearContent();
+            int index = m_element.getParent().elements(m_element.getQName()).indexOf(m_element);
+            m_element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getName() + index);
+            m_element.addElement(CmsXmlPage.NODE_LINKS);
+            m_element.addElement(CmsXmlPage.NODE_CONTENT).addCDATA(content);
+            data = m_element.element(CmsXmlPage.NODE_CONTENT);
+        }
         Attribute enabled = m_element.attribute(CmsXmlPage.ATTRIBUTE_ENABLED);
 
         String content = "";
