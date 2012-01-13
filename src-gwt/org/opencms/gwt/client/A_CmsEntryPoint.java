@@ -125,8 +125,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         Map<String, String> configProperties = CmsCollectionUtil.parseProperties(config);
         String clientBuildId = configProperties.get(CmsCoreData.KEY_GWT_BUILDID);
         if ((serverBuildId != null) && (clientBuildId != null)) {
-            int compareResult = clientBuildId.compareTo(serverBuildId);
-            if (compareResult == -1) {
+            if (!clientBuildId.equals(serverBuildId)) {
                 String title = Messages.get().key(Messages.GUI_BUILD_ID_MESSAGE_TITLE_0);
                 String content = Messages.get().key(Messages.GUI_BUILD_ID_MESSAGE_CONTENT_0);
                 CmsAlertDialog alert = new CmsAlertDialog(title, content);
