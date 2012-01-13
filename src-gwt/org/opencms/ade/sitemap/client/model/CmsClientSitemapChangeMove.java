@@ -155,17 +155,18 @@ public class CmsClientSitemapChangeMove implements I_CmsClientSitemapChange {
 
         CmsSitemapTreeItem sourceParent = view.getTreeItem(CmsResource.getParentFolder(getSourcePath()));
         sourceParent.getTree().setAnimationEnabled(false);
-        CmsSitemapTreeItem moved = (CmsSitemapTreeItem)sourceParent.removeChild(getSourcePosition());
+        CmsSitemapTreeItem moveEntry = view.getTreeItem(getSourcePath());
+        sourceParent.removeChild(moveEntry);
         CmsSitemapTreeItem destParent = view.getTreeItem(CmsResource.getParentFolder(getDestinationPath()));
         if (getDestinationPosition() < destParent.getChildCount()) {
-            destParent.insertChild(moved, getDestinationPosition());
+            destParent.insertChild(moveEntry, getDestinationPosition());
         } else {
-            destParent.addChild(moved);
+            destParent.addChild(moveEntry);
         }
-        moved.updateEntry(m_entry);
-        moved.updateSitePath(getDestinationPath());
+        moveEntry.updateEntry(m_entry);
+        moveEntry.updateSitePath(getDestinationPath());
         if (m_ensureVisible) {
-            view.ensureVisible(moved);
+            view.ensureVisible(moveEntry);
         }
         sourceParent.getTree().setAnimationEnabled(true);
     }
