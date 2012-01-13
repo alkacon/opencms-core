@@ -53,6 +53,7 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
+        checkBuildId("org.opencms.ade.publish");
         CmsPublishData initData = null;
 
         try {

@@ -55,6 +55,12 @@ public final class Messages {
     public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUILD_ID_MESSAGE_CONTENT_0 = "GUI_BUILD_ID_MESSAGE_CONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUILD_ID_MESSAGE_TITLE_0 = "GUI_BUILD_ID_MESSAGE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
 
     /** Message constant for key in the resource bundle. */

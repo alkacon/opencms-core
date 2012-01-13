@@ -36,6 +36,7 @@
       <resource uri="/system/workplace/resources/filetypes/htmlredirect_big.png"/>
     </resources>
     <resourcetypes/>
+    <parameters/>
     <explorertypes/>
   </module>
   <files>

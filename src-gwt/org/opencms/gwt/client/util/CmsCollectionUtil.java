@@ -77,6 +77,32 @@ public final class CmsCollectionUtil {
     }
 
     /**
+     * Parses properties from a string and returns them in a map.<p>
+     * 
+     * @param text the text containing the properties 
+     * @return the map with the parsed properties 
+     */
+    public static Map<String, String> parseProperties(String text) {
+
+        String[] lines = text.split("\n");
+        Map<String, String> result = new HashMap<String, String>();
+        for (String line : lines) {
+            line = line.replaceFirst("^ +", "");
+            line = line.replaceAll("\r", "");
+            if (line.startsWith("#")) {
+                continue;
+            }
+            int eqPos = line.indexOf('=');
+            if (eqPos > 0) {
+                String key = line.substring(0, eqPos);
+                String value = line.substring(eqPos + 1);
+                result.put(key, value);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns a new map with all entries of the input map except those which have a value of null.<p>
      * 
      * @param <A> the key type of the map
@@ -119,5 +145,4 @@ public final class CmsCollectionUtil {
             }
         }
     }
-
 }
