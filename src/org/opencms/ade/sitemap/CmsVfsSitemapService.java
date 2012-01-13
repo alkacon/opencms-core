@@ -409,13 +409,40 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             detailPages = new CmsDetailPageTable(configData.getAllDetailPages());
             if (!isOnlineProject) {
+                newResourceInfos = getNewResourceInfos(cms, configData, locale);
+                CmsResource modelResource = null;
                 if (configData.getDefaultModelPage() != null) {
-                    resourceTypeInfos = getResourceTypeInfos(getCmsObject(), configData, locale);
-                    defaultNewInfo = createNewResourceInfo(cms, configData.getDefaultModelPage().getResource(), locale);
-
+                    if (cms.existsResource(configData.getDefaultModelPage().getResource().getStructureId())) {
+                        modelResource = configData.getDefaultModelPage().getResource();
+                    } else {
+                        try {
+                            modelResource = cms.readResource(cms.getSitePath(configData.getDefaultModelPage().getResource()));
+                        } catch (CmsException e) {
+                            LOG.warn(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+                if ((modelResource == null) && !newResourceInfos.isEmpty()) {
+                    try {
+                        modelResource = cms.readResource(newResourceInfos.get(0).getCopyResourceId());
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
+                }
+                if (modelResource != null) {
+                    resourceTypeInfos = getResourceTypeInfos(
+                        getCmsObject(),
+                        configData.getResourceTypes(),
+                        configData.getFunctionReferences(),
+                        modelResource,
+                        locale);
+                    try {
+                        defaultNewInfo = createNewResourceInfo(cms, modelResource, locale);
+                    } catch (CmsException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 }
                 canEditDetailPages = !(configData.isModuleConfiguration());
-                newResourceInfos = getNewResourceInfos(cms, configData, locale);
             }
             if (isOnlineProject) {
                 noEdit = Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_SITEMAP_NO_EDIT_ONLINE_0);
@@ -933,6 +960,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private CmsNewResourceInfo createNewResourceInfo(CmsObject cms, CmsResource modelResource, Locale locale)
     throws CmsException {
 
+        // if model page got overwritten by another resource, reread from site path
+        if (!cms.existsResource(modelResource.getStructureId())) {
+            modelResource = cms.readResource(cms.getSitePath(modelResource));
+        }
         int typeId = modelResource.getTypeId();
         String name = OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
         String title = cms.readPropertyObject(modelResource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
@@ -1358,12 +1389,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * 
      * @throws CmsException if something goes wrong 
      */
-    private List<CmsNewResourceInfo> getNewResourceInfos(CmsObject cms, CmsADEConfigData configData, Locale locale)
-    throws CmsException {
+    private List<CmsNewResourceInfo> getNewResourceInfos(CmsObject cms, CmsADEConfigData configData, Locale locale) {
 
         List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
         for (CmsModelPageConfig modelConfig : configData.getModelPages()) {
-            result.add(createNewResourceInfo(cms, modelConfig.getResource(), locale));
+            try {
+                result.add(createNewResourceInfo(cms, modelConfig.getResource(), locale));
+            } catch (CmsException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
         }
         Collections.sort(result, new Comparator<CmsNewResourceInfo>() {
 
@@ -1398,29 +1432,34 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * Gets the resource type info beans for types for which new detail pages can be created.<p>
      * 
      * @param cms the current CMS context
-     * @param configData the configuration data from which the resource type infos should be read
+     * @param resourceTypeConfigs the resource type configurations
+     * @param functionReferences the function references
+     * @param modelResource the model resource
      * @param locale the locale used for retrieving descriptions/titles  
      * 
      * @return the resource type info beans for types for which new detail pages can be created 
      */
-    private List<CmsNewResourceInfo> getResourceTypeInfos(CmsObject cms, CmsADEConfigData configData, Locale locale) {
+    private List<CmsNewResourceInfo> getResourceTypeInfos(
+        CmsObject cms,
+        List<CmsResourceTypeConfig> resourceTypeConfigs,
+        List<CmsFunctionReference> functionReferences,
+        CmsResource modelResource,
+        Locale locale) {
 
         List<CmsNewResourceInfo> result = new ArrayList<CmsNewResourceInfo>();
-        for (CmsResourceTypeConfig typeConfig : configData.getResourceTypes()) {
+        for (CmsResourceTypeConfig typeConfig : resourceTypeConfigs) {
             if (typeConfig.isDetailPagesDisabled()) {
                 continue;
             }
             String typeName = typeConfig.getTypeName();
             try {
                 I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(typeName);
-                result.add(createResourceTypeInfo(resourceType, configData.getDefaultModelPage().getResource()));
+                result.add(createResourceTypeInfo(resourceType, modelResource));
             } catch (CmsLoaderException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        List<CmsFunctionReference> functionRefs = configData.getFunctionReferences();
-
-        for (CmsFunctionReference functionRef : functionRefs) {
+        for (CmsFunctionReference functionRef : functionReferences) {
             try {
                 CmsResource functionRes = cms.readResource(functionRef.getStructureId());
                 String description = cms.readPropertyObject(
@@ -1439,11 +1478,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 }
 
                 CmsNewResourceInfo info = new CmsNewResourceInfo(
-                    configData.getDefaultModelPage().getResource().getTypeId(),
+                    modelResource.getTypeId(),
                     CmsDetailPageInfo.FUNCTION_PREFIX + functionRef.getName(),
                     functionRef.getName(),
                     description,
-                    configData.getDefaultModelPage().getResource().getStructureId(),
+                    modelResource.getStructureId(),
                     false,
                     subtitle);
                 info.setAdditionalData(functionRef.getStructureId().toString());

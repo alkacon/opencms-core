@@ -64,14 +64,38 @@ public class CmsConfigurationReader {
     /** The default locale for configuration objects. */
     public static final Locale DEFAULT_LOCALE = new Locale("en");
 
-    /** The Name node name. */
+    /** The folder name node name. */
     public static final String N_FOLDER_NAME = "Name";
 
-    /** The Path node name. */
+    /** The folder path node name. */
     public static final String N_FOLDER_PATH = "Path";
 
-    /** The Type node name. */
-    public static final String N_RESOURCE_TYPE = "Type";
+    /** The resource type node name. */
+    public static final String N_RESOURCE_TYPE = "ResourceType";
+
+    /** The model page node name. */
+    public static final String N_MODEL_PAGE = "ModelPage";
+
+    /** The property node name. */
+    public static final String N_PROPERTY = "Property";
+
+    /** The detail page node name. */
+    public static final String N_DETAIL_PAGE = "DetailPage";
+
+    /** The function reference node name. */
+    public static final String N_FUNCTION_REF = "FunctionRef";
+
+    /** The discard types node name. */
+    public static final String N_DISCARD_TYPES = "DiscardTypes";
+
+    /** The discard properties node name. */
+    public static final String N_DISCARD_PROPERTIES = "DiscardProperties";
+
+    /** The discard model pages node name. */
+    public static final String N_DISCARD_MODEL_PAGES = "DiscardModelPages";
+
+    /** The create content locally node name. */
+    public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationReader.class);
@@ -135,32 +159,40 @@ public class CmsConfigurationReader {
             return CmsADEConfigData.emptyConfiguration(basePath);
         }
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, DEFAULT_LOCALE);
-        for (I_CmsXmlContentValueLocation node : root.getSubValues("ResourceType")) {
-            parseResourceTypeConfig(basePath, node);
+        for (I_CmsXmlContentValueLocation node : root.getSubValues(N_RESOURCE_TYPE)) {
+            try {
+                parseResourceTypeConfig(basePath, node);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
-        for (I_CmsXmlContentValueLocation node : root.getSubValues("ModelPage")) {
+        for (I_CmsXmlContentValueLocation node : root.getSubValues(N_MODEL_PAGE)) {
             try {
                 parseModelPage(node);
             } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+                LOG.warn(e.getLocalizedMessage(), e);
             }
         }
-        for (I_CmsXmlContentLocation node : root.getSubValues("Property")) {
+        for (I_CmsXmlContentLocation node : root.getSubValues(N_PROPERTY)) {
             parseProperty(node);
         }
-        for (I_CmsXmlContentLocation node : root.getSubValues("DetailPage")) {
-            parseDetailPage(node);
+        for (I_CmsXmlContentLocation node : root.getSubValues(N_DETAIL_PAGE)) {
+            try {
+                parseDetailPage(node);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
 
-        for (I_CmsXmlContentLocation node : root.getSubValues("FunctionRef")) {
+        for (I_CmsXmlContentLocation node : root.getSubValues(N_FUNCTION_REF)) {
             parseFunctionReference(node);
         }
 
-        boolean discardInheritedTypes = getBoolean(root, "DiscardTypes");
-        boolean discardInheritedProperties = getBoolean(root, "DiscardProperties");
-        boolean discardInheritedModelPages = getBoolean(root, "DiscardModelPages");
+        boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
+        boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
+        boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
 
-        boolean createContentsLocally = getBoolean(root, "CreateContentsLocally");
+        boolean createContentsLocally = getBoolean(root, N_CREATE_CONTENTS_LOCALLY);
 
         CmsADEConfigData result = new CmsADEConfigData(
             basePath,
