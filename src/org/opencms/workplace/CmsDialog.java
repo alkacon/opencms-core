@@ -228,6 +228,7 @@ public class CmsDialog extends CmsToolDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDialog.class);
 
+    /** The dialog action. */
     private int m_action;
 
     /** 
@@ -238,16 +239,37 @@ public class CmsDialog extends CmsToolDialog {
      */
     private String m_onlineHelpUriCustom;
 
+    /** The dialog action parameter. */
     private String m_paramAction;
+
+    /** The close link parameter. */
     private String m_paramCloseLink;
+
+    /** The dialog type. */
     private String m_paramDialogtype;
+
+    /** The frame name parameter. */
     private String m_paramFrameName;
+
+    /** The is popup parameter. */
     private String m_paramIsPopup;
+
+    /** The messages parameter. */
     private String m_paramMessage;
+
+    /** The original parameters. */
     private String m_paramOriginalParams;
+
+    /** The pre action done parameter. */
     private String m_paramPreActionDone;
+
+    /** The redirect parameter. */
     private String m_paramRedirect;
+
+    /** The resource parameter. */
     private String m_paramResource;
+
+    /** The title parameter. */
     private String m_paramTitle;
 
     /**
@@ -351,6 +373,8 @@ public class CmsDialog extends CmsToolDialog {
             // no workplace frame mode (currently used for galleries)
             // frame name parameter found, get URI
             String frameUri = getSettings().getFrameUris().get(getParamFramename());
+            // resetting the action parameter
+            params.put(PARAM_ACTION, "");
             if (frameUri != null) {
                 // URI found, include it
                 if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
@@ -1712,10 +1736,13 @@ public class CmsDialog extends CmsToolDialog {
      */
     protected boolean checkResourcePermissions(CmsPermissionSet required, boolean neededForFolder) {
 
-        return checkResourcePermissions(required, neededForFolder, Messages.get().container(
-            Messages.GUI_ERR_RESOURCE_PERMISSIONS_2,
-            getParamResource(),
-            required.getPermissionString()));
+        return checkResourcePermissions(
+            required,
+            neededForFolder,
+            Messages.get().container(
+                Messages.GUI_ERR_RESOURCE_PERMISSIONS_2,
+                getParamResource(),
+                required.getPermissionString()));
     }
 
     /**
