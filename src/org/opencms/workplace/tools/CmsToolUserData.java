@@ -39,10 +39,10 @@ import java.util.Map;
 public class CmsToolUserData {
 
     /** base tool for the user, root-based. */
-    private Map m_baseTools;
+    private Map<String, String> m_baseTools;
 
     /** Current used tool paths, root-based. */
-    private Map m_currentToolPaths;
+    private Map<String, String> m_currentToolPaths;
 
     /** root key for the user. */
     private String m_rootKey;
@@ -52,8 +52,8 @@ public class CmsToolUserData {
      */
     public CmsToolUserData() {
 
-        m_baseTools = new HashMap();
-        m_currentToolPaths = new HashMap();
+        m_baseTools = new HashMap<String, String>();
+        m_currentToolPaths = new HashMap<String, String>();
     }
 
     /**
@@ -65,7 +65,7 @@ public class CmsToolUserData {
      */
     public String getBaseTool(String rootKey) {
 
-        return (String)m_baseTools.get(rootKey);
+        return m_baseTools.get(rootKey);
     }
 
     /**
@@ -77,7 +77,7 @@ public class CmsToolUserData {
      */
     public String getCurrentToolPath(String rootKey) {
 
-        return (String)m_currentToolPaths.get(rootKey);
+        return m_currentToolPaths.get(rootKey);
     }
 
     /**

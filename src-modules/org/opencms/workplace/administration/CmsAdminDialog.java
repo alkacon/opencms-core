@@ -75,7 +75,7 @@ public class CmsAdminDialog extends CmsDialog {
      */
     public void displayDialog() throws Exception {
 
-        Map params = initAdminTool();
+        Map<String, String[]> params = initAdminTool();
 
         // explorer view dialogs
         if (CmsExplorerDialog.EXPLORER_TOOLS.contains(getCurrentToolPath())) {

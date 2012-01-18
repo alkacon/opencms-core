@@ -48,6 +48,8 @@ public class CmsIdentifiableObjectContainer<T> {
     /**
      * Internal class just for taking care of the positions in the container.<p>
      * 
+     * @param <T> the object type
+     * 
      * @since 6.0.0
      */
     private static class CmsIdObjectElement<T> {
@@ -99,12 +101,14 @@ public class CmsIdentifiableObjectContainer<T> {
     /** List of objects. */
     private final List<T> m_objectList = new ArrayList<T>();
 
-    private final List<CmsIdObjectElement<T>> m_orderedObjectList = new ArrayList<CmsIdObjectElement<T>>();
-
     /** Map of objects only used if uniqueIds flag set. */
     private final Map<String, T> m_objectsById = new HashMap<String, T>();
 
+    /** Map of object lists by id. */
     private final Map<String, List<T>> m_objectsListsById = new HashMap<String, List<T>>();
+
+    /** List of ordered objects. */
+    private final List<CmsIdObjectElement<T>> m_orderedObjectList = new ArrayList<CmsIdObjectElement<T>>();
 
     /** Flag for managing absolute and relative ordering. */
     private final boolean m_relativeOrdered;

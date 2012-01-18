@@ -327,9 +327,9 @@ public class CmsToolDialog extends CmsWorkplace {
      * 
      * @throws CmsRoleViolationException in case the dialog is opened by a user without the necessary privileges
      */
-    public Map initAdminTool() throws CmsRoleViolationException {
+    public Map<String, String[]> initAdminTool() throws CmsRoleViolationException {
 
-        Map params = new HashMap(getParameterMap());
+        Map<String, String[]> params = new HashMap<String, String[]>(getParameterMap());
         // initialize
         getToolManager().initParams(this);
 
@@ -345,7 +345,7 @@ public class CmsToolDialog extends CmsWorkplace {
             // set close link
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(wp.getParamCloseLink())) {
                 if (!getToolManager().getBaseToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
-                    Map args = getToolManager().resolveAdminTool(getParamRoot(), getParentPath()).getHandler().getParameters(
+                    Map<String, String[]> args = getToolManager().resolveAdminTool(getParamRoot(), getParentPath()).getHandler().getParameters(
                         wp);
                     wp.setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getParentPath(), args));
                     params.put(CmsDialog.PARAM_CLOSELINK, new String[] {wp.getParamCloseLink()});
@@ -365,17 +365,18 @@ public class CmsToolDialog extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#pageBody(int, java.lang.String, java.lang.String)
      */
+    @Override
     public String pageBody(int segment, String className, String parameters) {
 
         if (!useNewStyle()) {
             return super.pageBody(segment, className, parameters);
         } else {
-            Map data = CmsStringUtil.extendAttribute(parameters, "onLoad", "bodyLoad();");
-            String onLoad = (String)data.get("value");
-            String myPars = (String)data.get("text");
+            Map<String, String> data = CmsStringUtil.extendAttribute(parameters, "onLoad", "bodyLoad();");
+            String onLoad = data.get("value");
+            String myPars = data.get("text");
             data = CmsStringUtil.extendAttribute(myPars, "onUnload", "bodyUnload();");
-            String onUnload = (String)data.get("value");
-            myPars = (String)data.get("text");
+            String onUnload = data.get("value");
+            myPars = data.get("text");
             if (segment == HTML_START) {
                 StringBuffer html = new StringBuffer(512);
                 html.append("</head>\n");
@@ -413,6 +414,7 @@ public class CmsToolDialog extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#pageHtmlStyle(int, java.lang.String, java.lang.String)
      */
+    @Override
     public String pageHtmlStyle(int segment, String title, String stylesheet) {
 
         if (!useNewStyle() || (segment != HTML_START)) {
@@ -528,6 +530,7 @@ public class CmsToolDialog extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);

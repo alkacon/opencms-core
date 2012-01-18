@@ -91,7 +91,7 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
         KEY_ROLENAME};
 
     /** The admin commands wrapped in a List. */
-    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
+    public static final List<String> VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
 
     /** The workplace class for falling back, and use the cms context. */
     private CmsWorkplace m_wp;
@@ -138,9 +138,9 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
         macro = macro.substring(CmsToolMacroResolver.PREFIX_ADMIN.length());
         String id = null;
         // validate macro command
-        Iterator it = VALUE_NAMES.iterator();
+        Iterator<String> it = VALUE_NAMES.iterator();
         while (it.hasNext()) {
-            String cmd = it.next().toString();
+            String cmd = it.next();
             if (macro.startsWith(cmd)) {
                 id = macro.substring(cmd.length());
                 macro = cmd;

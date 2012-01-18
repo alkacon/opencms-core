@@ -90,7 +90,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      * A list of string pairs used to translate legacy system ids to a new form. The first component of each pair
      * is the prefix which should be replaced by the second component of that pair. 
      */
-    private static final String[][] m_legacyTranslations = {
+    private static final String[][] LEGACY_TRANSLATIONS = {
         {"opencms://system/modules/org.opencms.ade.config/schemas/", "internal://org/opencms/xml/adeconfig/"},
         {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"}};
 
@@ -247,7 +247,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private static String translateLegacySystemId(String systemId) {
 
         String result = systemId;
-        for (String[] translation : m_legacyTranslations) {
+        for (String[] translation : LEGACY_TRANSLATIONS) {
             if (systemId.startsWith(translation[0])) {
                 // replace prefix with second component if it matches the first component
                 result = translation[1] + systemId.substring(translation[0].length());

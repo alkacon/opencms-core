@@ -90,6 +90,7 @@ public class CmsToolRootHandler extends A_CmsToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#setup(org.opencms.file.CmsObject, org.opencms.workplace.tools.CmsToolRootHandler, java.lang.String)
      */
+    @Override
     public boolean setup(CmsObject cms, CmsToolRootHandler root, String resourcePath) {
 
         setDisabledHelpText(getHelpText());
