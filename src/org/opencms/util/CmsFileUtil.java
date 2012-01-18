@@ -94,12 +94,12 @@ public final class CmsFileUtil {
      * 
      * @throws CmsIllegalArgumentException in case not all resources exist or can be read with the given OpenCms user context
      */
-    public static void checkResources(CmsObject cms, List resources) throws CmsIllegalArgumentException {
+    public static void checkResources(CmsObject cms, List<String> resources) throws CmsIllegalArgumentException {
 
         StringBuffer result = new StringBuffer(128);
-        ListIterator it = resources.listIterator();
+        ListIterator<String> it = resources.listIterator();
         while (it.hasNext()) {
-            String resourcePath = (String)it.next();
+            String resourcePath = it.next();
             try {
                 CmsResource resource = cms.readResource(resourcePath);
                 // append folder separator, if resource is a folder and does not and with a slash
@@ -186,15 +186,15 @@ public final class CmsFileUtil {
      * 
      * @return a comma separated list of resource paths names
      */
-    public static String formatResourceNames(CmsRequestContext context, List resources) {
+    public static String formatResourceNames(CmsRequestContext context, List<CmsResource> resources) {
 
         if (resources == null) {
             return null;
         }
         StringBuffer result = new StringBuffer(128);
-        Iterator i = resources.iterator();
+        Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             String path = res.getRootPath();
             if (context != null) {
                 path = context.removeSiteRoot(path);
@@ -403,7 +403,7 @@ public final class CmsFileUtil {
             // ensure all File separators are '/'
             path = path.replace('\\', '/');
             if (drive != null) {
-                drive.replace('\\', '/');
+                drive = drive.replace('\\', '/');
             }
             if (path.charAt(0) == '/') {
                 // trick to resolve all ../ inside a path
