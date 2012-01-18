@@ -1211,9 +1211,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
                 String detailPage = finder.getDetailPage(cms, vfsRes.getRootPath(), cms.getRequestContext().getUri());
                 if (detailPage != null) {
-                    vfsName = CmsStringUtil.joinPaths(detailPage, CmsDetailPageUtil.getBestUrlName(
-                        cms,
-                        vfsRes.getStructureId()), "/");
+                    vfsName = CmsStringUtil.joinPaths(
+                        detailPage,
+                        CmsDetailPageUtil.getBestUrlName(cms, vfsRes.getStructureId()),
+                        "/");
                 }
             } catch (CmsVfsResourceNotFoundException e) {
                 // ignore
@@ -1701,8 +1702,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public boolean isExportLink(CmsObject cms, String vfsName) {
 
         LOG.info("isExportLink? " + vfsName);
-
-        String cacheKey = getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        // vfsname may still be a root path for a site with a different site root 
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(vfsName);
+        if (site != null) {
+            siteRoot = site.getSiteRoot();
+            vfsName = CmsStringUtil.joinPaths("/", vfsName.substring(siteRoot.length()));
+        }
+        String cacheKey = getCacheKey(siteRoot, vfsName);
         Boolean exportResource = getCacheExportLinks().get(cacheKey);
         if (exportResource != null) {
             return exportResource.booleanValue();
@@ -1713,7 +1720,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // static export must always be checked with the export users permissions,
             // not the current users permissions
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            exportCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
+            exportCms.getRequestContext().setSiteRoot(siteRoot);
             // let's look up export property in VFS
             CmsResource exportRes = CmsDetailPageUtil.lookupPage(exportCms, vfsName);
             String exportValue = exportCms.readPropertyObject(
@@ -2588,11 +2595,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
                 count++;
                 if (report != null) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                        new Integer(count),
-                        size,
-                        exportFolderName), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                            new Integer(count),
+                            size,
+                            exportFolderName),
+                        I_CmsReport.FORMAT_NOTE);
                 } else {
                     // write log message
                     if (LOG.isInfoEnabled()) {
@@ -2618,11 +2627,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     }
                     count++;
                     if (report != null) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                            new Integer(count),
-                            size,
-                            exportFolderName), I_CmsReport.FORMAT_NOTE);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_DELETE_EXPORT_FOLDER_3,
+                                new Integer(count),
+                                size,
+                                exportFolderName),
+                            I_CmsReport.FORMAT_NOTE);
                     } else {
                         // write log message
                         if (LOG.isInfoEnabled()) {
