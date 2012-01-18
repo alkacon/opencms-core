@@ -1691,8 +1691,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public boolean isExportLink(CmsObject cms, String vfsName) {
 
         LOG.info("isExportLink? " + vfsName);
-
-        String cacheKey = getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        // vfsname may still be a root path for a site with a different site root 
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(vfsName);
+        if (site != null) {
+            siteRoot = site.getSiteRoot();
+            vfsName = CmsStringUtil.joinPaths("/", vfsName.substring(siteRoot.length()));
+        }
+        String cacheKey = getCacheKey(siteRoot, vfsName);
         Boolean exportResource = getCacheExportLinks().get(cacheKey);
         if (exportResource != null) {
             return exportResource.booleanValue();
@@ -1703,7 +1709,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // static export must always be checked with the export users permissions,
             // not the current users permissions
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            exportCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
+            exportCms.getRequestContext().setSiteRoot(siteRoot);
             // let's look up export property in VFS
             CmsResource exportRes = CmsDetailPageUtil.lookupPage(exportCms, vfsName);
             String exportValue = exportCms.readPropertyObject(
