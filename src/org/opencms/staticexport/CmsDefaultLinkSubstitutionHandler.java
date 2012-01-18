@@ -369,8 +369,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return null;
         }
 
-        // concatenate fragment and query 
-        suffix = fragment.concat(query);
+        // concatenate query and fragment 
+        suffix = query.concat(fragment);
 
         // opaque URI
         if (uri.isOpaque()) {
