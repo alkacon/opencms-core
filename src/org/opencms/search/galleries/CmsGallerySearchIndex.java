@@ -27,6 +27,7 @@
 
 package org.opencms.search.galleries;
 
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -81,6 +82,12 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /** The gallery document type name for xml-pages. */
     public static final String TYPE_XMLPAGE_GALLERIES = "xmlpage-galleries";
+
+    /** The system modules folder path. */
+    public static final String FOLDER_SYTEM_MODULES = "/system/modules/";
+
+    /** The system galleries path. */
+    public static final String FOLDER_SYSTEM_GALLERIES = "/system/galleries/";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchIndex.class);
@@ -225,7 +232,6 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             }
             filter = appendPathFilter(searchCms, filter, folders);
 
-            String shared = OpenCms.getSiteManager().getSharedFolder();
             String subsite = null;
             if (params.getReferencePath() != null) {
                 subsite = OpenCms.getADEManager().getSubSiteRoot(
@@ -235,7 +241,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                     subsite = cms.getRequestContext().removeSiteRoot(subsite);
                 }
             }
-            List<String> scopeFolders = params.getScope().getSearchRoots("/", subsite, shared);
+            List<String> scopeFolders = getSearchRootsForScope(params.getScope(), subsite);
             filter = appendPathFilter(searchCms, filter, scopeFolders);
 
             // append category filter
@@ -435,7 +441,12 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         if ((roots != null) && (roots.size() > 0)) {
             // add the all configured search roots with will request context
             for (int i = 0; i < roots.size(); i++) {
-                String searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
+                String searchRoot = roots.get(i);
+                if (!searchRoot.startsWith(FOLDER_SYTEM_MODULES)
+                    && !searchRoot.startsWith(FOLDER_SYSTEM_GALLERIES)
+                    && !searchRoot.startsWith(OpenCms.getSiteManager().getSharedFolder())) {
+                    searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
+                }
                 extendPathFilter(pathFilter, searchRoot);
             }
         } else {
@@ -443,7 +454,8 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             extendPathFilter(pathFilter, cms.getRequestContext().getSiteRoot());
             // also add the shared folder (v 8.0)
             extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
-            extendPathFilter(pathFilter, "/system/modules/");
+            extendPathFilter(pathFilter, FOLDER_SYTEM_MODULES);
+            extendPathFilter(pathFilter, FOLDER_SYSTEM_GALLERIES);
         }
 
         // add the calculated path filter for the root path
@@ -534,6 +546,33 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                     result.add(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, l));
                 }
             }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the search roots to use for the given site/subsite parameters.<p>
+     *  
+     * @param scope the search scope
+     * @param subSiteParam the current subsite
+     *  
+     * @return the list of search roots for that option 
+     */
+    public List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String subSiteParam) {
+
+        List<String> result = new ArrayList<String>();
+        if (scope.isIncludeSite()) {
+            result.add("/");
+        }
+        if (scope.isIncludeSubSite() && (subSiteParam != null)) {
+            result.add(subSiteParam);
+        }
+        if (scope.isIncludeShared()) {
+            result.add(OpenCms.getSiteManager().getSharedFolder());
+        }
+        if (scope == CmsGallerySearchScope.siteShared) {
+            result.add(FOLDER_SYTEM_MODULES);
+            result.add(FOLDER_SYSTEM_GALLERIES);
         }
         return result;
     }

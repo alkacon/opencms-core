@@ -273,6 +273,7 @@
 				<resources>
 					<resource>/sites/</resource>
 					<resource>/shared/</resource>
+					<resource>/system/galleries/</resource>
 				</resources>
 				<documenttypes-indexed>
 	                <name>xmlpage-galleries</name>
