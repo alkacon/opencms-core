@@ -27,8 +27,6 @@
 
 package org.opencms.ade.galleries.shared;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An enum that represents the possible search scope choices in the ADE gallery search tab.<p>
@@ -99,28 +97,32 @@ public enum CmsGallerySearchScope {
     }
 
     /**
-     * Gets the search roots to use for the given site/subsite parameters.<p>
-     *  
-     * @param siteParam the current site 
-     * @param subSiteParam the current subsite 
-     * @param sharedParam the shared folder path 
-     * @return the list of search roots for that option 
+     * Returns if this search scope includes the shared folder.<p>
+     * 
+     * @return <code>true</code> if this search scope includes the shared folder
      */
-    public List<String> getSearchRoots(String siteParam, String subSiteParam, String sharedParam) {
+    public boolean isIncludeShared() {
 
-        List<String> result = new ArrayList<String>();
-        if (m_site && (siteParam != null)) {
-            result.add(siteParam);
-        }
-        if (m_subSite && (subSiteParam != null)) {
-            result.add(subSiteParam);
-        }
-        if (m_shared && (sharedParam != null)) {
-            result.add(sharedParam);
-        }
-        if (this == CmsGallerySearchScope.siteShared) {
-            result.add("/system/modules/");
-        }
-        return result;
+        return m_shared;
+    }
+
+    /**
+     * Returns if this search scope includes the site folder.<p>
+     * 
+     * @return <code>true</code> if this search scope includes the site folder
+     */
+    public boolean isIncludeSite() {
+
+        return m_site;
+    }
+
+    /**
+     * Returns if this search scope includes the sub site folder.<p>
+     * 
+     * @return <code>true</code> if this search scope includes the sub site folder
+     */
+    public boolean isIncludeSubSite() {
+
+        return m_subSite;
     }
 }

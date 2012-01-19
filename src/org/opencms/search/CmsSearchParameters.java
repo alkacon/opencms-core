@@ -1260,14 +1260,22 @@ public class CmsSearchParameters {
         return result.toString();
     }
 
-    private String toSeparatedString(List<String> stringList, char c) {
+    /**
+     * Concatenates the elements of the string list separated by the given separator character.<p>
+     * 
+     * @param stringList the list
+     * @param separator the separator
+     * 
+     * @return the concatenated string
+     */
+    private String toSeparatedString(List<String> stringList, char separator) {
 
         StringBuffer result = new StringBuffer();
         Iterator<String> it = stringList.iterator();
         while (it.hasNext()) {
             result.append(it.next());
             if (it.hasNext()) {
-                result.append(c);
+                result.append(separator);
             }
         }
         return result.toString();
