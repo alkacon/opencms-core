@@ -66,7 +66,7 @@ default:
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %><input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
-<%= wp.dialogTabContentStart(wp.getParamTitle(), "style=\"height: 260px;\" id=\"tabcontent\"") %>
+<%= wp.dialogTabContentStart(wp.getParamTitle(), "id=\"tabcontent\"") %>
 
 <%
 switch (wp.getActiveTab()) {
