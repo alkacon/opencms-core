@@ -49,15 +49,32 @@ import java.util.Map;
  */
 public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
-    private String m_fileName;
-    private Boolean m_hasNav;
-    private int m_navTreeLevel = Integer.MIN_VALUE;
-    private float m_position;
-    private Map<String, String> m_properties;
-    private CmsResource m_resource;
-    private String m_sitePath;
-    private String m_text;
+    /** The navigation position has changed flag. */
     private boolean m_changedNavPos;
+
+    /** The file name. */
+    private String m_fileName;
+
+    /** The has navigation flag. */
+    private Boolean m_hasNav;
+
+    /** The navigation tree level. */
+    private int m_navTreeLevel = Integer.MIN_VALUE;
+
+    /** The navigation position. */
+    private float m_position;
+
+    /** The properties. */
+    private Map<String, String> m_properties;
+
+    /** The resource. */
+    private CmsResource m_resource;
+
+    /** The site path. */
+    private String m_sitePath;
+
+    /** The navigation text. */
+    private String m_text;
 
     /**
      * Empty constructor required for every JavaBean, does nothing.<p>

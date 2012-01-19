@@ -52,33 +52,83 @@ import java.util.Map;
  */
 public class CmsWorkplaceSettings {
 
+    /** The resource collector. */
     private I_CmsResourceCollector m_collector;
-    private String m_currentSite;
-    private Object m_dialogObject;
-    private CmsMessageContainer m_errorMessage;
-    private String m_explorerFlaturl;
-    private String m_explorerMode;
-    private int m_explorerPage;
-    private String m_explorerProjectFilter;
-    private CmsUUID m_explorerProjectId;
-    private Map<String, String> m_explorerResource;
-    private Map<String, String> m_frameUris;
-    private String m_galleryType;
-    private Map<String, String> m_lastUsedGalleries;
-    private Object m_listObject;
-    private String m_permissionDetailView;
-    private CmsUUID m_project;
-    private CmsPublishList m_publishList;
-    private CmsToolUserData m_toolUserData;
-    private Map<String, String> m_treeSite;
-    private Map<String, String> m_treeType;
-    private CmsUser m_user;
-    private boolean m_userAgreementAccepted;
-    private CmsUserSettings m_userSettings;
-    private String m_viewStartup;
-    private String m_viewUri;
 
+    /** The current site. */
+    private String m_currentSite;
+
+    /** The diaolg object. */
+    private Object m_dialogObject;
+
+    /** The error messages. */
+    private CmsMessageContainer m_errorMessage;
+
+    /** The explorer URL. */
+    private String m_explorerFlaturl;
+
+    /** The explorer mode. */
+    private String m_explorerMode;
+
+    /** The explorer page. */
+    private int m_explorerPage;
+
+    /** The explorer project filter. */
+    private String m_explorerProjectFilter;
+
+    /** The explorer project id. */
+    private CmsUUID m_explorerProjectId;
+
+    /** The explorer resource. */
+    private Map<String, String> m_explorerResource;
+
+    /** The frame URIs. */
+    private Map<String, String> m_frameUris;
+
+    /** The gallery type. */
+    private String m_galleryType;
+
+    /** The last used galleries. */
+    private Map<String, String> m_lastUsedGalleries;
+
+    /** The list object. */
+    private Object m_listObject;
+
+    /** The permission detail view. */
+    private String m_permissionDetailView;
+
+    /** The project id. */
+    private CmsUUID m_project;
+
+    /** The publish list. */
+    private CmsPublishList m_publishList;
+
+    /** The gallery search scope. */
     private CmsGallerySearchScope m_scope;
+
+    /** The tool user data. */
+    private CmsToolUserData m_toolUserData;
+
+    /** The tree site. */
+    private Map<String, String> m_treeSite;
+
+    /** The tree type. */
+    private Map<String, String> m_treeType;
+
+    /** The user. */
+    private CmsUser m_user;
+
+    /** The user agreement accepted flag. */
+    private boolean m_userAgreementAccepted;
+
+    /** The user settings. */
+    private CmsUserSettings m_userSettings;
+
+    /** The startup view. */
+    private String m_viewStartup;
+
+    /** The view URI. */
+    private String m_viewUri;
 
     /**
      * Constructor, only package visible.<p>

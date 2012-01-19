@@ -41,7 +41,7 @@ import org.apache.tika.parser.microsoft.OfficeParser;
  * 
  * @since 8.0.1 
  */
-public class CmsExtractorMsOfficeOLE2 extends A_CmsTextExtractor {
+public final class CmsExtractorMsOfficeOLE2 extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
     private static final CmsExtractorMsOfficeOLE2 INSTANCE = new CmsExtractorMsOfficeOLE2();

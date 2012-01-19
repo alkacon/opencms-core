@@ -187,7 +187,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     // TODO: This is a hack, investigate this issue with different runtime environments
     private boolean m_errorPagesAreNotCommitted; // default false should work for Tomcat > 4.1
 
+    /** The offline JSPs. */
     private Map<String, Boolean> m_offlineJsps;
+
+    /** The online JSPs. */
     private Map<String, Boolean> m_onlineJsps;
 
     /** A map from taglib names to their URIs. */

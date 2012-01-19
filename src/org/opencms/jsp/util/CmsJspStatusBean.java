@@ -313,9 +313,8 @@ public class CmsJspStatusBean extends CmsJspActionElement {
      * 
      * @throws JspException in case there were problems including the target
      */
-    @SuppressWarnings("unchecked")
-    // because parameterMap is based on untyped servlet API 
-    public void includeTemplatePart(String target, String element, Map parameterMap) throws JspException {
+    public void includeTemplatePart(String target, String element, Map<String, Object> parameterMap)
+    throws JspException {
 
         // store current site root and URI
         String currentSiteRoot = getRequestContext().getSiteRoot();

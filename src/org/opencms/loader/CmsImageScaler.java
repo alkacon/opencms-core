@@ -665,15 +665,15 @@ public class CmsImageScaler {
                 int useScale = calculateClosest(scaleOfImage, scales);
                 int[] dimensions;
                 switch (useScale) {
-                    case 0:
-                    default:
-                        dimensions = calculateDimension(getWidth(), getHeight(), width, height);
-                        break;
                     case 1:
                         dimensions = calculateDimension(getWidth(), getHeight(), width, (int)maxHeight);
                         break;
                     case 2:
                         dimensions = calculateDimension(getWidth(), getHeight(), (int)maxWidth, height);
+                        break;
+                    case 0:
+                    default:
+                        dimensions = calculateDimension(getWidth(), getHeight(), width, height);
                         break;
                 }
                 width = dimensions[0];
@@ -1471,7 +1471,7 @@ public class CmsImageScaler {
      */
     private int[] calculateDimension(int sourceWidth, int sourceHeight, int boxWidth, int boxHeight) {
 
-        int result[] = new int[2];
+        int[] result = new int[2];
         if ((sourceWidth <= boxWidth) && (sourceHeight <= boxHeight)) {
             result[0] = sourceWidth;
             result[1] = sourceHeight;

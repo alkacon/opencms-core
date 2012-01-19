@@ -147,6 +147,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The edit action handler. */
     private I_CmsEditorActionHandler m_editorAction;
 
+    /** The editor CSS handlers. */
     private List<I_CmsEditorCssHandler> m_editorCssHandlers;
 
     /** The workplace editor display options. */
@@ -1138,10 +1139,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      *                       if this is omitted 
      * closelink (optional): a link which should be opened once the upload hook has finished whatever
      *                       it is doing
-     *                       
-     * If the parent frame of the frame in which the upload hook is opened contains a Javascript 
-     * function {@link org.opencms.ade.upload.client.ui.CmsUploadHookDialog#CLOSE_FUNCTION}, this function should be called (with no parameters)
-     * rather than opening the 'closelink' page. 
      * 
      * @param cms the current CMS context 
      * @param uploadFolder the folder for which the upload hook should be found

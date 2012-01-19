@@ -65,10 +65,14 @@ public class CmsDialogSelector {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDialogSelector.class);
+
+    /** The dialog handler. */
     private String m_handler;
 
-    // necessary member variables
+    /** The JSP context. */
     private CmsJspActionElement m_jsp;
+
+    /** The resource parameter. */
     private String m_paramResource;
 
     /**

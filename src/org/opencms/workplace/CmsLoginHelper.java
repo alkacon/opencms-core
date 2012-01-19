@@ -51,6 +51,7 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsLoginHelper extends CmsWorkplace {
 
+    /** The login exception. */
     private CmsException m_loginException;
 
     /**

@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -480,7 +481,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, boolean editable, Map<String, Object> parameterMap)
+    public void include(String target, String element, boolean editable, Map<String, ?> parameterMap)
     throws JspException {
 
         include(target, element, editable, true, parameterMap);
@@ -512,12 +513,8 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(
-        String target,
-        String element,
-        boolean editable,
-        boolean cacheable,
-        Map<String, Object> parameterMap) throws JspException {
+    public void include(String target, String element, boolean editable, boolean cacheable, Map<String, ?> parameterMap)
+    throws JspException {
 
         if (isNotInitialized()) {
             return;
@@ -527,9 +524,10 @@ public class CmsJspActionElement extends CmsJspBean {
             try {
                 modParameterMap = new HashMap<String, String[]>(parameterMap.size());
                 // ensure parameters are always of type String[] not just String
-                Iterator<Map.Entry<String, Object>> i = parameterMap.entrySet().iterator();
+                Iterator<?> i = parameterMap.entrySet().iterator();
                 while (i.hasNext()) {
-                    Map.Entry<String, Object> entry = i.next();
+                    @SuppressWarnings("unchecked")
+                    Map.Entry<String, ?> entry = (Entry<String, ?>)i.next();
                     String key = entry.getKey();
                     Object value = entry.getValue();
                     if (value instanceof String[]) {
@@ -571,7 +569,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, Map<String, Object> parameterMap) throws JspException {
+    public void include(String target, String element, Map<String, ?> parameterMap) throws JspException {
 
         include(target, element, false, parameterMap);
     }

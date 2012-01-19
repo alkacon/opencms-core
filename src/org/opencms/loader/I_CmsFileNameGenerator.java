@@ -42,10 +42,10 @@ import java.util.Iterator;
 public interface I_CmsFileNameGenerator {
 
     /** The "number" macro. */
-    public static final String MACRO_NUMBER = "number";
+    String MACRO_NUMBER = "number";
 
     /** Format for file create parameter. */
-    public static final PrintfFormat NUMBER_FORMAT = new PrintfFormat("%0.5d");
+    PrintfFormat NUMBER_FORMAT = new PrintfFormat("%0.5d");
 
     /**
      * Generates a new file name based on the provided OpenCms user context and name pattern.<p>

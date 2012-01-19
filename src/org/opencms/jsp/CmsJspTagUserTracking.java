@@ -28,7 +28,6 @@
 package org.opencms.jsp;
 
 import org.opencms.db.CmsSubscriptionFilter;
-import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.db.CmsSubscriptionReadMode;
 import org.opencms.db.CmsVisitedByFilter;
 import org.opencms.file.CmsGroup;
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * It is also possible to check if single resources are visited/subscribed by the current user.<p>
  * 
- * See also the {@link CmsSubscriptionManager} for more information about subscription or visitation.<p>
+ * See also the {@link org.opencms.db.CmsSubscriptionManager} for more information about subscription or visitation.<p>
  * 
  * @since 8.0 
  */

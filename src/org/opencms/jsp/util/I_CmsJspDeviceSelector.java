@@ -50,12 +50,12 @@ public interface I_CmsJspDeviceSelector {
      * 
      * @return the name of the device type
      */
-    public String getDeviceType(HttpServletRequest req);
+    String getDeviceType(HttpServletRequest req);
 
     /**
      * Returns an array of device types that can be detected.<p>
      * 
      * @return an array of device types that can be detected
      */
-    public List<String> getDeviceTypes();
+    List<String> getDeviceTypes();
 }

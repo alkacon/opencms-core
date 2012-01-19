@@ -209,41 +209,43 @@ public class CmsPublishQueue {
                     dbc.clear();
                     dbc = null;
                 }
-                for (Iterator<CmsPublishJobInfoBean> i = publishJobs.iterator(); i.hasNext();) {
-                    CmsPublishJobInfoBean job = i.next();
-                    dbc = m_publishEngine.getDbContext(null);
-                    if (!job.isStarted()) {
-                        // add jobs not already started to queue again
-                        try {
-                            job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
-                            m_publishEngine.lockPublishList(job);
-                            OpenCms.getMemoryMonitor().cachePublishJob(job);
-                        } catch (CmsException exc) {
-                            // skip job
-                            dbc.rollback();
-                            if (LOG.isErrorEnabled()) {
-                                LOG.error(
-                                    Messages.get().getBundle().key(
-                                        Messages.ERR_PUBLISH_JOB_INVALID_1,
-                                        job.getPublishHistoryId()),
-                                    exc);
+                if (publishJobs != null) {
+                    for (Iterator<CmsPublishJobInfoBean> i = publishJobs.iterator(); i.hasNext();) {
+                        CmsPublishJobInfoBean job = i.next();
+                        dbc = m_publishEngine.getDbContext(null);
+                        if (!job.isStarted()) {
+                            // add jobs not already started to queue again
+                            try {
+                                job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
+                                m_publishEngine.lockPublishList(job);
+                                OpenCms.getMemoryMonitor().cachePublishJob(job);
+                            } catch (CmsException exc) {
+                                // skip job
+                                dbc.rollback();
+                                if (LOG.isErrorEnabled()) {
+                                    LOG.error(
+                                        Messages.get().getBundle().key(
+                                            Messages.ERR_PUBLISH_JOB_INVALID_1,
+                                            job.getPublishHistoryId()),
+                                        exc);
+                                }
+                                m_publishEngine.getDriverManager().deletePublishJob(dbc, job.getPublishHistoryId());
+                            } finally {
+                                dbc.clear();
                             }
-                            m_publishEngine.getDriverManager().deletePublishJob(dbc, job.getPublishHistoryId());
-                        } finally {
-                            dbc.clear();
-                        }
-                    } else {
-                        try {
-                            // remove locks, set finish info and move job to history
-                            job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
-                            m_publishEngine.unlockPublishList(job);
-                            new CmsPublishJobEnqueued(job).m_publishJob.finish();
-                            m_publishEngine.getPublishHistory().add(job);
-                        } catch (CmsException exc) {
-                            dbc.rollback();
-                            LOG.error(exc.getLocalizedMessage(), exc);
-                        } finally {
-                            dbc.clear();
+                        } else {
+                            try {
+                                // remove locks, set finish info and move job to history
+                                job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
+                                m_publishEngine.unlockPublishList(job);
+                                new CmsPublishJobEnqueued(job).m_publishJob.finish();
+                                m_publishEngine.getPublishHistory().add(job);
+                            } catch (CmsException exc) {
+                                dbc.rollback();
+                                LOG.error(exc.getLocalizedMessage(), exc);
+                            } finally {
+                                dbc.clear();
+                            }
                         }
                     }
                 }

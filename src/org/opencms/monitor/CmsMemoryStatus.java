@@ -34,12 +34,22 @@ package org.opencms.monitor;
  */
 public class CmsMemoryStatus {
 
+    /** The count used to calculate the average. */
     private int m_count;
+
+    /** The current free memory, in megabytes. */
     private long m_freeMemory;
 
+    /** The maximum available memory, in megabytes. */
     private long m_maxMemory;
+
+    /** The amount of memory currently availble to the JVM, in megabytes. */
     private long m_totalMemory;
+
+    /** The current memory usage, in percent. */
     private long m_usage;
+
+    /** The amount of memory currently used, in megabytes. */
     private long m_usedMemory;
 
     /**
@@ -63,7 +73,7 @@ public class CmsMemoryStatus {
         m_totalMemory = ((m_count * m_totalMemory) + currentStatus.getTotalMemory()) / newCount;
         m_usedMemory = ((m_count * m_usedMemory) + currentStatus.getUsedMemory()) / newCount;
         m_freeMemory = ((m_count * m_freeMemory) + currentStatus.getFreeMemory()) / newCount;
-        m_usage = m_usedMemory * 100 / m_maxMemory;
+        m_usage = (m_usedMemory * 100) / m_maxMemory;
         m_count = newCount;
     }
 
@@ -136,6 +146,6 @@ public class CmsMemoryStatus {
         m_totalMemory = Runtime.getRuntime().totalMemory() / 1048576;
         m_usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;
         m_freeMemory = m_maxMemory - m_usedMemory;
-        m_usage = m_usedMemory * 100 / m_maxMemory;
+        m_usage = (m_usedMemory * 100) / m_maxMemory;
     }
 }

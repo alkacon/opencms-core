@@ -60,6 +60,7 @@ public class CmsMailTransport extends Thread {
     /**
      * @see java.lang.Thread#run()
      */
+    @Override
     public void run() {
 
         try {

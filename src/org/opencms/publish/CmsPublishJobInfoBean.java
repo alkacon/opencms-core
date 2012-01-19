@@ -89,6 +89,7 @@ public final class CmsPublishJobInfoBean {
     /** Time the publish job did actually start. */
     private long m_startTime;
 
+    /** The UUID of the running publish thread. */
     private CmsUUID m_threadUUID;
 
     /** User to use for publishing. */

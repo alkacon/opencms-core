@@ -78,13 +78,12 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    @SuppressWarnings("unchecked")
-    public synchronized String launch(CmsObject cms, Map parameters) throws Exception {
+    public synchronized String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         Date jobStart = new Date();
         String finishMessage;
-        String linkcheck = (String)parameters.get(PARAM_LINKCHECK);
-        String jobName = (String)parameters.get(PARAM_JOBNAME);
+        String linkcheck = parameters.get(PARAM_LINKCHECK);
+        String jobName = parameters.get(PARAM_JOBNAME);
         CmsProject project = cms.getRequestContext().getCurrentProject();
         CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishScheduledJob.class);
 
@@ -156,7 +155,7 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
             // send publish notification
             if (report.hasWarning() || report.hasError()) {
                 try {
-                    String userName = (String)parameters.get(PARAM_USER);
+                    String userName = parameters.get(PARAM_USER);
                     CmsUser user = cms.readUser(userName);
 
                     CmsPublishNotification notification = new CmsPublishNotification(cms, user, report);
