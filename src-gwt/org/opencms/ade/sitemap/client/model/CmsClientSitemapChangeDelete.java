@@ -141,6 +141,7 @@ public class CmsClientSitemapChangeDelete implements I_CmsClientSitemapChange {
             view.ensureVisible(deleteItem);
         }
         deleteParent.removeChild(deleteItem);
+        view.removeDeleted(m_entry);
         view.updateDetailPageView(m_entry);
     }
 

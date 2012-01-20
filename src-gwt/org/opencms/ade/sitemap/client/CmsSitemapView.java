@@ -69,6 +69,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -115,6 +116,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /** The sitemap toolbar. */
     private CmsSitemapToolbar m_toolbar;
+
+    /** The registered tree items. */
+    private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
 
     /**
      * Returns the instance.<p>
@@ -248,6 +252,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (isLastPage(entry)) {
             treeItem.setBackgroundColor(Background.YELLOW);
         }
+        m_treeItems.put(entryId, treeItem);
         return treeItem;
     }
 
@@ -367,6 +372,18 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /**
      * Returns the tree entry with the given path.<p>
      * 
+     * @param entryId the id of the sitemap entry
+     * 
+     * @return the tree entry with the given path, or <code>null</code> if not found
+     */
+    public CmsSitemapTreeItem getTreeItem(CmsUUID entryId) {
+
+        return m_treeItems.get(entryId);
+    }
+
+    /**
+     * Returns the tree entry with the given path.<p>
+     * 
      * @param path the path to look for
      * 
      * @return the tree entry with the given path, or <code>null</code> if not found
@@ -465,7 +482,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
 
         rootPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().root());
-
+        m_treeItems = new HashMap<CmsUUID, CmsSitemapTreeItem>();
         // controller 
         m_controller = new CmsSitemapController();
         m_controller.addChangeHandler(this);
@@ -555,6 +572,19 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
             openItemsOnPath(openPath);
         }
+    }
+
+    /**
+     * Removes deleted entry widget reference.<p>
+     * 
+     * @param entry the entry being deleted
+     */
+    public void removeDeleted(CmsClientSitemapEntry entry) {
+
+        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+            removeDeleted(child);
+        }
+        m_treeItems.remove(entry.getId());
     }
 
     /**
