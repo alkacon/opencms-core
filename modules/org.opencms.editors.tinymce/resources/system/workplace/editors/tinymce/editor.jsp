@@ -263,6 +263,9 @@ tinyMCE.init({
     theme_advanced_toolbar_align : "left",
     theme_advanced_statusbar_location : "bottom",
     theme_advanced_resizing : true,
+    
+    // Don't store editor size in cookies
+    theme_advanced_resizing_use_cookie : false,
 
     // Skin options
     skin : "o2k7",
@@ -285,7 +288,6 @@ tinyMCE.init({
     
     // editor size
     width: "100%",
-    height: "100%",
     
     // events
     setup : function(ed) {
@@ -346,6 +348,14 @@ function execAction(editor, action, target) {
 	form.target = target;
 	form.submit(); 
 }
+
+var tagBarHeight = 14;
+
+// calculate editor height in pixels
+function getEditorHeight(){
+	return document.getElementById('textarea-container').clientHeight -tagBarHeight;
+}
+
 //-->
 </script>
 </head>
@@ -410,8 +420,10 @@ if (options.showElement("option.cleanup", displayOptions)) {
 
 <tr>
 <td style="width:100%; height:100%;">
-<div style="width:100%; height:100%; background-color: Window;">
-<textarea id="<%= CmsEditor.PARAM_CONTENT %>" name="<%= CmsEditor.PARAM_CONTENT %>" style="width:100%;"></textarea>
+<div id="textarea-container" style="width:100%; height:100%; background-color: Window;">
+<script language="javascript">
+document.write ('<textarea id="<%= CmsEditor.PARAM_CONTENT %>" name="<%= CmsEditor.PARAM_CONTENT %>" style="height:'+getEditorHeight()+'px; width:100%;"></textarea>');
+</script>
 </div>
 </td>
 </tr>
