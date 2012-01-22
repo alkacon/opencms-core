@@ -80,6 +80,7 @@ default:
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tiny_mce/" %>tiny_mce.js"></script>
+<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "jquery/packed/" %>jquery.js"></script>
 
 <script type="text/javascript">
 
@@ -262,7 +263,7 @@ tinyMCE.init({
     theme_advanced_toolbar_location : "top",
     theme_advanced_toolbar_align : "left",
     theme_advanced_statusbar_location : "bottom",
-    theme_advanced_resizing : true,
+    theme_advanced_resizing : false,
     
     // Don't store editor size in cookies
     theme_advanced_resizing_use_cookie : false,
@@ -293,6 +294,7 @@ tinyMCE.init({
     setup : function(ed) {
 		  ed.onInit.add(function(ed) {
 		      ed.setContent(decodeURIComponent('<%= wp.getParamContent() %>'));
+		      initHeight();
 		  });
 		  
 		// Add Publisg button
@@ -348,13 +350,39 @@ function execAction(editor, action, target) {
 	form.target = target;
 	form.submit(); 
 }
+// JavaScript resize editor stuff
 
+// height of bottom line of editor with HTML tag information
 var tagBarHeight = 14;
+
+// current window heigh
+var windowHeight ;
+
+// current editor height
+var editorHeight ;
 
 // calculate editor height in pixels
 function getEditorHeight(){
 	return document.getElementById('textarea-container').clientHeight -tagBarHeight;
 }
+
+// Set inital heights for window and editor
+function initHeight(){
+	windowHeight = $(window).height();
+	editorHeight = $("#<%= CmsEditor.PARAM_CONTENT %>_ifr").height();
+}
+
+// Set editor size on resize window event
+window.onresize = function() {
+	var newWindowHeight = $(window).height();
+	var delta = newWindowHeight - windowHeight ;
+
+	windowHeight = newWindowHeight ;
+	editorHeight = editorHeight + delta ;
+	
+	document.getElementById("<%= CmsEditor.PARAM_CONTENT %>_ifr").style.height = editorHeight + 'px';
+	document.getElementById("<%= CmsEditor.PARAM_CONTENT %>_tbl").style.height = editorHeight + tagBarHeight + 'px';
+	}
 
 //-->
 </script>
