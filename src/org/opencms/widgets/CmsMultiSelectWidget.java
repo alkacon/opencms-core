@@ -56,7 +56,7 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
     public static final String CONFIGURATION_ASCHECKBOXES = "ascheckboxes";
 
     /** Configuration parameter to indicate the multi-select needs to be activated by a check box. */
-    public static final String CONFIGURATION_REQUIRES_ACTIVATION = "requieresactivation";
+    public static final String CONFIGURATION_REQUIRES_ACTIVATION = "requiresactivation";
 
     /** Indicates if used html code is a multi selection list or a list of checkboxes. */
     private boolean m_asCheckBoxes;
