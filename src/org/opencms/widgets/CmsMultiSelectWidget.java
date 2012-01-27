@@ -29,6 +29,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
 import java.util.List;
@@ -51,8 +52,17 @@ import java.util.Map;
  */
 public class CmsMultiSelectWidget extends A_CmsSelectWidget {
 
+    /** Configuration parameter to set the height from the select widget in pixel. */
+    public static final String CONFIGURATION_ASCHECKBOXES = "ascheckboxes";
+
+    /** Configuration parameter to indicate the multi-select needs to be activated by a check box. */
+    public static final String CONFIGURATION_REQUIRES_ACTIVATION = "requieresactivation";
+
     /** Indicates if used html code is a multi selection list or a list of checkboxes. */
     private boolean m_asCheckBoxes;
+
+    /** Flag to indicate if the multi-select needs to be activated by a check box. */
+    private boolean m_requiresActivation;
 
     /**
      * Creates a new select widget.<p>
@@ -104,37 +114,78 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
     }
 
     /**
+     * @param cms
+     * @param formParameters
+     * @param widgetDialog
+     * @param param
+     */
+    public static void setMultiSelectEditorValue(
+        CmsObject cms,
+        Map<String, String[]> formParameters,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        String[] values = formParameters.get(param.getId());
+        if ((values != null) && (values.length > 0)) {
+            StringBuffer value = new StringBuffer(128);
+            for (int i = 0; i < values.length; i++) {
+                if (i > 0) {
+                    value.append(',');
+                }
+                value.append(values[i]);
+            }
+            // set the value
+            param.setStringValue(cms, value.toString());
+        } else {
+            // erase:
+            param.setStringValue(cms, "");
+        }
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+     */
+    @Override
+    public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+
+        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/multiselector.js");
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
-    public static String getMultiSelectDialogWidget(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param,
-        A_CmsSelectWidget widget,
-        boolean asCheckBoxes,
-        String height) {
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
 
-        List options = widget.parseSelectOptions(cms, widgetDialog, param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
         result.append("<td class=\"xmlTd\">");
         // the configured select widget height start element
-        if (asCheckBoxes && CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
-            result.append("<div style=\"height: " + height + "; overflow: auto;\">");
-        }
-        if (!asCheckBoxes) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
-                result.append("<select style=\"height: " + height + ";\" multiple size='");
-            } else {
-                result.append("<select multiple size='");
+        if (!m_asCheckBoxes) {
+            if (m_requiresActivation) {
+                result.append("<input style=\"vertical-align:middle;\" type=\"checkbox\" id=\"check"
+                    + id
+                    + "\" name=\"check"
+                    + id
+                    + "\""
+                    + "onclick=toggleMultiSelectWidget(this);"
+                    + " />");
+                result.append("&nbsp;<label style=\"vertical-align:middle;\" for=\"check" + id + "\">");
+                result.append(widgetDialog.getMessages().key(Messages.GUI_MULTISELECT_ACTIVATE_0));
+                result.append("</label>&nbsp;");
             }
+            result.append("<select multiple size='");
             result.append(options.size());
-            result.append("' class=\"xmlInput");
+            result.append("' style=\"vertical-align:middle;\" class=\"xmlInput");
             if (param.hasError()) {
                 result.append(" xmlInputError");
             }
-            result.append("\" name=\"");
+            result.append("\" ");
+            if (m_requiresActivation) {
+                result.append("disabled=\"true\" ");
+            }
+            result.append("name=\"");
             result.append(id);
             result.append("\" id=\"");
             result.append(id);
@@ -142,12 +193,12 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
         }
 
         // get select box options from default value String
-        List selected = widget.getSelectedValues(cms, param);
-        Iterator i = options.iterator();
+        List<String> selected = getSelectedValues(cms, param);
+        Iterator<CmsSelectWidgetOption> i = options.iterator();
         while (i.hasNext()) {
-            CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+            CmsSelectWidgetOption option = i.next();
             // create the option
-            if (!asCheckBoxes) {
+            if (!m_asCheckBoxes) {
                 result.append("<option value=\"");
                 result.append(option.getValue());
                 result.append("\"");
@@ -171,50 +222,11 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
                 result.append("<br>");
             }
         }
-        if (!asCheckBoxes) {
+        if (!m_asCheckBoxes) {
             result.append("</select>");
         }
-        // the configured select widget height end element
-        if (asCheckBoxes && CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
-            result.append("</div>");
-        }
         result.append("</td>");
-
         return result.toString();
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    public static void setMultiSelectEditorValue(
-        CmsObject cms,
-        Map formParameters,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) {
-
-        String[] values = (String[])formParameters.get(param.getId());
-        if ((values != null) && (values.length > 0)) {
-            StringBuffer value = new StringBuffer(128);
-            for (int i = 0; i < values.length; i++) {
-                if (i > 0) {
-                    value.append(',');
-                }
-                value.append(values[i]);
-            }
-            // set the value
-            param.setStringValue(cms, value.toString());
-        } else {
-            // erase:
-            param.setStringValue(cms, "");
-        }
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
-
-        return getMultiSelectDialogWidget(cms, widgetDialog, param, this, m_asCheckBoxes, null);
     }
 
     /**
@@ -223,6 +235,41 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
     public I_CmsWidget newInstance() {
 
         return new CmsMultiSelectWidget(getConfiguration());
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
+     */
+    @Override
+    public void setConfiguration(String configuration) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
+            int asCheckBoxesIndex = configuration.indexOf(CONFIGURATION_ASCHECKBOXES);
+            if (asCheckBoxesIndex != -1) {
+                // the height is set
+                String asCheckBoxes = configuration.substring(asCheckBoxesIndex
+                    + CONFIGURATION_ASCHECKBOXES.length()
+                    + 1);
+                if (asCheckBoxes.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    asCheckBoxes = asCheckBoxes.substring(0, asCheckBoxes.indexOf('|'));
+                }
+                m_asCheckBoxes = Boolean.parseBoolean(asCheckBoxes);
+            }
+            int reqiresActivationIndex = configuration.indexOf(CONFIGURATION_REQUIRES_ACTIVATION);
+            if (reqiresActivationIndex != -1) {
+                // the height is set
+                String requiresActivation = configuration.substring(reqiresActivationIndex
+                    + CONFIGURATION_REQUIRES_ACTIVATION.length()
+                    + 1);
+                if (requiresActivation.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    requiresActivation = requiresActivation.substring(0, requiresActivation.indexOf('|'));
+                }
+                m_requiresActivation = Boolean.parseBoolean(requiresActivation);
+            }
+        }
+        super.setConfiguration(configuration);
     }
 
     /**

@@ -119,6 +119,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_TRUE_0 = "GUI_LABEL_TRUE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MULTISELECT_ACTIVATE_0 = "GUI_MULTISELECT_ACTIVATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1 = "LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */

@@ -100,6 +100,7 @@
 			<resource uri="/system/workplace/resources/components/widgets/htmlgallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/imagegallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/linkgallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/multiselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/orgunitselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/principalselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/tablegallery.js"/>
@@ -6259,6 +6260,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[JS to open external link gallery]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+			<file>
+			<source>system/workplace/resources/components/widgets/multiselector.js</source>
+			<destination>system/workplace/resources/components/widgets/multiselector.js</destination>
+			<type>plain</type>
+			<uuidstructure>a4a875ab-48cb-11e1-aa85-1fe8a6895956</uuidstructure>
+			<uuidresource>a4a875ac-48cb-11e1-aa85-1fe8a6895956</uuidresource>
+			<datelastmodified>Fri, 27 Jan 2012 09:45:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 27 Jan 2012 09:45:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[multiselector]]></value>
 				</property>
 			</properties>
 			<relations/>
