@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -75,17 +76,26 @@ import org.apache.commons.logging.Log;
  */
 public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
 
+    /** Configuration parameter name to use all available groups as default. */
+    public static final String CONFIGURATION_DEFAULT_ALL = "defaultall";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMultiSelectGroupWidget.class);
 
     /** Indicates if used html code is a multi selection list or a list of checkboxes. */
     private boolean m_asCheckBoxes;
 
+    /** Flag indicating if to use all available groups as default. */
+    private boolean m_defaultAllAvailable;
+
     /** Indicates if sub OUs should be included when reading the groups. */
     private boolean m_includeSubOus;
 
     /** The fully qualified name of the OU to read the groups from. */
     private String m_ouFqn;
+
+    /** Flag to indicate if the multi-select needs to be activated by a check box. */
+    private boolean m_requiresActivation;
 
     /**
      * Creates a new group select widget.<p>
@@ -123,18 +133,103 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+     */
+    @Override
+    public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+
+        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/multiselector.js");
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
-        return CmsMultiSelectWidget.getMultiSelectDialogWidget(
-            cms,
-            widgetDialog,
-            param,
-            this,
-            m_asCheckBoxes,
-            getHeight());
+        String id = param.getId();
+        StringBuffer result = new StringBuffer(16);
+        String height = getHeight();
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
+        result.append("<td class=\"xmlTd\">");
+        // the configured select widget height start element
+        if (m_asCheckBoxes && CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
+            result.append("<div style=\"height: " + height + "; overflow: auto;\">");
+        }
+        if (!m_asCheckBoxes) {
+            if (m_requiresActivation) {
+                result.append("<input style=\"vertical-align:middle;\" type=\"checkbox\" id=\"check"
+                    + id
+                    + "\" name=\"check"
+                    + id
+                    + "\""
+                    + "onclick=toggleMultiSelectWidget(this);"
+                    + " />");
+                result.append("&nbsp;<label style=\"vertical-align:middle;\" for=\"check" + id + "\">");
+                result.append(widgetDialog.getMessages().key(Messages.GUI_MULTISELECT_ACTIVATE_0));
+                result.append("</label>&nbsp;");
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
+                result.append("<select style=\"height: " + height + ";\" multiple size='");
+            } else {
+                result.append("<select multiple size='");
+            }
+            result.append(options.size());
+            result.append("' style=\"vertical-align:middle;\" class=\"xmlInput");
+            if (param.hasError()) {
+                result.append(" xmlInputError");
+            }
+            result.append("\" ");
+            if (m_requiresActivation) {
+                result.append("disabled=\"true\" ");
+            }
+            result.append("name=\"");
+            result.append(id);
+            result.append("\" id=\"");
+            result.append(id);
+            result.append("\">");
+        }
+
+        // get select box options from default value String
+        List<String> selected = getSelectedValues(cms, param);
+        Iterator<CmsSelectWidgetOption> i = options.iterator();
+        while (i.hasNext()) {
+            CmsSelectWidgetOption option = i.next();
+            // create the option
+            if (!m_asCheckBoxes) {
+                result.append("<option value=\"");
+                result.append(option.getValue());
+                result.append("\"");
+                if (selected.contains(option.getValue())) {
+                    result.append(" selected=\"selected\"");
+                }
+                result.append(">");
+                result.append(option.getOption());
+                result.append("</option>");
+            } else {
+                result.append("<input type='checkbox' name='");
+                result.append(id);
+                result.append("' value='");
+                result.append(option.getValue());
+                result.append("'");
+                if (selected.contains(option.getValue())) {
+                    result.append(" checked");
+                }
+                result.append(">");
+                result.append(option.getOption());
+                result.append("<br>");
+            }
+        }
+        if (!m_asCheckBoxes) {
+            result.append("</select>");
+        }
+        // the configured select widget height end element
+        if (m_asCheckBoxes && CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
+            result.append("</div>");
+        }
+        result.append("</td>");
+
+        return result.toString();
     }
 
     /**
@@ -147,11 +242,47 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
      */
+    @Override
+    public void setConfiguration(String configuration) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
+            int asCheckBoxesIndex = configuration.indexOf(CmsMultiSelectWidget.CONFIGURATION_ASCHECKBOXES);
+            if (asCheckBoxesIndex != -1) {
+                // the height is set
+                String asCheckBoxes = configuration.substring(asCheckBoxesIndex
+                    + CmsMultiSelectWidget.CONFIGURATION_ASCHECKBOXES.length()
+                    + 1);
+                if (asCheckBoxes.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    asCheckBoxes = asCheckBoxes.substring(0, asCheckBoxes.indexOf('|'));
+                }
+                m_asCheckBoxes = Boolean.parseBoolean(asCheckBoxes);
+            }
+            int reqiresActivationIndex = configuration.indexOf(CmsMultiSelectWidget.CONFIGURATION_REQUIRES_ACTIVATION);
+            if (reqiresActivationIndex != -1) {
+                // the height is set
+                String requiresActivation = configuration.substring(reqiresActivationIndex
+                    + CmsMultiSelectWidget.CONFIGURATION_REQUIRES_ACTIVATION.length()
+                    + 1);
+                if (requiresActivation.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    requiresActivation = requiresActivation.substring(0, requiresActivation.indexOf('|'));
+                }
+                m_requiresActivation = Boolean.parseBoolean(requiresActivation);
+            }
+        }
+        super.setConfiguration(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
     public void setEditorValue(
         CmsObject cms,
-        Map formParameters,
+        Map<String, String[]> formParameters,
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
@@ -182,7 +313,10 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
                     try {
                         // ensure that only existing groups are available in the select box
                         CmsGroup group = cms.readGroup(getOuFqn() + groupName);
-                        result.add(new CmsSelectWidgetOption(group.getName(), false, group.getSimpleName()));
+                        result.add(new CmsSelectWidgetOption(
+                            group.getName(),
+                            m_defaultAllAvailable,
+                            group.getSimpleName()));
                     } catch (CmsException e) {
                         // error reading the group by name, simply skip it
                     }
@@ -199,7 +333,10 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
                                 continue;
                             }
                         }
-                        result.add(new CmsSelectWidgetOption(group.getName(), false, group.getSimpleName()));
+                        result.add(new CmsSelectWidgetOption(
+                            group.getName(),
+                            m_defaultAllAvailable,
+                            group.getSimpleName()));
                     }
                 } catch (CmsException e) {
                     // error reading the groups
@@ -304,6 +441,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
             m_ouFqn += CmsOrganizationalUnit.SEPARATOR;
         }
         // set the flag to include sub OUs
-        m_includeSubOus = Boolean.valueOf(config.get(CONFIGURATION_INCLUDESUBOUS)).booleanValue();
+        m_includeSubOus = Boolean.parseBoolean(config.get(CONFIGURATION_INCLUDESUBOUS));
+        m_defaultAllAvailable = Boolean.parseBoolean(config.get(CONFIGURATION_DEFAULT_ALL));
     }
 }
