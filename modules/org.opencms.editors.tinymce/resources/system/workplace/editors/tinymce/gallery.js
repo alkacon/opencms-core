@@ -112,16 +112,9 @@ function findFrame(startFrame, frameName){
     return findFrame(startFrame.parent, frameName);
 }
 
-
-
-/**
- * Returns the path to the download gallery dialog with some request parameters for the dialog.<p>
- * 
- * @return <code>String</code> the dialog URL
- */ 
-function imageGalleryDialogUrl() {
-   var path=null;
+function getImageSelectionPath() {
    var selected = tinymce.activeEditor.selection.getNode();
+   var path; 
    if (selected && ( selected.tagName == "IMG" || selected.tagName == "SPAN" || (selected.tagName == "INPUT" && selected.type == "image"))){
       // try to read selected url
       path = selected.getAttribute("data-mce-src");
@@ -129,6 +122,36 @@ function imageGalleryDialogUrl() {
          path = selected.getAttribute("src");
       }
    }
+   return path; 
+}
+
+function getDownloadSelectionPath() {
+   var editor = tinymce.activeEditor;
+   var path; 
+   if (editor.selection.getContent() != '') {
+      var a = editor.dom.getParent(editor.selection.getNode(), 'A');
+      if (a) {
+         // link present
+         editor.selection.select(a, false);
+         //path to resource
+         path = a.getAttribute("data-mce-href");
+         // in case of a newly created link, use the href attribute
+         if (path == null || path==""){
+            path=a.getAttribute("href");
+         }
+        }
+   }
+   return path; 
+}
+
+
+
+/**
+ * Returns the path to the gallery dialog with some request parameters for the dialog.<p>
+ * 
+ * @return <code>String</code> the dialog URL
+ */ 
+function createGalleryDialogUrl(path, typesParam) {
    var resParam = "";
     var editFrame=findFrame(self, 'edit');
    if (editFrame.editedResource != null) {
@@ -147,8 +170,12 @@ function imageGalleryDialogUrl() {
    }catch(err){
        // nothing to do
    }
-   var searchParam = "&types=<%=itemResType %>&currentelement="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
+   var searchParam = "&types="+typesParam+"&currentelement="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
    return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?dialogmode=editor" + searchParam + resParam + integratorParam + debugParam;
+}
+
+function imageGalleryDialogUrl() {
+   return createGalleryDialogUrl(getImageSelectionPath(), "image");
 }
 
 
@@ -158,38 +185,7 @@ function imageGalleryDialogUrl() {
  * @return <code>String</code> the dialog URL
  */ 
 function downloadGalleryDialogUrl() {
-   var path=null;
-   var editor = tinymce.activeEditor;
-   if (editor.selection.getContent() != '') {
-      var a = editor.dom.getParent(editor.selection.getNode(), 'A');
-      if (a) {
-         // link present
-         editor.selection.select(a, false);
-         //path to resource
-         path = a.getAttribute("data-mce-href");
-         // in case of a newly created link, use the href attribute
-         if (path == null || path==""){
-            path=a.getAttribute("href");
-         }
-        }
-   }
-   var resParam = "";
-    var editFrame=findFrame(self, 'edit');
-   if (editFrame.editedResource != null) {
-      resParam = "&resource=" + editFrame.editedResource;
-   } else {
-      resParam = "&resource=" + editFrame.editform.editedResource;
-   }
-   var integratorParam = "&integrator=/system/workplace/editors/tinymce/integrator.js";
-   // set the content locale
-    var elementLanguage="${locale}";
-    try{
-        elementLanguage=editFrame.editform.document.forms['EDITOR']['elementlanguage'].value;
-    }catch(err){
-        // nothing to do
-    }
-    var searchParam = "&types=binary&currentelement="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
-   return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?dialogmode=editor" + searchParam + resParam + integratorParam;
+   return createGalleryDialogUrl(getDownloadSelectionPath(), "binary");
 }
 
 

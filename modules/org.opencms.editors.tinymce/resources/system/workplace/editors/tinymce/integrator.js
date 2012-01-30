@@ -3,6 +3,7 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
 %>
 /* only used for utility functions. */ 
 <%= cms.getContent("/system/workplace/resources/editors/fckeditor/editor/dialog/common/fck_dialog_common.js") %>
+<%= cms.getContent("/system/workplace/resources/editors/tinymce/jscripts/tiny_mce/tiny_mce_popup.js") %>
 /**
  * The JavaScript functions of this file serve as an interface between the API of the TinyMCE and the gallery dialog.<p>
  *
@@ -100,7 +101,7 @@ function _selectionDelete() {
 }
 
 function _editorDocumentCreateElement(nodeName) {
-   return document.createElement(nodeName);
+   return parentDialog.document.createElement(nodeName);
 }
 
 function _selectSubNode(nodeName, node) {
@@ -327,7 +328,10 @@ function getLinkTarget(){
  * @return void
  */
 function setImage(path, attributes){
+    // restore the selection; needed because IE forgets the selection otherwise 
+    tinyMCEPopup.restoreSelection();
     var image=_getSelectedImage();
+    
     if (image){
         // remove previous image and wrapping links or tags first
         var previousSelection=image;
@@ -530,6 +534,7 @@ function setImageLink(path, attributes, linkPath, target){
  * @return void
  */
 function setLink(path, title, target){
+   tinyMCEPopup.restoreSelection();
     if (_hasSelectedText()){
         var a = _selectionMoveToAncestorNode('A') ;
         if (a) {
