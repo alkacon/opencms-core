@@ -79,13 +79,9 @@ function _selectionHasAncestorNode(nodeName) {
 }
 
 function _selectionMoveToAncestorNode(nodeName) {
+
    var node = editor.selection.getNode();
-   var oldNode = node;
-   while (node && (node.nodeName != nodeName)) {
-      oldNode = node;
-      node = node.parentNode;
-   }
-   return node;
+   return editor.dom.getParent(node, nodeName);
 }
 
 function _selectionSelectNode(node) {

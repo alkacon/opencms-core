@@ -247,6 +247,35 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		
+		<file>
+			<source>system/workplace/editors/tinymce/link.js</source>
+			<destination>system/workplace/editors/tinymce/link.js</destination>
+			<type>jsp</type>
+			<uuidstructure>8334c651-0cfb-4e76-b6a9-a0944d3431f4</uuidstructure>
+			<uuidresource>8334c652-0cfb-4e76-b6a9-a0944d3431f4</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		
+		
+		
+		
 		<file>
 			<source>system/workplace/editors/tinymce/integrator.js</source>
 			<destination>system/workplace/editors/tinymce/integrator.js</destination>
@@ -7108,6 +7137,26 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<source>system/workplace/resources/editors/tinymce/toolbar/oc-link.gif</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-link.gif</destination>
+			<type>image</type>
+			<uuidstructure>1471a523-16c9-42b3-8036-f142753c10ef</uuidstructure>
+			<uuidresource>1471a524-16c9-42b3-8036-f142753c10ef</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
 		
 		
 		<file>

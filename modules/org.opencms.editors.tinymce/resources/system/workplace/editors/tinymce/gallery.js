@@ -3,8 +3,8 @@
              org.opencms.main.*,
              org.opencms.file.types.CmsResourceTypeImage" %><%
 %><%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><% 
-    CmsJspActionElement galleryCms = new CmsJspActionElement(pageContext, request, response); 
-   pageContext.setAttribute("cms", galleryCms);
+    CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response); 
+   pageContext.setAttribute("cms", cms);
    CmsDialog dialog = new CmsDialog(pageContext, request, response);
    pageContext.setAttribute("locale", dialog.getLocale().toString());
     String itemResType = CmsResourceTypeImage.getStaticTypeName();
