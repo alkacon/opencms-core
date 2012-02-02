@@ -277,8 +277,12 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                     while (is.hasNext()) {
                         I_CmsXmlSchemaType type = is.next();
                         String name = type.getName();
+                        int maxOccures = type.getMaxOccurs();
                         List<Element> elements = CmsXmlGenericWrapper.elements(root, name);
-                        if (elements.size() > type.getMaxOccurs()) {
+                        if (cd.getChoiceMaxOccurs() > 0) {
+                            maxOccures = cd.getChoiceMaxOccurs();
+                        }
+                        if (elements.size() > maxOccures) {
                             // to many nodes of this type appear according to the current schema definition
                             for (int lo = (elements.size() - 1); lo >= type.getMaxOccurs(); lo--) {
                                 elements.remove(lo);
