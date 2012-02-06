@@ -174,6 +174,17 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
                 result.append("&nbsp;<label style=\"vertical-align:middle;\" for=\"check" + id + "\">");
                 result.append(widgetDialog.getMessages().key(Messages.GUI_MULTISELECT_ACTIVATE_0));
                 result.append("</label>&nbsp;");
+                // adding hidden input with the current value, because disabled select box value won't be submitted 
+                result.append("<input type='hidden' name='").append(id).append("' id='").append(id).append("' value='");
+                List<String> values = getSelectedValues(cms, param);
+                if (values.size() > 0) {
+                    result.append(values.get(0));
+                    for (int i = 1; i < values.size(); i++) {
+                        result.append(",").append(values.get(i));
+                    }
+                }
+                result.append("' />");
+                id = "display" + id;
             }
             result.append("<select multiple size='");
             result.append(options.size());
