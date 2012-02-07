@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <editor>
-	<label>GUI_EDITOR_TITLE_TINYMCE_0</label>
-	<widgeteditor>org.opencms.editors.tinymce.CmsFCKEditorWidget</widgeteditor>
+	<label>TinyMCE</label>
+	<widgeteditor>org.opencms.editors.tinymce.CmsTinyMCEWidget</widgeteditor>
 	<resourcetypes>
 		<type>
 			<name>xmlpage</name>

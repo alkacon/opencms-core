@@ -4,7 +4,7 @@ import javax.servlet.http.HttpSession;
 
 
 /**
- * The configuration is passed to the external FCKeditor Javascript configuration file.<p>
+ * The configuration is passed to the external TinyMCE Javascript configuration file.<p>
  * 
  * This is done by using the current users session and storing an instance of the configuration object in the session.<p>
  * 
