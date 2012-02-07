@@ -268,7 +268,11 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
                     }
                 }
 
-                resourcePath = resourcePath.substring(resourceName.length());
+                if (resourcePath != null) {
+                    resourcePath = resourcePath.substring(resourceName.length());
+                } else {
+                    resourcePath = "";
+                }
                 orgResourcePath = orgResourcePath.substring(resourceName.length());
 
                 StringBuffer ret = new StringBuffer();
