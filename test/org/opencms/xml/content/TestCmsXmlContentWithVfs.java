@@ -76,18 +76,43 @@ import junit.framework.TestSuite;
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
+    /** Schema id 2. */
     private static final String SCHEMA_SYSTEM_ID_2 = "http://www.opencms.org/test2.xsd";
+
+    /** Schema id 3. */
     private static final String SCHEMA_SYSTEM_ID_3 = "http://www.opencms.org/test3.xsd";
+
+    /** Schema id 3b. */
     private static final String SCHEMA_SYSTEM_ID_3B = "http://www.opencms.org/test3b.xsd";
+
+    /** Schema id 4. */
     private static final String SCHEMA_SYSTEM_ID_4 = "http://www.opencms.org/test4.xsd";
+
+    /** Schema id 4b. */
     private static final String SCHEMA_SYSTEM_ID_4B = "http://www.opencms.org/test4b.xsd";
+
+    /** Schema id 5. */
     private static final String SCHEMA_SYSTEM_ID_5 = "http://www.opencms.org/test5.xsd";
+
+    /** Schema id 6. */
     private static final String SCHEMA_SYSTEM_ID_6 = "http://www.opencms.org/test6.xsd";
+
+    /** Schema id 7. */
     private static final String SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
+
+    /** Schema id 8. */
     private static final String SCHEMA_SYSTEM_ID_8 = "http://www.opencms.org/test8.xsd";
+
+    /** Schema id 9. */
     private static final String SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
+
+    /** Schema id 1L1. */
     private static final String SCHEMA_SYSTEM_ID_1L1 = "http://www.opencms.org/test1_localized1.xsd";
+
+    /** Schema id 1L2. */
     private static final String SCHEMA_SYSTEM_ID_1L2 = "http://www.opencms.org/test1_localized2.xsd";
+
+    /** Schema id 1L4. */
     private static final String SCHEMA_SYSTEM_ID_1L4 = "http://www.opencms.org/test1_localized4.xsd";
 
     /**

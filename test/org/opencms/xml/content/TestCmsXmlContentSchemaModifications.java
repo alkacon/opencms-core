@@ -56,6 +56,7 @@ import junit.framework.TestSuite;
  */
 public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
+    /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
 
     /**
