@@ -315,10 +315,6 @@ public class CmsLogin extends CmsJspLoginBean {
         if (m_requestedResource == null) {
             // no resource was requested, use default workplace URI
             m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
-        } else {
-            if (m_actionLogin != null) {
-                m_requestedResource = CmsEncoder.decode(m_requestedResource);
-            }
         }
 
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
@@ -1230,7 +1226,7 @@ public class CmsLogin extends CmsJspLoginBean {
                 html.append("<input type=\"hidden\"");
                 appendId(html, CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
                 html.append("value=\"");
-                html.append(CmsEncoder.encode(m_requestedResource));
+                html.append(CmsEncoder.escapeXml(m_requestedResource));
                 html.append("\">\n");
             }
 
