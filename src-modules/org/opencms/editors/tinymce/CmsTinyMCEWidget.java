@@ -1,10 +1,12 @@
 package org.opencms.editors.tinymce;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsHtmlWidget;
 import org.opencms.widgets.CmsHtmlWidgetOption;
@@ -12,6 +14,8 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.editors.I_CmsEditorCssHandler;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
 
@@ -153,6 +157,42 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
         result.append("	theme_advanced_toolbar_align : \"left\",\n");
         result.append("	theme_advanced_statusbar_location : \"bottom\",\n");
         result.append("	theme_advanced_resizing : true,\n");
+        
+        // set CSS style sheet for current editor widget if configured
+        boolean cssConfigured = false;
+        String cssPath = "";
+        if (getHtmlWidgetOption().useCss()) {
+            cssPath = getHtmlWidgetOption().getCssPath();
+            // set the CSS path to null (the created configuration String passed to JS will not include this path then)
+            getHtmlWidgetOption().setCssPath(null);
+            cssConfigured = true;
+        } else if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
+            Iterator<I_CmsEditorCssHandler> i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
+            try {
+                // cast parameter to I_CmsXmlContentValue
+                I_CmsXmlContentValue contentValue = (I_CmsXmlContentValue)param;
+                // now extract the absolute path of the edited resource
+                String editedResource = cms.getSitePath(contentValue.getDocument().getFile());
+                while (i.hasNext()) {
+                    I_CmsEditorCssHandler handler = i.next();
+                    if (handler.matches(cms, editedResource)) {
+                        cssPath = handler.getUriStyleSheet(cms, editedResource);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cssPath)) {
+                            cssConfigured = true;
+                        }
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                // ignore, CSS could not be set
+            }
+        }
+        if (cssConfigured) {
+            result.append("content_css : \"");
+            result.append(OpenCms.getLinkManager().substituteLink(cms, cssPath));
+            result.append("\",\n");
+        }
+        
         result.append("	// Drop lists for link/image/media/template dialogs\n");
         result.append("	template_external_list_url : \"lists/template_list.js\",\n");
         result.append("	external_link_list_url : \"lists/link_list.js\",\n");
@@ -220,7 +260,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
 	}
 
 	/**
-	 * Checks for particular availability
+	 * Check for particular button availability
 	 * 
 	 * @param buttonName - the button name
 	 * @param avalableButtons - array with enabled buttons
