@@ -227,12 +227,13 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
-			<source>system/workplace/editors/tinymce/gallery.js</source>
-			<destination>system/workplace/editors/tinymce/gallery.js</destination>
+		
+				<file>
+			<source>system/workplace/editors/tinymce/opencms_plugin.js</source>
+			<destination>system/workplace/editors/tinymce/opencms_plugin.js</destination>
 			<type>jsp</type>
-			<uuidstructure>67a6d031-9026-4b23-bb5f-a900b8741ddb</uuidstructure>
-			<uuidresource>67a6d032-9026-4b23-bb5f-a900b8741ddb</uuidresource>
+			<uuidstructure>5300593b-150f-48c0-9d1e-cc7884613ba6</uuidstructure>
+			<uuidresource>5300593c-150f-48c0-9d1e-cc7884613ba6</uuidresource>
 			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
@@ -247,34 +248,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
-		<file>
-			<source>system/workplace/editors/tinymce/link.js</source>
-			<destination>system/workplace/editors/tinymce/link.js</destination>
-			<type>jsp</type>
-			<uuidstructure>8334c651-0cfb-4e76-b6a9-a0944d3431f4</uuidstructure>
-			<uuidresource>8334c652-0cfb-4e76-b6a9-a0944d3431f4</uuidresource>
-			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		
-		
-		
-		
-		
-		
 		
 		<file>
 			<source>system/workplace/editors/tinymce/integrator.js</source>

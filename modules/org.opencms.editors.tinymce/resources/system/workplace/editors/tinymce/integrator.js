@@ -59,7 +59,7 @@ var Ok =function(){
  * Closes the dialog without setting any data.<p>
  */
 function closeDialog(){
-   window.parent.closeGalleryDialog();
+   tinyMCEPopup.close();
 }
 
 /**

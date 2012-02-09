@@ -1,9 +1,6 @@
 package org.opencms.editors.tinymce;
 
 import java.util.Iterator;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
@@ -16,6 +13,10 @@ import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
 
@@ -102,6 +103,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
         // general TinyMCE JS
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tiny_mce/tiny_mce.js"));
         result.append("\n");
+        result.append(getJSIncludeFile(OpenCms.getLinkManager().substituteLinkForRootPath(
+            cms,
+            "/system/workplace/editors/tinymce/opencms_plugin.js")));
+        result.append("\n");
         // special TinyMCE widget functions
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/tinymce.js"));
         return result.toString();
@@ -140,7 +145,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_"+id+"\",\n");
         result.append("	theme : \"advanced\",\n");
-        result.append("	plugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave");
+        result.append("	plugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave,-opencms");
         
         //check for fullpage mode
         if(getHtmlWidgetOption().isFullPage()){
