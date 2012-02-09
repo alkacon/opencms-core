@@ -1,7 +1,5 @@
 package org.opencms.editors.tinymce;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -105,6 +103,9 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
         return result.toString();
     }
     
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
 	public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 		String id = param.getId();
         String value = param.getStringValue(cms);
@@ -174,6 +175,11 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
 		return new CmsTinyMCEWidget(getHtmlWidgetOption());
 	}
 	
+	/**
+	 * Builds the toolbar.
+	 * 
+	 * @return Javascript code for toolbar configuration
+	 */
 	private String getToolbar(){
 		String buttonString = getHtmlWidgetOption().getButtonBar(BUTTON_TRANSLATION_MAP, ",", false) ;
 		
@@ -213,6 +219,13 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
 		return toolbar.toString();
 	}
 
+	/**
+	 * Checks for particular availability
+	 * 
+	 * @param buttonName - the button name
+	 * @param avalableButtons - array with enabled buttons
+	 * @return true if this button is enabled
+	 */
 	private boolean isEnabledButton(String buttonName, String[] avalableButtons){
 		boolean result = false ;
 		for(int i=0 ; i < avalableButtons.length; i++){
