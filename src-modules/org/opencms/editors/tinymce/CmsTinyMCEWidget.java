@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
@@ -191,6 +193,17 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
             result.append("content_css : \"");
             result.append(OpenCms.getLinkManager().substituteLink(cms, cssPath));
             result.append("\",\n");
+        }
+        
+        if(getHtmlWidgetOption().showStylesFormat()){
+        	try{
+        		CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath()) ;
+        		String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding() ;
+        		String formatSelect = "style_formats : " + new String(file.getContents(),characterEncoding) + ",\n";
+        		result.append(formatSelect) ;
+        	} catch(Exception e){
+        		// nothing to do
+        	}
         }
         
         result.append("	// Drop lists for link/image/media/template dialogs\n");

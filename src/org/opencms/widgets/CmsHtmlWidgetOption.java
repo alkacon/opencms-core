@@ -72,6 +72,8 @@ import java.util.Map;
  * <li><code>source</code>: shows the source code toggle button(s)</li>
  * <li><code>stylesxml:/vfs/path/to/stylefile.xml</code>: the absolute path in the OpenCms VFS to the user defined
  *     styles that should be displayed in the style selector (availability depends on the integrated editor)</li>
+ * <li><code>stylesformat:/vfs/path/to/stylefile.xml</code>: the absolute path in the OpenCms VFS to the user defined
+ *     styles format that should be displayed in the style selector (availability depends on the integrated editor)</li>
  * <li><code>table</code>: the table dialog button (availability depends on the integrated editor)</li>
  * </ul>
  * Some things like the button bar items should be defined in the global widget configuration of the file <code>opencms-vfs.xml</code>.<p>
@@ -162,6 +164,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the styles XML VFS path to use in the widget area. */
     public static final String OPTION_STYLES = "stylesxml:";
 
+    /** Option for the styles format VFS path to use in the widget area. */
+    public static final String OPTION_STYLES_FORMAT = "stylesformat:";
+    
     /** Option for the "table" dialog. */
     public static final String OPTION_TABLE = "table";
 
@@ -337,6 +342,7 @@ public class CmsHtmlWidgetOption {
     private boolean m_fullPage;
     private List<String> m_hiddenButtons;
     private String m_stylesXmlPath;
+    private String m_stylesFormatPath;
 
     /**
      * Creates a new empty HTML widget object object.<p>
@@ -659,7 +665,7 @@ public class CmsHtmlWidgetOption {
                             }
                         } else if (OPTION_STYLE.equals(barItem)) {
                             // special handling of style select box to be shown only if a path to the styles XML had been defined
-                            if (!showStylesXml()) {
+                            if ((!showStylesXml()) && (!showStylesFormat())) {
                                 // skip if no path has been defined
                                 continue;
                             }
@@ -740,6 +746,16 @@ public class CmsHtmlWidgetOption {
         return m_stylesXmlPath;
     }
 
+    /**
+     * Returns the styles format VFS path to use in the widget area.<p>
+     *
+     * @return the styles XML format path to use in the widget area
+     */
+    public String getStylesFormatPath() {
+
+        return m_stylesFormatPath;
+    }
+    
     /**
      * Initializes the widget options from the given configuration String.<p>
      * 
@@ -893,6 +909,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Sets the styles format VFS path to use in the widget area.<p>
+     *
+     * @param stylesFormatPath the styles XML VFS path to use in the widget area
+     */
+    public void setStylesFormatPath(String stylesFormatPath) {
+
+        m_stylesFormatPath = stylesFormatPath;
+    }
+    
+    /**
      * Returns true if the anchor dialog button should be available.<p>
      * 
      * @return if the anchor dialog button should be available
@@ -963,6 +989,16 @@ public class CmsHtmlWidgetOption {
         return CmsStringUtil.isNotEmpty(getStylesXmlPath());
     }
 
+    /**
+     * Returns true if the styles format selector should be available.<p>
+     *
+     * @return if the styles format selector should be available
+     */
+    public boolean showStylesFormat() {
+
+        return CmsStringUtil.isNotEmpty(getStylesFormatPath());
+    }
+    
     /**
      * Returns true if the table dialog button should be available.<p>
      *
@@ -1049,6 +1085,10 @@ public class CmsHtmlWidgetOption {
                     // the editor styles XML path
                     option = option.substring(OPTION_STYLES.length());
                     setStylesXmlPath(option);
+                } else if (option.startsWith(OPTION_STYLES_FORMAT)) {
+                    // the editor styles format path
+                    option = option.substring(OPTION_STYLES_FORMAT.length());
+                    setStylesFormatPath(option);
                 } else if (option.startsWith(OPTION_BUTTONBAR)) {
                     // the button bar definition string
                     option = option.substring(OPTION_BUTTONBAR.length());
