@@ -666,9 +666,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidget(org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidget(org.opencms.xml.types.I_CmsXmlSchemaType)
      */
-    public I_CmsWidget getWidget(I_CmsXmlContentValue value) {
+    public I_CmsWidget getWidget(I_CmsXmlSchemaType value) {
 
         // try the specific widget settings first
         I_CmsWidget result = m_elementWidgets.get(value.getName());

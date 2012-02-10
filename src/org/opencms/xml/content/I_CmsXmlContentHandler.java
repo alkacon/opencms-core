@@ -265,7 +265,7 @@ public interface I_CmsXmlContentHandler {
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    I_CmsWidget getWidget(I_CmsXmlContentValue value) throws CmsXmlException;
+    I_CmsWidget getWidget(I_CmsXmlSchemaType value) throws CmsXmlException;
 
     /**
      * Initializes this content handler for the given XML content definition by
