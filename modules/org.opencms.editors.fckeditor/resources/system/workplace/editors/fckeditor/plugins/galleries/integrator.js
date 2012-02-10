@@ -146,13 +146,15 @@ function getImageInfo(){
 function _collectAttributes(element, attributes){
     var attributeNames = ['alt', 'align', 'clazz', 'dir', 'height', 'hspace', 'id', 'lang', 'longDesc', 'style', 'title', 'vspace', 'width'];
     var value;
+    var null_marker = "cms_null_aslkj239fhoih9";
     for (var i=0; i<attributeNames.length; i++){
+       var attrName = attributeNames[i];
         if (attributeNames[i]!='clazz'){
-            value=GetAttribute(element, attributeNames[i], null);
+            value=GetAttribute(element, attrName, null_marker);
         }else{
-            value=GetAttribute(element, 'class', null);
+            value=GetAttribute(element, 'class', null_marker);
         }
-        if (value!=null){
+        if (value!=null_marker){
             if (attributeNames[i]=='style' && hasEnhancedImageOptions()){
                 value= value.replace(/margin-right:\s*\d+px;/, "");
                 value= value.replace(/margin-bottom:\s*\d+px;/, "");
@@ -195,6 +197,7 @@ function _collectAttributes(element, attributes){
         attributes.hspace= ""+hspaceValue;
     }
 }
+
 
 /**
  * Returns the availability of enhanced image options.<p>
