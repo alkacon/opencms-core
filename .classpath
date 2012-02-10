@@ -85,5 +85,7 @@
 	<classpathentry kind="lib" path="lib/runtime/lucene-highlighter-3.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/lucene-memory-3.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/lucene-queries-3.4.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/forms"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/VIE-WRAPPER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
