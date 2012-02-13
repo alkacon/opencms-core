@@ -3,6 +3,8 @@ package org.opencms.editors.tinymce;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsHtmlWidget;
@@ -14,10 +16,12 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
 
 public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
 
@@ -64,6 +68,9 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
     			,"template","pagebreak","selectall","OcmsImageGallery","OcmsDownloadGallery","OcmsLinkGallery","OcmsHtmlGallery"
     			,"OcmsTableGallery","oc-link","fullpage"}
     } ;
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.editors.tinymce.CmsTinyMCEWidget.class);
     
 	/**
      * Creates a new TinyMCE widget.<p>
@@ -200,13 +207,15 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
         }
         
         if(getHtmlWidgetOption().showStylesFormat()){
-        	try{
+        	try {
         		CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath()) ;
         		String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding() ;
         		String formatSelect = "style_formats : " + new String(file.getContents(),characterEncoding) + ",\n";
         		result.append(formatSelect) ;
-        	} catch(Exception e){
-        		// nothing to do
+        	} catch(CmsException cmsException){
+        		LOG.error("Can not open file:"+getHtmlWidgetOption().getStylesFormatPath(),cmsException);
+        	} catch(UnsupportedEncodingException ex){
+        		LOG.error(ex) ;
         	}
         }
         
