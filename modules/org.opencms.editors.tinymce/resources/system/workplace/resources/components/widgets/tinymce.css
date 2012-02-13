@@ -1,0 +1,18 @@
+
+/* These rules are used for laying out TinyMCE's button toolbar rows next to each other, not as rows. */
+
+.mceIframeContainer, .mceIframeContainer iframe {
+	height: 100% !important; 
+}
+
+.mceToolbar table {
+                float: left;
+}
+                    
+.mceToolbar select {
+       width: auto !important;
+}
+                    
+.mceToolbar option {
+  float: none; 
+}
