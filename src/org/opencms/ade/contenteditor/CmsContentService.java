@@ -33,6 +33,7 @@ import com.alkacon.acacia.shared.Entity;
 import com.alkacon.acacia.shared.Type;
 import com.alkacon.vie.shared.I_Entity;
 import com.alkacon.vie.shared.I_EntityAttribute;
+import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
@@ -72,6 +73,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
+import org.dom4j.Element;
+
 /**
  * Service to provide entity persistence within OpenCms.<p>
  */
@@ -89,7 +92,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         private CmsMultiMessages m_messages;
 
         /** The registered types. */
-        private Map<String, Type> m_registeredTypes;
+        private Map<String, I_Type> m_registeredTypes;
 
         /**
          * Returns the attribute configurations.<p>
@@ -106,7 +109,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          * 
          * @return the types
          */
-        protected Map<String, Type> getTypes() {
+        protected Map<String, I_Type> getTypes() {
 
             return m_registeredTypes;
         }
@@ -131,7 +134,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             // generate a new multi messages object and add the messages from the workplace
 
             m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
-            m_registeredTypes = new HashMap<String, Type>();
+            m_registeredTypes = new HashMap<String, I_Type>();
             readTypes(xmlContentDefinition);
         }
 
@@ -413,8 +416,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * Parses the element into an entity.<p>
      * 
      * @param content the entity content
+     * @param element the current element
      * @param locale the content locale
-     * @param path the parent path
      * @param entityId the entity id
      * @param typeName the entity type name
      * @param registeredTypes the types used within the entity
@@ -423,29 +426,35 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     protected Entity readEntity(
         CmsXmlContent content,
+        Element element,
         Locale locale,
-        String path,
         String entityId,
         String typeName,
-        Map<String, Type> registeredTypes) {
+        Map<String, I_Type> registeredTypes) {
 
         Entity result = new Entity(entityId, typeName);
-        List<I_CmsXmlContentValue> elements = content.getSubValues(path, locale);
-        Type type = registeredTypes.get(typeName);
+        @SuppressWarnings("unchecked")
+        List<Element> elements = element.elements();
+        I_Type type = registeredTypes.get(typeName);
         int counter = 0;
-        for (I_CmsXmlContentValue element : elements) {
-            String attributeName = getAttributeName(element.getName(), typeName);
-            if (element.isSimpleType()) {
-                result.addAttributeValue(attributeName, element.getStringValue(getCmsObject()));
+        CmsObject cms = getCmsObject();
+        for (Element child : elements) {
+            String attributeName = getAttributeName(child.getName(), typeName);
+            String subTypeName = type.getAttributeTypeName(attributeName);
+            if (registeredTypes.get(subTypeName).isSimpleType()) {
+                String path = removeFirstTwoPathLevel(child.getPath());
+                I_CmsXmlContentValue value = content.getValue(path, locale);
+                result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
-                String subTypeName = type.getAttributeTypeName(attributeName);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(subTypeName)) {
-                    Entity subEntity = readEntity(content, locale, path + element.getName() + "/", entityId
-                        + "/"
-                        + attributeName
-                        + counter, subTypeName, registeredTypes);
-                    result.addAttributeValue(attributeName, subEntity);
-                }
+                Entity subEntity = readEntity(
+                    content,
+                    child,
+                    locale,
+                    entityId + "/" + attributeName + counter,
+                    subTypeName,
+                    registeredTypes);
+                result.addAttributeValue(attributeName, subEntity);
+
             }
         }
         return result;
@@ -460,7 +469,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * 
      * @return the types of the given content definition 
      */
-    protected Map<String, Type> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
+    protected Map<String, I_Type> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
 
         TypeVisitor visitor = new TypeVisitor();
         visitor.visitTypes(xmlContentDefinition, locale);
@@ -542,10 +551,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         visitor.visitTypes(content.getContentDefinition(), locale);
         Entity entity = null;
         if (content.hasLocale(locale)) {
+            Element element = content.getLocaleNode(locale);
             entity = readEntity(
                 content,
+                element,
                 locale,
-                "/",
                 entityId,
                 getTypeUri(content.getContentDefinition()),
                 visitor.getTypes());
@@ -555,6 +565,19 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             visitor.getAttributeConfigurations(),
             visitor.getTypes(),
             locale.toString());
+    }
+
+    /**
+     * Removes the first two path levels.<p>
+     * 
+     * @param path the path
+     * 
+     * @return the shortened path
+     */
+    private String removeFirstTwoPathLevel(String path) {
+
+        int index = path.indexOf("/", 1);
+        return path.substring(path.indexOf("/", index + 1));
     }
 
     /**

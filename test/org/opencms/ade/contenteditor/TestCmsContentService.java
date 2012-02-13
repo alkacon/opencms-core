@@ -28,7 +28,7 @@
 package org.opencms.ade.contenteditor;
 
 import com.alkacon.acacia.shared.Entity;
-import com.alkacon.acacia.shared.Type;
+import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.util.CmsFileUtil;
@@ -41,6 +41,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import junit.framework.TestCase;
+
+import org.dom4j.Element;
 
 /**
  * Tests the content service for generating serializable XML content entities and type definitions and persisting those entities.<p>
@@ -75,7 +77,7 @@ public class TestCmsContentService extends TestCase {
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
         baseTypeName = service.getTypeUri(definition);
-        Map<String, Type> registeredTypes = service.readTypes(definition, new Locale("en"));
+        Map<String, I_Type> registeredTypes = service.readTypes(definition, new Locale("en"));
 
         assertFalse("Registered types should not be empty", registeredTypes.isEmpty());
         assertTrue("Registered types should contain type: " + baseTypeName, registeredTypes.containsKey(baseTypeName));
@@ -98,7 +100,7 @@ public class TestCmsContentService extends TestCase {
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
         baseTypeName = service.getTypeUri(definition);
-        Map<String, Type> registeredTypes = service.readTypes(definition, locale);
+        Map<String, I_Type> registeredTypes = service.readTypes(definition, locale);
 
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
         CmsXmlEntityResolver.cacheSystemId(
@@ -109,7 +111,8 @@ public class TestCmsContentService extends TestCase {
         Entity result = null;
 
         if (xmlcontent.hasLocale(locale)) {
-            result = service.readEntity(xmlcontent, locale, "/", "myEntity", baseTypeName, registeredTypes);
+            Element element = xmlcontent.getLocaleNode(locale);
+            result = service.readEntity(xmlcontent, element, locale, "myEntity", baseTypeName, registeredTypes);
         }
         assertNotNull("Result should not be null", result);
         // TODO: check out the result some more to ensure success
