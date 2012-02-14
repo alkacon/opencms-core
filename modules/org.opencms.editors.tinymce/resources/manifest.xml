@@ -229,6 +229,29 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/editors/tinymce/htmlgallery_integrator.js</source>
+			<destination>system/workplace/editors/tinymce/htmlgallery_integrator.js</destination>
+			<type>jsp</type>
+			<uuidstructure>45b5acf2-f3ee-4246-bc81-b0f659721e7f</uuidstructure>
+			<uuidresource>45b5acf3-f3ee-4246-bc81-b0f659721e7f</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		<file>
 			<source>system/workplace/editors/tinymce/editor_configuration.xml</source>
 			<destination>system/workplace/editors/tinymce/editor_configuration.xml</destination>
 			<type>plain</type>
@@ -7146,6 +7169,22 @@
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
 				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif</destination>
+			<type>image</type>
+			<uuidstructure>5de1b9cb-c911-4e5f-b9c2-dc1dc66695fb</uuidstructure>
+			<uuidresource>5de1b9cc-c911-4e5f-b9c2-dc1dc66695fb</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 			</properties>
 			<relations/>
 			<accesscontrol/>
