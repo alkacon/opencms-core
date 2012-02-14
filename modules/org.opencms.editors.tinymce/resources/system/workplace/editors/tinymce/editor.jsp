@@ -741,7 +741,6 @@ tinyMCE.init({
     plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,-opencms",
 
     // Theme options
-
     <%= CmsTinyMCE.buildToolbar(toolbar.toString())%>
     theme_advanced_toolbar_location : "top",
     theme_advanced_toolbar_align : "left",

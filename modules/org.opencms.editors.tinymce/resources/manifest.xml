@@ -249,6 +249,28 @@
 			<accesscontrol/>
 		</file>
 		
+		<file>
+			<source>system/workplace/editors/tinymce/linkgallery_integrator.js</source>
+			<destination>system/workplace/editors/tinymce/linkgallery_integrator.js</destination>
+			<type>jsp</type>
+			<uuidstructure>4800fbde-7710-4d59-a878-8aad4be219a1</uuidstructure>
+			<uuidresource>4800fbdf-7710-4d59-a878-8aad4be219a1</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
 		
 		
 		<file>
@@ -7173,6 +7195,29 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif</destination>
+			<type>image</type>
+			<uuidstructure>066dc610-7222-476a-adc3-352bb4e81035</uuidstructure>
+			<uuidresource>066dc611-7222-476a-adc3-352bb4e81035</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		
+		
+		
+		
 		<file>
 			<source>system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif</source>
 			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif</destination>

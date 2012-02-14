@@ -160,6 +160,21 @@ function downloadGalleryDialogUrl() {
    return createGalleryDialogUrl(getDownloadSelectionPath(), "binary");
 }
 
+function linkGalleryDialogUrl() {
+      var resParam = "";
+       var editFrame=findFrame(self, 'edit');
+      if (editFrame.editedResource != null) {
+         resParam = "&resource=" + editFrame.editedResource;
+      } else {
+         resParam = "&resource=" + editFrame.editform.editedResource;
+      }
+      var baseLink =  "<cms:link>/system/workplace/galleries/linkgallery/index.jsp</cms:link>";
+      var integrator = "/system/workplace/editors/tinymce/linkgallery_integrator.js";
+      var integratorParam = "&integrator=" + integrator;  
+      return baseLink + "?dialogmode=editor"+resParam+integratorParam;
+   
+}
+
 var USE_LINKSTYLEINPUTS = <%= options.showElement("option.linkstyleinputs", displayOptions) %>;
 
 // opens the link dialog window
@@ -300,6 +315,13 @@ tinymce.create('tinymce.opencms', {
          ed.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
       });
       
+      ed.addCommand("cmsLinkGallery", function() {
+         var width = 685;
+         var height = 600;
+         var url = linkGalleryDialogUrl();
+         ed.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
+      });
+      
       ed.addButton('OcmsImageGallery', {
          title: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
          image: '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-imagegallery.gif")%>',
@@ -319,9 +341,15 @@ tinymce.create('tinymce.opencms', {
        });
       
       ed.addButton('OcmsHtmlGallery', {
-         title : 'HTML galleries'',
+         title : 'HTML galleries',
          image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif")%>',
          cmd: 'cmsHtmlGallery'
+      });
+      
+      ed.addButton('OcmsLinkGallery', { 
+         title : 'Link galleries',
+         image: '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif")%>',
+         cmd : 'cmsLinkGallery'
       });
       
       ed.onInit.add(function(ed) {
