@@ -117,7 +117,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         String value = param.getStringValue(cms);
         StringBuilder result = new StringBuilder();
 
-        result.append("<td class=\"xmlTd\">");
+        result.append("<td class=\"cmsTinyMCE xmlTd\">");
 
         result.append("<textarea class=\"xmlInput maxwidth\" name=\"ta_");
         result.append(id);
@@ -142,6 +142,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_" + id + "\",\n");
         result.append("	theme : \"advanced\",\n");
+        result.append("setup : function(editor) { setupTinyMCE(editor); },\n");
         result.append("	plugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave,-opencms");
 
         //check for fullpage mode

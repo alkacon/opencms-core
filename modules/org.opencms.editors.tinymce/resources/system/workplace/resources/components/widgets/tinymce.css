@@ -5,8 +5,9 @@
 	height: 100% !important; 
 }
 
-.mceToolbar table {
-                float: left;
+/* Use the cmsTinyMCE class here because we need to turn the float off/on dynamically to fix a layout problem in Chrome. */
+.cmsTinyMCE .mceToolbar table {
+   float: left;
 }
                     
 .mceToolbar select {
