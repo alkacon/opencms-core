@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.vie.shared.I_Entity;
 
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
@@ -62,6 +63,7 @@ public class CmsInlineEditor {
      */
     public CmsInlineEditor() {
 
+        I_LayoutBundle.INSTANCE.inline().ensureInjected();
         I_CmsContentServiceAsync service = GWT.create(I_CmsContentService.class);
         String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt");
         ((ServiceDefTarget)service).setServiceEntryPoint(serviceUrl);

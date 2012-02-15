@@ -67,7 +67,7 @@ public class CmsContentEditor extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        I_LayoutBundle.INSTANCE.style().ensureInjected();
+        I_LayoutBundle.INSTANCE.form().ensureInjected();
         I_CmsContentServiceAsync service = GWT.create(I_CmsContentService.class);
         String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt");
         ((ServiceDefTarget)service).setServiceEntryPoint(serviceUrl);
