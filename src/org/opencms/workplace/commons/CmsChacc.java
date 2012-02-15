@@ -152,6 +152,8 @@ public class CmsChacc extends CmsDialog {
     /** The type parameter. */
     private String m_paramType;
 
+    private String m_paramUuid;
+
     /** Stores all possible permission keys of a permission set. */
     private Set m_permissionKeys = CmsPermissionSet.getPermissionKeys();
 
@@ -501,6 +503,7 @@ public class CmsChacc extends CmsDialog {
         String file = getParamResource();
         String name = getParamName();
         String type = getParamType();
+        String uuid = getParamUuid();
         try {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
@@ -510,7 +513,12 @@ public class CmsChacc extends CmsDialog {
                 // translate the internal group name to a role name
                 name = role.getFqn();
             }
-            getCms().rmacc(file, type, name);
+            try {
+                getCms().rmacc(file, type, name);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                getCms().rmacc(file, type, uuid);
+            }
             return true;
         } catch (CmsException e) {
             m_errorMessages.add(key(Messages.ERR_CHACC_DELETE_ENTRY_0));
@@ -859,6 +867,11 @@ public class CmsChacc extends CmsDialog {
         return m_paramType;
     }
 
+    public String getParamUuid() {
+
+        return m_paramUuid;
+    }
+
     /**
      * Returns if the inherited permissions information should be displayed.<p>
      *
@@ -957,6 +970,11 @@ public class CmsChacc extends CmsDialog {
     public void setParamType(String value) {
 
         m_paramType = value;
+    }
+
+    public void setParamUuid(String uuid) {
+
+        m_paramUuid = uuid;
     }
 
     /**
@@ -1442,9 +1460,9 @@ public class CmsChacc extends CmsDialog {
             }
         } else if ((principal != null) && principal.isGroup()) {
             String niceName = OpenCms.getWorkplaceManager().translateGroupName(principal.getName(), false);
-            name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
-                ((CmsGroup)principal).getDescription(getLocale()),
-                niceName});
+            name = key(
+                org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2,
+                new Object[] {((CmsGroup)principal).getDescription(getLocale()), niceName});
             ou = CmsOrganizationalUnit.getParentFqn(id);
             flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
         } else if ((principal != null) && principal.isUser()) {
@@ -1502,6 +1520,7 @@ public class CmsChacc extends CmsDialog {
         // set the parameters for the hidden fields
         setParamType(type);
         setParamName(id);
+        setParamUuid(entry.getPrincipal().toString());
 
         // set id value for html attributes
         String idValue = type + id + entry.getResource();
