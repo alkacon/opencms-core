@@ -5,5 +5,5 @@ CmsContentEditorActionElement actionElement=new CmsContentEditorActionElement(pa
 	<head>
 	<%= actionElement.exportAll() %>
 	</head>
-	<body style="margin: 0px;">&nbsp;</body>
+	<body style="width: 90%; margin: 20px auto;">&nbsp;</body>
 </html>
