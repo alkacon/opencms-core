@@ -84,6 +84,9 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     /** The overlay for expired elements. */
     private Element m_expiredOverlay;
 
+    /** A flag which indicates whether the height has already been checked. */
+    private boolean m_checkedHeight;
+
     /** Indicates whether this element has settings to edit. */
     private boolean m_hasSettings;
 
@@ -601,11 +604,15 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     @Override
     protected void onLoad() {
 
-        if (getOffsetHeight() < NECESSARY_HEIGHT) {
-            if (m_parent instanceof CmsContainerPageContainer) {
-                CmsContainerpageController.get().getHandler().enableShowSmallElements();
-                //            CmsContainerpageController.get().enableShowSmallElementsButton();
-                addStyleName(org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
+        if (!m_checkedHeight) {
+            m_checkedHeight = true;
+            if (getOffsetHeight() < NECESSARY_HEIGHT) {
+                m_checkedHeight = true;
+                if (m_parent instanceof CmsContainerPageContainer) {
+                    CmsContainerpageController.get().getHandler().enableShowSmallElements();
+                    //            CmsContainerpageController.get().enableShowSmallElementsButton();
+                    addStyleName(org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
+                }
             }
         }
         resetOptionbar();
