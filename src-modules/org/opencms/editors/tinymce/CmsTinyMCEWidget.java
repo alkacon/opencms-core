@@ -1,3 +1,4 @@
+
 package org.opencms.editors.tinymce;
 
 import org.opencms.file.CmsFile;
@@ -17,62 +18,47 @@ import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
-public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
+public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
-	/** Request parameter name for the tool bar configuration parameter. */
+    /** Request parameter name for the tool bar configuration parameter. */
     public static final String PARAM_CONFIGURATION = "config";
-	
+
     /** The translation of the generic widget button names to TinyMCE specific button names. */
     public static final String BUTTON_TRANSLATION =
-    		/* Row 1*/
-    		"|newdocument:newdocument|bold:bold|italic:italic|underline:underline|strikethrough:strikethrough|alignleft:justifyleft"
-    		+"|aligncenter:justifycenter|alignright:justifyright|justify:justifyfull|style:styleselect|formatselect:formatselect"
-    		+"|fontselect:fontselect|fontsizeselect:fontsizeselect"
-    		/* Row 2*/
-    		+"|cut:cut|copy:copy|paste:paste|pastetext:pastetext|pasteword:pasteword|find:search|replace:replace|unorderedlist:bullist"
-    		+"|orderedlist:numlist|outdent:outdent|indent:indent|blockquote:blockquote|undo:undo|redo:redo|editorlink:link|unlink:unlink"
-    		+"|anchor:anchor|image:image|cleanup:cleanup|source:code|insertdate:insertdate|inserttime:inserttime|forecolor:forecolor|backcolor:backcolor"
-    		/* Row 3*/
-    		+"|table:tablecontrols|hr:hr|removeformat:removeformat|visualaid:visualaid|subscript:sub|superscript:sup|specialchar:charmap"
-    		+"|emotions:emotions|spellcheck:iespell|media:media|advhr:advhr|print:print|ltr:ltr|rtl:rtl|fitwindow:fullscreen"
-    		/* Row 4*/
-    		+"|insertlayer:insertlayer|moveforward:moveforward|movebackward:movebackward|absolute:absolute|styleprops:styleprops|cite:cite"
-    		+"|abbr:abbr|acronym:acronym|del:del|ins:ins|attribs:attribs|visualchars:visualchars|nonbreaking:nonbreaking|template:template"
-    		+"|pagebreak:pagebreak|selectall:selectall|fullpage:fullpage|imagegallery:OcmsImageGallery|downloadgallery:OcmsDownloadGallery"
-    		+"|linkgallery:OcmsLinkGallery|htmlgallery:OcmsHtmlGallery|tablegallery:OcmsTableGallery|link:oc-link";
-    
+    /* Row 1*/
+    "|newdocument:newdocument|bold:bold|italic:italic|underline:underline|strikethrough:strikethrough|alignleft:justifyleft"
+        + "|aligncenter:justifycenter|alignright:justifyright|justify:justifyfull|style:styleselect|formatselect:formatselect"
+        + "|fontselect:fontselect|fontsizeselect:fontsizeselect"
+        /* Row 2*/
+        + "|cut:cut|copy:copy|paste:paste|pastetext:pastetext|pasteword:pasteword|find:search|replace:replace|unorderedlist:bullist"
+        + "|orderedlist:numlist|outdent:outdent|indent:indent|blockquote:blockquote|undo:undo|redo:redo|editorlink:link|unlink:unlink"
+        + "|anchor:anchor|image:image|cleanup:cleanup|source:code|insertdate:insertdate|inserttime:inserttime|forecolor:forecolor|backcolor:backcolor"
+        /* Row 3*/
+        + "|table:tablecontrols|hr:hr|removeformat:removeformat|visualaid:visualaid|subscript:sub|superscript:sup|specialchar:charmap"
+        + "|emotions:emotions|spellcheck:iespell|media:media|advhr:advhr|print:print|ltr:ltr|rtl:rtl|fitwindow:fullscreen"
+        /* Row 4*/
+        + "|insertlayer:insertlayer|moveforward:moveforward|movebackward:movebackward|absolute:absolute|styleprops:styleprops|cite:cite"
+        + "|abbr:abbr|acronym:acronym|del:del|ins:ins|attribs:attribs|visualchars:visualchars|nonbreaking:nonbreaking|template:template"
+        + "|pagebreak:pagebreak|selectall:selectall|fullpage:fullpage|imagegallery:OcmsImageGallery|downloadgallery:OcmsDownloadGallery"
+        + "|linkgallery:OcmsLinkGallery|htmlgallery:OcmsHtmlGallery|tablegallery:OcmsTableGallery|link:oc-link";
+
     /** The map containing the translation of the generic widget button names to TinyMCE specific button names. */
     public static final Map<String, String> BUTTON_TRANSLATION_MAP = CmsStringUtil.splitAsMap(
         BUTTON_TRANSLATION,
         "|",
         ":");
-    
-    /* Map TinyMCE buttons to particular row in the toolbar. */
-    private static final String[][] m_toolbarMap = {
-    		/* Row 1*/
-    		{"newdocument","bold","italic","underline","strikethrough","justifyleft","justifycenter","justifyright","justifyfull","styleselect"
-    			,"formatselect","fontselect","fontsizeselect"},
-    		/* Row 2*/
-    		{"cut","copy","paste","pastetext","pasteword","search","replace","bullist","numlist","outdent","indent","blockquote","undo","redo"
-    			,"link","unlink","anchor","image","cleanup","code","insertdate","inserttime","forecolor","backcolor"},
-    		/* Row 3*/
-    		{"tablecontrols","hr","removeformat","visualaid","sub","sup","charmap","emotions","iespell","media","advhr","print","ltr","rtl","fullscreen"},
-    		/* Row 4*/
-    		{"insertlayer","moveforward","movebackward","absolute","styleprops","cite","abbr","acronym","del","ins","attribs","visualchars","nonbreaking"
-    			,"template","pagebreak","selectall","OcmsImageGallery","OcmsDownloadGallery","OcmsLinkGallery","OcmsHtmlGallery"
-    			,"OcmsTableGallery","oc-link","fullpage"}
-    } ;
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.editors.tinymce.CmsTinyMCEWidget.class);
-    
-	/**
+
+    /**
      * Creates a new TinyMCE widget.<p>
      */
     public CmsTinyMCEWidget() {
@@ -80,7 +66,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
         // empty constructor is required for class registration
         this("");
     }
-    
+
     /**
      * Creates a new TinyMCE widget with the given configuration.<p>
      * 
@@ -100,7 +86,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
 
         super(configuration);
     }
-    
+
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
@@ -117,18 +103,21 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
         result.append("\n");
         // special TinyMCE widget functions
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/tinymce.js"));
+        String cssUri = CmsWorkplace.getSkinUri() + "components/widgets/tinymce.css";
+        result.append("<link type='text/css' rel='stylesheet' href='" + cssUri + "'>");
         return result.toString();
     }
-    
+
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
-	public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
-		String id = param.getId();
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        String id = param.getId();
         String value = param.getStringValue(cms);
         StringBuilder result = new StringBuilder();
 
-        result.append("<td class=\"xmlTd\">");
+        result.append("<td class=\"cmsTinyMCE xmlTd\">");
 
         result.append("<textarea class=\"xmlInput maxwidth\" name=\"ta_");
         result.append(id);
@@ -151,26 +140,29 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
         result.append("tinyMCE.init({\n");
         result.append("	// General options\n");
         result.append("	mode : \"exact\",\n");
-        result.append("	elements : \"ta_"+id+"\",\n");
+        result.append("	elements : \"ta_" + id + "\",\n");
         result.append("	theme : \"advanced\",\n");
+        result.append("setup : function(editor) { setupTinyMCE(editor); },\n");
         result.append("	plugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave,-opencms");
-        
+
         //check for fullpage mode
-        if(getHtmlWidgetOption().isFullPage()){
-        	// add fullpage plugin
-        	result.append(",fullpage") ;
+        if (getHtmlWidgetOption().isFullPage()) {
+            // add fullpage plugin
+            result.append(",fullpage");
         }
-        
-        result.append("\",\n") ;
-        
+
+        result.append("\",\n");
+
         result.append("	// Theme options\n");
-        result.append(getToolbar()) ;
-        
+        result.append(getToolbar());
+
         result.append("	theme_advanced_toolbar_location : \"top\",\n");
         result.append("	theme_advanced_toolbar_align : \"left\",\n");
         result.append("	theme_advanced_statusbar_location : \"bottom\",\n");
-        result.append("	theme_advanced_resizing : true,\n");
-        
+        result.append("width: '100%',");
+        result.append("	theme_advanced_resizing : false,\n");
+        result.append("theme_advanced_resizing_use_cookie : false,\n");
+
         // set CSS style sheet for current editor widget if configured
         boolean cssConfigured = false;
         String cssPath = "";
@@ -205,102 +197,99 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget{
             result.append(OpenCms.getLinkManager().substituteLink(cms, cssPath));
             result.append("\",\n");
         }
-        
-        if(getHtmlWidgetOption().showStylesFormat()){
-        	try {
-        		CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath()) ;
-        		String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding() ;
-        		String formatSelect = "style_formats : " + new String(file.getContents(),characterEncoding) + ",\n";
-        		result.append(formatSelect) ;
-        	} catch(CmsException cmsException){
-        		LOG.error("Can not open file:"+getHtmlWidgetOption().getStylesFormatPath(),cmsException);
-        	} catch(UnsupportedEncodingException ex){
-        		LOG.error(ex) ;
-        	}
+
+        if (getHtmlWidgetOption().showStylesFormat()) {
+            try {
+                CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath());
+                String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                String formatSelect = "style_formats : " + new String(file.getContents(), characterEncoding) + ",\n";
+                result.append(formatSelect);
+            } catch (CmsException cmsException) {
+                LOG.error("Can not open file:" + getHtmlWidgetOption().getStylesFormatPath(), cmsException);
+            } catch (UnsupportedEncodingException ex) {
+                LOG.error(ex);
+            }
         }
-        
+
         result.append("	// Drop lists for link/image/media/template dialogs\n");
         result.append("	template_external_list_url : \"lists/template_list.js\",\n");
         result.append("	external_link_list_url : \"lists/link_list.js\",\n");
         result.append("	external_image_list_url : \"lists/image_list.js\",\n");
         result.append("	media_external_list_url : \"lists/media_list.js\"\n");
         result.append("});\n");
-        
+
         result.append("contentFields[contentFields.length] = document.getElementById(\"").append(id).append("\");\n");
-        
+
         result.append("</script>\n");
         result.append("</td>");
 
         return result.toString();
-	}
+    }
 
-	/**
+    /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
-	public I_CmsWidget newInstance() {
-		return new CmsTinyMCEWidget(getHtmlWidgetOption());
-	}
-	
-	/**
-	 * Builds the toolbar.
-	 * 
-	 * @return Javascript code for toolbar configuration
-	 */
-	private String getToolbar(){
-		String buttonString = getHtmlWidgetOption().getButtonBar(BUTTON_TRANSLATION_MAP, ",", false) ;
-		
-		buttonString = StringUtils.replace(buttonString, "[", "") ;
-		buttonString = StringUtils.replace(buttonString, "]", "") ;
-		buttonString = StringUtils.replace(buttonString, ",-,", ",") ;
+    public I_CmsWidget newInstance() {
 
-		if(getHtmlWidgetOption().isFullPage()){
-			buttonString = buttonString + ",fullpage";
-		}
-		
-		String[] availableButtons = buttonString.split("\\,") ;
-		StringBuilder toolbar = new StringBuilder() ;
-		
-		int currentRow = 1 ;
-		for(int i=0 ; i < m_toolbarMap.length; i++){
-			StringBuilder row = new StringBuilder() ;
-			for(int j=0 ; j < m_toolbarMap[i].length; j++){
-				if(isEnabledButton(m_toolbarMap[i][j], availableButtons)){
-					if(row.length() > 0){
-						row.append(", ") ;
-					}
-					row.append(m_toolbarMap[i][j]) ;
-				}
-			}
-			if(row.length() > 0){
-				toolbar.append("theme_advanced_buttons"+currentRow+": \"" + row +"\",\n") ;
-				currentRow++ ;
-			}
-		}
-		
-		// it has to set empty string for rows without buttons
-		for(int i=currentRow; i <= m_toolbarMap.length; i++){
-			toolbar.append("theme_advanced_buttons"+i+": \"\",\n") ;
-		}
-		
-		return toolbar.toString();
-	}
+        return new CmsTinyMCEWidget(getHtmlWidgetOption());
+    }
 
-	/**
-	 * Check for particular button availability
-	 * 
-	 * @param buttonName - the button name
-	 * @param avalableButtons - array with enabled buttons
-	 * @return true if this button is enabled
-	 */
-	private boolean isEnabledButton(String buttonName, String[] avalableButtons){
-		boolean result = false ;
-		for(int i=0 ; i < avalableButtons.length; i++){
-			if(buttonName.equals(avalableButtons[i])){
-				result = true ;
-				break ;
-			}
-		}
-		return result ;
-	}
-	
+    /**
+     * Builds the toolbar.
+     * 
+     * @return Javascript code for toolbar configuration
+     */
+    private String getToolbar() {
+
+        String result = "";
+        List<String> barItems = getHtmlWidgetOption().getButtonBarShownItems();
+        List<List<String>> blocks = new ArrayList<List<String>>();
+        blocks.add(new ArrayList<String>());
+        String lastItem = null;
+        List<String> processedItems = new ArrayList<String>();
+
+        // translate buttons and eliminate adjacent separators 
+        for (String barItem : barItems) {
+            if (BUTTON_TRANSLATION_MAP.containsKey(barItem)) {
+                barItem = BUTTON_TRANSLATION_MAP.get(barItem);
+            }
+            if (barItem.equals("[") || barItem.equals("]") || barItem.equals("-")) {
+                barItem = "|";
+                if ("|".equals(lastItem)) {
+                    continue;
+                }
+            }
+            processedItems.add(barItem);
+            lastItem = barItem;
+        }
+
+        // remove leading or trailing '|' 
+        if ((processedItems.size() > 0) && processedItems.get(0).equals("|")) {
+            processedItems.remove(0);
+        }
+
+        if ((processedItems.size() > 0) && processedItems.get(processedItems.size() - 1).equals("|")) {
+            processedItems.remove(processedItems.size() - 1);
+        }
+
+        // transform flat list into list of groups 
+        for (String processedItem : processedItems) {
+            blocks.get(blocks.size() - 1).add(processedItem);
+            if ("|".equals(processedItem)) {
+                blocks.add(new ArrayList<String>());
+            }
+        }
+
+        // produce the TinyMCE toolbar options from the groups
+        // we use TinyMCE's button rows as groups instead of rows and fix the layout using CSS.
+        // This is because we want the button bars to wrap automatically when there is not enough space.
+        // Using this method, the wraps can only occur between different blocks/rows. 
+        int row = 1;
+        for (List<String> block : blocks) {
+            result = result + "theme_advanced_buttons" + row + ": '" + CmsStringUtil.listAsString(block, ",") + "',\n";
+            row += 1;
+        }
+        return result;
+    }
+
 }

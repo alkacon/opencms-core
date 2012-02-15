@@ -32,3 +32,18 @@ function submitHtml(form) {
 function editorsLoaded() {
 	return editorsLoaded;
 }
+
+function setupTinyMCE(editor) {
+   if (tinyMCE.isWebKit) {
+      // fix weird layout problem in Chrome 
+      // If we don't do this, the button bar won't wrap if the window is too small 
+      editor.onInit.add(function() {
+         var id = editor.id + "_tbl";
+         var baseElem = document.getElementById(id); 
+         var modElem = $(baseElem).parents(".cmsTinyMCE").get(0);
+         $(modElem).removeClass("cmsTinyMCE");
+         window.setTimeout(function() { $(modElem).addClass("cmsTinyMCE"); } , 1);
+      });
+   }
+}
+

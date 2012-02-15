@@ -30,6 +30,7 @@
 			<resource uri="/system/workplace/editors/tinymce/"/>
 			<resource uri="/system/workplace/resources/editors/tinymce/"/>
 			<resource uri="/system/workplace/resources/components/widgets/tinymce.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/tinymce.css"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -7202,5 +7203,36 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/tinymce.css</source>
+			<destination>system/workplace/resources/components/widgets/tinymce.css</destination>
+			<type>plain</type>
+			<uuidstructure>72ce1d7d-0d71-4946-86c6-2db4afdb5058</uuidstructure>
+			<uuidresource>c1f1d97a-0c7e-4f18-b477-676341c77a76</uuidresource>
+			<datelastmodified>Thu, 02 Feb 2012 15:02:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 02 Feb 2012 15:02:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[tinymce]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	</files>
 </export>
