@@ -1,5 +1,7 @@
+<%@page import="java.io.UnsupportedEncodingException"%>
 <%@ page taglibs="cms" import="
 	org.opencms.editors.tinymce.*,
+	org.opencms.util.*,
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
 	org.opencms.jsp.*,
@@ -13,6 +15,503 @@ CmsEditorDisplayOptions options = wp.getEditorDisplayOptions();
 Properties displayOptions = options.getDisplayOptions(cms);
 
 int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
+
+////////////////////start of building toolbar
+String resource = wp.getParamResource();
+StringBuilder toolbar = new StringBuilder();
+StringBuilder grp ;
+
+// Group
+grp = new StringBuilder() ;
+if (CmsStringUtil.isNotEmpty(resource) && options.showElement("button.customized", displayOptions)) {
+	I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
+	if (actionClass.isButtonActive(wp.getJsp(), resource)) {
+		grp.append("oc-publish,");
+	}
+}
+
+grp.append("oc-save-exit,oc-save");
+toolbar.append(CmsTinyMCE.GROUP_SEPARATOR + "," + grp.toString());
+
+//Group
+grp = new StringBuilder() ;
+if (options.showElement("button.newdocument", displayOptions)){
+	grp.append(",newdocument");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the font decoration buttons should be shown
+if (options.showElement("font.decoration", displayOptions)) {
+	if (options.showElement("button.bold", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",bold");
+	}
+	if (options.showElement("button.italic", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",italic");
+	}
+	if (options.showElement("button.underline", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",underline");
+	}
+	if (options.showElement("button.strikethrough", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",strikethrough");
+	}
+
+	if (options.showElement("button.sub", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",sub");
+	}
+	if (options.showElement("button.super", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",sup");
+	}
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the text alignment buttons should be shown
+if (options.showElement("text.align", displayOptions)) {
+	if (options.showElement("button.alignleft", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",justifyleft");
+	}
+	if (options.showElement("button.aligncenter", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",justifycenter");
+	}
+	if (options.showElement("button.alignright", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",justifyright");
+	}
+	if (options.showElement("button.justify", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",justifyfull");
+	}
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//style buttons
+String cssPath = wp.getUriStyleSheet() ;
+String styleFile = null;
+boolean stylePresent = false;
+if (CmsStringUtil.isNotEmpty(cssPath)) {
+	String pathUsed = cssPath;
+	int idx = pathUsed.indexOf('?');
+	if (idx != -1) {
+		pathUsed = cssPath.substring(0, idx);
+	}
+	styleFile = pathUsed + CmsTinyMCE.SUFFIX_STYLE;
+	if (cms.getCmsObject().existsResource(styleFile)) {
+		stylePresent = true;
+	}
+}
+boolean style = stylePresent && options.showElement("option.style", displayOptions);
+
+//determine if the font format selector should be shown
+if (options.showElement("option.formatselect", CmsStringUtil.TRUE, displayOptions)) {
+	grp.append(",formatselect");
+}
+//determine if the font face selector should be shown
+if (options.showElement("font.face", displayOptions)) {
+	grp.append(",fontselect");
+}
+
+//determine if the font size selector should be shown
+if (options.showElement("font.size", displayOptions)) {
+	grp.append(",fontsizeselect");
+}
+
+//determine if the style selector should be shown
+if (style) {
+	grp.append(",styleselect");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+grp.append(",oc-exit");
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+grp.append(",cut,copy,paste,pastetext,pasteword");
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+grp.append(",search,replace");
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the text list buttons should be shown
+if (options.showElement("text.lists", displayOptions)) {
+	if (options.showElement("button.orderedlist", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",numlist");
+	}
+	if (options.showElement("button.unorderedlist", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",bullist");
+	}
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the text indentation buttons should be shown
+if (options.showElement("text.indent", displayOptions)) {
+	if (options.showElement("button.outdent", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",outdent");
+	}
+	if (options.showElement("button.indent", CmsStringUtil.TRUE, displayOptions)) {
+		grp.append(",indent");
+	}
+}
+
+if (options.showElement("button.blockquote", CmsStringUtil.TRUE, displayOptions)) {
+	grp.append(",blockquote");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+grp.append(",undo,redo");
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the insert/edit image button should be shown
+if (options.showElement("option.images", displayOptions) || options.showElement("gallery.image", displayOptions)) {
+	// replaced by image gallery: toolbar.append(",'-', 'OcmsImage'");
+	grp.append(",OcmsImageGallery");
+}
+
+if (options.showElement("gallery.download", displayOptions)) {
+	grp.append(",OcmsDownloadGallery");
+}
+
+if (options.showElement("gallery.link", displayOptions)) {
+	grp.append(",OcmsLinkGallery");
+}
+
+if (options.showElement("gallery.html", displayOptions)) {
+	grp.append(",OcmsHtmlGallery");
+}
+
+if (options.showElement("gallery.table", displayOptions)) {
+	grp.append(",OcmsTableGallery");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the insert link buttons should be shown
+if (options.showElement("option.links", displayOptions)) {
+
+	// determine if the local link button should be shown
+	if (options.showElement("option.link", displayOptions)) {
+		grp.append(",oc-link");
+	}
+
+	// determine if the external link button should be shown
+	if (options.showElement("option.extlink", displayOptions)) {
+		grp.append(",link");
+	}
+
+	// determine if the anchor button should be shown
+	if (options.showElement("option.anchor", displayOptions)) {
+		grp.append(",anchor");
+	}
+
+	// determine if the unlink buttons should be shown
+	if (options.showElement("option.unlink", displayOptions)) {
+		grp.append(",unlink");
+	}
+
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.image", displayOptions)) {
+	grp.append(",image");
+}
+
+if (options.showElement("option.cleanup", displayOptions)) {
+	grp.append(",cleanup");
+}
+
+//determine if the help button should be shown
+if (wp.isHelpEnabled()) {
+	if (options.showElement("option.help", displayOptions)) {
+		grp.append(",oc-help");
+	}
+}
+
+if (options.showElement("option.sourcecode", displayOptions)) {
+	grp.append(",code");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.insertdate", displayOptions)) {
+	grp.append(",insertdate");
+}
+
+if (options.showElement("button.inserttime", displayOptions)) {
+	grp.append(",inserttime");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine which color selectors should be shown
+if (options.showElement("font.color", displayOptions)) {
+	grp.append(",forecolor");
+}
+if (options.showElement("bg.color", displayOptions)) {
+	grp.append(",backcolor");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the insert table button should be shown
+if (options.showElement("option.table", displayOptions)) {
+	grp.append(",tablecontrols");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.hr", displayOptions)) {
+	grp.append(",hr");
+}
+
+if (options.showElement("button.removeformat", displayOptions)) {
+	grp.append(",removeformat");
+}
+
+if (options.showElement("button.visualaid", displayOptions)) {
+	grp.append(",visualaid");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("option.specialchars", displayOptions)) {
+	grp.append(",charmap");
+}
+
+if (options.showElement("button.emotions", displayOptions)) {
+	grp.append(",emotions");
+}
+
+if (options.showElement("option.spellcheck", displayOptions)) {
+	grp.append(",iespell");
+}
+
+if (options.showElement("button.media", displayOptions)) {
+	grp.append(",media");
+}
+
+if (options.showElement("button.media", displayOptions)) {
+	grp.append(",media");
+}
+
+if (options.showElement("button.advhr", displayOptions)) {
+	grp.append(",advhr");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the print button should be shown
+if (options.showElement("option.print", displayOptions)) {
+	grp.append(",print");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.ltr", displayOptions)) {
+	grp.append(",ltr");
+}
+
+if (options.showElement("button.rtl", displayOptions)) {
+	grp.append(",rtl");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+grp.append(",fullscreen") ;
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.insertlayer", displayOptions)) {
+	grp.append(",insertlayer");
+}
+
+if (options.showElement("button.moveforward", displayOptions)) {
+	grp.append(",moveforward");
+}
+
+if (options.showElement("button.movebackward", displayOptions)) {
+	grp.append(",movebackward");
+}
+
+if (options.showElement("button.absolute", displayOptions)) {
+	grp.append(",absolute");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.styleprops", displayOptions)) {
+	grp.append(",styleprops");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.cite", displayOptions)) {
+	grp.append(",cite");
+}
+
+if (options.showElement("button.abbr", displayOptions)) {
+	grp.append(",abbr");
+}
+
+if (options.showElement("button.acronym", displayOptions)) {
+	grp.append(",acronym");
+}
+
+if (options.showElement("button.del", displayOptions)) {
+	grp.append(",del");
+}
+
+if (options.showElement("button.ins", displayOptions)) {
+	grp.append(",ins");
+}
+
+if (options.showElement("button.attribs", displayOptions)) {
+	grp.append(",attribs");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.visualchars", displayOptions)) {
+	grp.append(",visualchars");
+}
+
+if (options.showElement("button.nonbreaking", displayOptions)) {
+	grp.append(",nonbreaking");
+}
+
+if (options.showElement("button.template", displayOptions)) {
+	grp.append(",template");
+}
+
+if (options.showElement("button.pagebreak", displayOptions)) {
+	grp.append(",pagebreak");
+}
+
+if(grp.length() > 0){
+	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+}
 
 // create configuration object and store it in session to configure toolbar in external JavaScript, because request parameters do not work
 CmsTinyMCEConfiguration extConf = new CmsTinyMCEConfiguration();
@@ -258,17 +757,13 @@ tinyMCE.init({
     plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,-opencms",
 
     // Theme options
-    theme_advanced_buttons1 : "oc-publish,oc-save-exit,oc-save,|,OcmsImageGallery,OcmsDownloadGallery,|,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect,|,oc-exit",
-    theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,oc-link,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
-    theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
-    theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,blockquote,pagebreak,|,insertfile,insertimage",
+    <%= CmsTinyMCE.buildToolbar(toolbar.toString())%>
     theme_advanced_toolbar_location : "top",
     theme_advanced_toolbar_align : "left",
     theme_advanced_statusbar_location : "bottom",
     theme_advanced_resizing : false,
     
-    // Don't store editor size in cookies
-    theme_advanced_resizing_use_cookie : false,
+    language : "<%= wp.getLocale().getLanguage() %>",
 
     // Skin options
     skin : "o2k7",
@@ -276,22 +771,34 @@ tinyMCE.init({
     relative_urls: false,
 
     // Example content CSS (should be your site CSS)
-    content_css : "css/example.css",
+    content_css : "<%= wp.getUriStyleSheet() %>",
 
     // Drop lists for link/image/media/template dialogs
     template_external_list_url : "js/template_list.js",
     external_link_list_url : "js/link_list.js",
     external_image_list_url : "js/image_list.js",
     media_external_list_url : "js/media_list.js",
-
-    // Replace values for the template plugin
-    template_replace_values : {
-            username : "Some User",
-            staffid : "991234"
-    },
     
     // editor size
     width: "100%",
+    
+    <%
+    if(style){
+    	String styleContent ;
+    	try{
+    	styleContent = new String(cms.getCmsObject().readFile(styleFile).getContents(),
+    			OpenCms.getSystemInfo().getDefaultEncoding());
+    	} catch(UnsupportedEncodingException e){
+    		styleContent = null  ;
+    	}
+    	
+    	if(styleContent !=null){
+    		%>
+    		style_formats : <%= styleContent%>,
+    		<%
+    	}
+    }
+    %>
     
     // events
     setup : function(ed) {
