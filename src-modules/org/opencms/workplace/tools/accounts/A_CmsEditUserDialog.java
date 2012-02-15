@@ -660,6 +660,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                     addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsDisplayWidget()));
                 }
                 addWidget(new CmsWidgetDialogParameter(this, "startProject", PAGES[0], new CmsDisplayWidget()));
+                addWidget(new CmsWidgetDialogParameter(this, "startFolder", PAGES[0], new CmsDisplayWidget()));
+                addWidget(new CmsWidgetDialogParameter(this, "startView", PAGES[0], new CmsDisplayWidget()));
             }
         }
         addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsCheckboxWidget()));
