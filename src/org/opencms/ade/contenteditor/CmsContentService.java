@@ -55,6 +55,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
@@ -195,17 +196,17 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         private AttributeConfiguration readConfiguration(I_CmsXmlSchemaType schemaType) {
 
             AttributeConfiguration result = null;
+            String widgetName = null;
+            String widgetConfig = null;
             try {
                 I_CmsWidget widget = schemaType.getContentDefinition().getContentHandler().getWidget(schemaType);
-                result = new AttributeConfiguration(
-                    getLabel(schemaType),
-                    getHelp(schemaType),
-                    widget.getClass().getName(),
-                    widget.getConfiguration());
+                widgetName = widget.getClass().getName();
+                widgetConfig = widget.getConfiguration();
             } catch (Exception e) {
                 // may happen if no widget was set for the value
                 LOG.debug(e.getMessage(), e);
             }
+            result = new AttributeConfiguration(getLabel(schemaType), getHelp(schemaType), widgetName, widgetConfig);
             return result;
         }
 
@@ -313,9 +314,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             try {
                 CmsResource resource = getCmsObject().readResource(paramResource);
                 if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                    Locale defaultLocale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), resource);
+                    String paramLocale = getRequest().getParameter(CmsEditor.PARAM_ELEMENTLANGUAGE);
+                    Locale locale;
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
+                        locale = new Locale(paramLocale);
+                    } else {
+                        locale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), resource);
+                    }
 
-                    return readContentDefinition(resource, null, defaultLocale);
+                    return readContentDefinition(resource, null, locale);
                 }
             } catch (Exception e) {
                 // TODO: Auto-generated catch block
@@ -337,6 +344,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         try {
             Locale contentLocale = new Locale(locale);
             CmsResource resource = cms.readResource(structureId);
+            ensureLock(resource);
             CmsFile file = cms.readFile(resource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
             if (content.hasLocale(contentLocale)) {
@@ -345,7 +353,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             content.addLocale(cms, contentLocale);
             addEntityAttributes(cms, content, "", entity, contentLocale);
             writeContent(cms, file, content, getFileEncoding(cms, file));
-
+            tryUnlock(resource);
         } catch (Exception e) {
             error(e);
         }
@@ -446,13 +454,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 I_CmsXmlContentValue value = content.getValue(path, locale);
                 result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
-                Entity subEntity = readEntity(
-                    content,
-                    child,
-                    locale,
-                    entityId + "/" + attributeName + counter,
-                    subTypeName,
-                    registeredTypes);
+                Entity subEntity = readEntity(content, child, locale, entityId
+                    + "/"
+                    + attributeName
+                    + "["
+                    + counter
+                    + "]", subTypeName, registeredTypes);
                 result.addAttributeValue(attributeName, subEntity);
 
             }
@@ -496,16 +503,24 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             String elementPath = parentPath + getElementName(attribute.getAttributeName());
             if (attribute.isSimpleValue()) {
                 List<String> values = attribute.getSimpleValues();
-                for (int i = 1; i <= values.size(); i++) {
+                for (int i = 0; i < values.size(); i++) {
                     String value = values.get(i);
-                    content.addValue(cms, elementPath, contentLocale, i).setStringValue(cms, value);
+                    I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                    if (field == null) {
+                        field = content.addValue(cms, elementPath, contentLocale, i);
+                    }
+                    field.setStringValue(cms, value);
+
                 }
             } else {
                 List<I_Entity> entities = attribute.getComplexValues();
-                for (int i = 1; i <= entities.size(); i++) {
+                for (int i = 0; i < entities.size(); i++) {
                     I_Entity child = entities.get(i);
-                    content.addValue(cms, elementPath, contentLocale, i);
-                    addEntityAttributes(cms, content, elementPath + "[" + i + "]/", child, contentLocale);
+                    I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                    if (field == null) {
+                        field = content.addValue(cms, elementPath, contentLocale, i);
+                    }
+                    addEntityAttributes(cms, content, field.getPath() + "/", child, contentLocale);
                 }
             }
         }
