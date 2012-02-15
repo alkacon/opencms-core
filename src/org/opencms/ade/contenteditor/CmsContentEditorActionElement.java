@@ -31,6 +31,8 @@ import com.alkacon.acacia.shared.ContentDefinition;
 
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.CmsEditor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -94,7 +96,11 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         ContentDefinition definition = CmsContentService.newInstance(getRequest()).prefetch();
         StringBuffer sb = new StringBuffer();
         String prefetchedData = serializeForJavascript(I_CmsContentService.class.getMethod("prefetch"), definition);
-        sb.append(I_CmsContentService.DICT_CONTENT_DEFINITION).append("='").append(prefetchedData).append("';");
+        sb.append(I_CmsContentService.DICT_CONTENT_DEFINITION).append("='").append(prefetchedData).append("';\n");
+        String backlink = getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(backlink)) {
+            sb.append("backlink='").append(backlink).append("';\n");
+        }
         wrapScript(sb);
         return sb.toString();
     }

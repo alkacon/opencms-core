@@ -40,6 +40,9 @@ public interface I_CmsContentService extends I_ContentService {
     /** The content definition dictionary name. */
     String DICT_CONTENT_DEFINITION = "com_alkacon_acacia_shared_ContentDefinition";
 
+    /** The back-link parameter. */
+    String PARAM_BACKLINK = "backlink";
+
     /**
      * Returns the content definition of the resource requested through parameter 'resource'.<p>
      * 
