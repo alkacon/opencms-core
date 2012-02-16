@@ -6,7 +6,7 @@
 }
 
 /* Use the cmsTinyMCE class here because we need to turn the float off/on dynamically to fix a layout problem in Chrome. */
-.cmsTinyMCE .mceToolbar table {
+.cmsTinyMCE .mceToolbar table, #mce_fullscreen_tbl table.mceToolbar {
    float: left;
 }
                     
