@@ -421,15 +421,6 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-grp.append(",fullscreen") ;
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
-
-//Group
-grp = new StringBuilder() ;
-
 if (options.showElement("button.insertlayer", displayOptions)) {
 	grp.append(",insertlayer");
 }
