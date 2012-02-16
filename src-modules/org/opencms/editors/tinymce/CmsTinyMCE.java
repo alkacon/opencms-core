@@ -36,26 +36,23 @@ public class CmsTinyMCE extends CmsSimplePageEditor{
     	String[] buttons = buttonString.split("\\,") ;
     	
     	String button ;
-    	boolean firstGroup = true;
+    	boolean theFirstButtonInGroup = true;
     	int rowNum = 1 ;
     	for(int i=0; i < buttons.length; i++){
     		button = buttons[i] ;
-    		if(button.equals(GROUP_SEPARATOR)){
-    			if(!firstGroup){
-    				toolbar.append("\",\n");
-    				rowNum++;
-    			}
-    			firstGroup = false;
-    			toolbar.append("theme_advanced_buttons" + rowNum + " : \""+button) ;
-    			
+    		if(theFirstButtonInGroup){
+    			toolbar.append("theme_advanced_buttons"+rowNum+" : \""+button);
+    			theFirstButtonInGroup = false ;
     		} else {
     			toolbar.append(","+button) ;
     		}
+    		if(GROUP_SEPARATOR.equals(button)){
+    			toolbar.append("\",\n");
+    			rowNum++;
+    			theFirstButtonInGroup = true;
+    		}
     	}
-    	
-    	// close the last row/block
-    	toolbar.append("\",\n");
-    	
+    	    	
     	return toolbar.toString() ;
     }
     

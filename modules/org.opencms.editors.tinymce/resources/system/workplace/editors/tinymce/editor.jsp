@@ -31,7 +31,7 @@ if (CmsStringUtil.isNotEmpty(resource) && options.showElement("button.customized
 }
 
 grp.append("oc-save-exit,oc-save");
-toolbar.append(CmsTinyMCE.GROUP_SEPARATOR + "," + grp.toString());
+toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 
 //Group
 grp = new StringBuilder() ;
@@ -40,7 +40,7 @@ if (options.showElement("button.newdocument", displayOptions)){
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -70,7 +70,7 @@ if (options.showElement("font.decoration", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -93,7 +93,7 @@ if (options.showElement("text.align", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -136,7 +136,7 @@ if (style) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -144,7 +144,7 @@ grp = new StringBuilder() ;
 
 grp.append(",oc-exit");
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -152,7 +152,7 @@ grp = new StringBuilder() ;
 grp.append(",cut,copy,paste,pastetext,pasteword");
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -160,7 +160,7 @@ grp = new StringBuilder() ;
 grp.append(",search,replace");
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -177,7 +177,7 @@ if (options.showElement("text.lists", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -198,7 +198,7 @@ if (options.showElement("button.blockquote", CmsStringUtil.TRUE, displayOptions)
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -207,7 +207,7 @@ grp = new StringBuilder() ;
 grp.append(",undo,redo");
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -236,7 +236,7 @@ if (options.showElement("gallery.table", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -268,7 +268,7 @@ if (options.showElement("option.links", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -294,7 +294,7 @@ if (options.showElement("option.sourcecode", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -309,7 +309,7 @@ if (options.showElement("button.inserttime", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -324,7 +324,7 @@ if (options.showElement("bg.color", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -336,7 +336,7 @@ if (options.showElement("option.table", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -345,6 +345,8 @@ grp = new StringBuilder() ;
 if (options.showElement("button.hr", displayOptions)) {
 	grp.append(",hr");
 }
+
+grp.append(",selectall") ;
 
 if (options.showElement("button.removeformat", displayOptions)) {
 	grp.append(",removeformat");
@@ -355,7 +357,7 @@ if (options.showElement("button.visualaid", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -386,7 +388,7 @@ if (options.showElement("button.advhr", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -398,7 +400,7 @@ if (options.showElement("option.print", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -413,7 +415,7 @@ if (options.showElement("button.rtl", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -422,7 +424,7 @@ grp = new StringBuilder() ;
 grp.append(",fullscreen") ;
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -445,7 +447,7 @@ if (options.showElement("button.absolute", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -456,7 +458,7 @@ if (options.showElement("button.styleprops", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -487,7 +489,7 @@ if (options.showElement("button.attribs", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 //Group
@@ -510,7 +512,7 @@ if (options.showElement("button.pagebreak", displayOptions)) {
 }
 
 if(grp.length() > 0){
-	toolbar.append("," + CmsTinyMCE.GROUP_SEPARATOR + grp.toString());
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
 // create configuration object and store it in session to configure toolbar in external JavaScript, because request parameters do not work
@@ -577,6 +579,7 @@ default:
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
+<link rel=stylesheet type="text/css" href="<%= cms.link("tinymce_xmlpage.css") %>">
 <!-- <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/gallery.js</cms:link>"></script>
 <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/link.js</cms:link>"></script>-->
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tiny_mce/" %>tiny_mce.js"></script>
@@ -735,16 +738,6 @@ function popupCloseAction(closeObj) {
 		changeElement(closeObj.elemName, closeObj.elemLocale);
 	}
 }
-
-function FCKeditor_OnComplete(editorInstance) {
-    <%
-	// if necessary, switch to text mode
-	if ("edit".equals(wp.getParamEditormode())) {
-		out.print("FCKeditorAPI.GetInstance(\"fckeditor\").SwitchEditMode();");
-	}
-	%>
-}
-
 </script>
 <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
 <script type="text/javascript">
@@ -781,6 +774,7 @@ tinyMCE.init({
     
     // editor size
     width: "100%",
+    height: "100%",
     
     <%
     if(style){
@@ -804,8 +798,8 @@ tinyMCE.init({
     setup : function(ed) {
 		  ed.onInit.add(function(ed) {
 		      ed.setContent(decodeURIComponent('<%= wp.getParamContent() %>'));
-		      initHeight();
 		  });
+		  setupTinyMCE(ed);
 		// Add Publisg button
 	    ed.addButton('oc-publish', {
 	    	title : 'Publish',
@@ -851,6 +845,20 @@ tinyMCE.init({
 	}
 });
 
+function setupTinyMCE(editor) {
+   if (tinyMCE.isWebKit) {
+      // fix weird layout problem in Chrome 
+      // If we don't do this, the button bar won't wrap if the window is too small 
+      editor.onInit.add(function() {
+         var id = editor.id + "_tbl";
+         var baseElem = document.getElementById(id); 
+         var modElem = $(baseElem).parents(".cmsTinyMCE").get(0);
+         $(modElem).removeClass("cmsTinyMCE");
+         window.setTimeout(function() { $(modElem).addClass("cmsTinyMCE"); } , 1);
+      });
+   }
+}
+
 //sets field values and submits the editor form
 function execAction(editor, action, target) {
 	var form = document.forms["EDITOR"];
@@ -864,34 +872,10 @@ function execAction(editor, action, target) {
 // height of bottom line of editor with HTML tag information
 var tagBarHeight = 14;
 
-// current window heigh
-var windowHeight ;
-
-// current editor height
-var editorHeight ;
-
 // calculate editor height in pixels
 function getEditorHeight(){
 	return document.getElementById('textarea-container').clientHeight -tagBarHeight;
 }
-
-// Set inital heights for window and editor
-function initHeight(){
-	windowHeight = $(window).height();
-	editorHeight = $("#<%= CmsEditor.PARAM_CONTENT %>_ifr").height();
-}
-
-// Set editor size on resize window event
-window.onresize = function() {
-	var newWindowHeight = $(window).height();
-	var delta = newWindowHeight - windowHeight ;
-
-	windowHeight = newWindowHeight ;
-	editorHeight = editorHeight + delta ;
-	
-	document.getElementById("<%= CmsEditor.PARAM_CONTENT %>_ifr").style.height = editorHeight + 'px';
-	document.getElementById("<%= CmsEditor.PARAM_CONTENT %>_tbl").style.height = editorHeight + tagBarHeight + 'px';
-	}
 
 //-->
 </script>
@@ -957,7 +941,7 @@ if (options.showElement("option.cleanup", displayOptions)) {
 
 <tr>
 <td style="width:100%; height:100%;">
-<div id="textarea-container" style="width:100%; height:100%; background-color: Window;">
+<div id="textarea-container" class="cmsTinyMCE" style="width:100%; height:100%; background-color: Window;">
 <script language="javascript">
 document.write ('<textarea id="<%= CmsEditor.PARAM_CONTENT %>" name="<%= CmsEditor.PARAM_CONTENT %>" style="height:'+getEditorHeight()+'px; width:100%;"></textarea>');
 </script>
