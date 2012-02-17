@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.3</opencms_version>
-		<createdate>Wed, 15 Feb 2012 18:43:50 GMT</createdate>
+		<createdate>Fri, 17 Feb 2012 08:33:07 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains TinyMCE editor for HTML pages and XML content.</p>
 <p>The version of TinyMCE is 3.4.7 (2011-11-03)</p>]]></description>
-		<version>0.11</version>
+		<version>0.12</version>
 		<authorname><![CDATA[OpenCms community]]></authorname>
 		<authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>
 		<datecreated/>
@@ -38,10 +38,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>bb745e7f-525c-11e1-9069-eb442326482c</uuidstructure>
-			<datelastmodified>Wed, 08 Feb 2012 13:56:43 GMT</datelastmodified>
+			<uuidstructure>ae65fe03-4db3-11e1-ab41-c7b67799edc2</uuidstructure>
+			<datelastmodified>Thu, 02 Feb 2012 15:36:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 08 Feb 2012 13:56:43 GMT</datecreated>
+			<datecreated>Thu, 02 Feb 2012 15:36:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -60,10 +60,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>bbf2414b-525c-11e1-9069-eb442326482c</uuidstructure>
-			<datelastmodified>Wed, 08 Feb 2012 13:56:44 GMT</datelastmodified>
+			<uuidstructure>af1d8e6f-4db3-11e1-ab41-c7b67799edc2</uuidstructure>
+			<datelastmodified>Thu, 02 Feb 2012 15:36:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 08 Feb 2012 13:56:44 GMT</datecreated>
+			<datecreated>Thu, 02 Feb 2012 15:36:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -229,6 +229,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/editors/tinymce/editor_configuration.xml</source>
+			<destination>system/workplace/editors/tinymce/editor_configuration.xml</destination>
+			<type>plain</type>
+			<uuidstructure>e1ab35eb-3c5b-11e1-9604-974a2cad26ef</uuidstructure>
+			<uuidresource>e1ab35ec-3c5b-11e1-9604-974a2cad26ef</uuidresource>
+			<datelastmodified>Thu, 16 Feb 2012 16:55:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 11 Jan 2012 13:55:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor configuration file]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/editors/tinymce/htmlgallery_integrator.js</source>
 			<destination>system/workplace/editors/tinymce/htmlgallery_integrator.js</destination>
 			<type>jsp</type>
@@ -243,51 +263,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		
-		<file>
-			<source>system/workplace/editors/tinymce/linkgallery_integrator.js</source>
-			<destination>system/workplace/editors/tinymce/linkgallery_integrator.js</destination>
-			<type>jsp</type>
-			<uuidstructure>4800fbde-7710-4d59-a878-8aad4be219a1</uuidstructure>
-			<uuidresource>4800fbdf-7710-4d59-a878-8aad4be219a1</uuidresource>
-			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		
-		
-		
-		
-		<file>
-			<source>system/workplace/editors/tinymce/editor_configuration.xml</source>
-			<destination>system/workplace/editors/tinymce/editor_configuration.xml</destination>
-			<type>plain</type>
-			<uuidstructure>e1ab35eb-3c5b-11e1-9604-974a2cad26ef</uuidstructure>
-			<uuidresource>e1ab35ec-3c5b-11e1-9604-974a2cad26ef</uuidresource>
-			<datelastmodified>Wed, 25 Jan 2012 12:50:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 11 Jan 2012 13:55:12 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Editor configuration file]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -308,6 +283,26 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/tinymce/linkgallery_integrator.js</source>
+			<destination>system/workplace/editors/tinymce/linkgallery_integrator.js</destination>
+			<type>jsp</type>
+			<uuidstructure>4800fbde-7710-4d59-a878-8aad4be219a1</uuidstructure>
+			<uuidresource>4800fbdf-7710-4d59-a878-8aad4be219a1</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -527,6 +522,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/de.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/de.js</destination>
+			<type>plain</type>
+			<uuidstructure>f1df39b2-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f1df39b3-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/en.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/en.js</destination>
 			<type>plain</type>
@@ -541,6 +556,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/es.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/es.js</destination>
+			<type>plain</type>
+			<uuidstructure>f1e3f4a5-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f1e3f4a6-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/it.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/it.js</destination>
+			<type>plain</type>
+			<uuidstructure>f1e665a8-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f1e665a9-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -712,6 +767,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f1eb209b-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f1eb209c-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -726,6 +801,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f1f0029e-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f1f0029f-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f1f4bd91-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f1f4bd92-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -921,6 +1036,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f1f97884-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f1f97885-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -935,6 +1070,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f1fe3377-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f1fe3378-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f203157a-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f203157b-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1093,6 +1268,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2055f6d-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2055f6e-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -1107,6 +1302,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f20a1a60-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f20a1a61-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f20efc63-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f20efc64-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2033,6 +2268,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2114656-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2114657-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -2047,6 +2302,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2162859-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f216285a-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f218724c-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f218724d-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2454,6 +2749,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f21d2d3f-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f21d2d40-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -2468,6 +2783,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f21f9e42-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f21f9e43-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2245935-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2245936-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -3304,6 +3659,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2293b38-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2293b39-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -3318,6 +3693,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f22b852b-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f22b852c-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f230401e-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f230401f-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -3642,6 +4057,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2352121-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2352122-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -3656,6 +4091,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2376b14-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2376b15-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f23c4d17-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f23c4d18-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -4046,6 +4521,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f241080a-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f241080b-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -4060,6 +4555,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f24351fd-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f24351fe-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2483400-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2483401-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -4341,6 +4876,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f24ceef3-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f24ceef4-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -4355,6 +4910,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f251a9e6-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f251a9e7-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2541ae9-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2541aea-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -4726,6 +5321,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f258d5dc-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f258d5dd-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -4740,6 +5355,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f25d90cf-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f25d90d0-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f26001d2-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f26001d3-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -4918,6 +5573,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f264bcc5-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f264bcc6-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -4932,6 +5607,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f26977b8-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f26977b9-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f26e59bb-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f26e59bc-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -5436,6 +6151,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f27585ae-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f27585af-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/en_dlg.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/en_dlg.js</destination>
 			<type>plain</type>
@@ -5450,6 +6185,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f27a40a1-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f27a40a2-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f27c8a94-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f27c8a95-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -6125,6 +6900,46 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/de.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/de.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2816c97-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2816c98-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/de_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/de_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f286278a-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f286278b-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/en.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/en.js</destination>
 			<type>plain</type>
@@ -6159,6 +6974,86 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/es.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/es.js</destination>
+			<type>plain</type>
+			<uuidstructure>f288988d-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f288988e-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/es_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/es_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f28d5380-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f28d5381-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/it.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/it.js</destination>
+			<type>plain</type>
+			<uuidstructure>f28f9d73-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f28f9d74-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/it_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/it_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2947f76-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2947f77-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -6782,6 +7677,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/de.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/de.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2993a69-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2993a6a-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[de]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/en.js</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/en.js</destination>
 			<type>plain</type>
@@ -6796,6 +7711,46 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/es.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/es.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2a0665c-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2a0665d-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[es]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/it.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/it.js</destination>
+			<type>plain</type>
+			<uuidstructure>f2a5214f-5941-11e1-a2b8-c7b67799edc2</uuidstructure>
+			<uuidresource>f2a52150-5941-11e1-a2b8-c7b67799edc2</uuidresource>
+			<datelastmodified>Fri, 17 Feb 2012 08:32:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:32:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[it]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -7108,6 +8063,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif</destination>
+			<type>image</type>
+			<uuidstructure>5de1b9cb-c911-4e5f-b9c2-dc1dc66695fb</uuidstructure>
+			<uuidresource>5de1b9cc-c911-4e5f-b9c2-dc1dc66695fb</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/toolbar/oc-imagegallery.gif</source>
 			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-imagegallery.gif</destination>
 			<type>image</type>
@@ -7133,6 +8108,26 @@
 			<type>image</type>
 			<uuidstructure>1471a523-16c9-42b3-8036-f142753c10ef</uuidstructure>
 			<uuidresource>1471a524-16c9-42b3-8036-f142753c10ef</uuidresource>
+			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif</source>
+			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif</destination>
+			<type>image</type>
+			<uuidstructure>066dc610-7222-476a-adc3-352bb4e81035</uuidstructure>
+			<uuidresource>066dc611-7222-476a-adc3-352bb4e81035</uuidresource>
 			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
@@ -7191,45 +8186,6 @@
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
 				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif</source>
-			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif</destination>
-			<type>image</type>
-			<uuidstructure>066dc610-7222-476a-adc3-352bb4e81035</uuidstructure>
-			<uuidresource>066dc611-7222-476a-adc3-352bb4e81035</uuidresource>
-			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		
-		
-		
-		
-		
-		
-		
-		<file>
-			<source>system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif</source>
-			<destination>system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif</destination>
-			<type>image</type>
-			<uuidstructure>5de1b9cb-c911-4e5f-b9c2-dc1dc66695fb</uuidstructure>
-			<uuidresource>5de1b9cc-c911-4e5f-b9c2-dc1dc66695fb</uuidresource>
-			<datelastmodified>Tue, 17 Jan 2012 13:21:18 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 Jan 2012 13:14:38 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
 			</properties>
 			<relations/>
 			<accesscontrol/>

@@ -160,6 +160,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("	theme_advanced_toolbar_align : \"left\",\n");
         result.append("	theme_advanced_statusbar_location : \"bottom\",\n");
         result.append("width: '100%',");
+        result.append("language: '" + OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage() + "',\n");
         result.append("	theme_advanced_resizing : false,\n");
         result.append("theme_advanced_resizing_use_cookie : false,\n");
 
