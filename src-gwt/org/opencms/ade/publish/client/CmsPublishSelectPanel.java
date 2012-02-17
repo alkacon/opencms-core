@@ -432,7 +432,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
      */
     public Set<CmsUUID> getResourcesToRemove() {
 
-        return new HashSet<CmsUUID>(m_model.getRemoveIds());
+        Set<CmsUUID> result = new HashSet<CmsUUID>(m_model.getRemoveIds());
+        result.addAll(m_model.getIdsOfAlreadyPublishedResources());
+        return result;
     }
 
     /**
@@ -527,14 +529,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             title = m_publishDialog.getSelectedWorkflow().getNiceName();
         }
         m_publishDialog.setCaption(title);
-    }
-
-    /**
-     * Adds more groups if there are still undisplayed groups left.<p>
-     */
-    protected void addMoreGroups() {
-
-        //TODO: adding more groups  
     }
 
     /**

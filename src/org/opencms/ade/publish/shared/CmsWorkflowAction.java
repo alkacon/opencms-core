@@ -34,6 +34,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsWorkflowAction implements IsSerializable {
 
+    /** The cancel workflow action. */
+    public static final String ACTION_CANCEL = "cancel";
+
     /** The action key. */
     private String m_action;
 

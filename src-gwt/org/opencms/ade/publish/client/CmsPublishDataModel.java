@@ -31,6 +31,7 @@ import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.client.CmsPublishItemStatus.State;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.ade.publish.shared.CmsPublishResourceInfo.Type;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -196,6 +197,25 @@ public class CmsPublishDataModel {
     public List<CmsUUID> getIdsForGroup(int groupNum) {
 
         return m_idsByGroup.get(groupNum);
+    }
+
+    /**
+     * Returns the id's of all already published resources.<p>
+     * 
+     * @return the id's of the already published resources
+     */
+    public List<CmsUUID> getIdsOfAlreadyPublishedResources() {
+
+        List<CmsUUID> alreadyPublished = new ArrayList<CmsUUID>();
+        for (CmsPublishGroup group : m_groups) {
+
+            for (CmsPublishResource resource : group.getResources()) {
+                if ((resource.getInfo() != null) && (resource.getInfo().getType() == Type.PUBLISHED)) {
+                    alreadyPublished.add(resource.getId());
+                }
+            }
+        }
+        return alreadyPublished;
     }
 
     /** 

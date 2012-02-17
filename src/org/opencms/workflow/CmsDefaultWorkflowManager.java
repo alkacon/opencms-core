@@ -50,14 +50,14 @@ import java.util.Map;
  */
 public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
-    /** The name for the publish action. */
-    public static final String WORKFLOW_PUBLISH = "WORKFLOW_PUBLISH";
-
     /** The forced publish workflow action. */
     public static final String ACTION_FORCE_PUBLISH = "forcepublish";
 
     /** The publish workflow action. */
     public static final String ACTION_PUBLISH = "publish";
+
+    /** The name for the publish action. */
+    public static final String WORKFLOW_PUBLISH = "WORKFLOW_PUBLISH";
 
     /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, java.util.List)
@@ -66,7 +66,9 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     throws CmsException {
 
         String actionKey = action.getAction();
-        if (ACTION_PUBLISH.equals(actionKey)) {
+        if (CmsWorkflowAction.ACTION_CANCEL.equals(actionKey)) {
+            return new CmsWorkflowResponse(true, actionKey, null, null, null);
+        } else if (ACTION_PUBLISH.equals(actionKey)) {
             return actionPublish(userCms, resources);
         } else if (ACTION_FORCE_PUBLISH.equals(actionKey)) {
             return actionForcePublish(userCms, resources);

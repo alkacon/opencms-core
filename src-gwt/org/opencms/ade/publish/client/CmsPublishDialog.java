@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -71,11 +72,11 @@ public class CmsPublishDialog extends CmsPopup {
         /** The publish dialog was cancelled. */
         cancel,
 
-        /** The publish dialog has succeeded. */
-        success,
-
         /** The publish dialog has failed. */
-        failure;
+        failure,
+
+        /** The publish dialog has succeeded. */
+        success;
     }
 
     /**
@@ -155,20 +156,12 @@ public class CmsPublishDialog extends CmsPopup {
         }
     }
 
-    /** Stores the last workflow action. */
-    private CmsWorkflowAction m_lastAction;
-
-    /** Stores a failure message. */
-    private String m_failureMessage;
-
-    /** Stores the state. */
-    private State m_state = State.cancel;
-
     /** The dialog width in pixels. */
     public static final int DIALOG_WIDTH = 766;
 
     /** The project map used by showPublishDialog. */
     public static Map<String, String> m_staticProjects;
+
     /** The CSS bundle used for this widget. */
     private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
@@ -177,7 +170,6 @@ public class CmsPublishDialog extends CmsPopup {
 
     /** The index of the "broken links" panel. */
     private static final int PANEL_BROKEN_LINKS = 1;
-
     /** The index of the publish selection panel. */
     private static final int PANEL_SELECT = 0;
 
@@ -190,11 +182,20 @@ public class CmsPublishDialog extends CmsPopup {
     /** The panel for showing the links that would be broken by publishing. */
     private CmsBrokenLinksPanel m_brokenLinksPanel;
 
+    /** Stores a failure message. */
+    private String m_failureMessage;
+
+    /** Stores the last workflow action. */
+    private CmsWorkflowAction m_lastAction;
+
     /** The root panel of this dialog which contains both the selection panel and the panel for displaying broken links. */
     private DeckPanel m_panel = new DeckPanel();
 
     /** The current publish list options. */
     private CmsPublishOptions m_publishOptions;
+
+    /** Stores the state. */
+    private State m_state = State.cancel;
 
     /** The id of the current workflow. */
     private String m_workflowId;
@@ -383,7 +384,33 @@ public class CmsPublishDialog extends CmsPopup {
      */
     public void onCancel() {
 
-        hide();
+        final List<CmsUUID> toRemove = m_publishSelectPanel.m_model.getIdsOfAlreadyPublishedResources();
+        if (toRemove.isEmpty()) {
+            hide();
+        } else {
+            CmsRpcAction<CmsWorkflowResponse> action = new CmsRpcAction<CmsWorkflowResponse>() {
+
+                @Override
+                public void execute() {
+
+                    start(0, true);
+                    getService().executeAction(
+                        Collections.<CmsUUID> emptyList(),
+                        toRemove,
+                        new CmsWorkflowAction(CmsWorkflowAction.ACTION_CANCEL, "", true),
+                        this);
+                }
+
+                @Override
+                protected void onResponse(CmsWorkflowResponse result) {
+
+                    stop(false);
+                    hide();
+
+                }
+            };
+            action.execute();
+        }
     }
 
     /**
