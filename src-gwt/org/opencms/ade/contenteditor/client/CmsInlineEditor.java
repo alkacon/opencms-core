@@ -33,9 +33,11 @@ import com.alkacon.vie.shared.I_Entity;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -45,6 +47,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -63,11 +66,11 @@ public class CmsInlineEditor {
      */
     public CmsInlineEditor() {
 
-        I_LayoutBundle.INSTANCE.inline().ensureInjected();
+        I_LayoutBundle.INSTANCE.form().ensureInjected();
         I_CmsContentServiceAsync service = GWT.create(I_CmsContentService.class);
         String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt");
         ((ServiceDefTarget)service).setServiceEntryPoint(serviceUrl);
-        m_editor = new CmsEditorBase(service, true);
+        m_editor = new CmsEditorBase(service);
     }
 
     /**
@@ -89,13 +92,8 @@ public class CmsInlineEditor {
      * @param locale the content locale
      * @param panel the element panel
      * @param onClose the command to execute on close
-     * @param openForm the command to use to open the form based editor
      */
-    public void renderInlineEditor(
-        final String locale,
-        final ComplexPanel panel,
-        final Command onClose,
-        final Command openForm) {
+    public void renderInlineEditor(final String locale, final ComplexPanel panel, final Command onClose) {
 
         final String entityId = panel.getElement().getAttribute("about");
 
@@ -103,7 +101,7 @@ public class CmsInlineEditor {
 
             public void execute() {
 
-                initForm(entityId, locale, panel, onClose, openForm);
+                initForm(entityId, locale, panel, onClose);
             }
         });
     }
@@ -114,15 +112,10 @@ public class CmsInlineEditor {
      * @param entityId the entity id
      * @param locale the content locale
      * @param onClose the on close command
-     * @param openForm the command to open the form based editor
      * 
      * @return the button bar
      */
-    protected FlowPanel generateButtonBar(
-        final String entityId,
-        final String locale,
-        final Command onClose,
-        final Command openForm) {
+    protected FlowPanel generateButtonBar(final String entityId, final String locale, final Command onClose) {
 
         FlowPanel buttonBar = new FlowPanel();
         CmsPushButton saveButton = new CmsPushButton();
@@ -157,9 +150,7 @@ public class CmsInlineEditor {
 
             public void onClick(ClickEvent event) {
 
-                openForm.execute();
-                onClose.execute();
-                m_editor.clearVie();
+                openForm(entityId, locale, onClose);
             }
         });
         buttonBar.add(formButton);
@@ -173,28 +164,11 @@ public class CmsInlineEditor {
      * @param locale the content locale
      * @param panel the element panel
      * @param onClose the command to execute on close
-     * @param openForm the command to use to open the form based editor
      */
-    protected void initForm(
-        final String entityId,
-        final String locale,
-        ComplexPanel panel,
-        final Command onClose,
-        final Command openForm) {
+    protected void initForm(final String entityId, final String locale, ComplexPanel panel, final Command onClose) {
 
-        m_editor.renderEntity(entityId, panel.getElement());
-        final FlowPanel buttonBar = generateButtonBar(entityId, locale, onClose, openForm);
-        final CmsPushButton saveButton = new CmsPushButton();
-        saveButton.setText("Save");
-        saveButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_editor.saveEntity(entityId, locale, true, onClose);
-
-            }
-        });
-        saveButton.disable("Nothing changed yet");
+        m_editor.renderEntity(entityId, panel.getElement(), true);
+        final FlowPanel buttonBar = generateButtonBar(entityId, locale, onClose);
         panel.add(buttonBar);
         m_editor.addEntityChangeHandler(entityId, new ValueChangeHandler<I_Entity>() {
 
@@ -205,5 +179,58 @@ public class CmsInlineEditor {
                 }
             }
         });
+    }
+
+    /**
+     * Opens the form based editor.<p>
+     * 
+     * @param entityId the entity id
+     * @param locale the content locale
+     * @param onClose the on close command
+     */
+    protected void openForm(final String entityId, final String locale, final Command onClose) {
+
+        final CmsPopup popup = new CmsPopup("Editor");
+        popup.setGlassEnabled(true);
+        popup.addDialogClose(new Command() {
+
+            public void execute() {
+
+                onClose.execute();
+                m_editor.clearVie();
+            }
+        });
+        popup.setWidth(600);
+        final CmsPushButton saveButton = new CmsPushButton();
+        saveButton.setText("Save");
+        saveButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                m_editor.saveEntity(entityId, locale, true, onClose);
+                popup.hide();
+            }
+        });
+
+        final CmsPushButton closeButton = new CmsPushButton();
+        closeButton.setText("Cancel");
+        closeButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                onClose.execute();
+                m_editor.clearVie();
+                popup.hide();
+            }
+        });
+
+        popup.addButton(closeButton);
+        popup.addButton(saveButton);
+        HTML content = new HTML();
+        content.getElement().getStyle().setProperty("maxHeight", popup.getAvailableHeight(0), Unit.PX);
+        content.getElement().getStyle().setOverflow(Overflow.AUTO);
+        popup.add(content);
+        popup.centerHorizontally(50);
+        m_editor.renderEntity(entityId, content.getElement(), false);
     }
 }

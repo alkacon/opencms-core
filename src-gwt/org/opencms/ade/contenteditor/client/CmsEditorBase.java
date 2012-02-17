@@ -52,11 +52,10 @@ public class CmsEditorBase extends EditorBase {
      * Constructor.<p>
      * 
      * @param service the content service 
-     * @param renderInline flag indicating if the form should be rendered in-line
      */
-    public CmsEditorBase(I_CmsContentServiceAsync service, boolean renderInline) {
+    public CmsEditorBase(I_CmsContentServiceAsync service) {
 
-        super(service, renderInline);
+        super(service);
         Map<String, I_WidgetFactory> widgetFactories = new HashMap<String, I_WidgetFactory>();
         widgetFactories.put("org.opencms.widgets.CmsInputWidget", new I_WidgetFactory() {
 
@@ -90,6 +89,7 @@ public class CmsEditorBase extends EditorBase {
             @Override
             public void execute() {
 
+                start(0, true);
                 getService().loadContentDefinition(entityId, locale, this);
             }
 
@@ -98,6 +98,7 @@ public class CmsEditorBase extends EditorBase {
 
                 registerContentDefinition(result);
                 callback.execute();
+                stop(false);
             }
         };
         action.execute();
@@ -123,6 +124,7 @@ public class CmsEditorBase extends EditorBase {
             @Override
             public void execute() {
 
+                start(0, true);
                 getService().saveEntity(com.alkacon.acacia.shared.Entity.serializeEntity(entity), locale, this);
 
             }
@@ -134,6 +136,7 @@ public class CmsEditorBase extends EditorBase {
                 if (clearOnSuccess) {
                     clearVie();
                 }
+                stop(true);
             }
         };
         action.execute();

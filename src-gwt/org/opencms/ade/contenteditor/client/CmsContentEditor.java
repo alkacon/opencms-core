@@ -71,7 +71,7 @@ public class CmsContentEditor extends A_CmsEntryPoint {
         I_CmsContentServiceAsync service = GWT.create(I_CmsContentService.class);
         String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt");
         ((ServiceDefTarget)service).setServiceEntryPoint(serviceUrl);
-        final CmsEditorBase editor = new CmsEditorBase(service, false);
+        final CmsEditorBase editor = new CmsEditorBase(service);
         ContentDefinition definition = null;
         try {
             definition = (ContentDefinition)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
@@ -108,7 +108,7 @@ public class CmsContentEditor extends A_CmsEntryPoint {
         panel.add(saveButton);
         Element parent = DOM.createDiv();
         RootPanel.getBodyElement().appendChild(parent);
-        editor.renderEntity(entityId, parent);
+        editor.renderEntity(entityId, parent, false);
         editor.addEntityChangeHandler(entityId, new ValueChangeHandler<I_Entity>() {
 
             public void onValueChange(ValueChangeEvent<I_Entity> event) {

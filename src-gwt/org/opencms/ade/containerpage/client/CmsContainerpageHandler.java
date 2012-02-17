@@ -597,12 +597,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         reloadElements(element.getId());
 
                     }
-                }, new Command() {
-
-                    public void execute() {
-
-                        m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
-                    }
                 });
                 element.removeHighlighting();
             } else {
