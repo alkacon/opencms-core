@@ -14,6 +14,7 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -138,12 +140,21 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("\">");
 
         result.append("<script type=\"text/javascript\">\n");
+        CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
+        Properties displayOptions = options.getDisplayOptions(cms);
         result.append("tinyMCE.init({\n");
         result.append("	// General options\n");
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_" + id + "\",\n");
         result.append("	theme : \"advanced\",\n");
         result.append("setup : function(editor) { setupTinyMCE(editor); },\n");
+        if (options.showElement("gallery.enhancedoptions", displayOptions)) {
+            result.append("cmsGalleryEnhancedOptions: true,\n");
+        }
+
+        if (options.showElement("gallery.usethickbox", displayOptions)) {
+            result.append("cmsGalleryUseThickbox: true,\n");
+        }
         result.append("	plugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave,-opencms");
 
         //check for fullpage mode
@@ -151,9 +162,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             // add fullpage plugin
             result.append(",fullpage");
         }
-
         result.append("\",\n");
-
         result.append("	// Theme options\n");
         result.append(getToolbar());
 

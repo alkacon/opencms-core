@@ -743,7 +743,8 @@ tinyMCE.init({
     theme_advanced_toolbar_align : "left",
     theme_advanced_statusbar_location : "bottom",
     theme_advanced_resizing : false,
-    
+    cmsGalleryEnhancedOptions : <%= options.showElement("gallery.enhancedoptions", displayOptions)%>,
+    cmsGalleryUseThickbox : <%= options.showElement("gallery.usethickbox", displayOptions)%>,
     language : "<%= wp.getLocale().getLanguage() %>",
 
     // Skin options

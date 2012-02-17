@@ -284,8 +284,7 @@ function _collectAttributes(element, attributes){
  * @return <code>true</code> if enhanced image options are available
  */
 function hasEnhancedImageOptions(){
-   return true; 
-//    return editorConfig.ShowEnhancedOptions;
+   return !!(editor.settings.cmsGalleryEnhancedOptions);
 }
 
 /**
@@ -294,8 +293,7 @@ function hasEnhancedImageOptions(){
  * @return <code>true</code> if lightbox is available for enhanced image options
  */
 function hasLightboxOption(){
-    //return hasEnhancedImageOptions() && editorConfig.UseTbForLinkOriginal;
-   return true;
+   return !!(editor.settings.cmsGalleryUseThickbox); 
 }
 
 /**
