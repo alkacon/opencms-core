@@ -94,12 +94,13 @@ public class CmsAdminFrameset extends CmsToolDialog {
      */
     public boolean withMenu() {
 
-        return getParamMenu() == null || !getParamMenu().equals("no");
+        return (getParamMenu() == null) || !getParamMenu().equals("no");
     }
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

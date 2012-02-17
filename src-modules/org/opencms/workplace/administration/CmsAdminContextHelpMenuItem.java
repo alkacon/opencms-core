@@ -47,6 +47,7 @@ public class CmsAdminContextHelpMenuItem extends CmsAdminMenuItem {
     /**
      * @see org.opencms.workplace.administration.CmsAdminMenuItem#itemHtml(CmsWorkplace)
      */
+    @Override
     public String itemHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);

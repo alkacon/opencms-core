@@ -72,7 +72,7 @@ public class CmsEditArea extends CmsSimpleEditor {
         HIGHLIGHT_TYPE_XML};
 
     /** Possible type suffix names as list. */
-    protected static final List HIGHLIGHT_TYPES_LIST = Arrays.asList(HIGHLIGHT_TYPES);
+    protected static final List<String> HIGHLIGHT_TYPES_LIST = Arrays.asList(HIGHLIGHT_TYPES);
 
     /** Sub path fragment to the editor resources. */
     protected static final String SUBPATH_EDITAREA = "editors/editarea/";
@@ -110,6 +110,7 @@ public class CmsEditArea extends CmsSimpleEditor {
     /**
      * @see org.opencms.workplace.editors.CmsSimpleEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + SUBPATH_EDITAREA;
@@ -149,7 +150,7 @@ public class CmsEditArea extends CmsSimpleEditor {
                     // there is a suffix, determine matching syntax highlighting
                     int typeIndex = HIGHLIGHT_TYPES_LIST.indexOf(suffix.toLowerCase());
                     if (typeIndex != -1) {
-                        return (String)HIGHLIGHT_TYPES_LIST.get(typeIndex);
+                        return HIGHLIGHT_TYPES_LIST.get(typeIndex);
                     }
                 }
             }

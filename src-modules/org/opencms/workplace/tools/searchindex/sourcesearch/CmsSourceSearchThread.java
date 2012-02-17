@@ -212,43 +212,45 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
      * @param cmsResource the resource to lock
      * @param report the report
      * 
+     * @return <code>true</code> if the resource could be locked
+     * 
      * @throws CmsException if some goes wrong
      */
-    private boolean lockResource(CmsObject cmsObject, CmsResource cmsResource, I_CmsReport report) throws CmsException {
+    private boolean lockResource(CmsObject cms, CmsResource cmsResource, I_CmsReport report) throws CmsException {
 
-        CmsLock lock = cmsObject.getLock(cmsObject.getSitePath(cmsResource));
+        CmsLock lock = cms.getLock(cms.getSitePath(cmsResource));
         // check the lock
         if ((lock != null)
-            && lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())
+            && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
             && lock.isOwnedInProjectBy(
-                cmsObject.getRequestContext().getCurrentUser(),
-                cmsObject.getRequestContext().getCurrentProject())) {
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject())) {
             // prove is current lock from current user in current project
             return true;
-        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())) {
+        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
             // the resource is not locked by the current user, so can not lock it
             m_lockedFiles += 1;
             return false;
         } else if ((lock != null)
             && !lock.isUnlocked()
-            && lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())
+            && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
             && !lock.isOwnedInProjectBy(
-                cmsObject.getRequestContext().getCurrentUser(),
-                cmsObject.getRequestContext().getCurrentProject())) {
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject())) {
             // prove is current lock from current user but not in current project
             // file is locked by current user but not in current project
             // change the lock 
-            cmsObject.changeLock(cmsObject.getSitePath(cmsResource));
+            cms.changeLock(cms.getSitePath(cmsResource));
         } else if ((lock != null) && lock.isUnlocked()) {
             // lock resource from current user in current project
-            cmsObject.lockResource(cmsObject.getSitePath(cmsResource));
+            cms.lockResource(cms.getSitePath(cmsResource));
         }
-        lock = cmsObject.getLock(cmsObject.getSitePath(cmsResource));
+        lock = cms.getLock(cms.getSitePath(cmsResource));
         if ((lock != null)
-            && lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())
+            && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
             && !lock.isOwnedInProjectBy(
-                cmsObject.getRequestContext().getCurrentUser(),
-                cmsObject.getRequestContext().getCurrentProject())) {
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject())) {
             // resource could not be locked
             m_lockedFiles += 1;
 

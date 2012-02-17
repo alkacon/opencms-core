@@ -209,7 +209,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             settings.save(getCms());
 
             // refresh the list
-            Map objects = (Map)getSettings().getListObject();
+            Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
             if (objects != null) {
                 objects.remove(getListClass());
             }
@@ -220,9 +220,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         if (errors.isEmpty() && isNewUser()) {
             if ((getParamCloseLink() != null) && (getParamCloseLink().indexOf("path=" + getListRootPath()) > -1)) {
                 // set closelink
-                Map argMap = new HashMap();
-                argMap.put(PARAM_USERID, m_user.getId());
-                argMap.put("oufqn", m_paramOufqn);
+                Map<String, String[]> argMap = new HashMap<String, String[]>();
+                argMap.put(PARAM_USERID, new String[] {m_user.getId().toString()});
+                argMap.put("oufqn", new String[] {m_paramOufqn});
                 setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getListRootPath() + "/edit", argMap));
             }
         }
@@ -734,7 +734,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             } else {
                 // this is not the initial call, get the user object from session            
                 o = getDialogObject();
-                Map dialogObject = (Map)o;
+                Map<?, ?> dialogObject = (Map<?, ?>)o;
                 m_user = (CmsUser)dialogObject.get(USER_OBJECT);
                 m_pwdInfo = (CmsPasswordInfo)dialogObject.get(PWD_OBJECT);
                 CmsUserSettings settings = new CmsUserSettings(m_user);

@@ -127,6 +127,7 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
                     break;
                 }
 
+                //$FALL-THROUGH$
             case ACTION_DEFAULT:
             default:
                 // ACTION: show dialog (default)
@@ -201,10 +202,10 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     protected String copyFileToServer(String destination) throws CmsIllegalArgumentException, CmsRfsException {
 
         // get the file item from the multipart request
-        Iterator i = getMultiPartFileItems().iterator();
+        Iterator<FileItem> i = getMultiPartFileItems().iterator();
         FileItem fi = null;
         while (i.hasNext()) {
-            fi = (FileItem)i.next();
+            fi = i.next();
             if (fi.getName() != null) {
                 // found the file object, leave iteration
                 break;
@@ -344,11 +345,13 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected abstract void initMessages();
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

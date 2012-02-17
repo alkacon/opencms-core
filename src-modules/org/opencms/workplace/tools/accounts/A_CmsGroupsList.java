@@ -133,10 +133,10 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     public static final String LIST_MACTION_DELETE = "md";
 
     /** a set of action id's to use for deletion. */
-    private static Set m_deleteActionIds = new HashSet();
+    private static Set<String> m_deleteActionIds = new HashSet<String>();
 
     /** a set of action id's to use for edition. */
-    private static Set m_editActionIds = new HashSet();
+    private static Set<String> m_editActionIds = new HashSet<String>();
 
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
@@ -161,14 +161,15 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             // execute the delete multiaction
-            Map params = new HashMap();
-            params.put(A_CmsEditGroupDialog.PARAM_GROUPID, getParamSelItems());
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(A_CmsEditGroupDialog.PARAM_GROUPID, new String[] {getParamSelItems()});
             // set action parameter to initial dialog call
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
             try {
                 getToolManager().jspForwardTool(this, getCurrentToolPath() + "/delete", params);
             } catch (Exception e) {
@@ -177,9 +178,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)) {
             // execute the activate multiaction
             try {
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     String groupName = listItem.get(LIST_COLUMN_NAME).toString();
                     CmsGroup group = getCms().readGroup(groupName);
                     if (!group.isEnabled()) {
@@ -194,9 +195,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_MACTION_DEACTIVATE)) {
             // execute the activate multiaction
             try {
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     String groupName = listItem.get(LIST_COLUMN_NAME).toString();
                     CmsGroup group = getCms().readGroup(groupName);
                     if (group.isEnabled()) {
@@ -217,17 +218,18 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         String groupId = getSelectedItem().getId();
         String groupName = getSelectedItem().get(LIST_COLUMN_NAME).toString();
 
-        Map params = new HashMap();
-        params.put(A_CmsEditGroupDialog.PARAM_GROUPID, groupId);
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, m_paramOufqn);
-        params.put(A_CmsEditGroupDialog.PARAM_GROUPNAME, groupName);
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsEditGroupDialog.PARAM_GROUPID, new String[] {groupId.toString()});
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, new String[] {m_paramOufqn});
+        params.put(A_CmsEditGroupDialog.PARAM_GROUPNAME, new String[] {groupName});
         // set action parameter to initial dialog call
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
 
         if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // forward to the edit user screen
@@ -288,22 +290,23 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List groups = getList().getAllContent();
-        Iterator itGroups = groups.iterator();
+        List<CmsListItem> groups = getList().getAllContent();
+        Iterator<CmsListItem> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
-            CmsListItem item = (CmsListItem)itGroups.next();
+            CmsListItem item = itGroups.next();
             String groupName = item.get(LIST_COLUMN_NAME).toString();
             StringBuffer html = new StringBuffer(512);
             try {
                 if (detailId.equals(LIST_DETAIL_USERS)) {
                     // users
-                    List users = getCms().getUsersOfGroup(groupName, true);
-                    Iterator itUsers = users.iterator();
+                    List<CmsUser> users = getCms().getUsersOfGroup(groupName, true);
+                    Iterator<CmsUser> itUsers = users.iterator();
                     while (itUsers.hasNext()) {
-                        CmsUser user = (CmsUser)itUsers.next();
+                        CmsUser user = itUsers.next();
                         if (user.getOuFqn().equals(getParamOufqn())) {
                             html.append(user.getFullName());
                         } else {
@@ -316,9 +319,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                     }
                 } else if (detailId.equals(LIST_DETAIL_CHILDREN)) {
                     // childen
-                    Iterator itChildren = getCms().getChildren(groupName, false).iterator();
+                    Iterator<CmsGroup> itChildren = getCms().getChildren(groupName, false).iterator();
                     while (itChildren.hasNext()) {
-                        CmsGroup group = (CmsGroup)itChildren.next();
+                        CmsGroup group = itChildren.next();
                         if (group.getOuFqn().equals(getParamOufqn())) {
                             html.append(group.getSimpleName());
                         } else {
@@ -339,14 +342,16 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                     try {
                         getCms().getRequestContext().setSiteRoot("/");
                         CmsGroup group = getCms().readGroup(groupName);
-                        Iterator itRes = getCms().getResourcesForPrincipal(group.getId(), null, false).iterator();
+                        Iterator<CmsResource> itRes = getCms().getResourcesForPrincipal(group.getId(), null, false).iterator();
                         while (itRes.hasNext()) {
-                            CmsResource resource = (CmsResource)itRes.next();
+                            CmsResource resource = itRes.next();
                             html.append(resource.getRootPath());
 
-                            Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                            Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(
+                                resource.getRootPath(),
+                                false).iterator();
                             while (itAces.hasNext()) {
-                                CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                                CmsAccessControlEntry ace = itAces.next();
                                 if (ace.getPrincipal().equals(group.getId())) {
                                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
                                         html.append(" (" + ace.getPermissions().getPermissionString() + ")");
@@ -380,19 +385,20 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getGroups() throws CmsException;
+    protected abstract List<CmsGroup> getGroups() throws CmsException;
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
         // get content
-        List groups = getGroups();
-        Iterator itGroups = groups.iterator();
+        List<CmsGroup> groups = getGroups();
+        Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
-            CmsGroup group = (CmsGroup)itGroups.next();
+            CmsGroup group = itGroups.next();
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
             item.set(LIST_COLUMN_DISPLAY, OpenCms.getWorkplaceManager().translateGroupName(group.getName(), false));
@@ -406,6 +412,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -417,6 +424,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for edit
@@ -463,6 +471,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -488,6 +497,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -566,6 +576,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user users details
@@ -628,6 +639,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add delete multi action
@@ -660,6 +672,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

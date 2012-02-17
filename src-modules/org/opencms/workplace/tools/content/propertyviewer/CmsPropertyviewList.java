@@ -290,8 +290,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     @Override
-    @SuppressWarnings("unchecked")
-    protected List getListItems() {
+    protected List<CmsListItem> getListItems() {
 
         List<CmsListItem> result = new ArrayList<CmsListItem>();
         // get content
@@ -530,7 +529,6 @@ public class CmsPropertyviewList extends A_CmsListDialog {
      * 
      * @return the resources to use. 
      */
-    @SuppressWarnings("unchecked")
     private List<CmsResource> getResources() {
 
         List<CmsResource> result = new LinkedList<CmsResource>();

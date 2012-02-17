@@ -99,9 +99,10 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     /**
      * Commits the edited group to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             // if new create it first
@@ -124,7 +125,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
             // write the edited group
             getCms().writeGroup(m_group);
             // refresh the list
-            Map objects = (Map)getSettings().getListObject();
+            Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
             if (objects != null) {
                 objects.remove(getListClass());
                 objects.remove(A_CmsUsersList.class.getName());
@@ -136,10 +137,10 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
         if (errors.isEmpty() && isNewGroup()) {
             if ((getParamCloseLink() != null) && (getParamCloseLink().indexOf("path=" + getListRootPath()) > -1)) {
                 // set closelink
-                Map argMap = new HashMap();
-                argMap.put("groupid", m_group.getId());
-                argMap.put("groupname", m_group.getName());
-                argMap.put("oufqn", m_paramOufqn);
+                Map<String, String[]> argMap = new HashMap<String, String[]>();
+                argMap.put("groupid", new String[] {m_group.getId().toString()});
+                argMap.put("groupname", new String[] {m_group.getName()});
+                argMap.put("oufqn", new String[] {m_paramOufqn});
                 setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getListRootPath() + "/edit", argMap));
             }
         }
@@ -298,6 +299,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -335,6 +337,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -394,6 +397,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -438,6 +442,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -449,6 +454,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -472,6 +478,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));

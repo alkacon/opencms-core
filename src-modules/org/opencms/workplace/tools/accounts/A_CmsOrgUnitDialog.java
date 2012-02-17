@@ -117,12 +117,12 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
      * @param orgUnitBean the <code>CmsOrgUnitBean</code> object
      * @param resources the list of resources
      */
-    public void setResourcesInBean(CmsOrgUnitBean orgUnitBean, List resources) {
+    public void setResourcesInBean(CmsOrgUnitBean orgUnitBean, List<CmsResource> resources) {
 
-        List resourceNames = new ArrayList();
-        Iterator itResources = resources.iterator();
+        List<String> resourceNames = new ArrayList<String>();
+        Iterator<CmsResource> itResources = resources.iterator();
         while (itResources.hasNext()) {
-            CmsResource resource = (CmsResource)itResources.next();
+            CmsResource resource = itResources.next();
             resourceNames.add(getCms().getSitePath(resource));
         }
         orgUnitBean.setResources(resourceNames);
@@ -132,6 +132,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initOrgUnitObject();
@@ -141,6 +142,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -183,7 +185,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
                         + orgunit.getName()
                         + ")");
                 }
-                List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                List<CmsResource> resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                     getCms(),
                     orgunit.getName());
                 setResourcesInBean(m_orgUnitBean, resources);
@@ -203,6 +205,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
