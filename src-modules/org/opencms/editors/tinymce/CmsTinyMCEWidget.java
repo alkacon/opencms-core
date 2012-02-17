@@ -307,6 +307,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             result = result + "theme_advanced_buttons" + row + ": '" + CmsStringUtil.listAsString(block, ",") + "',\n";
             row += 1;
         }
+        // overwrite default toolbar rows 
+        for (int r = row; r <= 4; r++) {
+            result = result + "theme_advanced_buttons" + r + ": '',\n";
+        }
         return result;
     }
 
