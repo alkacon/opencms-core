@@ -575,11 +575,6 @@ default:
 <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/link.js</cms:link>"></script>-->
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tiny_mce/" %>tiny_mce_src.js"></script>
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "jquery/packed/" %>jquery.js"></script>
-<style type="text/css">
-	.mceIframeContainer, .mceIframeContainer iframe, #content_tbl > tbody > tr:first-child + tr, #content_tbl {
-		height: 100% !important;
-	}
-</style>
 <script type="text/javascript">
 
 // dialog windows
