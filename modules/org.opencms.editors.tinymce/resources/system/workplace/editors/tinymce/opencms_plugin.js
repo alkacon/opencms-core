@@ -341,13 +341,13 @@ tinymce.create('tinymce.opencms', {
        });
       
       ed.addButton('OcmsHtmlGallery', {
-         title : 'HTML galleries',
+         title : '<%=org.opencms.workplace.galleries.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.galleries.Messages.GUI_HTMLGALLERY_EDITOR_TOOLTIP_0)%>',
          image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif")%>',
          cmd: 'cmsHtmlGallery'
       });
       
       ed.addButton('OcmsLinkGallery', { 
-         title : 'Link galleries',
+         title : '<%=org.opencms.workplace.galleries.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.galleries.Messages.GUI_LINKGALLERY_EDITOR_TOOLTIP_0)%>',
          image: '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif")%>',
          cmd : 'cmsLinkGallery'
       });
