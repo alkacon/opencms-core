@@ -28,7 +28,7 @@ public class CmsTinyMCE extends CmsSimplePageEditor{
     
     /**
      * Build toolbar Javascript file for TinyMCE
-     * @param buttonString button names and block separators delimited by coma
+     * @param buttonString button names and block separators delimited by comma
      * @return Javascript for the toolbar
      */
     public static String buildToolbar(String buttonString){
