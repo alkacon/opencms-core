@@ -1,8 +1,11 @@
 package org.opencms.editors.tinymce;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.editors.CmsSimplePageEditor;
 
 public class CmsTinyMCE extends CmsSimplePageEditor{
@@ -62,6 +65,16 @@ public class CmsTinyMCE extends CmsSimplePageEditor{
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/jscripts/tiny_mce/";
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        if (CmsStringUtil.isNotEmpty(request.getParameter(PARAM_RESOURCE))) {
+            super.initWorkplaceRequestValues(settings, request);
+        }
     }
     
     /**

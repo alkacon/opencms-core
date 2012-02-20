@@ -1,5 +1,6 @@
 <%@page import="java.io.UnsupportedEncodingException"%>
 <%@ page taglibs="cms" import="
+	org.opencms.i18n.CmsEncoder,
 	org.opencms.editors.tinymce.*,
 	org.opencms.util.*,
 	org.opencms.workplace.*,
@@ -13,6 +14,7 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
 CmsTinyMCE wp = new CmsTinyMCE(cms);
 CmsEditorDisplayOptions options = wp.getEditorDisplayOptions();
 Properties displayOptions = options.getDisplayOptions(cms);
+String encoding = CmsEncoder.ENCODING_US_ASCII;
 
 int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 
@@ -792,7 +794,7 @@ tinyMCE.init({
 		  setupTinyMCE(ed);
 		// Add Publisg button
 	    ed.addButton('oc-publish', {
-	    	title : 'Publish',
+	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0), encoding)  %>',
 	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-publish.gif")%>',
 	        onclick : function() {
 	        	var exitTarget='_top';
@@ -806,7 +808,7 @@ tinyMCE.init({
 		
 	 	// Add Save & Exit button
 	    ed.addButton('oc-save-exit', {
-	    	title : 'Save and Exit',
+	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0), encoding) %>',
 	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-save-exit.gif")%>',
 	        onclick : function() {
 	        	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVEEXIT %>','_top');
@@ -815,7 +817,7 @@ tinyMCE.init({
 	   
 	 	// Add Save button
 	    ed.addButton('oc-save', {
-	    	title : 'Save',
+	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0), encoding) %>',
 	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-save.gif")%>',
 	        onclick : function() {
 	        	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVE %>','_self');
@@ -824,7 +826,7 @@ tinyMCE.init({
 
 	 	// Add Exit button
 	    ed.addButton('oc-exit', {
-	    	title : 'Exit',
+	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0), encoding) %>',
 	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-exit.gif")%>',
 	        onclick : function() {
 	        	if (!tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>').isDirty() || confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
