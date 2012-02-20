@@ -790,6 +790,7 @@ tinyMCE.init({
     setup : function(ed) {
 		  ed.onInit.add(function(ed) {
 		      ed.setContent(decodeURIComponent('<%= wp.getParamContent() %>'));
+		      ed.undoManager.clear();
 		  });
 		  setupTinyMCE(ed);
 		// Add Publisg button
