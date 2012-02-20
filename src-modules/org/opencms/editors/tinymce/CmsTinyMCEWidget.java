@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
 public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
@@ -212,6 +213,13 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             }
         }
 
+        String formatSelectOptions = getHtmlWidgetOption().getFormatSelectOptions() ;
+        if(!CmsStringUtil.isEmpty(formatSelectOptions) 
+        		&& !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)){
+        	formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",") ;
+        	result.append("theme_advanced_blockformats : \""+formatSelectOptions+"\",\n");
+        }
+        
         result.append("	// Drop lists for link/image/media/template dialogs\n");
         result.append("	template_external_list_url : \"lists/template_list.js\",\n");
         result.append("	external_link_list_url : \"lists/link_list.js\",\n");

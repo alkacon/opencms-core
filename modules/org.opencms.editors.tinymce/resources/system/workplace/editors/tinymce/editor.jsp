@@ -7,6 +7,7 @@
 	org.opencms.workplace.editors.*,
 	org.opencms.jsp.*,
 	org.opencms.main.*,
+	org.apache.commons.lang.StringUtils,
 	java.util.*
 "%><%
 
@@ -117,10 +118,11 @@ if (CmsStringUtil.isNotEmpty(cssPath)) {
 	}
 }
 boolean style = stylePresent && options.showElement("option.style", displayOptions);
-
+boolean formatSelectOption = false ;
 //determine if the font format selector should be shown
 if (options.showElement("option.formatselect", CmsStringUtil.TRUE, displayOptions)) {
 	grp.append(",formatselect");
+	formatSelectOption = true ;
 }
 //determine if the font face selector should be shown
 if (options.showElement("font.face", displayOptions)) {
@@ -761,6 +763,16 @@ tinyMCE.init({
     // editor size
     width: "100%",
     height: "100%",
+    
+    <%
+    if(formatSelectOption){
+    	String format = options.getOptionValue("formatselect.options", "", displayOptions);
+    	format = StringUtils.replace(format, ";", ",");
+    	%>
+    	theme_advanced_blockformats : "<%=format%>",
+    	<%
+    }
+    %>
     
     <%
     if(style){
