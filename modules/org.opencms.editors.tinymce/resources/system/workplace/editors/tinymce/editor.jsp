@@ -797,6 +797,7 @@ tinyMCE.init({
 		  ed.onInit.add(function(ed) {
 		      ed.setContent(decodeURIComponent('<%= wp.getParamContent() %>'));
 		      ed.undoManager.clear();
+		      addCustomShortcuts(ed);
 		  });
 		  setupTinyMCE(ed);
 		// Add Publisg button
@@ -817,29 +818,21 @@ tinyMCE.init({
 	    ed.addButton('oc-save-exit', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0), encoding) %>',
 	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-save-exit.gif")%>',
-	        onclick : function() {
-	        	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVEEXIT %>','_top');
-	        }
+	        onclick : ocmsSaveExit
 	   });
 	   
 	 	// Add Save button
 	    ed.addButton('oc-save', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0), encoding) %>',
 	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-save.gif")%>',
-	        onclick : function() {
-	        	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVE %>','_self');
-	        }
+	        onclick : ocmsSave
 	   });
 
 	 	// Add Exit button
 	    ed.addButton('oc-exit', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0), encoding) %>',
 	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-exit.gif")%>',
-	        onclick : function() {
-	        	if (!tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>').isDirty() || confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
-					execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_EXIT %>','_top');
-				}
-	        }
+	        onclick : ocmsExit
 	   });
 	}
 });
@@ -856,6 +849,28 @@ function setupTinyMCE(editor) {
          window.setTimeout(function() { $(modElem).addClass("cmsTinyMCE"); } , 1);
       });
    }
+}
+
+function ocmsSaveExit() {
+	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVEEXIT %>','_top');
+}
+
+function ocmsSave() {
+	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVE %>','_self');
+}
+
+function ocmsExit() {
+	if (!tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>').isDirty() || confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
+		execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_EXIT %>','_top');
+	}
+}
+
+function addCustomShortcuts(editor){
+	editor.addShortcut('ctrl+s','',ocmsSave);
+	editor.addShortcut('ctrl+shift+x','',ocmsExit);
+	editor.addShortcut('ctrl+shift+s','',ocmsSaveExit);
+	editor.addShortcut('ctrl+shift+z','','Redo');
+	editor.addShortcut('ctrl+l','','mceAdvLink');
 }
 
 //sets field values and submits the editor form

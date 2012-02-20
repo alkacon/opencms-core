@@ -34,6 +34,9 @@ function editorsLoaded() {
 }
 
 function setupTinyMCE(editor) {
+   editor.onInit.add(function(editor) {
+	   addCustomShortcuts(editor);
+   });
    if (tinyMCE.isWebKit) {
       // fix weird layout problem in Chrome 
       // If we don't do this, the button bar won't wrap if the window is too small 
@@ -47,3 +50,7 @@ function setupTinyMCE(editor) {
    }
 }
 
+function addCustomShortcuts(editor){
+	editor.addShortcut('ctrl+shift+z','','Redo');
+	editor.addShortcut('ctrl+l','','mceAdvLink');
+}
