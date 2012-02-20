@@ -325,7 +325,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     return readContentDefinition(resource, null, locale);
                 }
             } catch (Exception e) {
-                // TODO: Auto-generated catch block
                 error(e);
             }
 
@@ -427,6 +426,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param element the current element
      * @param locale the content locale
      * @param entityId the entity id
+     * @param parentPath the parent path
      * @param typeName the entity type name
      * @param registeredTypes the types used within the entity
      * 
@@ -437,32 +437,35 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Element element,
         Locale locale,
         String entityId,
+        String parentPath,
         String typeName,
         Map<String, I_Type> registeredTypes) {
 
-        Entity result = new Entity(entityId, typeName);
+        Entity result = new Entity(entityId + parentPath, typeName);
         @SuppressWarnings("unchecked")
         List<Element> elements = element.elements();
         I_Type type = registeredTypes.get(typeName);
-        int counter = 0;
+        int counter = 1;
         CmsObject cms = getCmsObject();
+        String previousName = null;
         for (Element child : elements) {
             String attributeName = getAttributeName(child.getName(), typeName);
+            if (!attributeName.equals(previousName)) {
+                // reset the attribute counter for every attribute name
+                counter = 1;
+                previousName = attributeName;
+            }
             String subTypeName = type.getAttributeTypeName(attributeName);
+            String path = parentPath + "/" + child.getName() + "[" + counter + "]";
             if (registeredTypes.get(subTypeName).isSimpleType()) {
-                String path = removeFirstTwoPathLevel(child.getPath());
                 I_CmsXmlContentValue value = content.getValue(path, locale);
                 result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
-                Entity subEntity = readEntity(content, child, locale, entityId
-                    + "/"
-                    + attributeName
-                    + "["
-                    + counter
-                    + "]", subTypeName, registeredTypes);
+                Entity subEntity = readEntity(content, child, locale, entityId, path, subTypeName, registeredTypes);
                 result.addAttributeValue(attributeName, subEntity);
 
             }
+            counter++;
         }
         return result;
     }
@@ -572,6 +575,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 element,
                 locale,
                 entityId,
+                "",
                 getTypeUri(content.getContentDefinition()),
                 visitor.getTypes());
         }
@@ -580,19 +584,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             visitor.getAttributeConfigurations(),
             visitor.getTypes(),
             locale.toString());
-    }
-
-    /**
-     * Removes the first two path levels.<p>
-     * 
-     * @param path the path
-     * 
-     * @return the shortened path
-     */
-    private String removeFirstTwoPathLevel(String path) {
-
-        int index = path.indexOf("/", 1);
-        return path.substring(path.indexOf("/", index + 1));
     }
 
     /**

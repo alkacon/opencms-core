@@ -112,7 +112,7 @@ public class TestCmsContentService extends TestCase {
 
         if (xmlcontent.hasLocale(locale)) {
             Element element = xmlcontent.getLocaleNode(locale);
-            result = service.readEntity(xmlcontent, element, locale, "myEntity", baseTypeName, registeredTypes);
+            result = service.readEntity(xmlcontent, element, locale, "myEntity", "", baseTypeName, registeredTypes);
         }
         assertNotNull("Result should not be null", result);
         // TODO: check out the result some more to ensure success
