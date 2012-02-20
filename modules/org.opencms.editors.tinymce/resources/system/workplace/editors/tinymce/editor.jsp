@@ -508,12 +508,6 @@ if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
-// create configuration object and store it in session to configure toolbar in external JavaScript, because request parameters do not work
-CmsTinyMCEConfiguration extConf = new CmsTinyMCEConfiguration();
-extConf.setUriStyleSheet(wp.getUriStyleSheet());
-extConf.setResourcePath(wp.getParamResource());
-extConf.setConfiguration(session);
-
 //////////////////// start of switch statement
 
 switch (wp.getAction()) {
