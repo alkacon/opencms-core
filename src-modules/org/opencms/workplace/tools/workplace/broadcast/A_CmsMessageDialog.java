@@ -101,6 +101,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -113,10 +114,10 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
      */
     protected String getToNames() {
 
-        List users = new ArrayList();
-        Iterator itIds = idsList().iterator();
+        List<String> users = new ArrayList<String>();
+        Iterator<String> itIds = idsList().iterator();
         while (itIds.hasNext()) {
-            String id = itIds.next().toString();
+            String id = itIds.next();
             CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
             if (session != null) {
                 try {
@@ -130,9 +131,9 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
             }
         }
         StringBuffer result = new StringBuffer(256);
-        Iterator itUsers = users.iterator();
+        Iterator<String> itUsers = users.iterator();
         while (itUsers.hasNext()) {
-            result.append(itUsers.next().toString());
+            result.append(itUsers.next());
             if (itUsers.hasNext()) {
                 result.append("; ");
             }
@@ -145,12 +146,12 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
      * 
      * @return the list of session ids
      */
-    protected List idsList() {
+    protected List<String> idsList() {
 
         if (!isForAll()) {
             return CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.ITEM_SEPARATOR);
         }
-        List manageableUsers = new ArrayList();
+        List<CmsUser> manageableUsers = new ArrayList<CmsUser>();
         try {
             manageableUsers = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
         } catch (CmsException e) {
@@ -158,10 +159,10 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        List ids = new ArrayList();
-        Iterator itSessions = OpenCms.getSessionManager().getSessionInfos().iterator();
+        List<String> ids = new ArrayList<String>();
+        Iterator<CmsSessionInfo> itSessions = OpenCms.getSessionManager().getSessionInfos().iterator();
         while (itSessions.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)itSessions.next();
+            CmsSessionInfo sessionInfo = itSessions.next();
             CmsUser user;
             try {
                 user = getCms().readUser(sessionInfo.getUserId());
@@ -174,7 +175,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
             if (!manageableUsers.contains(user)) {
                 continue;
             }
-            ids.add(sessionInfo.getSessionId());
+            ids.add(sessionInfo.getSessionId().toString());
         }
         return ids;
     }
@@ -203,6 +204,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -215,6 +217,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

@@ -39,7 +39,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CmsReturnLinkInfo implements IsSerializable {
 
     /**
-     * The moved  
+     * The moved status.<p>
      */
     public enum Status {
         /** The link was successfully looked up. */

@@ -152,12 +152,13 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws IOException, ServletException {
 
-        Map params = new HashMap();
-        params.put(A_CmsMessageDialog.PARAM_SESSIONIDS, getParamSelItems());
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsMessageDialog.PARAM_SESSIONIDS, new String[] {getParamSelItems()});
         // set action parameter to initial dialog call
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
 
         if (getParamListAction().equals(LIST_MACTION_MESSAGE)) {
             // execute the send message multiaction
@@ -175,12 +176,13 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
-        Map params = new HashMap();
-        params.put(A_CmsMessageDialog.PARAM_SESSIONIDS, getSelectedItem().getId());
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsMessageDialog.PARAM_SESSIONIDS, new String[] {getSelectedItem().getId()});
         // set action parameter to initial dialog call
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
 
         if (getParamListAction().equals(LIST_ACTION_MESSAGE) || getParamListAction().equals(LIST_DEFACTION_MESSAGE)) {
             getToolManager().jspForwardTool(this, "/workplace/broadcast/message", params);
@@ -193,13 +195,14 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List sessions = getList().getAllContent();
-        Iterator i = sessions.iterator();
+        List<CmsListItem> sessions = getList().getAllContent();
+        Iterator<CmsListItem> i = sessions.iterator();
         while (i.hasNext()) {
-            CmsListItem item = (CmsListItem)i.next();
+            CmsListItem item = i.next();
             CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(new CmsUUID(item.getId()));
             StringBuffer html = new StringBuffer(32);
             if (detailId.equals(LIST_DETAIL_EMAIL)) {
@@ -220,19 +223,20 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
         // get content
-        List sessionInfos = OpenCms.getSessionManager().getSessionInfos();
-        Iterator itSessions = sessionInfos.iterator();
+        List<CmsSessionInfo> sessionInfos = OpenCms.getSessionManager().getSessionInfos();
+        Iterator<CmsSessionInfo> itSessions = sessionInfos.iterator();
         List<CmsOrganizationalUnit> manageableOus = OpenCms.getRoleManager().getManageableOrgUnits(
             getCms(),
             "",
             true,
             false);
         while (itSessions.hasNext()) {
-            CmsSessionInfo sessionInfo = (CmsSessionInfo)itSessions.next();
+            CmsSessionInfo sessionInfo = itSessions.next();
             CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
             CmsUser user = getCms().readUser(sessionInfo.getUserId());
             CmsOrganizationalUnit userOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), user.getOuFqn());
@@ -271,6 +275,7 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -283,6 +288,7 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for send message
@@ -313,6 +319,7 @@ public class CmsSessionsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -333,6 +340,7 @@ public class CmsSessionsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -399,6 +407,7 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail
@@ -417,6 +426,7 @@ public class CmsSessionsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add message multi action

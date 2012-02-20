@@ -54,7 +54,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
 
     /** localized messages Keys prefix. */
     public static final String KEY_PREFIX = "loginmsg";
-    
+
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
@@ -86,9 +86,10 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
     /**
      * Commits the edited login message to the login manager.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             // set the edited message
@@ -113,6 +114,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -144,13 +146,14 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the object to use for the dialog
         initLoginMessageObject();
 
         setKeyPrefix(KEY_PREFIX);
-        
+
         // required to read the default values for the optional context parameters for the widgets
         CmsLoginMessage def = new CmsLoginMessage();
 
@@ -178,6 +181,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -204,6 +208,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -215,6 +220,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

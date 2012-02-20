@@ -115,6 +115,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#getDisabledHelpText()
      */
+    @Override
     public String getDisabledHelpText() {
 
         if (super.getDisabledHelpText().equals(DEFAULT_DISABLED_HELPTEXT)) {
@@ -132,6 +133,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public boolean isEnabled(CmsWorkplace wp) {
 
         if (getLink().equals(getPath(GROUPUSERS_FILE))) {
@@ -161,10 +163,10 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                     return false;
                 }
                 if (OpenCms.getOrgUnitManager().getGroups(wp.getCms(), ouFqn, true).size() > 0) {
-                    List groups = OpenCms.getOrgUnitManager().getGroups(wp.getCms(), ouFqn, true);
-                    Iterator itGroups = groups.iterator();
+                    List<CmsGroup> groups = OpenCms.getOrgUnitManager().getGroups(wp.getCms(), ouFqn, true);
+                    Iterator<CmsGroup> itGroups = groups.iterator();
                     while (itGroups.hasNext()) {
-                        CmsGroup group = (CmsGroup)itGroups.next();
+                        CmsGroup group = itGroups.next();
                         if (!OpenCms.getDefaultUsers().isDefaultGroup(group.getName())) {
                             return false;
                         }
@@ -227,6 +229,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public boolean isVisible(CmsWorkplace wp) {
 
         if (getVisibilityFlag().equals(VISIBILITY_NONE)) {
@@ -295,7 +298,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             }
         } else if (getLink().equals(getPath(ASSIGN_FILE))) {
             try {
-                List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
+                List<CmsOrganizationalUnit> orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
                     cms,
                     CmsRole.ACCOUNT_MANAGER.forOrgUnit(""),
                     true);

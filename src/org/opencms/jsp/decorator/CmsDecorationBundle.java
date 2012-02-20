@@ -46,7 +46,7 @@ import java.util.Set;
 public class CmsDecorationBundle {
 
     /** The bundle map. */
-    private Map m_bundle;
+    private Map<String, CmsDecorationObject> m_bundle;
 
     /** The locale of this bundle. */
     private Locale m_locale;
@@ -56,7 +56,7 @@ public class CmsDecorationBundle {
      */
     public CmsDecorationBundle() {
 
-        m_bundle = new HashMap();
+        m_bundle = new HashMap<String, CmsDecorationObject>();
         m_locale = null;
     }
 
@@ -67,7 +67,7 @@ public class CmsDecorationBundle {
      */
     public CmsDecorationBundle(Locale locale) {
 
-        m_bundle = new HashMap();
+        m_bundle = new HashMap<String, CmsDecorationObject>();
         m_locale = locale;
 
     }
@@ -86,7 +86,7 @@ public class CmsDecorationBundle {
      * Gets the map of all decoarion bundle entries.<p>
      * @return map of all decoarion bundle entries
      */
-    public Map getAll() {
+    public Map<String, CmsDecorationObject> getAll() {
 
         return m_bundle;
     }
@@ -104,7 +104,7 @@ public class CmsDecorationBundle {
      * Gets the keyset of the decoration bundle map.<p>
      * @return keyset of the decoration bundle map
      */
-    public Set keySet() {
+    public Set<String> keySet() {
 
         return m_bundle.keySet();
     }
@@ -114,7 +114,7 @@ public class CmsDecorationBundle {
      * @param key the key of the object to store
      * @param value the value of the object to store
      */
-    public void put(Object key, Object value) {
+    public void put(String key, CmsDecorationObject value) {
 
         m_bundle.put(key, value);
     }
@@ -123,7 +123,7 @@ public class CmsDecorationBundle {
      * Puts a complete map of objects into bundle.<p>
      * @param map the map to put into the bundle
      */
-    public void putAll(Map map) {
+    public void putAll(Map<String, CmsDecorationObject> map) {
 
         m_bundle.putAll(map);
     }

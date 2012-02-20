@@ -154,6 +154,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -162,6 +163,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_DEFACTION_TRANSFER) || getParamListAction().equals(LIST_ACTION_TRANSFER)) {
@@ -213,6 +215,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -221,11 +224,11 @@ public class CmsGroupTransferList extends A_CmsListDialog {
         if (getCurrentToolPath().indexOf("/edit/") < 0) {
             result.append(key(Messages.GUI_GROUP_DEPENDENCIES_SELECTED_GROUPS_0));
             result.append(":<br>\n");
-            List users = CmsStringUtil.splitAsList(getGroupName(), CmsHtmlList.ITEM_SEPARATOR, true);
+            List<String> users = CmsStringUtil.splitAsList(getGroupName(), CmsHtmlList.ITEM_SEPARATOR, true);
             result.append("<ul>\n");
-            Iterator it = users.iterator();
+            Iterator<String> it = users.iterator();
             while (it.hasNext()) {
-                String name = (String)it.next();
+                String name = it.next();
                 result.append("<li>");
                 result.append(name);
                 result.append("</li>\n");
@@ -240,21 +243,22 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List groups = getList().getAllContent();
-        Iterator itGroups = groups.iterator();
+        List<CmsListItem> groups = getList().getAllContent();
+        Iterator<CmsListItem> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
-            CmsListItem item = (CmsListItem)itGroups.next();
+            CmsListItem item = itGroups.next();
             String groupName = item.get(LIST_COLUMN_NAME).toString();
             StringBuffer html = new StringBuffer(512);
             try {
                 if (detailId.equals(LIST_DETAIL_USERS)) {
                     // users
-                    Iterator itUsers = getCms().getUsersOfGroup(groupName).iterator();
+                    Iterator<CmsUser> itUsers = getCms().getUsersOfGroup(groupName).iterator();
                     while (itUsers.hasNext()) {
-                        html.append(((CmsUser)itUsers.next()).getFullName());
+                        html.append(itUsers.next().getFullName());
                         if (itUsers.hasNext()) {
                             html.append("<br>");
                         }
@@ -262,9 +266,9 @@ public class CmsGroupTransferList extends A_CmsListDialog {
                     }
                 } else if (detailId.equals(LIST_DETAIL_CHILDREN)) {
                     // children
-                    Iterator itChildren = getCms().getChildren(groupName, false).iterator();
+                    Iterator<CmsGroup> itChildren = getCms().getChildren(groupName, false).iterator();
                     while (itChildren.hasNext()) {
-                        html.append(((CmsGroup)itChildren.next()).getName());
+                        html.append(itChildren.next().getName());
                         if (itChildren.hasNext()) {
                             html.append("<br>");
                         }
@@ -295,15 +299,19 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
         // get content
-        List groups = getGroups();
-        Set selGroups = new HashSet(CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true));
-        Iterator itGroups = groups.iterator();
+        List<CmsGroup> groups = getGroups();
+        Set<String> selGroups = new HashSet<String>(CmsStringUtil.splitAsList(
+            getParamGroupid(),
+            CmsHtmlList.ITEM_SEPARATOR,
+            true));
+        Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
-            CmsGroup group = (CmsGroup)itGroups.next();
+            CmsGroup group = itGroups.next();
             if (selGroups.contains(group.getId().toString())) {
                 continue;
             }
@@ -325,6 +333,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -336,6 +345,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for transfer
@@ -387,6 +397,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user users details
@@ -419,6 +430,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
@@ -441,13 +453,14 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
         m_groupName = "";
-        Iterator itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        Iterator<String> itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
         while (itGroups.hasNext()) {
-            CmsUUID id = new CmsUUID(itGroups.next().toString());
+            CmsUUID id = new CmsUUID(itGroups.next());
             m_groupName += getCms().readGroup(id).getName();
             if (itGroups.hasNext()) {
                 m_groupName += CmsHtmlList.ITEM_SEPARATOR;

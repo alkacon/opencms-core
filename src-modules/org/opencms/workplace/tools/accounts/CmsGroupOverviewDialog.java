@@ -95,10 +95,11 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     /**
      * Commits the edited group to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         // no saving needed
-        setCommitErrors(new ArrayList());
+        setCommitErrors(new ArrayList<Throwable>());
     }
 
     /**
@@ -136,6 +137,11 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
         return m_group.getSimpleName();
     }
 
+    /**
+     * Returns the groups nice name.<p>
+     * 
+     * @return the groups nice name
+     */
     public String getNiceName() {
 
         return OpenCms.getWorkplaceManager().translateGroupName(m_group.getName(), false);
@@ -239,6 +245,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -275,6 +282,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -283,6 +291,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -309,6 +318,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -331,6 +341,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -344,6 +355,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         super.initWorkplaceMembers(jsp);
@@ -353,6 +365,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

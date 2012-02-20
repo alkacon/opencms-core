@@ -28,11 +28,13 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListIndependentAction;
+import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
@@ -64,11 +66,11 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     public CmsShowOrgUnitResourceList(CmsJspActionElement jsp) {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_ORGUNIT_RESOURCES_LIST_NAME_0));
-        List resourceList;
+        List<CmsResource> resourceList;
         try {
             resourceList = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(getCms(), getParamOufqn());
         } catch (CmsException e) {
-            resourceList = new ArrayList();
+            resourceList = new ArrayList<CmsResource>();
         }
         Collections.sort(resourceList);
         m_collector = new CmsShowOrgUnitResourcesCollector(this, resourceList);
@@ -79,6 +81,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -87,6 +90,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -95,6 +99,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         return m_collector;
@@ -126,6 +131,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -134,6 +140,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no op
@@ -142,7 +149,8 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
         String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
         try {
@@ -156,6 +164,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
@@ -169,6 +178,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs, and remove default search action

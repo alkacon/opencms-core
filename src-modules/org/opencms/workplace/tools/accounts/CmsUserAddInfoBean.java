@@ -38,7 +38,7 @@ public class CmsUserAddInfoBean {
     private String m_name;
 
     /** The type. */
-    private Class m_type;
+    private Class<?> m_type;
 
     /** The value. */
     private String m_value;
@@ -50,7 +50,7 @@ public class CmsUserAddInfoBean {
      * @param value the value
      * @param type the type
      */
-    public CmsUserAddInfoBean(String name, String value, Class type) {
+    public CmsUserAddInfoBean(String name, String value, Class<?> type) {
 
         m_name = name;
         m_value = value;
@@ -72,7 +72,7 @@ public class CmsUserAddInfoBean {
      *
      * @return the type
      */
-    public Class getType() {
+    public Class<?> getType() {
 
         return m_type;
     }

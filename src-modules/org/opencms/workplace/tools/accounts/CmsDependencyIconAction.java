@@ -56,13 +56,14 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
      */
     public CmsDependencyIconAction(String id, CmsDependencyIconActionType type, CmsObject cms) {
 
-        super(id + type.getId(), CmsGroupDependenciesList.LIST_COLUMN_TYPE, cms);
+        super(id + type.getId(), CmsGroupPrincipalDependenciesList.LIST_COLUMN_TYPE, cms);
         m_type = type;
     }
 
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
@@ -89,6 +90,7 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         if (m_type == CmsDependencyIconActionType.USER) {
@@ -113,6 +115,7 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         boolean visible = false;

@@ -85,6 +85,7 @@ public class CmsGroupsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
 
         CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
@@ -97,6 +98,7 @@ public class CmsGroupsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setEditAction(CmsListColumnDefinition editCol) {
 
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);

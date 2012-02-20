@@ -174,14 +174,15 @@ public class CmsSchedulerList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             // execute the delete multiaction
-            List removedItems = new ArrayList();
-            Iterator itItems = getSelectedItems().iterator();
+            List<String> removedItems = new ArrayList<String>();
+            Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             while (itItems.hasNext()) {
-                CmsListItem listItem = (CmsListItem)itItems.next();
+                CmsListItem listItem = itItems.next();
                 try {
                     OpenCms.getScheduleManager().unscheduleJob(getCms(), listItem.getId());
                     removedItems.add(listItem.getId());
@@ -196,11 +197,11 @@ public class CmsSchedulerList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)
             || getParamListAction().equals(LIST_MACTION_DEACTIVATE)) {
             // execute the activate or deactivate multiaction
-            Iterator itItems = getSelectedItems().iterator();
+            Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             boolean activate = getParamListAction().equals(LIST_MACTION_ACTIVATE);
             while (itItems.hasNext()) {
                 // toggle the active state of the selected item(s)
-                CmsListItem listItem = (CmsListItem)itItems.next();
+                CmsListItem listItem = itItems.next();
                 try {
                     CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(listItem.getId()).clone();
                     job.setActive(activate);
@@ -222,25 +223,26 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_ACTION_EDIT) || getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // edit a job from the list
             String jobId = getSelectedItem().getId();
             // forward to the edit job screen with additional parameters               
-            Map params = new HashMap();
-            params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, new String[] {jobId});
             // set action parameter to initial dialog call
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
             getToolManager().jspForwardTool(this, "/scheduler/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_COPY)) {
             // copy a job from the list
             String jobId = getSelectedItem().getId();
             // forward to the edit job screen with additional parameters
-            Map params = new HashMap();
-            params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, new String[] {jobId});
             // set action parameter to copy job action
-            params.put(CmsDialog.PARAM_ACTION, CmsEditScheduledJobInfoDialog.DIALOG_COPYJOB);
+            params.put(CmsDialog.PARAM_ACTION, new String[] {CmsEditScheduledJobInfoDialog.DIALOG_COPYJOB});
             getToolManager().jspForwardTool(this, "/scheduler/new", params);
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
             // activate a job from the list
@@ -288,12 +290,13 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get all scheduled jobs from manager
-        Iterator i = getList().getAllContent().iterator();
+        Iterator<CmsListItem> i = getList().getAllContent().iterator();
         while (i.hasNext()) {
-            CmsListItem item = (CmsListItem)i.next();
+            CmsListItem item = i.next();
             CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(item.getId());
             if (detailId.equals(LIST_DETAIL_CONTEXTINFO)) {
                 // job details: context info
@@ -301,10 +304,10 @@ public class CmsSchedulerList extends A_CmsListDialog {
             } else if (detailId.equals(LIST_DETAIL_PARAMETER)) {
                 // job details: parameter
                 StringBuffer params = new StringBuffer(32);
-                Iterator paramIt = job.getParameters().keySet().iterator();
+                Iterator<String> paramIt = job.getParameters().keySet().iterator();
                 while (paramIt.hasNext()) {
-                    String param = (String)paramIt.next();
-                    String value = (String)job.getParameters().get(param);
+                    String param = paramIt.next();
+                    String value = job.getParameters().get(param);
                     params.append(param).append("=");
                     params.append(value).append("<br>");
                 }
@@ -318,14 +321,15 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    @Override
+    protected List<CmsListItem> getListItems() {
 
-        List items = new ArrayList();
+        List<CmsListItem> items = new ArrayList<CmsListItem>();
 
         // get all scheduled jobs from manager
-        Iterator i = OpenCms.getScheduleManager().getJobs().iterator();
+        Iterator<CmsScheduledJobInfo> i = OpenCms.getScheduleManager().getJobs().iterator();
         while (i.hasNext()) {
-            CmsScheduledJobInfo job = (CmsScheduledJobInfo)i.next();
+            CmsScheduledJobInfo job = i.next();
             CmsListItem item = getList().newItem(job.getId());
             // set the contents of the columns
             item.set(LIST_COLUMN_NAME, job.getJobName());
@@ -342,6 +346,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific messages
@@ -353,6 +358,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // add column for edit action
@@ -386,6 +392,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -406,6 +413,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -506,6 +514,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add independent job context info button
@@ -553,6 +562,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the activate job multi action

@@ -67,12 +67,15 @@ public class CmsGroupRemoveAction extends CmsListDefaultAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         if (getItem() != null) {
             String groupName = (String)getItem().get(A_CmsUserGroupsList.LIST_COLUMN_NAME);
             try {
-                List dGroups = getWp().getCms().getGroupsOfUser(((A_CmsUserGroupsList)getWp()).getParamUsername(), true);
+                List<CmsGroup> dGroups = getWp().getCms().getGroupsOfUser(
+                    ((A_CmsUserGroupsList)getWp()).getParamUsername(),
+                    true);
                 CmsGroup group = getWp().getCms().readGroup(groupName);
                 if (isDirect()) {
                     return dGroups.contains(group);

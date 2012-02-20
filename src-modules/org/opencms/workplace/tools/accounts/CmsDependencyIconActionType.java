@@ -60,13 +60,10 @@ public final class CmsDependencyIconActionType {
     public static final CmsDependencyIconActionType USER = new CmsDependencyIconActionType("u");
 
     /** Array constant for all available align types. */
-    private static final CmsDependencyIconActionType[] VALUE_ARRAY = {
-        RESOURCE,
-        GROUP,
-        USER};
+    private static final CmsDependencyIconActionType[] VALUE_ARRAY = {RESOURCE, GROUP, USER};
 
     /** List of mode constants. */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
+    public static final List<CmsDependencyIconActionType> VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_mode;
@@ -93,9 +90,9 @@ public final class CmsDependencyIconActionType {
      */
     public static CmsDependencyIconActionType valueOf(String value) throws CmsIllegalArgumentException {
 
-        Iterator iter = VALUES.iterator();
+        Iterator<CmsDependencyIconActionType> iter = VALUES.iterator();
         while (iter.hasNext()) {
-            CmsDependencyIconActionType target = (CmsDependencyIconActionType)iter.next();
+            CmsDependencyIconActionType target = iter.next();
             if (value.equals(target.getId())) {
                 return target;
             }
@@ -119,6 +116,7 @@ public final class CmsDependencyIconActionType {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_mode;

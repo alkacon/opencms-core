@@ -108,13 +108,13 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
-        List errors = new ArrayList();
-
-        Map params = new HashMap();
-        params.put(CmsDialog.PARAM_CLOSELINK, getParamCloseLink());
-        params.put(CmsToolDialog.PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        List<Throwable> errors = new ArrayList<Throwable>();
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(CmsDialog.PARAM_CLOSELINK, new String[] {getParamCloseLink()});
+        params.put(CmsToolDialog.PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         getToolManager().jspForwardPage(this, "/system/workplace/admin/workplace/logfileview/dodownload.jsp", params);
 
         setCommitErrors(errors);
@@ -123,6 +123,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
      */
+    @Override
     public String dialogButtonsCustom() {
 
         return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
@@ -216,6 +217,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -239,6 +241,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         setKeyPrefix(KEY_PREFIX);
@@ -282,6 +285,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -290,6 +294,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         super.initMessages();

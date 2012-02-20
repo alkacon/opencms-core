@@ -100,9 +100,9 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
 
         String ouFqn = CmsOrganizationalUnit.getParentFqn(getParamOufqn());
 
-        Map params = new HashMap();
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ouFqn);
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, new String[] {ouFqn});
+        params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
         String toolPath = getCurrentToolPath().substring(0, getCurrentToolPath().lastIndexOf("/"));
         getToolManager().jspForwardTool(this, toolPath, params);
         actionCloseDialog();
@@ -112,6 +112,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtml()
      */
+    @Override
     public String defaultActionHtml() {
 
         if ((getList() != null) && getList().getAllContent().isEmpty()) {
@@ -152,7 +153,10 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
      */
     public boolean hasSubOUs() throws CmsException {
 
-        List orgUnits = OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), m_paramOufqn, true);
+        List<CmsOrganizationalUnit> orgUnits = OpenCms.getOrgUnitManager().getOrganizationalUnits(
+            getCms(),
+            m_paramOufqn,
+            true);
         if (orgUnits == null) {
             return false;
         }
@@ -178,19 +182,25 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
-        List orgUnits = OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), m_paramOufqn, true);
-        Iterator itOrgUnits = orgUnits.iterator();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
+        List<CmsOrganizationalUnit> orgUnits = OpenCms.getOrgUnitManager().getOrganizationalUnits(
+            getCms(),
+            m_paramOufqn,
+            true);
+        Iterator<CmsOrganizationalUnit> itOrgUnits = orgUnits.iterator();
         while (itOrgUnits.hasNext()) {
-            CmsOrganizationalUnit childOrgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
+            CmsOrganizationalUnit childOrgUnit = itOrgUnits.next();
             CmsListItem item = getList().newItem(childOrgUnit.getName());
             item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription(getLocale()));
-            item.set(LIST_COLUMN_ADMIN, Boolean.valueOf(OpenCms.getRoleManager().hasRole(
-                getCms(),
-                CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
+            item.set(
+                LIST_COLUMN_ADMIN,
+                Boolean.valueOf(OpenCms.getRoleManager().hasRole(
+                    getCms(),
+                    CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
             item.set(LIST_COLUMN_WEBUSER, Boolean.valueOf(childOrgUnit.hasFlagWebuser()));
             ret.add(item);
         }
@@ -200,6 +210,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

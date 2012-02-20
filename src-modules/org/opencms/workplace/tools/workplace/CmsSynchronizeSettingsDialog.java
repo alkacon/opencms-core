@@ -56,7 +56,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
 
     /** localized messages Keys prefix. */
     public static final String KEY_PREFIX = "sync";
-    
+
     /** The synchronize settings which are edited on this dialog. */
     private CmsSynchronizeSettings m_synchronizeSettings;
 
@@ -85,9 +85,10 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
     /**
      * Commits the edited synchronize settings to the user settings.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             // set the synchronize settings
@@ -112,6 +113,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -148,6 +150,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the object to use for the dialog
@@ -173,6 +176,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -181,6 +185,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -211,6 +216,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

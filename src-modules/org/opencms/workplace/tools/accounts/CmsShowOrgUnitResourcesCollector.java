@@ -28,6 +28,7 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
@@ -48,7 +49,7 @@ public class CmsShowOrgUnitResourcesCollector extends A_CmsListResourceCollector
     public static final String COLLECTOR_NAME = "ouResources";
 
     /** The resources. */
-    private List m_resources;
+    private List<CmsResource> m_resourcesList;
 
     /**
      * Constructor, creates a new instance.<p>
@@ -56,18 +57,18 @@ public class CmsShowOrgUnitResourcesCollector extends A_CmsListResourceCollector
      * @param wp the workplace object
      * @param resources list of ou resources
      */
-    public CmsShowOrgUnitResourcesCollector(A_CmsListExplorerDialog wp, List resources) {
+    public CmsShowOrgUnitResourcesCollector(A_CmsListExplorerDialog wp, List<CmsResource> resources) {
 
         super(wp);
-        m_resources = resources;
+        m_resourcesList = resources;
     }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
-        List names = new ArrayList();
+        List<String> names = new ArrayList<String>();
         names.add(COLLECTOR_NAME);
         return names;
     }
@@ -75,14 +76,16 @@ public class CmsShowOrgUnitResourcesCollector extends A_CmsListResourceCollector
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List getResources(CmsObject cms, Map params) {
+    @Override
+    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params) {
 
-        return m_resources;
+        return m_resourcesList;
     }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // no-op

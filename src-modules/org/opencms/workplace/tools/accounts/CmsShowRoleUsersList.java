@@ -131,6 +131,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     public String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -139,6 +140,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -147,6 +149,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -167,7 +170,8 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#getUsers(boolean)
      */
-    protected List getUsers(boolean withOtherOus) throws CmsException {
+    @Override
+    protected List<CmsUser> getUsers(boolean withOtherOus) throws CmsException {
 
         return OpenCms.getRoleManager().getUsersOfRole(
             getCms(),
@@ -179,6 +183,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop

@@ -87,9 +87,10 @@ public abstract class A_CmsRfsFileWidgetDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
         try {
             OpenCms.getWorkplaceManager().setFileViewSettings(getCms(), m_logView);
         } catch (CmsRoleViolationException e) {
@@ -105,6 +106,7 @@ public abstract class A_CmsRfsFileWidgetDialog extends CmsWidgetDialog {
      *  
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initLogfileViewBean();
@@ -113,6 +115,7 @@ public abstract class A_CmsRfsFileWidgetDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -133,6 +136,7 @@ public abstract class A_CmsRfsFileWidgetDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle

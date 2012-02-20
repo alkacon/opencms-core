@@ -115,13 +115,14 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         switch (getAction()) {
             case ACTION_DELETE:
-                Iterator it = CmsStringUtil.splitAsList(getGroupName(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+                Iterator<String> it = CmsStringUtil.splitAsList(getGroupName(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
                 while (it.hasNext()) {
-                    String name = (String)it.next();
+                    String name = it.next();
                     try {
                         getCms().deleteGroup(name);
                     } catch (CmsException e) {
@@ -132,11 +133,11 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
                 actionCloseDialog();
                 break;
             case ACTION_TRANSFER:
-                Map params = new HashMap();
+                Map<String, String[]> params = new HashMap<String, String[]>();
                 // set action parameter to initial dialog call
-                params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+                params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
                 // forward to the select replacement screen
-                params.put(PARAM_GROUPID, getParamGroupid());
+                params.put(PARAM_GROUPID, new String[] {getParamGroupid()});
                 getToolManager().jspForwardPage(
                     this,
                     getJsp().getRequestContext().getFolderUri() + "group_transfer.jsp",
@@ -151,6 +152,7 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlContent()
      */
+    @Override
     public String defaultActionHtmlContent() {
 
         if (getList().getTotalSize() > 0) {
@@ -172,6 +174,7 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(512);
@@ -206,6 +209,7 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(512);
@@ -214,11 +218,11 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
         if (getCurrentToolPath().indexOf("/edit/") < 0) {
             result.append(key(Messages.GUI_GROUP_DEPENDENCIES_SELECTED_GROUPS_0));
             result.append(":<br>\n");
-            List users = CmsStringUtil.splitAsList(getGroupName(), CmsHtmlList.ITEM_SEPARATOR, true);
+            List<String> users = CmsStringUtil.splitAsList(getGroupName(), CmsHtmlList.ITEM_SEPARATOR, true);
             result.append("<ul>\n");
-            Iterator it = users.iterator();
+            Iterator<String> it = users.iterator();
             while (it.hasNext()) {
-                String name = (String)it.next();
+                String name = it.next();
                 result.append("<li>");
                 result.append(name);
                 result.append("</li>\n");
@@ -237,6 +241,7 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -250,13 +255,14 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
         m_groupName = "";
-        Iterator itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        Iterator<String> itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
         while (itGroups.hasNext()) {
-            CmsUUID id = new CmsUUID(itGroups.next().toString());
+            CmsUUID id = new CmsUUID(itGroups.next());
             m_groupName += getCms().readGroup(id).getName();
             if (itGroups.hasNext()) {
                 m_groupName += CmsHtmlList.ITEM_SEPARATOR;

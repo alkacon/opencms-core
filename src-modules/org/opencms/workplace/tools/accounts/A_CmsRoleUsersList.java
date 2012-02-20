@@ -169,9 +169,9 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             // lazzy initialization
             m_hasUsersInOtherOus = Boolean.FALSE;
             try {
-                Iterator itUsers = getUsers(true).iterator();
+                Iterator<CmsUser> itUsers = getUsers(true).iterator();
                 while (itUsers.hasNext()) {
-                    CmsUser user = (CmsUser)itUsers.next();
+                    CmsUser user = itUsers.next();
                     if (!user.getOuFqn().equals(getParamOufqn())) {
                         m_hasUsersInOtherOus = Boolean.TRUE;
                         break;
@@ -210,6 +210,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -229,18 +230,18 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     @Override
-    protected List getListItems() throws CmsException {
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
         boolean withOtherOus = hasUsersInOtherOus() && otherOrgUnitsVisible();
 
         // get content        
-        List users = getUsers(withOtherOus);
-        Iterator itUsers = users.iterator();
+        List<CmsUser> users = getUsers(withOtherOus);
+        Iterator<CmsUser> itUsers = users.iterator();
         while (itUsers.hasNext()) {
 
-            CmsUser user = (CmsUser)itUsers.next();
+            CmsUser user = itUsers.next();
             CmsListItem item = makeUserItem(user);
             ret.add(item);
         }
@@ -274,7 +275,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getUsers(boolean withOtherOus) throws CmsException;
+    protected abstract List<CmsUser> getUsers(boolean withOtherOus) throws CmsException;
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
@@ -310,6 +311,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 if (!isVisible()) {
@@ -332,21 +334,22 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
+            @Override
             public CmsMessageContainer getHelpText() {
 
                 try {
                     CmsUser user = getCms().readUser((String)getItem().get(LIST_COLUMN_LOGIN));
                     if (user.getOuFqn().equals(((A_CmsRoleUsersList)getWp()).getParamOufqn())) {
-                        List userRoles = OpenCms.getRoleManager().getRolesOfUser(
+                        List<CmsRole> userRoles = OpenCms.getRoleManager().getRolesOfUser(
                             ((A_CmsRoleUsersList)getWp()).getCms(),
                             user.getName(),
                             ((A_CmsRoleUsersList)getWp()).getParamOufqn(),
                             false,
                             true,
                             true);
-                        Iterator itUserRoles = userRoles.iterator();
+                        Iterator<CmsRole> itUserRoles = userRoles.iterator();
                         while (itUserRoles.hasNext()) {
-                            CmsRole role = (CmsRole)itUserRoles.next();
+                            CmsRole role = itUserRoles.next();
                             if (role.getGroupName().equals(((A_CmsRoleUsersList)getWp()).getParamRole())) {
                                 return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_HELP_0);
                             }
@@ -364,21 +367,22 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 try {
                     CmsUser user = getCms().readUser((String)getItem().get(LIST_COLUMN_LOGIN));
                     if (user.getOuFqn().equals(((A_CmsRoleUsersList)getWp()).getParamOufqn())) {
-                        List userRoles = OpenCms.getRoleManager().getRolesOfUser(
+                        List<CmsRole> userRoles = OpenCms.getRoleManager().getRolesOfUser(
                             ((A_CmsRoleUsersList)getWp()).getCms(),
                             user.getName(),
                             ((A_CmsRoleUsersList)getWp()).getParamOufqn(),
                             false,
                             true,
                             true);
-                        Iterator itUserRoles = userRoles.iterator();
+                        Iterator<CmsRole> itUserRoles = userRoles.iterator();
                         while (itUserRoles.hasNext()) {
-                            CmsRole role = (CmsRole)itUserRoles.next();
+                            CmsRole role = itUserRoles.next();
                             if (role.getGroupName().equals(((A_CmsRoleUsersList)getWp()).getParamRole())) {
                                 return A_CmsUsersList.PATH_BUTTONS + "user.png";
                             }
@@ -396,21 +400,22 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 try {
                     CmsUser user = getCms().readUser((String)getItem().get(LIST_COLUMN_LOGIN));
                     if (user.getOuFqn().equals(((A_CmsRoleUsersList)getWp()).getParamOufqn())) {
-                        List userRoles = OpenCms.getRoleManager().getRolesOfUser(
+                        List<CmsRole> userRoles = OpenCms.getRoleManager().getRolesOfUser(
                             ((A_CmsRoleUsersList)getWp()).getCms(),
                             user.getName(),
                             ((A_CmsRoleUsersList)getWp()).getParamOufqn(),
                             false,
                             true,
                             true);
-                        Iterator itUserRoles = userRoles.iterator();
+                        Iterator<CmsRole> itUserRoles = userRoles.iterator();
                         while (itUserRoles.hasNext()) {
-                            CmsRole role = (CmsRole)itUserRoles.next();
+                            CmsRole role = itUserRoles.next();
                             if (role.getGroupName().equals(((A_CmsRoleUsersList)getWp()).getParamRole())) {
                                 return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_NAME_0);
                             }
@@ -477,6 +482,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_HIDE;
@@ -485,6 +491,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((A_CmsRoleUsersList)getWp()).hasUsersInOtherOus();
@@ -495,6 +502,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_SHOW;
@@ -503,6 +511,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((A_CmsRoleUsersList)getWp()).hasUsersInOtherOus();

@@ -221,12 +221,12 @@ public class CmsMessageInfo {
      * @return list of internet addresses (email)
      * @throws AddressException if an email address is not correct
      */
-    private List createInternetAddresses(String mailAddresses) throws AddressException {
+    private List<InternetAddress> createInternetAddresses(String mailAddresses) throws AddressException {
 
         if (CmsStringUtil.isNotEmpty(mailAddresses)) {
             // at least one email address is present, generate list
             StringTokenizer T = new StringTokenizer(mailAddresses, ";");
-            List addresses = new ArrayList(T.countTokens());
+            List<InternetAddress> addresses = new ArrayList<InternetAddress>(T.countTokens());
             while (T.hasMoreTokens()) {
                 InternetAddress address = new InternetAddress(T.nextToken().trim());
                 addresses.add(address);
@@ -234,7 +234,7 @@ public class CmsMessageInfo {
             return addresses;
         } else {
             // no address given, return empty list
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 

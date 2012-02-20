@@ -91,6 +91,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtml()
      */
+    @Override
     public String defaultActionHtml() {
 
         if ((getList() != null) && getList().getAllContent().isEmpty()) {
@@ -116,15 +117,16 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String ouFqn = getSelectedItem().get(LIST_COLUMN_NAME).toString();
         if (ouFqn == null) {
             ouFqn = "";
         }
-        Map params = new HashMap();
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ouFqn.substring(1));
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, new String[] {ouFqn.substring(1)});
+        params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
         if (getParamListAction().equals(LIST_ACTION_OVERVIEW)) {
             // forward to the edit user screen
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/orgunit", params);
@@ -153,16 +155,16 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      */
     public void forwardToSingleAdminOU() throws ServletException, IOException, CmsException {
 
-        List orgUnits = getOrgUnits();
+        List<CmsOrganizationalUnit> orgUnits = getOrgUnits();
 
         if (orgUnits.isEmpty()) {
             OpenCms.getWorkplaceManager().getToolManager().jspForwardTool(this, "/", null);
             return;
         }
 
-        Map params = new HashMap();
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ((CmsOrganizationalUnit)orgUnits.get(0)).getName());
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, new String[] {orgUnits.get(0).getName()});
+        params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
 
         OpenCms.getWorkplaceManager().getToolManager().jspForwardTool(this, getForwardToolPath(), params);
     }
@@ -186,7 +188,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      */
     public boolean hasMoreAdminOUs() throws CmsException {
 
-        List orgUnits = getOrgUnits();
+        List<CmsOrganizationalUnit> orgUnits = getOrgUnits();
 
         if (orgUnits == null) {
             return false;
@@ -230,6 +232,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for overview
@@ -245,6 +248,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 if (getItem() != null) {
@@ -258,6 +262,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 if (getItem() != null) {

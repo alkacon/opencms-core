@@ -89,6 +89,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // noop
@@ -113,7 +114,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
         if (m_role.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
             // add all roles as parent of the workplace user role
             dependency = "";
-            Iterator itWuParents;
+            Iterator<CmsRole> itWuParents;
             try {
                 itWuParents = OpenCms.getRoleManager().getRoles(getCms(), getParamOufqn(), false).iterator();
             } catch (CmsException e) {
@@ -121,7 +122,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
                 return dependency;
             }
             while (itWuParents.hasNext()) {
-                CmsRole wuParent = (CmsRole)itWuParents.next();
+                CmsRole wuParent = itWuParents.next();
                 if (wuParent.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
                     // skip the wu role itself
                     continue;
@@ -240,6 +241,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -268,6 +270,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -276,6 +279,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -292,6 +296,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -312,6 +317,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

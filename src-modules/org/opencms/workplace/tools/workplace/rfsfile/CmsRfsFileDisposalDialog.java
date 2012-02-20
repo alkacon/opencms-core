@@ -86,6 +86,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // empty
@@ -94,6 +95,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
      */
+    @Override
     public String dialogButtonsCustom() {
 
         return dialogButtons(new int[] {BUTTON_CLOSE}, new String[1]);
@@ -108,8 +110,9 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
 
         HttpServletResponse res = CmsFlexController.getController(getJsp().getRequest()).getTopResponse();
         res.setContentType("application/octet-stream");
-        res.setHeader("Content-Disposition", new StringBuffer("attachment; filename=\"").append(
-            getDownloadFile().getName()).append("\"").toString());
+        res.setHeader(
+            "Content-Disposition",
+            new StringBuffer("attachment; filename=\"").append(getDownloadFile().getName()).append("\"").toString());
         res.setContentLength((int)getDownloadFile().length());
 
         // getOutputStream() throws IllegalStateException if the jsp directive buffer="none" is set. 
@@ -142,6 +145,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#checkRole()
      */
+    @Override
     protected void checkRole() throws CmsRoleViolationException {
 
         OpenCms.getRoleManager().checkRole(getCms(), CmsRole.WORKPLACE_MANAGER);
@@ -155,6 +159,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -188,6 +193,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // empty
@@ -231,6 +237,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -239,6 +246,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         super.initMessages();
@@ -248,6 +256,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         OpenCms.getRoleManager().checkRole(getCms(), CmsRole.WORKPLACE_MANAGER);

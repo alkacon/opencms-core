@@ -88,7 +88,7 @@ public class CmsReInitWorkplace extends CmsDialog {
                     // re-initialize the workplace
                     OpenCms.getWorkplaceManager().initialize(getCms());
                     // fire "clear caches" event to reload all cached resource bundles
-                    OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap());
+                    OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>());
                     actionCloseDialog();
                 } catch (Throwable t) {
                     // create a new Exception with custom message
@@ -101,6 +101,7 @@ public class CmsReInitWorkplace extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

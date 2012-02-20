@@ -83,7 +83,7 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
     /** Stores the value of the request parameter for the group id, could be a list of ids. */
     private String m_paramGroupid;
 
-    /** Flag to show resources with file attributes */
+    /** Flag to show resources with file attributes. */
     protected boolean m_showAttributes;
 
     /**

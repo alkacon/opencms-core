@@ -92,16 +92,16 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     private CmsDecorationBundle m_decorations;
 
     /** The list of excluded tags. */
-    private List m_excludes;
+    private List<String> m_excludes;
 
     /** The locale for to build the configuration for. */
     private Locale m_locale;
 
     /** The list of already used  decorations. */
-    private List m_usedDecorations;
+    private List<String> m_usedDecorations;
 
     /** The list with all <code>{@link CmsDecorationDefintion}</code> instances parsed from the config file. */
-    private List m_decorationDefinitions;
+    private List<CmsDecorationDefintion> m_decorationDefinitions;
 
     /**
      * Constructor, creates a new, empty CmsDecoratorConfiguration.<p>
@@ -113,9 +113,9 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
         m_configFile = null;
         m_cms = null;
         m_locale = null;
-        m_usedDecorations = new ArrayList();
-        m_excludes = new ArrayList();
-        m_decorationDefinitions = new ArrayList();
+        m_usedDecorations = new ArrayList<String>();
+        m_excludes = new ArrayList<String>();
+        m_decorationDefinitions = new ArrayList<CmsDecorationDefintion>();
     }
 
     /**
@@ -132,9 +132,9 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
         m_configFile = null;
         m_cms = cms;
         m_locale = m_cms.getRequestContext().getLocale();
-        m_usedDecorations = new ArrayList();
-        m_excludes = new ArrayList();
-        m_decorationDefinitions = new ArrayList();
+        m_usedDecorations = new ArrayList<String>();
+        m_excludes = new ArrayList<String>();
+        m_decorationDefinitions = new ArrayList<CmsDecorationDefintion>();
         init(cms, null, null);
     }
 
@@ -152,9 +152,9 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
         m_configFile = null;
         m_cms = cms;
         m_locale = m_cms.getRequestContext().getLocale();
-        m_usedDecorations = new ArrayList();
-        m_excludes = new ArrayList();
-        m_decorationDefinitions = new ArrayList();
+        m_usedDecorations = new ArrayList<String>();
+        m_excludes = new ArrayList<String>();
+        m_decorationDefinitions = new ArrayList<CmsDecorationDefintion>();
         init(cms, configFile, null);
     }
 
@@ -173,9 +173,9 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
         m_configFile = null;
         m_cms = cms;
         m_locale = m_cms.getRequestContext().getLocale();
-        m_usedDecorations = new ArrayList();
-        m_excludes = new ArrayList();
-        m_decorationDefinitions = new ArrayList();
+        m_usedDecorations = new ArrayList<String>();
+        m_excludes = new ArrayList<String>();
+        m_decorationDefinitions = new ArrayList<CmsDecorationDefintion>();
         init(cms, configFile, locale);
     }
 
@@ -268,7 +268,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
      * @return The list with all <code>{@link CmsDecorationDefintion}</code> instances 
      *      parsed from the config file
      */
-    public List getDecorationDefinitions() {
+    public List<CmsDecorationDefintion> getDecorationDefinitions() {
 
         return m_decorationDefinitions;
     }
@@ -287,7 +287,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
      *
      * @return the excludes
      */
-    public List getExcludes() {
+    public List<String> getExcludes() {
 
         return m_excludes;
     }
@@ -307,7 +307,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
      *
      * @return the usedDecorations
      */
-    public List getUsedDecorations() {
+    public List<String> getUsedDecorations() {
 
         return m_usedDecorations;
     }
@@ -337,41 +337,41 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
             m_locale = locale;
         }
 
-       if (m_configFile != null) { 
-       
-        // get the configuration file
-        CmsResource res = m_cms.readResource(m_configFile);
-        CmsFile file = m_cms.readFile(res);
-        CmsXmlContent configuration = CmsXmlContentFactory.unmarshal(m_cms, file);
+        if (m_configFile != null) {
 
-        // get the uselocale flag
-        // if this flag is not set to true, we must build locale independent decoration bundles
-        String uselocale = configuration.getValue(XPATH_USELOCALE, m_configurationLocale).getStringValue(m_cms);
-        if (!uselocale.equals("true")) {
-            m_locale = null;
-        }
-        // get the number of decoration definitions
-        int decorationDefCount = configuration.getIndexCount(XPATH_DECORATION, m_configurationLocale);
-        // get all the decoration definitions
-        for (int i = 1; i <= decorationDefCount; i++) {
-            CmsDecorationDefintion decDef = getDecorationDefinition(configuration, i);
-            m_decorationDefinitions.add(decDef);
-            CmsDecorationBundle decBundle = decDef.createDecorationBundle(m_cms, m_locale);
-            // merge it to the already existing decorations
-            m_decorations.putAll(decBundle.getAll());
-        }
+            // get the configuration file
+            CmsResource res = m_cms.readResource(m_configFile);
+            CmsFile file = m_cms.readFile(res);
+            CmsXmlContent configuration = CmsXmlContentFactory.unmarshal(m_cms, file);
 
-        // now read the exclude values
-        int excludeValuesCount = configuration.getIndexCount(XPATH_EXCLUDE, m_configurationLocale);
-        // get all the exclude definitions
-        for (int i = 1; i <= excludeValuesCount; i++) {
-            String excludeValue = configuration.getStringValue(
-                m_cms,
-                XPATH_EXCLUDE + "[" + i + "]",
-                m_configurationLocale);
-            m_excludes.add(excludeValue.toLowerCase());
+            // get the uselocale flag
+            // if this flag is not set to true, we must build locale independent decoration bundles
+            String uselocale = configuration.getValue(XPATH_USELOCALE, m_configurationLocale).getStringValue(m_cms);
+            if (!uselocale.equals("true")) {
+                m_locale = null;
+            }
+            // get the number of decoration definitions
+            int decorationDefCount = configuration.getIndexCount(XPATH_DECORATION, m_configurationLocale);
+            // get all the decoration definitions
+            for (int i = 1; i <= decorationDefCount; i++) {
+                CmsDecorationDefintion decDef = getDecorationDefinition(configuration, i);
+                m_decorationDefinitions.add(decDef);
+                CmsDecorationBundle decBundle = decDef.createDecorationBundle(m_cms, m_locale);
+                // merge it to the already existing decorations
+                m_decorations.putAll(decBundle.getAll());
+            }
+
+            // now read the exclude values
+            int excludeValuesCount = configuration.getIndexCount(XPATH_EXCLUDE, m_configurationLocale);
+            // get all the exclude definitions
+            for (int i = 1; i <= excludeValuesCount; i++) {
+                String excludeValue = configuration.getStringValue(
+                    m_cms,
+                    XPATH_EXCLUDE + "[" + i + "]",
+                    m_configurationLocale);
+                m_excludes.add(excludeValue.toLowerCase());
+            }
         }
-       }
     }
 
     /**
@@ -399,7 +399,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
      */
     public void resetMarkedDecorations() {
 
-        m_usedDecorations = new ArrayList();
+        m_usedDecorations = new ArrayList<String>();
     }
 
     /**
@@ -437,7 +437,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
      *
      * @param decorationDefinitions the decorationDefinitions to set
      */
-    public void setDecorationDefinitions(List decorationDefinitions) {
+    public void setDecorationDefinitions(List<CmsDecorationDefintion> decorationDefinitions) {
 
         m_decorationDefinitions = decorationDefinitions;
     }
@@ -457,7 +457,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
      *
      * @param excludes the excludes to set
      */
-    public void setExcludes(List excludes) {
+    public void setExcludes(List<String> excludes) {
 
         m_excludes = excludes;
     }
@@ -477,7 +477,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
      *
      * @param usedDecorations the usedDecorations to set
      */
-    public void setUsedDecorations(List usedDecorations) {
+    public void setUsedDecorations(List<String> usedDecorations) {
 
         m_usedDecorations = usedDecorations;
     }
@@ -485,6 +485,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();

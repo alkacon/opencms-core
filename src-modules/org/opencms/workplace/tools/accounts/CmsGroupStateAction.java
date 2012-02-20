@@ -114,11 +114,12 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         try {
             String groupName = (String)getItem().get(A_CmsUserGroupsList.LIST_COLUMN_NAME);
-            List dGroups = getCms().getGroupsOfUser(getUserName(), true);
+            List<CmsGroup> dGroups = getCms().getGroupsOfUser(getUserName(), true);
             CmsGroup group = getCms().readGroup(groupName);
             if (isDirect()) {
                 return dGroups.contains(group);
@@ -143,6 +144,7 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
     /**
      * @see org.opencms.workplace.list.I_CmsListAction#setWp(org.opencms.workplace.list.A_CmsListDialog)
      */
+    @Override
     public void setWp(A_CmsListDialog wp) {
 
         super.setWp(wp);

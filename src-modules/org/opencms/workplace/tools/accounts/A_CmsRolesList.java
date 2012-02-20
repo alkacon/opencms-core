@@ -133,13 +133,14 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List roles = getList().getAllContent();
-        Iterator itRoles = roles.iterator();
+        List<CmsListItem> roles = getList().getAllContent();
+        Iterator<CmsListItem> itRoles = roles.iterator();
         while (itRoles.hasNext()) {
-            CmsListItem item = (CmsListItem)itRoles.next();
+            CmsListItem item = itRoles.next();
             String roleName = item.get(LIST_COLUMN_GROUP_NAME).toString();
             StringBuffer html = new StringBuffer(512);
             try {
@@ -163,14 +164,15 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
-        List roles = getRoles();
-        List pRoles = new ArrayList(roles);
-        Iterator itRoles = roles.iterator();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
+        List<CmsRole> roles = getRoles();
+        List<CmsRole> pRoles = new ArrayList<CmsRole>(roles);
+        Iterator<CmsRole> itRoles = roles.iterator();
         while (itRoles.hasNext()) {
-            CmsRole role = (CmsRole)itRoles.next();
+            CmsRole role = itRoles.next();
             CmsListItem item = getList().newItem(role.getGroupName());
             Locale locale = getCms().getRequestContext().getLocale();
             item.set(LIST_COLUMN_NAME, role.getName(locale));
@@ -188,9 +190,9 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
             if (role.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
                 // add all roles as parent of the workplace user role
                 dependency = "";
-                Iterator itWuParents = pRoles.iterator();
+                Iterator<CmsRole> itWuParents = pRoles.iterator();
                 while (itWuParents.hasNext()) {
-                    CmsRole wuParent = (CmsRole)itWuParents.next();
+                    CmsRole wuParent = itWuParents.next();
                     if (wuParent.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)
                         || (wuParent.forOrgUnit(null).equals(CmsRole.ROOT_ADMIN))) {
                         continue;
@@ -225,7 +227,7 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getRoles() throws CmsException;
+    protected abstract List<CmsRole> getRoles() throws CmsException;
 
     /**
      * Returns if the organizational unit details button should be displayed.<p>
@@ -240,6 +242,7 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -255,6 +258,7 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return ((A_CmsRolesList)getWp()).getIconPath(getItem());
@@ -303,6 +307,7 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add description details
@@ -359,6 +364,7 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));

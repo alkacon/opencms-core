@@ -66,6 +66,7 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditGroupDialog#getListClass()
      */
+    @Override
     protected String getListClass() {
 
         return CmsGroupsList.class.getName();
@@ -74,6 +75,7 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditGroupDialog#getListRootPath()
      */
+    @Override
     protected String getListRootPath() {
 
         return "/accounts/orgunit/groups";
@@ -82,6 +84,7 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditGroupDialog#isEditable(org.opencms.file.CmsGroup)
      */
+    @Override
     protected boolean isEditable(CmsGroup group) {
 
         return true;

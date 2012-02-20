@@ -27,7 +27,9 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsGroupWidget;
 import org.opencms.widgets.CmsSelectWidget;
@@ -82,14 +84,15 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
-        Map params = new HashMap();
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
-        params.put(CmsDialog.PARAM_CLOSELINK, getParamCloseLink());
-        params.put(CmsToolDialog.PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, new String[] {getParamOufqn()});
+        params.put(CmsDialog.PARAM_CLOSELINK, new String[] {getParamCloseLink()});
+        params.put(CmsToolDialog.PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         getToolManager().jspForwardPage(this, getDownloadPath(), params);
         setCommitErrors(errors);
     }
@@ -102,6 +105,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -134,6 +138,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initExportObject();
@@ -160,6 +165,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -168,34 +174,36 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * Initializes the message info object to work with depending on the dialog state and request parameters.<p>
      */
+    @SuppressWarnings("unchecked")
     protected void initExportObject() {
 
         try {
             if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
                 // create a new list
-                setGroups(new ArrayList());
-                setRoles(new ArrayList());
+                setGroups(new ArrayList<CmsGroup>());
+                setRoles(new ArrayList<CmsRole>());
             } else {
                 // this is not the initial call, get the message info object from session
-                setGroups((List)((Map)getDialogObject()).get("groups"));
-                setRoles((List)((Map)getDialogObject()).get("roles"));
+                setGroups((List<CmsGroup>)((Map<?, ?>)getDialogObject()).get("groups"));
+                setRoles((List<CmsRole>)((Map<?, ?>)getDialogObject()).get("roles"));
             }
         } catch (Exception e) {
             // create a new list
-            setGroups(new ArrayList());
-            setRoles(new ArrayList());
+            setGroups(new ArrayList<CmsGroup>());
+            setRoles(new ArrayList<CmsRole>());
         }
     }
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
-        HashMap objectsMap = new HashMap();
+        HashMap<String, List<?>> objectsMap = new HashMap<String, List<?>>();
         objectsMap.put("groups", getGroups());
         objectsMap.put("roles", getRoles());
 

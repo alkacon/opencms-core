@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -59,13 +60,13 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
     public static final String[] PAGES = {"page1"};
 
     /** List of groups. */
-    private List m_groups;
+    private List<CmsGroup> m_groups;
 
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
 
     /** List of roles. */
-    private List m_roles;
+    private List<CmsRole> m_roles;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -92,6 +93,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public abstract void actionCommit() throws IOException, ServletException;
 
     /**
@@ -99,7 +101,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
      * 
      * @return the list of groups
      */
-    public List getGroups() {
+    public List<CmsGroup> getGroups() {
 
         return m_groups;
     }
@@ -119,7 +121,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
      *  
      * @return the list of roles to export
      */
-    public List getRoles() {
+    public List<CmsRole> getRoles() {
 
         return m_roles;
     }
@@ -129,7 +131,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
      * 
      * @param groups the groups list
      */
-    public void setGroups(List groups) {
+    public void setGroups(List<CmsGroup> groups) {
 
         m_groups = groups;
     }
@@ -152,7 +154,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
      * 
      * @param roles the roles list
      */
-    public void setRoles(List roles) {
+    public void setRoles(List<CmsRole> roles) {
 
         m_roles = roles;
     }
@@ -160,11 +162,13 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected abstract void defineWidgets();
 
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -175,23 +179,23 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
      * 
      * @return the role names to show in the select box
      */
-    protected List getSelectRoles() {
+    protected List<CmsSelectWidgetOption> getSelectRoles() {
 
-        List retVal = new ArrayList();
+        List<CmsSelectWidgetOption> retVal = new ArrayList<CmsSelectWidgetOption>();
 
         try {
             boolean inRootOu = CmsStringUtil.isEmptyOrWhitespaceOnly(getParamOufqn())
                 || CmsOrganizationalUnit.SEPARATOR.equals(getParamOufqn());
-            List roles = OpenCms.getRoleManager().getRolesOfUser(
+            List<CmsRole> roles = OpenCms.getRoleManager().getRolesOfUser(
                 getCms(),
                 getCms().getRequestContext().getCurrentUser().getName(),
                 getParamOufqn(),
                 false,
                 false,
                 false);
-            Iterator itRoles = roles.iterator();
+            Iterator<CmsRole> itRoles = roles.iterator();
             while (itRoles.hasNext()) {
-                CmsRole role = (CmsRole)itRoles.next();
+                CmsRole role = itRoles.next();
                 if (role.isOrganizationalUnitIndependent() && !inRootOu) {
                     continue;
                 }
@@ -200,16 +204,11 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
         } catch (CmsException e) {
             // noop
         }
-        Collections.sort(retVal, new Comparator() {
+        Collections.sort(retVal, new Comparator<CmsSelectWidgetOption>() {
 
-            public int compare(Object arg0, Object arg1) {
+            public int compare(CmsSelectWidgetOption arg0, CmsSelectWidgetOption arg1) {
 
-                if (!(arg0 instanceof CmsSelectWidgetOption) || !(arg1 instanceof CmsSelectWidgetOption)) {
-                    return 0;
-                }
-                CmsSelectWidgetOption opt0 = (CmsSelectWidgetOption)arg0;
-                CmsSelectWidgetOption opt1 = (CmsSelectWidgetOption)arg1;
-                return opt0.getOption().compareTo(opt1.getOption());
+                return arg0.getOption().compareTo(arg1.getOption());
             }
 
         });

@@ -83,10 +83,10 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     public static final String ORGUNIT_USERS = "orgunit_users";
 
     /** Stores the users not in the current ou.*/
-    private List m_notOuUsers;
+    private List<CmsUser> m_notOuUsers;
 
     /** Stores the users of the the current ou.*/
-    private List m_ouUsers;
+    private List<CmsUser> m_ouUsers;
 
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
@@ -105,7 +105,8 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable ? LIST_COLUMN_NAME
+        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable
+        ? LIST_COLUMN_NAME
         : null);
     }
 
@@ -114,7 +115,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
      *
      * @return the notOuUsers
      */
-    public List getNotOuUsers() {
+    public List<CmsUser> getNotOuUsers() {
 
         return m_notOuUsers;
     }
@@ -124,7 +125,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
      *
      * @return the ouUsers
      */
-    public List getOuUsers() {
+    public List<CmsUser> getOuUsers() {
 
         return m_ouUsers;
     }
@@ -165,7 +166,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
      *
      * @param notOuUsers the notOuUsers to set
      */
-    public void setNotOuUsers(List notOuUsers) {
+    public void setNotOuUsers(List<CmsUser> notOuUsers) {
 
         m_notOuUsers = notOuUsers;
         getJsp().getRequest().getSession().setAttribute(A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS, m_notOuUsers);
@@ -176,7 +177,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
      *
      * @param ouUsers the ouUsers to set
      */
-    public void setOuUsers(List ouUsers) {
+    public void setOuUsers(List<CmsUser> ouUsers) {
 
         m_ouUsers = ouUsers;
         getJsp().getRequest().getSession().setAttribute(A_CmsOrgUnitUsersList.ORGUNIT_USERS, m_ouUsers);
@@ -198,6 +199,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -206,15 +208,16 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
         // get content        
-        List users = getUsers();
-        Iterator itUsers = users.iterator();
+        List<CmsUser> users = getUsers();
+        Iterator<CmsUser> itUsers = users.iterator();
         while (itUsers.hasNext()) {
-            CmsUser user = (CmsUser)itUsers.next();
+            CmsUser user = itUsers.next();
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
             item.set(LIST_COLUMN_NAME, user.getSimpleName());
@@ -233,11 +236,12 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getUsers() throws CmsException;
+    protected abstract List<CmsUser> getUsers() throws CmsException;
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -301,6 +305,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // noop
@@ -316,6 +321,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

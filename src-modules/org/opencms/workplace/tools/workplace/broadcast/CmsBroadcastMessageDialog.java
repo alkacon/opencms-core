@@ -78,18 +78,19 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
     /**
      * Commits the edited project to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             if (isForAll()) {
                 OpenCms.getSessionManager().sendBroadcast(getCms(), m_msgInfo.getMsg());
             } else {
-                List ids = CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.ITEM_SEPARATOR);
-                Iterator itIds = ids.iterator();
+                List<String> ids = CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.ITEM_SEPARATOR);
+                Iterator<String> itIds = ids.iterator();
                 while (itIds.hasNext()) {
-                    String id = itIds.next().toString();
+                    String id = itIds.next();
                     OpenCms.getSessionManager().sendBroadcast(getCms(), m_msgInfo.getMsg(), id);
                 }
             }
@@ -103,6 +104,7 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -132,6 +134,7 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the project object to use for the dialog

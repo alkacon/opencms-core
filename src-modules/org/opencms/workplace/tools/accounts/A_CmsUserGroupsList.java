@@ -163,10 +163,10 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             // lazzy initialization
             m_hasGroupsInOtherOus = Boolean.FALSE;
             try {
-                List groups = getGroups(true);
-                Iterator itGroups = groups.iterator();
+                List<CmsGroup> groups = getGroups(true);
+                Iterator<CmsGroup> itGroups = groups.iterator();
                 while (itGroups.hasNext()) {
-                    CmsGroup group = (CmsGroup)itGroups.next();
+                    CmsGroup group = itGroups.next();
                     if (!group.getOuFqn().equals(getParamOufqn())) {
                         m_hasGroupsInOtherOus = Boolean.TRUE;
                         break;
@@ -215,6 +215,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -229,21 +230,22 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getGroups(boolean withOtherOus) throws CmsException;
+    protected abstract List<CmsGroup> getGroups(boolean withOtherOus) throws CmsException;
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
         CmsListItemDetails details = getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU);
         boolean withOtherOus = hasGroupsInOtherOus() && (details != null) && details.isVisible();
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
         // get content        
-        List groups = getGroups(withOtherOus);
-        Iterator itGroups = groups.iterator();
+        List<CmsGroup> groups = getGroups(withOtherOus);
+        Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
-            CmsGroup group = (CmsGroup)itGroups.next();
+            CmsGroup group = itGroups.next();
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
             item.set(LIST_COLUMN_DISPLAY, OpenCms.getWorkplaceManager().translateGroupName(group.getName(), false));
@@ -257,6 +259,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
      */
+    @Override
     protected void initializeDetail(String detailId) {
 
         super.initializeDetail(detailId);
@@ -271,6 +274,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -282,6 +286,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -344,6 +349,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user address details
@@ -353,6 +359,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_HIDE;
@@ -361,6 +368,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((A_CmsUserGroupsList)getWp()).hasGroupsInOtherOus();
@@ -371,6 +379,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_SHOW;
@@ -379,6 +388,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((A_CmsUserGroupsList)getWp()).hasGroupsInOtherOus();
@@ -405,6 +415,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

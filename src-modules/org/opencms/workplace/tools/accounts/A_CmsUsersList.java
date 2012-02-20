@@ -151,10 +151,10 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     public static final String PATH_BUTTONS = "tools/accounts/buttons/";
 
     /** a set of action id's to use for deletion. */
-    private static Set m_deleteActionIds = new HashSet();
+    private static Set<String> m_deleteActionIds = new HashSet<String>();
 
     /** a set of action id's to use for edition. */
-    private static Set m_editActionIds = new HashSet();
+    private static Set<String> m_editActionIds = new HashSet<String>();
 
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
@@ -192,14 +192,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             // execute the delete multiaction
-            Map params = new HashMap();
-            params.put(A_CmsEditUserDialog.PARAM_USERID, getParamSelItems());
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(A_CmsEditUserDialog.PARAM_USERID, new String[] {getParamSelItems()});
             // set action parameter to initial dialog call
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
 
             try {
                 getToolManager().jspForwardTool(this, getCurrentToolPath() + "/delete", params);
@@ -209,9 +210,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)) {
             // execute the activate multiaction
             try {
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     String usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
                     CmsUser user = readUser(usrName);
                     if (!user.isEnabled()) {
@@ -226,9 +227,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_MACTION_DEACTIVATE)) {
             // execute the activate multiaction
             try {
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     String usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
                     CmsUser user = readUser(usrName);
                     if (user.isEnabled()) {
@@ -249,16 +250,17 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String userId = getSelectedItem().getId();
         String userName = getSelectedItem().get(LIST_COLUMN_LOGIN).toString();
 
-        Map params = new HashMap();
-        params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsEditUserDialog.PARAM_USERID, new String[] {userId});
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, new String[] {getParamOufqn()});
         // set action parameter to initial dialog call
-        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
 
         if (getParamListAction().equals(LIST_ACTION_ROLE)) {
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/role", params);
@@ -321,13 +323,14 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List users = getList().getAllContent();
-        Iterator itUsers = users.iterator();
+        List<CmsListItem> users = getList().getAllContent();
+        Iterator<CmsListItem> itUsers = users.iterator();
         while (itUsers.hasNext()) {
-            CmsListItem item = (CmsListItem)itUsers.next();
+            CmsListItem item = itUsers.next();
             String userName = item.get(LIST_COLUMN_LOGIN).toString();
             StringBuffer html = new StringBuffer(512);
             try {
@@ -349,10 +352,10 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                     }
                 } else if (detailId.equals(LIST_DETAIL_GROUPS)) {
                     // groups
-                    List groups = getCms().getGroupsOfUser(userName, true, true);
-                    Iterator itGroups = groups.iterator();
+                    List<CmsGroup> groups = getCms().getGroupsOfUser(userName, true, true);
+                    Iterator<CmsGroup> itGroups = groups.iterator();
                     while (itGroups.hasNext()) {
-                        CmsGroup group = (CmsGroup)itGroups.next();
+                        CmsGroup group = itGroups.next();
                         if (group.getOuFqn().equals(getParamOufqn())) {
                             html.append(OpenCms.getWorkplaceManager().translateGroupName(group.getName(), false));
                         } else {
@@ -369,10 +372,16 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                 } else if (detailId.equals(LIST_DETAIL_ROLES)) {
                     // roles
                     boolean otherOuRole = false;
-                    List roles = OpenCms.getRoleManager().getRolesOfUser(getCms(), userName, "/", true, true, false);
-                    Iterator itRoles = roles.iterator();
+                    List<CmsRole> roles = OpenCms.getRoleManager().getRolesOfUser(
+                        getCms(),
+                        userName,
+                        "/",
+                        true,
+                        true,
+                        false);
+                    Iterator<CmsRole> itRoles = roles.iterator();
                     while (itRoles.hasNext()) {
-                        CmsRole role = (CmsRole)itRoles.next();
+                        CmsRole role = itRoles.next();
                         if (!role.getOuFqn().equals(getParamOufqn())) {
                             otherOuRole = true;
                             break;
@@ -380,7 +389,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                     }
                     itRoles = roles.iterator();
                     while (itRoles.hasNext()) {
-                        CmsRole role = (CmsRole)itRoles.next();
+                        CmsRole role = itRoles.next();
                         if (!otherOuRole) {
                             html.append(role.getName(getLocale()));
                         } else {
@@ -411,14 +420,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
         // get content
-        List users = getUsers();
-        Iterator itUsers = users.iterator();
+        List<CmsUser> users = getUsers();
+        Iterator<CmsUser> itUsers = users.iterator();
         while (itUsers.hasNext()) {
-            CmsUser user = (CmsUser)itUsers.next();
+            CmsUser user = itUsers.next();
             CmsListItem item = makeListItemForUser(user);
             ret.add(item);
         }
@@ -446,11 +456,12 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getUsers() throws CmsException;
+    protected abstract List<CmsUser> getUsers() throws CmsException;
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -487,6 +498,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for edit
@@ -744,7 +756,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Adds an "enabled" column
+     * Adds an "enabled" column.<p>
      * 
      * @param metadata the list metadata 
      * @param enable the list action for enabling 
@@ -787,6 +799,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() == null) {
@@ -820,6 +833,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() == null) {

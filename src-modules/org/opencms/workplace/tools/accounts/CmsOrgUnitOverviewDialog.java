@@ -58,6 +58,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // noop
@@ -71,6 +72,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -95,6 +97,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -103,6 +106,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -120,6 +124,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
      * Initializes the organizational unit object to work with depending on the dialog state and request parameters.<p>
      * 
      */
+    @Override
     protected void initOrgUnitObject() {
 
         try {
@@ -133,9 +138,9 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
                 m_orgUnitBean.setParentOu(orgunit.getParentFqn());
             }
             m_orgUnitBean.setFqn(orgunit.getName());
-            m_orgUnitBean.setResources(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                getCms(),
-                orgunit.getName()));
+            setResourcesInBean(
+                m_orgUnitBean,
+                OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(getCms(), orgunit.getName()));
         } catch (Exception e) {
             // noop
         }

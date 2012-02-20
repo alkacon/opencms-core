@@ -78,7 +78,7 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
     public static final String LIST_MACTION_REMOVE = "mr";
 
     /** a set of action id's to use for removing. */
-    protected static Set m_removeActionIds = new HashSet();
+    protected static Set<String> m_removeActionIds = new HashSet<String>();
 
     /**
      * Public constructor.<p>
@@ -150,13 +150,14 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_REMOVE)) {
             // execute the remove multiaction
-            Iterator itItems = getSelectedItems().iterator();
+            Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             while (itItems.hasNext()) {
-                CmsListItem listItem = (CmsListItem)itItems.next();
+                CmsListItem listItem = itItems.next();
                 String userName = (String)listItem.get(LIST_COLUMN_LOGIN);
                 try {
                     if (getCms().readUser(userName).getOuFqn().equals(getParamOufqn())) {
@@ -178,6 +179,7 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (m_removeActionIds.contains(getParamListAction())) {
@@ -200,7 +202,8 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#getUsers(boolean)
      */
-    protected List getUsers(boolean withOtherOus) throws CmsException {
+    @Override
+    protected List<CmsUser> getUsers(boolean withOtherOus) throws CmsException {
 
         return OpenCms.getRoleManager().getUsersOfRole(
             getCms(),
@@ -212,6 +215,7 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         if (m_lazy) {
@@ -256,6 +260,7 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add remove multi action
@@ -270,6 +275,7 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         super.validateParamaters();

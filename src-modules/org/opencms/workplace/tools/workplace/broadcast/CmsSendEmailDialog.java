@@ -91,9 +91,10 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
     /**
      * Commits the edited project to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_msgInfo.getTo())) {
             setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
@@ -135,6 +136,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -169,6 +171,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the project object to use for the dialog
@@ -191,13 +194,14 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
      * 
      * @return a semicolon separated list of user names
      */
+    @Override
     protected String getToNames() {
 
-        List excluded = new ArrayList();
-        List users = new ArrayList();
-        Iterator itIds = idsList().iterator();
+        List<String> excluded = new ArrayList<String>();
+        List<String> users = new ArrayList<String>();
+        Iterator<String> itIds = idsList().iterator();
         while (itIds.hasNext()) {
-            String id = itIds.next().toString();
+            String id = itIds.next();
             CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
             if (session != null) {
                 try {
@@ -220,7 +224,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
             StringBuffer text = new StringBuffer(500);
             text.append(Messages.get().container(Messages.GUI_EXCLUDED_USERS_WARNING_0).key(getLocale()));
             text.append("\n");
-            Iterator it = excluded.iterator();
+            Iterator<String> it = excluded.iterator();
             while (it.hasNext()) {
                 text.append("- ");
                 text.append(it.next());
@@ -234,7 +238,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
             return "";
         }
         StringBuffer result = new StringBuffer(256);
-        Iterator itUsers = users.iterator();
+        Iterator<String> itUsers = users.iterator();
         while (itUsers.hasNext()) {
             result.append(itUsers.next().toString());
             if (itUsers.hasNext()) {
@@ -251,10 +255,10 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
      */
     private String getEmailAddresses() {
 
-        List emails = new ArrayList();
-        Iterator itIds = idsList().iterator();
+        List<String> emails = new ArrayList<String>();
+        Iterator<String> itIds = idsList().iterator();
         while (itIds.hasNext()) {
-            String id = itIds.next().toString();
+            String id = itIds.next();
             CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
             if (session != null) {
                 try {
@@ -268,9 +272,9 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
             }
         }
         StringBuffer result = new StringBuffer(256);
-        Iterator itEmails = emails.iterator();
+        Iterator<String> itEmails = emails.iterator();
         while (itEmails.hasNext()) {
-            result.append(itEmails.next().toString());
+            result.append(itEmails.next());
             if (itEmails.hasNext()) {
                 result.append("; ");
             }

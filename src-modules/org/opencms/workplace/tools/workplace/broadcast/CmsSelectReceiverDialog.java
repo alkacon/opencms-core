@@ -78,7 +78,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
     public static final String MSGTYPE_POPUP = "popup";
 
     /** The selected groups. */
-    private List m_groups;
+    private List<String> m_groups;
 
     /** The message type parameter value. */
     private String m_paramMsgtype;
@@ -108,9 +108,10 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
     /**
      * Commits the edited project to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         boolean isEmail = (getParamMsgtype() != null) && getParamMsgtype().equals(MSGTYPE_EMAIL);
 
@@ -121,13 +122,13 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
         }
 
         boolean hasUser = false;
-        Iterator itGroups = getGroups().iterator();
+        Iterator<String> itGroups = getGroups().iterator();
         while (!hasUser && itGroups.hasNext()) {
-            String groupName = (String)itGroups.next();
+            String groupName = itGroups.next();
             try {
-                Iterator itUsers = getCms().getUsersOfGroup(groupName, true).iterator();
+                Iterator<CmsUser> itUsers = getCms().getUsersOfGroup(groupName, true).iterator();
                 while (!hasUser && itUsers.hasNext()) {
-                    CmsUser user = (CmsUser)itUsers.next();
+                    CmsUser user = itUsers.next();
                     if (!isEmail) {
                         if (!OpenCms.getSessionManager().getSessionInfos(user.getId()).isEmpty()) {
                             hasUser = true;
@@ -150,13 +151,15 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
         }
 
         try {
-            Set groups = new HashSet(m_groups);
-            Map params = new HashMap();
-            params.put(CmsToolDialog.PARAM_STYLE, CmsToolDialog.STYLE_NEW);
-            params.put(CmsSendEmailGroupsDialog.PARAM_GROUPS, CmsStringUtil.collectionAsString(
-                groups,
-                CmsHtmlList.ITEM_SEPARATOR));
-            params.put(CmsDialog.PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/workplace/broadcast"));
+            Set<String> groups = new HashSet<String>(m_groups);
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(CmsToolDialog.PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
+            params.put(
+                CmsSendEmailGroupsDialog.PARAM_GROUPS,
+                new String[] {CmsStringUtil.collectionAsString(groups, CmsHtmlList.ITEM_SEPARATOR)});
+            params.put(
+                CmsDialog.PARAM_CLOSELINK,
+                new String[] {CmsToolManager.linkForToolPath(getJsp(), "/workplace/broadcast")});
 
             if (isEmail) {
                 getToolManager().jspForwardPage(this, "/system/workplace/admin/workplace/groups_send_email.jsp", params);
@@ -175,7 +178,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
      *
      * @return the selected groups
      */
-    public List getGroups() {
+    public List<String> getGroups() {
 
         return m_groups;
     }
@@ -195,7 +198,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
      *
      * @param groups the selected groups to set
      */
-    public void setGroups(List groups) {
+    public void setGroups(List<String> groups) {
 
         m_groups = groups;
     }
@@ -213,6 +216,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -237,6 +241,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the project object to use for the dialog
@@ -250,6 +255,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -258,25 +264,27 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
     /**
      * Initializes the message info object to work with depending on the dialog state and request parameters.<p>
      */
+    @SuppressWarnings("unchecked")
     protected void initMessageObject() {
 
         try {
             if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
                 // create a new list
-                m_groups = new ArrayList();
+                m_groups = new ArrayList<String>();
             } else {
                 // this is not the initial call, get the message info object from session  
-                m_groups = (List)getDialogObject();
+                m_groups = (List<String>)getDialogObject();
             }
         } catch (Exception e) {
             // create a new list
-            m_groups = new ArrayList();
+            m_groups = new ArrayList<String>();
         }
     }
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -289,6 +297,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

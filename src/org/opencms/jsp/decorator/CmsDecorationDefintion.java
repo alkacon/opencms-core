@@ -132,20 +132,20 @@ public class CmsDecorationDefintion {
      *      
      * @throws CmsException if sth goes wrong
      */
-    public static List getDecorationDefinitionNames(CmsObject cms) throws CmsException {
+    public static List<String> getDecorationDefinitionNames(CmsObject cms) throws CmsException {
 
-        List result = new ArrayList();
+        List<String> result = new ArrayList<String>();
         CmsModule module = OpenCms.getModuleManager().getModule("com.alkacon.opencms.extendeddecorator");
         String configFile = module.getParameter("configfile");
         if (CmsStringUtil.isEmpty(configFile)) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_CONFIG_MISSING_0));
         } else {
             CmsDecoratorConfiguration config = new CmsDecoratorConfiguration(cms, configFile);
-            List decorationDefinitions = config.getDecorationDefinitions();
-            Iterator it = decorationDefinitions.iterator();
+            List<CmsDecorationDefintion> decorationDefinitions = config.getDecorationDefinitions();
+            Iterator<CmsDecorationDefintion> it = decorationDefinitions.iterator();
             CmsDecorationDefintion decDef;
             while (it.hasNext()) {
-                decDef = (CmsDecorationDefintion)it.next();
+                decDef = it.next();
                 result.add(decDef.getName());
             }
 
@@ -165,7 +165,7 @@ public class CmsDecorationDefintion {
     public CmsDecorationBundle createDecorationBundle(CmsObject cms, Locale locale) throws CmsException {
 
         // get configfile basename and the list of all decoration map files
-        List decorationMapFiles = getDecorationMapFiles(cms);
+        List<CmsResource> decorationMapFiles = getDecorationMapFiles(cms);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_DECORATION_DEFINITION_MAP_FILES_2,
@@ -174,7 +174,7 @@ public class CmsDecorationDefintion {
         }
 
         // create decoration maps
-        List decorationMaps = getDecorationMaps(cms, decorationMapFiles);
+        List<CmsDecorationMap> decorationMaps = getDecorationMaps(cms, decorationMapFiles);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_DECORATION_DEFINITION_MAPS_2, decorationMaps, locale));
         }
@@ -193,15 +193,15 @@ public class CmsDecorationDefintion {
      * @param locale the locale to build the decoration bundle for. If no locale is given, a bundle of all locales is build
      * @return CmsDecorationBundle including all decoration lists that match the locale
      */
-    public CmsDecorationBundle createDecorationBundle(List decorationMaps, Locale locale) {
+    public CmsDecorationBundle createDecorationBundle(List<CmsDecorationMap> decorationMaps, Locale locale) {
 
         CmsDecorationBundle decorationBundle = new CmsDecorationBundle(locale);
         // sort the bundles
         Collections.sort(decorationMaps);
         // now process the decoration maps to see which of those must be added to the bundle
-        Iterator i = decorationMaps.iterator();
+        Iterator<CmsDecorationMap> i = decorationMaps.iterator();
         while (i.hasNext()) {
-            CmsDecorationMap decMap = (CmsDecorationMap)i.next();
+            CmsDecorationMap decMap = i.next();
             // a decoration map must be added to the bundle if one of the following conditions match:
             // 1) the bundle has no locale
             // 2) the bundle has a locale and the locale of the map is equal or a sublocale
@@ -365,6 +365,7 @@ public class CmsDecorationDefintion {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();
@@ -394,9 +395,9 @@ public class CmsDecorationDefintion {
      * @return list of CmsResources of the decoration map files
      * @throws CmsException if something goes wrong.
      */
-    private List getDecorationMapFiles(CmsObject cms) throws CmsException {
+    private List<CmsResource> getDecorationMapFiles(CmsObject cms) throws CmsException {
 
-        List files = new ArrayList();
+        List<CmsResource> files = new ArrayList<CmsResource>();
 
         // calcualte the basename for the decoration map files
         // the basename is the filename without the fileextension and any "_locale" postfixes
@@ -423,10 +424,12 @@ public class CmsDecorationDefintion {
             // this should really never happen
             plainId = CmsResourceTypePlain.getStaticTypeId();
         }
-        List resources = cms.readResources(CmsResource.getParentFolder(m_configurationFile), CmsResourceFilter.DEFAULT);
-        Iterator i = resources.iterator();
+        List<CmsResource> resources = cms.readResources(
+            CmsResource.getParentFolder(m_configurationFile),
+            CmsResourceFilter.DEFAULT);
+        Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             if (cms.getSitePath(res).startsWith(basename) && (res.getTypeId() == plainId)) {
                 files.add(res);
             }
@@ -442,12 +445,12 @@ public class CmsDecorationDefintion {
      * @param decorationListFiles the list of decoration files
      * @return list of decoration map objects
      */
-    private List getDecorationMaps(CmsObject cms, List decorationListFiles) {
+    private List<CmsDecorationMap> getDecorationMaps(CmsObject cms, List<CmsResource> decorationListFiles) {
 
-        List decorationMaps = new ArrayList();
-        Iterator i = decorationListFiles.iterator();
+        List<CmsDecorationMap> decorationMaps = new ArrayList<CmsDecorationMap>();
+        Iterator<CmsResource> i = decorationListFiles.iterator();
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             try {
                 CmsDecorationMap decMap = (CmsDecorationMap)CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().getCachedObject(
                     cms,

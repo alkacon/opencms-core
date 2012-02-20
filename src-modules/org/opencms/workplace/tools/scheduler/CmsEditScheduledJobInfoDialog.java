@@ -118,9 +118,10 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     /**
      * Commits the edited scheduled job to the scheduler.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             // schedule the edited job
@@ -128,7 +129,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             // update the XML configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
             // refresh the list
-            Map objects = (Map)getSettings().getListObject();
+            Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
             if (objects != null) {
                 objects.remove(CmsSchedulerList.class.getName());
             }
@@ -190,6 +191,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -227,6 +229,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the scheduled job object to use for the dialog
@@ -300,9 +303,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
      * 
      * @return the example cron class names to show in the combo box
      */
-    protected List getComboClasses() {
+    protected List<CmsSelectWidgetOption> getComboClasses() {
 
-        List result = new ArrayList(16);
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>(16);
         result.add(new CmsSelectWidgetOption(
             CmsInternalRelationsValidationJob.class.getName(),
             false,
@@ -373,9 +376,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
      * 
      * @return the example cron expressions to show in the combo box
      */
-    protected List getComboCronExpressions() {
+    protected List<CmsSelectWidgetOption> getComboCronExpressions() {
 
-        List result = new ArrayList();
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
 
         // 0 0 3 * * ? (daily at 3 am)
         result.add(new CmsSelectWidgetOption("0 0 3 * * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE1_0)));
@@ -397,6 +400,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -405,6 +409,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -471,6 +476,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -493,6 +499,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (!isNewJob()) {

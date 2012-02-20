@@ -81,6 +81,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#displayDialog()
      */
+    @Override
     public void displayDialog() throws JspException, IOException, ServletException {
 
         if (!Boolean.valueOf(getParamShowlog()).booleanValue()) {
@@ -93,9 +94,9 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
                 result.append(m_logView.readFilePortion());
                 result.append("</pre>");
             } catch (Throwable f) {
-                List commitErrors = getCommitErrors();
+                List<Throwable> commitErrors = getCommitErrors();
                 if (commitErrors == null) {
-                    commitErrors = new LinkedList();
+                    commitErrors = new LinkedList<Throwable>();
                 }
                 commitErrors.add(f);
                 setCommitErrors(commitErrors);
@@ -135,6 +136,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -167,6 +169,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();

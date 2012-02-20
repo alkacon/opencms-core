@@ -58,7 +58,7 @@ public class CmsOrgUnitBean {
     private String m_parentOuDesc;
 
     /** The resource list of this object. */
-    private List m_resources;
+    private List<String> m_resources;
 
     /** The webusers flag. */
     private boolean m_webusers;
@@ -68,7 +68,7 @@ public class CmsOrgUnitBean {
      */
     public CmsOrgUnitBean() {
 
-        m_resources = new ArrayList();
+        m_resources = new ArrayList<String>();
     }
 
     /**
@@ -150,7 +150,7 @@ public class CmsOrgUnitBean {
      *
      * @return the resources
      */
-    public List getResources() {
+    public List<String> getResources() {
 
         return m_resources;
     }
@@ -246,7 +246,7 @@ public class CmsOrgUnitBean {
      *
      * @param resources the resources to set
      */
-    public void setResources(List resources) {
+    public void setResources(List<String> resources) {
 
         m_resources = resources;
     }

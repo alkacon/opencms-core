@@ -52,6 +52,7 @@ public class CmsTwoOrgUnitUsersList extends CmsTwoListsDialog {
     /**
      * @see org.opencms.workplace.list.CmsTwoListsDialog#defaultActionHtml()
      */
+    @Override
     public String defaultActionHtml() {
 
         StringBuffer result = new StringBuffer(2048);

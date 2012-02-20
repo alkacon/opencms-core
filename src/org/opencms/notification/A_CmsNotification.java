@@ -132,6 +132,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
     /**
      * @see org.apache.commons.mail.Email#send()
      */
+    @Override
     public String send() throws EmailException {
 
         String messageID = null;
@@ -150,7 +151,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
             m_mailContent = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(getNotificationContent()));
 
             // detect locale
-            List locales = m_mailContent.getLocales();
+            List<Locale> locales = m_mailContent.getLocales();
             Locale userLocale = new CmsUserSettings(m_receiver).getLocale();
             if (locales.contains(userLocale)) {
                 // mail is localized in the user locale, use that
@@ -160,7 +161,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
                 m_locale = OpenCms.getWorkplaceManager().getDefaultLocale();
             } else {
                 // use any localization
-                m_locale = (Locale)locales.get(0);
+                m_locale = locales.get(0);
             }
 
             // define macro resolver

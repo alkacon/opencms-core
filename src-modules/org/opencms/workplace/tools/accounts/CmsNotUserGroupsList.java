@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -69,7 +70,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     public static final String LIST_MACTION_ADD = "ma";
 
     /** a set of action id's to use for adding. */
-    protected static Set m_addActionIds = new HashSet();
+    protected static Set<String> m_addActionIds = new HashSet<String>();
 
     /**
      * Public constructor.<p>
@@ -107,19 +108,20 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_ADD)) {
             // execute the remove multiaction
             try {
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     getCms().addUserToGroup(getParamUsername(), (String)listItem.get(LIST_COLUMN_NAME));
                 }
             } catch (CmsException e) {
                 // refresh the list
-                Map objects = (Map)getSettings().getListObject();
+                Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
                 if (objects != null) {
                     objects.remove(A_CmsUsersList.class.getName());
                 }
@@ -134,6 +136,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (m_addActionIds.contains(getParamListAction())) {
@@ -153,10 +156,11 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups(boolean)
      */
-    protected List getGroups(boolean withOtherOus) throws CmsException {
+    @Override
+    protected List<CmsGroup> getGroups(boolean withOtherOus) throws CmsException {
 
-        List usergroups = getCms().getGroupsOfUser(getParamUsername(), false, withOtherOus);
-        List groups;
+        List<CmsGroup> usergroups = getCms().getGroupsOfUser(getParamUsername(), false, withOtherOus);
+        List<CmsGroup> groups;
         if (withOtherOus) {
             groups = OpenCms.getRoleManager().getManageableGroups(getCms(), "", true);
         } else {
@@ -169,6 +173,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setDefaultAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDefaultAction(CmsListColumnDefinition nameCol) {
 
         // add add action
@@ -183,6 +188,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setIconAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
         CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
@@ -196,6 +202,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add add multi action
@@ -210,6 +217,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setStateActionCol(CmsListMetadata metadata) {
 
         // create column for state change

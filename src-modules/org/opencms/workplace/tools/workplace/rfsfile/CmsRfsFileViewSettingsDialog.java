@@ -89,9 +89,10 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             // set the edited settings
@@ -115,6 +116,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -141,6 +143,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         setKeyPrefix(KEY_PREFIX);
@@ -151,7 +154,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
             createComboConfigurationFileChoice())));
 
         // options for windowsize combowidget:
-        List comboOptions = new LinkedList();
+        List<CmsSelectWidgetOption> comboOptions = new LinkedList<CmsSelectWidgetOption>();
         comboOptions.add(new CmsSelectWidgetOption("100"));
         comboOptions.add(new CmsSelectWidgetOption("200"));
         comboOptions.add(new CmsSelectWidgetOption("400"));
@@ -176,17 +179,17 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
      *         <code>{@link CmsComboWidget}</code> with the supported encodings of the 
      *         current system and the default encoding set as default combo option.<p>  
      */
-    private List createComboConfigurationEncodingChoice() {
+    private List<CmsSelectWidgetOption> createComboConfigurationEncodingChoice() {
 
-        List result = new LinkedList();
-        SortedMap csMap = Charset.availableCharsets();
+        List<CmsSelectWidgetOption> result = new LinkedList<CmsSelectWidgetOption>();
+        SortedMap<String, Charset> csMap = Charset.availableCharsets();
         // default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
         // before java 1.5 there is no other way (System property "file.encoding" is implementation detail not in vmspec.
         Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
         Charset cs;
-        Iterator it = csMap.values().iterator();
+        Iterator<Charset> it = csMap.values().iterator();
         while (it.hasNext()) {
-            cs = (Charset)it.next();
+            cs = it.next();
             // default? no equals required: safety by design!
             if (cs == defaultCs) {
                 result.add(new CmsSelectWidgetOption(
@@ -217,9 +220,9 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
      *         <code>{@link CmsComboWidget}</code> with default file locations of OpenCms
      * 
      */
-    private List createComboConfigurationFileChoice() {
+    private List<CmsSelectWidgetOption> createComboConfigurationFileChoice() {
 
-        List result = new LinkedList();
+        List<CmsSelectWidgetOption> result = new LinkedList<CmsSelectWidgetOption>();
         CmsSystemInfo sysInfo = OpenCms.getSystemInfo();
         // log file, default
         result.add(new CmsSelectWidgetOption(

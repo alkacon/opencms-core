@@ -105,9 +105,10 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
     /**
      * Commits the edited project to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_msgInfo.getTo())) {
             setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
@@ -147,7 +148,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
      *
      * @return the selected groups
      */
-    public List getGroups() {
+    public List<String> getGroups() {
 
         return CmsStringUtil.splitAsList(getParamGroups(), CmsHtmlList.ITEM_SEPARATOR);
     }
@@ -185,6 +186,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -218,6 +220,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the project object to use for the dialog
@@ -238,6 +241,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -250,15 +254,15 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
      */
     protected String getToNames() {
 
-        List excluded = new ArrayList();
-        List users = new ArrayList();
-        Iterator itGroups = getGroups().iterator();
+        List<String> excluded = new ArrayList<String>();
+        List<String> users = new ArrayList<String>();
+        Iterator<String> itGroups = getGroups().iterator();
         while (itGroups.hasNext()) {
-            String groupName = (String)itGroups.next();
+            String groupName = itGroups.next();
             try {
-                Iterator itUsers = getCms().getUsersOfGroup(groupName, true).iterator();
+                Iterator<CmsUser> itUsers = getCms().getUsersOfGroup(groupName, true).iterator();
                 while (itUsers.hasNext()) {
-                    CmsUser user = (CmsUser)itUsers.next();
+                    CmsUser user = itUsers.next();
                     String userName = user.getFullName();
                     if (!users.contains(userName)) {
                         String emailAddress = user.getEmail();
@@ -277,7 +281,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
             StringBuffer text = new StringBuffer(500);
             text.append(Messages.get().container(Messages.GUI_EXCLUDED_USERS_WARNING_0).key(getLocale()));
             text.append("<br>");
-            Iterator it = excluded.iterator();
+            Iterator<String> it = excluded.iterator();
             while (it.hasNext()) {
                 text.append("- ");
                 text.append(it.next());
@@ -291,7 +295,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
             return "";
         }
         StringBuffer result = new StringBuffer(256);
-        Iterator itUsers = users.iterator();
+        Iterator<String> itUsers = users.iterator();
         while (itUsers.hasNext()) {
             result.append(itUsers.next().toString());
             if (itUsers.hasNext()) {
@@ -325,6 +329,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -337,6 +342,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -349,6 +355,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if ((getGroups() == null) || getGroups().isEmpty()) {
@@ -363,14 +370,14 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
      */
     private String getEmailAddresses() {
 
-        List emails = new ArrayList();
-        Iterator itGroups = getGroups().iterator();
+        List<String> emails = new ArrayList<String>();
+        Iterator<String> itGroups = getGroups().iterator();
         while (itGroups.hasNext()) {
-            String groupName = (String)itGroups.next();
+            String groupName = itGroups.next();
             try {
-                Iterator itUsers = getCms().getUsersOfGroup(groupName, true).iterator();
+                Iterator<CmsUser> itUsers = getCms().getUsersOfGroup(groupName, true).iterator();
                 while (itUsers.hasNext()) {
-                    CmsUser user = (CmsUser)itUsers.next();
+                    CmsUser user = itUsers.next();
                     String emailAddress = user.getEmail();
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress) && !emails.contains(emailAddress)) {
                         emails.add(emailAddress);
@@ -381,9 +388,9 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
             }
         }
         StringBuffer result = new StringBuffer(256);
-        Iterator itEmails = emails.iterator();
+        Iterator<String> itEmails = emails.iterator();
         while (itEmails.hasNext()) {
-            result.append(itEmails.next().toString());
+            result.append(itEmails.next());
             if (itEmails.hasNext()) {
                 result.append("; ");
             }

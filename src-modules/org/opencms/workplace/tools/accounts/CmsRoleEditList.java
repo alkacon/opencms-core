@@ -130,15 +130,16 @@ public class CmsRoleEditList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_ACTIVATE)) {
             // execute the activate multiaction
             try {
                 CmsUser user = getCms().readUser(new CmsUUID(getParamUserid()));
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     CmsGroup group = getCms().readGroup((String)listItem.get(LIST_COLUMN_GROUP_NAME));
                     CmsRole role = CmsRole.valueOf(group);
                     if (!OpenCms.getRoleManager().hasRole(getCms(), user.getName(), role)) {
@@ -154,9 +155,9 @@ public class CmsRoleEditList extends A_CmsRolesList {
             // execute the activate multiaction
             try {
                 CmsUser user = getCms().readUser(new CmsUUID(getParamUserid()));
-                Iterator itItems = getSelectedItems().iterator();
+                Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    CmsListItem listItem = itItems.next();
                     CmsGroup group = getCms().readGroup((String)listItem.get(LIST_COLUMN_GROUP_NAME));
                     CmsRole role = CmsRole.valueOf(group);
                     if (OpenCms.getRoleManager().hasRole(getCms(), user.getName(), role)) {
@@ -177,6 +178,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         String roleName = getSelectedItem().getId();
@@ -225,6 +227,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getIconPath(CmsListItem)
      */
+    @Override
     public String getIconPath(CmsListItem item) {
 
         try {
@@ -264,6 +267,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -272,7 +276,8 @@ public class CmsRoleEditList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getRoles()
      */
-    protected List getRoles() throws CmsException {
+    @Override
+    protected List<CmsRole> getRoles() throws CmsException {
 
         return OpenCms.getRoleManager().getRolesOfUser(
             getCms(),
@@ -286,6 +291,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -304,6 +310,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -335,6 +342,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -367,6 +375,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add description details
@@ -408,6 +417,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the activate role multi action
