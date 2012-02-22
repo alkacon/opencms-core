@@ -42,7 +42,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_history_projectresources")
+@Table(name = "CMS_HISTORY_PROJECTRESOURCES")
 @IdClass(CmsDAOHistoryProjectResources.CmsDAOHistoryProjectResourcesPK.class)
 public class CmsDAOHistoryProjectResources {
 
@@ -260,17 +260,17 @@ public class CmsDAOHistoryProjectResources {
 
     /** The project id. */
     @Id
-    @Column(name = "project_id", length = 36)
+    @Column(name = "PROJECT_ID", length = 36)
     private String m_projectId;
 
     /** The publish tag. */
     @Id
-    @Column(name = "publish_tag")
+    @Column(name = "PUBLISH_TAG")
     private int m_publishTag;
 
     /** The resource path. */
     @Id
-    @Column(name = "resource_path", length = 1024)
+    @Column(name = "RESOURCE_PATH", length = 1024)
     private String m_resourcePath;
 
     /**

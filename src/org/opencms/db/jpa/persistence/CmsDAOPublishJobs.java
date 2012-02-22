@@ -40,69 +40,69 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_publish_jobs")
+@Table(name = "CMS_PUBLISH_JOBS")
 public class CmsDAOPublishJobs {
 
     /** The enqueue time. */
     @Basic
-    @Column(name = "enqueue_time")
+    @Column(name = "ENQUEUE_TIME")
     private long m_enqueueTime;
 
     /** The finish time. */
     @Basic
-    @Column(name = "finish_time")
+    @Column(name = "FINISH_TIME")
     private long m_finishTime;
 
     /** The history id. */
     @Id
-    @Column(name = "history_id", length = 36)
+    @Column(name = "HISTORY_ID", length = 36)
     private String m_historyId;
 
     /** The project id. */
     @Basic
-    @Column(name = "project_id", nullable = false, length = 36)
+    @Column(name = "PROJECT_ID", nullable = false, length = 36)
     private String m_projectId;
 
     /** The project name. */
     @Basic
-    @Column(name = "project_name", nullable = false)
+    @Column(name = "PROJECT_NAME", nullable = false)
     private String m_projectName;
 
     /** The publish flags. */
     @Basic
-    @Column(name = "publish_flags")
+    @Column(name = "PUBLISH_FLAGS")
     private int m_publishFlags;
 
     /** The publish list. */
     @Basic
     @Lob
-    @Column(name = "publish_list")
+    @Column(name = "PUBLISH_LIST")
     private byte[] m_publishList;
 
     /** The publish locale. */
     @Basic
-    @Column(name = "publish_locale", nullable = false, length = 16)
+    @Column(name = "PUBLISH_LOCALE", nullable = false, length = 16)
     private String m_publishLocale;
 
     /** The publish report. */
     @Basic
     @Lob
-    @Column(name = "publish_report")
+    @Column(name = "PUBLISH_REPORT")
     private byte[] m_publishReport;
 
     /** The resource count. */
     @Basic
-    @Column(name = "resource_count")
+    @Column(name = "RESOURCE_COUNT")
     private int m_resourceCount;
 
     /** The start time. */
     @Basic
-    @Column(name = "start_time")
+    @Column(name = "START_TIME")
     private long m_startTime;
 
     /** The user id. */
     @Basic
-    @Column(name = "user_id", nullable = false, length = 36)
+    @Column(name = "USER_ID", nullable = false, length = 36)
     private String m_userId;
 
     /**

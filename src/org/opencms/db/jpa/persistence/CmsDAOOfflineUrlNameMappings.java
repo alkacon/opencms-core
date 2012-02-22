@@ -41,7 +41,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_offline_urlname_mappings")
+@Table(name = "CMS_OFFLINE_URLNAME_MAPPINGS")
 @IdClass(org.opencms.db.jpa.persistence.CmsDAOOfflineUrlNameMappings.CmsDAOOfflineUrlNameMappingsPK.class)
 public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
 
@@ -291,26 +291,26 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
 
     /** The date changed. */
     @Id
-    @Column(name = "date_changed")
+    @Column(name = "DATE_CHANGED")
     private long m_dateChanged;
 
     /** The name. */
     @Id
-    @Column(name = "name", length = 255)
+    @Column(name = "NAME", length = 255)
     private String m_name;
 
     /** The state. */
     @Id
-    @Column(name = "state")
+    @Column(name = "STATE")
     private int m_state;
 
     /** The structure id. */
     @Id
-    @Column(name = "structure_id", length = 36)
+    @Column(name = "STRUCTURE_ID", length = 36)
     private String m_structureId;
 
     /** The locale. */
-    @Column(name = "locale", length = 10)
+    @Column(name = "LOCALE", length = 10)
     private String m_locale;
 
     /**
