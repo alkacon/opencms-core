@@ -38,6 +38,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import java.util.Map;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -173,10 +174,17 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         }
         if (getGalleryMode() == GalleryMode.editor) {
             m_imageEditorFormatsTab = new CmsImageEditorTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
-            m_tabbedPanel.add(m_imageEditorFormatsTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEOPTIONS_0));
+
+            String hideFormatsParam = Window.Location.getParameter("hideformats");
+            boolean hideFormats = "true".equals(hideFormatsParam);
+            if (!hideFormats) {
+                m_tabbedPanel.add(m_imageEditorFormatsTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEOPTIONS_0));
+            }
 
             m_imageAdvancedTab = new CmsImageAdvancedTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
-            m_tabbedPanel.add(m_imageAdvancedTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEADVANCED_0));
+            if (!hideFormats) {
+                m_tabbedPanel.add(m_imageAdvancedTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEADVANCED_0));
+            }
         }
         m_imageInfosTab = new CmsImageInfoTab(m_galleryMode, m_dialogHeight, m_dialogWidth, handler);
         m_tabbedPanel.add(m_imageInfosTab, Messages.get().key(Messages.GUI_PREVIEW_TAB_IMAGEINFOS_0));

@@ -147,6 +147,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_" + id + "\",\n");
         result.append("	theme : \"advanced\",\n");
+        result.append(" file_browser_callback : 'cmsTinyMceFileBrowser',\n");
         result.append("setup : function(editor) { setupTinyMCE(editor); },\n");
         if (options.showElement("gallery.enhancedoptions", displayOptions)) {
             result.append("cmsGalleryEnhancedOptions: true,\n");
@@ -222,13 +223,13 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             }
         }
 
-        String formatSelectOptions = getHtmlWidgetOption().getFormatSelectOptions() ;
-        if(!CmsStringUtil.isEmpty(formatSelectOptions) 
-        		&& !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)){
-        	formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",") ;
-        	result.append("theme_advanced_blockformats : \""+formatSelectOptions+"\",\n");
+        String formatSelectOptions = getHtmlWidgetOption().getFormatSelectOptions();
+        if (!CmsStringUtil.isEmpty(formatSelectOptions)
+            && !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
+            formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
+            result.append("theme_advanced_blockformats : \"" + formatSelectOptions + "\",\n");
         }
-        
+
         result.append("	// Drop lists for link/image/media/template dialogs\n");
         result.append("	template_external_list_url : \"lists/template_list.js\",\n");
         result.append("	external_link_list_url : \"lists/link_list.js\",\n");

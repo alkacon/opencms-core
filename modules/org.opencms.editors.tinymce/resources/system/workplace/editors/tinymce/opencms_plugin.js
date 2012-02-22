@@ -123,7 +123,7 @@ function getDownloadSelectionPath() {
  * 
  * @return <code>String</code> the dialog URL
  */ 
-function createGalleryDialogUrl(path, typesParam) {
+function createGalleryDialogUrl(path, typesParam, integrator) {
    var resParam = "";
     var editFrame=findFrame(self, 'edit');
    if (editFrame.editedResource != null) {
@@ -131,7 +131,10 @@ function createGalleryDialogUrl(path, typesParam) {
    } else {
       resParam = "&resource=" + editFrame.editform.editedResource;
    }
-   var integratorParam = "&integrator=/system/workplace/editors/tinymce/integrator.js";
+   if (!integrator) {
+      integrator = "/system/workplace/editors/tinymce/integrator.js";
+   }
+   var integratorParam = "&integrator="+integrator; 
    var debugParam = "";   
    // uncomment the next line for debugging GWT code 
    //debugParam="&gwt.codesvr=localhost:9997";
@@ -367,6 +370,26 @@ tinymce.create('tinymce.opencms', {
       };
    }
 });
+
+window.cmsTinyMceFileBrowser = function(fieldId, currentValue, browserType, targetWindow) {
+   var editor = tinymce.activeEditor;
+   if (browserType == "image") {
+      var integrator = "/system/workplace/editors/tinymce/filebrowser_gallery_integrator.js"
+      var url = createGalleryDialogUrl(currentValue, "image", integrator);
+      url = url + "&hideformats=true";
+   } else {
+      var url = "<cms:link>/system/workplace/views/explorer/tree_fs.jsp?type=pagelink&includefiles=true</cms:link>"; 
+      var integrator = "<cms:link>/system/workplace/editors/tinymce/filebrowser_integrator.js</cms:link>";
+      var url = "<cms:link>/system/workplace/views/explorer/tree_fs.jsp?type=pagelink&includefiles=true</cms:link>";
+      url = url + "&integrator=" + integrator;
+   }
+   var width = 685;
+   var height = 502;
+   editor.cmsTargetWindow = targetWindow;
+   editor.cmsFieldId = fieldId; 
+   editor.windowManager.open({url: url, width : width, height: height, inline: "yes"}, {});
+   
+}
 
 tinymce.PluginManager.add('opencms', tinymce.opencms);
 } // end function initOpenCmsTinyMCEPlugin

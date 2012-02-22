@@ -736,6 +736,7 @@ tinyMCE.init({
     elements : "<%= CmsEditor.PARAM_CONTENT %>",
     theme : "advanced",
     plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,-opencms",
+    file_browser_callback : 'cmsTinyMceFileBrowser',
 
     // Theme options
     <%= CmsTinyMCE.buildToolbar(toolbar.toString())%>
@@ -753,7 +754,7 @@ tinyMCE.init({
     relative_urls: false,
 
     // Example content CSS (should be your site CSS)
-    content_css : "<%= wp.getUriStyleSheet() %>",
+    content_css : "<cms:link><%= wp.getUriStyleSheet() %></cms:link>",
 
     // Drop lists for link/image/media/template dialogs
     template_external_list_url : "js/template_list.js",
