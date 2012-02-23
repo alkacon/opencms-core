@@ -190,16 +190,37 @@ public class CmsHtmlWidgetOption {
     /** Holds the global button bar configuration options to increase performance. */
     private static List<String> m_globalButtonBarOption;
 
+    /** The additional buttons list. */
     private List<String> m_additionalButtons;
+
+    /** The button bar items. */
     private List<String> m_buttonBar;
+
+    /** The button bar configuration options. */
     private List<String> m_buttonBarOption;
+
+    /** The button bar options. */
     private String m_buttonBarOptionString;
+
+    /** The configuration. */
     private String m_configuration;
+
+    /** The CSS style sheet path. */
     private String m_cssPath;
+
+    /** The editor height. */
     private String m_editorHeight;
+
+    /** The format select options. */
     private String m_formatSelectOptions;
+
+    /** The full page flag. */
     private boolean m_fullPage;
+
+    /** The hidden buttons. */
     private List<String> m_hiddenButtons;
+
+    /** The style XML path. */
     private String m_stylesXmlPath;
 
     /**

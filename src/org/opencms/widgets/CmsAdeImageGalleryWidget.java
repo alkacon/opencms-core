@@ -42,10 +42,17 @@ import org.opencms.util.CmsStringUtil;
  */
 public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
 
+    /** The widget configuration. */
     private CmsVfsImageWidgetConfiguration m_widgetConfiguration;
 
+    /** Widget info. */
     private enum ImageWidgetInfo {
-        imageFormatNames, imageFormats, useFormats
+        /** Image format names. */
+        imageFormatNames,
+        /** Image formats. */
+        imageFormats,
+        /** Use formats. */
+        useFormats
     }
 
     /** The gallery name. */

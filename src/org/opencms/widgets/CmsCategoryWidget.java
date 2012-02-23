@@ -152,7 +152,6 @@ public class CmsCategoryWidget extends A_CmsWidget {
     }
 
     /**
-    >>>>>>> THEIRS
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
@@ -267,12 +266,16 @@ public class CmsCategoryWidget extends A_CmsWidget {
                         Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                 }
                 result.append(">");
-                result.append(buildSelectBox(param.getId(), i, options, (selected != null
-                ? CmsCategoryService.getInstance().readCategory(
-                    cms,
-                    CmsResource.getPathPart(selected.getPath(), i + baseLevel),
-                    referencePath).getId().toString()
-                : ""), param.hasError(), (i == (level - baseLevel - 1))));
+                result.append(buildSelectBox(
+                    param.getId(),
+                    i,
+                    options,
+                    (selected != null ? CmsCategoryService.getInstance().readCategory(
+                        cms,
+                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                        referencePath).getId().toString() : ""),
+                    param.hasError(),
+                    (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
             }
             result.append("</td>");

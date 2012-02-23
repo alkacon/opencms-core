@@ -69,6 +69,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         types
     }
 
+    /** The widget configuration. */
     private CmsGalleryWidgetConfiguration m_widgetConfiguration;
 
     /** The gallery JSP path. */
