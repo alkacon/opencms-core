@@ -123,6 +123,23 @@ public interface I_CmsXmlContentHandler {
      * If a schema type does not have a default value, this method must return <code>null</code>.
      * 
      * @param cms the current users OpenCms context
+     * @param resource the content resource
+     * @param type the type to get the default for
+     * @param path the element path
+     * @param locale the currently selected locale for the value
+     * 
+     * @return the default String value for the given XML content value object
+     * 
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(Locale)
+     */
+    String getDefault(CmsObject cms, CmsResource resource, I_CmsXmlSchemaType type, String path, Locale locale);
+
+    /**
+     * Returns the default String value for the given XML content schema type object in the given XML content.<p> 
+     * 
+     * If a schema type does not have a default value, this method must return <code>null</code>.
+     * 
+     * @param cms the current users OpenCms context
      * @param value the value to get the default for
      * @param locale the currently selected locale for the value
      * 

@@ -466,39 +466,39 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, I_CmsXmlContentValue, java.util.Locale)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.xml.types.I_CmsXmlSchemaType, java.lang.String, java.util.Locale)
      */
-    public String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale) {
+    public String getDefault(CmsObject cms, CmsResource resource, I_CmsXmlSchemaType type, String path, Locale locale) {
 
         String defaultValue;
-        if (value.getElement() == null) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
             // use the "getDefault" method of the given value, will use value from standard XML schema
-            defaultValue = value.getDefault(locale);
+            defaultValue = type.getDefault(locale);
         } else {
-            String xpath = value.getPath();
             // look up the default from the configured mappings
-            defaultValue = m_defaultValues.get(xpath);
+            defaultValue = m_defaultValues.get(path);
             if (defaultValue == null) {
                 // no value found, try default xpath
-                xpath = CmsXmlUtils.removeXpath(xpath);
-                xpath = CmsXmlUtils.createXpath(xpath, 1);
+                path = CmsXmlUtils.removeXpath(path);
+                path = CmsXmlUtils.createXpath(path, 1);
                 // look up the default value again with default index of 1 in all path elements
-                defaultValue = m_defaultValues.get(xpath);
+                defaultValue = m_defaultValues.get(path);
             }
         }
         if (defaultValue != null) {
             CmsObject newCms = cms;
-            try {
-                // switch the current URI to the XML document resource so that properties can be read
-                CmsResource file = value.getDocument().getFile();
-                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(file.getRootPath());
-                if (site != null) {
-                    newCms = OpenCms.initCmsObject(cms);
-                    newCms.getRequestContext().setSiteRoot(site.getSiteRoot());
-                    newCms.getRequestContext().setUri(newCms.getSitePath(file));
+            if (resource != null) {
+                try {
+                    // switch the current URI to the XML document resource so that properties can be read
+                    CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resource.getRootPath());
+                    if (site != null) {
+                        newCms = OpenCms.initCmsObject(cms);
+                        newCms.getRequestContext().setSiteRoot(site.getSiteRoot());
+                        newCms.getRequestContext().setUri(newCms.getSitePath(resource));
+                    }
+                } catch (Exception e) {
+                    // on any error just use the default input OpenCms context
                 }
-            } catch (Exception e) {
-                // on any error just use the default input OpenCms context
             }
             // return the default value with processed macros
             CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(newCms).setMessages(
@@ -507,6 +507,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
         // no default value is available
         return null;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, I_CmsXmlContentValue, java.util.Locale)
+     */
+    public String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale) {
+
+        String path = null;
+        if (value.getElement() != null) {
+            path = value.getPath();
+        }
+
+        return getDefault(cms, value.getDocument() != null ? value.getDocument().getFile() : null, value, path, locale);
     }
 
     /**
