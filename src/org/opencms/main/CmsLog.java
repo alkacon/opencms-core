@@ -106,7 +106,7 @@ public final class CmsLog {
                         String logFilePath = CmsFileUtil.normalizePath(webInfPath + FOLDER_LOGS + FILE_LOG, '/');
                         File logFile = new File(logFilePath);
                         m_logFileRfsPath = logFile.getAbsolutePath();
-                        m_logFileRfsFolder = CmsFileUtil.normalizePath(logFile.getParent() + '/', '/');
+                        m_logFileRfsFolder = CmsFileUtil.normalizePath(logFile.getParent() + '/', File.separatorChar);
                         System.setProperty("opencms.logfile", m_logFileRfsPath);
                         System.setProperty("opencms.logfolder", m_logFileRfsFolder);
                         // re-read the configuration with the new environment variable available

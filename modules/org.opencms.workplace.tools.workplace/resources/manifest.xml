@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.0.0</opencms_version>
-		<createdate>Mon, 25 Jun 2007 14:20:46 GMT</createdate>
+		<opencms_version>8.0.3</opencms_version>
+		<createdate>Thu, 23 Feb 2012 13:17:44 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -28,42 +28,58 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.workplace/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-            <resource uri="/system/workplace/admin/workplace/broadcast_message.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/broadcast_message_all.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/groups_send_email.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/groups_send_popup.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/loginmessage.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/reinitialize.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/send_email.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/send_email_all.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/send_mail_groups.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/send_popup_groups.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/sessions.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/synchronize.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/logfileview/dodownload.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/logfileview/download.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/logfileview/index.jsp"/>
-            <resource uri="/system/workplace/admin/workplace/logfileview/logfileViewSettings.jsp"/>
-            <resource uri="/system/workplace/resources/tools/workplace/buttons/message_notpending.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/buttons/message_pending.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/buttons/multi_send_email.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/buttons/multi_send_message.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/buttons/send_message.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_download.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_settings.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_view.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/folder_refresh.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/send_email.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/send_email_groups.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/send_message.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/send_popup_groups.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_broadcast.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_loginmessage.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_reload.png"/>
-            <resource uri="/system/workplace/resources/tools/workplace/icons/small/workplace.png"/>
+			<resource uri="/system/workplace/admin/workplace/broadcast_message.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/broadcast_message_all.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/groups_send_email.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/groups_send_popup.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/loginmessage.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/reinitialize.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/send_email.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/send_email_all.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/send_mail_groups.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/send_popup_groups.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/sessions.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/synchronize.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/logfileview/dodownload.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/logfileview/download.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/logfileview/index.jsp"/>
+			<resource uri="/system/workplace/admin/workplace/logfileview/logfileViewSettings.jsp"/>
+			<resource uri="/system/workplace/resources/tools/workplace/buttons/message_notpending.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/buttons/message_pending.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/buttons/multi_send_email.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/buttons/multi_send_message.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/buttons/send_message.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_download.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_settings.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/fileview_view.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/folder_refresh.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/send_email.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/send_email_groups.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/send_message.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/send_popup_groups.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_broadcast.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_loginmessage.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/workplace_reload.png"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/small/workplace.png"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.workplace/"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_debug_a_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_debug_i_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_error_a_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_error_i_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_fatal_a_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_fatal_i_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_file_off_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_file_on_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_info_a_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_info_i_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_off_a_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_off_i_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_warn_a_2.png"/>
+			<resource uri="/system/workplace/resources/buttons/log_button_warn_i_2.png"/>
+			<resource uri="/system/workplace/admin/workplace/logging/index.jsp"/>
+			<resource uri="/system/workplace/resources/tools/workplace/icons/big/log_preferences.png"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -71,28 +87,46 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>0a0c1bea-2325-11dc-8245-53aeb3024788</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>b235abf6-5262-11e1-ba62-e7aa6134161f</uuidstructure>
+			<datelastmodified>Thu, 09 Feb 2012 15:13:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Jun 2007 14:04:50 GMT</datecreated>
+			<datecreated>Wed, 08 Feb 2012 14:39:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>b38117f2-5262-11e1-ba62-e7aa6134161f</uuidstructure>
+			<datelastmodified>Wed, 08 Feb 2012 14:39:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 08 Feb 2012 14:39:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.workplace</destination>
@@ -138,7 +172,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>440448d6-8a90-11e0-ad6c-bff56146ac12</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -377,6 +411,282 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/workplace/logfileview</destination>
+			<type>folder</type>
+			<uuidstructure>c395c044-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/fileview_view.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_BASIC_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[View log file]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/workplace/logfileview/dodownload.jsp</source>
+			<destination>system/workplace/admin/workplace/logfileview/dodownload.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c398314d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>e39dfee5-e61e-11d9-85f0-ad0f10d5214f</uuidresource>
+			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Download popup]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/workplace/logfileview/download.jsp</source>
+			<destination>system/workplace/admin/workplace/logfileview/download.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c39a7b41-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>50614038-d8f8-11d9-b518-ef342b994563</uuidresource>
+			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/fileview_download.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Download file]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/workplace/logfileview/downloadTrigger.jsp</source>
+			<destination>system/workplace/admin/workplace/logfileview/downloadTrigger.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c39f5d4a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>9567518c-d8fa-11d9-b518-ef342b994563</uuidresource>
+			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Download-Trigger]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/workplace/logfileview/index.jsp</source>
+			<destination>system/workplace/admin/workplace/logfileview/index.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c3a1a73d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>d91a12fd-d8f2-11d9-9822-ef342b994563</uuidresource>
+			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Logfile view]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/workplace/logfileview/logfileViewSettings.jsp</source>
+			<destination>system/workplace/admin/workplace/logfileview/logfileViewSettings.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c3a41842-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>330f4a74-d8f4-11d9-9822-ef342b994563</uuidresource>
+			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_SETTINGS_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/fileview_settings.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_SETTINGS_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit the logfile view settings]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/workplace/logging</destination>
+			<type>folder</type>
+			<uuidstructure>b598a639-5265-11e1-ba62-e7aa6134161f</uuidstructure>
+			<datelastmodified>Thu, 09 Feb 2012 11:42:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2012 15:00:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGGING_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/log_preferences.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_BASIC_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_LOGGING_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[View log set]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/workplace/logging/index.jsp</source>
+			<destination>system/workplace/admin/workplace/logging/index.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>b5b55613-5265-11e1-ba62-e7aa6134161f</uuidstructure>
+			<uuidresource>b5b55614-5265-11e1-ba62-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2012 09:11:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2012 15:00:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Logfile view]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -788,221 +1098,364 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/workplace/logfileview</destination>
-			<type>folder</type>
-			<uuidstructure>c395c044-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/workplace/icons/big/fileview_view.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_BASIC_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[View log file]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.jsp]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/workplace/logfileview/dodownload.jsp</source>
-			<destination>system/workplace/admin/workplace/logfileview/dodownload.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>c398314d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>e39dfee5-e61e-11d9-85f0-ad0f10d5214f</uuidresource>
-			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Download popup]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/workplace/logfileview/download.jsp</source>
-			<destination>system/workplace/admin/workplace/logfileview/download.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>c39a7b41-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>50614038-d8f8-11d9-b518-ef342b994563</uuidresource>
-			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/workplace/icons/big/fileview_download.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Download file]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/workplace/logfileview/downloadTrigger.jsp</source>
-			<destination>system/workplace/admin/workplace/logfileview/downloadTrigger.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>c39f5d4a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>9567518c-d8fa-11d9-b518-ef342b994563</uuidresource>
-			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Download-Trigger]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/workplace/logfileview/index.jsp</source>
-			<destination>system/workplace/admin/workplace/logfileview/index.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>c3a1a73d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>d91a12fd-d8f2-11d9-9822-ef342b994563</uuidresource>
-			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Logfile view]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/workplace/logfileview/logfileViewSettings.jsp</source>
-			<destination>system/workplace/admin/workplace/logfileview/logfileViewSettings.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>c3a41842-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>330f4a74-d8f4-11d9-9822-ef342b994563</uuidresource>
-			<datelastmodified>Thu, 22 Feb 2007 08:33:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_SETTINGS_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/workplace/icons/big/fileview_settings.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_WORKPLACE_LOGVIEW_SETTINGS_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Edit the logfile view settings]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidstructure>440692ce-8a90-11e0-ad6c-bff56146ac12</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/buttons</destination>
+			<type>folder</type>
+			<uuidstructure>82c3d154-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_debug_a_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_debug_a_2.png</destination>
+			<type>image</type>
+			<uuidstructure>4384fdaf-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>4384fdb0-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_debug_a_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_debug_i_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_debug_i_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43b4c043-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43b4c044-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_debug_i_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_error_a_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_error_a_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43b97b37-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43b97b38-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_error_a_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_error_i_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_error_i_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43be362b-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43be362c-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_error_i_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_fatal_a_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_fatal_a_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43c0a72f-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43c0a730-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_fatal_a_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_fatal_i_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_fatal_i_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43c56223-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43c56224-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_fatal_i_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_file_off_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_file_off_2.png</destination>
+			<type>image</type>
+			<uuidstructure>2bcbe7a5-5d6c-11e1-980f-e7aa6134161f</uuidstructure>
+			<uuidresource>2bcbe7a6-5d6c-11e1-980f-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 22 Feb 2012 15:44:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_file_off_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_file_on_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_file_on_2.png</destination>
+			<type>image</type>
+			<uuidstructure>2c516b59-5d6c-11e1-980f-e7aa6134161f</uuidstructure>
+			<uuidresource>2c516b5a-5d6c-11e1-980f-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 22 Feb 2012 15:44:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_file_on_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_info_a_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_info_a_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43ca1d17-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43ca1d18-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_info_a_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_info_i_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_info_i_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43ceff1b-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43ceff1c-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_info_i_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_off_a_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_off_a_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43d3ba0f-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43d3ba10-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_off_a_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_off_i_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_off_i_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43d62b13-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43d62b14-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_off_i_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_warn_a_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_warn_a_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43dae607-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43dae608-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_warn_a_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/log_button_warn_i_2.png</source>
+			<destination>system/workplace/resources/buttons/log_button_warn_i_2.png</destination>
+			<type>image</type>
+			<uuidstructure>43dfa0fb-5945-11e1-8ad4-e7aa6134161f</uuidstructure>
+			<uuidresource>43dfa0fc-5945-11e1-8ad4-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2012 11:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Feb 2012 08:56:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_button_warn_i_2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:20]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1010,12 +1463,17 @@
 			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
 			<uuidstructure>c3a8d33c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 09 Feb 2012 15:13:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1023,7 +1481,7 @@
 			<destination>system/workplace/resources/tools/workplace</destination>
 			<type>folder</type>
 			<uuidstructure>c3a8d33e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 09 Feb 2012 15:13:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1149,7 +1607,7 @@
 			<destination>system/workplace/resources/tools/workplace/icons</destination>
 			<type>folder</type>
 			<uuidstructure>c3b97520-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 09 Feb 2012 15:13:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1162,7 +1620,7 @@
 			<destination>system/workplace/resources/tools/workplace/icons/big</destination>
 			<type>folder</type>
 			<uuidstructure>c3bbe622-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 09 Feb 2012 15:13:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1243,6 +1701,30 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/icons/big/log_preferences.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/big/log_preferences.png</destination>
+			<type>image</type>
+			<uuidstructure>49195b5c-5346-11e1-ba8f-e7aa6134161f</uuidstructure>
+			<uuidresource>49195b5d-5346-11e1-ba8f-e7aa6134161f</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2012 11:28:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2012 11:28:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[log_preferences]]></value>
+				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:32,h:32]]></value>
