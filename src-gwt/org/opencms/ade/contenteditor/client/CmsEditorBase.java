@@ -61,14 +61,18 @@ public class CmsEditorBase extends EditorBase {
 
             public I_EditWidget createWidget(String configuration) {
 
-                return new StringWidget();
+                I_EditWidget widget = new StringWidget();
+                widget.setConfiguration(configuration);
+                return widget;
             }
         });
         widgetFactories.put("org.opencms.widgets.CmsHtmlWidget", new I_WidgetFactory() {
 
             public I_EditWidget createWidget(String configuration) {
 
-                return new TinyMCEWidget(null);
+                I_EditWidget widget = new TinyMCEWidget(null);
+                widget.setConfiguration(configuration);
+                return widget;
             }
         });
         getWidgetService().setWidgetFactories(widgetFactories);
