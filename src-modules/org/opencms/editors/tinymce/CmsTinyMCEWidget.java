@@ -156,7 +156,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         if (options.showElement("gallery.usethickbox", displayOptions)) {
             result.append("cmsGalleryUseThickbox: true,\n");
         }
-        result.append("	plugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave,-opencms");
+        result.append("	plugins : \"autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,-opencms");
 
         //check for fullpage mode
         if (getHtmlWidgetOption().isFullPage()) {
@@ -172,8 +172,6 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("	theme_advanced_statusbar_location : \"bottom\",\n");
         result.append("width: '100%',");
         result.append("language: '" + OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage() + "',\n");
-        result.append("	theme_advanced_resizing : false,\n");
-        result.append("theme_advanced_resizing_use_cookie : false,\n");
 
         // set CSS style sheet for current editor widget if configured
         boolean cssConfigured = false;
@@ -230,11 +228,8 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
             result.append("theme_advanced_blockformats : \"" + formatSelectOptions + "\",\n");
         }
 
-        result.append("	// Drop lists for link/image/media/template dialogs\n");
-        result.append("	template_external_list_url : \"lists/template_list.js\",\n");
-        result.append("	external_link_list_url : \"lists/link_list.js\",\n");
-        result.append("	external_image_list_url : \"lists/image_list.js\",\n");
-        result.append("	media_external_list_url : \"lists/media_list.js\"\n");
+        result.append("theme_advanced_resizing : false,\n");
+        result.append("theme_advanced_resizing_use_cookie : false");
         result.append("});\n");
 
         result.append("contentFields[contentFields.length] = document.getElementById(\"").append(id).append("\");\n");

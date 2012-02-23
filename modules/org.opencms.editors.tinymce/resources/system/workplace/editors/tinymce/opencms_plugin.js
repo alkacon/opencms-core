@@ -53,7 +53,7 @@ function filterContextMenu(sender, menu, element) {
    }
    menu.items = otherItems;
    if (element.nodeName === 'IMG') {
-      menu.add({title : '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />', icon : 'media', cmd : 'cmsImageGallery'});
+      menu.add({title : '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />', icon : 'image', cmd : 'cmsImageGallery'});
    }
 };
 
