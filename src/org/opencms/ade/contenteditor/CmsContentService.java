@@ -60,6 +60,7 @@ import org.opencms.workplace.editors.Messages;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -101,6 +102,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         /** The registered types. */
         private Map<String, I_Type> m_registeredTypes;
 
+        /** The content handler. */
+        private I_CmsXmlContentHandler m_contentHandler;
+
         /**
          * Constructor.<p>
          * 
@@ -141,12 +145,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          */
         protected void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
 
+            m_contentHandler = xmlContentDefinition.getContentHandler();
             CmsMessages messages = null;
             m_messages = new CmsMultiMessages(locale);
             try {
                 messages = OpenCms.getWorkplaceManager().getMessages(locale);
                 m_messages.addMessages(messages);
-                m_messages.addMessages(xmlContentDefinition.getContentHandler().getMessages(locale));
+                m_messages.addMessages(m_contentHandler.getMessages(locale));
             } catch (Exception e) {
                 //ignore
             }
@@ -218,7 +223,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             String widgetName = null;
             String widgetConfig = null;
             try {
-                I_CmsWidget widget = schemaType.getContentDefinition().getContentHandler().getWidget(schemaType);
+                I_CmsWidget widget = m_contentHandler.getWidget(schemaType);
                 widgetName = widget.getClass().getName();
                 widgetConfig = widget.getConfiguration();
             } catch (Exception e) {
@@ -244,12 +249,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          */
         private String readDefaultValue(I_CmsXmlSchemaType schemaType, String path) {
 
-            return schemaType.getContentDefinition().getContentHandler().getDefault(
-                getCmsObject(),
-                m_file,
-                schemaType,
-                path,
-                m_locale);
+            return m_contentHandler.getDefault(getCmsObject(), m_file, schemaType, path, m_locale);
         }
 
         /**
