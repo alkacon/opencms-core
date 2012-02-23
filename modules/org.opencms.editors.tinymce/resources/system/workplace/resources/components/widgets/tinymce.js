@@ -48,6 +48,11 @@ function setupTinyMCE(editor) {
          window.setTimeout(function() { $(modElem).addClass("cmsTinyMCE"); } , 1);
       });
    }
+   if (tinyMCE.isIE7 && !window.cmsIE7CssFixForTinyMCE) {
+      // fixing the issue where the fullscreen mode editor is positioned below the XML content editor instead of overlaying it 
+      $("head").append("<style type='text/css'>#mce_fullscreen_container { position: absolute !important; }</style>");
+      window.cmsIE7CssFixForTinyMCE = true; 
+   }
 }
 
 function addCustomShortcuts(editor){
