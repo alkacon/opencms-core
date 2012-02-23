@@ -30,7 +30,9 @@ var modeType = "";
 
 /* Initializes the download gallery popup window. */
 function initPopup() {
-
+   
+   $("#cancelbutton").click(function() {tinyMCEPopup.close(); } )
+   $("head").append("<style type='text/css'>#galleryitemlist { height: 457px !important; } #galleryitemlistinner {  height: 385px !important; } #categoryfolderlist { height: 515px !important; }</style>");
    $("#galleryresetsearchbutton").hide();
    $("#categoryresetsearchbutton").hide();
    

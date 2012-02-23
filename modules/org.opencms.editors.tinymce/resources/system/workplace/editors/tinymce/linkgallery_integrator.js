@@ -35,9 +35,8 @@ var modeType = "";
 
 /* Initializes the download gallery popup window. */
 function initPopup() {
-//   $("#gallerycancelbutton").remove();
+   $("#gallerycancelbutton").click(function() {tinyMCEPopup.close(); } )
    $("#categorycancelbutton").remove();
-//   $("#galleryokbutton").remove();
    $("#categoryokbutton").remove();
    $("#galleryresetsearchbutton").hide();
    $("#categoryresetsearchbutton").hide();
