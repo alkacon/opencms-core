@@ -89,11 +89,29 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         /** The attribute configurations. */
         private Map<String, AttributeConfiguration> m_attributeConfigurations;
 
+        /** The content resource. */
+        private CmsFile m_file;
+
+        /** The content locale. */
+        private Locale m_locale;
+
         /** The messages. */
         private CmsMultiMessages m_messages;
 
         /** The registered types. */
         private Map<String, I_Type> m_registeredTypes;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param file the content file
+         * @param locale the content locale
+         */
+        protected TypeVisitor(CmsFile file, Locale locale) {
+
+            m_file = file;
+            m_locale = locale;
+        }
 
         /**
          * Returns the attribute configurations.<p>
@@ -136,7 +154,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
             m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
             m_registeredTypes = new HashMap<String, I_Type>();
-            readTypes(xmlContentDefinition);
+            readTypes(xmlContentDefinition, "");
         }
 
         /**
@@ -190,10 +208,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          * Reads the attribute configuration for the given schema type. May return <code>null</code> if no special configuration was set.<p>
          * 
          * @param schemaType the schema type
+         * @param path the attribute path
          * 
          * @return the attribute configuration
          */
-        private AttributeConfiguration readConfiguration(I_CmsXmlSchemaType schemaType) {
+        private AttributeConfiguration readConfiguration(I_CmsXmlSchemaType schemaType, String path) {
 
             AttributeConfiguration result = null;
             String widgetName = null;
@@ -206,8 +225,31 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 // may happen if no widget was set for the value
                 LOG.debug(e.getMessage(), e);
             }
-            result = new AttributeConfiguration(getLabel(schemaType), getHelp(schemaType), widgetName, widgetConfig);
+            result = new AttributeConfiguration(
+                getLabel(schemaType),
+                getHelp(schemaType),
+                widgetName,
+                widgetConfig,
+                readDefaultValue(schemaType, path));
             return result;
+        }
+
+        /**
+         * Reads the default value for the given type.<p>
+         * 
+         * @param schemaType the schema type
+         * @param path the element path
+         * 
+         * @return the default value
+         */
+        private String readDefaultValue(I_CmsXmlSchemaType schemaType, String path) {
+
+            return schemaType.getContentDefinition().getContentHandler().getDefault(
+                getCmsObject(),
+                m_file,
+                schemaType,
+                path,
+                m_locale);
         }
 
         /**
@@ -215,9 +257,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          * types if necessary.<p>
          * 
          * @param xmlContentDefinition the XML content definition
+         * @param path the element path
          * @param attributeName the attribute name
          */
-        private void readTypes(CmsXmlContentDefinition xmlContentDefinition) {
+        private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 
             String typeName = getTypeUri(xmlContentDefinition);
             if (m_registeredTypes.containsKey(typeName)) {
@@ -229,8 +272,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
 
                 String subTypeName = null;
+                String childPath = path + "/" + subType.getName();
                 String subAttributeName = getAttributeName(subType.getName(), typeName);
-                AttributeConfiguration config = readConfiguration(subType);
+                AttributeConfiguration config = readConfiguration(subType, childPath);
                 if (config != null) {
                     m_attributeConfigurations.put(subAttributeName, config);
                 }
@@ -242,7 +286,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 } else {
                     CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
                     subTypeName = getTypeUri(subTypeDefinition);
-                    readTypes(subTypeDefinition);
+                    readTypes(subTypeDefinition, childPath);
                 }
                 type.addAttribute(subAttributeName, subTypeName, subType.getMinOccurs(), subType.getMaxOccurs());
             }
@@ -481,7 +525,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     protected Map<String, I_Type> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
 
-        TypeVisitor visitor = new TypeVisitor();
+        TypeVisitor visitor = new TypeVisitor(null, locale);
         visitor.visitTypes(xmlContentDefinition, locale);
         return visitor.getTypes();
     }
@@ -564,7 +608,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         CmsFile file = cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-        TypeVisitor visitor = new TypeVisitor();
+        TypeVisitor visitor = new TypeVisitor(file, locale);
 
         visitor.visitTypes(content.getContentDefinition(), locale);
         Entity entity = null;
