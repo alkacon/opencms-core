@@ -236,9 +236,11 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             newLogchannelLevel = Level.OFF;
         }
         if (newLogchannelLevel != null) {
-            // set the log-channel to the new logging-level
-            logchannel.setLevel(newLogchannelLevel);
-
+            if (newLogchannelLevel.equals(logchannel.getParent().getLevel())) {
+                logchannel.setLevel(null);
+            } else {
+                logchannel.setLevel(newLogchannelLevel);
+            }
         }
         if (ACTION_ACTIVATE_LOGFILE.equals(getParamListAction())) {
             String filepath = "";
@@ -408,7 +410,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         colChangeFatalLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_FATAL"));
         colChangeFatalLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeFatalLevel.setWidth("50");
-        colChangeFatalLevel.setSorteable(true);
         colChangeFatalLevel.setListItemComparator(new CmsLogLevelListItemComparator());
         colChangeFatalLevel.setPrintable(false);
         colChangeFatalLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -449,7 +450,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         colChangeErrorLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_ERROR"));
         colChangeErrorLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeErrorLevel.setWidth("50");
-        colChangeErrorLevel.setSorteable(true);
         colChangeErrorLevel.setPrintable(false);
         colChangeErrorLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeErrorLevel.setListItemComparator(new CmsLogLevelListItemComparator());
@@ -488,7 +488,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         colChangeWarnLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_WARN"));
         colChangeWarnLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeWarnLevel.setWidth("50");
-        colChangeWarnLevel.setSorteable(true);
         colChangeWarnLevel.setPrintable(false);
         colChangeWarnLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeWarnLevel.setListItemComparator(new CmsLogLevelListItemComparator());
@@ -527,7 +526,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         colChangeINFOLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_INFO"));
         colChangeINFOLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeINFOLevel.setWidth("50");
-        colChangeINFOLevel.setSorteable(true);
         colChangeINFOLevel.setPrintable(false);
         colChangeINFOLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeINFOLevel.setListItemComparator(new CmsLogLevelListItemComparator());
@@ -567,7 +565,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         colChangeDebugLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeDebugLevel.setWidth("50");
         colChangeDebugLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        colChangeDebugLevel.setSorteable(true);
         colChangeDebugLevel.setPrintable(false);
         colChangeDebugLevel.setListItemComparator(new CmsLogLevelListItemComparator());
         // generate an Action to activate the change of a log-channel
