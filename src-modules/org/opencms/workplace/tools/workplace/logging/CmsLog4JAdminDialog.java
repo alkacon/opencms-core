@@ -152,6 +152,24 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     /** Path to the File-Icon(inactive). */
     public static final String PATH_FILE_INACTIVE = PATH_BUTTONS + "log_button_file_off_2.png";
 
+    /** Shortcut for the DEBUG column. */
+    public static final String COLUMN_DEBUG = "chd";
+
+    /** Shortcut for the INFO column. */
+    public static final String COLUMN_INFO = "chi";
+
+    /** Shortcut for the WARN column. */
+    public static final String COLUMN_WARN = "chw";
+
+    /** Shortcut for the ERROR column. */
+    public static final String COLUMN_ERROR = "che";
+
+    /** Shortcut for the FATAL column. */
+    public static final String COLUMN_FATAL = "chf";
+
+    /** Shortcut for the OFF column. */
+    public static final String COLUMN_OFF = "cho";
+
     /**
      * @param jsp
      */
@@ -406,7 +424,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     protected void setColumns(CmsListMetadata metadata) {
 
         // add column for FATAL level [Icon has a fix width 50px]
-        CmsListColumnDefinition colChangeFatalLevel = new CmsListColumnDefinition("chf");
+        CmsListColumnDefinition colChangeFatalLevel = new CmsListColumnDefinition(COLUMN_FATAL);
         colChangeFatalLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_FATAL"));
         colChangeFatalLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeFatalLevel.setWidth("50");
@@ -446,7 +464,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(colChangeFatalLevel);
 
         // add column for ERROR level [Icon has a fix width 50px]
-        CmsListColumnDefinition colChangeErrorLevel = new CmsListColumnDefinition("che");
+        CmsListColumnDefinition colChangeErrorLevel = new CmsListColumnDefinition(COLUMN_ERROR);
         colChangeErrorLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_ERROR"));
         colChangeErrorLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeErrorLevel.setWidth("50");
@@ -484,7 +502,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(colChangeErrorLevel);
 
         // add column for WARN level [Icon has a fix width 50px]
-        CmsListColumnDefinition colChangeWarnLevel = new CmsListColumnDefinition("chw");
+        CmsListColumnDefinition colChangeWarnLevel = new CmsListColumnDefinition(COLUMN_WARN);
         colChangeWarnLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_WARN"));
         colChangeWarnLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeWarnLevel.setWidth("50");
@@ -522,7 +540,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(colChangeWarnLevel);
 
         // add column for INFO level [Icon has a fix width 50px]
-        CmsListColumnDefinition colChangeINFOLevel = new CmsListColumnDefinition("chi");
+        CmsListColumnDefinition colChangeINFOLevel = new CmsListColumnDefinition(COLUMN_INFO);
         colChangeINFOLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_INFO"));
         colChangeINFOLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeINFOLevel.setWidth("50");
@@ -560,7 +578,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(colChangeINFOLevel);
 
         // add column for DEBUG level [Icon has a fix width 50px]
-        CmsListColumnDefinition colChangeDebugLevel = new CmsListColumnDefinition("chd");
+        CmsListColumnDefinition colChangeDebugLevel = new CmsListColumnDefinition(COLUMN_DEBUG);
         colChangeDebugLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_DEBUG"));
         colChangeDebugLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeDebugLevel.setWidth("50");
@@ -598,7 +616,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(colChangeDebugLevel);
 
         // add column for OFF level [Icon has a fix width 50px]
-        CmsListColumnDefinition colChangeOffLevel = new CmsListColumnDefinition("cho");
+        CmsListColumnDefinition colChangeOffLevel = new CmsListColumnDefinition(COLUMN_OFF);
         colChangeOffLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_OFF"));
         colChangeOffLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeOffLevel.setWidth("50");
