@@ -170,6 +170,24 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     /** Shortcut for the OFF column. */
     public static final String COLUMN_OFF = "cho";
 
+    /** Shortcut for the MultiAction (FATAL). */
+    public static final String SET_TO_FATAL = "sf";
+
+    /** Shortcut for the MultiAction (ERROR). */
+    public static final String SET_TO_ERROR = "sr";
+
+    /** Shortcut for the MultiAction (WARN). */
+    public static final String SET_TO_WARN = "sw";
+
+    /** Shortcut for the MultiAction (INFO). */
+    public static final String SET_TO_INFO = "si";
+
+    /** Shortcut for the MultiAction (DEBUG). */
+    public static final String SET_TO_DEBUG = "sd";
+
+    /** Shortcut for the MultiAction (OFF). */
+    public static final String SET_TO_OFF = "so";
+
     /**
      * @param jsp
      */
@@ -194,17 +212,17 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
         Level newLogchannelLevel = null;
         // get the selected logging-level
-        if (getParamListAction().equals("sE")) {
+        if (getParamListAction().equals(SET_TO_ERROR)) {
             newLogchannelLevel = Level.ERROR;
-        } else if (getParamListAction().equals("sD")) {
+        } else if (getParamListAction().equals(SET_TO_DEBUG)) {
             newLogchannelLevel = Level.DEBUG;
-        } else if (getParamListAction().equals("sF")) {
+        } else if (getParamListAction().equals(SET_TO_FATAL)) {
             newLogchannelLevel = Level.FATAL;
-        } else if (getParamListAction().equals("sI")) {
+        } else if (getParamListAction().equals(SET_TO_INFO)) {
             newLogchannelLevel = Level.INFO;
-        } else if (getParamListAction().equals("sW")) {
+        } else if (getParamListAction().equals(SET_TO_WARN)) {
             newLogchannelLevel = Level.WARN;
-        } else if (getParamListAction().equals("sO")) {
+        } else if (getParamListAction().equals(SET_TO_OFF)) {
             newLogchannelLevel = Level.OFF;
         }
 
@@ -254,6 +272,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             newLogchannelLevel = Level.OFF;
         }
         if (newLogchannelLevel != null) {
+            isparentlogger(logchannel);
             if (newLogchannelLevel.equals(logchannel.getParent().getLevel())) {
                 logchannel.setLevel(null);
             } else {
@@ -749,7 +768,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the Fatal multi action
-        CmsListMultiAction settoFatal = new CmsChangeLogLevelMultiAction("sF");
+        CmsListMultiAction settoFatal = new CmsChangeLogLevelMultiAction(SET_TO_FATAL);
         settoFatal.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MFATAL_HELP_0));
         settoFatal.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MFATAL_CONF_0));
         settoFatal.setIconPath(PATH_FATAL_ACTIVE);
@@ -757,7 +776,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addMultiAction(settoFatal);
 
         // add the Error multi action
-        CmsListMultiAction settoError = new CmsChangeLogLevelMultiAction("sE");
+        CmsListMultiAction settoError = new CmsChangeLogLevelMultiAction(SET_TO_ERROR);
         settoError.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MERROR_HELP_0));
         settoError.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MERROR_CONF_0));
         settoError.setIconPath(PATH_ERROR_ACTIVE);
@@ -765,7 +784,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addMultiAction(settoError);
 
         // add the Warn multi action
-        CmsListMultiAction settoWarn = new CmsChangeLogLevelMultiAction("sW");
+        CmsListMultiAction settoWarn = new CmsChangeLogLevelMultiAction(SET_TO_WARN);
         settoWarn.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MWARN_HELP_0));
         settoWarn.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MWARN_CONF_0));
         settoWarn.setIconPath(PATH_WARN_ACTIVE);
@@ -773,7 +792,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addMultiAction(settoWarn);
 
         // add the Info multi action
-        CmsListMultiAction settoInfo = new CmsChangeLogLevelMultiAction("sI");
+        CmsListMultiAction settoInfo = new CmsChangeLogLevelMultiAction(SET_TO_INFO);
         settoInfo.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MINFO_HELP_0));
         settoInfo.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MINFO_CONF_0));
         settoInfo.setIconPath(PATH_INFO_ACTIVE);
@@ -781,7 +800,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addMultiAction(settoInfo);
 
         // add the Debug multi action
-        CmsListMultiAction settoDebug = new CmsChangeLogLevelMultiAction("sD");
+        CmsListMultiAction settoDebug = new CmsChangeLogLevelMultiAction(SET_TO_DEBUG);
         settoDebug.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEBUG_HELP_0));
         settoDebug.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEBUG_CONF_0));
         settoDebug.setIconPath(PATH_DEBUG_ACTIVE);
@@ -789,7 +808,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addMultiAction(settoDebug);
 
         // add the Off multi action
-        CmsListMultiAction settoOff = new CmsChangeLogLevelMultiAction("sO");
+        CmsListMultiAction settoOff = new CmsChangeLogLevelMultiAction(SET_TO_OFF);
         settoOff.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MOFF_HELP_0));
         settoOff.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MOFF_CONF_0));
         settoOff.setIconPath(PATH_OFF_ACTIVE);
@@ -881,5 +900,24 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             check = app.next().getName().equals(logchannel.getName());
         }
         return check;
+    }
+
+    /** Simple function to set all child loggers to the same value of <p>
+     * parent logger if the parent logger leves is changed.<p>
+     * 
+     * @param logchannel the channel that might be the parent logger
+     * */
+    private void isparentlogger(Logger logchannel) {
+
+        // get all logchannels
+        List<Logger> referenz = getLoggers();
+        Iterator<Logger> it_logger = referenz.iterator();
+        while (it_logger.hasNext()) {
+            Logger child_test = it_logger.next();
+            // if the logchannel has the given logchannel as parent his loglevel is set to the parent one.
+            if (logchannel.getName().equals(child_test.getParent().getName())) {
+                child_test.setLevel(null);
+            }
+        }
     }
 }

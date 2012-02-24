@@ -84,10 +84,12 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         // returns < 0 if the first rows have the loglevel "Debug"
                         if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(DEBUG)) {
                             test = -1;
-                        } else if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(DEBUG)) {
+                        } else
+                        // returns > 0 if the second rows have the loglevel "Debug"
+                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(DEBUG)) {
                             test = 1;
                         } else {
-                            // returns > 0 if the second rows have the loglevel "Debug"
+                            // sort other values by level value
                             if (o1temp.toInt() == o2temp.toInt()) {
                                 test = 0;
                             } else if (o1temp.toInt() < o2temp.toInt()) {
@@ -119,10 +121,12 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         // returns < 0 if the first rows have the loglevel "INFO"
                         if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(INFO)) {
                             test = -1;
-                        } else if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(INFO)) {
+                        } else
+                        // returns > 0 if the second rows have the loglevel "INFO"
+                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(INFO)) {
                             test = 1;
                         } else {
-                            // returns > 0 if the second rows have the loglevel "INFO"
+                            // sort other values by level value
                             if (o1temp.toInt() == o2temp.toInt()) {
                                 test = 0;
                             } else if (o1temp.toInt() < o2temp.toInt()) {
@@ -154,10 +158,12 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         // returns < 0 if the first rows have the loglevel "WARN"
                         if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(WARN)) {
                             test = -1;
-                        } else if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(WARN)) {
+                        } else
+                        // returns > 0 if the second rows have the loglevel "WARN"
+                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(WARN)) {
                             test = 1;
                         } else {
-                            // returns > 0 if the second rows have the loglevel "WARN"
+                            // sort other values by level value
                             if (o1temp.toInt() == o2temp.toInt()) {
                                 test = 0;
                             } else if (o1temp.toInt() < o2temp.toInt()) {
@@ -189,10 +195,12 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         // returns < 0 if the first rows have the loglevel "ERROR"
                         if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(ERROR)) {
                             test = -1;
-                        } else if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(ERROR)) {
+                        } else
+                        // returns > 0 if the second rows have the loglevel "ERROR"
+                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(ERROR)) {
                             test = 1;
                         } else {
-                            // returns > 0 if the second rows have the loglevel "ERROR"
+                            // sort other values by level value
                             if (o1temp.toInt() == o2temp.toInt()) {
                                 test = 0;
                             } else if (o1temp.toInt() < o2temp.toInt()) {
@@ -224,10 +232,12 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         // returns < 0 if the first rows have the loglevel "FATAL"
                         if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(FATAL)) {
                             test = -1;
-                        } else if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(FATAL)) {
+                        } else
+                        // returns > 0 if the second rows have the loglevel "FATAL"
+                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(FATAL)) {
                             test = 1;
                         } else {
-                            // returns > 0 if the second rows have the loglevel "FATAL"
+                            // sort other values by level value
                             if (o1temp.toInt() == o2temp.toInt()) {
                                 test = 0;
                             } else if (o1temp.toInt() < o2temp.toInt()) {
@@ -259,10 +269,12 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         // returns < 0 if the first rows have the loglevel "Off"
                         if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(OFF)) {
                             test = -1;
-                        } else if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(OFF)) {
+                        } else
+                        // returns > 0 if the second rows have the loglevel "Off"
+                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(OFF)) {
                             test = 1;
                         } else {
-                            // returns > 0 if the second rows have the loglevel "Off"
+                            // sort other values by level value
                             if (o1temp.toInt() == o2temp.toInt()) {
                                 test = 0;
                             } else if (o1temp.toInt() < o2temp.toInt()) {
