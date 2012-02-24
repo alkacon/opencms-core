@@ -70,7 +70,7 @@ public class CmsEditorBase extends EditorBase {
 
             public I_EditWidget createWidget(String configuration) {
 
-                I_EditWidget widget = new TinyMCEWidget(null);
+                I_EditWidget widget = new TinyMCEWidget();
                 widget.setConfiguration(configuration);
                 return widget;
             }
