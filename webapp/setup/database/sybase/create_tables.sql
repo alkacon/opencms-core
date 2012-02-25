@@ -21,6 +21,19 @@ CREATE INDEX CMS_CONTENTS_04_IDX ON CMS_CONTENTS (PUBLISH_TAG_TO);
 CREATE INDEX CMS_CONTENTS_05_IDX ON CMS_CONTENTS (RESOURCE_ID, ONLINE_FLAG);
 
 /* ----------------------------------------------------------------------- */
+/* cms_counters */
+/* ----------------------------------------------------------------------- */
+
+CREATE TABLE CMS_COUNTERS
+(
+    NAME VARCHAR(255) NOT NULL,
+    COUNTER INT NOT NULL,
+    PRIMARY KEY (NAME)
+);
+
+CREATE UNIQUE INDEX PK_COUNTERS ON CMS_COUNTERS (NAME);
+
+/* ----------------------------------------------------------------------- */
 /* cms_groups */
 /* ----------------------------------------------------------------------- */
 
