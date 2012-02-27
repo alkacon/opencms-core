@@ -852,9 +852,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                     temp_logger.setAdditivity(true);
                     // add the logger to the packageLoggers list if it is not part of it
                     if (!packageLoggers.contains(temp_logger)) {
-                        if (temp_logger.getName().equals("om.lkacon")) {
-                            String te = "test";
-                        }
                         packageLoggers.add(temp_logger);
                     }
                 }
@@ -930,9 +927,10 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         }
     }
 
-    /** Simpel function to get the prefix of an logchannel name.
+    /** Simple function to get the prefix of an logchannel name.
      * 
      * @param logname the full name of the logging channel
+     * @return a string array with different package prefixes
      * */
     private String[] buildsufix(String logname) {
 
