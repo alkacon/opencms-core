@@ -835,20 +835,28 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         while (it_curentlogger.hasNext()) {
             // get the logger
             Logger log = it_curentlogger.next();
-            // get the name of the logger without the prefix "org.opencms"
-            String temp = log.getName().replace(OPENCMS_CLASS_PREFIX, "");
-            // if the name has suffix
-            if (temp.length() > 1) {
-                temp = temp.substring(1);
-            }
-            if (temp.lastIndexOf(".") > 1) {
-                // generate new logger with "org.opencms" prefix and the next element between the points e.g.: "org.opencms.search"
-                Logger temp_logger = Logger.getLogger(OPENCMS_CLASS_PREFIX + "." + temp.substring(0, temp.indexOf(".")));
-                // activate the heredity so the logger get the appender from parent logger
-                temp_logger.setAdditivity(true);
-                // add the logger to the packageLoggers list if it is not part of it
-                if (!packageLoggers.contains(temp_logger)) {
-                    packageLoggers.add(temp_logger);
+            String logname = log.getName();
+            String[] prefix = buildsufix(logname);
+            // create all possible package logger from given logger name            
+            for (int i = 0; i < prefix.length; i++) {
+                // get the name of the logger without the prefix
+                String temp = log.getName().replace(prefix[i], "");
+                // if the name has suffix
+                if (temp.length() > 1) {
+                    temp = temp.substring(1);
+                }
+                if (temp.lastIndexOf(".") > 1) {
+                    // generate new logger with "org.opencms" prefix and the next element between the points e.g.: "org.opencms.search"
+                    Logger temp_logger = Logger.getLogger(prefix[i] + "." + temp.substring(0, temp.indexOf(".")));
+                    // activate the heredity so the logger get the appender from parent logger
+                    temp_logger.setAdditivity(true);
+                    // add the logger to the packageLoggers list if it is not part of it
+                    if (!packageLoggers.contains(temp_logger)) {
+                        if (temp_logger.getName().equals("om.lkacon")) {
+                            String te = "test";
+                        }
+                        packageLoggers.add(temp_logger);
+                    }
                 }
             }
             definedLoggers.add(log);
@@ -916,8 +924,54 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             Logger child_test = it_logger.next();
             // if the logchannel has the given logchannel as parent his loglevel is set to the parent one.
             if (logchannel.getName().equals(child_test.getParent().getName())) {
+                isparentlogger(child_test);
                 child_test.setLevel(null);
             }
+        }
+    }
+
+    /** Simpel function to get the prefix of an logchannel name.
+     * 
+     * @param logname the full name of the logging channel
+     * */
+    private String[] buildsufix(String logname) {
+
+        // help String array to store all combination
+        String[] prefix_temp = new String[logname.length()];
+        int count = 0;
+        while (logname.indexOf(".") > 1) {
+            // separate the name of the logger into pieces of name and separator e.g.: "org."
+            String subprefix = logname.substring(0, logname.indexOf(".") + 1);
+            logname = logname.replace(subprefix, "");
+            if (logname.indexOf(".") > 1) {
+                if (count > 0) {
+                    // build different suffixes based on the pieces separated above  
+                    prefix_temp[count] = prefix_temp[count - 1] + subprefix;
+                } else {
+                    // if it´s the first piece of the name only it will be set
+                    prefix_temp[count] = subprefix;
+
+                }
+            }
+            count++;
+        }
+        // if the logger name has more then one piece
+        if (count >= 1) {
+            // create result string array
+            String[] prefix = new String[count - 1];
+            // copy all different prefixes to one array with right size
+            for (int i = 0; i < (count - 1); i++) {
+                prefix[i] = prefix_temp[i].substring(0, prefix_temp[i].length() - 1);
+            }
+            // return all different prefixes
+            return prefix;
+        }
+        // if the logger name has only one or less piece
+        else {
+            // return the full logger name
+            String nullreturn[] = new String[1];
+            nullreturn[0] = logname;
+            return nullreturn;
         }
     }
 }
