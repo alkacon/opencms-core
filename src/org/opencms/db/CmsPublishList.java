@@ -630,6 +630,30 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
+     * Gets the sub-resources of a list of folders which are missing from the publish list.<p> 
+     * 
+     * @param cms the current CMS context 
+     * @param folders the folders which should be checked 
+     * @return a list of missing sub resources 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected List<CmsResource> getMissingSubResources(CmsObject cms, List<CmsResource> folders) throws CmsException {
+
+        List<CmsResource> result = new ArrayList<CmsResource>();
+        for (CmsResource folder : folders) {
+            String folderPath = cms.getSitePath(folder);
+            List<CmsResource> subResources = cms.readResources(folderPath, CmsResourceFilter.ALL, true);
+            for (CmsResource resource : subResources) {
+                if (!containsResource(resource)) {
+                    result.add(resource);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Internal method to get the moved folders from the publish list.<p>
      * 
      * @param cms the current CMS context 

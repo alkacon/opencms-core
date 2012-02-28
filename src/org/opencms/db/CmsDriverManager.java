@@ -9830,12 +9830,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource folder = folderIt.next();
             addSubResources(dbc, pubList, folder);
         }
-        CmsResource checkRes = pubList.checkContainsSubResources(cms, topMovedFolders);
-        if (checkRes != null) {
-            throw new CmsVfsException(Messages.get().container(
-                Messages.RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1,
-                checkRes.getRootPath()));
+        List<CmsResource> missingSubResources = pubList.getMissingSubResources(cms, topMovedFolders);
+        if (missingSubResources.isEmpty()) {
+            return;
         }
+
+        StringBuffer pathBuffer = new StringBuffer();
+
+        for (CmsResource missing : missingSubResources) {
+            pathBuffer.append(missing.getRootPath());
+            pathBuffer.append(" ");
+        }
+        throw new CmsVfsException(Messages.get().container(
+            Messages.RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1,
+            pathBuffer.toString()));
 
     }
 
