@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * Usage:
  * <code>
- * &lt;cms:contentload collector=&quot;allKeyValuePairFiltered&quot; param=&quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date]|sortAsc=[boolean]&quot;&gt;
+ * &lt;cms:contentload collector=&quot;allKeyValuePairFiltered&quot; param=&quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date|property:[property_name]]|sortAsc=[boolean]&quot;&gt;
  * </code>
  * 
  * @since 7.0.0
@@ -74,7 +74,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      * 
      * Usage:
      * <code>
-     * &quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date]|sortAsc=[boolean]&quot;
+     * &quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date|property:[property_name]]|sortAsc=[boolean]&quot;
      * </code>
      */
     private static final class CmsCategoryCollectorData extends CmsCollectorData {
@@ -106,8 +106,11 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         /** Indicates if the returned list will be sorted ascending or not (descending). */
         private boolean m_sortAsc;
 
-        /** The returned list will be sort by this ('category' or 'date' are excepted). */
+        /** The returned list will be sort by this ('category', 'date' or 'property' are excepted). */
         private String m_sortBy;
+
+        /** The returned list will be sort by this property value  */
+        private String m_sortByPropertyName;
 
         /** Indicates if the sub tree of the given resource will be searched for appropriate resources too. */
         private boolean m_subTree;
@@ -136,13 +139,33 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         }
 
         /**
-         * Returns the sort by string (only 'date' or 'category' excepted).<p>
+         * Returns the sort by string (only 'date', 'category' or 'property' excepted).<p>
          *
          * @return the sort by string
          */
         public String getSortBy() {
 
             return m_sortBy;
+        }
+
+        /**
+         * Returns the sort by this property value.<p>
+         *
+         * @return the sort by string
+         */
+        public String getSortByPropertyName() {
+
+            return m_sortByPropertyName;
+        }
+
+        /**
+         * Returns the sort order. <code>true=asc</code> or <code>false=desc</code>  <p>
+         *
+         * @return the sort order. <code>true=asc</code> or <code>false=desc</code> 
+         */
+        public boolean getSortOrder() {
+
+            return m_sortAsc;
         }
 
         /**
@@ -195,7 +218,16 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 } else if (PARAM_KEY_SORT_ASC.equals(key)) {
                     m_sortAsc = Boolean.valueOf(value).booleanValue();
                 } else if (PARAM_KEY_SORT_BY.equals(key)) {
-                    m_sortBy = value;
+                    if (value.contains(":")) {
+                        String[] keyValuePairProp = CmsStringUtil.splitAsArray(value, ':');
+                        String keyProp = keyValuePairProp[0];
+                        String valueProp = keyValuePairProp[1];
+                        m_sortBy = keyProp;
+                        m_sortByPropertyName = valueProp;
+                    } else {
+                        m_sortBy = value;
+                        m_sortByPropertyName = null;
+                    }
                 } else if (PARAM_KEY_SUB_TREE.equals(key)) {
                     m_subTree = Boolean.valueOf(value).booleanValue();
                 } else if (PARAM_KEY_COUNT.equals(key)) {
@@ -337,6 +369,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
     protected List<CmsResource> allKeyValuePairFiltered(CmsObject cms, String param) throws CmsException {
 
         CmsCategoryCollectorData data = new CmsCategoryCollectorData(param);
+
         if ((data.getCategoryTypes() != null) && (data.getCategoryTypes().size() > 0)) {
             List<CmsResource> result = new ArrayList<CmsResource>();
             Map<String, List<CmsResource>> sortCategories = new HashMap<String, List<CmsResource>>();
@@ -398,7 +431,14 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                         result.addAll(categoryListToAdd);
                     }
                 }
+            } else if ((data.getSortBy() != null) && data.getSortBy().equals("property")) {
+                Comparator<CmsResource> comp = new CmsPropertyResourceComparator(
+                    cms,
+                    data.getSortByPropertyName(),
+                    data.getSortOrder());
+                Collections.sort(result, comp);
             }
+
             return shrinkToFit(result, data.getCount());
         }
         return null;

@@ -622,8 +622,16 @@ function doActionInsertSelected(doc, nodeId) {
     if (getSitePrefix()) {
         filePrefix = getSitePrefix();
     }
-    window.opener.setFormValue(filePrefix + getNodeNameById(nodeId));
+    getForm().setFormValue(filePrefix + getNodeNameById(nodeId));
 }
+
+function getForm() {
+   if (window['setFormValue']) {
+      return window;
+   }
+   return window.opener; 
+}
+
 
 // called if the folder name is clicked in the tree
 function doAction(doc, nodeId) {

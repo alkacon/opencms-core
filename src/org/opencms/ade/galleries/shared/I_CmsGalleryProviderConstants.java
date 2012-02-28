@@ -212,6 +212,9 @@ public interface I_CmsGalleryProviderConstants {
     /** The widget field id hash. */
     String KEY_HASH_ID = "hashId";
 
+    /** The key for the flag which controls whether the select button should be shown. */
+    String KEY_SHOW_SELECT = "showSelect";
+
     /** Path to the host page. */
     String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
 }
