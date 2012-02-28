@@ -39,47 +39,47 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_offline_structure")
+@Table(name = "CMS_OFFLINE_STRUCTURE")
 public class CmsDAOOfflineStructure implements I_CmsDAOStructure {
 
     /** The date expired. */
     @Basic
-    @Column(name = "date_expired")
+    @Column(name = "DATE_EXPIRED")
     private long m_dateExpired;
 
     /** The date released. */
     @Basic
-    @Column(name = "date_released")
+    @Column(name = "DATE_RELEASED")
     private long m_dateReleased;
 
     /** The parent id. */
     @Basic
-    @Column(name = "parent_id", nullable = false, length = 36)
+    @Column(name = "PARENT_ID", nullable = false, length = 36)
     private String m_parentId;
 
     /** The resource id. */
     @Basic
-    @Column(name = "resource_id", nullable = false, length = 36)
+    @Column(name = "RESOURCE_ID", nullable = false, length = 36)
     private String m_resourceId;
 
     /** The resource path. */
     @Basic
-    @Column(name = "resource_path", length = 1024)
+    @Column(name = "RESOURCE_PATH", length = 1024)
     private String m_resourcePath;
 
     /** The structure id. */
     @Id
-    @Column(name = "structure_id", length = 36)
+    @Column(name = "STRUCTURE_ID", length = 36)
     private String m_structureId;
 
     /** The structure state. */
     @Basic
-    @Column(name = "structure_state")
+    @Column(name = "STRUCTURE_STATE")
     private int m_structureState;
 
     /** The structure version. */
     @Basic
-    @Column(name = "structure_version")
+    @Column(name = "STRUCTURE_VERSION")
     private int m_structureVersion;
 
     /**

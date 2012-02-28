@@ -40,34 +40,34 @@ import javax.persistence.UniqueConstraint;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_online_properties", uniqueConstraints = @UniqueConstraint(columnNames = {
-    "propertydef_id",
-    "property_mapping_id"}))
+@Table(name = "CMS_ONLINE_PROPERTIES", uniqueConstraints = @UniqueConstraint(columnNames = {
+    "PROPERTYDEF_ID",
+    "PROPERTY_MAPPING_ID"}))
 public class CmsDAOOnlineProperties implements I_CmsDAOProperties {
 
     /** The property definition id. */
     @Basic
-    @Column(name = "propertydef_id", nullable = false, length = 36)
+    @Column(name = "PROPERTYDEF_ID", nullable = false, length = 36)
     private String m_propertyDefId;
 
     /** The property id. */
     @Id
-    @Column(name = "property_id", length = 36)
+    @Column(name = "PROPERTY_ID", length = 36)
     private String m_propertyId;
 
     /** The property mapping id. */
     @Basic
-    @Column(name = "property_mapping_id", nullable = false, length = 36)
+    @Column(name = "PROPERTY_MAPPING_ID", nullable = false, length = 36)
     private String m_propertyMappingId;
 
     /** The property mapping type. */
     @Basic
-    @Column(name = "property_mapping_type")
+    @Column(name = "PROPERTY_MAPPING_TYPE")
     private int m_propertyMappingType;
 
     /** The property value. */
     @Basic
-    @Column(name = "property_value", nullable = false, length = 2048)
+    @Column(name = "PROPERTY_VALUE", nullable = false, length = 2048)
     private String m_propertyValue;
 
     /**

@@ -40,22 +40,22 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_history_propertydef")
+@Table(name = "CMS_HISTORY_PROPERTYDEF")
 public class CmsDAOHistoryPropertyDef {
 
     /** The property definition id. */
     @Id
-    @Column(name = "propertydef_id", length = 36)
+    @Column(name = "PROPERTYDEF_ID", length = 36)
     private String m_propertyDefId;
 
     /** The property definition name. */
     @Basic
-    @Column(name = "propertydef_name", nullable = false, length = 128)
+    @Column(name = "PROPERTYDEF_NAME", nullable = false, length = 128)
     private String m_propertyDefName;
 
     /** The property definition type. */
     @Basic
-    @Column(name = "propertydef_type")
+    @Column(name = "PROPERTYDEF_TYPE")
     private int m_propertyDefType;
 
     /**

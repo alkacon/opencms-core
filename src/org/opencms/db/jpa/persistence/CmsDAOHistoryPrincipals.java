@@ -39,47 +39,47 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_history_principals")
+@Table(name = "CMS_HISTORY_PRINCIPALS")
 public class CmsDAOHistoryPrincipals {
 
     /** The date when the principal was deleted. */
     @Basic
-    @Column(name = "principal_datedeleted")
+    @Column(name = "PRINCIPAL_DATEDELETED")
     private long m_principalDateDeleted;
 
     /** The principal description. */
     @Basic
-    @Column(name = "principal_description", nullable = false)
+    @Column(name = "PRINCIPAL_DESCRIPTION", nullable = false)
     private String m_principalDescription;
 
     /** The principal email. */
     @Basic
-    @Column(name = "principal_email", nullable = false, length = 128)
+    @Column(name = "PRINCIPAL_EMAIL", nullable = false, length = 128)
     private String m_principalEmail;
 
     /** The principal id. */
     @Id
-    @Column(name = "principal_id", length = 36)
+    @Column(name = "PRINCIPAL_ID", length = 36)
     private String m_principalId;
 
     /** The principal name. */
     @Basic
-    @Column(name = "principal_name", nullable = false, length = 128)
+    @Column(name = "PRINCIPAL_NAME", nullable = false, length = 128)
     private String m_principalName;
 
     /** The principal ou. */
     @Basic
-    @Column(name = "principal_ou", length = 128)
+    @Column(name = "PRINCIPAL_OU", length = 128)
     private String m_principalOu;
 
     /** The principal type. */
     @Basic
-    @Column(name = "principal_type", nullable = false, length = 5)
+    @Column(name = "PRINCIPAL_TYPE", nullable = false, length = 5)
     private String m_principalType;
 
     /** The name of the user who deleted this principal. */
     @Basic
-    @Column(name = "principal_userdeleted", nullable = false, length = 36)
+    @Column(name = "PRINCIPAL_USERDELETED", nullable = false, length = 36)
     private String m_principalUserDeleted;
 
     /**

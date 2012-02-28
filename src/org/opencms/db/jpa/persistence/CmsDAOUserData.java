@@ -43,7 +43,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_userdata")
+@Table(name = "CMS_USERDATA")
 @IdClass(CmsDAOUserData.CmsDAOUserDataPK.class)
 public class CmsDAOUserData {
 
@@ -233,23 +233,23 @@ public class CmsDAOUserData {
 
     /** The data key. */
     @Id
-    @Column(name = "data_key")
+    @Column(name = "DATA_KEY")
     private String m_dataKey;
 
     /** The data type. */
     @Basic
-    @Column(name = "data_type", nullable = false, length = 128)
+    @Column(name = "DATA_TYPE", nullable = false, length = 128)
     private String m_dataType;
 
     /** The data value. */
     @Basic
     @Lob
-    @Column(name = "data_value")
+    @Column(name = "DATA_VALUE")
     private byte[] m_dataValue;
 
     /** The user id. */
     @Id
-    @Column(name = "user_id", length = 36)
+    @Column(name = "USER_ID", length = 36)
     private String m_userId;
 
     /**

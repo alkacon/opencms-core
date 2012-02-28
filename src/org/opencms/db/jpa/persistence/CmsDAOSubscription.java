@@ -42,7 +42,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_subscription")
+@Table(name = "CMS_SUBSCRIPTION")
 @IdClass(org.opencms.db.jpa.persistence.CmsDAOSubscription.CmsDAOSubscriptionPK.class)
 public class CmsDAOSubscription {
 
@@ -232,17 +232,17 @@ public class CmsDAOSubscription {
 
     /** The date deleted. */
     @Basic
-    @Column(name = "date_deleted")
+    @Column(name = "DATE_DELETED")
     private long m_dateDeleted;
 
     /** The principal id. */
     @Id
-    @Column(name = "principal_id", length = 36)
+    @Column(name = "PRINCIPAL_ID", length = 36)
     private String m_principalId;
 
     /** The structure id. */
     @Id
-    @Column(name = "structure_id", length = 36)
+    @Column(name = "STRUCTURE_ID", length = 36)
     private String m_structureId;
 
     /**

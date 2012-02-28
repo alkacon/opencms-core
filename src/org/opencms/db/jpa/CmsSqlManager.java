@@ -554,11 +554,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         jpaDbc.getEntityManager().flush();
         String rawSql = readQuery(projectId, queryKey);
 
-        /* Persistence classes use lower case for identifiers. It's no matter according 
-         * to SQL standard, but some database such as Sybase interprets identifiers as 
-         * case sensitive. 
-        */
-        return jpaDbc.getEntityManager().createNativeQuery(prepareQueryParameters(rawSql).toLowerCase());
+        return jpaDbc.getEntityManager().createNativeQuery(prepareQueryParameters(rawSql).toUpperCase());
     }
 
     /**
