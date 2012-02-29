@@ -295,8 +295,6 @@ public class CmsUploadBean extends CmsJspBean {
 
         String newResname = getNewResourceName(getCmsObject(), fileName, targetFolder);
         CmsResource createdResource = null;
-        int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
-        int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
 
         // determine Title property value to set on new resource
         String title = fileName;
@@ -328,10 +326,12 @@ public class CmsUploadBean extends CmsJspBean {
         }
         properties.add(titleProp);
 
+        int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
         if (!getCmsObject().existsResource(newResname, CmsResourceFilter.IGNORE_EXPIRATION)) {
             // if the resource does not exist, create it
             try {
                 // create the resource
+                int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
                 createdResource = getCmsObject().createResource(newResname, resTypeId, content, properties);
             } catch (CmsSecurityException e) {
                 // in case of not enough permissions, try to create a plain text file
@@ -351,11 +351,7 @@ public class CmsUploadBean extends CmsJspBean {
             CmsFile file = getCmsObject().readFile(res);
             byte[] contents = file.getContents();
             try {
-                getCmsObject().replaceResource(newResname, resTypeId, content, null);
-                createdResource = res;
-            } catch (CmsSecurityException e) {
-                // in case of not enough permissions, try to create a plain text file
-                getCmsObject().replaceResource(newResname, plainId, content, null);
+                getCmsObject().replaceResource(newResname, res.getTypeId(), content, null);
                 createdResource = res;
             } catch (CmsDbSqlException sqlExc) {
                 // SQL error, probably the file is too large for the database settings, restore content
