@@ -138,7 +138,7 @@ public class CmsEditorBase extends EditorBase {
 
                 callback.execute();
                 if (clearOnSuccess) {
-                    clearVie();
+                    destroyFrom();
                 }
                 stop(true);
             }

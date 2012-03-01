@@ -47,7 +47,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -138,7 +137,7 @@ public class CmsInlineEditor {
             public void onClick(ClickEvent event) {
 
                 onClose.execute();
-                m_editor.clearVie();
+                m_editor.destroyFrom();
             }
         });
         cancelButton.getElement().getStyle().setMarginRight(5, Unit.PX);
@@ -167,7 +166,7 @@ public class CmsInlineEditor {
      */
     protected void initForm(final String entityId, final String locale, ComplexPanel panel, final Command onClose) {
 
-        m_editor.renderEntity(entityId, panel.getElement(), true);
+        m_editor.renderInlineEntity(entityId, panel.getElement());
         final FlowPanel buttonBar = generateButtonBar(entityId, locale, onClose);
         panel.add(buttonBar);
         m_editor.addEntityChangeHandler(entityId, new ValueChangeHandler<I_Entity>() {
@@ -197,7 +196,7 @@ public class CmsInlineEditor {
             public void execute() {
 
                 onClose.execute();
-                m_editor.clearVie();
+                m_editor.destroyFrom();
             }
         });
         popup.setWidth(600);
@@ -208,6 +207,7 @@ public class CmsInlineEditor {
             public void onClick(ClickEvent event) {
 
                 m_editor.saveEntity(entityId, locale, true, onClose);
+                m_editor.destroyFrom();
                 popup.hide();
             }
         });
@@ -219,18 +219,18 @@ public class CmsInlineEditor {
             public void onClick(ClickEvent event) {
 
                 onClose.execute();
-                m_editor.clearVie();
+                m_editor.destroyFrom();
                 popup.hide();
             }
         });
 
         popup.addButton(closeButton);
         popup.addButton(saveButton);
-        HTML content = new HTML();
+        FlowPanel content = new FlowPanel();
         content.getElement().getStyle().setProperty("maxHeight", popup.getAvailableHeight(0), Unit.PX);
         content.getElement().getStyle().setOverflow(Overflow.AUTO);
         popup.add(content);
         popup.centerHorizontally(50);
-        m_editor.renderEntity(entityId, content.getElement(), false);
+        m_editor.renderEntityForm(entityId, content);
     }
 }

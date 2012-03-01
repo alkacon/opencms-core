@@ -44,8 +44,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -106,9 +104,9 @@ public class CmsContentEditor extends A_CmsEntryPoint {
         });
         saveButton.disable(DISABLE_SAVE);
         panel.add(saveButton);
-        Element parent = DOM.createDiv();
-        RootPanel.getBodyElement().appendChild(parent);
-        editor.renderEntity(entityId, parent, false);
+        FlowPanel parent = new FlowPanel();
+        RootPanel.get().add(parent);
+        editor.renderEntityForm(entityId, parent);
         editor.addEntityChangeHandler(entityId, new ValueChangeHandler<I_Entity>() {
 
             public void onValueChange(ValueChangeEvent<I_Entity> event) {
