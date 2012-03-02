@@ -1496,18 +1496,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             return;
         }
 
-        // do not allow to move a resource into an as deleted marked folder
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-        if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
-            // does not matter online
-            filter = CmsResourceFilter.ALL;
-        }
-
         // determine destination folder        
         String destinationFoldername = CmsResource.getParentFolder(destinationPath);
 
         // read the destination folder (will also check read permissions)
-        CmsFolder destinationFolder = m_driverManager.readFolder(dbc, destinationFoldername, filter);
+        CmsFolder destinationFolder = m_driverManager.readFolder(dbc, destinationFoldername, CmsResourceFilter.ALL);
 
         if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
             // check online resource
@@ -2407,8 +2400,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 q.setParameter(1, propertyDef.toString());
                 q.setParameter(2, escapeDbWildcard(path + "%"));
                 q.setParameter(3, "%" + value + "%");
-                q.setParameter(4, escapeDbWildcard("%" + path + "%"));
-                q.setParameter(5, value + "%");
+                q.setParameter(4, escapeDbWildcard(path + "%"));
+                q.setParameter(5, "%" + value + "%");
                 res.addAll(q.getResultList());
             }
 
@@ -2978,6 +2971,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         property.getName(),
                         CmsPropertyDefinition.TYPE_NORMAL);
                 }
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_PROPERTY_DEFINITION_CREATED,
+                    Collections.<String, Object> singletonMap("propertyDefinition", propertyDefinition)));
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
