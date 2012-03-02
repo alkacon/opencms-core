@@ -224,6 +224,7 @@ public class CmsUploadBean extends CmsJspBean {
      * Creates the resources.<p>
      * @param listener the listener
      * 
+     * @throws CmsException if something goes wrong 
      * @throws UnsupportedEncodingException 
      */
     private void createResources(CmsUploadListener listener) throws CmsException, UnsupportedEncodingException {
@@ -271,7 +272,8 @@ public class CmsUploadBean extends CmsJspBean {
     /**
      * Creates a single resource and returns the site path of the new resource.<p>
      * 
-     * @param newResname the name of the resource to create
+     * @param fileName the name of the resource to create
+     * @param targetFolder the folder to store the new resource
      * @param content the content of the resource to create
      * 
      * @return the new resource site path
@@ -284,7 +286,6 @@ public class CmsUploadBean extends CmsJspBean {
     throws CmsException, CmsLoaderException, CmsDbSqlException {
 
         String newResname = getNewResourceName(getCmsObject(), fileName, targetFolder);
-        CmsResource createdResource = null;
 
         // determine Title property value to set on new resource
         String title = fileName;
@@ -322,7 +323,7 @@ public class CmsUploadBean extends CmsJspBean {
             try {
                 // create the resource
                 int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
-                createdResource = getCmsObject().createResource(newResname, resTypeId, content, properties);
+                getCmsObject().createResource(newResname, resTypeId, content, properties);
             } catch (CmsSecurityException e) {
                 // in case of not enough permissions, try to create a plain text file
                 getCmsObject().createResource(newResname, plainId, content, properties);
@@ -342,7 +343,6 @@ public class CmsUploadBean extends CmsJspBean {
             byte[] contents = file.getContents();
             try {
                 getCmsObject().replaceResource(newResname, res.getTypeId(), content, null);
-                createdResource = res;
             } catch (CmsDbSqlException sqlExc) {
                 // SQL error, probably the file is too large for the database settings, restore content
                 file.setContents(contents);
@@ -371,6 +371,10 @@ public class CmsUploadBean extends CmsJspBean {
 
     /**
      * Generates a JSON object and returns its String representation for the response.<p>
+     * 
+     * @param success <code>true</code> if the upload was successful
+     * @param message the message to display
+     * @param stacktrace the stack trace in case of an error
      * 
      * @return the the response String
      */
@@ -471,6 +475,10 @@ public class CmsUploadBean extends CmsJspBean {
      * Parses the request.<p>
      * 
      * Stores the file items and the request parameters in a local variable if present.<p>
+     * 
+     * @param listener the upload listener 
+     * 
+     * @throws Exception if anything goes wrong
      */
     private void parseRequest(CmsUploadListener listener) throws Exception {
 
@@ -507,6 +515,8 @@ public class CmsUploadBean extends CmsJspBean {
      * 
      * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request has no file items
+     *      
+     * @throws Exception if anything goes wrong
      */
     private List<FileItem> readMultipartFileItems(CmsUploadListener listener) throws Exception {
 
