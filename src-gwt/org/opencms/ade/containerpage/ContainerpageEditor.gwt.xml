@@ -2,7 +2,6 @@
 <module rename-to="containerpage">
 	<inherits name="org.opencms.ade.publish.PublishDialogHeadless" />
 	<inherits name="org.opencms.ade.galleries.GalleryHeadless" />
-	<inherits name="org.opencms.ade.contenteditor.ContentEditorHeadless" />
 	<source path="client" />
 	<source path="shared" />
 	<replace-with class="org.opencms.ade.containerpage.client.impl.CmsDummyZIndexManager">

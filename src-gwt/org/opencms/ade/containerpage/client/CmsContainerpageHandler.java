@@ -33,7 +33,6 @@ import org.opencms.ade.containerpage.client.ui.groupeditor.CmsGroupContainerEdit
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.ade.contenteditor.client.CmsInlineEditor;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -588,20 +587,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
             openGroupEditor((CmsGroupContainerElementPanel)element);
         } else {
-            String entityId = element.getElement().getAttribute("about");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
-                CmsInlineEditor.getInstance().renderInlineEditor(m_controller.getLocale(), element, new Command() {
-
-                    public void execute() {
-
-                        reloadElements(element.getId());
-
-                    }
-                });
-                element.removeHighlighting();
-            } else {
-                m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
-            }
+            m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
         }
     }
 
