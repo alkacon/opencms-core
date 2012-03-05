@@ -145,7 +145,6 @@ public class CmsFavoritesDNDController implements I_CmsDNDController {
      */
     public boolean onTargetEnter(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        //draggable.getElement().getStyle().setDisplay(Display.NONE);
         return true;
     }
 
@@ -154,7 +153,7 @@ public class CmsFavoritesDNDController implements I_CmsDNDController {
      */
     public void onTargetLeave(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        //draggable.getElement().getStyle().setDisplay(Display.BLOCK);
+        // nothing to do
     }
 
 }
