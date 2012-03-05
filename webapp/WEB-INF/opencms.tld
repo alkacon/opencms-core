@@ -854,6 +854,21 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
     </tag>     
+    
+    
+    <tag>
+    	<description>
+    		Enables parameter escaping for the current request. 
+    	</description>
+    	<name>escapeparams</name>
+    	<tag-class>org.opencms.jsp.CmsJspTagEscapeParams</tag-class>
+    	<body-content>empty</body-content>
+    	<attribute>
+    		<name>exceptions</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    </tag>
               
     <function>
         <description>

@@ -29,6 +29,7 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsEvent;
@@ -39,14 +40,17 @@ import org.opencms.security.CmsRole;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.ServletRequest;
@@ -79,6 +83,12 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /** Flag to decide if this request can be cached or not. */
     private boolean m_canCache;
+
+    /** A flag which leads to request parameters being escaped on access when enabled. */
+    private boolean m_escapeParameters;
+
+    /** The parameters which shouldn't be escaped if m_escapeParameters is set. */
+    private Set<String> m_parameterEscapeExceptions = new HashSet<String>();
 
     /** The CmsFlexController for this request. */
     private CmsFlexController m_controller;
@@ -311,6 +321,51 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     }
 
     /**
+     * Enables escaping for all parameters which are not in the list of exceptions.<p>
+     * 
+     * @param exceptions the list of exceptions 
+     */
+    public void enableParameterEscaping(List<String> exceptions) {
+
+        LOG.info("Enabling parameter escaping for the current flex request, exceptions are "
+            + CmsStringUtil.listAsString(exceptions, ","));
+        m_escapeParameters = true;
+        m_parameterEscapeExceptions = new HashSet<String>(exceptions);
+    }
+
+    /**
+     * Escapes a single parameter value.<p>
+     * 
+     * @param name The parameter name 
+     * @param parameter the parameter value to escape 
+     * 
+     * @return returns the escaped parameter value 
+     */
+    public String escapeParameter(String name, String parameter) {
+
+        String result = CmsEncoder.escapeXml(parameter);
+        LOG.info("Escaping parameter '" + name + "': IN='" + parameter + "', OUT='" + result + "'");
+        return result;
+    }
+
+    /**
+     * Escapes an array of parameters.<p>
+     * 
+     * @param name the parameter name  
+     * @param parameters the array of parameter values 
+     * 
+     * @return the escaped parameter values 
+     */
+    public String[] escapeParameters(String name, String[] parameters) {
+
+        String[] result = new String[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            result[i] = escapeParameter(name, parameters[i]);
+        }
+        return result;
+    }
+
+    /**
      * Return the value of the specified request attribute, if any; otherwise,
      * return <code>null</code>.<p>
      * 
@@ -398,7 +453,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
         String[] values = m_parameters.get(name);
         if (values != null) {
-            return (values[0]);
+            if (m_escapeParameters && !m_parameterEscapeExceptions.contains(name)) {
+                return escapeParameter(name, values[0]);
+            } else {
+                return (values[0]);
+            }
         } else {
             return (null);
         }
@@ -419,6 +478,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     @Override
     public Map<String, String[]> getParameterMap() {
 
+        // NOTE: The parameters in this map are not escaped, so when escaping is enabled,
+        // its values may be different from those obtained via getParameter/getParameterValues
         return m_parameters;
     }
 
@@ -451,7 +512,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     @Override
     public String[] getParameterValues(String name) {
 
-        return m_parameters.get(name);
+        if (m_escapeParameters && !m_parameterEscapeExceptions.contains(name)) {
+            return escapeParameters(name, m_parameters.get(name));
+        } else {
+            return m_parameters.get(name);
+        }
     }
 
     /** 
