@@ -855,20 +855,30 @@
         </attribute> 
     </tag>     
     
-    
-    <tag>
+     <tag>
     	<description>
-    		Enables parameter escaping for the current request. 
+    		Enables automatic parameter escaping for the current flex request. 
     	</description>
-    	<name>escapeparams</name>
-    	<tag-class>org.opencms.jsp.CmsJspTagEscapeParams</tag-class>
+    	<name>secureparams</name>
+    	<tag-class>org.opencms.jsp.CmsJspTagSecureParams</tag-class>
     	<body-content>empty</body-content>
     	<attribute>
-    		<name>exceptions</name>
+    		<name>allowXml</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    	<attribute>
+    		<name>allowHtml</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
+    	<attribute>
+    		<name>policy</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     </tag>
+    
               
     <function>
         <description>

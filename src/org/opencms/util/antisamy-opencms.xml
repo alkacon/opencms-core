@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+	
+
+<anti-samy-rules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="antisamy.xsd">
+	
+	<directives>
+		<directive name="omitXmlDeclaration" value="true"/>
+		<directive name="omitDoctypeDeclaration" value="true"/>
+		<directive name="maxInputSize" value="100000"/>
+		<directive name="useXHTML" value="false"/>
+		<directive name="formatOutput" value="true"/>
+		
+		<directive name="embedStyleSheets" value="false"/>
+	</directives>
+	
+	<common-regexps>
+		<regexp name="htmlTitle" value="[\p{L}\p{N}\s\-_',:\[\]!\./\\\(\)&amp;]*"/> <!-- force non-empty with a '+' at the end instead of '*' -->
+		<regexp name="onsiteURL" value="([\p{L}\p{N}\\/\.\?=\#&amp;;\-_~]+|\#(\w)+)"/>
+		<regexp name="offsiteURL" value="(\s)*((ht|f)tp(s?)://|mailto:)[\p{L}\p{N}]+[~\p{L}\p{N}\p{Zs}\-_\.@\#\$%&amp;;:,\?=/\+!\(\)]*(\s)*"/>
+	</common-regexps>
+	
+	<common-attributes>
+		
+
+		<attribute name="lang" description="The 'lang' attribute tells the browser what language the element's attribute values and content are written in">
+		 	<regexp-list>
+		 		<regexp value="[a-zA-Z]{2,20}"/>
+		 	</regexp-list>
+		 </attribute>
+		 
+		 <attribute name="title" description="The 'title' attribute provides text that shows up in a 'tooltip' when a user hovers their mouse over the element">
+		 	<regexp-list>
+		 		<regexp name="htmlTitle"/>
+		 	</regexp-list>
+		 </attribute>
+
+		<attribute name="href" onInvalid="filterTag">
+			<regexp-list>
+				<regexp name="onsiteURL"/>
+				<regexp name="offsiteURL"/>
+			</regexp-list>
+		</attribute>
+	
+		<attribute name="align" description="The 'align' attribute of an HTML element is a direction word, like 'left', 'right' or 'center'">
+			<literal-list>
+				<literal value="center"/>
+				<literal value="left"/>
+				<literal value="right"/>
+				<literal value="justify"/>
+				<literal value="char"/>
+			</literal-list>
+		</attribute>
+
+	</common-attributes>
+	
+	<global-tag-attributes>
+		<attribute name="title"/>
+		<attribute name="lang"/>
+	</global-tag-attributes>
+
+	
+	<tag-rules>
+
+		<!-- Tags related to JavaScript -->
+
+		<tag name="script" action="remove"/>
+		<tag name="noscript" action="remove"/>
+		
+		<!-- Frame & related tags -->
+		
+		<tag name="iframe" action="remove"/>
+		<tag name="frameset" action="remove"/>
+		<tag name="frame" action="remove"/>
+		<tag name="noframes" action="remove"/>
+		
+		<!-- CSS related tags -->
+		<tag name="style" action="remove"/>
+
+		<!-- All reasonable formatting tags -->
+		
+		<tag name="p" action="validate">
+			<attribute name="align"/>
+		</tag>
+
+		<tag name="div" action="validate"/>		
+		<tag name="i" action="validate"/>
+		<tag name="b" action="validate"/>
+		<tag name="em" action="validate"/>
+		<tag name="blockquote" action="validate"/>
+		<tag name="tt" action="validate"/>
+		<tag name="strong" action="validate"/>
+		
+		<tag name="br" action="truncate"/>
+						
+		<!-- Anchor and anchor related tags -->
+		
+		<tag name="a" action="validate">
+
+			<attribute name="href" onInvalid="filterTag"/>
+			<attribute name="nohref">
+				<literal-list>
+					<literal value="nohref"/>
+					<literal value=""/>
+				</literal-list>
+			</attribute>
+			<attribute name="rel">
+				<literal-list>
+					<literal value="nofollow"/>
+				</literal-list>
+			</attribute>
+		</tag>
+
+		<!-- List tags -->
+
+		<tag name="ul" action="validate"/>
+		<tag name="ol" action="validate"/>
+		<tag name="li" action="validate"/>
+		
+	</tag-rules>
+
+	<css-rules>
+	</css-rules>
+
+</anti-samy-rules>
