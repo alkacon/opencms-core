@@ -588,20 +588,25 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
             openGroupEditor((CmsGroupContainerElementPanel)element);
         } else {
+            Command onClose = new Command() {
+
+                public void execute() {
+
+                    reloadElements(element.getId());
+
+                }
+            };
             String entityId = element.getElement().getAttribute("about");
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
-                CmsInlineEditor.getInstance().renderInlineEditor(m_controller.getLocale(), element, new Command() {
-
-                    public void execute() {
-
-                        reloadElements(element.getId());
-
-                    }
-                });
-                element.removeHighlighting();
+                CmsInlineEditor.getInstance().renderInlineEditor(m_controller.getLocale(), element, onClose);
             } else {
-                m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
+                CmsInlineEditor.getInstance().openContentEditorDialog(
+                    m_controller.getLocale(),
+                    CmsContainerpageController.getServerId(element.getId()),
+                    onClose);
+                // m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
             }
+            element.removeHighlighting();
         }
     }
 

@@ -857,6 +857,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * Sets an additional CSS class to the main content element.<p>
+     * 
+     * @param cssClassName the CSS class to set
+     */
+    public void setSpecialBackgroundClass(String cssClassName) {
+
+        m_main.addClassName(cssClassName);
+    }
+
+    /**
      * Sets the use animation flag.<p>
      * 
      * @param use <code>true</code> if the animation should be used, default is <code>true</code>

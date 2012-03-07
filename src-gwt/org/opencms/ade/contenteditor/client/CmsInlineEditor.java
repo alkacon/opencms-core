@@ -86,6 +86,26 @@ public class CmsInlineEditor {
     }
 
     /**
+     * Opens the content editor dialog.<p>
+     * 
+     * @param locale the content locale
+     * @param elementId the element id
+     * @param onClose the command executed on dialog close
+     */
+    public void openContentEditorDialog(final String locale, String elementId, final Command onClose) {
+
+        final String id = "http://opencms.org/resources/" + elementId;
+        m_editor.loadContentDefinition(id, locale, new Command() {
+
+            public void execute() {
+
+                openForm(id, locale, onClose);
+
+            }
+        });
+    }
+
+    /**
      * Renders the in-line editor for the given element.<p>
      *  
      * @param locale the content locale
@@ -190,6 +210,7 @@ public class CmsInlineEditor {
     protected void openForm(final String entityId, final String locale, final Command onClose) {
 
         final CmsPopup popup = new CmsPopup("Editor");
+        popup.setSpecialBackgroundClass(I_LayoutBundle.INSTANCE.form().formParent());
         popup.setGlassEnabled(true);
         popup.addDialogClose(new Command() {
 
