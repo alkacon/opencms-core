@@ -144,6 +144,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         Properties displayOptions = options.getDisplayOptions(cms);
         result.append("tinyMCE.init({\n");
         result.append("	// General options\n");
+        result.append("relative_urls: false,\n");
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_" + id + "\",\n");
         result.append("	theme : \"advanced\",\n");

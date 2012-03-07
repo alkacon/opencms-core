@@ -30,7 +30,9 @@ var fieldId = editor.cmsFieldId;
 
 function setFormValue(url) {
    var inputField = targetWindow.document.getElementById(fieldId);
-   var url = "<%=org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext()%>"+"/" + url;
-   url = url.replace(/\/+/g, "/");
+   if (url.indexOf("://") == -1) {
+      var url = "<%=org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext()%>"+"/" + url;
+      url = url.replace(/\/+/g, "/");
+   }
    inputField.value = url; 
 }

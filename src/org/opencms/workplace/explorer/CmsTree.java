@@ -90,6 +90,9 @@ public class CmsTree extends CmsWorkplace {
     /** Request parameter name for the showsiteselector parameter. */
     public static final String PARAM_SHOWSITESELECTOR = "showsiteselector";
 
+    /** Request parameter name for the integrator parameter. */
+    public static final String PARAM_INTEGRATOR = "integrator";
+
     /** Request parameter name for the treesite parameter. */
     public static final String PARAM_TREESITE = "treesite";
 
