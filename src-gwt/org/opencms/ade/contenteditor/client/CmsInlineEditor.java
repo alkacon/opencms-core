@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -250,6 +251,7 @@ public class CmsInlineEditor {
         FlowPanel content = new FlowPanel();
         content.getElement().getStyle().setProperty("maxHeight", popup.getAvailableHeight(0), Unit.PX);
         content.getElement().getStyle().setOverflow(Overflow.AUTO);
+        content.getElement().getStyle().setPosition(Position.RELATIVE);
         popup.add(content);
         popup.centerHorizontally(50);
         m_editor.renderEntityForm(entityId, content);
