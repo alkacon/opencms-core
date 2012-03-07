@@ -29,6 +29,13 @@
 		params.append(CmsTree.PARAM_SHOWSITESELECTOR);
 		params.append("=true");
 	}
+	String integrator = request.getParameter(CmsTree.PARAM_INTEGRATOR);
+	if (integrator != null) {
+	    params.append("&");
+	    params.append(CmsTree.PARAM_INTEGRATOR);
+	    params.append("=");
+	    params.append(integrator);
+	}
 	
 	String frameRows = "*,0";
 	String frameSiteSelector = "";
