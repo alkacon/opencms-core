@@ -141,7 +141,8 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         Iterator<String> nameIterator = getUrlNameSequence(baseName);
         String result = nameIterator.next();
-        while (cms.existsResource(CmsStringUtil.joinPaths(parentFolder, result))) {
+        // use CmsResourceFilter.ALL because we also want to skip over deleted resources 
+        while (cms.existsResource(CmsStringUtil.joinPaths(parentFolder, result), CmsResourceFilter.ALL)) {
             result = nameIterator.next();
         }
         return result;
