@@ -269,7 +269,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setTitle(typeInfo.getTitle());
         info.setSubTitle(Messages.get().key(Messages.GUI_REDIRECT_SUBTITLE_0));
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().redirect());
+        widget.setIcon(CmsIconUtil.getResourceIconClasses("htmlredirect", false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.redirect);
         listItem.addTag(TAG_REDIRECT);
         listItem.addTag(TAG_SPECIAL);
