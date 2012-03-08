@@ -273,12 +273,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
                     // step 1: first sort the nodes according to the schema, this takes care of re-ordered elements
                     List<List<Element>> nodeLists = new ArrayList<List<Element>>();
-                    Iterator<I_CmsXmlSchemaType> is = cd.getTypeSequence().iterator();
-                    while (is.hasNext()) {
-                        I_CmsXmlSchemaType type = is.next();
-                        String name = type.getName();
-                        List<Element> elements = CmsXmlGenericWrapper.elements(root, name);
-                        if (elements.size() > type.getMaxOccurs()) {
+                    for (I_CmsXmlSchemaType type : cd.getTypeSequence()) {
+                        List<Element> elements = CmsXmlGenericWrapper.elements(root, type.getName());
+                        int maxOccures = cd.getChoiceMaxOccurs() > 0 ? cd.getChoiceMaxOccurs() : type.getMaxOccurs();
+                        if (elements.size() > maxOccures) {
                             // to many nodes of this type appear according to the current schema definition
                             for (int lo = (elements.size() - 1); lo >= type.getMaxOccurs(); lo--) {
                                 elements.remove(lo);

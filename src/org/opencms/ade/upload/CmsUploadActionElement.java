@@ -76,8 +76,6 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     /** The module name. */
     public static final String MODULE_NAME = "upload";
 
-    private CmsUploadData m_uploadData;
-
     /**
      * Constructor.<p>
      * 
@@ -151,10 +149,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
      */
     public CmsUploadData getUploadData() {
 
-        if (m_uploadData == null) {
-            m_uploadData = CmsUploadService.newInstance(getRequest()).prefetch();
-        }
-        return m_uploadData;
+        return CmsUploadService.newInstance(getRequest()).prefetch();
     }
 
     /**
