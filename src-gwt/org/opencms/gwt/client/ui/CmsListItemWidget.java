@@ -52,6 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -241,6 +242,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     @UiField
     protected FlowPanel m_contentPanel;
 
+    /** A list of click handlers for the main icon. */
+    protected List<ClickHandler> m_iconClickHandlers = new ArrayList<ClickHandler>();
+
     /** The DIV showing the list icon. */
     @UiField
     protected SimplePanel m_iconPanel;
@@ -274,6 +278,20 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /** The event handler registrations. */
     private List<HandlerRegistration> m_handlerRegistrations;
+
+    /** A click handler which triggers all icon click handlers. */
+    private ClickHandler m_iconSuperClickHandler = new ClickHandler() {
+
+        public void onClick(ClickEvent event) {
+
+            for (ClickHandler iconClickHandler : m_iconClickHandlers) {
+                iconClickHandler.onClick(event);
+            }
+        }
+    };
+
+    /** The main icon title. */
+    private String m_iconTitle = "";
 
     /** The lock icon. */
     private HTML m_lockIcon;
@@ -373,9 +391,19 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
      * 
      * @return the handler registration
      */
-    public HandlerRegistration addIconClickHandler(ClickHandler handler) {
+    public HandlerRegistration addIconClickHandler(final ClickHandler handler) {
 
-        return m_iconPanel.addDomHandler(handler, ClickEvent.getType());
+        final HandlerRegistration internalHandlerRegistration = m_iconPanel.addDomHandler(handler, ClickEvent.getType());
+        m_iconClickHandlers.add(handler);
+        HandlerRegistration result = new HandlerRegistration() {
+
+            public void removeHandler() {
+
+                internalHandlerRegistration.removeHandler();
+                m_iconClickHandlers.remove(handler);
+            }
+        };
+        return result;
     }
 
     /**
@@ -663,6 +691,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
      */
     public void setIconTitle(String title) {
 
+        m_iconTitle = title;
         m_iconPanel.setTitle(title);
     }
 
@@ -676,6 +705,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         if (m_lockIcon == null) {
             m_lockIcon = new HTML();
+            m_lockIcon.addClickHandler(m_iconSuperClickHandler);
             m_contentPanel.add(m_lockIcon);
         }
         switch (icon) {
@@ -703,7 +733,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
             default:
                 m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon());
         }
-        m_lockIcon.setTitle(iconTitle);
+
+        m_lockIcon.setTitle(concatIconTitles(m_iconTitle, iconTitle));
+        m_lockIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
     }
 
     /**
@@ -717,27 +749,30 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         if (m_stateIcon == null) {
             m_stateIcon = new HTML();
+            m_stateIcon.addClickHandler(m_iconSuperClickHandler);
             m_contentPanel.add(m_stateIcon);
-        }
 
+        }
+        String iconTitle = null;
         switch (icon) {
             case export:
                 m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon()
                     + " "
                     + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().export());
-                m_stateIcon.setTitle(Messages.get().key(Messages.GUI_ICON_TITLE_EXPORT_0));
+                iconTitle = Messages.get().key(Messages.GUI_ICON_TITLE_EXPORT_0);
                 break;
             case secure:
                 m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon()
                     + " "
                     + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().secure());
-                m_stateIcon.setTitle(Messages.get().key(Messages.GUI_ICON_TITLE_SECURE_0));
+                iconTitle = Messages.get().key(Messages.GUI_ICON_TITLE_SECURE_0);
                 break;
             default:
                 m_stateIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().stateIcon());
-                m_stateIcon.setTitle(null);
                 break;
         }
+        m_stateIcon.setTitle(concatIconTitles(m_iconTitle, iconTitle));
+        m_stateIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
 
     }
 
@@ -1023,6 +1058,30 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         box.removeFromParent();
         m_title.setText(text);
         m_title.setVisible(true);
+
+    }
+
+    /**
+     * Combines the main icon title with the title for a status icon overlayed over the main icon.<p>
+     * 
+     * @param main the main icon title 
+     * @param secondary the secondary icon title
+     *  
+     * @return the combined icon title for the secondary icon 
+     */
+    String concatIconTitles(String main, String secondary) {
+
+        if (main == null) {
+            main = "";
+        }
+        if (secondary == null) {
+            secondary = "";
+        }
+
+        if (secondary.length() == 0) {
+            return main;
+        }
+        return main + " [" + secondary + "]";
 
     }
 }
