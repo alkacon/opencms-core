@@ -101,9 +101,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** The name of the VFS property that controls the caching. */
     public static final String PROPERTY_CACHE = "cache";
 
-    /** Property for the sitemap configuration file path. */
-    public static final String PROPERTY_CONFIG_SITEMAP = "config.sitemap";
-
     /** Property to define the function detail container for a template. */
     public static final String PROPERTY_CONTAINER_INFO = "container.info";
 
