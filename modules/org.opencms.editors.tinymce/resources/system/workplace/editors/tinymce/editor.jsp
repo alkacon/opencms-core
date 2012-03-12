@@ -24,12 +24,16 @@ String resource = wp.getParamResource();
 StringBuilder toolbar = new StringBuilder();
 StringBuilder grp ;
 
+grp = new StringBuilder();
+grp.append("oc-exit");
+toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+
 // Group
 grp = new StringBuilder() ;
 if (CmsStringUtil.isNotEmpty(resource) && options.showElement("button.customized", displayOptions)) {
 	I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
 	if (actionClass.isButtonActive(wp.getJsp(), resource)) {
-		grp.append("oc-publish,");
+		grp.append(",oc-publish,");
 	}
 }
 
@@ -38,13 +42,226 @@ toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 
 //Group
 grp = new StringBuilder() ;
-if (options.showElement("button.newdocument", displayOptions)){
-	grp.append(",newdocument");
+if (options.showElement("option.sourcecode", displayOptions)) {
+	grp.append(",code");
 }
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
+
+//Group
+grp = new StringBuilder() ;
+
+grp.append(",undo,redo");
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+//Group
+grp = new StringBuilder() ;
+grp.append(",search,replace");
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.hr", displayOptions)) {
+	grp.append(",hr");
+}
+
+grp.append(",selectall") ;
+
+if (options.showElement("button.removeformat", displayOptions)) {
+	grp.append(",removeformat");
+}
+
+if (options.showElement("button.visualaid", displayOptions)) {
+	grp.append(",visualaid");
+}
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+//Group
+grp = new StringBuilder() ;
+grp.append(",cut,copy,paste,pastetext,pasteword");
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the insert table button should be shown
+if (options.showElement("option.table", displayOptions)) {
+	grp.append(",table");
+}
+
+if (options.showElement("button.media", displayOptions)) {
+	grp.append(",media");
+}
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the insert link buttons should be shown
+if (options.showElement("option.links", displayOptions)) {
+
+	// determine if the local link button should be shown
+	if (options.showElement("option.link", displayOptions)) {
+		grp.append(",oc-link");
+	}
+
+	// determine if the external link button should be shown
+	if (options.showElement("option.extlink", displayOptions)) {
+		grp.append(",link");
+	}
+
+	// determine if the anchor button should be shown
+	if (options.showElement("option.anchor", displayOptions)) {
+		grp.append(",anchor");
+	}
+
+	// determine if the unlink buttons should be shown
+	if (options.showElement("option.unlink", displayOptions)) {
+		grp.append(",unlink");
+	}
+
+}
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the insert/edit image button should be shown
+if (options.showElement("option.images", displayOptions) || options.showElement("gallery.image", displayOptions)) {
+	// replaced by image gallery: toolbar.append(",'-', 'OcmsImage'");
+	grp.append(",OcmsImageGallery");
+}
+
+if (options.showElement("gallery.download", displayOptions)) {
+	grp.append(",OcmsDownloadGallery");
+}
+
+if (options.showElement("gallery.link", displayOptions)) {
+	grp.append(",OcmsLinkGallery");
+}
+
+if (options.showElement("gallery.html", displayOptions)) {
+	grp.append(",OcmsHtmlGallery");
+}
+
+if (options.showElement("gallery.table", displayOptions)) {
+	grp.append(",OcmsTableGallery");
+}
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+//Group
+grp = new StringBuilder() ;
+
+if (options.showElement("button.advhr", displayOptions)) {
+	grp.append(",advhr");
+}
+
+
+if (options.showElement("option.specialchars", displayOptions)) {
+	grp.append(",charmap");
+}
+
+if (options.showElement("option.spellcheck", displayOptions)) {
+	grp.append(",iespell");
+}
+
+
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+
+//Group
+grp = new StringBuilder() ;
+
+//determine if the print button should be shown
+if (options.showElement("option.print", displayOptions)) {
+	grp.append(",print");
+}
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+//Group
+grp = new StringBuilder() ;
+
+//style buttons
+String cssPath = wp.getUriStyleSheet() ;
+String styleFile = null;
+boolean stylePresent = false;
+if (CmsStringUtil.isNotEmpty(cssPath)) {
+	String pathUsed = cssPath;
+	int idx = pathUsed.indexOf('?');
+	if (idx != -1) {
+		pathUsed = cssPath.substring(0, idx);
+	}
+	styleFile = pathUsed + CmsTinyMCE.SUFFIX_STYLE;
+	if (cms.getCmsObject().existsResource(styleFile)) {
+		stylePresent = true;
+	}
+}
+boolean style = stylePresent && options.showElement("option.style", displayOptions);
+boolean formatSelectOption = false ;
+//determine if the font format selector should be shown
+if (options.showElement("option.formatselect", CmsStringUtil.TRUE, displayOptions)) {
+	grp.append(",formatselect");
+	formatSelectOption = true ;
+}
+//determine if the font face selector should be shown
+if (options.showElement("font.face", displayOptions)) {
+	grp.append(",fontselect");
+}
+
+//determine if the font size selector should be shown
+if (options.showElement("font.size", displayOptions)) {
+	grp.append(",fontsizeselect");
+}
+
+//determine if the style selector should be shown
+if (style) {
+	grp.append(",styleselect");
+}
+
+if(grp.length() > 0){
+	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+}
+
+
+
+
+
+
+
+
+
+
 
 //Group
 grp = new StringBuilder() ;
@@ -99,73 +316,9 @@ if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
-//Group
-grp = new StringBuilder() ;
 
-//style buttons
-String cssPath = wp.getUriStyleSheet() ;
-String styleFile = null;
-boolean stylePresent = false;
-if (CmsStringUtil.isNotEmpty(cssPath)) {
-	String pathUsed = cssPath;
-	int idx = pathUsed.indexOf('?');
-	if (idx != -1) {
-		pathUsed = cssPath.substring(0, idx);
-	}
-	styleFile = pathUsed + CmsTinyMCE.SUFFIX_STYLE;
-	if (cms.getCmsObject().existsResource(styleFile)) {
-		stylePresent = true;
-	}
-}
-boolean style = stylePresent && options.showElement("option.style", displayOptions);
-boolean formatSelectOption = false ;
-//determine if the font format selector should be shown
-if (options.showElement("option.formatselect", CmsStringUtil.TRUE, displayOptions)) {
-	grp.append(",formatselect");
-	formatSelectOption = true ;
-}
-//determine if the font face selector should be shown
-if (options.showElement("font.face", displayOptions)) {
-	grp.append(",fontselect");
-}
 
-//determine if the font size selector should be shown
-if (options.showElement("font.size", displayOptions)) {
-	grp.append(",fontsizeselect");
-}
 
-//determine if the style selector should be shown
-if (style) {
-	grp.append(",styleselect");
-}
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
-
-//Group
-grp = new StringBuilder() ;
-
-grp.append(",oc-exit");
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
-
-//Group
-grp = new StringBuilder() ;
-grp.append(",cut,copy,paste,pastetext,pasteword");
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
-
-//Group
-grp = new StringBuilder() ;
-grp.append(",search,replace");
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
 
 //Group
 grp = new StringBuilder() ;
@@ -208,72 +361,20 @@ if(grp.length() > 0){
 //Group
 grp = new StringBuilder() ;
 
-grp.append(",undo,redo");
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
+//determine which color selectors should be shown
+if (options.showElement("font.color", displayOptions)) {
+	grp.append(",forecolor");
 }
 
-//Group
-grp = new StringBuilder() ;
-
-//determine if the insert/edit image button should be shown
-if (options.showElement("option.images", displayOptions) || options.showElement("gallery.image", displayOptions)) {
-	// replaced by image gallery: toolbar.append(",'-', 'OcmsImage'");
-	grp.append(",OcmsImageGallery");
-}
-
-if (options.showElement("gallery.download", displayOptions)) {
-	grp.append(",OcmsDownloadGallery");
-}
-
-if (options.showElement("gallery.link", displayOptions)) {
-	grp.append(",OcmsLinkGallery");
-}
-
-if (options.showElement("gallery.html", displayOptions)) {
-	grp.append(",OcmsHtmlGallery");
-}
-
-if (options.showElement("gallery.table", displayOptions)) {
-	grp.append(",OcmsTableGallery");
+if (options.showElement("bg.color", displayOptions)) {
+	grp.append(",backcolor");
 }
 
 if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
-//Group
-grp = new StringBuilder() ;
 
-//determine if the insert link buttons should be shown
-if (options.showElement("option.links", displayOptions)) {
-
-	// determine if the local link button should be shown
-	if (options.showElement("option.link", displayOptions)) {
-		grp.append(",oc-link");
-	}
-
-	// determine if the external link button should be shown
-	if (options.showElement("option.extlink", displayOptions)) {
-		grp.append(",link");
-	}
-
-	// determine if the anchor button should be shown
-	if (options.showElement("option.anchor", displayOptions)) {
-		grp.append(",anchor");
-	}
-
-	// determine if the unlink buttons should be shown
-	if (options.showElement("option.unlink", displayOptions)) {
-		grp.append(",unlink");
-	}
-
-}
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
 
 //Group
 grp = new StringBuilder() ;
@@ -316,96 +417,9 @@ if(grp.length() > 0){
 	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
 }
 
-//Group
-grp = new StringBuilder() ;
 
-//determine which color selectors should be shown
-if (options.showElement("font.color", displayOptions)) {
-	grp.append(",forecolor");
-}
-if (options.showElement("bg.color", displayOptions)) {
-	grp.append(",backcolor");
-}
 
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
 
-//Group
-grp = new StringBuilder() ;
-
-//determine if the insert table button should be shown
-if (options.showElement("option.table", displayOptions)) {
-	grp.append(",tablecontrols");
-}
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
-
-//Group
-grp = new StringBuilder() ;
-
-if (options.showElement("button.hr", displayOptions)) {
-	grp.append(",hr");
-}
-
-grp.append(",selectall") ;
-
-if (options.showElement("button.removeformat", displayOptions)) {
-	grp.append(",removeformat");
-}
-
-if (options.showElement("button.visualaid", displayOptions)) {
-	grp.append(",visualaid");
-}
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
-
-//Group
-grp = new StringBuilder() ;
-
-if (options.showElement("option.specialchars", displayOptions)) {
-	grp.append(",charmap");
-}
-
-if (options.showElement("button.emotions", displayOptions)) {
-	grp.append(",emotions");
-}
-
-if (options.showElement("option.spellcheck", displayOptions)) {
-	grp.append(",iespell");
-}
-
-if (options.showElement("button.media", displayOptions)) {
-	grp.append(",media");
-}
-
-if (options.showElement("button.media", displayOptions)) {
-	grp.append(",media");
-}
-
-if (options.showElement("button.advhr", displayOptions)) {
-	grp.append(",advhr");
-}
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
-
-//Group
-grp = new StringBuilder() ;
-
-//determine if the print button should be shown
-if (options.showElement("option.print", displayOptions)) {
-	grp.append(",print");
-}
-
-if(grp.length() > 0){
-	toolbar.append(grp.toString() + "," + CmsTinyMCE.GROUP_SEPARATOR);
-}
 
 //Group
 grp = new StringBuilder() ;
@@ -749,8 +763,7 @@ tinyMCE.init({
     language : "<%= wp.getLocale().getLanguage() %>",
 
     // Skin options
-    skin : "o2k7",
-    skin_variant : "silver",
+    skin_variant : "ocms",
     relative_urls: false,
 
     // Example content CSS (should be your site CSS)

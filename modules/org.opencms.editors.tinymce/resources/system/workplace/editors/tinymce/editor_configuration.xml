@@ -5,7 +5,7 @@
 	<resourcetypes>
 		<type>
 			<name>xmlpage</name>
-			<ranking>100</ranking>
+			<ranking>400</ranking>
 		</type>
 	</resourcetypes>
 	<useragents>
