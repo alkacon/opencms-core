@@ -64,6 +64,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexRequestContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockFilter;
@@ -6287,7 +6288,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     resource,
                     CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
                     false).getValue();
-                if (defaultFileName != null) {
+                // check if the default file property does not match the navigation level folder marker value
+                if ((defaultFileName != null) && !CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER.equals(defaultFileName)) {
                     // property was set, so look up this file first
                     String folderName = CmsResource.getFolderPath(resource.getRootPath());
                     resource = readResource(

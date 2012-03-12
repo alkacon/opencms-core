@@ -159,7 +159,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         ? entry.getDefaultFileType()
         : entry.getResourceTypeName());
 
-        CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
+        final CmsInfoLoadingListItemWidget itemWidget = new CmsInfoLoadingListItemWidget(infoBean);
         itemWidget.setIcon(getIconForEntry(entry));
         itemWidget.setIconTitle(entry.isSubSitemapType()
         ? Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0)
@@ -173,6 +173,15 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 if (sitemapEntry != null) {
                     if (sitemapEntry.isSubSitemapType()) {
                         getController().openSiteMap(sitemapEntry.getSitePath());
+                    } else if (sitemapEntry.isNavigationLevelType()) {
+                        if (!sitemapEntry.getSubEntries().isEmpty()) {
+                            CmsClientSitemapEntry subEntry = sitemapEntry.getSubEntries().get(0);
+                            if (!subEntry.isNavigationLevelType()) {
+                                getController().leaveEditor(subEntry.getSitePath());
+                                return;
+                            }
+                        }
+                        itemWidget.setIconTitle("Unknown target");
                     } else {
                         getController().leaveEditor(sitemapEntry.getSitePath());
                     }
@@ -323,6 +332,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      */
     public String getIconForEntry(CmsClientSitemapEntry entry) {
 
+        if (!entry.isSubSitemapType() && entry.isNavigationLevelType()) {
+            return "cms_type_icon " + I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navigationLevelIcon();
+        }
         String iconClass = CmsIconUtil.getResourceIconClasses(entry.getResourceTypeName(), entry.getSitePath(), false);
         if (isNavigationMode()) {
             if (m_controller.isDetailPage(entry.getId())) {
@@ -452,7 +464,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         target.getTree().setAnimationEnabled(false);
         target.clearChildren();
         for (CmsClientSitemapEntry child : event.getEntry().getSubEntries()) {
-            target.addChild(create(child));
+            CmsSitemapTreeItem childItem = createSitemapItem(child);
+            target.addChild(childItem);
         }
         target.onFinishLoading();
         target.getTree().setAnimationEnabled(true);
@@ -515,12 +528,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         // starting rendering
         m_tree = new CmsLazyTree<CmsSitemapTreeItem>(new I_CmsLazyOpenHandler<CmsSitemapTreeItem>() {
 
+            private boolean m_setOpen;
+
             /**
              * @see org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler#load(org.opencms.gwt.client.ui.tree.CmsLazyTreeItem)
              */
             public void load(final CmsSitemapTreeItem target) {
 
-                getController().getChildren(target.getSitePath(), true, null);
+                getController().getChildren(target.getSitePath(), m_setOpen, null);
             }
 
             /**
@@ -529,12 +544,17 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             public void onOpen(OpenEvent<CmsSitemapTreeItem> event) {
 
                 CmsSitemapTreeItem target = event.getTarget();
-                if (target.getLoadState() != CmsLazyTreeItem.LoadState.UNLOADED) {
-                    return;
+                if ((target.getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED)) {
+                    target.onStartLoading();
+                    target.setOpen(false);
+                    m_setOpen = true;
+                    load(target);
+                } else if ((target.getChildren().getWidgetCount() > 0)
+                    && (((CmsSitemapTreeItem)target.getChild(0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED)) {
+                    // load grand children in advance
+                    m_setOpen = false;
+                    load(target);
                 }
-                target.onStartLoading();
-                target.setOpen(false);
-                load(target);
             }
         });
 

@@ -41,6 +41,9 @@ public class CmsNewResourceInfo implements Serializable {
     /** ID for serialization. */
     private static final long serialVersionUID = -4731814848380350682L;
 
+    /** The navigation level create parameter. */
+    public static final String NAVIGATION_LEVEL_PARAMETER = "new_navigation_level";
+
     /** The structure id of the copy resource. */
     private CmsUUID m_copyResourceId;
 
@@ -235,13 +238,13 @@ public class CmsNewResourceInfo implements Serializable {
     }
 
     /**
-     * Sets the additional data used for creating new pages.<p>
+     * Sets the create parameter used for new pages.<p>
      * 
-     * @param additionalData the additional data used for creating new pages 
+     * @param createParameter the create parameter used for new pages 
      */
-    public void setAdditionalData(String additionalData) {
+    public void setCreateParameter(String createParameter) {
 
-        m_createParameter = additionalData;
+        m_createParameter = createParameter;
     }
 
     /** 

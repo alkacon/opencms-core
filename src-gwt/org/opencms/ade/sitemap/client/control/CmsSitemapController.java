@@ -562,8 +562,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                 // Make the call to the sitemap service
                 start(500, false);
-
-                getService().getChildren(getEntryPoint(), sitePath, 1, this);
+                // loading grand children as well
+                getService().getChildren(getEntryPoint(), sitePath, 2, this);
             }
 
             /**

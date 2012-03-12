@@ -34,11 +34,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -59,6 +59,9 @@ import org.apache.commons.logging.Log;
  * @see org.opencms.jsp.CmsJspNavElement
  */
 public class CmsJspNavBuilder {
+
+    /** Default file property value to mark navigation level folders. */
+    public static final String NAVIGATION_LEVEL_FOLDER = "##navigation_level_folder##";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspNavBuilder.class);
@@ -108,23 +111,13 @@ public class CmsJspNavBuilder {
     public static String getDefaultFile(CmsObject cms, String folder) {
 
         if (folder.endsWith("/")) {
-            List<String> defaultFolders = new ArrayList<String>();
             try {
-                CmsProperty p = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, false);
-                if (!p.isNullProperty()) {
-                    defaultFolders.add(p.getValue());
+                CmsResource defaultFile = cms.readDefaultFile(folder);
+                if (defaultFile != null) {
+                    return cms.getSitePath(defaultFile);
                 }
             } catch (CmsException e) {
-                // should never happen
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-
-            defaultFolders.addAll(OpenCms.getDefaultFiles());
-
-            for (String defaultName : defaultFolders) {
-                if (cms.existsResource(folder + defaultName)) {
-                    return folder + defaultName;
-                }
+                LOG.debug(e.getLocalizedMessage(), e);
             }
             return folder;
         }
@@ -453,24 +446,7 @@ public class CmsJspNavBuilder {
      */
     public CmsJspNavElement getNavigationForResource(String sitePath) {
 
-        List<CmsProperty> properties;
-        CmsResource resource;
-        try {
-            resource = m_cms.readResource(sitePath);
-            if (resource.isFolder() && !sitePath.endsWith("/")) {
-                sitePath = sitePath + "/";
-            }
-            properties = m_cms.readPropertyObjects(resource, false);
-        } catch (Exception e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-            return null;
-        }
-        int level = CmsResource.getPathLevel(sitePath);
-        if (sitePath.endsWith("/")) {
-            level--;
-        }
-        return new CmsJspNavElement(sitePath, resource, CmsProperty.toMap(properties), level);
+        return getNavigationForResource(sitePath, false);
     }
 
     /**
@@ -601,5 +577,83 @@ public class CmsJspNavBuilder {
         m_cms = cms;
         m_requestUri = m_cms.getRequestContext().getUri();
         m_requestUriFolder = CmsResource.getFolderPath(m_requestUri);
+    }
+
+    /**
+     * Collect all navigation elements from the files in the given folder.<p>
+    *
+    * @param folder the selected folder
+    * @param includeInvisible <code>true</code> to include elements not visible in navigation
+    * @param shallow <code>true</code> for a shallow look up, not regarding next level resources
+    * 
+    * @return A sorted (ascending to navigation position) list of navigation elements
+    */
+    private List<CmsJspNavElement> getNavigationForFolder(String folder, boolean includeInvisible, boolean shallow) {
+
+        folder = CmsResource.getFolderPath(folder);
+        List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
+
+        List<CmsResource> resources;
+        try {
+            resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return Collections.<CmsJspNavElement> emptyList();
+        }
+
+        for (CmsResource r : resources) {
+            CmsJspNavElement element = getNavigationForResource(m_cms.getSitePath(r), shallow);
+            if ((element != null) && (includeInvisible || element.isInNavigation())) {
+                result.add(element);
+            }
+        }
+        Collections.sort(result);
+        return result;
+    }
+
+    /**
+     * Returns a navigation element for the named resource.<p>
+     * 
+     * @param sitePath the resource name to get the navigation information for, 
+     *              must be a full path name, e.g. "/docs/index.html"
+     * @param shallow <code>true</code> for a shallow look up, not regarding next level resources
+     *              
+     * @return a navigation element for the given resource
+     */
+    private CmsJspNavElement getNavigationForResource(String sitePath, boolean shallow) {
+
+        CmsResource resource;
+        Map<String, String> propertiesMap;
+        int level = CmsResource.getPathLevel(sitePath);
+        if (sitePath.endsWith("/")) {
+            level--;
+        }
+        try {
+            resource = m_cms.readResource(sitePath);
+            List<CmsProperty> properties = m_cms.readPropertyObjects(resource, false);
+            propertiesMap = CmsProperty.toMap(properties);
+            if (resource.isFolder()) {
+                if (!sitePath.endsWith("/")) {
+                    sitePath = sitePath + "/";
+                }
+                if (!shallow
+                    && (NAVIGATION_LEVEL_FOLDER.equals(propertiesMap.get(CmsPropertyDefinition.PROPERTY_DEFAULT_FILE)))) {
+                    // this folder is marked as a navigation level, set the site path to the first sub element
+                    List<CmsJspNavElement> subElements = getNavigationForFolder(sitePath, false, true);
+                    if (!subElements.isEmpty()) {
+                        CmsJspNavElement subElement = subElements.get(0);
+                        subElement = getNavigationForResource(subElement.getSitePath(), false);
+                        sitePath = subElement.getSitePath();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
+
+        return new CmsJspNavElement(sitePath, resource, propertiesMap, level);
     }
 }
