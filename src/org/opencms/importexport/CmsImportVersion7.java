@@ -67,15 +67,18 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlErrorHandler;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.codec.binary.Base64;
@@ -83,6 +86,7 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Adds the XML handler rules for import and export of resources and accounts.<p>
@@ -96,6 +100,12 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /** Tag for the "type" attribute, contains the property type. */
     public static final String A_TYPE = "type";
+
+    /** The name of the DTD for this import version. */
+    public static final String DTD_FILENAME = "opencms-import7.dtd";
+
+    /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
+    public static final String DTD_LOCATION = "org/opencms/importexport/";
 
     /** The version number of this import implementation.<p> */
     public static final int IMPORT_VERSION7 = 7;
@@ -282,6 +292,9 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /** The cms object. */
     private CmsObject m_cms;
+
+    /** The set of resource ids of files which actually are contained in the zip file. */
+    private Set<CmsUUID> m_contentFiles = new HashSet<CmsUUID>();
 
     /** The date created value. */
     private long m_dateCreated;
@@ -499,6 +512,25 @@ public class CmsImportVersion7 implements I_CmsImport {
             m_acePermissionsAllowed = 0;
             m_acePermissionsDenied = 0;
             m_aceFlags = 0;
+        }
+    }
+
+    /**
+     * Registers a file whose contents are contained in the zip file.<p>
+     * 
+     * @param source the path in the zip file 
+     * 
+     * @param resourceId 
+     */
+    public void addContentFile(String source, String resourceId) {
+
+        if ((source != null) && (resourceId != null)) {
+            try {
+                m_helper.getFileBytes(source);
+                m_contentFiles.add(new CmsUUID(resourceId));
+            } catch (CmsImportExportException e) {
+                LOG.info("File not found in import: " + source);
+            }
         }
     }
 
@@ -1307,6 +1339,7 @@ public class CmsImportVersion7 implements I_CmsImport {
         try {
             m_helper.openFile();
             m_helper.cacheDtdSystemId(DTD_LOCATION, DTD_FILENAME, CmsConfigurationManager.DEFAULT_DTD_PREFIX);
+            findContentFiles();
             // start the parsing process
             stream = m_helper.getFileStream(CmsImportExportManager.EXPORT_MANIFEST);
             digester.parse(stream);
@@ -1793,12 +1826,15 @@ public class CmsImportVersion7 implements I_CmsImport {
                 if (m_properties == null) {
                     m_properties = new HashMap();
                 }
-                // import this resource in the VFS
-                m_resource = getCms().importResource(
-                    translatedName,
-                    resource,
-                    content,
-                    new ArrayList(m_properties.values()));
+
+                if (m_type.isFolder() || hasContentInVfsOrImport(resource)) {
+                    // import this resource in the VFS
+                    m_resource = getCms().importResource(
+                        translatedName,
+                        resource,
+                        content,
+                        new ArrayList(m_properties.values()));
+                }
 
                 // only set permissions if the resource did not exists or if the keep permissions flag is not set
                 m_importACEs = (m_resource != null) && (!exists || !m_parameters.isKeepPermissions());
@@ -2119,12 +2155,6 @@ public class CmsImportVersion7 implements I_CmsImport {
 
         m_totalFiles++;
     }
-
-    /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
-    public static final String DTD_LOCATION = "org/opencms/importexport/";
-
-    /** The name of the DTD for this import version. */
-    public static final String DTD_FILENAME = "opencms-import7.dtd";
 
     /**
      * @see org.opencms.importexport.I_CmsImport#matches(org.opencms.importexport.CmsImportParameters)
@@ -3204,6 +3234,49 @@ public class CmsImportVersion7 implements I_CmsImport {
     }
 
     /**
+     * This method goes through the manifest, records all files from the manifest for which the content also
+     * exists in the zip file, and stores their resource ids in m_contentFiles.<p>
+     * 
+     * @throws CmsImportExportException 
+     * @throws IOException
+     * @throws SAXException
+     */
+    protected void findContentFiles() throws CmsImportExportException, IOException, SAXException {
+
+        Digester digester = new Digester();
+        digester.setUseContextClassLoader(true);
+        digester.setValidating(false);
+        digester.setEntityResolver(new CmsXmlEntityResolver(null));
+        digester.setRuleNamespaceURI(null);
+        digester.setErrorHandler(new CmsXmlErrorHandler(CmsImportExportManager.EXPORT_MANIFEST));
+
+        digester.addCallMethod("export/files/file", "addContentFile", 2);
+        digester.addCallParam("export/files/file/source", 0);
+        digester.addCallParam("export/files/file/uuidresource", 1);
+        m_contentFiles.clear();
+        digester.push(this);
+        InputStream stream = null;
+        try {
+            stream = m_helper.getFileStream(CmsImportExportManager.EXPORT_MANIFEST);
+            digester.parse(stream);
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+    }
+
+    /**
+     * Gets the import helper instance.<p>
+     * 
+     * @return the import helper 
+     */
+    protected CmsImportHelper getHelper() {
+
+        return m_helper;
+    }
+
+    /**
      * Returns the list of properties to ignore during import.<p>
      * 
      * @return the list of properties to ignore during import
@@ -3240,5 +3313,29 @@ public class CmsImportVersion7 implements I_CmsImport {
             }
         }
         return m_immutables;
+    }
+
+    /**
+     * Checks whether the content for the resource being imported exists either in the VFS or in the import file.<p>
+     * 
+     * @param resource the resource which should be checked 
+     * 
+     * @return true if the content exists in the VFS or import file 
+     */
+    private boolean hasContentInVfsOrImport(CmsResource resource) {
+
+        if (m_contentFiles.contains(resource.getResourceId())) {
+            return true;
+        }
+        try {
+            List<CmsResource> resources = getCms().readSiblings(resource, CmsResourceFilter.ALL);
+            if (!resources.isEmpty()) {
+                return true;
+            }
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        return false;
+
     }
 }
