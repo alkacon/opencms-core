@@ -81,8 +81,8 @@ public final class CmsPreviewUtil {
      * Triggers the dialog OK action.<p>
      */
     public static native void closeDialog() /*-{
-      $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_DIALOG_CLOSE_FUNCTION]
-            ();
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_DIALOG_CLOSE_FUNCTION]
+                ();
     }-*/;
 
     /**
@@ -91,8 +91,8 @@ public final class CmsPreviewUtil {
      * @param enabled <code>true</code> to enable the button
      */
     public static native void enableEditorOk(boolean enabled)/*-{
-      $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_ENABLE_DIALOG_OK_FUNCTION]
-            (enabled);
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_ENABLE_DIALOG_OK_FUNCTION]
+                (enabled);
     }-*/;
 
     /**
@@ -103,9 +103,9 @@ public final class CmsPreviewUtil {
      * @param preview the preview
      */
     public static native void exportFunctions(String previewName, I_CmsResourcePreview<?> preview) /*-{
-      $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_DATA_IN_EDITOR_FUNCTION] = function() {
-         return preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::setDataInEditor()();
-      };
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_DATA_IN_EDITOR_FUNCTION] = function() {
+            return preview.@org.opencms.ade.galleries.client.preview.I_CmsResourcePreview::setDataInEditor()();
+        };
     }-*/;
 
     /**
@@ -114,7 +114,7 @@ public final class CmsPreviewUtil {
      * @return the field id
      */
     public static native String getFieldId() /*-{
-      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
+        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
     }-*/;
 
     /**
@@ -163,8 +163,8 @@ public final class CmsPreviewUtil {
      *          information on an surrounding link tag
      */
     public static native CmsJSONMap getImageAttributes() /*-{
-      return $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_GET_IMAGE_INFO_FUNCTION]
-            ();
+        return $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_GET_IMAGE_INFO_FUNCTION]
+                ();
     }-*/;
 
     /**
@@ -173,8 +173,8 @@ public final class CmsPreviewUtil {
      * @return <code>true</code> if enhanced image options are available
      */
     public static native boolean hasEnhancedImageOptions() /*-{
-      return $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_HAS_ENHANCED_IMAGE_OPTIONS]
-            () ? true : false;
+        return $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_HAS_ENHANCED_IMAGE_OPTIONS]
+                () ? true : false;
     }-*/;
 
     /**
@@ -183,12 +183,12 @@ public final class CmsPreviewUtil {
      * @return <code>true</code> if format selector should be shown
      */
     public static native boolean isAdvancedWidget()/*-{
-      var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
-      var additional = $wnd.parent['cms_additional_' + id];
-      if (additional) {
-         return additional['isAdvancedWidget'];
-      }
-      return false;
+        var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
+        var additional = $wnd.parent['cms_additional_' + id];
+        if (additional && additional['isAdvancedWidget']) {
+            return true;
+        }
+        return false;
     }-*/;
 
     /**
@@ -197,20 +197,20 @@ public final class CmsPreviewUtil {
      * @return <code>true</code> if format selector should be shown
      */
     public static native boolean isShowFormats()/*-{
-      var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
-      var additional = $wnd.parent['cms_additional_' + id];
-      if (additional) {
-         return additional['useFormats'];
-      }
-      return false;
+        var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
+        var additional = $wnd.parent['cms_additional_' + id];
+        if (additional) {
+            return additional['useFormats'];
+        }
+        return false;
     }-*/;
 
     /**
      * Triggers the dialog OK action.<p>
      */
     public static native void setDataAndCloseDialog() /*-{
-      $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_DIALOG_OK_FUNCTION]
-            ();
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_DIALOG_OK_FUNCTION]
+                ();
     }-*/;
 
     /**
@@ -265,20 +265,23 @@ public final class CmsPreviewUtil {
      * @param path the path to the selected resource
      */
     public static native void setResourcePath(String path) /*-{
-      //the id of the input field in the xml content
-      var fieldId = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
+        //the id of the input field in the xml content
+        var fieldId = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
 
-      if (fieldId != null && fieldId != "") {
-         var inputField = $wnd.parent.document.getElementById(fieldId);
-         inputField.setAttribute('value', path);
-         inputField.value = path;
-         try {
-            // toggle preview icon if possible
-            $wnd.parent.checkPreview(fieldId);
-         } catch (e) {
-         }
-      }
-      $wnd.parent.cmsCloseDialog(fieldId);
+        if (fieldId != null && fieldId != "") {
+            var inputField = $wnd.parent.document.getElementById(fieldId);
+            inputField.setAttribute('value', path);
+            inputField.value = path;
+            try {
+                // toggle preview icon if possible
+                $wnd.parent.checkPreview(fieldId);
+            } catch (e) {
+            }
+        }
+
+        $wnd.setTimeout(function() {
+            $wnd.parent.cmsCloseDialog(fieldId);
+        }, 10);
     }-*/;
 
     /**
@@ -292,57 +295,63 @@ public final class CmsPreviewUtil {
      * @param ratio the image ratio (width/height)
      */
     public static native void setVfsImage(String path, String scale, String formatName, String ratio) /*-{
-      //the id of the input field in the xml content
-      var fieldId = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
+        //the id of the input field in the xml content
+        var fieldId = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
 
-      if (fieldId != null && fieldId != "") {
-         var inputField = $wnd.parent.document.getElementById("img." + fieldId);
-         inputField.setAttribute("value", path);
-         inputField.value = path;
-         if (formatName != null) {
-            var formatBox = $wnd.parent.document.getElementById("format."
-                  + fieldId);
-            if (formatBox != null && formatBox.options != null) {
-               var selectIndex = -1;
-               for ( var i = 0; i < formatBox.options.length; i++) {
-                  if (formatBox.options[i].value == formatName) {
-                     formatBox.selectedIndex = i;
-                     break;
-                  }
-               }
+        if (fieldId != null && fieldId != "") {
+            var inputField = $wnd.parent.document.getElementById("img."
+                    + fieldId);
+            inputField.setAttribute("value", path);
+            inputField.value = path;
+            if (formatName != null) {
+                var formatBox = $wnd.parent.document.getElementById("format."
+                        + fieldId);
+                if (formatBox != null && formatBox.options != null) {
+                    var selectIndex = -1;
+                    for ( var i = 0; i < formatBox.options.length; i++) {
+                        if (formatBox.options[i].value == formatName) {
+                            formatBox.selectedIndex = i;
+                            break;
+                        }
+                    }
 
-               if (selectIndex != -1) {
-                  formatBox.selectedIndex = selectIndex;
-                  $wnd.parent
-                        .setImageFormat(
-                              fieldId,
-                              $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID]);
-               }
+                    if (selectIndex != -1) {
+                        formatBox.selectedIndex = selectIndex;
+                        $wnd.parent
+                                .setImageFormat(
+                                        fieldId,
+                                        $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID]);
+                    }
+                }
+                var formatField = $wnd.parent.document.getElementById("fmtval."
+                        + fieldId);
+                formatField.setAttribute("value", formatName);
+                formatField.value = formatName;
             }
-            var formatField = $wnd.parent.document.getElementById("fmtval."
-                  + fieldId);
-            formatField.setAttribute("value", formatName);
-            formatField.value = formatName;
-         }
-         var ratioField = $wnd.parent.document.getElementById("imgrat."
-               + fieldId);
-         ratioField.setAttribute("value", ratio);
-         ratioField.value = ratio;
-         var scaleField = $wnd.parent.document.getElementById("scale."
-               + fieldId);
-         scaleField.setAttribute("value", scale);
-         scaleField.value = scale;
-         try {
-            // toggle preview icon if possible
-            $wnd.parent.checkVfsImagePreview(fieldId);
-         } catch (e) {
-         }
-      }
-      $wnd.parent.cmsCloseDialog(fieldId);
+            var ratioField = $wnd.parent.document.getElementById("imgrat."
+                    + fieldId);
+            ratioField.setAttribute("value", ratio);
+            ratioField.value = ratio;
+            var scaleField = $wnd.parent.document.getElementById("scale."
+                    + fieldId);
+            scaleField.setAttribute("value", scale);
+            scaleField.value = scale;
+            try {
+                // toggle preview icon if possible
+                $wnd.parent.checkVfsImagePreview(fieldId);
+            } catch (e) {
+            }
+        }
+        $wnd.parent.cmsCloseDialog(fieldId);
     }-*/;
 
+    /**
+     * Returns if the select button should be shown.<p>
+     * 
+     * @return <code>true</code> if the select button should be shown
+     */
     public static native boolean shouldShowSelectButton()/*-{
-      return "true" == $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_SHOW_SELECT];
+        return "true" == $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_SHOW_SELECT];
     }-*/;
 
     /**
@@ -351,12 +360,12 @@ public final class CmsPreviewUtil {
      * @return the image format names
      */
     private static native JsArrayString nativeGetFormatNames()/*-{
-      var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
-      var additional = $wnd.parent['cms_additional_' + id];
-      if (additional) {
-         return additional['imageFormatNames'];
-      }
-      return null;
+        var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
+        var additional = $wnd.parent['cms_additional_' + id];
+        if (additional) {
+            return additional['imageFormatNames'];
+        }
+        return null;
     }-*/;
 
     /**
@@ -365,12 +374,12 @@ public final class CmsPreviewUtil {
      * @return the available image formats
      */
     private static native JsArrayString nativeGetFormats()/*-{
-      var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
-      var additional = $wnd.parent['cms_additional_' + id];
-      if (additional) {
-         return additional['imageFormats'];
-      }
-      return null;
+        var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
+        var additional = $wnd.parent['cms_additional_' + id];
+        if (additional) {
+            return additional['imageFormats'];
+        }
+        return null;
     }-*/;
 
     /**
@@ -380,10 +389,10 @@ public final class CmsPreviewUtil {
     * @param attributes the image tag attributes
     */
     private static native void nativeSetImage(String path, CmsJSONMap attributes)/*-{
-      if ($wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_IMAGE_FUNCTION] != null) {
-         $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_IMAGE_FUNCTION]
-               (path, attributes);
-      }
+        if ($wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_IMAGE_FUNCTION] != null) {
+            $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_IMAGE_FUNCTION]
+                    (path, attributes);
+        }
 
     }-*/;
 
@@ -396,8 +405,8 @@ public final class CmsPreviewUtil {
      * @param target the link target attribute
      */
     private static native void nativeSetImageLink(String path, CmsJSONMap attributes, String linkPath, String target)/*-{
-      $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_IMAGE_LINK_FUNCTION]
-            (path, attributes, linkPath, target);
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_IMAGE_LINK_FUNCTION]
+                (path, attributes, linkPath, target);
     }-*/;
 
     /**
@@ -408,7 +417,7 @@ public final class CmsPreviewUtil {
      * @param target the link target attribute
      */
     private static native void nativeSetLink(String path, String title, String target)/*-{
-      $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_LINK_FUNCTION]
-            (path, title, target);
+        $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_LINK_FUNCTION]
+                (path, title, target);
     }-*/;
 }
