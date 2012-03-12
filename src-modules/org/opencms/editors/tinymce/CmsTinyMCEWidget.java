@@ -28,10 +28,10 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
+/**
+ * The TinyMCE implementation of the HTML widget.<p>
+ */
 public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
-
-    /** Request parameter name for the tool bar configuration parameter. */
-    public static final String PARAM_CONFIGURATION = "config";
 
     /** The translation of the generic widget button names to TinyMCE specific button names. */
     public static final String BUTTON_TRANSLATION =
@@ -44,7 +44,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         + "|orderedlist:numlist|outdent:outdent|indent:indent|blockquote:blockquote|undo:undo|redo:redo|editorlink:link|unlink:unlink"
         + "|anchor:anchor|image:image|cleanup:cleanup|source:code|insertdate:insertdate|inserttime:inserttime|forecolor:forecolor|backcolor:backcolor"
         /* Row 3*/
-        + "|table:tablecontrols|hr:hr|removeformat:removeformat|visualaid:visualaid|subscript:sub|superscript:sup|specialchar:charmap"
+        + "|table:table|hr:hr|removeformat:removeformat|visualaid:visualaid|subscript:sub|superscript:sup|specialchar:charmap"
         + "|emotions:emotions|spellcheck:iespell|media:media|advhr:advhr|print:print|ltr:ltr|rtl:rtl|fitwindow:fullscreen"
         /* Row 4*/
         + "|insertlayer:insertlayer|moveforward:moveforward|movebackward:movebackward|absolute:absolute|styleprops:styleprops|cite:cite"
@@ -57,6 +57,9 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         BUTTON_TRANSLATION,
         "|",
         ":");
+
+    /** Request parameter name for the tool bar configuration parameter. */
+    public static final String PARAM_CONFIGURATION = "config";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.editors.tinymce.CmsTinyMCEWidget.class);
@@ -145,6 +148,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("tinyMCE.init({\n");
         result.append("	// General options\n");
         result.append("relative_urls: false,\n");
+        result.append("skin_variant: 'ocms',\n");
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_" + id + "\",\n");
         result.append("	theme : \"advanced\",\n");
