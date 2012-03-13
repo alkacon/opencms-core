@@ -127,6 +127,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Time given (in seconds) to the static export handler to finish a publish task. */
     public static final int HANDLER_FINISH_TIME = 60;
 
+    /** 
+     * If the property 'secure' is set to this value, 
+     * the resource will be delivered through http and https depending on the link source.
+     */
+    public static final String SECURE_PROPERTY_VALUE_BOTH = "both";
+
     /** Cache value to indicate a true 404 error. */
     private static final String CACHEVALUE_404 = "?404";
 
@@ -149,7 +155,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private Map<String, String> m_cacheOnlineLinks;
 
     /** Cache for the secure links. */
-    private Map<String, Boolean> m_cacheSecureLinks;
+    private Map<String, String> m_cacheSecureLinks;
 
     /** OpenCms default charset header. */
     private String m_defaultAcceptCharsetHeader;
@@ -1584,7 +1590,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // map must be of type "LRUMap" so that memory monitor can acecss all information
         OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportUris", lruMap2);
 
-        Map<String, Boolean> lruMap3 = CmsCollectionsGenericWrapper.createLRUMap(2048);
+        Map<String, String> lruMap3 = CmsCollectionsGenericWrapper.createLRUMap(2048);
         m_cacheSecureLinks = Collections.synchronizedMap(lruMap3);
         // map must be of type "LRUMap" so that memory monitor can acecss all information
         OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheSecureLinks", lruMap3);
@@ -1777,28 +1783,53 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public boolean isSecureLink(CmsObject cms, String vfsName) {
 
+        return isSecureLink(cms, vfsName, false);
+    }
+
+    /**
+     * Returns <code>true</code> if the given VFS resource should be transported through a secure channel.<p>
+     * 
+     * The secure mode is only checked in the "Online" project. 
+     * If the given OpenCms context is currently not in the "Online" project,
+     * <code>false</code> is returned.<p>
+     * 
+     * The given resource is read from the site root of the provided OpenCms context.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param vfsName the VFS resource name to check
+     * @param fromSecure <code>true</code> if the link source is delivered secure 
+     * 
+     * @return <code>true</code> if the given VFS resource should be transported through a secure channel
+     * 
+     * @see CmsStaticExportManager#isSecureLink(CmsObject, String, String)
+     */
+    public boolean isSecureLink(CmsObject cms, String vfsName, boolean fromSecure) {
+
         if (!cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             return false;
         }
         String cacheKey = OpenCms.getStaticExportManager().getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
-        Boolean secureResource = OpenCms.getStaticExportManager().getCacheSecureLinks().get(cacheKey);
+        String secureResource = OpenCms.getStaticExportManager().getCacheSecureLinks().get(cacheKey);
         if (secureResource == null) {
             try {
-                String secureProp = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-                secureResource = Boolean.valueOf(secureProp);
+                secureResource = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(secureResource)) {
+                    secureResource = "false";
+                }
                 // only cache result if read was successfull
                 OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
             } catch (CmsVfsResourceNotFoundException e) {
-                secureResource = Boolean.FALSE;
+                secureResource = "false";
                 // resource does not exist, no secure link will be required for any user
                 OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
             } catch (Exception e) {
                 // no secure link required (probably security issues, e.g. no access for current user)
                 // however other users may be allowed to read the resource, so the result can't be cached
-                secureResource = Boolean.FALSE;
+                secureResource = "false";
             }
         }
-        return secureResource.booleanValue();
+        return Boolean.parseBoolean(secureResource)
+            || (fromSecure && SECURE_PROPERTY_VALUE_BOTH.equals(secureResource));
     }
 
     /**
@@ -1815,15 +1846,38 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public boolean isSecureLink(CmsObject cms, String vfsName, String siteRoot) {
 
+        return isSecureLink(cms, vfsName, siteRoot, false);
+    }
+
+    /**
+     * Returns <code>true</code> if the given VFS resource should be transported through a secure channel.<p>
+     * 
+     * The secure mode is only checked in the "Online" project. 
+     * If the given OpenCms context is currently not in the "Online" project,
+     * <code>false</code> is returned.<p>
+     * 
+     * The given resource is read from the site root of the provided OpenCms context.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param vfsName the VFS resource name to check
+     * @param siteRoot the site root where the the VFS resource should be read
+     * @param fromSecure <code>true</code> if the link source is delivered secure 
+     * 
+     * @return <code>true</code> if the given VFS resource should be transported through a secure channel
+     * 
+     * @see CmsStaticExportManager#isSecureLink(CmsObject, String, String)
+     */
+    public boolean isSecureLink(CmsObject cms, String vfsName, String siteRoot, boolean fromSecure) {
+
         if (siteRoot == null) {
-            return isSecureLink(cms, vfsName);
+            return isSecureLink(cms, vfsName, fromSecure);
         }
 
         // the site root of the cms object has to be changed so that the property can be read   
         String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             cms.getRequestContext().setSiteRoot(siteRoot);
-            return isSecureLink(cms, vfsName);
+            return isSecureLink(cms, vfsName, fromSecure);
         } finally {
             cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
@@ -2236,7 +2290,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      *
      * @return the cacheSecureLinks
      */
-    protected Map<String, Boolean> getCacheSecureLinks() {
+    protected Map<String, String> getCacheSecureLinks() {
 
         return m_cacheSecureLinks;
     }
