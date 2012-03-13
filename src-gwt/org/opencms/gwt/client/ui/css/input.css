@@ -5,6 +5,7 @@ input.textBox {
 	border: none;
 	width: 100%;
 	background: transparent;
+	padding: 0px;
 }
 
 .highTextBoxes .textBox {
