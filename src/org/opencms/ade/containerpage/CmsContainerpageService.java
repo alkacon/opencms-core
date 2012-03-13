@@ -312,6 +312,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getResponse(),
                 new Locale(locale));
             CmsContainerElementBean elementBean = getCachedElement(clientId);
+            elementBean.initResource(cms);
             elementBean = CmsContainerElementBean.cloneWithSettings(
                 elementBean,
                 convertSettingValues(elementBean.getResource(), settings));
