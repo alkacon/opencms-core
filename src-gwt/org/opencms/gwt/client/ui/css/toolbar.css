@@ -7,7 +7,7 @@
 		overflow-y: scroll;
 	}
 }
-.toolbarHide .toolbar{
+.toolbarHide .toolbar .toolbarBackground{
 	display: none;
 }
 
