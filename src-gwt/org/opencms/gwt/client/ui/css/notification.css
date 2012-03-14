@@ -70,15 +70,16 @@ div.notificationContainer {
 
 div.notificationMessage, span.notificationMessage {
 	font-weight: bold; 
-	padding: 2px 10px; 
-	line-height: 16px; 
+	font-size: value("constants.css.fontSizeBig");
+	padding: 5px 15px; 
+	line-height: value("constants.css.lineHeightBig");
 	display: inline-block; 
 	margin-top: 8px;
 	max-height: 300px;
     max-width: 830px;
     min-width: 415px;
     overflow: auto;
-    border-width: 1px;
+    border-width: 2px;
     border-style: solid;
     text-align: center;
 }
