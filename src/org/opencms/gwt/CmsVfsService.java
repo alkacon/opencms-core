@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -895,7 +896,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
         }
         if (lock.getUserId() != null) {
-            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, resourceUtil.getLockedByName());
+            CmsUser lockOwner = getCmsObject().readUser(lock.getUserId());
+            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
         }
         result.setLockIcon(icon);
         result.setLockIconTitle(iconTitle);

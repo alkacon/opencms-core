@@ -48,6 +48,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
@@ -981,8 +982,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param resource the resource
      * 
      * @return lock information, if the page is locked by another user
+     * 
+     * @throws CmsException if something goes wrong reading the lock owner user
      */
-    private String getLockInfo(CmsResource resource) {
+    private String getLockInfo(CmsResource resource) throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
@@ -993,9 +996,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 lockInfo = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
                     Messages.GUI_LOCKED_FOR_PUBLISH_0);
             } else {
+                CmsUser lockOwner = cms.readUser(lock.getUserId());
                 lockInfo = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
                     Messages.GUI_LOCKED_BY_1,
-                    resourceUtil.getLockedByName());
+                    lockOwner.getFullName());
             }
         }
         return lockInfo;
