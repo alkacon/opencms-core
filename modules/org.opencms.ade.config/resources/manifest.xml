@@ -155,8 +155,6 @@
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
-
-
 			<explorertype name="containerpage" key="fileicon.containerpage"
 				icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
 				<newresource
@@ -247,11 +245,14 @@
 						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
 							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
-							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
+							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport"
+							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
 							rule="containerpage" />
