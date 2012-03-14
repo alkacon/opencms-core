@@ -52,8 +52,17 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current container page URI. */
     private String m_cntPageUri;
 
+    /** The detail structure id, if available. */
+    private CmsUUID m_detailId;
+
+    /** The date at which the container page was last modified. */
+    private long m_lastModified;
+
     /** The content locale. */
     private String m_locale;
+
+    /** The lock information, if the page is locked by another user. */
+    private String m_lockInfo;
 
     /** The map of available types and their new resource id's. */
     private Map<String, String> m_newTypes;
@@ -70,12 +79,6 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current site path. */
     private String m_sitePath;
 
-    /** The detail structure id, if available. */
-    private CmsUUID m_detailId;
-
-    /** The date at which the container page was last modified. */
-    private long m_lastModified;
-
     /**
      * Constructor.<p>
      * 
@@ -87,6 +90,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param detailId the detail resource id, if available
      * @param newTypes the map of available types and their new resource id's
      * @param lastModified the last modification date of the page 
+     * @param lockInfo lock information, if the page is locked by another user
      * @param locale the content locale
      */
     public CmsCntPageData(
@@ -98,6 +102,7 @@ public final class CmsCntPageData implements IsSerializable {
         CmsUUID detailId,
         Map<String, String> newTypes,
         long lastModified,
+        String lockInfo,
         String locale) {
 
         m_cntPageUri = cntPageUri;
@@ -107,6 +112,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_sitePath = sitePath;
         m_newTypes = newTypes;
         m_lastModified = lastModified;
+        m_lockInfo = lockInfo;
         m_locale = locale;
         m_detailId = detailId;
     }
@@ -177,6 +183,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the lock information, if the page is locked by another user.<p>
+     *
+     * @return the lock infomation
+     */
+    public String getLockInfo() {
+
+        return m_lockInfo;
     }
 
     /**

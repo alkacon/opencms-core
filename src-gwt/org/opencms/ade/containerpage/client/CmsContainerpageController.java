@@ -1022,6 +1022,19 @@ public final class CmsContainerpageController {
                 }
             }
         });
+        checkLockInfo();
+    }
+
+    /**
+     * Checks if the page was locked by another user at load time.<p>
+     */
+    private void checkLockInfo() {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getData().getLockInfo())) {
+            CmsNotification.get().send(Type.ERROR, getData().getLockInfo());
+            m_lockStatus = LockStatus.failed;
+            m_handler.m_editor.disableEditing(getData().getLockInfo());
+        }
     }
 
     /**

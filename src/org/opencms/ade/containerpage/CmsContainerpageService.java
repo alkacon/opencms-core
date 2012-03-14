@@ -53,6 +53,8 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -405,18 +407,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         HttpServletRequest request = getRequest();
         try {
-            CmsResource cntPage = getContainerpage(cms);
-            long lastModified = cntPage.getDateLastModified();
-            String cntPageUri = cms.getSitePath(cntPage);
+            CmsResource containerPage = getContainerpage(cms);
+            long lastModified = containerPage.getDateLastModified();
+            String cntPageUri = cms.getSitePath(containerPage);
             data = new CmsCntPageData(
-                cms.getSitePath(cntPage),
-                getNoEditReason(cms, cntPage),
+                cms.getSitePath(containerPage),
+                getNoEditReason(cms, containerPage),
                 CmsRequestUtil.encodeParams(request),
                 CmsADEManager.PATH_SITEMAP_EDITOR_JSP,
                 cntPageUri,
                 CmsDetailPageResourceHandler.getDetailId(getRequest()),
                 getNewTypes(cms, request),
                 lastModified,
+                getLockInfo(containerPage),
                 cms.getRequestContext().getLocale().toString());
         } catch (Throwable e) {
             error(e);
@@ -970,6 +973,32 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the lock information to the given resource.<p>
+     * 
+     * @param resource the resource
+     * 
+     * @return lock information, if the page is locked by another user
+     */
+    private String getLockInfo(CmsResource resource) {
+
+        CmsObject cms = getCmsObject();
+        CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
+        CmsLock lock = resourceUtil.getLock();
+        String lockInfo = null;
+        if (!lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
+            if (lock.getType() == CmsLockType.PUBLISH) {
+                lockInfo = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                    Messages.GUI_LOCKED_FOR_PUBLISH_0);
+            } else {
+                lockInfo = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                    Messages.GUI_LOCKED_BY_1,
+                    resourceUtil.getLockedByName());
+            }
+        }
+        return lockInfo;
     }
 
     /**
