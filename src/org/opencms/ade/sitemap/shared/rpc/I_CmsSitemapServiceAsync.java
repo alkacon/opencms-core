@@ -28,10 +28,14 @@
 package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
+import org.opencms.ade.sitemap.shared.CmsAliasBean;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.util.CmsUUID;
+
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -64,7 +68,16 @@ public interface I_CmsSitemapServiceAsync {
     void getAdditionalEntryInfo(CmsUUID structureId, AsyncCallback<CmsAdditionalEntryInfo> callback);
 
     /**
-     * Returns the sitemap children for the given entry.<p>
+     * Fetches the aliases for a given page.<p>
+     * 
+     * @param structureId the structure id of the page 
+     * @param callback the async callback 
+     *  
+     */
+    void getAliasesForPage(CmsUUID structureId, AsyncCallback<List<CmsAliasBean>> callback);
+
+    /**
+     * Returns the sitemap children for the given path.<p>
      * 
      * @param entryPointUri the URI of the sitemap entry point
      * @param entryId the entry id
@@ -101,6 +114,15 @@ public interface I_CmsSitemapServiceAsync {
     void save(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
 
     /**
+     * Saves aliases for a page.<p>
+     * 
+     * @param structureId the structure id of the page 
+     * @param aliases the aliases which should be saved for the page
+     * @param callback the async callback  
+     */
+    void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliases, AsyncCallback<Void> callback);
+
+    /**
      * Save the change to the given sitemap.<p>
      * 
      * @param sitemapUri the sitemap URI 
@@ -109,4 +131,16 @@ public interface I_CmsSitemapServiceAsync {
      */
     @SynchronizedRpcRequest
     void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
+
+    /**
+     * Validates alias paths for a page.<p>
+     * 
+     * @param structureId the structure id of the page 
+     * @param aliasPaths a map from (arbitrary) id strings to alias paths
+     * @param callback the async callback 
+     */
+    void validateAliases(
+        CmsUUID structureId,
+        Map<String, String> aliasPaths,
+        AsyncCallback<Map<String, String>> callback);
 }

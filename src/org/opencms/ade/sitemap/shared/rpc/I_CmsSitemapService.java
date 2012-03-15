@@ -28,11 +28,15 @@
 package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
+import org.opencms.ade.sitemap.shared.CmsAliasBean;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
+
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -71,7 +75,18 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsAdditionalEntryInfo getAdditionalEntryInfo(CmsUUID structureId) throws CmsRpcException;
 
     /**
-     * Returns the sitemap children for the given entry.<p>
+     * Fetches the aliases for a given page.<p>
+     * 
+     * @param uuid the structure id of the page 
+     * 
+     * @return the lists of aliases for the page
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    List<CmsAliasBean> getAliasesForPage(CmsUUID uuid) throws CmsRpcException;
+
+    /**
+     * Returns the sitemap children for the given path.<p>
      * 
      * @param entryPointUri the URI of the sitemap entry point
      * @param entryId the entry id
@@ -119,6 +134,16 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsSitemapChange save(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 
     /**
+     * Saves aliases for a page.<p>
+     * 
+     * @param structureId the structure id of the page 
+     * 
+     * @param aliases the aliases which should be saved for the page 
+     * @throws CmsRpcException 
+     */
+    void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliases) throws CmsRpcException;
+
+    /**
      * Saves the change to the given sitemap.<p>
      * 
      * @param sitemapUri the sitemap URI 
@@ -130,4 +155,16 @@ public interface I_CmsSitemapService extends RemoteService {
      */
     @SynchronizedRpcRequest
     CmsSitemapChange saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+
+    /**
+     * Validates alias paths for a page.<p>
+     * 
+     * @param uuid the structure id of the page 
+     * @param aliasPaths a map from (arbitrary) id strings to alias paths 
+     * 
+     * @return a map which maps the same id strings to validation results
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    Map<String, String> validateAliases(CmsUUID uuid, Map<String, String> aliasPaths) throws CmsRpcException;
 }

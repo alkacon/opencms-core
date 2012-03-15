@@ -37,6 +37,7 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
@@ -158,6 +159,12 @@ public final class OpenCmsCore {
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
 
+    /** The ADE manager instance. */
+    private CmsADEManager m_adeManager;
+
+    /** The manager for page aliases. */
+    private CmsAliasManager m_aliasManager;
+
     /** The configured authorization handler. */
     private I_CmsAuthorizationHandler m_authorizationHandler;
 
@@ -202,9 +209,6 @@ public final class OpenCmsCore {
 
     /** The password handler used to digest and validate passwords. */
     private I_CmsPasswordHandler m_passwordHandler;
-
-    /** The workflow manager instance. */
-    private I_CmsWorkflowManager m_workflowManager;
 
     /** The publish engine. */
     private CmsPublishEngine m_publishEngine;
@@ -263,14 +267,14 @@ public final class OpenCmsCore {
     /** The runtime validation handler. */
     private I_CmsValidationHandler m_validationHandler;
 
+    /** The workflow manager instance. */
+    private I_CmsWorkflowManager m_workflowManager;
+
     /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-
-    /** The ADE manager instance. */
-    private CmsADEManager m_adeManager;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
@@ -377,6 +381,16 @@ public final class OpenCmsCore {
 
         m_adeManager.initialize();
         return m_adeManager;
+    }
+
+    /**
+     * Returns the alias manager.<p>
+     * 
+     * @return the alias manager
+     */
+    protected CmsAliasManager getAliasManager() {
+
+        return m_aliasManager;
     }
 
     /**
@@ -1192,6 +1206,8 @@ public final class OpenCmsCore {
         // initialize the link manager
         m_linkManager = new CmsLinkManager(m_staticExportManager.getLinkSubstitutionHandler());
 
+        m_aliasManager = new CmsAliasManager(m_securityManager);
+
         // store the runtime properties
         m_runtimeProperties.putAll(systemConfiguration.getRuntimeProperties());
 
@@ -1478,12 +1494,14 @@ public final class OpenCmsCore {
         }
 
         // test if this file has to be checked or modified
-        Iterator<I_CmsResourceInit> i = m_resourceInitHandlers.iterator();
-        while (i.hasNext()) {
+        for (I_CmsResourceInit handler : m_resourceInitHandlers) {
             try {
-                resource = i.next().initResource(resource, cms, req, res);
+                resource = handler.initResource(resource, cms, req, res);
                 // the loop has to be interrupted when the exception is thrown!
             } catch (CmsResourceInitException e) {
+                if (e.isClearErrors()) {
+                    tmpException = null;
+                }
                 break;
             } catch (CmsSecurityException e) {
                 tmpException = e;

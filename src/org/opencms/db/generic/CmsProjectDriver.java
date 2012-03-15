@@ -1233,6 +1233,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
             }
             m_driverManager.publishUrlNameMapping(dbc, offlineResource);
+            if (offlineResource.getState().isDeleted()) {
+                OpenCms.getAliasManager().clearAliases(offlineResource.getStructureId());
+            }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         } finally {

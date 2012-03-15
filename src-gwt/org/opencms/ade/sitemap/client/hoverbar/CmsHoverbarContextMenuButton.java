@@ -96,6 +96,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries.add(new CmsDeleteMenuEntry(hoverbar));
         m_entries.add(new CmsEditRedirectMenuEntry(hoverbar));
         m_entries.add(new CmsLockReportMenuEntry(hoverbar));
+        m_entries.add(new CmsAliasMenuEntry(hoverbar));
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_TITLE_0));
         setVisible(true);
         addClickHandler(new ClickHandler() {

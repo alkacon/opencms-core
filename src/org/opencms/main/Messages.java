@@ -127,6 +127,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_REQUEST_SECURE_RESOURCE_0 = "ERR_REQUEST_SECURE_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_INIT_ABORTED_1 = "ERR_RESOURCE_INIT_ABORTED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SECURE_SITE_NOT_CONFIGURED_1 = "ERR_SECURE_SITE_NOT_CONFIGURED_1";
 
     /** Message constant for key in the resource bundle. */

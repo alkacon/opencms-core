@@ -35,6 +35,7 @@ import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
+import org.opencms.ade.sitemap.shared.CmsAliasBean;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
@@ -45,6 +46,8 @@ import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.db.CmsAlias;
+import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -105,10 +108,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -169,23 +175,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
     }
 
+    /** The regular expression which describes valid alias paths.  */
+    public static final Pattern ALIAS_PATTERN = Pattern.compile("(?:/[a-zA-Z0-9_-]+)+"); //$NON-NLS-1$
+
     /** The configuration key for the functionDetail attribute in the container.info property. */
-    public static final String KEY_FUNCTION_DETAIL = "functionDetail";
+    public static final String KEY_FUNCTION_DETAIL = "functionDetail"; //$NON-NLS-1$
 
     /** The additional user info key for deleted list. */
-    private static final String ADDINFO_ADE_DELETED_LIST = "ADE_DELETED_LIST";
+    private static final String ADDINFO_ADE_DELETED_LIST = "ADE_DELETED_LIST"; //$NON-NLS-1$
 
     /** The additional user info key for modified list. */
-    private static final String ADDINFO_ADE_MODIFIED_LIST = "ADE_MODIFIED_LIST";
+    private static final String ADDINFO_ADE_MODIFIED_LIST = "ADE_MODIFIED_LIST"; //$NON-NLS-1$
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsSitemapService.class);
 
     /** The redirect recource type name. */
-    private static final String RECOURCE_TYPE_NAME_REDIRECT = "htmlredirect";
+    private static final String RECOURCE_TYPE_NAME_REDIRECT = "htmlredirect"; //$NON-NLS-1$
 
     /** The redirect target XPath. */
-    private static final String REDIRECT_LINK_TARGET_XPATH = "Link";
+    private static final String REDIRECT_LINK_TARGET_XPATH = "Link"; //$NON-NLS-1$
 
     /** Serialization uid. */
     private static final long serialVersionUID = -7236544324371767330L;
@@ -219,7 +228,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsResource subSitemapFolder = cms.readResource(entryId);
             ensureLock(subSitemapFolder);
             String sitePath = cms.getSitePath(subSitemapFolder);
-            String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONFIG_FOLDER_NAME + "/");
+            String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONFIG_FOLDER_NAME + "/"); //$NON-NLS-1$
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
             if (!cms.existsResource(folderName)) {
                 cms.createResource(
@@ -263,32 +272,56 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsAdditionalEntryInfo result = null;
         try {
+            Map<String, String> additional = new LinkedHashMap<String, String>();
+            result = new CmsAdditionalEntryInfo();
+            result.setAdditional(additional);
             try {
                 CmsResource resource = getCmsObject().readResource(structureId);
-                result = new CmsAdditionalEntryInfo();
                 result.setResourceState(resource.getState());
                 if (isRedirectType(resource.getTypeId())) {
-
                     CmsFile file = getCmsObject().readFile(resource);
-
                     I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
                     String link = content.getValue(
                         REDIRECT_LINK_TARGET_XPATH,
                         getCmsObject().getRequestContext().getLocale()).getStringValue(getCmsObject());
-                    Map<String, String> additional = new HashMap<String, String>();
                     additional.put(
                         Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_REDIRECT_TARGET_LABEL_0),
                         link);
-                    result.setAdditional(additional);
                 }
+                CmsResource page = resource;
+                if (resource.isFolder()) {
+                    page = getCmsObject().readDefaultFile(resource);
+                }
+                if (page != null) {
+                    List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForStructureId(page.getStructureId());
+                    int counter = 1;
+                    for (CmsAlias alias : aliases) {
+                        String aliasPath = alias.getAliasPath();
+                        additional.put(Messages.get().getBundle().key(Messages.GUI_ALIAS_0) + counter, aliasPath); //$NON-NLS-1$
+                        counter += 1;
+                    }
+                }
+
             } catch (CmsVfsResourceNotFoundException ne) {
-                result = new CmsAdditionalEntryInfo();
                 result.setResourceState(CmsResourceState.STATE_DELETED);
             }
         } catch (Exception e) {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getAliasesForPage(org.opencms.util.CmsUUID)
+     */
+    public List<CmsAliasBean> getAliasesForPage(CmsUUID uuid) throws CmsRpcException {
+
+        try {
+            return internalGetAliasesForPage(uuid);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
     }
 
     /**
@@ -366,7 +399,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String openPath = getRequest().getParameter(CmsCoreData.PARAM_PATH);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(openPath)) {
                 // if no path is supplied, start from root
-                openPath = "/";
+                openPath = "/"; //$NON-NLS-1$
             }
             CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
                 cms,
@@ -388,7 +421,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     parentSitemap = cms.getRequestContext().removeSiteRoot(parentSitemap);
                 }
             }
-            String noEdit = "";
+            String noEdit = ""; //$NON-NLS-1$
             CmsNewResourceInfo defaultNewInfo = null;
             List<CmsNewResourceInfo> newResourceInfos = null;
             CmsDetailPageTable detailPages = null;
@@ -400,7 +433,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             try {
                 String basePath = configData.getBasePath();
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
-                rootCms.getRequestContext().setSiteRoot("");
+                rootCms.getRequestContext().setSiteRoot(""); //$NON-NLS-1$
                 CmsResource baseDir = rootCms.readResource(basePath);
                 OpenCms.getLocaleManager();
                 locale = CmsLocaleManager.getMainLocale(cms, baseDir);
@@ -495,11 +528,76 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveAliases(org.opencms.util.CmsUUID, java.util.List)
+     */
+    public void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliasBeans) throws CmsRpcException {
+
+        CmsAliasManager aliasManager = OpenCms.getAliasManager();
+        CmsObject cms = getCmsObject();
+        List<CmsAlias> aliases = new ArrayList<CmsAlias>();
+        for (CmsAliasBean aliasBean : aliasBeans) {
+            CmsAlias alias = new CmsAlias(
+                structureId,
+                cms.getRequestContext().getSiteRoot(),
+                aliasBean.getSitePath(),
+                aliasBean.getMode());
+            aliases.add(alias);
+        }
+        try {
+            aliasManager.saveAliases(structureId, aliases);
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
      */
     public CmsSitemapChange saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
 
         return save(entryPoint, change);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#validateAliases(org.opencms.util.CmsUUID, java.util.Map)
+     */
+    public Map<String, String> validateAliases(CmsUUID uuid, Map<String, String> aliasPaths) throws CmsRpcException {
+
+        try {
+            return internalValidateAliases(uuid, aliasPaths);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+
+    }
+
+    /**
+     * Checks whether a given string is a valid alias path.<p>
+     * 
+     * @param path the path to check 
+     * 
+     * @return null if the string is a valid alias path, else an error message 
+     */
+    protected String checkValidAliasPath(String path) {
+
+        if (ALIAS_PATTERN.matcher(path).matches()) {
+            return null;
+        } else {
+            return Messages.get().getBundle().key(Messages.ERR_ALIAS_INVALID_PATH_0); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Converts a server-side alias object to an alias bean.<p>
+     * 
+     * @param alias the server-side alias object  
+     * 
+     * @return the client-side alias bean  
+     */
+    protected CmsAliasBean convertAliasToBean(CmsAlias alias) {
+
+        return new CmsAliasBean(alias.getAliasPath(), alias.getMode());
     }
 
     /**
@@ -515,7 +613,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsObject cms = getCmsObject();
         CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, true);
-        String defaultTitle = "";
+        String defaultTitle = ""; //$NON-NLS-1$
         String title = titleProp.getValue(defaultTitle);
         String path = cms.getSitePath(resource);
         String subtitle = path;
@@ -555,6 +653,101 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             justLocked = true;
         }
         return new LockInfo(lock, justLocked);
+    }
+
+    /**
+     * Implementation of the getAliasesForPage method.<p>
+     * 
+     * @param uuid the structure id of the page 
+     * @return the aliases for the given page 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected List<CmsAliasBean> internalGetAliasesForPage(CmsUUID uuid) throws CmsException {
+
+        CmsAliasManager aliasManager = OpenCms.getAliasManager();
+        List<CmsAlias> aliases = aliasManager.getAliasesForStructureId(uuid);
+        List<CmsAliasBean> result = new ArrayList<CmsAliasBean>();
+        for (CmsAlias alias : aliases) {
+            CmsAliasBean bean = convertAliasToBean(alias);
+            result.add(bean);
+        }
+        return result;
+    }
+
+    /**
+     * The internal method used for validating aliases.<p>
+     * 
+     * @param uuid the structure id of the resource whose aliases are being validated 
+     * @param aliasPaths a map from (arbitrary) ids to alias paths 
+     * 
+     * @return a map from the same ids to validation error messages 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected Map<String, String> internalValidateAliases(CmsUUID uuid, Map<String, String> aliasPaths)
+    throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        Set<String> seenPaths = new HashSet<String>();
+        Set<String> duplicatePaths = new HashSet<String>();
+        for (String path : aliasPaths.values()) {
+            if (seenPaths.contains(path)) {
+                duplicatePaths.add(path);
+            }
+            seenPaths.add(path);
+        }
+        Map<String, String> errorMessagesByPath = new HashMap<String, String>();
+        for (String path : duplicatePaths) {
+            errorMessagesByPath.put(path, Messages.get().getBundle().key(Messages.ERR_ALIAS_DUPLICATE_PATH_0)); //$NON-NLS-1$
+        }
+        seenPaths.removeAll(duplicatePaths);
+
+        for (String path : seenPaths) {
+            String pathError = checkValidAliasPath(path);
+            if (pathError != null) {
+                errorMessagesByPath.put(path, pathError);
+            } else {
+                errorMessagesByPath.put(path, null);
+                if (cms.existsResource(path, CmsResourceFilter.ALL)) {
+                    errorMessagesByPath.put(path, Messages.get().getBundle().key(Messages.ERR_ALIAS_IS_VFS_0)); //$NON-NLS-1$
+                } else {
+                    List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(
+                        cms.getRequestContext().getSiteRoot(),
+                        path);
+                    for (CmsAlias alias : aliases) {
+                        CmsUUID otherStructureId = alias.getStructureId();
+                        if (!otherStructureId.equals(uuid)) {
+                            try {
+                                CmsResource resource = cms.readResource(otherStructureId, CmsResourceFilter.ALL);
+                                errorMessagesByPath.put(
+                                    path,
+                                    Messages.get().getBundle().key(
+                                        Messages.ERR_ALIAS_ALREADY_USED_1,
+                                        resource.getRootPath()));
+                                break;
+                            } catch (CmsVfsResourceNotFoundException e) {
+                                // this may happen if there are outdated entries in the database table
+                                errorMessagesByPath.put(
+                                    path,
+                                    Messages.get().getBundle().key(Messages.ERR_ALIAS_ALREADY_USED_UNKNOWN_0)); //$NON-NLS-1$
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        Map<String, String> errorMessagesById = new HashMap<String, String>();
+        for (String key : aliasPaths.keySet()) {
+            String path = aliasPaths.get(key);
+            if (errorMessagesByPath.containsKey(path)) {
+                String errorMessage = errorMessagesByPath.get(path);
+                errorMessagesById.put(key, errorMessage);
+            }
+        }
+        return errorMessagesById;
     }
 
     /**
@@ -786,7 +979,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             for (CmsJspNavElement nav : navs) {
                 CmsProperty property = new CmsProperty(
                     CmsPropertyDefinition.PROPERTY_NAVPOS,
-                    "" + nav.getNavPosition(),
+                    "" + nav.getNavPosition(), //$NON-NLS-1$
                     null);
                 cms.writePropertyObject(cms.getSitePath(nav.getResource()), property);
             }
@@ -823,6 +1016,31 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Creates a navigation level type info.<p>
+     * 
+     * @return the navigation level type info bean
+     */
+    private CmsNewResourceInfo createNavigationLevelTypeInfo() {
+
+        String name = CmsResourceTypeFolder.getStaticTypeName();
+        Locale locale = getWorkplaceLocale();
+        String subtitle = Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_NAVIGATION_LEVEL_SUBTITLE_0);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(subtitle)) {
+            subtitle = CmsWorkplaceMessages.getResourceTypeName(locale, name);
+        }
+        CmsNewResourceInfo result = new CmsNewResourceInfo(
+            CmsResourceTypeFolder.getStaticTypeId(),
+            name,
+            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_NAVIGATION_LEVEL_TITLE_0),
+            subtitle,
+            null,
+            false,
+            subtitle);
+        result.setCreateParameter(CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER);
+        return result;
+    }
+
+    /**
      * Creates a new page in navigation.<p>
      * 
      * @param entryPoint the site-map entry-point
@@ -838,7 +1056,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsClientSitemapEntry newEntry = null;
         if (change.getParentId() != null) {
             CmsResource parentFolder = cms.readResource(change.getParentId());
-            String entryPath = "";
+            String entryPath = ""; //$NON-NLS-1$
             CmsResource entryFolder = null;
             CmsResource newRes = null;
             byte[] content = null;
@@ -862,7 +1080,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 cms.writePropertyObjects(newRes, generateInheritProperties(change, newRes));
                 applyNavigationChanges(change, newRes);
             } else {
-                String entryFolderPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName() + "/");
+                String entryFolderPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName() + "/"); //$NON-NLS-1$
                 boolean idWasNull = change.getEntryId() == null;
                 // we don'T really need to create a folder object here anymore.
                 if (idWasNull) {
@@ -914,7 +1132,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     change.setEntryId(entryFolder.getStructureId());
                 }
                 applyNavigationChanges(change, entryFolder);
-                entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html");
+                entryPath = CmsStringUtil.joinPaths(entryFolderPath, "index.html"); //$NON-NLS-1$
                 boolean isContainerPage = change.getNewResourceTypeId() == CmsResourceTypeXmlContainerPage.getContainerPageTypeIdSafely();
                 if (isContainerPage && (copyPage != null)) {
 
@@ -1076,31 +1294,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Creates a navigation level type info.<p>
-     * 
-     * @return the navigation level type info bean
-     */
-    private CmsNewResourceInfo createNavigationLevelTypeInfo() {
-
-        String name = CmsResourceTypeFolder.getStaticTypeName();
-        Locale locale = getWorkplaceLocale();
-        String subtitle = Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_NAVIGATION_LEVEL_SUBTITLE_0);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(subtitle)) {
-            subtitle = CmsWorkplaceMessages.getResourceTypeName(locale, name);
-        }
-        CmsNewResourceInfo result = new CmsNewResourceInfo(
-            CmsResourceTypeFolder.getStaticTypeId(),
-            name,
-            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_NAVIGATION_LEVEL_TITLE_0),
-            subtitle,
-            null,
-            false,
-            subtitle);
-        result.setCreateParameter(CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER);
-        return result;
-    }
-
-    /**
      * Deletes a resource according to the change data.<p>
      * 
      * @param change the change data
@@ -1213,10 +1406,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsObject cms = getCmsObject();
         if (rootPath == null) {
-            rootPath = cms.getRequestContext().addSiteRoot("/");
+            rootPath = cms.getRequestContext().addSiteRoot("/"); //$NON-NLS-1$
         }
         CmsObject rootCms = OpenCms.initCmsObject(cms);
-        rootCms.getRequestContext().setSiteRoot("");
+        rootCms.getRequestContext().setSiteRoot(""); //$NON-NLS-1$
         String parentRootPath = CmsResource.getParentFolder(rootPath);
 
         Map<String, CmsClientProperty> result = new HashMap<String, CmsClientProperty>();
@@ -1347,7 +1540,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         try {
             CmsObject cms = getCmsObject();
             CmsObject rootCms = OpenCms.initCmsObject(cms);
-            rootCms.getRequestContext().setSiteRoot("");
+            rootCms.getRequestContext().setSiteRoot(""); //$NON-NLS-1$
             CmsProperty templateProp = cms.readPropertyObject(parent, CmsPropertyDefinition.PROPERTY_TEMPLATE, true);
             String templateVal = templateProp.getValue();
             if (templateVal == null) {
@@ -1363,8 +1556,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 templateRes,
                 CmsPropertyDefinition.PROPERTY_CONTAINER_INFO,
                 true);
-            String containerInfo = containerInfoProp.getValue() == null ? "" : containerInfoProp.getValue();
-            Map<String, String> attrs = CmsStringUtil.splitAsMap(containerInfo, "|", "=");
+            String containerInfo = containerInfoProp.getValue() == null ? "" : containerInfoProp.getValue(); //$NON-NLS-1$
+            Map<String, String> attrs = CmsStringUtil.splitAsMap(containerInfo, "|", "="); //$NON-NLS-1$ //$NON-NLS-2$
             String functionDetailContainerName = attrs.get(KEY_FUNCTION_DETAIL);
             return functionDetailContainerName;
         } catch (CmsException e) {
@@ -1431,8 +1624,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param locale locale used for retrieving descriptions/titles
      * 
      * @return the new resource infos
-     * 
-     * @throws CmsException if something goes wrong 
      */
     private List<CmsNewResourceInfo> getNewResourceInfos(CmsObject cms, CmsADEConfigData configData, Locale locale) {
 
@@ -1556,7 +1747,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private CmsClientSitemapEntry getRootEntry(String rootPath, String targetPath)
     throws CmsSecurityException, CmsException {
 
-        String sitePath = "/";
+        String sitePath = "/"; //$NON-NLS-1$
         if (rootPath != null) {
             sitePath = getCmsObject().getRequestContext().removeSiteRoot(rootPath);
         }
@@ -1770,7 +1961,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                             CmsResource.getParentFolder(cms.getSitePath(entryFolder)),
                             change.getName());
                     }
-                    if (change.isLeafType() && destinationPath.endsWith("/")) {
+                    if (change.isLeafType() && destinationPath.endsWith("/")) { //$NON-NLS-1$
                         destinationPath = destinationPath.substring(0, destinationPath.length() - 1);
                     }
                     // only if the site-path has really changed
@@ -2098,7 +2289,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
             String newValue = propMod.getValue();
             if (newValue == null) {
-                newValue = "";
+                newValue = ""; //$NON-NLS-1$
             }
             if (propMod.isStructureValue()) {
                 propToModify.setStructureValue(newValue);
@@ -2131,4 +2322,5 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             cms.writePropertyObjects(defaultFileRes, defaultFilePropertyChanges);
         }
     }
+
 }
