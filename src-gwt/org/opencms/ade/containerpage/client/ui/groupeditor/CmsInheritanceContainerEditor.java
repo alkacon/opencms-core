@@ -128,6 +128,16 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     }
 
     /**
+     * Returns the inheritance container editor instance.<p>
+     * 
+     * @return the editor instance
+     */
+    public static CmsInheritanceContainerEditor getInstance() {
+
+        return INSTANCE;
+    }
+
+    /**
      * Opens the inheritance container editor.<p>
      * 
      * @param groupContainer the group-container
@@ -150,6 +160,17 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                 groupContainer.refreshHighlighting();
             }
         }
+    }
+
+    /**
+     * Sets the option bar on the element widget.<p>
+     * 
+     * @param elementWidget the element widget
+     */
+    public void setOptionBar(CmsContainerPageElementPanel elementWidget) {
+
+        elementWidget.setElementOptionBar(createOptionBar(elementWidget));
+        updateButtonVisibility(elementWidget);
     }
 
     /**
@@ -374,9 +395,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                             element,
                             getGroupContainerWidget());
                         elementWidget.setInheritanceInfo(info);
-                        elementWidget.setElementOptionBar(createOptionBar(elementWidget));
+                        setOptionBar(elementWidget);
                         getGroupContainerWidget().add(elementWidget);
-                        updateButtonVisibility(elementWidget);
                     } catch (Exception e) {
                         CmsDebugLog.getInstance().printLine(e.getMessage());
                     }
@@ -392,9 +412,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                             getGroupContainerWidget());
                         elementWidget.setInheritanceInfo(info);
                         elementWidget.addStyleName(HIDDEN_ELEMENT_CLASS);
-                        elementWidget.setElementOptionBar(createOptionBar(elementWidget));
+                        setOptionBar(elementWidget);
                         getGroupContainerWidget().add(elementWidget);
-                        updateButtonVisibility(elementWidget);
                         Element elementOverlay = DOM.createDiv();
                         elementOverlay.setClassName(HIDDEN_ELEMENT_OVERLAY_CLASS);
                         elementWidget.getElement().appendChild(elementOverlay);
