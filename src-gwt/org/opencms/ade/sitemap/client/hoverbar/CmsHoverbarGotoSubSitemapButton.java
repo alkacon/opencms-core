@@ -65,7 +65,7 @@ public class CmsHoverbarGotoSubSitemapButton extends CmsPushButton {
 
                 hoverbar.hide();
 
-                String sitePath = hoverbar.getSitePath();
+                String sitePath = hoverbar.getEntry().getSitePath();
                 if (!sitePath.endsWith("/")) {
                     sitePath += "/";
                 }
@@ -81,10 +81,9 @@ public class CmsHoverbarGotoSubSitemapButton extends CmsPushButton {
              */
             public void onShow(CmsHoverbarShowEvent event) {
 
-                String sitePath = hoverbar.getSitePath();
                 CmsSitemapController controller = hoverbar.getController();
-                CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-                setVisible((entry != null) && entry.isSubSitemapType() && !controller.isRoot(sitePath));
+                CmsClientSitemapEntry entry = hoverbar.getEntry();
+                setVisible((entry != null) && entry.isSubSitemapType() && !controller.isRoot(entry.getSitePath()));
             }
         });
     }

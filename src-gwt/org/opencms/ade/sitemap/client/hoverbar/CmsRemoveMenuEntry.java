@@ -57,9 +57,8 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        final String sitePath = getHoverbar().getSitePath();
-        final CmsSitemapController controller = getHoverbar().getController();
-        controller.removeFromNavigation(sitePath);
+        CmsSitemapController controller = getHoverbar().getController();
+        controller.removeFromNavigation(getHoverbar().getEntry().getId());
     }
 
     /**
@@ -68,12 +67,11 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !controller.isRoot(sitePath) && (entry != null) && entry.isInNavigation();
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        boolean show = !controller.isRoot(entry.getSitePath()) && entry.isInNavigation();
         setVisible(show);
-        if (show && (entry != null) && !entry.isEditable()) {
+        if (show && !entry.isEditable()) {
             setActive(false);
             setDisabledReason(controller.getNoEditReason(entry));
         } else {

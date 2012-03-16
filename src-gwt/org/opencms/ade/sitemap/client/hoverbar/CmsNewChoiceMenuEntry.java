@@ -63,7 +63,7 @@ public class CmsNewChoiceMenuEntry extends CmsNewMenuEntry {
     public void execute() {
 
         final CmsSitemapController controller = getHoverbar().getController();
-        final CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+        final CmsClientSitemapEntry entry = getHoverbar().getEntry();
         List<CmsNewResourceInfo> infos = controller.getData().getNewElementInfos();
         List<CmsModelResourceInfo> models = createModelInfos(infos);
         I_CmsModelSelectHandler handler = new I_CmsModelSelectHandler() {

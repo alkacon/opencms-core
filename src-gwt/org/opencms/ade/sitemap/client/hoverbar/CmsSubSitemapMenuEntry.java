@@ -63,13 +63,12 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        String sitePath = getHoverbar().getSitePath();
         final CmsSitemapController controller = getHoverbar().getController();
         String confirmTitle = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TITLE_0);
         String confirmMessage = Messages.get().key(Messages.GUI_SUBSITEMAP_CONFIRM_TEXT_0);
         CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
 
-        final CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        final CmsClientSitemapEntry entry = getHoverbar().getEntry();
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
@@ -112,16 +111,14 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !controller.isRoot(sitePath)
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        boolean show = !controller.isRoot(entry.getSitePath())
             && CmsSitemapView.getInstance().isNavigationMode()
-            && (entry != null)
             && entry.isInNavigation()
             && entry.isFolderType();
         setVisible(show);
-        if (show && (entry != null) && !entry.isEditable()) {
+        if (show && !entry.isEditable()) {
             setActive(false);
             setDisabledReason(controller.getNoEditReason(entry));
         } else {

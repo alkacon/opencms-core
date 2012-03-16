@@ -34,6 +34,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -105,19 +106,8 @@ public class CmsToolbarClipboardView {
 
         m_clipboardButton = clipboardButton;
         m_modified = new CmsList<CmsListItem>();
-        boolean hasElements = false;
-        for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getModifications().values()) {
-            m_modified.insertItem(createModifiedItem(entry), 0);
-            hasElements = true;
-        }
-        m_clipboardButton.enableClearModified(hasElements);
         m_deleted = new CmsList<CmsListItem>();
-        hasElements = false;
-        for (CmsClientSitemapEntry entry : controller.getData().getClipboardData().getDeletions().values()) {
-            m_deleted.insertItem(createDeletedItem(entry), 0);
-            hasElements = true;
-        }
-        m_clipboardButton.enableClearDeleted(hasElements);
+        updateContent(controller.getData().getClipboardData());
         controller.addChangeHandler(new I_CmsSitemapChangeHandler() {
 
             /**
@@ -125,7 +115,7 @@ public class CmsToolbarClipboardView {
              */
             public void onChange(CmsSitemapChangeEvent changeEvent) {
 
-                changeEvent.getChange().applyToClipboardView(CmsToolbarClipboardView.this);
+                updateContent(changeEvent.getChange().getClipBoardData());
             }
         });
     }
@@ -312,5 +302,31 @@ public class CmsToolbarClipboardView {
         if (getModified().getWidgetCount() == 0) {
             m_clipboardButton.enableClearModified(false);
         }
+    }
+
+    /**
+     * Updates the clip board content.<p>
+     * 
+     * @param data the clip board data
+     */
+    protected void updateContent(CmsSitemapClipboardData data) {
+
+        if (data == null) {
+            return;
+        }
+        m_modified.clearList();
+        boolean hasElements = false;
+        for (CmsClientSitemapEntry entry : data.getModifications().values()) {
+            m_modified.insertItem(createModifiedItem(entry), 0);
+            hasElements = true;
+        }
+        m_clipboardButton.enableClearModified(hasElements);
+        m_deleted.clearList();
+        hasElements = false;
+        for (CmsClientSitemapEntry entry : data.getDeletions().values()) {
+            m_deleted.insertItem(createDeletedItem(entry), 0);
+            hasElements = true;
+        }
+        m_clipboardButton.enableClearDeleted(hasElements);
     }
 }

@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -137,13 +138,13 @@ public final class CmsSitemapHoverbar extends FlowPanel {
     }
 
     /**
-     * Returns the current entry's site path.<p>
-     *
-     * @return the current entry's site path
+     * Returns the sitemap entry.<p>
+     * 
+     * @return the sitemap entry
      */
-    public String getSitePath() {
+    public CmsClientSitemapEntry getEntry() {
 
-        return m_treeItem.getSitePath();
+        return m_controller.getEntryById(m_treeItem.getEntryId());
     }
 
     /**

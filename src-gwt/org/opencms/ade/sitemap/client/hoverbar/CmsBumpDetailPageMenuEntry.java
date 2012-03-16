@@ -59,8 +59,7 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         CmsSitemapController controller = getHoverbar().getController();
-        String path = getHoverbar().getSitePath();
-        CmsClientSitemapEntry entry = controller.getEntry(path);
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
         controller.bump(entry);
     }
 
@@ -70,9 +69,8 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
         boolean show = (entry != null)
             && controller.isDetailPage(entry)
             && controller.getData().canEditDetailPages()

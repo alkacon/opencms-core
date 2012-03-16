@@ -31,11 +31,7 @@ import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
-import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
-import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.util.CmsUUID;
-
-import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -57,7 +53,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param entryId the structure id of the sitemap entry to create a sub sitemap of
      * @param callback the async callback  
      */
-    void createSubSitemap(CmsUUID entryId, AsyncCallback<CmsSubSitemapInfo> callback);
+    void createSubSitemap(CmsUUID entryId, AsyncCallback<CmsSitemapChange> callback);
 
     /**
      * Returns additional sitemap entry information.<p>
@@ -68,14 +64,14 @@ public interface I_CmsSitemapServiceAsync {
     void getAdditionalEntryInfo(CmsUUID structureId, AsyncCallback<CmsAdditionalEntryInfo> callback);
 
     /**
-     * Returns the sitemap children for the given path.<p>
+     * Returns the sitemap children for the given entry.<p>
      * 
      * @param entryPointUri the URI of the sitemap entry point
-     * @param root the site relative root
+     * @param entryId the entry id
      * @param levels the count of child levels to read
      * @param callback the async callback
      */
-    void getChildren(String entryPointUri, String root, int levels, AsyncCallback<CmsClientSitemapEntry> callback);
+    void getChildren(String entryPointUri, CmsUUID entryId, int levels, AsyncCallback<CmsClientSitemapEntry> callback);
 
     /**
      * Merges a sub-sitemap into it's parent sitemap.<p>
@@ -85,7 +81,7 @@ public interface I_CmsSitemapServiceAsync {
      * 
      * @param callback the async callback
      */
-    void mergeSubSitemap(String entryPoint, CmsUUID subSitemapId, AsyncCallback<CmsSitemapMergeInfo> callback);
+    void mergeSubSitemap(String entryPoint, CmsUUID subSitemapId, AsyncCallback<CmsSitemapChange> callback);
 
     /**
      * Returns the initialization data for the given sitemap.<p>
@@ -102,7 +98,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param change the change to save
      * @param callback the async callback
      */
-    void save(String sitemapUri, CmsSitemapChange change, AsyncCallback<List<CmsClientSitemapEntry>> callback);
+    void save(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
 
     /**
      * Save the change to the given sitemap.<p>
@@ -112,5 +108,5 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback
      */
     @SynchronizedRpcRequest
-    void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<List<CmsClientSitemapEntry>> callback);
+    void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
 }

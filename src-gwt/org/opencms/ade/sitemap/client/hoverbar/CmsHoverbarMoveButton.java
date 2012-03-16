@@ -70,9 +70,9 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
              */
             public void onShow(CmsHoverbarShowEvent event) {
 
-                m_sitePath = hoverbar.getSitePath();
+                m_sitePath = hoverbar.getEntry().getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
-                CmsClientSitemapEntry entry = controller.getEntry(m_sitePath);
+                CmsClientSitemapEntry entry = hoverbar.getEntry();
                 if (CmsSitemapView.getInstance().isNavigationMode() && (entry != null)) {
 
                     if (!entry.isInNavigation()) {

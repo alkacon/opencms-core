@@ -71,7 +71,7 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         final CmsSitemapController controller = getHoverbar().getController();
-        final CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+        final CmsClientSitemapEntry entry = getHoverbar().getEntry();
 
         final CmsUUID infoId;
 
@@ -117,9 +117,7 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
         boolean show = (entry != null);
         setVisible(show);
     }

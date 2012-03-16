@@ -209,9 +209,6 @@ public class CmsPropertyFormHandler implements I_CmsFormHandler {
      */
     private CmsReloadMode getReloadMode(Map<String, String> fieldValues, Set<String> editedFields) {
 
-        if (m_handler.isSimpleMode()) {
-            return CmsReloadMode.none;
-        }
         for (String fieldName : editedFields) {
             if (checkContains(fieldName, CmsClientProperty.PROPERTY_DEFAULTFILE, CmsClientProperty.PROPERTY_NAVPOS)) {
                 return CmsReloadMode.reloadParent;
@@ -223,5 +220,4 @@ public class CmsPropertyFormHandler implements I_CmsFormHandler {
         }
         return CmsReloadMode.none;
     }
-
 }

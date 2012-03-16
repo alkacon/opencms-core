@@ -76,9 +76,9 @@ public class CmsHoverbarGotoParentButton extends CmsPushButton {
              */
             public void onShow(CmsHoverbarShowEvent event) {
 
-                String sitePath = hoverbar.getSitePath();
                 CmsSitemapController controller = hoverbar.getController();
-                boolean show = controller.isRoot(sitePath) && (controller.getData().getParentSitemap() != null);
+                boolean show = controller.isRoot(hoverbar.getEntry().getSitePath())
+                    && (controller.getData().getParentSitemap() != null);
                 setVisible(show);
             }
         });
