@@ -1,11 +1,11 @@
-.fieldsetVisible {
+div.fieldsetVisible {
 	border: solid 1px value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 	min-height: 8px;
 	position: relative;
 	overflow: visible;
 }
-.fieldsetInvisible {
+div.fieldsetInvisible {
 	/** Use the same color as the background to make this border invisible. */
 	border: solid 1px value("constants.css.backgroundColorDialog");
 	border-top: solid 1px value("constants.css.borderColor");
@@ -30,10 +30,11 @@
 	margin: -8px 0px 0px 5px;
 	color: value("constants.css.textColor");
 }
-.content {
+div.fieldsetVisible .content {
 	/* margin: 12px 6px 4px 6px; */
 	margin: 10px 6px 6px;
 	color: value("constants.css.textColor");
+	overflow: auto;
 }
 .fieldsetInvisible .content{
 	display: none;
