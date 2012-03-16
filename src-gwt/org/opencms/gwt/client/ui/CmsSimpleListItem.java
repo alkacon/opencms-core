@@ -125,14 +125,6 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#hasTag(java.lang.String)
-     */
-    public boolean hasTag(String tag) {
-
-        return false;
-    }
-
-    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
      */
     public void onDragCancel() {
