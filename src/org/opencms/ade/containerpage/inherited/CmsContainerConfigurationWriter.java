@@ -127,6 +127,8 @@ public class CmsContainerConfigurationWriter {
         }
         CmsResource configRes = cms.readResource(configPath);
         CmsFile configFile = cms.readFile(configRes);
+        // make sure the internal flag is set
+        configFile.setFlags(configFile.getFlags() | CmsResource.FLAG_INTERNAL);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
         removeExistingEntry(cms, content, cms.getRequestContext().getLocale(), name);
         CmsContainerConfiguration configuration = createConfigurationBean(newOrdering, elements, keys);
