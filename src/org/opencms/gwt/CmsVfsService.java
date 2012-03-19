@@ -895,7 +895,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 icon = LockIcon.SHARED_OPEN;
             }
         }
-        if (lock.getUserId() != null) {
+        if ((lock.getUserId() != null) && !lock.getUserId().isNullUUID()) {
             CmsUser lockOwner = getCmsObject().readUser(lock.getUserId());
             iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
         }
