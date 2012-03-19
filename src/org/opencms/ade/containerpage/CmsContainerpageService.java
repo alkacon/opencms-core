@@ -51,6 +51,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
@@ -267,6 +268,29 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public CmsContainerElement getElementInfo() {
 
         throw new UnsupportedOperationException("This method is used for serialization only.");
+    }
+
+    /**
+     * Returns the serialized element data.<p>
+     * 
+     * @param elementBean the element to serialize
+     * 
+     * @return the serialized element data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public String getSerializedElementInfo(CmsContainerElementBean elementBean) throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsContainerElement result = new CmsContainerElement();
+        CmsElementUtil util = new CmsElementUtil(
+            cms,
+            cms.getRequestContext().getUri(),
+            getThreadLocalRequest(),
+            getThreadLocalResponse(),
+            cms.getRequestContext().getLocale());
+        util.setElementInfo(elementBean, result);
+        return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
     }
 
     /**

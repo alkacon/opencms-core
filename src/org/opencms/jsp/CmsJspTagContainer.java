@@ -29,19 +29,15 @@ package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
-import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
-import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -51,13 +47,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -69,18 +60,17 @@ import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.CmsXmlGroupContainer;
 import org.opencms.xml.containerpage.CmsXmlGroupContainerFactory;
-import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -646,44 +636,11 @@ public class CmsJspTagContainer extends TagSupport {
      */
     private String getElementInfo(CmsObject cms, CmsContainerElementBean elementBean) throws Exception {
 
-        CmsContainerElement result = new CmsContainerElement();
-        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        String noEditReason = "";
-        // reinitializing resource to avoid caching issues
-        elementBean.initResource(cms);
-        if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
-            noEditReason = new CmsResourceUtil(cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
-        } else {
-            noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
-        }
-        result.setClientId(elementBean.editorHash());
-        result.setSitePath(elementBean.getSitePath());
-        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
-        result.setResourceType(typeName);
-        result.setNew(elementBean.isCreateNew());
-        if (elementBean.isCreateNew()) {
-            CmsResourceTypeConfig typeConfig = OpenCms.getADEManager().lookupConfiguration(
-                cms,
-                cms.getRequestContext().getRootUri()).getResourceType(typeName);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
-                && ((typeConfig == null) || !typeConfig.checkCreatable(cms))) {
-                String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-                noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
-            }
-        }
-        result.setHasSettings(hasSettings(cms, elementBean.getResource()));
-        //    result.put("hasprops", hasProperties(cms, elementBean.getResource()));
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-        boolean viewPermission = cms.hasPermissions(
-            elementBean.getResource(),
-            CmsPermissionSet.ACCESS_VIEW,
-            false,
-            CmsResourceFilter.IGNORE_EXPIRATION)
-            && settings.getAccess().getPermissions(cms, elementBean.getResource()).requiresViewPermission();
-        result.setViewPermission(viewPermission);
-        result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
-        result.setNoEditReason(noEditReason);
-        return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
+        CmsContainerpageService service = new CmsContainerpageService();
+        service.setCms(cms);
+        service.setRequest((HttpServletRequest)pageContext.getRequest());
+        service.setResponse((HttpServletResponse)pageContext.getResponse());
+        return service.getSerializedElementInfo(elementBean);
     }
 
     /**
@@ -801,27 +758,6 @@ public class CmsJspTagContainer extends TagSupport {
                 sessionCache);
         }
         return sessionCache;
-    }
-
-    /**
-     * Helper method for checking whether there are properties defined for a given content element.<p>
-     * 
-     * @param cms the CmsObject to use for VFS operations 
-     * @param resource the resource for which it should be checked whether it has properties 
-     * 
-     * @return true if the resource has properties defined 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    private boolean hasSettings(CmsObject cms, CmsResource resource) throws CmsException {
-
-        if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
-            return false;
-        }
-        Map<String, CmsXmlContentProperty> propConfig = CmsXmlContentDefinition.getContentHandlerForResource(
-            cms,
-            resource).getSettings(cms, resource);
-        return !propConfig.isEmpty();
     }
 
     /**

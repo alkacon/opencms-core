@@ -131,12 +131,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_XSD_NO_TEMPLATE_FORMATTER_3 = "ERR_XSD_NO_TEMPLATE_FORMATTER_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1 = "GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0 = "GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_ACTIONELEM_NOT_INIT_0 = "GUI_ERR_ACTIONELEM_NOT_INIT_0";
 
     /** Message constant for key in the resource bundle. */

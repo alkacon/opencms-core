@@ -28,17 +28,19 @@
 package org.opencms.ade.containerpage;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagHeadIncludes;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsTemplateLoaderFacade;
@@ -50,10 +52,13 @@ import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -218,6 +223,100 @@ public class CmsElementUtil {
     }
 
     /**
+     * Sets the data to the given container element.<p>
+     * 
+     * @param elementBean the element bean
+     * @param result the container element to set the data to
+     * 
+     * @return the container element
+     *  
+     * @throws CmsException if something goes wrong
+     */
+    public CmsContainerElement setElementInfo(CmsContainerElementBean elementBean, CmsContainerElement result)
+    throws CmsException {
+
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+        String noEditReason = "";
+        // reinitializing resource to avoid caching issues
+        elementBean.initResource(m_cms);
+        if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
+            noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason) && elementBean.isInheritedContainer(m_cms)) {
+                String requestUri = m_cms.getRequestContext().getUri();
+                String folderPath = CmsResource.getFolderPath(requestUri);
+                String configPath = CmsStringUtil.joinPaths(
+                    folderPath,
+                    CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+                if (m_cms.existsResource(configPath)) {
+                    noEditReason = new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(
+                        wpLocale,
+                        true);
+                } else {
+                    if (!m_cms.getLock(folderPath).isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
+                        noEditReason = org.opencms.workplace.explorer.Messages.get().getBundle(wpLocale).key(
+                            org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
+                            new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName());
+                    }
+                }
+            } else {
+                noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
+            }
+        } else {
+            noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
+        }
+        result.setClientId(elementBean.editorHash());
+        result.setSitePath(elementBean.getSitePath());
+        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
+        result.setResourceType(typeName);
+        result.setNew(elementBean.isCreateNew());
+        if (elementBean.isCreateNew()) {
+            CmsResourceTypeConfig typeConfig = OpenCms.getADEManager().lookupConfiguration(
+                m_cms,
+                m_cms.getRequestContext().getRootUri()).getResourceType(typeName);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
+                && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
+                String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+                noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
+            }
+        }
+        result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+        result.setViewPermission(elementBean.isInMemoryOnly()
+            || (m_cms.hasPermissions(
+                elementBean.getResource(),
+                CmsPermissionSet.ACCESS_VIEW,
+                false,
+                CmsResourceFilter.IGNORE_EXPIRATION) && settings.getAccess().getPermissions(
+                m_cms,
+                elementBean.getResource()).requiresViewPermission()));
+
+        result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
+        result.setNoEditReason(noEditReason);
+        return result;
+    }
+
+    /**
+     * Helper method for checking whether there are properties defined for a given content element.<p>
+     * 
+     * @param cms the CmsObject to use for VFS operations 
+     * @param resource the resource for which it should be checked whether it has properties 
+     * 
+     * @return true if the resource has properties defined 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private boolean hasSettings(CmsObject cms, CmsResource resource) throws CmsException {
+
+        if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
+            return false;
+        }
+        Map<String, CmsXmlContentProperty> propConfig = CmsXmlContentDefinition.getContentHandlerForResource(
+            cms,
+            resource).getSettings(cms, resource);
+        return !propConfig.isEmpty();
+    }
+
+    /**
      * Returns the data for an element.<p>
      * 
      * @param element the resource
@@ -236,21 +335,17 @@ public class CmsElementUtil {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
         CmsUUID structureId = resUtil.getResource().getStructureId();
+        CmsContainerElementData elementBean = new CmsContainerElementData();
+        setElementInfo(element, elementBean);
+        elementBean.setLastModifiedDate(element.getResource().getDateLastModified());
+        elementBean.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
+        elementBean.setNavText(resUtil.getNavText());
         String title = resUtil.getTitle();
         if (!structureId.isNullUUID()) {
             CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(m_cms, structureId, requestLocale);
             title = searchResult.getTitle();
         }
-
-        CmsContainerElementData elementBean = new CmsContainerElementData();
-        elementBean.setReleasedAndNotExpired(element.isReleasedAndNotExpired());
-        elementBean.setClientId(element.editorHash());
-        elementBean.setSitePath(resUtil.getFullPath());
-        elementBean.setLastModifiedDate(element.getResource().getDateLastModified());
-        elementBean.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
-        elementBean.setNavText(resUtil.getNavText());
         elementBean.setTitle(title);
-        elementBean.setResourceType(OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getTypeName());
         Set<String> cssResources = new LinkedHashSet<String>();
         for (String cssSitePath : CmsJspTagHeadIncludes.getCSSHeadIncludes(m_cms, element.getResource())) {
             cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
@@ -264,26 +359,6 @@ public class CmsElementUtil {
             element.getIndividualSettings(),
             settingConfig));
         elementBean.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
-        // no need to check permissions for in memory resources
-        elementBean.setViewPermission(element.isInMemoryOnly()
-            || m_cms.hasPermissions(
-                element.getResource(),
-                CmsPermissionSet.ACCESS_VIEW,
-                false,
-                CmsResourceFilter.IGNORE_EXPIRATION));
-        String noEditReason = "";
-        if (CmsResourceTypeXmlContent.isXmlContent(element.getResource())) {
-            if (!element.isInMemoryOnly()) {
-                noEditReason = CmsEncoder.escapeHtml(resUtil.getNoEditReason(
-                    OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms),
-                    true));
-            }
-        } else {
-            noEditReason = org.opencms.jsp.Messages.get().getBundle().key(
-                org.opencms.jsp.Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
-        }
-        elementBean.setNoEditReason(noEditReason);
-
         Map<String, String> contents = new HashMap<String, String>();
         if (element.isGroupContainer(m_cms)) {
             Set<String> types = new HashSet<String>();
