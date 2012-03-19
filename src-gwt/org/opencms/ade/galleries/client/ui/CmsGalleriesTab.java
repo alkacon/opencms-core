@@ -320,11 +320,16 @@ public class CmsGalleriesTab extends A_CmsListTab {
         StringBuffer result = new StringBuffer(128);
         for (String galleryPath : selectedGalleries) {
             CmsGalleryFolderBean galleryBean = m_galleries.get(galleryPath);
-            String title = galleryBean.getTitle();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = galleryBean.getPath();
+            if (galleryBean != null) {
+                String title = galleryBean.getTitle();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                    title = galleryBean.getPath();
+                }
+                result.append(title).append(", ");
             }
-            result.append(title).append(", ");
+        }
+        if (result.length() == 0) {
+            return null;
         }
         result.delete(result.length() - 2, result.length());
 
