@@ -29,7 +29,10 @@ package org.opencms.ade.galleries;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 
 import java.util.HashMap;
@@ -74,6 +77,15 @@ public class CmsOpenGallery extends CmsDialog {
         Locale locale = OpenCms.getLocaleManager().getDefaultLocale(getCms(), galleryPath);
         params.put("__locale", locale.toString());
         params.put(I_CmsGalleryProviderConstants.ReqParam.dialogmode.name(), GalleryMode.view.name());
+        try {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryPath)) {
+                // ensure to have a proper site path to the gallery folder, this is needed within the shared site
+                CmsResource galleryFolder = getCms().readResource(galleryPath);
+                galleryPath = getCms().getSitePath(galleryFolder);
+            }
+        } catch (CmsException e) {
+            // nothing to do
+        }
         params.put(I_CmsGalleryProviderConstants.ReqParam.gallerypath.name(), galleryPath);
         params.put(I_CmsGalleryProviderConstants.ReqParam.types.name(), "");
         sendForward(I_CmsGalleryProviderConstants.VFS_OPEN_GALLERY_PATH, params);
