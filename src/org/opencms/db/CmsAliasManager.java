@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,75 +27,91 @@
 
 package org.opencms.db;
 
-import org.opencms.ade.sitemap.shared.CmsAliasMode;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
 
+/**
+ * The alias manager provides access to the aliases stored in the database.<p>
+ */
 public class CmsAliasManager {
 
-    public static final String LUCKY_PATH = "/lucky";
-
-    public static final CmsUUID LUCKY_UUID = new CmsUUID("b7e482d3-77ef-11e0-be13-000c2972a6a4");
-    public static final CmsAlias X_DUMMY_ALIAS = new CmsAlias(
-        LUCKY_UUID,
-        "/sites/default",
-        LUCKY_PATH,
-        CmsAliasMode.page);
-
+    /** The security manager for accessing the database. */
     protected CmsSecurityManager m_securityManager;
-    private List<CmsAlias> m_aliases = new ArrayList<CmsAlias>();
 
+    /**
+     * Creates a new alias manager instance.<p>
+     *
+     * @param securityManager the security manager
+     */
     public CmsAliasManager(CmsSecurityManager securityManager) {
 
         m_securityManager = securityManager;
-        m_aliases.add(X_DUMMY_ALIAS);
-    }
-
-    public void clearAliases(CmsUUID structureId) throws CmsException {
-
-        Iterator<CmsAlias> it = m_aliases.iterator();
-        while (it.hasNext()) {
-            CmsAlias alias = it.next();
-            if (alias.getStructureId().equals(structureId)) {
-                it.remove();
-            }
-        }
-    }
-
-    public List<CmsAlias> getAliasesForPath(String siteRoot, String aliasPath) throws CmsException {
-
-        for (CmsAlias alias : m_aliases) {
-            if (siteRoot.equals(alias.getSiteRoot()) && aliasPath.equals(alias.getAliasPath())) {
-                return Collections.singletonList(alias);
-            }
-        }
-        return new ArrayList<CmsAlias>();
     }
 
     /**
-     * @param structureId 
-     * @return
+     * Gets the list of aliases for a path in a given site.<p>
+     *
+     * This should only return either an empty list or a list with a single element.
+     *
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root for which we want the aliases
+     * @param aliasPath the alias path
+     *
+     * @return the aliases for the given site root and path
+     *
+     * @throws CmsException if something goes wrong 
      */
-    public List<CmsAlias> getAliasesForStructureId(CmsUUID structureId) throws CmsException {
+    public List<CmsAlias> getAliasesForPath(CmsObject cms, String siteRoot, String aliasPath) throws CmsException {
 
-        List<CmsAlias> result = new ArrayList<CmsAlias>();
-        for (CmsAlias alias : m_aliases) {
-            if (alias.getStructureId().equals(structureId)) {
-                result.add(alias);
-            }
+        CmsAlias alias = m_securityManager.readAliasByPath(cms.getRequestContext(), siteRoot, aliasPath);
+        if (alias == null) {
+            return Collections.emptyList();
+        } else {
+            return Collections.singletonList(alias);
         }
-        return result;
     }
 
-    public void saveAliases(CmsUUID structureId, List<CmsAlias> aliases) throws CmsException {
+    /**
+     * Gets the aliases for a given structure id.<p>
+     *
+     * @param cms the current CMS context
+     * @param structureId the structure id of a resource
+     *
+     * @return the aliases which point to the resource with the given structure id
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsAlias> getAliasesForStructureId(CmsObject cms, CmsUUID structureId) throws CmsException {
 
-        clearAliases(structureId);
-        m_aliases.addAll(aliases);
+        List<CmsAlias> aliases = m_securityManager.readAliasesById(cms.getRequestContext(), structureId);
+        Collections.sort(aliases, new Comparator<CmsAlias>() {
+
+            public int compare(CmsAlias first, CmsAlias second) {
+
+                return first.getAliasPath().compareTo(second.getAliasPath());
+            }
+        });
+        return aliases;
+    }
+
+    /**
+     * Saves the aliases for a given structure id, <b>completely replacing</b> any existing aliases for the same structure id.<p>
+     *
+     * @param cms the current CMS context
+     * @param structureId the structure id of a resource
+     * @param aliases the list of aliases which should be written
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void saveAliases(CmsObject cms, CmsUUID structureId, List<CmsAlias> aliases) throws CmsException {
+
+        m_securityManager.saveAliases(cms.getRequestContext(), cms.readResource(structureId), aliases);
     }
 
 }

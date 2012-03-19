@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -89,10 +89,10 @@ public class CmsAliasList extends Composite {
 
         /**
          * Creates a new alias controls instance.<p>
-         * 
-         * @param alias the alias to which the controls belong 
-         * @param textBox the text box for entering the alias site path 
-         * @param selectBox the select box for selecting alias modes 
+         *
+         * @param alias the alias to which the controls belong
+         * @param textBox the text box for entering the alias site path
+         * @param selectBox the select box for selecting alias modes
          */
         public AliasControls(CmsAliasBean alias, CmsTextBox textBox, CmsSelectBox selectBox) {
 
@@ -103,8 +103,8 @@ public class CmsAliasList extends Composite {
 
         /**
          * Gets the alias to which these controls belong.<p>
-         * 
-         * @return the alias to which these controls belong 
+         *
+         * @return the alias to which these controls belong
          */
         public CmsAliasBean getAlias() {
 
@@ -113,18 +113,18 @@ public class CmsAliasList extends Composite {
 
         /**
          * Gets the id of this set of controls.<p>
-         * 
-         * @return the id 
+         *
+         * @return the id
          */
         public String getId() {
 
             return m_id;
         }
 
-        /** 
+        /**
          * Gets the alias mode select box.<p>
-         * 
-         * @return the alias mode select box 
+         *
+         * @return the alias mode select box
          */
         public CmsSelectBox getSelectBox() {
 
@@ -132,9 +132,9 @@ public class CmsAliasList extends Composite {
         }
 
         /**
-         * Gets the text box for the alias site path.<p> 
-         * 
-         * @return the text box for the alias site path 
+         * Gets the text box for the alias site path.<p>
+         *
+         * @return the text box for the alias site path
          */
         public CmsTextBox getTextBox() {
 
@@ -154,7 +154,7 @@ public class CmsAliasList extends Composite {
 
         public void onFailure(Throwable caught) {
 
-            // do nothing 
+            // do nothing
         }
 
         public void onSuccess(java.util.Map<String, String> result) {
@@ -191,9 +191,9 @@ public class CmsAliasList extends Composite {
 
     /**
      * Creates a new widget instance.<p>
-     * 
+     *
      * @param structureId the structure id of the page for which the aliases should be edited
-     * @param aliases the aliases being edited 
+     * @param aliases the aliases being edited
      */
     public CmsAliasList(CmsUUID structureId, List<CmsAliasBean> aliases) {
 
@@ -211,8 +211,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Adds the controls for a single alias to the widget.<p>
-     * 
-     * @param alias the alias for which the controls should be added 
+     *
+     * @param alias the alias for which the controls should be added
      */
     public void addAlias(final CmsAliasBean alias) {
 
@@ -277,8 +277,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Gets a list of the changed aliases.<p>
-     * 
-     * @return a list of the aliases 
+     *
+     * @return a list of the aliases
      */
     public List<CmsAliasBean> getAliases() {
 
@@ -291,8 +291,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Gets a map of the current alias site paths, with the alias controls ids as the keys.<p>
-     * 
-     * @return a map from control ids to alias site paths 
+     *
+     * @return a map from control ids to alias site paths
      */
     public Map<String, String> getAliasPaths() {
 
@@ -305,8 +305,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Checks whether there have been validation errors since the validation errors were cleared the last time.<p>
-     * 
-     * @return true if there were validation errors 
+     *
+     * @return true if there were validation errors
      */
     public boolean hasValidationErrors() {
 
@@ -315,8 +315,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Initializes the alias controls.<p>
-     * 
-     * @param aliases the existing aliases 
+     *
+     * @param aliases the existing aliases
      */
     public void init(List<CmsAliasBean> aliases) {
 
@@ -326,6 +326,9 @@ public class CmsAliasList extends Composite {
 
         final HorizontalPanel hp = new HorizontalPanel();
         final CmsTextBox textbox = createTextBox();
+        textbox.setGhostMode(true);
+        textbox.setGhostValue(Messages.get().key(Messages.GUI_ENTER_ALIAS_0), true);
+        textbox.setGhostModeClear(true);
         hp.add(textbox);
         final CmsSelectBox selectbox = createSelectBox();
         hp.add(selectbox);
@@ -340,7 +343,7 @@ public class CmsAliasList extends Composite {
 
                     public void onFailure(Throwable caught) {
 
-                        // shouldn't be called 
+                        // shouldn't be called
                     }
 
                     public void onSuccess(String result) {
@@ -381,8 +384,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Simplified method to perform a full validation of the aliases in the list and execute an action afterwards.<p>
-     * 
-     * @param nextAction the action to execute after the validation finished 
+     *
+     * @param nextAction the action to execute after the validation finished
      */
     public void validate(final Runnable nextAction) {
 
@@ -409,8 +412,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Creates the button used for adding new aliases.<p>
-     * 
-     * @return the new button 
+     *
+     * @return the new button
      */
     protected PushButton createAddButton() {
 
@@ -420,8 +423,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Creates the button used for deleting aliases.<p>
-     * 
-     * @return the new button 
+     *
+     * @return the new button
      */
     protected PushButton createDeleteButton() {
 
@@ -431,10 +434,10 @@ public class CmsAliasList extends Composite {
 
     /**
      * Creates an icon button for editing aliases.<p>
-     * 
-     * @param icon the icon css class to use 
-     * 
-     * @return the new icon button 
+     *
+     * @param icon the icon css class to use
+     *
+     * @return the new icon button
      */
     protected PushButton createIconButton(String icon) {
 
@@ -446,6 +449,13 @@ public class CmsAliasList extends Composite {
         return button;
     }
 
+    /**
+     * Creates a label for this widget.<p>
+     *
+     * @param text the text to display in the label
+     *
+     * @return the created label
+     */
     protected Label createLabel(String text) {
 
         Label label = new Label(text);
@@ -458,8 +468,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Creates the select box for selecting alias modes.<p>
-     * 
-     * @return the select box for selecting alias modes 
+     *
+     * @return the select box for selecting alias modes
      */
     protected CmsSelectBox createSelectBox() {
 
@@ -474,8 +484,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * Creates a text box for entering an alias path.<p>
-     * 
-     * @return the new text box 
+     *
+     * @return the new text box
      */
     protected CmsTextBox createTextBox() {
 
@@ -487,8 +497,8 @@ public class CmsAliasList extends Composite {
 
     /**
      * This method is called when an alias path changes.<p>
-     * 
-     * @param controls the alias controls 
+     *
+     * @param controls the alias controls
      */
     protected void onChangePath(AliasControls controls) {
 
@@ -502,11 +512,11 @@ public class CmsAliasList extends Composite {
 
     /**
      * Performs a validation of the current list of aliases in the widget.<p>
-     * 
-     * @param structureId the resource's structure id 
-     * @param sitePaths the map from ids to alias site paths 
-     * 
-     * @param errorCallback the callback to invoke when the validation finishes 
+     *
+     * @param structureId the resource's structure id
+     * @param sitePaths the map from ids to alias site paths
+     *
+     * @param errorCallback the callback to invoke when the validation finishes
      */
     protected void validateFull(
         CmsUUID structureId,
@@ -519,7 +529,7 @@ public class CmsAliasList extends Composite {
 
     /**
      * Validation method used when adding a new alias.<p>
-     * 
+     *
      * @param structureId
      * @param sitePaths
      * @param newSitePath
@@ -538,7 +548,7 @@ public class CmsAliasList extends Composite {
 
             public void onFailure(Throwable caught) {
 
-                assert false; // should never happen 
+                assert false; // should never happen
             }
 
             public void onSuccess(Map<String, String> result) {

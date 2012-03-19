@@ -44,6 +44,7 @@
 		<class>org.opencms.db.jpa.persistence.CmsDAOCounters</class>
 		<class>org.opencms.db.jpa.persistence.CmsDAOOfflineUrlNameMappings</class>
 		<class>org.opencms.db.jpa.persistence.CmsDAOOnlineUrlNameMappings</class>
+		<class>org.opencms.db.jpa.persistence.CmsDAOAlias</class>
 
 		<properties>
 			<!-- *** DBCP Connection pool configuration *** -->

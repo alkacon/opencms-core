@@ -15,6 +15,12 @@
 @sprite .cmsMenuItem .edit{
     gwt-image: "icons.editIconActive";
 }
+
+@sprite .cmsMenuItem .seo {
+	gwt-image: "icons.seoIcon";
+}
+
+
 @sprite .cmsMenuItem .move{
     gwt-image: "icons.moveIconActive";
 }

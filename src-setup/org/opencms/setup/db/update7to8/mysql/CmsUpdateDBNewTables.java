@@ -78,7 +78,8 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
             "CMS_OFFLINE_URLNAME_MAPPINGS",
             "CMS_ONLINE_URLNAME_MAPPINGS",
             "CMS_SUBSCRIPTION",
-            "CMS_SUBSCRIPTION_VISIT"});
+            "CMS_SUBSCRIPTION_VISIT",
+            "CMS_ALIASES"});
 
         Map<String, String> replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
         for (Iterator<String> it = elements.iterator(); it.hasNext();) {

@@ -825,8 +825,8 @@ CREATE INDEX cms_online_mappings_01_idx ON cms_online_urlname_mappings (name);
 CREATE INDEX cms_online_mappings_02_idx ON cms_online_urlname_mappings (structure_id);
 
 
-
-
+CREATE TABLE CMS_ALIASES (path VARCHAR(100) NOT NULL, site_root VARCHAR(64) NOT NULL, alias_mode INTEGER NOT NULL, structure_id VARCHAR(36) NOT NULL, PRIMARY KEY (path, site_root));
+CREATE INDEX CMS_ALIASES_IDX_1 ON CMS_ALIASES (structure_id);
 
 
 

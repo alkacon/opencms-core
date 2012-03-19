@@ -28,6 +28,7 @@
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler" />
 			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler" />
             <resourceinithandler class="org.opencms.ade.detailpage.CmsDetailPageResourceHandler"/>
+            <resourceinithandler class="org.opencms.main.CmsAliasResourceHandler" />
         </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">

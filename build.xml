@@ -7,6 +7,7 @@
 
 	<property name="app.name" value="opencms" />
 	<property name="src.all.comps" value="lib,modules,src-components,src-gwt,src-modules,src-setup,test,webapp" />
+	
 
 	<property name="opencms.input" location="${basedir}" />
 	<property name="opencms.output" location="${basedir}/../BuildCms" />
@@ -17,6 +18,9 @@
 	<property name="opencms.output.jars" location="${opencms.output}/build/jars-core" />
 	<property name="opencms.output.warfiles" location="${opencms.output}/build/${app.name}" />
 	<property name="opencms.output.distfiles" location="${opencms.output}/zip" />
+	
+	<property name="databases" value="as400,db2,derby,empress,firebird,h2,hsqldb,informix,ingres,interbase,intersystemscache,jdatastore,mssql,mysql,oracle,postgresql,sybase" /> 
+<!--	<property name="databases" value="mysql" /> -->
 
 	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
 	<property name="opencms.input.webinf" location="${opencms.input.warfiles}/WEB-INF" />
@@ -124,6 +128,29 @@
 		<delete dir="${opencms.output.warfiles}" />
 		<delete dir="${opencms.output}/build" />
 		<delete dir="${opencms.output.distfiles}" />
+	</target>
+	
+	<target name="generate-schema">
+		<taskdef name="mappingtool" classname="org.apache.openjpa.jdbc.ant.MappingToolTask" />
+		<for list="${databases}" param="db">
+			<sequential>
+				<if>
+					<and>
+						<available file="${basedir}/webapp/setup/database/@{db}/create_tables.sql" />
+						<not>
+							<equals arg1="mssql" arg2="@{db}" />
+						</not>
+					</and>
+					<then>
+						<property file="${basedir}/webapp/setup/database/@{db}/database.properties" />
+						<echo message="DRIVER: ${@{db}.driver}" />
+		     			<mappingtool schemaAction="build" readSchema="false" sqlFile="${basedir}/webapp/setup/database/@{db}/create_tables_gen.sql" schemaFile="${basedir}/webapp/setup/database/@{db}/jpa_schema.xml">
+							<config ConnectionDriverName="${@{db}.driver}" propertiesFile="${basedir}/persistence.xml" />
+						</mappingtool>
+					</then>
+				</if>
+			</sequential>
+		</for>
 	</target>
 
 	<target name="compile" depends="init" description="Compile the OpenCms classes">

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,10 +30,18 @@ package org.opencms.db;
 import org.opencms.ade.sitemap.shared.CmsAliasMode;
 import org.opencms.util.CmsUUID;
 
+import java.util.regex.Pattern;
+
 /**
  * This class represents an alias from a virtual path to a resource in the VFS.<p>
  */
 public class CmsAlias {
+
+    /** The regular expression which describes valid alias paths:
+     * one or more segments, each consisting of a slash at the front followed
+     * by one or more 'unreserved characters' for URIs (see RFC 2396).
+     */
+    public static final Pattern ALIAS_PATTERN = Pattern.compile("(?:/[a-zA-Z0-9-_\\.!~\\*\\'\\(\\)]+)+"); //$NON-NLS-1$
 
     /** The alias path. */
     protected String m_aliasPath;
@@ -47,13 +55,13 @@ public class CmsAlias {
     /** The structure id of the aliased page. */
     protected CmsUUID m_structureId;
 
-    /** 
+    /**
      * Creates a new alias.<p>
-     * 
-     * @param structureId the structure id of the aliased page 
-     * @param siteRoot the site root of the alias 
-     * @param aliasPath the alias path 
-     * @param mode the alias mode 
+     *
+     * @param structureId the structure id of the aliased page
+     * @param siteRoot the site root of the alias
+     * @param aliasPath the alias path
+     * @param mode the alias mode
      */
     public CmsAlias(CmsUUID structureId, String siteRoot, String aliasPath, CmsAliasMode mode) {
 
@@ -65,8 +73,8 @@ public class CmsAlias {
 
     /**
      * Gets the alias path.<p>
-     * 
-     * @return the alias path 
+     *
+     * @return the alias path
      */
     public String getAliasPath() {
 
@@ -75,8 +83,8 @@ public class CmsAlias {
 
     /**
      * Gets the alias mode.<p>
-     * 
-     * @return the alias mode 
+     *
+     * @return the alias mode
      */
     public CmsAliasMode getMode() {
 
@@ -85,8 +93,8 @@ public class CmsAlias {
 
     /**
      * Gets the alias site root.<p>
-     * 
-     * @return the alias site root 
+     *
+     * @return the alias site root
      */
     public String getSiteRoot() {
 
@@ -95,8 +103,8 @@ public class CmsAlias {
 
     /**
      * Gets the structure id of the aliased resource.<p>
-     * 
-     * @return the structure id of the aliased resource 
+     *
+     * @return the structure id of the aliased resource
      */
     public CmsUUID getStructureId() {
 
@@ -105,7 +113,7 @@ public class CmsAlias {
 
     /**
      * Checks whether the mode of the alias is 'permanent redirect'.<p>
-     * 
+     *
      * @return true if the mode of the alias is 'permanent redirect'
      */
     public boolean isPermanentRedirect() {
@@ -115,11 +123,12 @@ public class CmsAlias {
 
     /**
      * Checks whether the mode of the alias is a redirect type (permanent or temporary).<p>
-     * 
-     * @return true if the mode of the alias is a redirect type 
+     *
+     * @return true if the mode of the alias is a redirect type
      */
     public boolean isRedirect() {
 
         return m_mode.equals(CmsAliasMode.permanentRedirect) || m_mode.equals(CmsAliasMode.redirect);
     }
+
 }

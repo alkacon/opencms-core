@@ -107,6 +107,10 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
         indexes.add("CREATE_INDEX_CMS_ONLINE_URLNAME_MAPPINGS_01_IDX");
         indexes.add("CREATE_INDEX_CMS_ONLINE_URLNAME_MAPPINGS_02_IDX");
 
+        indexes = new ArrayList<String>();
+        elements.put("CMS_ALIASES", indexes);
+        indexes.add("CMS_ALIASES_IDX_1");
+
         Map<String, String> replacer = Collections.emptyMap();
         for (Map.Entry<String, List<String>> entry : elements.entrySet()) {
             String table = entry.getKey();

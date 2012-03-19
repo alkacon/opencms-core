@@ -19,23 +19,19 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.alias;
+package org.opencms.main;
 
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.db.CmsAlias;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.CmsLog;
-import org.opencms.main.CmsResourceInitException;
-import org.opencms.main.I_CmsResourceInit;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
@@ -50,7 +46,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Resource init handler for detail-pages.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsAliasResourceHandler implements I_CmsResourceInit {
@@ -80,7 +76,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
         // check if the resource comes from the /system/ folder
         abort |= cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
         if (abort) {
-            // skip in all cases above 
+            // skip in all cases above
             return resource;
         }
 
@@ -102,7 +98,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
             } finally {
                 cms.getRequestContext().setSiteRoot(oldSiteRoot);
             }
-            List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(siteRoot, sitePath);
+            List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(cms, siteRoot, sitePath);
             assert aliases.size() < 2;
             if (aliases.size() == 1) {
                 CmsAlias alias = aliases.get(0);
@@ -111,13 +107,13 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
                     // response may be null if we're coming from the locale manager
                     CmsResourceInitException resInitException = new CmsResourceInitException(getClass());
                     if (res != null) {
-                        // preserve request parameters for the redirect 
+                        // preserve request parameters for the redirect
                         String query = req.getQueryString();
                         String link = OpenCms.getLinkManager().substituteLink(cms, aliasTarget);
                         if (query != null) {
                             link += "?" + query;
                         }
-                        // disable 404 handler 
+                        // disable 404 handler
                         resInitException.setClearErrors(true);
                         if (alias.isPermanentRedirect()) {
                             res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
@@ -128,7 +124,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
                     }
                     throw resInitException;
                 } else {
-                    // not a redirect, just proceed with the aliased resource 
+                    // not a redirect, just proceed with the aliased resource
                     cms.getRequestContext().setUri(cms.getSitePath(aliasTarget));
                     return aliasTarget;
                 }
@@ -137,7 +133,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
             // trigger the permission denied handler
             throw e;
         } catch (CmsResourceInitException e) {
-            // just rethrow so the catch(Throwable e) code isn't executed 
+            // just rethrow so the catch(Throwable e) code isn't executed
             throw e;
         } catch (Throwable e) {
             String uri = cms.getRequestContext().getUri();

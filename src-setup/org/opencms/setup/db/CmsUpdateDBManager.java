@@ -225,12 +225,17 @@ public class CmsUpdateDBManager {
         CmsSetupDb setupDb = new CmsSetupDb(null);
 
         try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), m_dbPools.get(
-                pool).get("pwd"));
+            setupDb.setConnection(
+                getDbDriver(pool),
+                getDbUrl(pool),
+                getDbParams(pool),
+                getDbUser(pool),
+                m_dbPools.get(pool).get("pwd"));
 
             if (!setupDb.hasTableOrColumn("CMS_USERS", "USER_OU")) {
                 m_detectedVersion = 6;
-            } else if (!setupDb.hasTableOrColumn("CMS_LOG", null)) {
+            } else {
+                // change this later for V 8.5
                 m_detectedVersion = 7;
             }
         } finally {
@@ -263,8 +268,7 @@ public class CmsUpdateDBManager {
                 m_plugins.add(new org.opencms.setup.db.update6to7.CmsUpdateDBAlterTables());
                 m_plugins.add(new org.opencms.setup.db.update6to7.CmsUpdateDBDropBackupTables());
                 m_plugins.add(new org.opencms.setup.db.update6to7.CmsUpdateDBCreateIndexes7());
-            }
-            if (getDetectedVersion() < 8) {
+            } else {
                 m_plugins.add(new org.opencms.setup.db.update7to8.CmsUpdateDBNewTables());
             }
         } catch (Throwable t) {

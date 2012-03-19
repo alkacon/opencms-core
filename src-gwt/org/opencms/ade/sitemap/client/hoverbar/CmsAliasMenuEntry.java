@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,6 +35,7 @@ import org.opencms.ade.sitemap.shared.CmsAliasBean;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 
@@ -49,14 +50,15 @@ public class CmsAliasMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsAliasMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
         //setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoPage());
         setLabel(org.opencms.ade.sitemap.client.Messages.get().key(Messages.GUI_SEO_OPTIONS_0));
+        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().seo());
         setActive(true);
         setVisible(true);
     }
@@ -74,7 +76,7 @@ public class CmsAliasMenuEntry extends A_CmsSitemapMenuEntry {
         if (structureId == null) {
             structureId = entry.getId();
         }
-        // use another final variable so that we can use it in the callback 
+        // use another final variable so that we can use it in the callback
         final CmsUUID constStructureId = structureId;
         CmsRpcAction<CmsListInfoBean> infoAction = new CmsRpcAction<CmsListInfoBean>() {
 

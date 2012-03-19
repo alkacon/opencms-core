@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -114,7 +114,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -125,9 +124,9 @@ import com.google.common.collect.Ordering;
 
 /**
  * Handles all RPC services related to the vfs sitemap.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
@@ -144,9 +143,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         /**
          * Creates a new LockInfo object.<p>
-         * 
-         * @param lock the lock state 
-         * @param wasJustLocked true if the lock was just locked 
+         *
+         * @param lock the lock state
+         * @param wasJustLocked true if the lock was just locked
          */
         public LockInfo(CmsLock lock, boolean wasJustLocked) {
 
@@ -154,10 +153,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             m_wasJustLocked = wasJustLocked;
         }
 
-        /** 
+        /**
          * Returns the lock state.<p>
-         * 
-         * @return the lock state 
+         *
+         * @return the lock state
          */
         public CmsLock getLock() {
 
@@ -165,18 +164,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
 
         /**
-         * Returns true if the lock was just locked.<p> 
-         * 
-         * @return true if the lock was just locked 
+         * Returns true if the lock was just locked.<p>
+         *
+         * @return true if the lock was just locked
          */
         public boolean wasJustLocked() {
 
             return m_wasJustLocked;
         }
     }
-
-    /** The regular expression which describes valid alias paths.  */
-    public static final Pattern ALIAS_PATTERN = Pattern.compile("(?:/[a-zA-Z0-9_-]+)+"); //$NON-NLS-1$
 
     /** The configuration key for the functionDetail attribute in the container.info property. */
     public static final String KEY_FUNCTION_DETAIL = "functionDetail"; //$NON-NLS-1$
@@ -204,9 +200,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns a new configured service instance.<p>
-     * 
+     *
      * @param request the current request
-     * 
+     *
      * @return a new service instance
      */
     public static CmsVfsSitemapService newInstance(HttpServletRequest request) {
@@ -293,11 +289,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     page = getCmsObject().readDefaultFile(resource);
                 }
                 if (page != null) {
-                    List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForStructureId(page.getStructureId());
+                    List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForStructureId(
+                        getCmsObject(),
+                        page.getStructureId());
                     int counter = 1;
                     for (CmsAlias alias : aliases) {
                         String aliasPath = alias.getAliasPath();
-                        additional.put(Messages.get().getBundle().key(Messages.GUI_ALIAS_0) + counter, aliasPath); //$NON-NLS-1$
+                        additional.put(Messages.get().getBundle().key(Messages.GUI_ALIAS_0) + " " + counter, aliasPath); //$NON-NLS-1$
                         counter += 1;
                     }
                 }
@@ -544,7 +542,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             aliases.add(alias);
         }
         try {
-            aliasManager.saveAliases(structureId, aliases);
+            aliasManager.saveAliases(cms, structureId, aliases);
         } catch (Throwable e) {
             error(e);
         }
@@ -564,7 +562,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     public Map<String, String> validateAliases(CmsUUID uuid, Map<String, String> aliasPaths) throws CmsRpcException {
 
         try {
-            return internalValidateAliases(uuid, aliasPaths);
+            return internalValidateAliases(
+                uuid,
+                aliasPaths,
+                OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
         } catch (Throwable e) {
             error(e);
         }
@@ -574,26 +575,27 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Checks whether a given string is a valid alias path.<p>
-     * 
-     * @param path the path to check 
-     * 
-     * @return null if the string is a valid alias path, else an error message 
+     *
+     * @param path the path to check
+     * @param locale the locale to use for validation messages
+     *
+     * @return null if the string is a valid alias path, else an error message
      */
-    protected String checkValidAliasPath(String path) {
+    protected String checkValidAliasPath(String path, Locale locale) {
 
-        if (ALIAS_PATTERN.matcher(path).matches()) {
+        if (org.opencms.db.CmsAlias.ALIAS_PATTERN.matcher(path).matches()) {
             return null;
         } else {
-            return Messages.get().getBundle().key(Messages.ERR_ALIAS_INVALID_PATH_0); //$NON-NLS-1$
+            return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_INVALID_PATH_0); //$NON-NLS-1$
         }
     }
 
     /**
      * Converts a server-side alias object to an alias bean.<p>
-     * 
-     * @param alias the server-side alias object  
-     * 
-     * @return the client-side alias bean  
+     *
+     * @param alias the server-side alias object
+     *
+     * @return the client-side alias bean
      */
     protected CmsAliasBean convertAliasToBean(CmsAlias alias) {
 
@@ -602,12 +604,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Creates a "broken link" bean based on a resource.<p>
-     * 
-     * @param resource the resource 
-     * 
-     * @return the "broken link" bean with the data from the resource 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource
+     *
+     * @return the "broken link" bean with the data from the resource
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsBrokenLinkBean createSitemapBrokenLinkBean(CmsResource resource) throws CmsException {
 
@@ -624,11 +626,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * Locks the given resource with a temporary, if not already locked by the current user.
      * Will throw an exception if the resource could not be locked for the current user.<p>
-     * 
+     *
      * @param resource the resource to lock
-     * 
+     *
      * @return the assigned lock
-     * 
+     *
      * @throws CmsException if the resource could not be locked
      */
     protected LockInfo ensureLockAndGetInfo(CmsResource resource) throws CmsException {
@@ -657,16 +659,16 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Implementation of the getAliasesForPage method.<p>
-     * 
-     * @param uuid the structure id of the page 
-     * @return the aliases for the given page 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param uuid the structure id of the page
+     * @return the aliases for the given page
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsAliasBean> internalGetAliasesForPage(CmsUUID uuid) throws CmsException {
 
         CmsAliasManager aliasManager = OpenCms.getAliasManager();
-        List<CmsAlias> aliases = aliasManager.getAliasesForStructureId(uuid);
+        List<CmsAlias> aliases = aliasManager.getAliasesForStructureId(getCmsObject(), uuid);
         List<CmsAliasBean> result = new ArrayList<CmsAliasBean>();
         for (CmsAlias alias : aliases) {
             CmsAliasBean bean = convertAliasToBean(alias);
@@ -677,15 +679,16 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * The internal method used for validating aliases.<p>
-     * 
-     * @param uuid the structure id of the resource whose aliases are being validated 
-     * @param aliasPaths a map from (arbitrary) ids to alias paths 
-     * 
-     * @return a map from the same ids to validation error messages 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param uuid the structure id of the resource whose aliases are being validated
+     * @param aliasPaths a map from (arbitrary) ids to alias paths
+     * @param locale the locale for validation messages
+     *
+     * @return a map from the same ids to validation error messages
+     *
+     * @throws CmsException if something goes wrong
      */
-    protected Map<String, String> internalValidateAliases(CmsUUID uuid, Map<String, String> aliasPaths)
+    protected Map<String, String> internalValidateAliases(CmsUUID uuid, Map<String, String> aliasPaths, Locale locale)
     throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -699,20 +702,21 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
         Map<String, String> errorMessagesByPath = new HashMap<String, String>();
         for (String path : duplicatePaths) {
-            errorMessagesByPath.put(path, Messages.get().getBundle().key(Messages.ERR_ALIAS_DUPLICATE_PATH_0)); //$NON-NLS-1$
+            errorMessagesByPath.put(path, Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_DUPLICATE_PATH_0)); //$NON-NLS-1$
         }
         seenPaths.removeAll(duplicatePaths);
 
         for (String path : seenPaths) {
-            String pathError = checkValidAliasPath(path);
+            String pathError = checkValidAliasPath(path, locale);
             if (pathError != null) {
                 errorMessagesByPath.put(path, pathError);
             } else {
                 errorMessagesByPath.put(path, null);
                 if (cms.existsResource(path, CmsResourceFilter.ALL)) {
-                    errorMessagesByPath.put(path, Messages.get().getBundle().key(Messages.ERR_ALIAS_IS_VFS_0)); //$NON-NLS-1$
+                    errorMessagesByPath.put(path, Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IS_VFS_0)); //$NON-NLS-1$
                 } else {
                     List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(
+                        cms,
                         cms.getRequestContext().getSiteRoot(),
                         path);
                     for (CmsAlias alias : aliases) {
@@ -722,7 +726,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                                 CmsResource resource = cms.readResource(otherStructureId, CmsResourceFilter.ALL);
                                 errorMessagesByPath.put(
                                     path,
-                                    Messages.get().getBundle().key(
+                                    Messages.get().getBundle(locale).key(
                                         Messages.ERR_ALIAS_ALREADY_USED_1,
                                         resource.getRootPath()));
                                 break;
@@ -730,7 +734,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                                 // this may happen if there are outdated entries in the database table
                                 errorMessagesByPath.put(
                                     path,
-                                    Messages.get().getBundle().key(Messages.ERR_ALIAS_ALREADY_USED_UNKNOWN_0)); //$NON-NLS-1$
+                                    Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_ALREADY_USED_UNKNOWN_0)); //$NON-NLS-1$
                                 break;
                             }
                         }
@@ -752,13 +756,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Internal method for saving a sitemap.<p>
-     * 
+     *
      * @param entryPoint the URI of the sitemap to save
      * @param change the change to save
-     * 
+     *
      * @return list of changed sitemap entries
-     * 
-     * @throws CmsException 
+     *
+     * @throws CmsException
      */
     protected CmsSitemapChange saveInternal(String entryPoint, CmsSitemapChange change) throws CmsException {
 
@@ -782,12 +786,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Converts a sequence of properties to a map of client-side property beans.<p>
-     * 
+     *
      * @param props the sequence of properties
-     * @param preserveOrigin if true, the origin of the properties should be copied to the client properties 
-     *  
-     * @return the map of client properties 
-     * 
+     * @param preserveOrigin if true, the origin of the properties should be copied to the client properties
+     *
+     * @return the map of client properties
+     *
      */
     Map<String, CmsClientProperty> createClientProperties(Iterable<CmsProperty> props, boolean preserveOrigin) {
 
@@ -801,11 +805,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Removes unnecessary locales from a container page.<p>
-     * 
-     * @param containerPage the container page which should be changed 
-     * @param localeRes the resource used to determine the locale 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param containerPage the container page which should be changed
+     * @param localeRes the resource used to determine the locale
+     *
+     * @throws CmsException if something goes wrong
      */
     void ensureSingleLocale(CmsXmlContainerPage containerPage, CmsResource localeRes) throws CmsException {
 
@@ -815,7 +819,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         Locale defaultLocale = CmsLocaleManager.getDefaultLocale();
         if (containerPage.hasLocale(mainLocale)) {
             removeAllLocalesExcept(containerPage, mainLocale);
-            // remove other locales 
+            // remove other locales
         } else if (containerPage.hasLocale(defaultLocale)) {
             containerPage.copyLocale(defaultLocale, mainLocale);
             removeAllLocalesExcept(containerPage, mainLocale);
@@ -829,14 +833,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Gets the properties of a resource as a map of client properties.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      * @param res the resource whose properties to read
      * @param search true if the inherited properties should be read
-     *  
+     *
      * @return the client properties as a map
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     Map<String, CmsClientProperty> getClientProperties(CmsObject cms, CmsResource res, boolean search)
     throws CmsException {
@@ -848,14 +852,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Adds a function detail element to a container page.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param page the container page which should be changed 
-     * @param containerName the name of the container which should be used for function detail elements 
-     * @param elementId the structure id of the element to add  
+     *
+     * @param cms the current CMS context
+     * @param page the container page which should be changed
+     * @param containerName the name of the container which should be used for function detail elements
+     * @param elementId the structure id of the element to add
      * @param formatterId the structure id of the formatter for the element
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private void addFunctionDetailElement(
         CmsObject cms,
@@ -905,12 +909,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Applys the given change to the VFS.<p>
-     * 
+     *
      * @param entryPoint the sitemap entry-point
      * @param change the change
-     * 
-     * @return the updated entry 
-     * 
+     *
+     * @return the updated entry
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsSitemapChange applyChange(String entryPoint, CmsSitemapChange change) throws CmsException {
@@ -948,11 +952,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Changes the navigation for a moved entry and its neighbors.<p>
-     * 
-     * @param change the sitemap change 
-     * @param entryFolder the moved entry 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param change the sitemap change
+     * @param entryFolder the moved entry
+     *
+     * @throws CmsException if something goes wrong
      */
     private void applyNavigationChanges(CmsSitemapChange change, CmsResource entryFolder) throws CmsException {
 
@@ -988,7 +992,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 try {
                     cms.unlockResource(lockedRes);
                 } catch (CmsException e) {
-                    // we catch this because we still want to unlock the other resources 
+                    // we catch this because we still want to unlock the other resources
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
@@ -997,10 +1001,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Creates a client property bean from a server-side property.<p>
-     * 
+     *
      * @param prop the property from which to create the client property
      * @param preserveOrigin if true, the origin will be copied into the new object
-     *  
+     *
      * @return the new client property
      */
     private CmsClientProperty createClientProperty(CmsProperty prop, boolean preserveOrigin) {
@@ -1017,7 +1021,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Creates a navigation level type info.<p>
-     * 
+     *
      * @return the navigation level type info bean
      */
     private CmsNewResourceInfo createNavigationLevelTypeInfo() {
@@ -1042,12 +1046,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Creates a new page in navigation.<p>
-     * 
+     *
      * @param entryPoint the site-map entry-point
      * @param change the new change
-     * 
-     * @return the updated entry 
-     * 
+     *
+     * @return the updated entry
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsClientSitemapEntry createNewEntry(String entryPoint, CmsSitemapChange change) throws CmsException {
@@ -1084,7 +1088,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 boolean idWasNull = change.getEntryId() == null;
                 // we don'T really need to create a folder object here anymore.
                 if (idWasNull) {
-                    // need this for calculateNavPosition, even though the id will get overwritten 
+                    // need this for calculateNavPosition, even though the id will get overwritten
                     change.setEntryId(new CmsUUID());
                 }
 
@@ -1136,7 +1140,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 boolean isContainerPage = change.getNewResourceTypeId() == CmsResourceTypeXmlContainerPage.getContainerPageTypeIdSafely();
                 if (isContainerPage && (copyPage != null)) {
 
-                    // do *NOT* get this from the cache, because we perform some destructive operation on the XML content 
+                    // do *NOT* get this from the cache, because we perform some destructive operation on the XML content
                     CmsXmlContainerPage page = CmsXmlContainerPageFactory.unmarshal(
                         cms,
                         cms.readFile(copyPage),
@@ -1185,14 +1189,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Creates a new resource info to a given model page resource.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param modelResource the model page resource
      * @param locale the locale used for retrieving descriptions/titles
-     * 
+     *
      * @return the new resource info
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private CmsNewResourceInfo createNewResourceInfo(CmsObject cms, CmsResource modelResource, Locale locale)
     throws CmsException {
@@ -1245,7 +1249,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 try {
                     navpos = Float.valueOf(navposStr);
                 } catch (NumberFormatException e) {
-                    // noop 
+                    // noop
                 }
             }
         } catch (CmsException e) {
@@ -1263,10 +1267,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Creates a resource type info bean for a given resource type.<p>
-     * 
+     *
      * @param resType the resource type
      * @param copyResource the structure id of the copy resource
-     *  
+     *
      * @return the resource type info bean
      */
     private CmsNewResourceInfo createResourceTypeInfo(I_CmsResourceType resType, CmsResource copyResource) {
@@ -1295,12 +1299,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Deletes a resource according to the change data.<p>
-     * 
+     *
      * @param change the change data
-     * 
+     *
      * @return CmsClientSitemapEntry always null
-     * 
-     * 
+     *
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsClientSitemapEntry delete(CmsSitemapChange change) throws CmsException {
@@ -1315,11 +1319,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Generates a client side lock info object representing the current lock state of the given resource.<p>
-     * 
+     *
      * @param resource the resource
-     * 
+     *
      * @return the client lock
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsClientLock generateClientLock(CmsResource resource) throws CmsException {
@@ -1338,10 +1342,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Generates a list of property object to save to the sitemap entry folder to apply the given change.<p>
-     * 
+     *
      * @param change the change
      * @param entryFolder the entry folder
-     * 
+     *
      * @return the property objects
      */
     private List<CmsProperty> generateInheritProperties(CmsSitemapChange change, CmsResource entryFolder) {
@@ -1370,9 +1374,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Generates a list of property object to save to the sitemap entry resource to apply the given change.<p>
-     * 
+     *
      * @param change the change
-     * 
+     *
      * @return the property objects
      */
     private List<CmsProperty> generateOwnProperties(CmsSitemapChange change) {
@@ -1395,11 +1399,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Generates a list of property values inherited to the site-map root entry.<p>
-     * 
+     *
      * @param rootPath the root entry name
-     * 
+     *
      * @return the list of property values inherited to the site-map root entry
-     * 
+     *
      * @throws CmsException if something goes wrong reading the properties
      */
     private Map<String, CmsClientProperty> generateParentProperties(String rootPath) throws CmsException {
@@ -1424,17 +1428,17 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Returns the sitemap children for the given path with all descendants up to the given level or to the given target path, ie. 
-     * <dl><dt>levels=1 </dt><dd>only children</dd><dt>levels=2</dt><dd>children and great children</dd></dl>
+     * Returns the sitemap children for the given path with all descendants up to the given level or to the given target path, ie.
+     * <dl><dt>levels=1 <dd>only children<dt>levels=2<dd>children and great children</dl>
      * and so on.<p>
-     * 
+     *
      * @param root the site relative root
      * @param levels the levels to recurse
      * @param targetPath the target path
-     * 
+     *
      * @return the sitemap children
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private List<CmsClientSitemapEntry> getChildren(String root, int levels, String targetPath) throws CmsException {
 
@@ -1462,7 +1466,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns the clipboard data from the current user.<p>
-     * 
+     *
      * @return the clipboard data
      */
     private CmsSitemapClipboardData getClipboardData() {
@@ -1475,7 +1479,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns the deleted list from the current user.<p>
-     * 
+     *
      * @return the deleted list
      */
     private LinkedHashMap<CmsUUID, CmsClientSitemapEntry> getDeletedList() {
@@ -1519,10 +1523,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Gets the type id for entry point folders.<p>
-     * 
-     * @return the type id for entry point folders 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the type id for entry point folders
+     *
+     * @throws CmsException if something goes wrong
      */
     private int getEntryPointType() throws CmsException {
 
@@ -1531,8 +1535,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Gets the container name for function detail elements depending on the parent folder.<p>
-     * 
-     * @param parent the parent folder 
+     *
+     * @param parent the parent folder
      * @return the name of the function detail container
      */
     private String getFunctionDetailContainerName(CmsResource parent) {
@@ -1568,7 +1572,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns the modified list from the current user.<p>
-     * 
+     *
      * @return the modified list
      */
     private LinkedHashMap<CmsUUID, CmsClientSitemapEntry> getModifiedList() {
@@ -1605,7 +1609,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns a navigation builder reference.<p>
-     * 
+     *
      * @return the navigation builder
      */
     private CmsJspNavBuilder getNavBuilder() {
@@ -1618,11 +1622,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns the new resource infos.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param configData the configuration data from which the new resource infos should be read 
+     *
+     * @param cms the current CMS context
+     * @param configData the configuration data from which the new resource infos should be read
      * @param locale locale used for retrieving descriptions/titles
-     * 
+     *
      * @return the new resource infos
      */
     private List<CmsNewResourceInfo> getNewResourceInfos(CmsObject cms, CmsADEConfigData configData, Locale locale) {
@@ -1647,11 +1651,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Gets the names of all available properties.<p>
-     * 
-     * @param cms the CMS context 
-     * 
-     * @return the list of all property names 
-     *  
+     *
+     * @param cms the CMS context
+     *
+     * @return the list of all property names
+     *
      * @throws CmsException
      */
     private List<String> getPropertyNames(CmsObject cms) throws CmsException {
@@ -1666,14 +1670,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Gets the resource type info beans for types for which new detail pages can be created.<p>
-     * 
+     *
      * @param cms the current CMS context
      * @param resourceTypeConfigs the resource type configurations
      * @param functionReferences the function references
      * @param modelResource the model resource
-     * @param locale the locale used for retrieving descriptions/titles  
-     * 
-     * @return the resource type info beans for types for which new detail pages can be created 
+     * @param locale the locale used for retrieving descriptions/titles
+     *
+     * @return the resource type info beans for types for which new detail pages can be created
      */
     private List<CmsNewResourceInfo> getResourceTypeInfos(
         CmsObject cms,
@@ -1735,12 +1739,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Reeds the site root entry.<p>
-     * 
+     *
      * @param rootPath the root path of the sitemap root
      * @param targetPath the target path to open
-     * 
+     *
      * @return the site root entry
-     * 
+     *
      * @throws CmsSecurityException in case of insufficient permissions
      * @throws CmsException if something goes wrong
      */
@@ -1763,11 +1767,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns the sitemap info for the given base path.<p>
-     * 
+     *
      * @param basePath the base path
-     * 
+     *
      * @return the sitemap info
-     * 
+     *
      * @throws CmsException if something goes wrong reading the resources
      */
     private CmsSitemapInfo getSitemapInfo(String basePath) throws CmsException {
@@ -1794,7 +1798,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns the workplace locale for the current user.<p>
-     * 
+     *
      * @return the workplace locale
      */
     private Locale getWorkplaceLocale() {
@@ -1811,9 +1815,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Checks whether the sitemap change has default file changes.<p>
-     * 
-     * @param change a sitemap change 
-     * @return true if the change would change the default file 
+     *
+     * @param change a sitemap change
+     * @return true if the change would change the default file
      */
     private boolean hasDefaultFileChanges(CmsSitemapChange change) {
 
@@ -1823,24 +1827,24 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Checks whether the sitemap change has changes for the sitemap entry resource.<p>
-     * 
-     * @param change the sitemap change 
-     * @return true if the change would change the original sitemap entry resource 
+     *
+     * @param change the sitemap change
+     * @return true if the change would change the original sitemap entry resource
      */
     private boolean hasOwnChanges(CmsSitemapChange change) {
 
         return !change.isNew();
-        //TODO: optimize this! 
+        //TODO: optimize this!
     }
 
     /**
      * Checks whether a resource is a default file of a folder.<p>
-     * 
-     * @param resource the resource to check 
-     * 
-     * @return true if the resource is the default file of a folder 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource to check
+     *
+     * @return true if the resource is the default file of a folder
+     *
+     * @throws CmsException if something goes wrong
      */
     private boolean isDefaultFile(CmsResource resource) throws CmsException {
 
@@ -1856,9 +1860,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Checks if the toolbar should be displayed.<p>
-     * 
-     * @param request the current request to get the default locale from 
-     * 
+     *
+     * @param request the current request to get the default locale from
+     *
      * @return <code>true</code> if the toolbar should be displayed
      */
     private boolean isDisplayToolbar(HttpServletRequest request) {
@@ -1874,9 +1878,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns if the given type id matches the xml-redirect resource type.<p>
-     * 
+     *
      * @param typeId the resource type id
-     * 
+     *
      * @return <code>true</code> if the given type id matches the xml-redirect resource type
      */
     private boolean isRedirectType(int typeId) {
@@ -1890,9 +1894,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Returns if the given nav-element resembles a sub-sitemap entry-point.<p>
-     * 
+     *
      * @param navElement the nav-element
-     * 
+     *
      * @return <code>true</code> if the given nav-element resembles a sub-sitemap entry-point.<p>
      * @throws CmsException if something goes wrong
      */
@@ -1903,9 +1907,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Applys the given changes to the entry.<p>
-     * 
+     *
      * @param change the change to apply
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void modifyEntry(CmsSitemapChange change) throws CmsException {
@@ -1983,10 +1987,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Helper method for removing all locales except one from a container page.<p>
-     * 
+     *
      * @param page the container page to proces
-     * @param localeToKeep the locale which should be kept 
-     * 
+     * @param localeToKeep the locale which should be kept
+     *
      * @throws CmsXmlException if something goes wrong
      */
     private void removeAllLocalesExcept(CmsXmlContainerPage page, Locale localeToKeep) throws CmsXmlException {
@@ -2001,11 +2005,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Applys the given remove change.<p>
-     * 
+     *
      * @param change the change to apply
-     * 
+     *
      * @return the changed client sitemap entry or <code>null</code>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsSitemapChange removeEntryFromNavigation(CmsSitemapChange change) throws CmsException {
@@ -2029,11 +2033,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Saves the detail page information of a sitemap to the sitemap's configuration file.<p>
-     * 
+     *
      * @param detailPages saves the detailpage configuration
      * @param resource the configuration file resource
-     * @param newId the structure id to use for new detail page entries 
-     * 
+     * @param newId the structure id to use for new detail page entries
+     *
      * @throws CmsException
      */
     private void saveDetailPages(List<CmsDetailPageInfo> detailPages, CmsResource resource, CmsUUID newId)
@@ -2046,10 +2050,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Saves the given clipboard data to the session.<p>
-     * 
+     *
      * @param clipboardData the clipboard data to save
-     * 
-     * @throws CmsException if something goes wrong writing the user 
+     *
+     * @throws CmsException if something goes wrong writing the user
      */
     private void setClipboardData(CmsSitemapClipboardData clipboardData) throws CmsException {
 
@@ -2080,10 +2084,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Determines if the title property of the default file should be changed.<p>
-     * 
+     *
      * @param properties the current default file properties
      * @param folderNavtext the 'NavText' property of the folder
-     * 
+     *
      * @return <code>true</code> if the title property should be changed
      */
     private boolean shouldChangeDefaultFileTitle(Map<String, CmsProperty> properties, CmsProperty folderNavtext) {
@@ -2097,9 +2101,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Determines if the title property should be changed in case of a 'NavText' change.<p>
-     * 
+     *
      * @param properties the current resource properties
-     * 
+     *
      * @return <code>true</code> if the title property should be changed in case of a 'NavText' change
      */
     private boolean shouldChangeTitle(Map<String, CmsProperty> properties) {
@@ -2114,12 +2118,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Converts a jsp navigation element into a client sitemap entry.<p>
-     * 
+     *
      * @param navElement the jsp navigation element
      * @param isRoot true if the entry is a root entry
-     * 
-     * @return the client sitemap entry 
-     * @throws CmsException 
+     *
+     * @return the client sitemap entry
+     * @throws CmsException
      */
     private CmsClientSitemapEntry toClientEntry(CmsJspNavElement navElement, boolean isRoot) throws CmsException {
 
@@ -2181,7 +2185,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         clientEntry.setOwnProperties(ownProps);
         clientEntry.setDefaultFileProperties(defaultFileProps);
         clientEntry.setSitePath(entryFolder != null ? cms.getSitePath(entryFolder) : path);
-        //CHECK: assuming that, if entryPage refers to the default file, the lock state of the folder 
+        //CHECK: assuming that, if entryPage refers to the default file, the lock state of the folder
         clientEntry.setLock(generateClientLock(entryPage));
         clientEntry.setInNavigation(isRoot || navElement.isInNavigation());
         String type = OpenCms.getResourceManager().getResourceType(ownResource).getTypeName();
@@ -2191,11 +2195,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Un-deletes a resource according to the change data.<p>
-     * 
+     *
      * @param change the change data
-     * 
+     *
      * @return the changed entry or <code>null</code>
-     *  
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsSitemapChange undelete(CmsSitemapChange change) throws CmsException {
@@ -2217,11 +2221,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Updates the navigation position for a resource.<p>
-     * 
+     *
      * @param res the resource for which to update the navigation position
      * @param change the sitemap change
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private void updateNavPos(CmsResource res, CmsSitemapChange change) throws CmsException {
 
@@ -2232,13 +2236,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /**
      * Updates properties for a resource and possibly its detail page.<p>
-     *     
-     * @param cms the CMS context 
-     * @param ownRes the resource 
-     * @param defaultFileRes the default file resource (possibly null) 
-     * @param propertyModifications the property modifications 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context
+     * @param ownRes the resource
+     * @param defaultFileRes the default file resource (possibly null)
+     * @param propertyModifications the property modifications
+     *
+     * @throws CmsException if something goes wrong
      */
     private void updateProperties(
         CmsObject cms,
