@@ -238,6 +238,15 @@ public final class Messages {
     public static final String GUI_LOCK_REPORT_UNLOCK_MESSAGE_0 = "GUI_LOCK_REPORT_UNLOCK_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_REPORT_UNLOCK_ALL_MESSAGE_0 = "GUI_LOCK_REPORT_UNLOCK_ALL_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_REPORT_STEAL_LOCK_MESSAGE_0 = "GUI_LOCK_REPORT_STEAL_LOCK_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_REPORT_STEAL_ALL_LOCKS_MESSAGE_0 = "GUI_LOCK_REPORT_STEAL_ALL_LOCKS_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -374,6 +383,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCK_ALL_0 = "GUI_UNLOCK_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNLOCK_0 = "GUI_UNLOCK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCK_NOTIFICATION_2 = "GUI_UNLOCK_NOTIFICATION_2";

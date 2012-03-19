@@ -83,5 +83,4 @@ public class CmsLockReportInfo implements IsSerializable {
 
         return m_resourceInfo;
     }
-
 }
