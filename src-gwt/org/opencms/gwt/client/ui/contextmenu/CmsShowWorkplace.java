@@ -61,9 +61,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
 
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-                if (handler.ensureLockOnResource(structureId)) {
-                    openWorkplace(structureId);
-                }
+                openWorkplace(structureId);
             }
 
             public String getCommandIconClass() {
@@ -119,23 +117,23 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
      */
     protected static native void openWorkplace(String path, int winWidth, int winHeight, int winLeft, int winTop) /*-{
 
-        if ($wnd.opener && $wnd.opener != self) {
-            $wnd.opener.location.href = path;
-            $wnd.opener.focus();
-        } else {
-            var openerStr = 'width='
-                    + winWidth
-                    + ',height='
-                    + winHeight
-                    + ',left='
-                    + winLeft
-                    + ',top='
-                    + winTop
-                    + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
-            var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-            if (deWindow) {
-                deWindow.focus();
-            }
-        }
+      if ($wnd.opener && $wnd.opener != self) {
+         $wnd.opener.location.href = path;
+         $wnd.opener.focus();
+      } else {
+         var openerStr = 'width='
+               + winWidth
+               + ',height='
+               + winHeight
+               + ',left='
+               + winLeft
+               + ',top='
+               + winTop
+               + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
+         var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
+         if (deWindow) {
+            deWindow.focus();
+         }
+      }
     }-*/;
 }
