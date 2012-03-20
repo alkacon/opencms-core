@@ -271,29 +271,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Returns the serialized element data.<p>
-     * 
-     * @param elementBean the element to serialize
-     * 
-     * @return the serialized element data
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public String getSerializedElementInfo(CmsContainerElementBean elementBean) throws Exception {
-
-        CmsObject cms = getCmsObject();
-        CmsContainerElement result = new CmsContainerElement();
-        CmsElementUtil util = new CmsElementUtil(
-            cms,
-            cms.getRequestContext().getUri(),
-            getThreadLocalRequest(),
-            getThreadLocalResponse(),
-            cms.getRequestContext().getLocale());
-        util.setElementInfo(elementBean, result);
-        return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
-    }
-
-    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, java.lang.String)
      */
     public Map<String, CmsContainerElementData> getElementsData(
@@ -342,7 +319,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             elementBean.initResource(cms);
             elementBean = CmsContainerElementBean.cloneWithSettings(
                 elementBean,
-                convertSettingValues(elementBean.getResource(), settings));
+                convertSettingValues(elementBean.getResource(), settings, new Locale(locale)));
             getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
             element = elemUtil.getElementData(elementBean, containers);
         } catch (Throwable e) {
@@ -420,6 +397,29 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             error(e);
         }
         return result;
+    }
+
+    /**
+     * Returns the serialized element data.<p>
+     * 
+     * @param elementBean the element to serialize
+     * 
+     * @return the serialized element data
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public String getSerializedElementInfo(CmsContainerElementBean elementBean) throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsContainerElement result = new CmsContainerElement();
+        CmsElementUtil util = new CmsElementUtil(
+            cms,
+            cms.getRequestContext().getUri(),
+            getThreadLocalRequest(),
+            getThreadLocalResponse(),
+            cms.getRequestContext().getLocale());
+        util.setElementInfo(elementBean, result);
+        return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
     }
 
     /**
@@ -598,26 +598,33 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @param resource the resource
      * @param settings the settings to convert
+     * @param locale the locale used for accessing the element settings 
      * 
      * @return the converted settings
      * @throws CmsException if something goes wrong 
      */
-    private Map<String, String> convertSettingValues(CmsResource resource, Map<String, String> settings)
+    private Map<String, String> convertSettingValues(CmsResource resource, Map<String, String> settings, Locale locale)
     throws CmsException {
 
         CmsObject cms = getCmsObject();
-        Map<String, CmsXmlContentProperty> settingsConf = OpenCms.getADEManager().getElementSettings(cms, resource);
-        Map<String, String> changedSettings = new HashMap<String, String>();
-        if (settings != null) {
-            for (Map.Entry<String, String> entry : settings.entrySet()) {
-                String settingName = entry.getKey();
-                String settingType = settingsConf.get(settingName).getType();
-                changedSettings.put(
-                    settingName,
-                    CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));
+        Locale origLocale = cms.getRequestContext().getLocale();
+        try {
+            cms.getRequestContext().setLocale(locale);
+            Map<String, CmsXmlContentProperty> settingsConf = OpenCms.getADEManager().getElementSettings(cms, resource);
+            Map<String, String> changedSettings = new HashMap<String, String>();
+            if (settings != null) {
+                for (Map.Entry<String, String> entry : settings.entrySet()) {
+                    String settingName = entry.getKey();
+                    String settingType = settingsConf.get(settingName).getType();
+                    changedSettings.put(
+                        settingName,
+                        CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));
+                }
             }
+            return changedSettings;
+        } finally {
+            cms.getRequestContext().setLocale(origLocale);
         }
-        return changedSettings;
     }
 
     /**
