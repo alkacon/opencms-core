@@ -37,6 +37,9 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADD_ALIAS_0 = "GUI_ADD_ALIAS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIAS_MOVED_0 = "GUI_ALIAS_MOVED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -266,6 +269,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REDIRECTION_FIELD_LABEL_0 = "GUI_REDIRECTION_FIELD_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REMOVE_ALIAS_0 = "GUI_REMOVE_ALIAS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RETURN_PAGE_NOT_FOUND_TEXT_0 = "GUI_RETURN_PAGE_NOT_FOUND_TEXT_0";

@@ -418,7 +418,9 @@ public class CmsAliasList extends Composite {
     protected PushButton createAddButton() {
 
         I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
-        return createIconButton(imagestyle.addIcon());
+        PushButton button = createIconButton(imagestyle.addIcon());
+        button.setTitle(Messages.get().key(Messages.GUI_ADD_ALIAS_0)); //$NON-NLS-1$
+        return button;
     }
 
     /**
@@ -429,7 +431,9 @@ public class CmsAliasList extends Composite {
     protected PushButton createDeleteButton() {
 
         I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
-        return createIconButton(imagestyle.deleteIcon());
+        PushButton button = createIconButton(imagestyle.deleteIcon());
+        button.setTitle(Messages.get().key(Messages.GUI_REMOVE_ALIAS_0)); //$NON-NLS-1$
+        return button;
     }
 
     /**
