@@ -478,9 +478,17 @@ public class CmsAliasList extends Composite {
     protected CmsSelectBox createSelectBox() {
 
         CmsSelectBox selectbox = new CmsSelectBox();
+        selectbox.setTitle(CmsAliasMode.page.toString(), Messages.get().key(Messages.GUI_ALIAS_PAGE_DESCRIPTION_0)); //$NON-NLS-1$
+        selectbox.setTitle(
+            CmsAliasMode.redirect.toString(),
+            Messages.get().key(Messages.GUI_ALIAS_REDIRECT_DESCRIPTION_0)); //$NON-NLS-1$
+        selectbox.setTitle(
+            CmsAliasMode.permanentRedirect.toString(),
+            Messages.get().key(Messages.GUI_ALIAS_MOVED_DESCRIPTION_0)); //$NON-NLS-1$
         selectbox.addOption(CmsAliasMode.page.toString(), Messages.get().key(Messages.GUI_ALIAS_PAGE_0)); //$NON-NLS-1$
         selectbox.addOption(CmsAliasMode.redirect.toString(), Messages.get().key(Messages.GUI_ALIAS_REDIRECT_0)); //$NON-NLS-1$
         selectbox.addOption(CmsAliasMode.permanentRedirect.toString(), Messages.get().key(Messages.GUI_ALIAS_MOVED_0)); //$NON-NLS-1$
+
         selectbox.getElement().getStyle().setWidth(100, Unit.PX);
         selectbox.getElement().getStyle().setMarginRight(5, Unit.PX);
         return selectbox;

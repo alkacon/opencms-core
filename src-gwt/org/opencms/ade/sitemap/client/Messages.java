@@ -43,10 +43,19 @@ public final class Messages {
     public static final String GUI_ALIAS_MOVED_0 = "GUI_ALIAS_MOVED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIAS_MOVED_DESCRIPTION_0 = "GUI_ALIAS_MOVED_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIAS_PAGE_0 = "GUI_ALIAS_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIAS_PAGE_DESCRIPTION_0 = "GUI_ALIAS_PAGE_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIAS_REDIRECT_0 = "GUI_ALIAS_REDIRECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIAS_REDIRECT_DESCRIPTION_0 = "GUI_ALIAS_REDIRECT_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_0 = "GUI_ALIASES_0";
