@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client.ui.groupeditor;
 
+import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -55,7 +56,15 @@ public class CmsInheritedOptionButton extends CmsPushButton implements I_CmsGrou
         super();
         setImageClass(I_CmsButton.ButtonData.INHERITED.getIconClass());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        setTitle(I_CmsButton.ButtonData.INHERITED.getTitle());
+
+        String path = elementWidget.getInheritanceInfo().getPath();
+        String title = I_CmsButton.ButtonData.INHERITED.getTitle();
+        if (path != null) {
+            title = Messages.get().key(
+                Messages.GUI_TITLE_INHERITED_FROM_1,
+                elementWidget.getInheritanceInfo().getPath()); //$NON-NLS-1$
+        }
+        setTitle(title);
         addStyleName(I_CmsButton.ButtonData.INHERITED.getIconClass());
         m_elementWidget = elementWidget;
     }
