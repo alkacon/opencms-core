@@ -166,9 +166,12 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     /**
      * Returns the cropping parameter.<p>
      * 
+     * @param imageHeight the original image height 
+     * @param imageWidth the original image width
+     * 
      * @return the cropping parameter
      */
-    public String getPreviewScaleParam() {
+    public String getPreviewScaleParam(int imageHeight, int imageWidth) {
 
         if (m_croppingParam != null) {
             return m_croppingParam.getRestrictedSizeScaleParam(
@@ -176,8 +179,12 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
                 CmsImagePreviewDialog.IMAGE_WIDTH_MAX);
         }
         CmsCroppingParamBean restricted = new CmsCroppingParamBean();
-        restricted.setTargetHeight(CmsImagePreviewDialog.IMAGE_HEIGHT_MAX);
-        restricted.setTargetWidth(CmsImagePreviewDialog.IMAGE_WIDTH_MAX);
+        restricted.setTargetHeight(imageHeight > CmsImagePreviewDialog.IMAGE_HEIGHT_MAX
+        ? CmsImagePreviewDialog.IMAGE_HEIGHT_MAX
+        : imageHeight);
+        restricted.setTargetWidth(imageWidth > CmsImagePreviewDialog.IMAGE_WIDTH_MAX
+        ? CmsImagePreviewDialog.IMAGE_WIDTH_MAX
+        : imageWidth);
         return restricted.toString();
     }
 
@@ -189,7 +196,7 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         m_croppingParam = event.getValue();
         m_previewDialog.resetPreviewImage(CmsCoreProvider.get().link(m_resourcePreview.getResourcePath())
             + "?"
-            + getPreviewScaleParam());
+            + getPreviewScaleParam(m_croppingParam.getOrgHeight(), m_croppingParam.getOrgWidth()));
     }
 
     /**

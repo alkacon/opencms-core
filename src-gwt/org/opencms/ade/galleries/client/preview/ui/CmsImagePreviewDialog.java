@@ -37,6 +37,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -89,6 +90,8 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     public CmsImagePreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
 
         super(dialogMode, dialogHeight, dialogWidth);
+        // set the line-height to the height of the preview panel to be able to center the image vertically
+        m_previewHolder.getElement().getStyle().setProperty("lineHeight", m_previewHeight, Unit.PX);
     }
 
     /**
@@ -128,7 +131,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         m_previewImage = new Image();
         StringBuffer urlScaled = new StringBuffer(128);
         urlScaled.append(CmsCoreProvider.get().link(infoBean.getResourcePath())).append("?").append(
-            m_handler.getPreviewScaleParam());
+            m_handler.getPreviewScaleParam(infoBean.getHeight(), infoBean.getWidth()));
         m_previewImage.setUrl(urlScaled.toString());
         panel.add(m_previewImage);
         m_previewPanel.setWidget(panel);
