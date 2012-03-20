@@ -91,6 +91,17 @@
     vertical-align: middle;
 }
 
+@sprite .cmsState-down .lockIcon, .cmsState-up-hovering .lockIcon, .cmsState-down-hovering .lockIcon{
+    gwt-image: "icons.lockIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .lockIcon, .cmsState-up-disabled .lockIcon, .cmsState-down-disabled .lockIcon{
+    gwt-image: "icons.lockIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
 
 @sprite div.opencmsSymbol, span.opencmsSymbol{
 	gwt-image: "opencmsSymbolImage";
