@@ -34,7 +34,7 @@ package org.opencms.newsletter;
  * {@link org.opencms.newsletter.CmsNewsletterContentType#TYPE_HTML} or 
  * {@link org.opencms.newsletter.CmsNewsletterContentType#TYPE_TEXT}.
  */
-public interface I_CmsNewsletterContent extends Comparable {
+public interface I_CmsNewsletterContent extends Comparable<I_CmsNewsletterContent> {
 
     /**
      * Returns the channel.<p>

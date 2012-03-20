@@ -79,6 +79,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (!(obj instanceof CmsSimpleNewsletterRecipient)) {
@@ -140,6 +141,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_email.hashCode() + m_firstname.hashCode() + m_lastname.hashCode() + m_name.hashCode();

@@ -73,7 +73,7 @@ public class CmsContentNotification extends A_CmsNotification {
     private CmsMessages m_messages;
 
     /**  The resources the responsible will be notified of, a list of CmsNotificationCauses. */
-    private List m_notificationCauses;
+    private List<CmsExtendedNotificationCause> m_notificationCauses;
 
     /** The receiver of the notification. */
     private CmsUser m_responsible;
@@ -139,6 +139,7 @@ public class CmsContentNotification extends A_CmsNotification {
      * 
      * @return the mail to be sent to the responsible user
      */
+    @Override
     protected String generateHtmlMsg() {
 
         // set the messages
@@ -150,15 +151,15 @@ public class CmsContentNotification extends A_CmsNotification {
 
         GregorianCalendar tomorrow = new GregorianCalendar(TimeZone.getDefault(), CmsLocaleManager.getDefaultLocale());
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        List outdatedResources = new ArrayList();
-        List resourcesNextDay = new ArrayList();
-        List resourcesNextWeek = new ArrayList();
+        List<CmsExtendedNotificationCause> outdatedResources = new ArrayList<CmsExtendedNotificationCause>();
+        List<CmsExtendedNotificationCause> resourcesNextDay = new ArrayList<CmsExtendedNotificationCause>();
+        List<CmsExtendedNotificationCause> resourcesNextWeek = new ArrayList<CmsExtendedNotificationCause>();
 
         // split all resources into three lists: the resources that expire, will be released or get outdated
         // within the next 24h, within the next week and the resources unchanged since a long time
-        Iterator notificationCauses = m_notificationCauses.iterator();
+        Iterator<CmsExtendedNotificationCause> notificationCauses = m_notificationCauses.iterator();
         while (notificationCauses.hasNext()) {
-            CmsExtendedNotificationCause notificationCause = (CmsExtendedNotificationCause)notificationCauses.next();
+            CmsExtendedNotificationCause notificationCause = notificationCauses.next();
             if (notificationCause.getCause() == CmsExtendedNotificationCause.RESOURCE_OUTDATED) {
                 outdatedResources.add(notificationCause);
             } else if (notificationCause.getDate().before(tomorrow.getTime())) {
@@ -172,9 +173,12 @@ public class CmsContentNotification extends A_CmsNotification {
         Collections.sort(outdatedResources);
         appendResourceList(htmlMsg, resourcesNextDay, m_messages.key(Messages.GUI_WITHIN_NEXT_DAY_0));
         appendResourceList(htmlMsg, resourcesNextWeek, m_messages.key(Messages.GUI_WITHIN_NEXT_WEEK_0));
-        appendResourceList(htmlMsg, outdatedResources, m_messages.key(
-            Messages.GUI_FILES_NOT_UPDATED_1,
-            String.valueOf(OpenCms.getSystemInfo().getNotificationTime())));
+        appendResourceList(
+            htmlMsg,
+            outdatedResources,
+            m_messages.key(
+                Messages.GUI_FILES_NOT_UPDATED_1,
+                String.valueOf(OpenCms.getSystemInfo().getNotificationTime())));
 
         htmlMsg.append("</td></tr></table>");
         String result = htmlMsg.toString();
@@ -186,7 +190,7 @@ public class CmsContentNotification extends A_CmsNotification {
      * 
      * @return a list of CmsNotificationResourceInfos of the resources that will occur in the notification
      */
-    protected List getNotificationCauses() {
+    protected List<CmsExtendedNotificationCause> getNotificationCauses() {
 
         return m_notificationCauses;
     }
@@ -194,6 +198,7 @@ public class CmsContentNotification extends A_CmsNotification {
     /**
      * @see org.opencms.notification.A_CmsNotification#getNotificationContent()
      */
+    @Override
     protected String getNotificationContent() {
 
         return NOTIFICATION_CONTENT;
@@ -204,7 +209,7 @@ public class CmsContentNotification extends A_CmsNotification {
      * 
      * @param resources a list of CmsNotificationResourceInfo's
      */
-    protected void setNotificationCauses(List resources) {
+    protected void setNotificationCauses(List<CmsExtendedNotificationCause> resources) {
 
         m_notificationCauses = resources;
     }
@@ -217,7 +222,7 @@ public class CmsContentNotification extends A_CmsNotification {
      */
     private void appendConfirmLink(StringBuffer buf, CmsExtendedNotificationCause notificationCause) {
 
-        Map params = new HashMap();
+        Map<String, String[]> params = new HashMap<String, String[]>();
         buf.append("<td>");
         try {
             String resourcePath = notificationCause.getResource().getRootPath();
@@ -231,11 +236,13 @@ public class CmsContentNotification extends A_CmsNotification {
             wpStartUri.append(notificationCause.getCause());
             wpStartUri.append("&resource=");
             wpStartUri.append(resourcePath);
-            params.put(CmsFrameset.PARAM_WP_START, wpStartUri.toString());
-            params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
-            params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
+            params.put(CmsFrameset.PARAM_WP_START, new String[] {wpStartUri.toString()});
+            params.put(
+                CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE,
+                new String[] {CmsResource.getParentFolder(resourcePath)});
+            params.put(CmsWorkplace.PARAM_WP_SITE, new String[] {siteRoot});
             CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
-            params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
+            params.put(CmsWorkplace.PARAM_WP_PROJECT, new String[] {String.valueOf(projectId)});
             buf.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
             buf.append("\">");
             buf.append(m_messages.key(Messages.GUI_CONFIRM_0));
@@ -262,12 +269,14 @@ public class CmsContentNotification extends A_CmsNotification {
                 String resourcePath = notificationCause.getResource().getRootPath();
                 String siteRoot = OpenCms.getSiteManager().getSiteRoot(resourcePath);
                 resourcePath = resourcePath.substring(siteRoot.length());
-                Map params = new HashMap();
+                Map<String, String[]> params = new HashMap<String, String[]>();
                 CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
-                params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
-                params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
-                params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
-                params.put(CmsDialog.PARAM_RESOURCE, resourcePath);
+                params.put(CmsWorkplace.PARAM_WP_PROJECT, new String[] {String.valueOf(projectId)});
+                params.put(
+                    CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE,
+                    new String[] {CmsResource.getParentFolder(resourcePath)});
+                params.put(CmsWorkplace.PARAM_WP_SITE, new String[] {siteRoot});
+                params.put(CmsDialog.PARAM_RESOURCE, new String[] {resourcePath});
                 buf.append("[<a href=\"");
                 buf.append(CmsRequestUtil.appendParameters(m_uriWorkplace + "editors/editor.jsp", params, false));
                 buf.append("\">");
@@ -290,7 +299,7 @@ public class CmsContentNotification extends A_CmsNotification {
      */
     private void appendModifyLink(StringBuffer buf, CmsExtendedNotificationCause notificationCause) {
 
-        Map params = new HashMap();
+        Map<String, String[]> params = new HashMap<String, String[]>();
         buf.append("<td>");
         try {
             buf.append("[<a href=\"");
@@ -300,11 +309,13 @@ public class CmsContentNotification extends A_CmsNotification {
             StringBuffer wpStartUri = new StringBuffer(m_uriWorkplace);
             wpStartUri.append("commons/availability.jsp?resource=");
             wpStartUri.append(resourcePath);
-            params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
-            params.put(CmsFrameset.PARAM_WP_START, wpStartUri.toString());
-            params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
+            params.put(
+                CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE,
+                new String[] {CmsResource.getParentFolder(resourcePath)});
+            params.put(CmsFrameset.PARAM_WP_START, new String[] {wpStartUri.toString()});
+            params.put(CmsWorkplace.PARAM_WP_SITE, new String[] {siteRoot});
             CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
-            params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
+            params.put(CmsWorkplace.PARAM_WP_PROJECT, new String[] {String.valueOf(projectId)});
             buf.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
             buf.append("\">");
             buf.append(m_messages.key(Messages.GUI_MODIFY_0));
@@ -324,7 +335,10 @@ public class CmsContentNotification extends A_CmsNotification {
      * @param notificationCauseList the list of notification causes
      * @param header the title of the resource list 
      */
-    private void appendResourceList(StringBuffer htmlMsg, List notificationCauseList, String header) {
+    private void appendResourceList(
+        StringBuffer htmlMsg,
+        List<CmsExtendedNotificationCause> notificationCauseList,
+        String header) {
 
         if (!notificationCauseList.isEmpty()) {
             htmlMsg.append("<tr><td colspan=\"5\"><br/><p style=\"margin-top:20px;margin-bottom:10px;\"><b>");
@@ -336,9 +350,9 @@ public class CmsContentNotification extends A_CmsNotification {
             htmlMsg.append("</div></td><td><div style=\"padding-top:2px;padding-bottom:2px;padding-left:10px;\">");
             htmlMsg.append(m_messages.key(Messages.GUI_ISSUE_0));
             htmlMsg.append("</div></td><td colspan=\"2\"/></tr>");
-            Iterator notificationCauses = notificationCauseList.iterator();
+            Iterator<CmsExtendedNotificationCause> notificationCauses = notificationCauseList.iterator();
             for (int i = 0; notificationCauses.hasNext(); i++) {
-                CmsExtendedNotificationCause notificationCause = (CmsExtendedNotificationCause)notificationCauses.next();
+                CmsExtendedNotificationCause notificationCause = notificationCauses.next();
                 htmlMsg.append(buildNotificationListItem(notificationCause, (i % 2) + 2));
             }
         }
@@ -364,9 +378,9 @@ public class CmsContentNotification extends A_CmsNotification {
         if ((notificationCause.getResource().getDateReleased() < System.currentTimeMillis())
             && (notificationCause.getResource().getDateExpired() > System.currentTimeMillis())) {
 
-            Map params = new HashMap();
-            params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
-            params.put(CmsDialog.PARAM_RESOURCE, resourcePath);
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(CmsWorkplace.PARAM_WP_SITE, new String[] {siteRoot});
+            params.put(CmsDialog.PARAM_RESOURCE, new String[] {resourcePath});
             result.append("<a href=\"");
             result.append(CmsRequestUtil.appendParameters(m_uriWorkplace + "commons/displayresource.jsp", params, false));
             result.append("\">");
@@ -394,8 +408,9 @@ public class CmsContentNotification extends A_CmsNotification {
             appendConfirmLink(result, notificationCause);
             appendEditLink(result, notificationCause);
         } else {
-            result.append(m_messages.key(Messages.GUI_UNCHANGED_SINCE_1, new Object[] {new Integer(
-                CmsDateUtil.getDaysPassedSince(notificationCause.getDate()))}));
+            result.append(m_messages.key(
+                Messages.GUI_UNCHANGED_SINCE_1,
+                new Object[] {new Integer(CmsDateUtil.getDaysPassedSince(notificationCause.getDate()))}));
             result.append("</div></td>");
             appendConfirmLink(result, notificationCause);
             appendEditLink(result, notificationCause);

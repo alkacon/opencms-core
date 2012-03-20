@@ -41,6 +41,7 @@ public class CmsResourceInitException extends CmsException {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 4896514314866157082L;
 
+    /** The 'clear errors' flag. */
     private boolean m_clearErrors;
 
     /**

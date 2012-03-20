@@ -64,6 +64,7 @@ public class CmsPublishNotification extends A_CmsNotification {
     /**
      * @see org.opencms.notification.A_CmsNotification#generateHtmlMsg()
      */
+    @Override
     protected String generateHtmlMsg() {
 
         StringBuffer buffer = new StringBuffer();
@@ -92,6 +93,7 @@ public class CmsPublishNotification extends A_CmsNotification {
     /**
      * @see org.opencms.notification.A_CmsNotification#getNotificationContent()
      */
+    @Override
     protected String getNotificationContent() {
 
         return NOTIFICATION_CONTENT;
@@ -103,12 +105,12 @@ public class CmsPublishNotification extends A_CmsNotification {
      * @param buffer The buffer were the entries of the list will be appended.
      * @param list The list with the entries to append to the buffer.
      */
-    private void appendList(StringBuffer buffer, List list) {
+    private void appendList(StringBuffer buffer, List<Object> list) {
 
-        Iterator iter = list.iterator();
+        Iterator<Object> iter = list.iterator();
         while (iter.hasNext()) {
-            String entry = (String)iter.next();
-            buffer.append(entry + "<br/>\n");
+            Object entry = iter.next();
+            buffer.append(entry).append("<br/>\n");
         }
     }
 

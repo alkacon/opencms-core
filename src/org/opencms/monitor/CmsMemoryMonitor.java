@@ -713,6 +713,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param publishJob the publish job
      */
+    @SuppressWarnings("unchecked")
     public void cachePublishJob(CmsPublishJobInfoBean publishJob) {
 
         if (m_disabled.get(CacheType.PUBLISH_QUEUE) != null) {
@@ -726,6 +727,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param publishJob the publish job
      */
+    @SuppressWarnings("unchecked")
     public void cachePublishJobInHistory(CmsPublishJobInfoBean publishJob) {
 
         if (m_disabled.get(CacheType.PUBLISH_HISTORY) != null) {
@@ -1365,6 +1367,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return all cached publish jobs
      */
+    @SuppressWarnings("unchecked")
     public List<CmsPublishJobInfoBean> getAllCachedPublishJobs() {
 
         return new ArrayList<CmsPublishJobInfoBean>(m_publishQueue);
@@ -1375,6 +1378,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return all cached publish jobs
      */
+    @SuppressWarnings("unchecked")
     public List<CmsPublishJobInfoBean> getAllCachedPublishJobsInHistory() {
 
         return new ArrayList<CmsPublishJobInfoBean>(m_publishHistory);
@@ -1550,7 +1554,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public CmsPublishJobInfoBean getCachedPublishJob(String key) {
 
         synchronized (m_publishQueue) {
-            for (Iterator<CmsPublishJobInfoBean> i = m_publishQueue.iterator(); i.hasNext();) {
+            for (@SuppressWarnings("unchecked")
+            Iterator<CmsPublishJobInfoBean> i = m_publishQueue.iterator(); i.hasNext();) {
                 CmsPublishJobInfoBean publishJob = i.next();
                 if (publishJob.getPublishHistoryId().toString().equals(key)) {
                     return publishJob;
@@ -1569,7 +1574,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsPublishJobInfoBean getCachedPublishJobInHistory(String key) {
 
-        for (Iterator<CmsPublishJobInfoBean> i = m_publishHistory.iterator(); i.hasNext();) {
+        for (@SuppressWarnings("unchecked")
+        Iterator<CmsPublishJobInfoBean> i = m_publishHistory.iterator(); i.hasNext();) {
             CmsPublishJobInfoBean publishJob = i.next();
             if (publishJob.getPublishHistoryId().toString().equals(key)) {
                 return publishJob;
