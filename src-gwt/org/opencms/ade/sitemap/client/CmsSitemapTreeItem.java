@@ -157,6 +157,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
              */
             public void handleEdit(CmsLabel titleLabel, TextBox box) {
 
+                CmsClientSitemapEntry editEntry = getSitemapEntry();
                 final String newTitle = box.getText();
                 box.removeFromParent();
                 if (CmsStringUtil.isEmpty(newTitle)) {
@@ -167,37 +168,31 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                     alert.center();
                     return;
                 }
-                String oldTitle = getSitemapEntry().getTitle();
+                String oldTitle = editEntry.getTitle();
                 if (!oldTitle.equals(newTitle)) {
                     CmsPropertyModification propMod = new CmsPropertyModification(
-                        getSitemapEntry().getId(),
+                        editEntry.getId(),
                         CmsClientProperty.PROPERTY_NAVTEXT,
                         newTitle,
                         true);
                     final List<CmsPropertyModification> propChanges = new ArrayList<CmsPropertyModification>();
                     propChanges.add(propMod);
                     CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                    if (getSitemapEntry().isNew() && !getSitemapEntry().isRoot()) {
+                    if (editEntry.isNew() && !editEntry.isRoot()) {
                         String urlName = controller.ensureUniqueName(
-                            CmsResource.getParentFolder(getSitemapEntry().getSitePath()),
+                            CmsResource.getParentFolder(editEntry.getSitePath()),
                             newTitle);
-                        if (oldTitle.equals(getSitemapEntry().getPropertyValue(CmsClientProperty.PROPERTY_TITLE))) {
+                        if (oldTitle.equals(editEntry.getPropertyValue(CmsClientProperty.PROPERTY_TITLE))) {
                             CmsPropertyModification titleMod = new CmsPropertyModification(
-                                getSitemapEntry().getId(),
+                                editEntry.getId(),
                                 CmsClientProperty.PROPERTY_TITLE,
                                 newTitle,
                                 true);
                             propChanges.add(titleMod);
                         }
-                        controller.editAndChangeName(
-                            getSitemapEntry(),
-                            urlName,
-                            getSitemapEntry().getVfsPath(),
-                            propChanges,
-                            false,
-                            CmsReloadMode.none);
+                        controller.editAndChangeName(editEntry, urlName, propChanges, true, CmsReloadMode.none);
                     } else {
-                        controller.edit(getSitemapEntry(), getSitemapEntry().getVfsPath(), propChanges, false);
+                        controller.edit(editEntry, propChanges, CmsReloadMode.none);
                     }
                 }
                 titleLabel.setVisible(true);

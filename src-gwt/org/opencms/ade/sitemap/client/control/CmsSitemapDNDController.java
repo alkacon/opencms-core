@@ -326,9 +326,8 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                 m_controller.editAndChangeName(
                     entry,
                     uniqueName,
-                    entry.getVfsPath(),
                     Collections.<CmsPropertyModification> emptyList(),
-                    !entry.isNew(),
+                    entry.isNew(),
                     CmsReloadMode.none);
                 m_controller.move(entry, m_insertPath + uniqueName + "/", m_insertIndex);
             } else {
