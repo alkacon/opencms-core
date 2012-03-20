@@ -51,10 +51,13 @@ div.previewDialog {
 
 .previewPanel {	
 	height:100%;	
+	line-height: inherit;
 }
 
 .imagePanel {
 	text-align: center;
+	line-height: inherit;
+	vertical-align: middle;
 }
 
 /* Tabs panel (details) */

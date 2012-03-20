@@ -94,6 +94,9 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
     @UiField
     protected FlowPanel m_parentPanel;
 
+    /** The preview height. */
+    protected int m_previewHeight;
+
     /** The preview placeholder panel. */
     @UiField
     protected FlowPanel m_previewHolder;
@@ -131,17 +134,12 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
         m_dialogHeight = dialogHeight;
         m_dialogWidth = dialogWidth;
-
-        int previewHeight = m_minPreviewHeight;
-        int detailsHeight = m_dialogHeight - previewHeight - 7;
-
-        m_previewHolder.getElement().getStyle().setHeight(previewHeight, Unit.PX);
-
+        m_previewHeight = m_minPreviewHeight;
+        int detailsHeight = m_dialogHeight - m_previewHeight - 7;
+        m_previewHolder.getElement().getStyle().setHeight(m_previewHeight, Unit.PX);
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
-
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabbedPanelStyle.classicTabs);
         m_tabsHolder.add(m_tabbedPanel);
-
         m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.setVisible(false);
         m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_BUTTON_0));
