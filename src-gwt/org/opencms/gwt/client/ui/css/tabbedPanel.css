@@ -229,9 +229,10 @@
 	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	height: auto;
-	margin:0 0 -1px 2px;
+	margin:0 0 -2px 2px;
 	padding:0;		
 	border:1px solid value("constants.css.borderColor");	
+	border-bottom: none;
 	color:value("constants.css.textColor");
 	position:relative;
 	cursor:pointer;
