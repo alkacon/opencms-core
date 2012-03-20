@@ -58,13 +58,25 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
      */
     public CmsLabelSelectCell(String value, String text) {
 
+        this(value, text, null);
+    }
+
+    /**
+     * Creates a new select cell.<p>
+     * 
+     * @param value the value of the select option
+     * @param text the text to display for the select option 
+     * @param title the title to display on mouseover 
+     */
+    public CmsLabelSelectCell(String value, String text, String title) {
+
         super();
         m_value = value;
         m_text = text;
         initWidget(m_label);
         addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectBoxCell());
         m_label.setText(m_text);
-        m_label.setTitle(m_text);
+        m_label.setTitle(title != null ? title : m_text);
     }
 
     /**
