@@ -256,9 +256,9 @@ public final class CmsLockReportDialog extends CmsPopup {
         content.add(m_scrollPanel);
         this.setMainContent(content);
         if (isShowing()) {
-            m_resourceItem.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH);
+            m_resourceItem.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH - 10);
             if (list != null) {
-                list.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH);
+                list.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH - 10);
             }
             adjustHeight();
         }

@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCKED_BY_1 = "GUI_LOCKED_BY_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCKED_OWNER_0 = "GUI_LOCKED_OWNER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0 = "GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0";
 
     /** Message constant for key in the resource bundle. */
