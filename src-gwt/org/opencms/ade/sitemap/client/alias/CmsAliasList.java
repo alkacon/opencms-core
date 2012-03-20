@@ -502,7 +502,7 @@ public class CmsAliasList extends Composite {
     protected CmsTextBox createTextBox() {
 
         CmsTextBox textbox = new CmsTextBox();
-        textbox.getElement().getStyle().setWidth(330, Unit.PX);
+        textbox.getElement().getStyle().setWidth(325, Unit.PX);
         textbox.getElement().getStyle().setMarginRight(5, Unit.PX);
         return textbox;
     }

@@ -91,7 +91,7 @@ public class CmsSeoOptionsDialog extends CmsPopup {
         m_panel.add(aliasFieldset);
         Style style = m_aliasList.getElement().getStyle();
         style.setProperty("minHeight", "300px"); //$NON-NLS-1$ //$NON-NLS-2$
-        style.setProperty("maxHeight", "800px"); //$NON-NLS-1$ //$NON-NLS-2$
+        style.setProperty("maxHeight", "450px"); //$NON-NLS-1$ //$NON-NLS-2$
 
         style.setOverflowY(Overflow.AUTO);
         setMainContent(m_panel);
