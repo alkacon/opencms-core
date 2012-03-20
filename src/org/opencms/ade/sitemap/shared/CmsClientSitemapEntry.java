@@ -710,11 +710,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /**
      * Sets the "new" flag of the client sitemap entry.<p>
      *
-     * @param new1 the new new
+     * @param isNew the new new
      */
-    public void setNew(boolean new1) {
+    public void setNew(boolean isNew) {
 
-        m_new = new1;
+        m_new = isNew;
     }
 
     /**

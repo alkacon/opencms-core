@@ -959,6 +959,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             // mark position as not set
             newEntry.setPosition(-1);
+            newEntry.setNew(true);
             change.getClipBoardData().getModifications().remove(null);
             change.getClipBoardData().getModifications().put(newEntry.getId(), newEntry);
         }

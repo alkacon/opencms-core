@@ -440,19 +440,29 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * Edits the given sitemap entry.<p>
      * 
      * @param entry the sitemap entry to update
-     * @param vfsReference the new VFS reference, can be <code>null</code> to keep the old one
      * @param propertyChanges the property changes 
-     * @param isNew if false, the entry's name has been edited 
+     * @param reloadStatus a value indicating which entries need to be reloaded after the change
      */
     public void edit(
         CmsClientSitemapEntry entry,
-        String vfsReference,
         List<CmsPropertyModification> propertyChanges,
-        boolean isNew) {
+        final CmsReloadMode reloadStatus) {
 
-        CmsSitemapChange change = getChangeForEdit(entry, vfsReference, propertyChanges, isNew);
+        CmsSitemapChange change = getChangeForEdit(entry, propertyChanges);
+        final String updateTarget = ((reloadStatus == CmsReloadMode.reloadParent))
+        ? getParentEntry(entry).getSitePath()
+        : entry.getSitePath();
+        Command callback = new Command() {
+
+            public void execute() {
+
+                if ((reloadStatus == CmsReloadMode.reloadParent) || (reloadStatus == CmsReloadMode.reloadEntry)) {
+                    updateEntry(updateTarget);
+                }
+            }
+        };
         if (change != null) {
-            commitChange(change, null);
+            commitChange(change, callback);
         }
     }
 
@@ -461,38 +471,37 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * 
      * @param entry the entry which is being edited 
      * @param newUrlName the new URL name of the entry 
-     * @param vfsPath the vfs path of the entry 
      * @param propertyChanges the property changes  
-     * @param editedName true if the name has been edited
+     * @param keepNewStatus <code>true</code> if the entry should keep it's new status
      * @param reloadStatus a value indicating which entries need to be reloaded after the change   
      */
     public void editAndChangeName(
         final CmsClientSitemapEntry entry,
         String newUrlName,
-        String vfsPath,
         List<CmsPropertyModification> propertyChanges,
-        boolean editedName,
+        final boolean keepNewStatus,
         final CmsReloadMode reloadStatus) {
 
-        CmsSitemapChange change = getChangeForEdit(entry, vfsPath, propertyChanges, !editedName);
-        if (editedName) {
-            change.setName(newUrlName);
-        }
+        CmsSitemapChange change = getChangeForEdit(entry, propertyChanges);
+        change.setName(newUrlName);
+        final CmsUUID entryId = entry.getId();
+        final boolean newStatus = keepNewStatus && entry.isNew();
 
-        Command callback = null;
+        final String updateTarget = ((reloadStatus == CmsReloadMode.reloadParent))
+        ? getParentEntry(entry).getSitePath()
+        : entry.getSitePath();
+        Command callback = new Command() {
 
-        if ((reloadStatus == CmsReloadMode.reloadParent) || (reloadStatus == CmsReloadMode.reloadEntry)) {
-            final String updateTarget = ((reloadStatus == CmsReloadMode.reloadParent) || editedName) ? getParentEntry(
-                entry).getSitePath() : entry.getSitePath();
-            callback = new Command() {
+            public void execute() {
 
-                public void execute() {
-
+                if ((reloadStatus == CmsReloadMode.reloadParent) || (reloadStatus == CmsReloadMode.reloadEntry)) {
                     updateEntry(updateTarget);
                 }
+                getEntryById(entryId).setNew(newStatus);
+            }
 
-            };
-        }
+        };
+
         commitChange(change, callback);
     }
 
@@ -1309,35 +1318,17 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * Creates a change object for an edit operation.<p>
      *  
      * @param entry the edited sitemap entry
-     * @param vfsReference the vfs path 
      * @param propertyChanges the list of property changes 
-     * @param isNew true if the entry's url name has not been edited before
      *  
      * @return the change object
      */
     protected CmsSitemapChange getChangeForEdit(
         CmsClientSitemapEntry entry,
-        String vfsReference,
-        List<CmsPropertyModification> propertyChanges,
-        boolean isNew) {
-
-        // check changes
-        boolean changedVfsRef = ((vfsReference != null) && !vfsReference.trim().equals(entry.getVfsPath()));
-
-        // create changes
-        CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry(entry);
-
-        // We don't calculate isNew by comparing the old and new url names.
-        // This is because any editing of the URL name field should mark the entry as "not new", even if the final
-        // value is the same as the initial one. 
-        newEntry.setNew(entry.isNew() && isNew);
-        if (changedVfsRef) {
-            newEntry.setVfsPath(vfsReference);
-        }
+        List<CmsPropertyModification> propertyChanges) {
 
         CmsSitemapChange change = new CmsSitemapChange(entry.getId(), entry.getSitePath(), ChangeType.modify);
         change.setDefaultFileId(entry.getDefaultFileId());
-        change.setLeafType(newEntry.isLeafType());
+        change.setLeafType(entry.isLeafType());
         List<CmsPropertyModification> propertyChangeData = new ArrayList<CmsPropertyModification>();
         for (CmsPropertyModification propChange : propertyChanges) {
             propertyChangeData.add(propChange);

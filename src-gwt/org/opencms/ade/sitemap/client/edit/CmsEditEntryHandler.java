@@ -199,9 +199,13 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
         String vfsPath,
         List<CmsPropertyModification> propertyChanges,
         boolean editedName,
-        final CmsReloadMode reloadStatus) {
+        CmsReloadMode reloadStatus) {
 
-        m_controller.editAndChangeName(m_entry, newUrlName, vfsPath, propertyChanges, editedName, reloadStatus);
+        if (editedName) {
+            m_controller.editAndChangeName(m_entry, newUrlName, propertyChanges, false, reloadStatus);
+        } else {
+            m_controller.edit(m_entry, propertyChanges, reloadStatus);
+        }
 
     }
 
