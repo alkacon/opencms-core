@@ -342,7 +342,9 @@ public final class CmsPreviewUtil {
             } catch (e) {
             }
         }
-        $wnd.parent.cmsCloseDialog(fieldId);
+        $wnd.setTimeout(function() {
+            $wnd.parent.cmsCloseDialog(fieldId);
+        }, 10);
     }-*/;
 
     /**
