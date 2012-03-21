@@ -113,6 +113,7 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
             m_dynamicInfo.add(item);
             m_additionalInfo.add(item);
         }
+        updateTruncation();
     }
 
     /**
@@ -160,7 +161,6 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
                                 public void onSuccess(List<AdditionalInfoItem> result) {
 
                                     m_openClose.enable();
-                                    setDynamicInfo(result);
                                     m_loading = false;
                                     m_additionalInfoOpen = true;
                                     setDynamicInfo(result);
