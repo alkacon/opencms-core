@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.shared.rpc;
 
+import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -39,6 +40,7 @@ import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -65,6 +67,15 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the callback
      */
     void forceUnlock(CmsUUID structureId, AsyncCallback<Void> callback);
+
+    /**
+     * Fetches the aliases for a given page.<p>
+     * 
+     * @param structureId the structure id of the page 
+     * @param callback the async callback 
+     *  
+     */
+    void getAliasesForPage(CmsUUID structureId, AsyncCallback<List<CmsAliasBean>> callback);
 
     /**
      * Gets a {@link CmsAvailabilityInfoBean} for a given resource.<p>
@@ -174,6 +185,15 @@ public interface I_CmsVfsServiceAsync {
     void prepareEdit(CmsUUID currentPage, String fileNameWithMacros, AsyncCallback<CmsPrepareEditResponse> callback);
 
     /**
+     * Saves aliases for a page.<p>
+     * 
+     * @param structureId the structure id of the page 
+     * @param aliases the aliases which should be saved for the page
+     * @param callback the async callback  
+     */
+    void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliases, AsyncCallback<Void> callback);
+
+    /**
      * Saves a set of property changes.<p>
      * 
      * @param changes the property changes
@@ -191,5 +211,17 @@ public interface I_CmsVfsServiceAsync {
      */
     @SynchronizedRpcRequest
     void substituteLinkForRootPath(String currentSiteRoot, String rootPath, AsyncCallback<String> callback);
+
+    /**
+     * Validates alias paths for a page.<p>
+     * 
+     * @param structureId the structure id of the page 
+     * @param aliasPaths a map from (arbitrary) id strings to alias paths
+     * @param callback the async callback 
+     */
+    void validateAliases(
+        CmsUUID structureId,
+        Map<String, String> aliasPaths,
+        AsyncCallback<Map<String, String>> callback);
 
 }
