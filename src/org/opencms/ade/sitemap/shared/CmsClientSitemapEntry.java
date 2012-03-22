@@ -1025,6 +1025,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setDateExpired(source.getDateExpired());
         setDateReleased(source.getDateReleased());
         setResleasedAndNotExpired(source.isResleasedAndNotExpired());
+        setAliases(source.getAliases());
+        setRedirectTarget(source.getRedirectTarget());
+        setResourceState(source.getResourceState());
     }
 
     /**

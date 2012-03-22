@@ -3886,23 +3886,24 @@ public final class CmsSecurityManager {
      *
      * @param context the request context
      * @param resource the folder to get the default file for
+     * @param resourceFilter the resource filter
      *
      * @return the default file for the given folder
      *
      * @throws CmsSecurityException if the user has no permissions to read the resulting file
      *
      * @see CmsObject#readDefaultFile(String)
-     * @see CmsDriverManager#readDefaultFile(CmsDbContext, CmsResource)
      */
-    public CmsResource readDefaultFile(CmsRequestContext context, CmsResource resource) throws CmsSecurityException {
+    public CmsResource readDefaultFile(CmsRequestContext context, CmsResource resource, CmsResourceFilter resourceFilter)
+    throws CmsSecurityException {
 
         CmsResource result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            result = m_driverManager.readDefaultFile(dbc, resource);
+            result = m_driverManager.readDefaultFile(dbc, resource, resourceFilter);
             if (result != null) {
                 // check if the user has read access to the resource
-                checkPermissions(dbc, result, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.DEFAULT);
+                checkPermissions(dbc, result, CmsPermissionSet.ACCESS_READ, true, resourceFilter);
             }
         } catch (CmsSecurityException se) {
             // permissions deny access to the resource

@@ -34,6 +34,10 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
+
 /**
  * Sitemap context menu availability entry.<p>
  * 
@@ -60,7 +64,18 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        new CmsAvailabilityDialog(entry.getId(), CmsSitemapView.getInstance().getIconForEntry(entry)).loadAndShow();
+        CmsAvailabilityDialog dialog = new CmsAvailabilityDialog(
+            entry.getId(),
+            CmsSitemapView.getInstance().getIconForEntry(entry));
+        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                updateEntry();
+
+            }
+        });
+        dialog.loadAndShow();
     }
 
     /**
@@ -80,5 +95,13 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
             setActive(true);
             setDisabledReason(null);
         }
+    }
+
+    /**
+     * Updates the sitemap entry.<p>
+     */
+    protected void updateEntry() {
+
+        getHoverbar().getController().updateSingleEntry(getHoverbar().getEntry().getId());
     }
 }

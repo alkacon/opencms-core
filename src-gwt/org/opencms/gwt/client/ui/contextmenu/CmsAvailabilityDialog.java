@@ -269,8 +269,6 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
         if (validateForm()) {
             // if the user input is valid, submit the bean as RPC call
             submitBean();
-            // close the availability dialog
-            hide();
         }
     }
 
@@ -281,6 +279,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
      */
     protected void showDialog(CmsAvailabilityInfoBean dialogBean) {
 
+        catchNotifications();
         m_availabilityInfo = dialogBean;
         // create the info box
         final CmsListItemWidget info = new CmsListItemWidget(m_availabilityInfo.getPageInfo());
@@ -623,7 +622,9 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
             @Override
             public void onResponse(Void result) {
 
-                // noop
+                this.stop(false);
+                // close the availability dialog
+                hide();
             }
         };
         callback.execute();

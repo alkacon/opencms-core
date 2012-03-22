@@ -51,6 +51,10 @@
 	cursor: default;
 }
 
+.expiredOrNotReleased div.itemTitle{
+	font-style: italic;
+}
+
 div.itemTitle{
 	cursor: text;
 }

@@ -6307,13 +6307,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @param dbc the database context
      * @param resource the folder to get the default file for
+     * @param resourceFilter the resource filter
      *
      * @return the default file for the given folder
-     *
-     * @see CmsObject#readDefaultFile(String)
-     * @see CmsDriverManager#readDefaultFile(CmsDbContext, CmsResource)
      */
-    public CmsResource readDefaultFile(CmsDbContext dbc, CmsResource resource) {
+    public CmsResource readDefaultFile(CmsDbContext dbc, CmsResource resource, CmsResourceFilter resourceFilter) {
 
         // resource exists, lets check if we have a file or a folder
         if (resource.isFolder()) {
@@ -6328,10 +6326,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if ((defaultFileName != null) && !CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER.equals(defaultFileName)) {
                     // property was set, so look up this file first
                     String folderName = CmsResource.getFolderPath(resource.getRootPath());
-                    resource = readResource(
-                        dbc,
-                        folderName + defaultFileName,
-                        CmsResourceFilter.DEFAULT.addRequireFile());
+                    resource = readResource(dbc, folderName + defaultFileName, resourceFilter.addRequireFile());
                 }
             } catch (CmsException e) {
                 // ignore all other exceptions and continue the lookup process
@@ -6346,7 +6341,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 while (it.hasNext()) {
                     String tmpResourceName = folderName + it.next();
                     try {
-                        resource = readResource(dbc, tmpResourceName, CmsResourceFilter.DEFAULT.addRequireFile());
+                        resource = readResource(dbc, tmpResourceName, resourceFilter.addRequireFile());
                         // no exception? So we have found the default file
                         // stop looking for default files
                         break;

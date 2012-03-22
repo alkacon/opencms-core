@@ -558,6 +558,21 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
+     * Re-initializes the additional infos.<p>
+     * 
+     * @param infoBean the info bean
+     */
+    public void reInitAdditionalInfo(CmsListInfoBean infoBean) {
+
+        m_additionalInfo.clear();
+        if (m_openClose != null) {
+            m_openClose.removeFromParent();
+            m_openClose = null;
+        }
+        initAdditionalInfo(infoBean);
+    }
+
+    /**
      * Removes a widget from the button panel.<p>
      * 
      * @param w the widget to remove
