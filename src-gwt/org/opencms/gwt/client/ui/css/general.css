@@ -102,9 +102,11 @@ div.toolTip.cornerAll, div.toolTip{
 .clearFix:after {
     content: ".";
     display: block;
-    height: 0;
+    height: 0 !important;
+    min-height: 0 !important;
     clear: both;
     visibility: hidden;
+    overflow: hidden !important;
 }
 
 @sprite div.disablingOverlay{
