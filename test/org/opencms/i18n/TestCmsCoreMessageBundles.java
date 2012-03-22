@@ -54,9 +54,9 @@ public final class TestCmsCoreMessageBundles extends TestCmsMessageBundles {
      * @see org.opencms.i18n.TestCmsMessageBundles#getTestClientMessageBundles()
      */
     @Override
-    protected I_CmsClientMessageBundle[] getTestClientMessageBundles() throws Exception {
+    protected List<I_CmsClientMessageBundle> getTestClientMessageBundles() throws Exception {
 
-        return new I_CmsClientMessageBundle[0];
+        return Collections.emptyList();
     }
 
     /**

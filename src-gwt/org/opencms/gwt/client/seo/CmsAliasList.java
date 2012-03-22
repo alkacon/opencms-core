@@ -25,13 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.gwt.client.seo;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.shared.CmsAliasBean;
-import org.opencms.ade.sitemap.shared.CmsAliasMode;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
@@ -41,6 +38,8 @@ import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
+import org.opencms.gwt.shared.CmsAliasBean;
+import org.opencms.gwt.shared.CmsAliasMode;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -146,6 +145,9 @@ public class CmsAliasList extends Composite {
     /** The CSS bundle for input widgets. */
     public static final I_CmsInputCss INPUT_CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
+    /** The alias messages. */
+    protected static CmsAliasMessages aliasMessages = new CmsAliasMessages();
+
     /** Static variable used to generate new ids. */
     protected static int idCounter;
 
@@ -198,12 +200,13 @@ public class CmsAliasList extends Composite {
     public CmsAliasList(CmsUUID structureId, List<CmsAliasBean> aliases) {
 
         initWidget(m_panel);
+
         m_panel.addStyleName(INPUT_CSS.highTextBoxes());
         m_structureId = structureId;
-        Label newLabel = createLabel(Messages.get().key(Messages.GUI_NEW_ALIAS_0)); //$NON-NLS-1$
+        Label newLabel = createLabel(aliasMessages.newAlias()); //$NON-NLS-1$
         m_panel.add(newLabel);
         m_panel.add(m_newBox);
-        Label changeLabel = createLabel(Messages.get().key(Messages.GUI_EXISTING_ALIASES_0)); //$NON-NLS-1$
+        Label changeLabel = createLabel(aliasMessages.existingAliases()); //$NON-NLS-1$
         m_panel.add(changeLabel);
         m_panel.add(m_changeBox);
         init(aliases);
@@ -327,7 +330,7 @@ public class CmsAliasList extends Composite {
         final HorizontalPanel hp = new HorizontalPanel();
         final CmsTextBox textbox = createTextBox();
         textbox.setGhostMode(true);
-        textbox.setGhostValue(Messages.get().key(Messages.GUI_ENTER_ALIAS_0), true);
+        textbox.setGhostValue(aliasMessages.enterAlias(), true);
         textbox.setGhostModeClear(true);
         hp.add(textbox);
         final CmsSelectBox selectbox = createSelectBox();
@@ -411,6 +414,44 @@ public class CmsAliasList extends Composite {
     }
 
     /**
+     * Validates aliases.
+     * 
+     * @param uuid The structure id for which the aliases should be valid
+     * @param aliasPaths a map from id strings to alias paths 
+     * @param callback the callback which should be called with the validation results 
+     */
+    public void validateAliases(
+        final CmsUUID uuid,
+        final Map<String, String> aliasPaths,
+        final AsyncCallback<Map<String, String>> callback) {
+
+        CmsRpcAction<Map<String, String>> action = new CmsRpcAction<Map<String, String>>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(200, true);
+                CmsCoreProvider.getVfsService().validateAliases(uuid, aliasPaths, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Map<String, String> result) {
+
+                stop(false);
+                callback.onSuccess(result);
+            }
+
+        };
+        action.execute();
+    }
+
+    /**
      * Creates the button used for adding new aliases.<p>
      *
      * @return the new button
@@ -419,7 +460,7 @@ public class CmsAliasList extends Composite {
 
         I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
         PushButton button = createIconButton(imagestyle.addIcon());
-        button.setTitle(Messages.get().key(Messages.GUI_ADD_ALIAS_0)); //$NON-NLS-1$
+        button.setTitle(aliasMessages.addAlias()); //$NON-NLS-1$
         return button;
     }
 
@@ -432,7 +473,7 @@ public class CmsAliasList extends Composite {
 
         I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
         PushButton button = createIconButton(imagestyle.deleteIcon());
-        button.setTitle(Messages.get().key(Messages.GUI_REMOVE_ALIAS_0)); //$NON-NLS-1$
+        button.setTitle(aliasMessages.removeAlias()); //$NON-NLS-1$
         return button;
     }
 
@@ -478,18 +519,14 @@ public class CmsAliasList extends Composite {
     protected CmsSelectBox createSelectBox() {
 
         CmsSelectBox selectbox = new CmsSelectBox();
-        selectbox.setTitle(CmsAliasMode.page.toString(), Messages.get().key(Messages.GUI_ALIAS_PAGE_DESCRIPTION_0)); //$NON-NLS-1$
-        selectbox.setTitle(
-            CmsAliasMode.redirect.toString(),
-            Messages.get().key(Messages.GUI_ALIAS_REDIRECT_DESCRIPTION_0)); //$NON-NLS-1$
-        selectbox.setTitle(
-            CmsAliasMode.permanentRedirect.toString(),
-            Messages.get().key(Messages.GUI_ALIAS_MOVED_DESCRIPTION_0)); //$NON-NLS-1$
-        selectbox.addOption(CmsAliasMode.page.toString(), Messages.get().key(Messages.GUI_ALIAS_PAGE_0)); //$NON-NLS-1$
-        selectbox.addOption(CmsAliasMode.redirect.toString(), Messages.get().key(Messages.GUI_ALIAS_REDIRECT_0)); //$NON-NLS-1$
-        selectbox.addOption(CmsAliasMode.permanentRedirect.toString(), Messages.get().key(Messages.GUI_ALIAS_MOVED_0)); //$NON-NLS-1$
+        selectbox.setTitle(CmsAliasMode.page.toString(), aliasMessages.pageDescription()); //$NON-NLS-1$
+        selectbox.setTitle(CmsAliasMode.redirect.toString(), aliasMessages.redirectDescription()); //$NON-NLS-1$
+        selectbox.setTitle(CmsAliasMode.permanentRedirect.toString(), aliasMessages.movedDescription()); //$NON-NLS-1$
+        selectbox.addOption(CmsAliasMode.page.toString(), aliasMessages.optionPage()); //$NON-NLS-1$
+        selectbox.addOption(CmsAliasMode.redirect.toString(), aliasMessages.optionRedirect()); //$NON-NLS-1$
+        selectbox.addOption(CmsAliasMode.permanentRedirect.toString(), aliasMessages.optionMoved()); //$NON-NLS-1$
 
-        selectbox.getElement().getStyle().setWidth(100, Unit.PX);
+        selectbox.getElement().getStyle().setWidth(190, Unit.PX);
         selectbox.getElement().getStyle().setMarginRight(5, Unit.PX);
         return selectbox;
     }
@@ -535,8 +572,7 @@ public class CmsAliasList extends Composite {
         Map<String, String> sitePaths,
         final AsyncCallback<Map<String, String>> errorCallback) {
 
-        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        controller.validateAliases(structureId, sitePaths, errorCallback);
+        validateAliases(structureId, sitePaths, errorCallback);
     }
 
     /**
@@ -555,7 +591,6 @@ public class CmsAliasList extends Composite {
 
         Map<String, String> newMap = new HashMap<String, String>(sitePaths);
         newMap.put("NEW", newSitePath); //$NON-NLS-1$
-        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
         AsyncCallback<Map<String, String>> callback = new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
@@ -569,6 +604,6 @@ public class CmsAliasList extends Composite {
                 errorCallback.onSuccess(newRes);
             }
         };
-        controller.validateAliases(structureId, newMap, callback);
+        validateAliases(structureId, newMap, callback);
     }
 }

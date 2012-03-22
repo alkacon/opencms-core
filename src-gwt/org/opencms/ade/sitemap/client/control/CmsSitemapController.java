@@ -31,7 +31,6 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.client.CmsSitemapTreeItem;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.shared.CmsAliasBean;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
@@ -994,33 +993,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
-     * Loads the aliases for a given page.<p>
-     * 
-     * @param structureId the structure id of the page 
-     * @param callback the callback for the loaded aliases 
-     */
-    public void loadAliases(final CmsUUID structureId, final AsyncCallback<List<CmsAliasBean>> callback) {
-
-        final CmsRpcAction<List<CmsAliasBean>> action = new CmsRpcAction<List<CmsAliasBean>>() {
-
-            @Override
-            public void execute() {
-
-                start(200, true);
-                getService().getAliasesForPage(structureId, this);
-            }
-
-            @Override
-            protected void onResponse(List<CmsAliasBean> result) {
-
-                stop(false);
-                callback.onSuccess(result);
-            }
-        };
-        action.execute();
-    }
-
-    /**
     * Merges a subsitemap at the given id back into this sitemap.<p>
     * 
     * @param entryId the id of the sub sitemap entry 
@@ -1172,40 +1144,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
-     * Saves the aliases for a given page.<p>
-     *  
-     * @param uuid the page structure id 
-     * @param aliases the aliases to save
-     */
-    public void saveAliases(final CmsUUID uuid, final List<CmsAliasBean> aliases) {
-
-        final CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(200, true);
-                getService().saveAliases(uuid, aliases, this);
-
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            public void onResponse(Void result) {
-
-                stop(false);
-            }
-
-        };
-        action.execute();
-    }
-
-    /**
      * Undeletes the resource with the given structure id.<p>
      * 
      * @param entryId the entry id
@@ -1239,43 +1177,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
         getChildren(entry.getId(), CmsSitemapTreeItem.getItemById(entry.getId()).isOpen(), null);
-    }
-
-    /**
-     * Validates aliases.
-     * @param uuid
-     * @param aliasPaths
-     * @param callback
-     */
-    public void validateAliases(
-        final CmsUUID uuid,
-        final Map<String, String> aliasPaths,
-        final AsyncCallback<Map<String, String>> callback) {
-
-        CmsRpcAction<Map<String, String>> action = new CmsRpcAction<Map<String, String>>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(200, true);
-                getService().validateAliases(uuid, aliasPaths, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(Map<String, String> result) {
-
-                stop(false);
-                callback.onSuccess(result);
-            }
-
-        };
-        action.execute();
     }
 
     /**

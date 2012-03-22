@@ -25,9 +25,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.gwt.client.seo;
 
-import org.opencms.ade.sitemap.client.Messages;
+
 
 /**
  * Message accessor class for the alias dialog.<p>

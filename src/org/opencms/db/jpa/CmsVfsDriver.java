@@ -27,7 +27,6 @@
 
 package org.opencms.db.jpa;
 
-import org.opencms.ade.sitemap.shared.CmsAliasMode;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsAlias;
@@ -82,6 +81,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.I_CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.gwt.shared.CmsAliasMode;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;

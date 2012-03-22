@@ -227,6 +227,7 @@
 								rule="standard" />
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
 								rule="standard" />
+							
 							<separator />
 							<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
 								rule="standard" />
@@ -248,6 +249,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
 							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"  rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport"
 							rule="containerpage" />

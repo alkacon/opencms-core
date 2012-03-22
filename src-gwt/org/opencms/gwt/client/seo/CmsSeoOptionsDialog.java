@@ -25,15 +25,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.gwt.client.seo;
 
-import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.shared.CmsAliasBean;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 import org.opencms.util.CmsUUID;
@@ -46,12 +47,16 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * This is a dialog widget which wraps a {@link CmsAliasList}.
  */
 public class CmsSeoOptionsDialog extends CmsPopup {
+
+    /** The alias messages. */
+    protected static CmsAliasMessages aliasMessages = new CmsAliasMessages();
 
     /** The inner alias list. */
     protected CmsAliasList m_aliasList;
@@ -71,17 +76,15 @@ public class CmsSeoOptionsDialog extends CmsPopup {
      */
     public CmsSeoOptionsDialog(CmsUUID structureId, CmsListInfoBean infoBean, List<CmsAliasBean> aliases) {
 
-        super(org.opencms.ade.sitemap.client.Messages.get().key(
-            org.opencms.ade.sitemap.client.Messages.GUI_SEO_OPTIONS_0)); //$NON-NLS-1$
+        super(aliasMessages.seoOptions()); //$NON-NLS-1$
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
-        setWidth(500);
+        setWidth(590);
         m_structureId = structureId;
         m_panel = new FlowPanel();
         CmsFieldSet aliasFieldset = new CmsFieldSet();
-        aliasFieldset.setLegend(org.opencms.ade.sitemap.client.Messages.get().key(
-            org.opencms.ade.sitemap.client.Messages.GUI_ALIASES_0)); //$NON-NLS-1$
+        aliasFieldset.setLegend(aliasMessages.aliases()); //$NON-NLS-1$
         m_aliasList = new CmsAliasList(structureId, aliases);
         CmsListItemWidget liWidget = new CmsListItemWidget(infoBean);
         liWidget.setStateIcon(StateIcon.standard);
@@ -97,6 +100,67 @@ public class CmsSeoOptionsDialog extends CmsPopup {
         setMainContent(m_panel);
         addButton(createCancelButton());
         addButton(saveButton());
+    }
+
+    /**
+     * Loads the aliases for a given page.<p>
+     * 
+     * @param structureId the structure id of the page 
+     * @param callback the callback for the loaded aliases 
+     */
+    public static void loadAliases(final CmsUUID structureId, final AsyncCallback<List<CmsAliasBean>> callback) {
+
+        final CmsRpcAction<List<CmsAliasBean>> action = new CmsRpcAction<List<CmsAliasBean>>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                CmsCoreProvider.getVfsService().getAliasesForPage(structureId, this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsAliasBean> result) {
+
+                stop(false);
+                callback.onSuccess(result);
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Saves the aliases for a given page.<p>
+     *  
+     * @param uuid the page structure id 
+     * @param aliases the aliases to save
+     */
+    public void saveAliases(final CmsUUID uuid, final List<CmsAliasBean> aliases) {
+
+        final CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(200, true);
+                CmsCoreProvider.getVfsService().saveAliases(uuid, aliases, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            public void onResponse(Void result) {
+
+                stop(false);
+            }
+
+        };
+        action.execute();
     }
 
     /**
@@ -116,7 +180,7 @@ public class CmsSeoOptionsDialog extends CmsPopup {
 
                         if (!m_aliasList.hasValidationErrors()) {
                             List<CmsAliasBean> aliases = m_aliasList.getAliases();
-                            CmsSitemapView.getInstance().getController().saveAliases(m_structureId, aliases);
+                            saveAliases(m_structureId, aliases);
                             hide();
                         }
                     }

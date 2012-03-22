@@ -47,6 +47,7 @@ import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
+import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
@@ -106,10 +107,15 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsService.class);
+
     /** The allowed preview mime types. Checked for binary content only. */
     private static Set<String> m_previewMimeTypes = new HashSet<String>();
+
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /** Initialize the preview mime types. */
     static {
@@ -235,7 +241,19 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (CmsException e) {
             error(e);
         }
+    }
 
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getAliasesForPage(org.opencms.util.CmsUUID)
+     */
+    public List<CmsAliasBean> getAliasesForPage(CmsUUID uuid) throws CmsRpcException {
+
+        try {
+            return m_aliasHelper.getAliasesForPage(uuid);
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
@@ -546,6 +564,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveAliases(org.opencms.util.CmsUUID, java.util.List)
+     */
+    public void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliasBeans) throws CmsRpcException {
+
+        try {
+            m_aliasHelper.saveAliases(structureId, aliasBeans);
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveProperties(org.opencms.gwt.shared.property.CmsPropertyChangeSet)
      */
     public void saveProperties(CmsPropertyChangeSet changes) throws CmsRpcException {
@@ -555,6 +585,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (Throwable t) {
             error(t);
         }
+    }
+
+    /**
+     * Sets the current cms context.<p>
+     *
+     * @param cms the current cms context to set
+     */
+    @Override
+    public synchronized void setCms(CmsObject cms) {
+
+        super.setCms(cms);
+        m_aliasHelper.setCms(cms);
     }
 
     /**
@@ -571,6 +613,20 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#validateAliases(org.opencms.util.CmsUUID, java.util.Map)
+     */
+    public Map<String, String> validateAliases(CmsUUID uuid, Map<String, String> aliasPaths) throws CmsRpcException {
+
+        try {
+            return m_aliasHelper.validateAliases(uuid, aliasPaths);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+
     }
 
     /**

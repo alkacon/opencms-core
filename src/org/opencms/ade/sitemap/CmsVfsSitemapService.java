@@ -35,7 +35,6 @@ import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
-import org.opencms.ade.sitemap.shared.CmsAliasBean;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
@@ -47,7 +46,6 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.db.CmsAlias;
-import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -108,12 +106,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -295,7 +291,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     int counter = 1;
                     for (CmsAlias alias : aliases) {
                         String aliasPath = alias.getAliasPath();
-                        additional.put(Messages.get().getBundle().key(Messages.GUI_ALIAS_0) + " " + counter, aliasPath); //$NON-NLS-1$
+                        additional.put(
+                            org.opencms.gwt.Messages.get().getBundle().key(org.opencms.gwt.Messages.GUI_ALIAS_0)
+                                + " " + counter, aliasPath); //$NON-NLS-1$
                         counter += 1;
                     }
                 }
@@ -307,19 +305,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             error(e);
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getAliasesForPage(org.opencms.util.CmsUUID)
-     */
-    public List<CmsAliasBean> getAliasesForPage(CmsUUID uuid) throws CmsRpcException {
-
-        try {
-            return internalGetAliasesForPage(uuid);
-        } catch (Throwable e) {
-            error(e);
-        }
-        return null;
     }
 
     /**
@@ -526,80 +511,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveAliases(org.opencms.util.CmsUUID, java.util.List)
-     */
-    public void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliasBeans) throws CmsRpcException {
-
-        CmsAliasManager aliasManager = OpenCms.getAliasManager();
-        CmsObject cms = getCmsObject();
-        List<CmsAlias> aliases = new ArrayList<CmsAlias>();
-        for (CmsAliasBean aliasBean : aliasBeans) {
-            CmsAlias alias = new CmsAlias(
-                structureId,
-                cms.getRequestContext().getSiteRoot(),
-                aliasBean.getSitePath(),
-                aliasBean.getMode());
-            aliases.add(alias);
-        }
-        try {
-            aliasManager.saveAliases(cms, structureId, aliases);
-        } catch (Throwable e) {
-            error(e);
-        }
-    }
-
-    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
      */
     public CmsSitemapChange saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
 
         return save(entryPoint, change);
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#validateAliases(org.opencms.util.CmsUUID, java.util.Map)
-     */
-    public Map<String, String> validateAliases(CmsUUID uuid, Map<String, String> aliasPaths) throws CmsRpcException {
-
-        try {
-            return internalValidateAliases(
-                uuid,
-                aliasPaths,
-                OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
-        } catch (Throwable e) {
-            error(e);
-        }
-        return null;
-
-    }
-
-    /**
-     * Checks whether a given string is a valid alias path.<p>
-     *
-     * @param path the path to check
-     * @param locale the locale to use for validation messages
-     *
-     * @return null if the string is a valid alias path, else an error message
-     */
-    protected String checkValidAliasPath(String path, Locale locale) {
-
-        if (org.opencms.db.CmsAlias.ALIAS_PATTERN.matcher(path).matches()) {
-            return null;
-        } else {
-            return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_INVALID_PATH_0); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Converts a server-side alias object to an alias bean.<p>
-     *
-     * @param alias the server-side alias object
-     *
-     * @return the client-side alias bean
-     */
-    protected CmsAliasBean convertAliasToBean(CmsAlias alias) {
-
-        return new CmsAliasBean(alias.getAliasPath(), alias.getMode());
     }
 
     /**
@@ -655,103 +571,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             justLocked = true;
         }
         return new LockInfo(lock, justLocked);
-    }
-
-    /**
-     * Implementation of the getAliasesForPage method.<p>
-     *
-     * @param uuid the structure id of the page
-     * @return the aliases for the given page
-     *
-     * @throws CmsException if something goes wrong
-     */
-    protected List<CmsAliasBean> internalGetAliasesForPage(CmsUUID uuid) throws CmsException {
-
-        CmsAliasManager aliasManager = OpenCms.getAliasManager();
-        List<CmsAlias> aliases = aliasManager.getAliasesForStructureId(getCmsObject(), uuid);
-        List<CmsAliasBean> result = new ArrayList<CmsAliasBean>();
-        for (CmsAlias alias : aliases) {
-            CmsAliasBean bean = convertAliasToBean(alias);
-            result.add(bean);
-        }
-        return result;
-    }
-
-    /**
-     * The internal method used for validating aliases.<p>
-     *
-     * @param uuid the structure id of the resource whose aliases are being validated
-     * @param aliasPaths a map from (arbitrary) ids to alias paths
-     * @param locale the locale for validation messages
-     *
-     * @return a map from the same ids to validation error messages
-     *
-     * @throws CmsException if something goes wrong
-     */
-    protected Map<String, String> internalValidateAliases(CmsUUID uuid, Map<String, String> aliasPaths, Locale locale)
-    throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        Set<String> seenPaths = new HashSet<String>();
-        Set<String> duplicatePaths = new HashSet<String>();
-        for (String path : aliasPaths.values()) {
-            if (seenPaths.contains(path)) {
-                duplicatePaths.add(path);
-            }
-            seenPaths.add(path);
-        }
-        Map<String, String> errorMessagesByPath = new HashMap<String, String>();
-        for (String path : duplicatePaths) {
-            errorMessagesByPath.put(path, Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_DUPLICATE_PATH_0)); //$NON-NLS-1$
-        }
-        seenPaths.removeAll(duplicatePaths);
-
-        for (String path : seenPaths) {
-            String pathError = checkValidAliasPath(path, locale);
-            if (pathError != null) {
-                errorMessagesByPath.put(path, pathError);
-            } else {
-                errorMessagesByPath.put(path, null);
-                if (cms.existsResource(path, CmsResourceFilter.ALL)) {
-                    errorMessagesByPath.put(path, Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IS_VFS_0)); //$NON-NLS-1$
-                } else {
-                    List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(
-                        cms,
-                        cms.getRequestContext().getSiteRoot(),
-                        path);
-                    for (CmsAlias alias : aliases) {
-                        CmsUUID otherStructureId = alias.getStructureId();
-                        if (!otherStructureId.equals(uuid)) {
-                            try {
-                                CmsResource resource = cms.readResource(otherStructureId, CmsResourceFilter.ALL);
-                                errorMessagesByPath.put(
-                                    path,
-                                    Messages.get().getBundle(locale).key(
-                                        Messages.ERR_ALIAS_ALREADY_USED_1,
-                                        resource.getRootPath()));
-                                break;
-                            } catch (CmsVfsResourceNotFoundException e) {
-                                // this may happen if there are outdated entries in the database table
-                                errorMessagesByPath.put(
-                                    path,
-                                    Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_ALREADY_USED_UNKNOWN_0)); //$NON-NLS-1$
-                                break;
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-        Map<String, String> errorMessagesById = new HashMap<String, String>();
-        for (String key : aliasPaths.keySet()) {
-            String path = aliasPaths.get(key);
-            if (errorMessagesByPath.containsKey(path)) {
-                String errorMessage = errorMessagesByPath.get(path);
-                errorMessagesById.put(key, errorMessage);
-            }
-        }
-        return errorMessagesById;
     }
 
     /**

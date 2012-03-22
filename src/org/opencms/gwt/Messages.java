@@ -38,6 +38,21 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_ALREADY_USED_1 = "ERR_ALIAS_ALREADY_USED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_ALREADY_USED_UNKNOWN_0 = "ERR_ALIAS_ALREADY_USED_UNKNOWN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_DUPLICATE_PATH_0 = "ERR_ALIAS_DUPLICATE_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_INVALID_PATH_0 = "ERR_ALIAS_INVALID_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_IS_VFS_0 = "ERR_ALIAS_IS_VFS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INSTANTIATION_FAILED_1 = "ERR_INSTANTIATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -60,6 +75,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_VALIDATOR_INSTANTIATION_FAILED_1 = "ERR_VALIDATOR_INSTANTIATION_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIAS_0 = "GUI_ALIAS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKED_BY_1 = "GUI_LOCKED_BY_1";
