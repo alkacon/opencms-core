@@ -76,7 +76,6 @@ public class CmsFormDialog extends CmsPopup implements I_CmsFormDialog {
         m_okButton = createOkButton();
         addButton(m_okButton);
         m_form = form;
-        m_form.setFormDialog(this);
     }
 
     /**

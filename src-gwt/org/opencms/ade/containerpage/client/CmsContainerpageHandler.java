@@ -54,6 +54,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.ui.input.form.A_CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
@@ -235,7 +236,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 infoBean.setResourceType(elementBean.getResourceType());
                 CmsInfoBoxFormFieldPanel formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
                 form.setWidget(formFieldPanel);
-                I_CmsFormHandler formHandler = new I_CmsFormHandler() {
+                I_CmsFormHandler formHandler = new A_CmsDialogFormHandler() {
 
                     /**
                      * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitForm(java.util.Map, java.util.Set)

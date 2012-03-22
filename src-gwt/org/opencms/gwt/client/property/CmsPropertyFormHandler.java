@@ -27,8 +27,8 @@
 
 package org.opencms.gwt.client.property;
 
+import org.opencms.gwt.client.ui.input.form.A_CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 
@@ -45,13 +45,13 @@ import java.util.Set;
  * 
  * @since 8.0.0
  */
-public class CmsPropertyFormHandler implements I_CmsFormHandler {
-
-    /** The property editor handler. */
-    private I_CmsPropertyEditorHandler m_handler;
+public class CmsPropertyFormHandler extends A_CmsDialogFormHandler {
 
     /** The dialog used for editing the properties. */
     private CmsFormDialog m_dialog;
+
+    /** The property editor handler. */
+    private I_CmsPropertyEditorHandler m_handler;
 
     /**
      * Creates a new instance.<p>
@@ -62,6 +62,8 @@ public class CmsPropertyFormHandler implements I_CmsFormHandler {
     public CmsPropertyFormHandler(I_CmsPropertyEditorHandler handler, CmsFormDialog dialog) {
 
         m_dialog = dialog;
+        setDialog(dialog);
+        setForm(dialog.getForm());
         m_handler = handler;
     }
 

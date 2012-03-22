@@ -49,4 +49,8 @@ public interface I_CmsFormHandler {
      */
     void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields);
 
+    void onSubmitValidationResult(boolean ok);
+
+    void onValidationResult(boolean ok);
+
 }

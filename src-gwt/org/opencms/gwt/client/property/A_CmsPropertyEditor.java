@@ -72,11 +72,11 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
     /** The form dialog. */
     protected CmsFormDialog m_dialog;
 
-    /** The form containing the fields. */
-    protected CmsForm m_form;
-
     /** The reason to disable the form input fields. */
     protected String m_disabledReason;
+
+    /** The form containing the fields. */
+    protected CmsForm m_form;
 
     /** The handler for this sitemap entry editor. */
     protected I_CmsPropertyEditorHandler m_handler;
@@ -105,8 +105,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         m_dialog = new CmsFormDialog(handler.getDialogTitle(), form);
         m_handler = handler;
         m_propertyConfig = removeHiddenProperties(propertyConfig);
-
-        m_dialog.setFormHandler(new CmsPropertyFormHandler(m_handler, m_dialog));
+        CmsPropertyFormHandler formHandler = new CmsPropertyFormHandler(m_handler, m_dialog);
+        m_dialog.setFormHandler(formHandler);
     }
 
     /**
@@ -176,7 +176,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
      */
     public void start() {
 
-        CmsForm form = m_dialog.getForm();
+        CmsForm form = m_form;
 
         // creates tabs, etc. if necessary 
         setupFieldContainer();
@@ -306,7 +306,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
      */
     protected void setUrlNameField(String urlName) {
 
-        m_dialog.getForm().getField(FIELD_URLNAME).getWidget().setFormValueAsString(urlName);
+        m_form.getField(FIELD_URLNAME).getWidget().setFormValueAsString(urlName);
     }
 
     /**
@@ -316,7 +316,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
      */
     protected void showUrlNameError(String message) {
 
-        m_dialog.getForm().getField(FIELD_URLNAME).getWidget().setErrorMessage(message);
+        m_form.getField(FIELD_URLNAME).getWidget().setErrorMessage(message);
     }
 
     /**
