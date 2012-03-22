@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -77,11 +78,20 @@ public class CmsClientSitemapEntry implements IsSerializable {
         subSitemap
     }
 
+    /** The entry aliases. */
+    private List<String> m_aliases;
+
     /** The cached export name. */
     private String m_cachedExportName;
 
     /** True if the children of this entry have initially been loaded. */
     private boolean m_childrenLoadedInitially;
+
+    /** The expiration date. */
+    private String m_dateExpired;
+
+    /** The release date. */
+    private String m_dateReleased;
 
     /** The default file id. */
     private CmsUUID m_defaultFileId;
@@ -113,6 +123,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** Indicates if this entry represents the default page of the parent folder. */
     private boolean m_isFolderDefaultPage;
 
+    /** Flag indicating the resource is released and not expired. */
+    private boolean m_isResleasedAndNotExpired;
+
     /** The lock of the entry resource. */
     private CmsClientLock m_lock;
 
@@ -127,6 +140,12 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The relative position between siblings. */
     private int m_position = -1;
+
+    /** The target in case of a redirect type. */
+    private String m_redirectTarget;
+
+    /** The resource state. */
+    private CmsResourceState m_resourceState;
 
     /** The resource type name. */
     private String m_resourceTypeName;
@@ -175,6 +194,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the aliases.<p>
+     *
+     * @return the aliases
+     */
+    public List<String> getAliases() {
+
+        return m_aliases;
+    }
+
+    /**
      * Returns true if this item's children have been loaded initially.<p>
      * 
      * @return true if this item's children have been loaded initially
@@ -182,6 +211,26 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean getChildrenLoadedInitially() {
 
         return m_childrenLoadedInitially;
+    }
+
+    /**
+     * Returns the expiration date.<p>
+     *
+     * @return the expiration date
+     */
+    public String getDateExpired() {
+
+        return m_dateExpired;
+    }
+
+    /**
+     * Returns the release date.<p>
+     *
+     * @return the release date
+     */
+    public String getDateReleased() {
+
+        return m_dateReleased;
     }
 
     /**
@@ -307,6 +356,26 @@ public class CmsClientSitemapEntry implements IsSerializable {
             return m_ownProperties.get(propertyName).getEffectiveValue();
         }
         return null;
+    }
+
+    /**
+     * Returns the redirect target.<p>
+     *
+     * @return the redirect target
+     */
+    public String getRedirectTarget() {
+
+        return m_redirectTarget;
+    }
+
+    /**
+     * Returns the resource state.<p>
+     *
+     * @return the resource state
+     */
+    public CmsResourceState getResourceState() {
+
+        return m_resourceState;
     }
 
     /**
@@ -497,6 +566,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns if the resource is released and not expired.<p>
+     *
+     * @return <code>true</code> if the resource is released and not expired
+     */
+    public boolean isResleasedAndNotExpired() {
+
+        return m_isResleasedAndNotExpired;
+    }
+
+    /**
      * Returns true if this entry is the root entry of the sitemap.<p>
      * 
      * @return true if this entry is the root entry of the sitemap 
@@ -530,20 +609,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /**
      * Removes the child at the given position.<p>
      * 
-     * @param position the index of the child to remove
-     * 
-     * @return the removed child
-     */
-    public CmsClientSitemapEntry removeSubEntry(int position) {
-
-        CmsClientSitemapEntry removed = m_subEntries.remove(position);
-        updatePositions(position);
-        return removed;
-    }
-
-    /**
-     * Removes the child at the given position.<p>
-     * 
      * @param entryId the id of the child to remove
      * 
      * @return the removed child
@@ -568,6 +633,30 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Removes the child at the given position.<p>
+     * 
+     * @param position the index of the child to remove
+     * 
+     * @return the removed child
+     */
+    public CmsClientSitemapEntry removeSubEntry(int position) {
+
+        CmsClientSitemapEntry removed = m_subEntries.remove(position);
+        updatePositions(position);
+        return removed;
+    }
+
+    /**
+     * Sets the aliases.<p>
+     *
+     * @param aliases the aliases to set
+     */
+    public void setAliases(List<String> aliases) {
+
+        m_aliases = aliases;
+    }
+
+    /**
      * Sets if the entry resource has blocking locked children that can not be locked by the current user.<p>
      * 
      * @param hasBlockingLockedChildren <code>true</code> if the entry resource has blocking locked children
@@ -585,6 +674,26 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setChildrenLoadedInitially(boolean childrenLoaded) {
 
         m_childrenLoadedInitially = childrenLoaded;
+    }
+
+    /**
+     * Sets the expiration date.<p>
+     *
+     * @param dateExpired the expiration date to set
+     */
+    public void setDateExpired(String dateExpired) {
+
+        m_dateExpired = dateExpired;
+    }
+
+    /**
+     * Sets the release date.<p>
+     *
+     * @param dateReleased the release date to set
+     */
+    public void setDateReleased(String dateReleased) {
+
+        m_dateReleased = dateReleased;
     }
 
     /** 
@@ -738,6 +847,36 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Sets the redirect target.<p>
+     *
+     * @param redirectTarget the redirect target to set
+     */
+    public void setRedirectTarget(String redirectTarget) {
+
+        m_redirectTarget = redirectTarget;
+    }
+
+    /**
+     * Sets the resource is released and not expired flag.<p>
+     *
+     * @param isResleasedAndNotExpired the resource is released and not expired flag
+     */
+    public void setResleasedAndNotExpired(boolean isResleasedAndNotExpired) {
+
+        m_isResleasedAndNotExpired = isResleasedAndNotExpired;
+    }
+
+    /**
+     * Sets the resource state.<p>
+     *
+     * @param resourceState the resource state to set
+     */
+    public void setResourceState(CmsResourceState resourceState) {
+
+        m_resourceState = resourceState;
+    }
+
+    /**
      * Sets the resource type name.<p>
      * 
      * @param typeName the resource type name 
@@ -883,6 +1022,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setResourceTypeName(source.getResourceTypeName());
         setChildrenLoadedInitially(source.getChildrenLoadedInitially());
         setFolderDefaultPage(source.isFolderDefaultPage());
+        setDateExpired(source.getDateExpired());
+        setDateReleased(source.getDateReleased());
+        setResleasedAndNotExpired(source.isResleasedAndNotExpired());
     }
 
     /**
