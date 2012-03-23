@@ -53,7 +53,6 @@ public class CmsSimpleFormFieldPanel extends A_CmsFormFieldPanel {
     public CmsSimpleFormFieldPanel() {
 
         m_panel = new FlowPanel();
-        setBorder(m_panel);
         initWidget(m_panel);
     }
 

@@ -396,7 +396,7 @@ public class CmsAliasList extends Composite {
 
             public void onFailure(Throwable caught) {
 
-                // TODO: Auto-generated method stub
+                // do nothing
 
             }
 

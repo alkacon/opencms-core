@@ -27,8 +27,8 @@
 
 package org.opencms.gwt.client.property;
 
-import org.opencms.gwt.client.ui.input.form.A_CmsDialogFormHandler;
-import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.CmsForm;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 
@@ -41,14 +41,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Specialized form handler class for editing properties.<p>
- * 
- * @since 8.0.0
+ * This class handles form submits from property forms and passes the form data to a property editor handler.<p>
  */
-public class CmsPropertyFormHandler extends A_CmsDialogFormHandler {
-
-    /** The dialog used for editing the properties. */
-    private CmsFormDialog m_dialog;
+public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
 
     /** The property editor handler. */
     private I_CmsPropertyEditorHandler m_handler;
@@ -57,20 +52,16 @@ public class CmsPropertyFormHandler extends A_CmsDialogFormHandler {
      * Creates a new instance.<p>
      * 
      * @param handler the property editor handler
-     * @param dialog the dialog used for editing the properties 
      */
-    public CmsPropertyFormHandler(I_CmsPropertyEditorHandler handler, CmsFormDialog dialog) {
+    public CmsPropertySubmitHandler(I_CmsPropertyEditorHandler handler) {
 
-        m_dialog = dialog;
-        setDialog(dialog);
-        setForm(dialog.getForm());
         m_handler = handler;
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitForm(java.util.Map, java.util.Set)
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler#onSubmitForm(org.opencms.gwt.client.ui.input.form.CmsForm, java.util.Map, java.util.Set)
      */
-    public void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields) {
+    public void onSubmitForm(CmsForm form, Map<String, String> fieldValues, Set<String> editedFields) {
 
         CmsReloadMode reloadMode = getReloadMode(fieldValues, editedFields);
         Map<String, String> changedPropValues = removeTabSuffixes(fieldValues);
@@ -79,7 +70,6 @@ public class CmsPropertyFormHandler extends A_CmsDialogFormHandler {
         List<CmsPropertyModification> propChanges = getPropertyChanges(changedPropValues);
         if (!m_handler.hasEditableName()) {
             // The root element's name can't be edited 
-            m_dialog.hide();
             m_handler.handleSubmit(
                 "",
                 null,
@@ -90,8 +80,6 @@ public class CmsPropertyFormHandler extends A_CmsDialogFormHandler {
         }
         final String urlNameValue = getAndRemoveValue(fieldValues, A_CmsPropertyEditor.FIELD_URLNAME);
         fieldValues.remove(A_CmsPropertyEditor.FIELD_LINK);
-        //final CmsLinkBean link = m_linkSelector.getLinkBean();
-        //CmsClientSitemapEntry.setRedirect(fieldValues, link);
         m_handler.handleSubmit(
             urlNameValue,
             null,
@@ -216,10 +204,7 @@ public class CmsPropertyFormHandler extends A_CmsDialogFormHandler {
                 return CmsReloadMode.reloadParent;
 
             }
-            if (checkContains(fieldName, CmsClientProperty.PROPERTY_NAVTEXT)) {
-                return CmsReloadMode.reloadEntry;
-            }
         }
-        return CmsReloadMode.none;
+        return CmsReloadMode.reloadEntry;
     }
 }

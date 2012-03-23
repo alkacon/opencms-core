@@ -28,12 +28,14 @@
 package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.seo.CmsSeoOptionsDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -59,37 +61,69 @@ public class CmsOpenSeoDialog implements I_CmsHasContextMenuCommand, I_CmsContex
     /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#execute(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
      */
-    public void execute(final CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+    public void execute(
+        final CmsUUID structureId,
+        final I_CmsContextMenuHandler contextMenuHandler,
+        final CmsContextMenuEntryBean bean) {
 
-        CmsRpcAction<CmsListInfoBean> infoAction = new CmsRpcAction<CmsListInfoBean>() {
+        if (contextMenuHandler.ensureLockOnResource(structureId)) {
 
-            @Override
-            public void execute() {
+            CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
 
-                start(200, true);
-                CmsCoreProvider.getVfsService().getPageInfo(structureId, this);
-            }
+                @Override
+                public void execute() {
 
-            @Override
-            protected void onResponse(final CmsListInfoBean listInfoBean) {
+                    start(0, true);
+                    CmsCoreProvider.getVfsService().loadPropertyData(structureId, this);
+                }
 
-                stop(false);
-                CmsSeoOptionsDialog.loadAliases(structureId, new AsyncCallback<List<CmsAliasBean>>() {
+                @Override
+                protected void onResponse(final CmsPropertiesBean propertyData) {
 
-                    public void onFailure(Throwable caught) {
+                    CmsRpcAction<CmsListInfoBean> infoAction = new CmsRpcAction<CmsListInfoBean>() {
 
-                        // do nothing
-                    }
+                        @Override
+                        public void execute() {
 
-                    public void onSuccess(List<CmsAliasBean> result) {
+                            start(200, true);
+                            CmsCoreProvider.getVfsService().getPageInfo(structureId, this);
+                        }
 
-                        CmsSeoOptionsDialog dialog = new CmsSeoOptionsDialog(structureId, listInfoBean, result);
-                        dialog.center();
-                    }
-                });
-            }
-        };
-        infoAction.execute();
+                        @Override
+                        protected void onResponse(final CmsListInfoBean listInfoBean) {
+
+                            stop(false);
+                            CmsSeoOptionsDialog.loadAliases(structureId, new AsyncCallback<List<CmsAliasBean>>() {
+
+                                public void onFailure(Throwable caught) {
+
+                                    // do nothing
+                                }
+
+                                public void onSuccess(final List<CmsAliasBean> aliases) {
+
+                                    CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(
+                                        contextMenuHandler);
+                                    handler.setPropertiesBean(propertyData);
+                                    CmsSeoOptionsDialog dialog = new CmsSeoOptionsDialog(
+                                        structureId,
+                                        listInfoBean,
+                                        aliases,
+                                        propertyData.getPropertyDefinitions(),
+                                        handler);
+                                    dialog.centerHorizontally(50);
+                                    dialog.catchNotifications();
+                                    dialog.center();
+                                }
+                            });
+                        }
+                    };
+                    infoAction.execute();
+
+                }
+            };
+            action.execute();
+        }
     }
 
     /**

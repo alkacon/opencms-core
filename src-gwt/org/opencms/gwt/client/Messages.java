@@ -268,6 +268,9 @@ public final class Messages {
     public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTIES_0 = "GUI_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_BLOCK_UNUSED_0 = "GUI_PROPERTY_BLOCK_UNUSED_0";
 
     /** Message constant for key in the resource bundle. */

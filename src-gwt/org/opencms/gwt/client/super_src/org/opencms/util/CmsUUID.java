@@ -60,8 +60,11 @@ public final class CmsUUID implements IsSerializable, Cloneable, Comparable<CmsU
      * @param uuid a String representing a UUID
      */
     public CmsUUID(String uuid) {
-
+        if (!uuid.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) {
+            throw new IllegalArgumentException("Invalid UUID syntax!");  
+        }
         m_uuid = uuid;
+        
     }
 
     /**
@@ -185,8 +188,8 @@ public final class CmsUUID implements IsSerializable, Cloneable, Comparable<CmsU
      * @return <code>true</code> if the given UUID is valid
      */
     public static native boolean isValidUUID(String uuid)/*-{
-        var regex=/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
-        return regex.test(uuid);
+      var regex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
+      return regex.test(uuid);
     }-*/;
 
     /**

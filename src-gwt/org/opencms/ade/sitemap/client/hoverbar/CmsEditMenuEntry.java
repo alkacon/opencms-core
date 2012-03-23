@@ -35,10 +35,14 @@ import org.opencms.ade.sitemap.client.edit.CmsNavModePropertyEditor;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.A_CmsPropertyEditor;
+import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -100,10 +104,19 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                 handler.setPageInfo(result);
                 A_CmsPropertyEditor editor = createEntryEditor(handler);
                 editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
-                editor.start();
+                CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+                formHandler.setDialog(dialog);
+                I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
+                formHandler.setSubmitHandler(submitHandler);
+                dialog.setFormHandler(formHandler);
+                editor.initializeWidgets(dialog);
+                dialog.centerHorizontally(50);
+                dialog.catchNotifications();
                 String noEditReason = controller.getNoEditReason(entry);
                 if (noEditReason != null) {
                     editor.disableInput(noEditReason);
+                    dialog.getOkButton().disable(noEditReason);
                 }
             }
 

@@ -27,45 +27,55 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+/**
+ * Abstract handler superclass for forms which have their own dialog.<p> 
+ */
+public class CmsDialogFormHandler implements I_CmsFormHandler {
 
-public class A_CmsDialogFormHandler implements I_CmsFormHandler {
-
+    /** The form dialog. */
     protected CmsFormDialog m_dialog;
-    protected CmsForm m_form;
 
-    public void onSubmitForm(Map<String, String> values, Set<String> editedFields) {
+    /** The form submit handler. */
+    protected I_CmsFormSubmitHandler m_submitHandler;
 
-    }
-
-    public void onSubmitValidationResult(boolean ok) {
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
+     */
+    public void onSubmitValidationResult(CmsForm form, boolean ok) {
 
         if (ok) {
-            m_dialog.closeDialog();
-            Map<String, String> values = m_form.collectValues();
-            Set<String> editedFields = new HashSet<String>(m_form.getEditedFields());
-            editedFields.retainAll(values.keySet());
-            onSubmitForm(values, editedFields);
+            m_dialog.hide();
+            form.handleSubmit(m_submitHandler);
         } else {
-            m_dialog.setOkButtonEnabled(m_form.noFieldsInvalid());
+            m_dialog.setOkButtonEnabled(form.noFieldsInvalid());
         }
     }
 
-    public void onValidationResult(boolean ok) {
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
+     */
+    public void onValidationResult(CmsForm form, boolean ok) {
 
         m_dialog.setOkButtonEnabled(ok);
     }
 
+    /**
+     * Sets the dialog.<p>
+     * 
+     * @param dialog the form dialog 
+     */
     public void setDialog(CmsFormDialog dialog) {
 
         m_dialog = dialog;
     }
 
-    public void setForm(CmsForm form) {
+    /**
+     * Sets the form submit handler.<p>
+     * 
+     * @param submitHandler the new form submit handler 
+     */
+    public void setSubmitHandler(I_CmsFormSubmitHandler submitHandler) {
 
-        m_form = form;
+        m_submitHandler = submitHandler;
     }
-
 }

@@ -78,9 +78,6 @@ public class CmsForm {
     /** A map from field ids to the corresponding widgets. */
     protected Map<String, I_CmsFormField> m_fields = new LinkedHashMap<String, I_CmsFormField>();
 
-    /** A reference to the dialog this form is contained in. */
-    protected I_CmsFormDialog m_formDialog;
-
     /** The form handler. */
     protected I_CmsFormHandler m_formHandler;
 
@@ -242,6 +239,19 @@ public class CmsForm {
     }
 
     /**
+     * Passes this form's data to a form submit handler.<p>
+     *  
+     * @param handler the form submit handler
+     */
+    public void handleSubmit(I_CmsFormSubmitHandler handler) {
+
+        Map<String, String> values = collectValues();
+        Set<String> editedFields = new HashSet<String>(getEditedFields());
+        editedFields.retainAll(values.keySet());
+        handler.onSubmitForm(this, values, editedFields);
+    }
+
+    /**
      * Checks that no fields are invalid.<p>
      * 
      * @return true if no fields are invalid. 
@@ -359,7 +369,7 @@ public class CmsForm {
                  */
                 public void onValidationFinished(boolean ok) {
 
-                    m_formHandler.onSubmitValidationResult(ok);
+                    m_formHandler.onSubmitValidationResult(CmsForm.this, ok);
                 }
 
                 /**
@@ -530,7 +540,7 @@ public class CmsForm {
              */
             public void onValidationFinished(boolean ok) {
 
-                m_formHandler.onValidationResult(noFieldsInvalid(m_fields.values()));
+                m_formHandler.onValidationResult(CmsForm.this, noFieldsInvalid(m_fields.values()));
             }
 
             /**

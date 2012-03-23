@@ -27,16 +27,12 @@
 
 package org.opencms.gwt.client.property;
 
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
-import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Style;
-import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.client.ui.input.form.CmsSimpleFormFieldPanel;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientProperty.Mode;
 import org.opencms.gwt.shared.property.CmsPathValue;
@@ -53,13 +49,6 @@ import java.util.Map;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -73,28 +62,13 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.0
  */
-public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
-
-    /** The interval used for updating the height. */
-    public static final int UPDATE_HEIGHT_INTERVAL = 200;
-
-    /** The map of tab names. */
-    private static BiMap<CmsClientProperty.Mode, String> tabs;
+public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
 
     /** The map of models of the fields. */
     Map<String, I_CmsStringModel> m_models = new HashMap<String, I_CmsStringModel>();
 
-    /** The previous tab index. */
-    private int m_oldTabIndex = -1;
-
-    /** The panel used for editing the properties. */
-    private CmsPropertyPanel m_panel;
-
     /** The properties of the entry. */
     private Map<String, CmsClientProperty> m_properties;
-
-    /** Flag which indicates whether the resource properties should be editable. */
-    private boolean m_showResourceProperties;
 
     /**
      * Creates a new sitemap entry editor instance for the VFS mode.<p>
@@ -102,17 +76,10 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
      * @param propConfig the property configuration 
      * @param handler the sitemap entry editor handler 
      */
-    public CmsVfsModePropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
+    public CmsSimplePropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
 
         super(propConfig, handler);
         m_properties = CmsClientProperty.makeLazyCopy(handler.getOwnProperties());
-    }
-
-    static {
-        tabs = HashBiMap.create();
-        tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
-        tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
-        tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
     }
 
     /**
@@ -121,78 +88,37 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     @Override
     public void buildFields() {
 
-        internalBuildConfiguredFields();
-        //internalBuildOtherFields();
+        Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
+        Map<String, CmsClientProperty> defaultFileProps = m_handler.getDefaultFileProperties();
+        Map<String, CmsClientProperty> props;
+        CmsUUID id = null;
+        if (!m_handler.isFolder()) {
+            props = ownProps;
+            id = m_handler.getId();
+        } else if (m_handler.getDefaultFileId() != null) {
+            props = defaultFileProps;
+            id = m_handler.getDefaultFileId();
+        } else {
+            props = ownProps;
+            id = m_handler.getId();
+        }
+        props = CmsClientProperty.makeLazyCopy(props);
+        List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
+        moveToTop(keys, CmsClientProperty.PROPERTY_NAVTEXT);
+        moveToTop(keys, CmsClientProperty.PROPERTY_DESCRIPTION);
+        moveToTop(keys, CmsClientProperty.PROPERTY_TITLE);
+        for (String propName : keys) {
+            buildField(props, propName, Mode.effective, id);
+        }
     }
 
     /**
-     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#initializeWidgets(org.opencms.gwt.client.ui.CmsPopup)
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#addSpecialFields()
      */
     @Override
-    public void initializeWidgets(final CmsPopup dialog) {
+    protected void addSpecialFields() {
 
-        super.initializeWidgets(dialog);
-        dialog.setCaption(null);
-        dialog.removePadding();
-
-        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-
-            public boolean execute() {
-
-                if (!getPropertyPanel().getTabPanel().isAttached() || !getPropertyPanel().getTabPanel().isVisible()) {
-                    return false;
-                }
-                updateHeight(dialog);
-                return true;
-            }
-        }, UPDATE_HEIGHT_INTERVAL);
-    }
-
-    /**
-     * Sets the "show resource properties" flag which controls whether the resource value fields should be built.<p>
-     * 
-     * @param showResourceProperties if true, the resource value fields will be build 
-     */
-    public void setShowResourceProperties(boolean showResourceProperties) {
-
-        m_showResourceProperties = showResourceProperties;
-    }
-
-    /**
-     * Returns the property panel.<p>
-     * 
-     * @return the property panel
-     */
-    protected CmsPropertyPanel getPropertyPanel() {
-
-        return m_panel;
-    }
-
-    /**
-     * Method which is called when the tab is switched.<p>
-     * 
-     * @param toTab the tab to which the user is switching 
-     */
-    protected void handleSwitchTab(int toTab) {
-
-        switch (toTab) {
-            case 0:
-                rebuildSimpleTab();
-                break;
-            case 1:
-                rebuildIndividualTab();
-                break;
-            case 2:
-                rebuildSharedTab();
-                break;
-            default:
-                break;
-        }
-        if (m_disabledReason != null) {
-            disableInput(m_disabledReason);
-        } else {
-            m_form.validateAllFields();
-        }
+        // we don't want any special fields 
     }
 
     /**
@@ -201,50 +127,8 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     @Override
     protected void setupFieldContainer() {
 
-        CmsListInfoBean info = m_handler.getPageInfo();
-        m_panel = new CmsPropertyPanel(m_showResourceProperties, info);
-        String modeClass = m_handler.getModeClass();
-        if (modeClass != null) {
-            m_panel.addStyleName(modeClass);
-        }
-        m_panel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
-
-            public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
-
-                int target = event.getItem().intValue();
-                handleSwitchTab(target);
-            }
-        });
-
-        m_form.setWidget(m_panel);
-    }
-
-    /**
-     * Updates the panel height depending on the content of the current tab.<p>
-     * 
-     * @param dialog the dialog for which the height should be updated 
-     */
-    protected void updateHeight(CmsPopup dialog) {
-
-        int tabIndex = m_panel.getTabPanel().getSelectedIndex();
-        boolean changedTab = tabIndex != m_oldTabIndex;
-        m_oldTabIndex = tabIndex;
-        Widget tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
-        Element tabElement = tabWidget.getElement();
-        Element innerElement = tabElement.getFirstChildElement();
-        int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
-        int spaceLeft = dialog.getAvailableHeight(0);
-        int newHeight = Math.min(spaceLeft, contentHeight) + 50;
-        if ((m_panel.getTabPanel().getOffsetHeight() != newHeight) || changedTab) {
-            m_panel.getTabPanel().setHeight(newHeight + "px");
-            if (CmsCoreProvider.get().isIe7()) {
-                int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
-                Widget widget = m_panel.getTabPanel().getWidget(selectedIndex);
-                widget.setHeight((newHeight - 45) + "px");
-                dialog.center();
-            }
-        }
-
+        CmsSimpleFormFieldPanel panel = new CmsSimpleFormFieldPanel();
+        m_form.setWidget(panel);
     }
 
     /**
@@ -253,10 +137,14 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
      * @param ownProps the entry's own properties 
      * @param propName the property name
      * @param mode the mode which controls which kind of field will be built  
+     * @param id the id of the resource for which to build the field 
      */
-    private void buildField(Map<String, CmsClientProperty> ownProps, final String propName, CmsClientProperty.Mode mode) {
+    private void buildField(
+        Map<String, CmsClientProperty> ownProps,
+        final String propName,
+        CmsClientProperty.Mode mode,
+        CmsUUID id) {
 
-        String entryId = m_handler.getId().toString();
         CmsXmlContentProperty propDef = m_propertyConfig.get(propName);
 
         if (propDef == null) {
@@ -279,14 +167,13 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             propDef = propDef.withNiceName(propName);
         }
 
-        CmsClientProperty ownProp = m_properties.get(propName);
-        CmsPathValue pathValue = CmsClientProperty.getPathValue(ownProp, mode).prepend(entryId + "/" + propName + "/");
+        CmsClientProperty ownProp = ownProps.get(propName);
+        CmsPathValue pathValue = CmsClientProperty.getPathValue(ownProp, mode).prepend(id + "/" + propName + "/");
 
         //CHECK: should fields other than NavText be really automatically allowed to be empty in navigation mode?
-        String tab = tabs.get(mode);
         CmsBasicFormField field = CmsBasicFormField.createField(
             propDef,
-            pathValue.getPath() + "#" + tab,
+            pathValue.getPath(),
             this,
             Collections.singletonMap(
                 CmsSelectBox.NO_SELECTION_TEXT,
@@ -321,7 +208,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             field.getLayoutData().put(CmsPropertyPanel.LD_DISPLAY_VALUE, "true");
         }
         field.getLayoutData().put(CmsPropertyPanel.LD_PROPERTY, propName);
-        m_form.addField(tab, field, initialValue);
+        m_form.addField(field, initialValue);
     }
 
     /**
@@ -441,35 +328,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
-     * Builds the fields for the configured properties in the first tab.<p>
-     */
-    private void internalBuildConfiguredFields() {
-
-        Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
-        List<String> keys = new ArrayList<String>(m_propertyConfig.keySet());
-        moveToTop(keys, CmsClientProperty.PROPERTY_NAVTEXT);
-        moveToTop(keys, CmsClientProperty.PROPERTY_DESCRIPTION);
-        moveToTop(keys, CmsClientProperty.PROPERTY_TITLE);
-        for (String propName : keys) {
-            buildField(ownProps, propName, Mode.effective);
-        }
-    }
-
-    /**
-     * 
-     * Builds the fields for a given mode.<p>
-     * 
-     * @param mode the mode 
-     */
-    private void internalBuildFields(Mode mode) {
-
-        Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
-        for (String propName : m_handler.getAllPropertyNames()) {
-            buildField(ownProps, propName, mode);
-        }
-    }
-
-    /**
      * Moves the given property name to the top of the keys if present.<p>
      * 
      * @param keys the list of keys
@@ -483,42 +341,4 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         }
     }
 
-    /**
-     * Rebuilds the "individual" tab.<p>
-     */
-    private void rebuildIndividualTab() {
-
-        m_form.removeGroup(CmsPropertyPanel.TAB_INDIVIDUAL);
-        CmsPropertyPanel panel = ((CmsPropertyPanel)m_form.getWidget());
-        panel.clearTab(CmsPropertyPanel.TAB_INDIVIDUAL);
-        internalBuildFields(Mode.structure);
-        m_form.renderGroup(CmsPropertyPanel.TAB_INDIVIDUAL);
-    }
-
-    /**
-     * Rebuilds the "shared" tab.<p>
-     */
-    private void rebuildSharedTab() {
-
-        m_form.removeGroup(CmsPropertyPanel.TAB_SHARED);
-        CmsPropertyPanel panel = ((CmsPropertyPanel)m_form.getWidget());
-        panel.clearTab(CmsPropertyPanel.TAB_SHARED);
-        internalBuildFields(Mode.resource);
-        m_form.renderGroup(CmsPropertyPanel.TAB_SHARED);
-    }
-
-    /**
-     * Rebuilds the simple tab.<p>
-     */
-    private void rebuildSimpleTab() {
-
-        m_form.removeGroup(CmsPropertyPanel.TAB_SIMPLE);
-        CmsPropertyPanel panel = ((CmsPropertyPanel)m_form.getWidget());
-        panel.clearTab(CmsPropertyPanel.TAB_SIMPLE);
-        if (m_handler.hasEditableName()) {
-            m_form.addField(CmsPropertyPanel.TAB_SIMPLE, createUrlNameField());
-        }
-        internalBuildConfiguredFields();
-        m_form.renderGroup(CmsPropertyPanel.TAB_SIMPLE);
-    }
 }

@@ -29,6 +29,7 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.edit.CmsEditEntryHandler;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
@@ -38,22 +39,24 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The context menu entry used for opening the "alias editor" dialog.<p>
  */
-public class CmsAliasMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsSeoMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      *
      * @param hoverbar the hoverbar
      */
-    public CmsAliasMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsSeoMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
         //setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoPage());
@@ -100,7 +103,18 @@ public class CmsAliasMenuEntry extends A_CmsSitemapMenuEntry {
 
                     public void onSuccess(List<CmsAliasBean> result) {
 
-                        CmsSeoOptionsDialog dialog = new CmsSeoOptionsDialog(constStructureId, listInfoBean, result);
+                        CmsEditEntryHandler handler = new CmsEditEntryHandler(
+                            controller,
+                            getHoverbar().getEntry(),
+                            CmsSitemapView.getInstance().isNavigationMode());
+                        handler.setPageInfo(listInfoBean);
+                        Map<String, CmsXmlContentProperty> propConfig = CmsSitemapView.getInstance().getController().getData().getProperties();
+                        CmsSeoOptionsDialog dialog = new CmsSeoOptionsDialog(
+                            constStructureId,
+                            listInfoBean,
+                            result,
+                            propConfig,
+                            handler);
                         dialog.center();
                     }
 

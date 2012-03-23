@@ -29,17 +29,28 @@ package org.opencms.gwt.client.seo;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.property.A_CmsPropertyEditor;
+import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
+import org.opencms.gwt.client.property.CmsSimplePropertyEditor;
+import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.ui.input.form.CmsForm;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -51,21 +62,49 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * This is a dialog widget which wraps a {@link CmsAliasList}.
+ * The SEO options dialog, which makes it possible to both edit the SEO relevant properties of
+ * a resource as well as alias paths for the resource.<p>
  */
-public class CmsSeoOptionsDialog extends CmsPopup {
+public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /** The alias messages. */
     protected static CmsAliasMessages aliasMessages = new CmsAliasMessages();
 
+    /** The properties which should be displayed. */
+    protected static String[] seoProperties = new String[] {"Title", "Description", "Keywords"};
+
+    /** The validation has detected an error. */
+    protected static final int VALIDATION_FAILED = 2;
+
+    /** The validation has finished successfully. */
+    protected static final int VALIDATION_OK = 0;
+    /** The validation isn't finished yet. */
+    protected static final int VALIDATION_RUNNING = 1;
+
     /** The inner alias list. */
     protected CmsAliasList m_aliasList;
 
-    /** The root panel for this dialog. */
-    protected FlowPanel m_panel;
+    /** The validation status for the aliases. */
+    protected int m_aliasValidationStatus;
 
+    /** The root panel for this dialog. */
+    protected FlowPanel m_panel = new FlowPanel();
+
+    /** The validation status for the properties. */
+    protected int m_propertyValidationStatus;
     /** The structure id of the resource whose aliases are being edited. */
     protected CmsUUID m_structureId;
+
+    /** The property editor instance. */
+    A_CmsPropertyEditor m_propertyEditor;
+
+    /** The form submit handler. */
+    private I_CmsFormSubmitHandler m_formSubmitHandler;
+
+    /**
+     * The field set containing the properties relevant for SEO.
+     */
+    private CmsFieldSet m_propertyFieldset = new CmsFieldSet();
 
     /**
      * Creates a new dialog instance.<p>
@@ -73,33 +112,63 @@ public class CmsSeoOptionsDialog extends CmsPopup {
      * @param structureId the structure id of the resource whose aliases are being edited
      * @param infoBean a bean containing the information to display in the resource info box 
      * @param aliases the existing aliases of the resource 
+     * @param propertyConfig the property configuration 
+     * @param propertyEditorHandler the property editor handler 
      */
-    public CmsSeoOptionsDialog(CmsUUID structureId, CmsListInfoBean infoBean, List<CmsAliasBean> aliases) {
+    public CmsSeoOptionsDialog(
+        CmsUUID structureId,
+        CmsListInfoBean infoBean,
+        List<CmsAliasBean> aliases,
+        Map<String, CmsXmlContentProperty> propertyConfig,
+        I_CmsPropertyEditorHandler propertyEditorHandler) {
 
         super(aliasMessages.seoOptions()); //$NON-NLS-1$
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
         setWidth(590);
-        m_structureId = structureId;
-        m_panel = new FlowPanel();
-        CmsFieldSet aliasFieldset = new CmsFieldSet();
-        aliasFieldset.setLegend(aliasMessages.aliases()); //$NON-NLS-1$
-        m_aliasList = new CmsAliasList(structureId, aliases);
+
+        //-----------------------INFO BOX -------------------------------------------
+
         CmsListItemWidget liWidget = new CmsListItemWidget(infoBean);
         liWidget.setStateIcon(StateIcon.standard);
         m_panel.add(liWidget);
+
+        //------------------------ PROPERTIES ------------------------------------------        
+        LinkedHashMap<String, CmsXmlContentProperty> props = new LinkedHashMap<String, CmsXmlContentProperty>();
+        for (String seoProperty : seoProperties) {
+            if (propertyConfig.containsKey(seoProperty)) {
+                props.put(seoProperty, propertyConfig.get(seoProperty));
+            }
+        }
+        m_propertyEditor = new CmsSimplePropertyEditor(props, propertyEditorHandler);
+        m_propertyEditor.getForm().setFormHandler(this);
+        m_formSubmitHandler = new CmsPropertySubmitHandler(propertyEditorHandler);
+        m_structureId = structureId;
+        m_propertyFieldset.getElement().getStyle().setMarginTop(10, Unit.PX);
+        m_propertyFieldset.getContentPanel().getElement().getStyle().setOverflow(Overflow.VISIBLE);
+        m_propertyFieldset.setLegend(org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_PROPERTIES_0));
+        m_propertyEditor.initializeWidgets(this);
+        m_panel.add(m_propertyFieldset);
+
+        //------------------------ ALIASES ------------------------------------------
+
+        CmsFieldSet aliasFieldset = new CmsFieldSet();
+        aliasFieldset.setLegend(aliasMessages.aliases()); //$NON-NLS-1$
+        m_aliasList = new CmsAliasList(structureId, aliases);
         aliasFieldset.getElement().getStyle().setMarginTop(10, Unit.PX);
         aliasFieldset.addContent(m_aliasList);
         m_panel.add(aliasFieldset);
         Style style = m_aliasList.getElement().getStyle();
         style.setProperty("minHeight", "300px"); //$NON-NLS-1$ //$NON-NLS-2$
         style.setProperty("maxHeight", "450px"); //$NON-NLS-1$ //$NON-NLS-2$
-
         style.setOverflowY(Overflow.AUTO);
+
         setMainContent(m_panel);
         addButton(createCancelButton());
         addButton(saveButton());
+
     }
 
     /**
@@ -127,6 +196,24 @@ public class CmsSeoOptionsDialog extends CmsPopup {
             }
         };
         action.execute();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
+     */
+    public void onSubmitValidationResult(CmsForm form, boolean ok) {
+
+        m_propertyValidationStatus = ok ? VALIDATION_OK : VALIDATION_FAILED;
+        update(true);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
+     */
+    public void onValidationResult(CmsForm form, boolean ok) {
+
+        m_propertyValidationStatus = ok ? VALIDATION_OK : VALIDATION_FAILED;
+        update(false);
     }
 
     /**
@@ -164,6 +251,32 @@ public class CmsSeoOptionsDialog extends CmsPopup {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#show()
+     */
+    @Override
+    public void show() {
+
+        m_propertyFieldset.addContent(m_propertyEditor.getForm().getWidget());
+        super.show();
+        notifyWidgetsOfOpen();
+    }
+
+    /**
+     * Updates the validation status and optionally submits the data.<p>
+     * 
+     * @param submit the submit flag 
+     */
+    public void update(boolean submit) {
+
+        boolean ok = (m_propertyValidationStatus == VALIDATION_OK) && (m_aliasValidationStatus == VALIDATION_OK);
+        if (submit && ok) {
+            saveProperties();
+            saveAliases();
+            hide();
+        }
+    }
+
+    /**
      * The method which is called when the user clicks the save button of the dialog.<p>
      */
     protected void onClickSave() {
@@ -174,21 +287,41 @@ public class CmsSeoOptionsDialog extends CmsPopup {
             public void run() {
 
                 m_aliasList.clearValidationErrors();
+                m_aliasValidationStatus = VALIDATION_RUNNING;
+                m_propertyValidationStatus = VALIDATION_RUNNING;
                 m_aliasList.validate(new Runnable() {
 
                     public void run() {
 
-                        if (!m_aliasList.hasValidationErrors()) {
-                            List<CmsAliasBean> aliases = m_aliasList.getAliases();
-                            saveAliases(m_structureId, aliases);
-                            hide();
-                        }
+                        m_aliasValidationStatus = !m_aliasList.hasValidationErrors()
+                        ? VALIDATION_OK
+                        : VALIDATION_FAILED;
+                        update(true);
+
                     }
                 });
+                m_propertyEditor.getForm().validateAndSubmit();
             }
         };
         // slight delay so that the validation doesn't interfere with validations triggered by the change event 
         timer.schedule(20);
+    }
+
+    /**
+     * Saves the aliases.<p>
+     */
+    protected void saveAliases() {
+
+        List<CmsAliasBean> aliases = m_aliasList.getAliases();
+        saveAliases(m_structureId, aliases);
+    }
+
+    /**
+     * Saves the properties.<p>
+     */
+    protected void saveProperties() {
+
+        m_propertyEditor.getForm().handleSubmit(m_formSubmitHandler);
     }
 
     /**
@@ -214,6 +347,16 @@ public class CmsSeoOptionsDialog extends CmsPopup {
         });
 
         return button;
+    }
+
+    /**
+     * Tells all widgets that the dialog has been opened.<p>
+     */
+    private void notifyWidgetsOfOpen() {
+
+        for (Map.Entry<String, I_CmsFormField> fieldEntry : m_propertyEditor.getForm().getFields().entrySet()) {
+            fieldEntry.getValue().getWidget().setAutoHideParent(this);
+        }
     }
 
     /**
