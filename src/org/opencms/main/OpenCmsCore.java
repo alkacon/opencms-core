@@ -1577,6 +1577,8 @@ public final class OpenCmsCore {
                 synchronized (lock) {
                     rpcService.service(req, res);
                 }
+                // update the session info
+                m_sessionManager.updateSessionInfo(cms, req);
             } finally {
                 // be sure to clear the cms context
                 rpcService.setCms(null);
