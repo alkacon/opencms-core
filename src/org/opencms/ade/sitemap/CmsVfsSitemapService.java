@@ -34,7 +34,6 @@ import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
-import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
@@ -46,7 +45,6 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.db.CmsAlias;
-import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -257,56 +255,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             error(e);
         }
         return null;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getAdditionalEntryInfo(org.opencms.util.CmsUUID)
-     */
-    public CmsAdditionalEntryInfo getAdditionalEntryInfo(CmsUUID structureId) throws CmsRpcException {
-
-        CmsAdditionalEntryInfo result = null;
-        try {
-            Map<String, String> additional = new LinkedHashMap<String, String>();
-            result = new CmsAdditionalEntryInfo();
-            result.setAdditional(additional);
-            try {
-                CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.ONLY_VISIBLE);
-                result.setResourceState(resource.getState());
-                if (isRedirectType(resource.getTypeId())) {
-                    CmsFile file = getCmsObject().readFile(resource);
-                    I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
-                    String link = content.getValue(
-                        REDIRECT_LINK_TARGET_XPATH,
-                        getCmsObject().getRequestContext().getLocale()).getStringValue(getCmsObject());
-                    additional.put(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_REDIRECT_TARGET_LABEL_0),
-                        link);
-                }
-                CmsResource page = resource;
-                if (resource.isFolder()) {
-                    page = getCmsObject().readDefaultFile(resource, CmsResourceFilter.ONLY_VISIBLE);
-                }
-                if (page != null) {
-                    List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForStructureId(
-                        getCmsObject(),
-                        page.getStructureId());
-                    int counter = 1;
-                    for (CmsAlias alias : aliases) {
-                        String aliasPath = alias.getAliasPath();
-                        additional.put(
-                            org.opencms.gwt.Messages.get().getBundle().key(org.opencms.gwt.Messages.GUI_ALIAS_0)
-                                + " " + counter, aliasPath); //$NON-NLS-1$
-                        counter += 1;
-                    }
-                }
-
-            } catch (CmsVfsResourceNotFoundException ne) {
-                result.setResourceState(CmsResourceState.STATE_DELETED);
-            }
-        } catch (Exception e) {
-            error(e);
-        }
-        return result;
     }
 
     /**
