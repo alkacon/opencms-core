@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /**
  * Consistently manages RPCs errors and 'loading' state.<p>
@@ -80,7 +81,13 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      */
     public void onFailure(Throwable t) {
 
-        CmsErrorDialog.handleException(t);
+        // a status code exception indicates the session is no longer valid
+        if ((t instanceof StatusCodeException) && (((StatusCodeException)t).getStatusCode() == 500)) {
+            CmsErrorDialog dialog = new CmsErrorDialog(Messages.get().key(Messages.GUI_SESSION_EXPIRED_0), null);
+            dialog.center();
+        } else {
+            CmsErrorDialog.handleException(t);
+        }
         // remove the overlay
         stop(false);
     }
