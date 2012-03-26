@@ -322,6 +322,12 @@ public final class Messages {
     public static final String GUI_SELECTBOX_EMPTY_SELECTION_1 = "GUI_SELECTBOX_EMPTY_SELECTION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECTBOX_INHERIT_1 = "GUI_SELECTBOX_INHERIT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECTBOX_UNSELECTED_0 = "GUI_SELECTBOX_UNSELECTED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECTBOX_UNSELECTED_1 = "GUI_SELECTBOX_UNSELECTED_1";
 
     /** Message constant for key in the resource bundle. */

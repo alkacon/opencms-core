@@ -133,6 +133,10 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
             // at the time the error message is set, so measuring the field's size would
             // yield an invalid value  
             result = textBox;
+        } else if ("select".equals(key)) {
+            final CmsPropertySelectBox box = new CmsPropertySelectBox(widgetParams);
+            result = box;
+
         } else {
             result = CmsWidgetFactoryRegistry.instance().createFormWidget(key, widgetParams);
             checkWidgetRequirements(key, result);
@@ -348,7 +352,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
                 }
                 values.put(template.getSitePath(), title);
             }
-            selectBox = new CmsSelectBox(values, true);
+            selectBox = new CmsPropertySelectBox(values);
             return selectBox;
         } else {
             CmsTextBox textbox = new CmsTextBox();

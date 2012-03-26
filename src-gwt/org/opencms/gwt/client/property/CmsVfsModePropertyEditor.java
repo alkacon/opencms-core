@@ -30,7 +30,6 @@ package org.opencms.gwt.client.property;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -288,9 +287,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             propDef,
             pathValue.getPath() + "#" + tab,
             this,
-            Collections.singletonMap(
-                CmsSelectBox.NO_SELECTION_TEXT,
-                Messages.get().key(Messages.GUI_SELECTBOX_UNSELECTED_1)),
+            Collections.<String, String> emptyMap(),
             true);
 
         CmsPair<String, String> defaultValueAndOrigin = getDefaultValueToDisplay(ownProp, mode);

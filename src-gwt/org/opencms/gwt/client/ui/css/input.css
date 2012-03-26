@@ -1,4 +1,6 @@
-@external gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external transparentSelectBox, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+
+
 
 /* inner text box of the text box widget */
 input.textBox {
@@ -212,6 +214,19 @@ input.textBoxReadOnly {
 	background-position: 50% 50%;
 	outline: none;
 	background-color: value("constants.css.backgroundColorStateHover");
+}
+
+.transparentSelectBox .openerNoHover.selectBoxSelected, .transparentSelectBox .openerHover.selectBoxSelected {
+	background-image: none !important;
+	font-style: oblique !important; 
+}
+
+.transparentSelectBox * {
+	background-color: transparent !important; 
+}
+
+.transparentSelectBox .selectBoxOpener {
+	color: value("constants.css.textColorDisabled") !important; 
 }
 
 div.selectBoxSelector, div.selectorPopup div.selectBoxSelector{

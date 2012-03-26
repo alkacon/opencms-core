@@ -30,7 +30,6 @@ package org.opencms.ade.sitemap.client.edit;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.gwt.client.property.A_CmsPropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -136,8 +135,7 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
             propDef,
             pathValue.getPath(),
             this,
-            Collections.singletonMap(CmsSelectBox.NO_SELECTION_TEXT, org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_SELECTBOX_UNSELECTED_1)),
+            Collections.<String, String> emptyMap(),
             alwaysAllowEmpty);
         CmsClientProperty inheritedProperty = m_handler.getInheritedProperty(propName);
         String inherited = (inheritedProperty == null) ? null : inheritedProperty.getEffectiveValue();
