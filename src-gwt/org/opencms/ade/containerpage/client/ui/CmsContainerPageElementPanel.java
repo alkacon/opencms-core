@@ -402,7 +402,7 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
         }
         m_elementOptionBar = elementOptionBar;
         insert(m_elementOptionBar, 0);
-        if (isOptionbarIFrameCollision()) {
+        if (isOptionbarIFrameCollision(m_elementOptionBar.getCalculatedWidth())) {
             m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
             int marginLeft = getElement().getOffsetWidth() - m_elementOptionBar.getCalculatedWidth();
             m_elementOptionBar.getElement().getStyle().setMarginLeft(marginLeft, Unit.PX);
@@ -626,18 +626,23 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     /**
      * Returns if the option bar position collides with any iframe child elements.<p>
      * 
+     * @param optionWidth the option bar witdh 
+     * 
      * @return <code>true</code> if there are iframe child elements located no less than 25px below the upper edge of the element
      */
-    private boolean isOptionbarIFrameCollision() {
+    private boolean isOptionbarIFrameCollision(int optionWidth) {
 
         if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
             int elementTop = getElement().getAbsoluteTop();
+
             NodeList<Element> frames = getElement().getElementsByTagName(CmsDomUtil.Tag.iframe.name());
             for (int i = 0; i < frames.getLength(); i++) {
 
-                if ((frames.getItem(i).getAbsoluteTop() - elementTop) < 25) {
+                if (((frames.getItem(i).getAbsoluteTop() - elementTop) < 25)
+                    && ((frames.getItem(i).getAbsoluteRight() - getElement().getAbsoluteRight()) < optionWidth)) {
                     return true;
                 }
+
             }
         }
         return false;
@@ -681,7 +686,7 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
             if (getWidgetIndex(m_elementOptionBar) >= 0) {
                 m_elementOptionBar.removeFromParent();
             }
-            if (isOptionbarIFrameCollision()) {
+            if (isOptionbarIFrameCollision(m_elementOptionBar.getCalculatedWidth())) {
                 m_elementOptionBar.getElement().getStyle().setPosition(Position.RELATIVE);
                 int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
                 if (marginLeft > 0) {
