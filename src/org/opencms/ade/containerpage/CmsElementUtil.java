@@ -239,30 +239,32 @@ public class CmsElementUtil {
         String noEditReason = "";
         // reinitializing resource to avoid caching issues
         elementBean.initResource(m_cms);
-        if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
-            noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason) && elementBean.isInheritedContainer(m_cms)) {
-                String requestUri = m_cms.getRequestContext().getUri();
-                String folderPath = CmsResource.getFolderPath(requestUri);
-                String configPath = CmsStringUtil.joinPaths(
-                    folderPath,
-                    CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
-                if (m_cms.existsResource(configPath)) {
-                    noEditReason = new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(
-                        wpLocale,
-                        true);
-                } else {
-                    if (!m_cms.getLock(folderPath).isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
-                        noEditReason = org.opencms.workplace.explorer.Messages.get().getBundle(wpLocale).key(
-                            org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
-                            new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName());
+        if (!elementBean.isInMemoryOnly()) {
+            if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
+                noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason) && elementBean.isInheritedContainer(m_cms)) {
+                    String requestUri = m_cms.getRequestContext().getUri();
+                    String folderPath = CmsResource.getFolderPath(requestUri);
+                    String configPath = CmsStringUtil.joinPaths(
+                        folderPath,
+                        CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+                    if (m_cms.existsResource(configPath)) {
+                        noEditReason = new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(
+                            wpLocale,
+                            true);
+                    } else {
+                        if (!m_cms.getLock(folderPath).isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
+                            noEditReason = org.opencms.workplace.explorer.Messages.get().getBundle(wpLocale).key(
+                                org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
+                                new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName());
+                        }
                     }
+                } else {
+                    noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
                 }
             } else {
-                noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
+                noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
             }
-        } else {
-            noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
         }
         result.setClientId(elementBean.editorHash());
         result.setSitePath(elementBean.getSitePath());
