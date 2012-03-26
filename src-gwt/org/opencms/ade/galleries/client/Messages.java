@@ -181,6 +181,9 @@ public final class Messages {
     public static final String GUI_PARAMS_LABEL_INCLUDING_EXPIRED_0 = "GUI_PARAMS_LABEL_INCLUDING_EXPIRED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PARAMS_LABEL_SCOPE_0 = "GUI_PARAMS_LABEL_SCOPE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PARAMS_LABEL_SEARCH_0 = "GUI_PARAMS_LABEL_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */

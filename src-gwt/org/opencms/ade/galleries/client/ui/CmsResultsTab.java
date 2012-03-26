@@ -306,7 +306,7 @@ public class CmsResultsTab extends A_CmsListTab {
         } else {
             m_sortSelectBox.setItems(getSortList(true));
         }
-        m_sortSelectBox.setFormValueAsString(searchObj.getSortOrder());
+        m_sortSelectBox.selectValue(searchObj.getSortOrder());
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
