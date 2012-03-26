@@ -241,10 +241,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
             Iterator<A_CmsTab> it = m_tabbedPanel.iterator();
             while (it.hasNext()) {
                 A_CmsTab tab = it.next();
-                CmsSearchParamPanel panel = tab.getParamPanel(searchObj);
-                if (panel != null) {
-                    paramPanels.add(panel);
-                }
+                paramPanels.addAll(tab.getParamPanels(searchObj));
             }
             m_resultsTab.fillContent(searchObj, paramPanels);
         }

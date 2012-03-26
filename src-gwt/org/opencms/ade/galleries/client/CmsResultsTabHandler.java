@@ -151,4 +151,13 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
 
         m_controller.selectResource(resourcePath, title, resourceType);
     }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
+     */
+    @Override
+    public void removeParam(String paramKey) {
+
+        // nothing to do
+    }
 }

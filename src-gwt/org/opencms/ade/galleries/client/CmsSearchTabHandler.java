@@ -163,4 +163,13 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
 
         m_controller.addSearchQuery(searchQuery);
     }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
+     */
+    @Override
+    public void removeParam(String paramKey) {
+
+        m_controller.removeTextSearchParameter(paramKey);
+    }
 }

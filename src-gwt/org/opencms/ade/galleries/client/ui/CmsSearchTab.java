@@ -42,7 +42,9 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
@@ -292,6 +294,20 @@ public class CmsSearchTab extends A_CmsTab {
         // GWT interface, nothing to do here
     }
 
+    /** The parameter types of this tab. */
+    public enum ParamType {
+        /** Text query type. */
+        text,
+        /** The language type. */
+        language,
+        /** The expired resources type. */
+        expired,
+        /** The creation range type. */
+        creation,
+        /** The modification range type. */
+        modification
+    }
+
     /** A constant for the "not set" valueof the language selection. */
     private static final String NOT_SET_OPTION_VALUE = "notSet";
 
@@ -385,9 +401,6 @@ public class CmsSearchTab extends A_CmsTab {
 
     /** The map of available locales. */
     private Map<String, String> m_availableLocales;
-
-    /** The search parameter panel for this tab. */
-    private CmsSearchParamPanel m_paramPanel;
 
     /** The search scope. */
     private CmsGallerySearchScope m_scope;
@@ -496,6 +509,35 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
+     * Removes the given parameter type.<p>
+     * 
+     * @param type the parameter type
+     */
+    public void removeParameter(ParamType type) {
+
+        switch (type) {
+            case language:
+                m_localeSelection.reset();
+                break;
+            case text:
+                m_searchInput.setFormValueAsString("");
+                break;
+            case expired:
+                m_includeExpiredCheckBox.setChecked(false);
+                break;
+            case creation:
+                m_dateCreatedStartDateBox.setValue(null, true);
+                m_dateCreatedEndDateBox.setValue(null, true);
+                break;
+            case modification:
+                m_dateModifiedStartDateBox.setValue(null, true);
+                m_dateModifiedEndDateBox.setValue(null, true);
+                break;
+            default:
+        }
+    }
+
+    /**
      * Clears the search tab input.<p>
      */
     public void clearInput() {
@@ -521,20 +563,87 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
     @Override
-    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+    public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
 
-        if (m_paramPanel == null) {
-            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_SEARCH_0), this);
+        List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
+        // get the required data
+        String query = m_searchInput.getText();
+        String cStart = m_dateCreatedStartDateBox.getValueAsFormatedString();
+        String cEnd = m_dateCreatedEndDateBox.getValueAsFormatedString();
+        String mStart = m_dateModifiedStartDateBox.getValueAsFormatedString();
+        String mEnd = m_dateModifiedEndDateBox.getValueAsFormatedString();
+
+        // append the language to the resulting string
+        String locale = m_localeSelection.getFormValueAsString();
+        String language = m_availableLocales.get(locale);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(locale)
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(language)
+            && !locale.equals(NOT_SET_OPTION_VALUE)) {
+
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0), this);
+            panel.setContent(language, ParamType.language.name());
+            result.add(panel);
         }
-        String content = getSearchParams();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
-            m_paramPanel.setContent(content);
-            return m_paramPanel;
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0),
+                this);
+            panel.setContent(query, ParamType.text.name());
+            result.add(panel);
         }
-        return null;
+
+        // append the date created range to the resulting string
+        StringBuffer createdResult = new StringBuffer();
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(cStart) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(cEnd))) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_TAB_SEARCH_LABEL_CREATED_RANGE_0), this);
+            panel.setContent(cStart + " - " + cEnd, ParamType.creation.name());
+            result.add(panel);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cStart)) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0), this);
+            panel.setContent(cStart, ParamType.creation.name());
+            result.add(panel);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cEnd)) {
+            createdResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0)).append(" ").append(
+                cEnd);
+
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0), this);
+            panel.setContent(cEnd, ParamType.creation.name());
+            result.add(panel);
+        }
+
+        // append the date modified range to the resulting string
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(mStart) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(mEnd))) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_RANGE_0), this);
+            panel.setContent(mStart + " - " + mEnd, ParamType.modification.name());
+            result.add(panel);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mStart)) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0), this);
+            panel.setContent(mStart, ParamType.modification.name());
+            result.add(panel);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mEnd)) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0), this);
+            panel.setContent(mEnd, ParamType.modification.name());
+            result.add(panel);
+        }
+
+        if (m_includeExpiredCheckBox.getFormValue().booleanValue()) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_PARAMS_LABEL_INCLUDING_EXPIRED_0), this);
+            panel.setContent("", ParamType.expired.name());
+            result.add(panel);
+        }
+        return result;
     }
 
     /**

@@ -256,9 +256,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     /** Flag which indicates whether new elements are currently being inserted into the galleries tab.<p> */
     private boolean m_loading;
 
-    /** The search parameter panel for this tab. */
-    private CmsSearchParamPanel m_paramPanel;
-
     /** The tab handler. */
     private CmsGalleriesTabHandler m_tabHandler;
 
@@ -306,51 +303,26 @@ public class CmsGalleriesTab extends A_CmsListTab {
     }
 
     /**
-     * Returns the content of the galleries search parameter.<p>
-     *  
-     * @param selectedGalleries the list of selected galleries by the user
-     * 
-     * @return the selected galleries
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
-    public String getGalleriesParams(List<String> selectedGalleries) {
+    @Override
+    public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
 
-        if ((selectedGalleries == null) || (selectedGalleries.size() == 0)) {
-            return null;
-        }
-        StringBuffer result = new StringBuffer(128);
-        for (String galleryPath : selectedGalleries) {
+        List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
+        for (String galleryPath : searchObj.getGalleries()) {
             CmsGalleryFolderBean galleryBean = m_galleries.get(galleryPath);
             if (galleryBean != null) {
                 String title = galleryBean.getTitle();
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                     title = galleryBean.getPath();
                 }
-                result.append(title).append(", ");
+                CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                    Messages.GUI_PARAMS_LABEL_GALLERIES_0), this);
+                panel.setContent(title, galleryPath);
+                result.add(panel);
             }
         }
-        if (result.length() == 0) {
-            return null;
-        }
-        result.delete(result.length() - 2, result.length());
-
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
-     */
-    @Override
-    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
-
-        if (m_paramPanel == null) {
-            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0), this);
-        }
-        String content = getGalleriesParams(searchObj.getGalleries());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
-            m_paramPanel.setContent(content);
-            return m_paramPanel;
-        }
-        return null;
+        return result;
     }
 
     /**

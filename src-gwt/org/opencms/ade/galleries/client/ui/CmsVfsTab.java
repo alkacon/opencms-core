@@ -40,10 +40,8 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,9 +102,6 @@ public class CmsVfsTab extends A_CmsListTab {
     /** A map of tree items indexed by VFS path. */
     private Map<String, CmsLazyTreeItem> m_itemsByPath = new HashMap<String, CmsLazyTreeItem>();
 
-    /** The search parameter panel for this tab. */
-    private CmsSearchParamPanel m_paramPanel;
-
     /**
      * Constructor.<p>
      * 
@@ -135,41 +130,26 @@ public class CmsVfsTab extends A_CmsListTab {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
     @Override
-    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+    public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
 
-        if (m_paramPanel == null) {
-            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_FOLDERS_0), this);
+        List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
+        for (String folder : searchObj.getFolders()) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_PARAMS_LABEL_FOLDERS_0),
+                this);
+            panel.setContent(folder, folder);
+            result.add(panel);
         }
-        String content = getVfsParams(new ArrayList<String>(searchObj.getFolders()));
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
-            m_paramPanel.setContent(content);
-            return m_paramPanel;
-        }
-        return null;
+        return result;
     }
 
     /**
-     * Returns a user-readable string representing the selected VFS folders.<p>
+     * Un-checks the check boxes for each folder passed in the <code>folders</code> parameter.<p>
      * 
-     * @param selectedFolders the list of selected folders 
-     * 
-     * @return a user-readable string representing the selected VFS folder 
-     */
-    public String getVfsParams(List<String> selectedFolders) {
-
-        if (CmsCollectionUtil.isEmptyOrNull(selectedFolders)) {
-            return null;
-        }
-        return CmsStringUtil.listAsString(selectedFolders, ", ");
-    }
-
-    /**
-     * Unchecks the checkboxes for each folder passed in the <code>folders</code> parameter.<p>
-     * 
-     * @param folders the folders for which the checkboxes should be unchecked 
+     * @param folders the folders for which the check boxes should be unchecked 
      */
     public void uncheckFolders(Collection<String> folders) {
 

@@ -30,6 +30,8 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.A_CmsTabHandler;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 
@@ -65,13 +67,23 @@ public abstract class A_CmsTab extends Composite {
     }
 
     /**
+     * Removes the parameter with the given key from the tab.<p>
+     * 
+     * @param paramKey the parameter key
+     */
+    public void removeParam(String paramKey) {
+
+        getTabHandler().removeParam(paramKey);
+    }
+
+    /**
      * Returns the search parameters to display within the result tab.<p>
      * 
      * @param searchObj the current search object
      * 
      * @return the parameter panel
      */
-    public abstract CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj);
+    public abstract List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj);
 
     /**
      * Returns the tab id.<p>

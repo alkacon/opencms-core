@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewFactory;
 import org.opencms.ade.galleries.client.preview.I_CmsResourcePreview;
+import org.opencms.ade.galleries.client.ui.CmsSearchTab.ParamType;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
@@ -567,6 +568,21 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Removes the category from the search object.<p>
+     * 
+     * @param key the category
+     */
+    public void removeCategoryParam(String key) {
+
+        if (m_searchObject.getCategories().contains(key)) {
+            m_handler.onClearCategories(Collections.singletonList(key));
+            m_searchObject.removeCategory(key);
+            updateResultsTab(false);
+            ValueChangeEvent.fire(this, m_searchObject);
+        }
+    }
+
+    /**
      * Removes a folder from the current search object.<p>
      * 
      * @param folder the folder to remove 
@@ -576,6 +592,21 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_searchObject.removeFolder(folder);
         m_searchObjectChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
+    }
+
+    /**
+     * Removes the folder from the search object.<p>
+     * 
+     * @param key the folder
+     */
+    public void removeFolderParam(String key) {
+
+        if (m_searchObject.getFolders().contains(key)) {
+            m_handler.onClearFolders(Collections.singletonList(key));
+            m_searchObject.removeFolder(key);
+            updateResultsTab(false);
+            ValueChangeEvent.fire(this, m_searchObject);
+        }
     }
 
     /**
@@ -591,6 +622,58 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Removes a selected gallery from the search object.<p>
+     * 
+     * @param key the gallery key
+     */
+    public void removeGalleryParam(String key) {
+
+        if (m_searchObject.getGalleries().contains(key)) {
+            m_handler.onClearGalleries(Collections.singletonList(key));
+            m_searchObject.removeGallery(key);
+            updateResultsTab(false);
+            ValueChangeEvent.fire(this, m_searchObject);
+        }
+    }
+
+    /**
+     * Removes the given full text search criteria from the search object.<p>
+     * 
+     * @param key the key of the parameter to remove
+     */
+    public void removeTextSearchParameter(String key) {
+
+        try {
+            ParamType type = ParamType.valueOf(key);
+            switch (type) {
+                case language:
+                    m_searchObject.setLocale(getStartLocale());
+                    break;
+                case text:
+                    m_searchObject.setQuery(null);
+                    break;
+                case expired:
+                    m_searchObject.setIncludeExpired(false);
+                    break;
+                case creation:
+                    m_searchObject.setDateCreatedEnd(-1L);
+                    m_searchObject.setDateCreatedStart(-1L);
+                    break;
+                case modification:
+                    m_searchObject.setDateModifiedEnd(-1L);
+                    m_searchObject.setDateModifiedStart(-1L);
+                    break;
+                default:
+            }
+            m_handler.onRemoveSearchParam(type);
+            updateResultsTab(false);
+            ValueChangeEvent.fire(this, m_searchObject);
+        } catch (IllegalArgumentException e) {
+            // should not happen
+        }
+    }
+
+    /**
      * Remove the type from the search object.<p>
      * 
      * @param resourceType the resource type as id
@@ -600,6 +683,22 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_searchObject.removeType(resourceType);
         m_searchObjectChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
+    }
+
+    /**
+     * Removes the type from the search object.<p>
+     * 
+     * @param key the type
+     */
+    public void removeTypeParam(String key) {
+
+        List<String> selectedTypes = m_searchObject.getTypes();
+        if (selectedTypes.contains(key)) {
+            m_handler.onClearTypes(Collections.singletonList(key));
+            selectedTypes.remove(key);
+            updateResultsTab(false);
+            ValueChangeEvent.fire(this, m_searchObject);
+        }
     }
 
     /**
@@ -641,14 +740,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
-     * Sets the search object changed flag to <code>true</code>.<p>
-     */
-    public void setSearchObjectChanged() {
-
-        m_searchObjectChanged = true;
-    }
-
-    /**
      * Sets if the search should include expired or unreleased resources.<p>
      * 
      * @param includeExpired if the search should include expired or unreleased resources
@@ -658,6 +749,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_searchObject.setIncludeExpired(includeExpired);
         m_searchObjectChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
+    }
+
+    /**
+     * Sets the search object changed flag to <code>true</code>.<p>
+     */
+    public void setSearchObjectChanged() {
+
+        m_searchObjectChanged = true;
     }
 
     /**

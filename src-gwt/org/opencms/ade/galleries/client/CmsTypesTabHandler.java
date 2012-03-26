@@ -94,4 +94,13 @@ public class CmsTypesTabHandler extends A_CmsTabHandler {
 
         m_controller.addType(resourceType);
     }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
+     */
+    @Override
+    public void removeParam(String paramKey) {
+
+        m_controller.removeTypeParam(paramKey);
+    }
 }

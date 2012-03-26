@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.ade.galleries.client.ui.CmsSearchTab.ParamType;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
@@ -142,6 +143,16 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
         m_galleryDialog.getSearchTab().clearInput();
 
+    }
+
+    /**
+     * Removes a parameter from the search tab.<p>
+     * 
+     * @param type the parameter type 
+     */
+    public void onRemoveSearchParam(ParamType type) {
+
+        m_galleryDialog.getSearchTab().removeParameter(type);
     }
 
     /**

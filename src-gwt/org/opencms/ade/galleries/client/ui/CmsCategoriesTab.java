@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -105,9 +106,6 @@ public class CmsCategoriesTab extends A_CmsListTab {
     /** The flag to indicate when the categories are opened for the fist time. */
     private boolean m_isInitOpen;
 
-    /** The search parameter panel for this tab. */
-    private CmsSearchParamPanel m_paramPanel;
-
     /** The tab handler. */
     private CmsCategoriesTabHandler m_tabHandler;
 
@@ -137,46 +135,24 @@ public class CmsCategoriesTab extends A_CmsListTab {
     }
 
     /**
-     * Returns the content of the categories search parameter.<p>
-     *  
-     * @param selectedCategories the list of selected categories by the user
-     * 
-     * @return the selected categories
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
-    public String getCategoriesParams(List<String> selectedCategories) {
+    @Override
+    public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
 
-        if ((selectedCategories == null) || (selectedCategories.size() == 0)) {
-            return null;
-        }
-        StringBuffer result = new StringBuffer(128);
-        for (String categoryPath : selectedCategories) {
+        List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
+        for (String categoryPath : searchObj.getCategories()) {
             CmsCategoryBean categoryItem = m_categories.get(categoryPath);
             String title = categoryItem.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = categoryItem.getPath();
             }
-            result.append(title).append(", ");
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
+                Messages.GUI_PARAMS_LABEL_CATEGORIES_0), this);
+            panel.setContent(title, categoryPath);
+            result.add(panel);
         }
-        result.delete(result.length() - 2, result.length());
-
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
-     */
-    @Override
-    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
-
-        if (m_paramPanel == null) {
-            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORIES_0), this);
-        }
-        String content = getCategoriesParams(searchObj.getCategories());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
-            m_paramPanel.setContent(content);
-            return m_paramPanel;
-        }
-        return null;
+        return result;
     }
 
     /**
