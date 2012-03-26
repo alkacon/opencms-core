@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.3//EN" "../../gwt-module.dtd">
 <module rename-to="upload">
 	<inherits name="org.opencms.ade.upload.UploadHeadless" />
 	<entry-point class="org.opencms.ade.upload.client.CmsUpload"></entry-point>
