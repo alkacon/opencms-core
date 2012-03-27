@@ -28,12 +28,17 @@
 package org.opencms.gwt.client;
 
 import org.opencms.gwt.client.rpc.CmsLog;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
+import org.opencms.gwt.client.util.CmsCollectionUtil;
+import org.opencms.gwt.shared.CmsCoreData;
+
+import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -104,6 +109,30 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
 
         initClasses();
+    }
+
+    /**
+     * Checks whether the build id of the server-side module is greater than the client-build id, and displays 
+     * an error message if this is the case.<p>
+     * 
+     * @param moduleName the name of the module for which the check should be performed 
+     */
+    protected void checkBuildId(String moduleName) {
+
+        Map<String, String> buildIds = CmsCoreProvider.get().getGwtBuildIds();
+        String serverBuildId = buildIds.get(moduleName);
+        String config = org.opencms.gwt.client.I_CmsConfigBundle.INSTANCE.gwtProperties().getText();
+        Map<String, String> configProperties = CmsCollectionUtil.parseProperties(config);
+        String clientBuildId = configProperties.get(CmsCoreData.KEY_GWT_BUILDID);
+        if ((serverBuildId != null) && (clientBuildId != null)) {
+            int compareResult = clientBuildId.compareTo(serverBuildId);
+            if (compareResult == -1) {
+                String title = Messages.get().key(Messages.GUI_BUILD_ID_MESSAGE_TITLE_0);
+                String content = Messages.get().key(Messages.GUI_BUILD_ID_MESSAGE_CONTENT_0);
+                CmsAlertDialog alert = new CmsAlertDialog(title, content);
+                alert.center();
+            }
+        }
     }
 
     /**

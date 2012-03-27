@@ -285,6 +285,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
+        checkBuildId("org.opencms.ade.containerpage");
         CmsPingTimer.start();
         JavaScriptObject window = CmsDomUtil.getWindow();
         CmsDomUtil.setAttribute(window, "__hideEditorCloseButton", "true");

@@ -45,5 +45,4 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
         super.onModuleLoad();
         I_CmsPublishLayoutBundle.INSTANCE.publishCss().ensureInjected();
     }
-
 }

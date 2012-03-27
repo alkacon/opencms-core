@@ -452,6 +452,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     public void onModuleLoad() {
 
         super.onModuleLoad();
+        checkBuildId("org.opencms.ade.sitemap");
         CmsPingTimer.start();
         m_instance = this;
         RootPanel rootPanel = RootPanel.get();

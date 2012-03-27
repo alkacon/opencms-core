@@ -53,10 +53,10 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     public static native void exportOpenUploadDialog() /*-{
 
-        $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
-                uploadTarget) {
-            @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
-        };
+      $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
+            uploadTarget) {
+         @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
+      };
 
     }-*/;
 
@@ -91,6 +91,7 @@ public class CmsUpload extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
+        checkBuildId("org.opencms.ade.upload");
         if ((getDialogMode() != null) && getDialogMode().equals("button")) {
             exportOpenUploadDialog();
         } else {
@@ -120,7 +121,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
+      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 
@@ -131,7 +132,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getDialogMode() /*-{
 
-        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
+      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
 
     }-*/;
 
@@ -142,7 +143,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     private native String getTargetFolder() /*-{
 
-        return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
+      return $wnd[@org.opencms.ade.upload.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
 
     }-*/;
 }

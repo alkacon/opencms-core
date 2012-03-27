@@ -55,6 +55,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.scheduler.CmsScheduledJobInfo;
@@ -501,7 +502,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (CmsException e) {
             log(e.getLocalizedMessage(), e);
         }
-
+        Map<String, String> gwtBuildIds = getBuildIds();
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
@@ -516,7 +517,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             structureId,
             new HashMap<String, String>(OpenCms.getResourceManager().getExtensionMapping()),
             System.currentTimeMillis(),
-            toolbarVisible);
+            toolbarVisible,
+            gwtBuildIds);
+
         return data;
     }
 
@@ -613,6 +616,24 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * Collect GWT build ids from the different ADE modules.<p>
+     * 
+     * @return the map of GWT build ids 
+     */
+    protected Map<String, String> getBuildIds() {
+
+        List<CmsModule> modules = OpenCms.getModuleManager().getAllInstalledModules();
+        Map<String, String> result = new HashMap<String, String>();
+        for (CmsModule module : modules) {
+            String buildid = module.getParameter(CmsCoreData.KEY_GWT_BUILDID);
+            if (buildid != null) {
+                result.put(module.getName(), buildid);
+            }
+        }
+        return result;
     }
 
     /**

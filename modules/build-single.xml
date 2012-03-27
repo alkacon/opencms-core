@@ -13,7 +13,8 @@
 
 	<property environment="env" />
 	<property file="${basedir}/opencms.properties" />
-
+	<property file="${basedir}/../src-gwt/org/opencms/gwt/client/gwt.properties" />
+	
 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 		<classpath>
 			<pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar" />
@@ -648,6 +649,11 @@
 			<isset property="module.gwt" />
 			<then>
 				<ensuredirmanifest xmlfile="${module.input.res}/manifest.xml" base="${module.input.res}/" directory="${module.gwt.output}" />
+				<xslt in="${module.input.res}/manifest.xml" out="${module.input.res}/manifest.transformed.xml" style="${basedir}/add-buildid.xsl">
+					<param name="gwt.buildid" expression="${gwt.buildid}" />
+				</xslt>
+				<copy file="${module.input.res}/manifest.transformed.xml" tofile="${module.input.res}/manifest.xml" />
+				<delete file="${module.input.res}/manifest.transformed.xml" />
 			</then>
 		</if>
 		<if>
