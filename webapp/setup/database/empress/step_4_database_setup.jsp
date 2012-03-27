@@ -126,7 +126,7 @@ Enter the JDBC <b>Connection String</b> to your database (without DB Name).
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "4") %>
-Enter the name of the DB2 <b>Database</b> which should be used by Alkacon OpenCms.
+Enter the name of the Empress <b>Database</b> which should be used by Alkacon OpenCms.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "5") %>
