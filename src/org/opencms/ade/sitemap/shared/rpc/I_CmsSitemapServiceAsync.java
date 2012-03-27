@@ -27,7 +27,6 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
-import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
@@ -54,14 +53,6 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback  
      */
     void createSubSitemap(CmsUUID entryId, AsyncCallback<CmsSitemapChange> callback);
-
-    /**
-     * Returns additional sitemap entry information.<p>
-     *  
-     * @param structureId the entry structure id
-     * @param callback the async callback
-     */
-    void getAdditionalEntryInfo(CmsUUID structureId, AsyncCallback<CmsAdditionalEntryInfo> callback);
 
     /**
      * Returns the sitemap children for the given entry.<p>

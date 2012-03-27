@@ -34,7 +34,6 @@ import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
-import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
@@ -45,7 +44,6 @@ import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
-import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -256,41 +254,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             error(e);
         }
         return null;
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getAdditionalEntryInfo(org.opencms.util.CmsUUID)
-     */
-    public CmsAdditionalEntryInfo getAdditionalEntryInfo(CmsUUID structureId) throws CmsRpcException {
-
-        CmsAdditionalEntryInfo result = null;
-        try {
-            try {
-                CmsResource resource = getCmsObject().readResource(structureId);
-                result = new CmsAdditionalEntryInfo();
-                result.setResourceState(resource.getState());
-                if (isRedirectType(resource.getTypeId())) {
-
-                    CmsFile file = getCmsObject().readFile(resource);
-
-                    I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
-                    String link = content.getValue(
-                        REDIRECT_LINK_TARGET_XPATH,
-                        getCmsObject().getRequestContext().getLocale()).getStringValue(getCmsObject());
-                    Map<String, String> additional = new HashMap<String, String>();
-                    additional.put(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_REDIRECT_TARGET_LABEL_0),
-                        link);
-                    result.setAdditional(additional);
-                }
-            } catch (CmsVfsResourceNotFoundException ne) {
-                result = new CmsAdditionalEntryInfo();
-                result.setResourceState(CmsResourceState.STATE_DELETED);
-            }
-        } catch (Exception e) {
-            error(e);
-        }
-        return result;
     }
 
     /**
