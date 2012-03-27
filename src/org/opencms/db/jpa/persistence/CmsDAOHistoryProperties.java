@@ -43,7 +43,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_history_properties")
+@Table(name = "CMS_HISTORY_PROPERTIES")
 @IdClass(CmsDAOHistoryProperties.CmsDAOHistoryPropertiesPK.class)
 public class CmsDAOHistoryProperties {
 
@@ -293,32 +293,32 @@ public class CmsDAOHistoryProperties {
 
     /** The property definition id. */
     @Id
-    @Column(name = "propertydef_id", length = 36)
+    @Column(name = "PROPERTYDEF_ID", length = 36)
     private String m_propertyDefId;
 
     /** The property mapping id. */
     @Basic
-    @Column(name = "property_mapping_id", nullable = false, length = 36)
+    @Column(name = "PROPERTY_MAPPING_ID", nullable = false, length = 36)
     private String m_propertyMappingId;
 
     /** The property mapping type. */
     @Id
-    @Column(name = "property_mapping_type")
+    @Column(name = "PROPERTY_MAPPING_TYPE")
     private int m_propertyMappingType;
 
     /** The property value. */
     @Basic
-    @Column(name = "property_value", nullable = false, length = 2048)
+    @Column(name = "PROPERTY_VALUE", nullable = false, length = 2048)
     private String m_propertyValue;
 
     /** The publish tag. */
     @Id
-    @Column(name = "publish_tag")
+    @Column(name = "PUBLISH_TAG")
     private int m_publishTag;
 
     /** The structure id. */
     @Id
-    @Column(name = "structure_id", length = 36)
+    @Column(name = "STRUCTURE_ID", length = 36)
     private String m_structureId;
 
     /**

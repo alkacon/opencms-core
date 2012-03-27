@@ -40,67 +40,67 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_history_projects")
+@Table(name = "CMS_HISTORY_PROJECTS")
 public class CmsDAOHistoryProjects {
 
     /** The date created. */
     @Basic
-    @Column(name = "date_created")
+    @Column(name = "DATE_CREATED")
     private long m_dateCreated;
 
     /** The group id. */
     @Basic
-    @Column(name = "group_id", nullable = false, length = 36)
+    @Column(name = "GROUP_ID", nullable = false, length = 36)
     private String m_groupId;
 
     /** The managers group id. */
     @Basic
-    @Column(name = "managergroup_id", nullable = false, length = 36)
+    @Column(name = "MANAGERGROUP_ID", nullable = false, length = 36)
     private String m_managerGroupId;
 
     /** The projects description. */
     @Basic
-    @Column(name = "project_description", nullable = false)
+    @Column(name = "PROJECT_DESCRIPTION", nullable = false)
     private String m_projectDescription;
 
     /** The project id. */
     @Basic
-    @Column(name = "project_id", nullable = false, length = 36)
+    @Column(name = "PROJECT_ID", nullable = false, length = 36)
     private String m_projectId;
 
     /** The project name. */
     @Basic
-    @Column(name = "project_name", nullable = false)
+    @Column(name = "PROJECT_NAME", nullable = false)
     private String m_projectName;
 
     /** The project ou. */
     @Basic
-    @Column(name = "project_ou", nullable = false, length = 128)
+    @Column(name = "PROJECT_OU", nullable = false, length = 128)
     private String m_projectOu;
 
     /** The publish date of the project.*/
     @Basic
-    @Column(name = "project_publishdate")
+    @Column(name = "PROJECT_PUBLISHDATE")
     private long m_projectPublishDate;
 
     /** The user who published this project. */
     @Basic
-    @Column(name = "project_published_by", nullable = false, length = 36)
+    @Column(name = "PROJECT_PUBLISHED_BY", nullable = false, length = 36)
     private String m_projectPublishedBy;
 
     /** The project type. */
     @Basic
-    @Column(name = "project_type")
+    @Column(name = "PROJECT_TYPE")
     private int m_projectType;
 
     /** The publish tag. */
     @Id
-    @Column(name = "publish_tag")
+    @Column(name = "PUBLISH_TAG")
     private int m_publishTag;
 
     /** The user id. */
     @Basic
-    @Column(name = "user_id", nullable = false, length = 36)
+    @Column(name = "USER_ID", nullable = false, length = 36)
     private String m_userId;
 
     /**

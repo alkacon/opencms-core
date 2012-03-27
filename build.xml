@@ -585,6 +585,8 @@
 				</fileset>
 				<fileset dir="${opencms.input.libs.compile}">
 					<include name="**/*.jar" />
+					<exclude name="**/ant.jar" />
+					<exclude name="**/gwt-dev-*.jar" />
 				</fileset>
 				<fileset dir="${opencms.input.libs.runtime}">
 					<include name="**/*.jar" />
@@ -610,6 +612,8 @@
 				</fileset>
 				<fileset dir="${opencms.input.libs.compile}">
 					<include name="**/*.jar" />
+					<exclude name="**/ant.jar" />
+					<exclude name="**/gwt-dev-*.jar" />
 				</fileset>
 				<fileset dir="${opencms.input.libs.runtime}">
 					<include name="**/*.jar" />

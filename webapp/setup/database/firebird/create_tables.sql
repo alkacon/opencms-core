@@ -1,828 +1,837 @@
-CREATE TABLE cms_contents
+CREATE TABLE CMS_CONTENTS
 (
-    resource_id VARCHAR(36) NOT NULL,
-    file_content BLOB,
-    publish_tag_from INTEGER NOT NULL,
-    publish_tag_to INTEGER,
-    online_flag INTEGER,
-    PRIMARY KEY (resource_id, publish_tag_from)
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    FILE_CONTENT BLOB,
+    PUBLISH_TAG_FROM INTEGER NOT NULL,
+    PUBLISH_TAG_TO INTEGER,
+    ONLINE_FLAG INTEGER,
+    PRIMARY KEY (RESOURCE_ID, PUBLISH_TAG_FROM)
 );
 
-CREATE UNIQUE INDEX pk_contents ON cms_contents (resource_id, publish_tag_from);
+CREATE UNIQUE INDEX PK_CONTENTS ON CMS_CONTENTS (RESOURCE_ID, PUBLISH_TAG_FROM);
 
-CREATE INDEX cms_contents_01_idx ON cms_contents (resource_id, publish_tag_to);
+CREATE INDEX CMS_CONTENTS_01_IDX ON CMS_CONTENTS (RESOURCE_ID, PUBLISH_TAG_TO);
 
-CREATE INDEX cms_contents_02_idx ON cms_contents (resource_id);
+CREATE INDEX CMS_CONTENTS_02_IDX ON CMS_CONTENTS (RESOURCE_ID);
 
-CREATE INDEX cms_contents_03_idx ON cms_contents (publish_tag_from);
+CREATE INDEX CMS_CONTENTS_03_IDX ON CMS_CONTENTS (PUBLISH_TAG_FROM);
 
-CREATE INDEX cms_contents_04_idx ON cms_contents (publish_tag_to);
+CREATE INDEX CMS_CONTENTS_04_IDX ON CMS_CONTENTS (PUBLISH_TAG_TO);
 
-CREATE INDEX cms_contents_05_idx ON cms_contents (resource_id, online_flag);
+CREATE INDEX CMS_CONTENTS_05_IDX ON CMS_CONTENTS (RESOURCE_ID, ONLINE_FLAG);
+
+/* ----------------------------------------------------------------------- */
+/* CMS_COUNTERS */
+/* ----------------------------------------------------------------------- */
+
+CREATE TABLE CMS_COUNTERS
+(
+    NAME VARCHAR(255) NOT NULL,
+    COUNTER INTEGER NOT NULL,
+    PRIMARY KEY (NAME)
+);
+
+CREATE UNIQUE INDEX PK_COUNTERS ON CMS_COUNTERS (NAME);
 
 /* ----------------------------------------------------------------------- */
 /* cms_groups */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_groups
+CREATE TABLE CMS_GROUPS
 (
-    group_id VARCHAR(36) NOT NULL,
-    parent_group_id VARCHAR(36) NOT NULL,
-    group_name VARCHAR(128) NOT NULL,
-    group_description VARCHAR(255) NOT NULL,
-    group_flags INTEGER NOT NULL,
-    group_ou VARCHAR(128) NOT NULL,
-    PRIMARY KEY (group_id)
+    GROUP_ID VARCHAR(36) NOT NULL,
+    PARENT_GROUP_ID VARCHAR(36) NOT NULL,
+    GROUP_NAME VARCHAR(128) NOT NULL,
+    GROUP_DESCRIPTION VARCHAR(255) NOT NULL,
+    GROUP_FLAGS INTEGER NOT NULL,
+    GROUP_OU VARCHAR(128) NOT NULL,
+    PRIMARY KEY (GROUP_ID)
 );
 
-CREATE UNIQUE INDEX pk_groups ON cms_groups (group_id);
+CREATE UNIQUE INDEX PK_GROUPS ON CMS_GROUPS (GROUP_ID);
 
-CREATE UNIQUE INDEX uk_groups ON cms_groups (group_name, group_ou);
+CREATE UNIQUE INDEX UK_GROUPS ON CMS_GROUPS (GROUP_NAME, GROUP_OU);
 
-CREATE INDEX cms_groups_01_idx ON cms_groups (parent_group_id);
+CREATE INDEX CMS_GROUPS_01_IDX ON CMS_GROUPS (PARENT_GROUP_ID);
 
-CREATE INDEX cms_groups_02_idx ON cms_groups (group_name);
+CREATE INDEX CMS_GROUPS_02_IDX ON CMS_GROUPS (GROUP_NAME);
 
-CREATE INDEX cms_groups_03_idx ON cms_groups (group_ou);
+CREATE INDEX CMS_GROUPS_03_IDX ON CMS_GROUPS (GROUP_OU);
 
 /* ----------------------------------------------------------------------- */
 /* cms_groupusers */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_groupusers
+CREATE TABLE CMS_GROUPUSERS
 (
-    group_id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    groupuser_flags INTEGER NOT NULL,
-    PRIMARY KEY (group_id, user_id)
+    GROUP_ID VARCHAR(36) NOT NULL,
+    USER_ID VARCHAR(36) NOT NULL,
+    GROUPUSER_FLAGS INTEGER NOT NULL,
+    PRIMARY KEY (GROUP_ID, USER_ID)
 );
 
-CREATE UNIQUE INDEX pk_groupusers ON cms_groupusers (group_id, user_id);
+CREATE UNIQUE INDEX PK_GROUPUSERS ON CMS_GROUPUSERS (GROUP_ID, USER_ID);
 
-CREATE INDEX cms_groupusers_01_idx ON cms_groupusers (group_id);
+CREATE INDEX CMS_GROUPUSERS_01_IDX ON CMS_GROUPUSERS (GROUP_ID);
 
-CREATE INDEX cms_groupusers_02_idx ON cms_groupusers (user_id);
+CREATE INDEX CMS_GROUPUSERS_02_IDX ON CMS_GROUPUSERS (USER_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_history_principals */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_history_principals
+CREATE TABLE CMS_HISTORY_PRINCIPALS
 (
-    principal_id VARCHAR(36) NOT NULL,
-    principal_name VARCHAR(128) NOT NULL,
-    principal_description VARCHAR(255) NOT NULL,
-    principal_ou VARCHAR(128),
-    principal_email VARCHAR(128) NOT NULL,
-    principal_type VARCHAR(5) NOT NULL,
-    principal_userdeleted VARCHAR(36) NOT NULL,
-    principal_datedeleted BIGINT NOT NULL,
-    PRIMARY KEY (principal_id)
+    PRINCIPAL_ID VARCHAR(36) NOT NULL,
+    PRINCIPAL_NAME VARCHAR(128) NOT NULL,
+    PRINCIPAL_DESCRIPTION VARCHAR(255) NOT NULL,
+    PRINCIPAL_OU VARCHAR(128),
+    PRINCIPAL_EMAIL VARCHAR(128) NOT NULL,
+    PRINCIPAL_TYPE VARCHAR(5) NOT NULL,
+    PRINCIPAL_USERDELETED VARCHAR(36) NOT NULL,
+    PRINCIPAL_DATEDELETED BIGINT NOT NULL,
+    PRIMARY KEY (PRINCIPAL_ID)
 );
 
-CREATE UNIQUE INDEX pk_hist_principals ON cms_history_principals (principal_id);
+CREATE UNIQUE INDEX PK_HIST_PRINCIPALS ON CMS_HISTORY_PRINCIPALS (PRINCIPAL_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_history_projectresources */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_history_projectresources
+CREATE TABLE CMS_HISTORY_PROJECTRESOURCES
 (
-    publish_tag INTEGER NOT NULL,
-    project_id VARCHAR(36) NOT NULL,
-    resource_path VARCHAR(1024) NOT NULL,
-    PRIMARY KEY (publish_tag, project_id, resource_path)
+    PUBLISH_TAG INTEGER NOT NULL,
+    PROJECT_ID VARCHAR(36) NOT NULL,
+    RESOURCE_PATH VARCHAR(1024) NOT NULL,
+    PRIMARY KEY (PUBLISH_TAG, PROJECT_ID, RESOURCE_PATH)
 );
 
-CREATE UNIQUE INDEX pk_history_projectresources ON cms_history_projectresources (publish_tag, project_id, resource_path);
+CREATE UNIQUE INDEX PK_HISTORY_PROJECTRESOURCES ON CMS_HISTORY_PROJECTRESOURCES (PUBLISH_TAG, PROJECT_ID, RESOURCE_PATH);
 
 /* ----------------------------------------------------------------------- */
 /* cms_history_projects */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_history_projects
+CREATE TABLE CMS_HISTORY_PROJECTS
 (
-    project_id VARCHAR(36) NOT NULL,
-    project_name VARCHAR(255) NOT NULL,
-    project_description VARCHAR(255) NOT NULL,
-    project_type INTEGER NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    group_id VARCHAR(36) NOT NULL,
-    managergroup_id VARCHAR(36) NOT NULL,
-    date_created BIGINT NOT NULL,
-    publish_tag INTEGER NOT NULL,
-    project_publishdate BIGINT NOT NULL,
-    project_published_by VARCHAR(36) NOT NULL,
-    project_ou VARCHAR(128) NOT NULL,
-    PRIMARY KEY (publish_tag)
+    PROJECT_ID VARCHAR(36) NOT NULL,
+    PROJECT_NAME VARCHAR(255) NOT NULL,
+    PROJECT_DESCRIPTION VARCHAR(255) NOT NULL,
+    PROJECT_TYPE INTEGER NOT NULL,
+    USER_ID VARCHAR(36) NOT NULL,
+    GROUP_ID VARCHAR(36) NOT NULL,
+    MANAGERGROUP_ID VARCHAR(36) NOT NULL,
+    DATE_CREATED BIGINT NOT NULL,
+    PUBLISH_TAG INTEGER NOT NULL,
+    PROJECT_PUBLISHDATE BIGINT NOT NULL,
+    PROJECT_PUBLISHED_BY VARCHAR(36) NOT NULL,
+    PROJECT_OU VARCHAR(128) NOT NULL,
+    PRIMARY KEY (PUBLISH_TAG)
 );
 
-CREATE UNIQUE INDEX pk_history_projects ON cms_history_projects (publish_tag);
+CREATE UNIQUE INDEX PK_HISTORY_PROJECTS ON CMS_HISTORY_PROJECTS (PUBLISH_TAG);
 
 /* ----------------------------------------------------------------------- */
 /* cms_history_properties */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_history_properties
+CREATE TABLE CMS_HISTORY_PROPERTIES
 (
-    structure_id VARCHAR(36) NOT NULL,
-    propertydef_id VARCHAR(36) NOT NULL,
-    property_mapping_id VARCHAR(36) NOT NULL,
-    property_mapping_type INTEGER NOT NULL,
-    property_value VARCHAR(2048) NOT NULL,
-    publish_tag INTEGER NOT NULL,
-    PRIMARY KEY (structure_id, propertydef_id, property_mapping_type, publish_tag)
+    STRUCTURE_ID VARCHAR(36) NOT NULL,
+    PROPERTYDEF_ID VARCHAR(36) NOT NULL,
+    PROPERTY_MAPPING_ID VARCHAR(36) NOT NULL,
+    PROPERTY_MAPPING_TYPE INTEGER NOT NULL,
+    PROPERTY_VALUE VARCHAR(2048) NOT NULL,
+    PUBLISH_TAG INTEGER NOT NULL,
+    PRIMARY KEY (STRUCTURE_ID, PROPERTYDEF_ID, PROPERTY_MAPPING_TYPE, PUBLISH_TAG)
 );
 
-CREATE UNIQUE INDEX pk_history_properties ON cms_history_properties (structure_id, propertydef_id, property_mapping_type, publish_tag);
+CREATE UNIQUE INDEX PK_HISTORY_PROPERTIES ON CMS_HISTORY_PROPERTIES (STRUCTURE_ID, PROPERTYDEF_ID, PROPERTY_MAPPING_TYPE, PUBLISH_TAG);
 
-CREATE INDEX cms_history_properties_01_idx ON cms_history_properties (propertydef_id);
+CREATE INDEX CMS_HISTORY_PROPERTIES_01_IDX ON CMS_HISTORY_PROPERTIES (PROPERTYDEF_ID);
 
-CREATE INDEX cms_history_properties_02_idx ON cms_history_properties (property_mapping_id);
+CREATE INDEX CMS_HISTORY_PROPERTIES_02_IDX ON CMS_HISTORY_PROPERTIES (PROPERTY_MAPPING_ID);
 
-CREATE INDEX cms_history_properties_03_idx ON cms_history_properties (publish_tag);
+CREATE INDEX CMS_HISTORY_PROPERTIES_03_IDX ON CMS_HISTORY_PROPERTIES (PUBLISH_TAG);
 
-CREATE INDEX cms_history_properties_04_idx ON cms_history_properties (propertydef_id, property_mapping_id);
+CREATE INDEX CMS_HISTORY_PROPERTIES_04_IDX ON CMS_HISTORY_PROPERTIES (PROPERTYDEF_ID, PROPERTY_MAPPING_ID);
 
-CREATE INDEX cms_history_properties_05_idx ON cms_history_properties (structure_id, publish_tag);
+CREATE INDEX CMS_HISTORY_PROPERTIES_05_IDX ON CMS_HISTORY_PROPERTIES (STRUCTURE_ID, PUBLISH_TAG);
 
 /* ----------------------------------------------------------------------- */
 /* cms_history_propertydef */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_history_propertydef
+CREATE TABLE CMS_HISTORY_PROPERTYDEF
 (
-    propertydef_id VARCHAR(36) NOT NULL,
-    propertydef_name VARCHAR(128) NOT NULL,
-    propertydef_type INTEGER NOT NULL,
-    PRIMARY KEY (propertydef_id)
+    PROPERTYDEF_ID VARCHAR(36) NOT NULL,
+    PROPERTYDEF_NAME VARCHAR(128) NOT NULL,
+    PROPERTYDEF_TYPE INTEGER NOT NULL,
+    PRIMARY KEY (PROPERTYDEF_ID)
 );
 
-CREATE UNIQUE INDEX pk_history_propertydef ON cms_history_propertydef (propertydef_id);
+CREATE UNIQUE INDEX PK_HISTORY_PROPERTYDEF ON CMS_HISTORY_PROPERTYDEF (PROPERTYDEF_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_history_resources */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_history_resources
+CREATE TABLE CMS_HISTORY_RESOURCES
 (
-    resource_id VARCHAR(36) NOT NULL,
-    resource_type INTEGER NOT NULL,
-    resource_flags INTEGER NOT NULL,
-    resource_state INTEGER NOT NULL,
-    resource_size INTEGER NOT NULL,
-    date_content BIGINT NOT NULL,
-    sibling_count INTEGER NOT NULL,
-    date_created BIGINT NOT NULL,
-    date_lastmodified BIGINT NOT NULL,
-    user_created VARCHAR(36) NOT NULL,
-    user_lastmodified VARCHAR(36) NOT NULL,
-    project_lastmodified VARCHAR(36) NOT NULL,
-    publish_tag INTEGER NOT NULL,
-    resource_version INTEGER NOT NULL,
-    PRIMARY KEY (resource_id, publish_tag)
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    RESOURCE_TYPE INTEGER NOT NULL,
+    RESOURCE_FLAGS INTEGER NOT NULL,
+    RESOURCE_STATE INTEGER NOT NULL,
+    RESOURCE_SIZE INTEGER NOT NULL,
+    DATE_CONTENT BIGINT NOT NULL,
+    SIBLING_COUNT INTEGER NOT NULL,
+    DATE_CREATED BIGINT NOT NULL,
+    DATE_LASTMODIFIED BIGINT NOT NULL,
+    USER_CREATED VARCHAR(36) NOT NULL,
+    USER_LASTMODIFIED VARCHAR(36) NOT NULL,
+    PROJECT_LASTMODIFIED VARCHAR(36) NOT NULL,
+    PUBLISH_TAG INTEGER NOT NULL,
+    RESOURCE_VERSION INTEGER NOT NULL,
+    PRIMARY KEY (RESOURCE_ID, PUBLISH_TAG)
 );
 
-CREATE UNIQUE INDEX pk_history_resources ON cms_history_resources (resource_id, publish_tag);
+CREATE UNIQUE INDEX PK_HISTORY_RESOURCES ON CMS_HISTORY_RESOURCES (RESOURCE_ID, PUBLISH_TAG);
 
-CREATE INDEX cms_history_resources_01_idx ON cms_history_resources (project_lastmodified);
+CREATE INDEX CMS_HISTORY_RESOURCES_01_IDX ON CMS_HISTORY_RESOURCES (PROJECT_LASTMODIFIED);
 
-CREATE INDEX cms_history_resources_02_idx ON cms_history_resources (project_lastmodified, resource_size);
+CREATE INDEX CMS_HISTORY_RESOURCES_02_IDX ON CMS_HISTORY_RESOURCES (PROJECT_LASTMODIFIED, RESOURCE_SIZE);
 
-CREATE INDEX cms_history_resources_03_idx ON cms_history_resources (resource_size);
+CREATE INDEX CMS_HISTORY_RESOURCES_03_IDX ON CMS_HISTORY_RESOURCES (RESOURCE_SIZE);
 
-CREATE INDEX cms_history_resources_04_idx ON cms_history_resources (date_lastmodified);
+CREATE INDEX CMS_HISTORY_RESOURCES_04_IDX ON CMS_HISTORY_RESOURCES (DATE_LASTMODIFIED);
 
-CREATE INDEX cms_history_resources_05_idx ON cms_history_resources (resource_type);
+CREATE INDEX CMS_HISTORY_RESOURCES_05_IDX ON CMS_HISTORY_RESOURCES (RESOURCE_TYPE);
 
-CREATE INDEX cms_history_resources_06_idx ON cms_history_resources (publish_tag);
+CREATE INDEX CMS_HISTORY_RESOURCES_06_IDX ON CMS_HISTORY_RESOURCES (PUBLISH_TAG);
 
 /* ----------------------------------------------------------------------- */
 /* cms_history_structure */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_history_structure
+CREATE TABLE CMS_HISTORY_STRUCTURE
 (
-    publish_tag INTEGER NOT NULL,
-    version INTEGER NOT NULL,
-    structure_id VARCHAR(36) NOT NULL,
-    resource_id VARCHAR(36) NOT NULL,
-    parent_id VARCHAR(36) NOT NULL,
-    resource_path VARCHAR(1024),
-    structure_state INTEGER NOT NULL,
-    date_released BIGINT NOT NULL,
-    date_expired BIGINT NOT NULL,
-    structure_version INTEGER NOT NULL,
-    PRIMARY KEY (publish_tag, version, structure_id)
+    PUBLISH_TAG INTEGER NOT NULL,
+    VERSION INTEGER NOT NULL,
+    STRUCTURE_ID VARCHAR(36) NOT NULL,
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    PARENT_ID VARCHAR(36) NOT NULL,
+    RESOURCE_PATH VARCHAR(1024),
+    STRUCTURE_STATE INTEGER NOT NULL,
+    DATE_RELEASED BIGINT NOT NULL,
+    DATE_EXPIRED BIGINT NOT NULL,
+    STRUCTURE_VERSION INTEGER NOT NULL,
+    PRIMARY KEY (PUBLISH_TAG, VERSION, STRUCTURE_ID)
 );
 
-CREATE UNIQUE INDEX pk_history_structure ON cms_history_structure (structure_id, publish_tag, version);
+CREATE UNIQUE INDEX PK_HISTORY_STRUCTURE ON CMS_HISTORY_STRUCTURE (STRUCTURE_ID, PUBLISH_TAG, VERSION);
 
-CREATE INDEX cms_history_structure_01_idx ON cms_history_structure (structure_id, resource_path);
+CREATE INDEX CMS_HISTORY_STRUCTURE_01_IDX ON CMS_HISTORY_STRUCTURE (STRUCTURE_ID, RESOURCE_PATH);
 
-CREATE INDEX cms_history_structure_02_idx ON cms_history_structure (resource_path, resource_id);
+CREATE INDEX CMS_HISTORY_STRUCTURE_02_IDX ON CMS_HISTORY_STRUCTURE (RESOURCE_PATH, RESOURCE_ID);
 
-CREATE INDEX cms_history_structure_03_idx ON cms_history_structure (structure_id, resource_id);
+CREATE INDEX CMS_HISTORY_STRUCTURE_03_IDX ON CMS_HISTORY_STRUCTURE (STRUCTURE_ID, RESOURCE_ID);
 
-CREATE INDEX cms_history_structure_04_idx ON cms_history_structure (structure_state);
+CREATE INDEX CMS_HISTORY_STRUCTURE_04_IDX ON CMS_HISTORY_STRUCTURE (STRUCTURE_STATE);
 
-CREATE INDEX cms_history_structure_05_idx ON cms_history_structure (resource_id);
+CREATE INDEX CMS_HISTORY_STRUCTURE_05_IDX ON CMS_HISTORY_STRUCTURE (RESOURCE_ID);
 
-CREATE INDEX cms_history_structure_06_idx ON cms_history_structure (resource_path);
+CREATE INDEX CMS_HISTORY_STRUCTURE_06_IDX ON CMS_HISTORY_STRUCTURE (RESOURCE_PATH);
 
-CREATE INDEX cms_history_structure_07_idx ON cms_history_structure (publish_tag);
+CREATE INDEX CMS_HISTORY_STRUCTURE_07_IDX ON CMS_HISTORY_STRUCTURE (PUBLISH_TAG);
 
-CREATE INDEX cms_history_structure_08_idx ON cms_history_structure (version);
+CREATE INDEX CMS_HISTORY_STRUCTURE_08_IDX ON CMS_HISTORY_STRUCTURE (VERSION);
 
 /* ----------------------------------------------------------------------- */
 /* cms_log */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_log
+CREATE TABLE CMS_LOG
 (
-    user_id VARCHAR(36) NOT NULL,
-    log_date BIGINT NOT NULL,
-    structure_id VARCHAR(36),
-    log_type INTEGER NOT NULL,
-    log_data VARCHAR(1024),
-    PRIMARY KEY (user_id, log_date, log_type)
+    USER_ID VARCHAR(36) NOT NULL,
+    LOG_DATE BIGINT NOT NULL,
+    STRUCTURE_ID VARCHAR(36),
+    LOG_TYPE INTEGER NOT NULL,
+    LOG_DATA VARCHAR(1024),
+    PRIMARY KEY (USER_ID, LOG_DATE, LOG_TYPE)
 );
 
-CREATE UNIQUE INDEX pk_log ON cms_log (user_id, log_date, log_type);
+CREATE UNIQUE INDEX PK_LOG ON CMS_LOG (USER_ID, LOG_DATE, LOG_TYPE);
 
-CREATE INDEX cms_log_01_idx ON cms_log (user_id);
+CREATE INDEX CMS_LOG_01_IDX ON CMS_LOG (USER_ID);
 
-CREATE INDEX cms_log_02_idx ON cms_log (log_date);
+CREATE INDEX CMS_LOG_02_IDX ON CMS_LOG (LOG_DATE);
 
-CREATE INDEX cms_log_03_idx ON cms_log (structure_id);
+CREATE INDEX CMS_LOG_03_IDX ON CMS_LOG (STRUCTURE_ID);
 
-CREATE INDEX cms_log_04_idx ON cms_log (log_type);
+CREATE INDEX CMS_LOG_04_IDX ON CMS_LOG (LOG_TYPE);
 
-CREATE INDEX cms_log_05_idx ON cms_log (user_id, structure_id);
+CREATE INDEX CMS_LOG_05_IDX ON CMS_LOG (USER_ID, STRUCTURE_ID);
 
-CREATE INDEX cms_log_06_idx ON cms_log (user_id, log_date);
+CREATE INDEX CMS_LOG_06_IDX ON CMS_LOG (USER_ID, LOG_DATE);
 
-CREATE INDEX cms_log_07_idx ON cms_log (user_id, structure_id, log_date);
+CREATE INDEX CMS_LOG_07_IDX ON CMS_LOG (USER_ID, STRUCTURE_ID, LOG_DATE);
 
-CREATE INDEX cms_log_08_idx ON cms_log (user_id, log_type, structure_id, log_date);
+CREATE INDEX CMS_LOG_08_IDX ON CMS_LOG (USER_ID, LOG_TYPE, STRUCTURE_ID, LOG_DATE);
 
 /* ----------------------------------------------------------------------- */
 /* cms_offline_accesscontrol */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_offline_accesscontrol
+CREATE TABLE CMS_OFFLINE_ACCESSCONTROL
 (
-    resource_id VARCHAR(36) NOT NULL,
-    principal_id VARCHAR(36) NOT NULL,
-    access_allowed INTEGER,
-    access_denied INTEGER,
-    access_flags INTEGER,
-    PRIMARY KEY (resource_id, principal_id)
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    PRINCIPAL_ID VARCHAR(36) NOT NULL,
+    ACCESS_ALLOWED INTEGER,
+    ACCESS_DENIED INTEGER,
+    ACCESS_FLAGS INTEGER,
+    PRIMARY KEY (RESOURCE_ID, PRINCIPAL_ID)
 );
 
-CREATE UNIQUE INDEX pk_offline_accesscontrol ON cms_offline_accesscontrol (resource_id, principal_id);
+CREATE UNIQUE INDEX PK_OFFLINE_ACCESSCONTROL ON CMS_OFFLINE_ACCESSCONTROL (RESOURCE_ID, PRINCIPAL_ID);
 
-CREATE INDEX offline_accesscontrol_01_idx ON cms_offline_accesscontrol (principal_id);
+CREATE INDEX OFFLINE_ACCESSCONTROL_01_IDX ON CMS_OFFLINE_ACCESSCONTROL (PRINCIPAL_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_offline_contents */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_offline_contents
+CREATE TABLE CMS_OFFLINE_CONTENTS
 (
-    resource_id VARCHAR(36) NOT NULL,
-    file_content BLOB,
-    PRIMARY KEY (resource_id)
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    FILE_CONTENT BLOB,
+    PRIMARY KEY (RESOURCE_ID)
 );
 
-CREATE UNIQUE INDEX pk_offline_contents ON cms_offline_contents (resource_id);
+CREATE UNIQUE INDEX PK_OFFLINE_CONTENTS ON CMS_OFFLINE_CONTENTS (RESOURCE_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_offline_properties */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_offline_properties
+CREATE TABLE CMS_OFFLINE_PROPERTIES
 (
-    property_id VARCHAR(36) NOT NULL,
-    propertydef_id VARCHAR(36) NOT NULL,
-    property_mapping_id VARCHAR(36) NOT NULL,
-    property_mapping_type INTEGER NOT NULL,
-    property_value VARCHAR(2048) NOT NULL,
-    PRIMARY KEY (property_id)
+    PROPERTY_ID VARCHAR(36) NOT NULL,
+    PROPERTYDEF_ID VARCHAR(36) NOT NULL,
+    PROPERTY_MAPPING_ID VARCHAR(36) NOT NULL,
+    PROPERTY_MAPPING_TYPE INTEGER NOT NULL,
+    PROPERTY_VALUE VARCHAR(2048) NOT NULL,
+    PRIMARY KEY (PROPERTY_ID)
 );
 
-CREATE UNIQUE INDEX pk_offline_properties ON cms_offline_properties (property_id);
+CREATE UNIQUE INDEX PK_OFFLINE_PROPERTIES ON CMS_OFFLINE_PROPERTIES (PROPERTY_ID);
 
-CREATE UNIQUE INDEX uk_offline_properties ON cms_offline_properties (propertydef_id, property_mapping_id);
+CREATE UNIQUE INDEX UK_OFFLINE_PROPERTIES ON CMS_OFFLINE_PROPERTIES (PROPERTYDEF_ID, PROPERTY_MAPPING_ID);
 
-CREATE INDEX cms_offline_properties_01_idx ON cms_offline_properties (propertydef_id);
+CREATE INDEX CMS_OFFLINE_PROPERTIES_01_IDX ON CMS_OFFLINE_PROPERTIES (PROPERTYDEF_ID);
 
-CREATE INDEX cms_offline_properties_02_idx ON cms_offline_properties (property_mapping_id);
+CREATE INDEX CMS_OFFLINE_PROPERTIES_02_IDX ON CMS_OFFLINE_PROPERTIES (PROPERTY_MAPPING_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_offline_propertydef */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_offline_propertydef
+CREATE TABLE CMS_OFFLINE_PROPERTYDEF
 (
-    propertydef_id VARCHAR(36) NOT NULL,
-    propertydef_name VARCHAR(128) NOT NULL,
-    propertydef_type INTEGER NOT NULL,
-    PRIMARY KEY (propertydef_id)
+    PROPERTYDEF_ID VARCHAR(36) NOT NULL,
+    PROPERTYDEF_NAME VARCHAR(128) NOT NULL,
+    PROPERTYDEF_TYPE INTEGER NOT NULL,
+    PRIMARY KEY (PROPERTYDEF_ID)
 );
 
-CREATE UNIQUE INDEX pk_offline_propertydef ON cms_offline_propertydef (propertydef_id);
+CREATE UNIQUE INDEX PK_OFFLINE_PROPERTYDEF ON CMS_OFFLINE_PROPERTYDEF (PROPERTYDEF_ID);
 
-CREATE UNIQUE INDEX uk_offline_propertydef ON cms_offline_propertydef (propertydef_name);
+CREATE UNIQUE INDEX UK_OFFLINE_PROPERTYDEF ON CMS_OFFLINE_PROPERTYDEF (PROPERTYDEF_NAME);
 
 /* ----------------------------------------------------------------------- */
 /* cms_offline_resource_relations */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_offline_resource_relations
+CREATE TABLE CMS_OFFLINE_RESOURCE_RELATIONS
 (
-    relation_source_id VARCHAR(36) NOT NULL,
-    relation_source_path VARCHAR(1024) NOT NULL,
-    relation_target_id VARCHAR(36) NOT NULL,
-    relation_target_path VARCHAR(1024) NOT NULL,
-    relation_type INTEGER NOT NULL
+    RELATION_SOURCE_ID VARCHAR(36) NOT NULL,
+    RELATION_SOURCE_PATH VARCHAR(1024) NOT NULL,
+    RELATION_TARGET_ID VARCHAR(36) NOT NULL,
+    RELATION_TARGET_PATH VARCHAR(1024) NOT NULL,
+    RELATION_TYPE INTEGER NOT NULL
 );
 
-CREATE INDEX cms_offline_relations_01_idx ON cms_offline_resource_relations (relation_source_id);
+CREATE INDEX CMS_OFFLINE_RELATIONS_01_IDX ON CMS_OFFLINE_RESOURCE_RELATIONS (RELATION_SOURCE_ID);
 
-CREATE INDEX cms_offline_relations_02_idx ON cms_offline_resource_relations (relation_target_id);
+CREATE INDEX CMS_OFFLINE_RELATIONS_02_IDX ON CMS_OFFLINE_RESOURCE_RELATIONS (RELATION_TARGET_ID);
 
-CREATE INDEX cms_offline_relations_03_idx ON cms_offline_resource_relations (relation_source_path);
+CREATE INDEX CMS_OFFLINE_RELATIONS_03_IDX ON CMS_OFFLINE_RESOURCE_RELATIONS (RELATION_SOURCE_PATH);
 
-CREATE INDEX cms_offline_relations_04_idx ON cms_offline_resource_relations (relation_target_path);
+CREATE INDEX CMS_OFFLINE_RELATIONS_04_IDX ON CMS_OFFLINE_RESOURCE_RELATIONS (RELATION_TARGET_PATH);
 
-CREATE INDEX cms_offline_relations_05_idx ON cms_offline_resource_relations (relation_type);
+CREATE INDEX CMS_OFFLINE_RELATIONS_05_IDX ON CMS_OFFLINE_RESOURCE_RELATIONS (RELATION_TYPE);
 
 /* ----------------------------------------------------------------------- */
 /* cms_offline_resources */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_offline_resources
+CREATE TABLE CMS_OFFLINE_RESOURCES
 (
-    resource_id VARCHAR(36) NOT NULL,
-    resource_type INTEGER NOT NULL,
-    resource_flags INTEGER NOT NULL,
-    resource_state INTEGER NOT NULL,
-    resource_size INTEGER NOT NULL,
-    date_content BIGINT NOT NULL,
-    sibling_count INTEGER NOT NULL,
-    date_created BIGINT NOT NULL,
-    date_lastmodified BIGINT NOT NULL,
-    user_created VARCHAR(36) NOT NULL,
-    user_lastmodified VARCHAR(36) NOT NULL,
-    project_lastmodified VARCHAR(36) NOT NULL,
-    resource_version INTEGER NOT NULL,
-    PRIMARY KEY (resource_id)
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    RESOURCE_TYPE INTEGER NOT NULL,
+    RESOURCE_FLAGS INTEGER NOT NULL,
+    RESOURCE_STATE INTEGER NOT NULL,
+    RESOURCE_SIZE INTEGER NOT NULL,
+    DATE_CONTENT BIGINT NOT NULL,
+    SIBLING_COUNT INTEGER NOT NULL,
+    DATE_CREATED BIGINT NOT NULL,
+    DATE_LASTMODIFIED BIGINT NOT NULL,
+    USER_CREATED VARCHAR(36) NOT NULL,
+    USER_LASTMODIFIED VARCHAR(36) NOT NULL,
+    PROJECT_LASTMODIFIED VARCHAR(36) NOT NULL,
+    RESOURCE_VERSION INTEGER NOT NULL,
+    PRIMARY KEY (RESOURCE_ID)
 );
 
-CREATE UNIQUE INDEX pk_offline_resources ON cms_offline_resources (resource_id);
+CREATE UNIQUE INDEX PK_OFFLINE_RESOURCES ON CMS_OFFLINE_RESOURCES (RESOURCE_ID);
 
-CREATE INDEX cms_offline_resources_01_idx ON cms_offline_resources (project_lastmodified);
+CREATE INDEX CMS_OFFLINE_RESOURCES_01_IDX ON CMS_OFFLINE_RESOURCES (PROJECT_LASTMODIFIED);
 
-CREATE INDEX cms_offline_resources_02_idx ON cms_offline_resources (project_lastmodified, resource_size);
+CREATE INDEX CMS_OFFLINE_RESOURCES_02_IDX ON CMS_OFFLINE_RESOURCES (PROJECT_LASTMODIFIED, RESOURCE_SIZE);
 
-CREATE INDEX cms_offline_resources_03_idx ON cms_offline_resources (resource_size);
+CREATE INDEX CMS_OFFLINE_RESOURCES_03_IDX ON CMS_OFFLINE_RESOURCES (RESOURCE_SIZE);
 
-CREATE INDEX cms_offline_resources_04_idx ON cms_offline_resources (date_lastmodified);
+CREATE INDEX CMS_OFFLINE_RESOURCES_04_IDX ON CMS_OFFLINE_RESOURCES (DATE_LASTMODIFIED);
 
-CREATE INDEX cms_offline_resources_05_idx ON cms_offline_resources (resource_type);
+CREATE INDEX CMS_OFFLINE_RESOURCES_05_IDX ON CMS_OFFLINE_RESOURCES (RESOURCE_TYPE);
 
 /* ----------------------------------------------------------------------- */
 /* cms_offline_structure */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_offline_structure
+CREATE TABLE CMS_OFFLINE_STRUCTURE
 (
-    structure_id VARCHAR(36) NOT NULL,
-    resource_id VARCHAR(36) NOT NULL,
-    parent_id VARCHAR(36) NOT NULL,
-    resource_path VARCHAR(1024),
-    structure_state INTEGER NOT NULL,
-    date_released BIGINT NOT NULL,
-    date_expired BIGINT NOT NULL,
-    structure_version INTEGER NOT NULL,
-    PRIMARY KEY (structure_id)
+    STRUCTURE_ID VARCHAR(36) NOT NULL,
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    PARENT_ID VARCHAR(36) NOT NULL,
+    RESOURCE_PATH VARCHAR(1024),
+    STRUCTURE_STATE INTEGER NOT NULL,
+    DATE_RELEASED BIGINT NOT NULL,
+    DATE_EXPIRED BIGINT NOT NULL,
+    STRUCTURE_VERSION INTEGER NOT NULL,
+    PRIMARY KEY (STRUCTURE_ID)
 );
 
-CREATE UNIQUE INDEX pk_offline_structure ON cms_offline_structure (structure_id);
+CREATE UNIQUE INDEX PK_OFFLINE_STRUCTURE ON CMS_OFFLINE_STRUCTURE (STRUCTURE_ID);
 
-CREATE INDEX cms_offline_structure_01_idx ON cms_offline_structure (structure_id, resource_path);
+CREATE INDEX CMS_OFFLINE_STRUCTURE_01_IDX ON CMS_OFFLINE_STRUCTURE (STRUCTURE_ID, RESOURCE_PATH);
 
-CREATE INDEX cms_offline_structure_02_idx ON cms_offline_structure (resource_path, resource_id);
+CREATE INDEX CMS_OFFLINE_STRUCTURE_02_IDX ON CMS_OFFLINE_STRUCTURE (RESOURCE_PATH, RESOURCE_ID);
 
-CREATE INDEX cms_offline_structure_03_idx ON cms_offline_structure (structure_id, resource_id);
+CREATE INDEX CMS_OFFLINE_STRUCTURE_03_IDX ON CMS_OFFLINE_STRUCTURE (STRUCTURE_ID, RESOURCE_ID);
 
-CREATE INDEX cms_offline_structure_04_idx ON cms_offline_structure (structure_state);
+CREATE INDEX CMS_OFFLINE_STRUCTURE_04_IDX ON CMS_OFFLINE_STRUCTURE (STRUCTURE_STATE);
 
-CREATE INDEX cms_offline_structure_05_idx ON cms_offline_structure (parent_id);
+CREATE INDEX CMS_OFFLINE_STRUCTURE_05_IDX ON CMS_OFFLINE_STRUCTURE (PARENT_ID);
 
-CREATE INDEX cms_offline_structure_06_idx ON cms_offline_structure (resource_id);
+CREATE INDEX CMS_OFFLINE_STRUCTURE_06_IDX ON CMS_OFFLINE_STRUCTURE (RESOURCE_ID);
 
-CREATE INDEX cms_offline_structure_07_idx ON cms_offline_structure (resource_path);
+CREATE INDEX CMS_OFFLINE_STRUCTURE_07_IDX ON CMS_OFFLINE_STRUCTURE (RESOURCE_PATH);
 
 /* ----------------------------------------------------------------------- */
 /* cms_online_accesscontrol */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_online_accesscontrol
+CREATE TABLE CMS_ONLINE_ACCESSCONTROL
 (
-    resource_id VARCHAR(36) NOT NULL,
-    principal_id VARCHAR(36) NOT NULL,
-    access_allowed INTEGER,
-    access_denied INTEGER,
-    access_flags INTEGER,
-    PRIMARY KEY (resource_id, principal_id)
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    PRINCIPAL_ID VARCHAR(36) NOT NULL,
+    ACCESS_ALLOWED INTEGER,
+    ACCESS_DENIED INTEGER,
+    ACCESS_FLAGS INTEGER,
+    PRIMARY KEY (RESOURCE_ID, PRINCIPAL_ID)
 );
 
-CREATE UNIQUE INDEX pk_online_accesscontrol ON cms_online_accesscontrol (resource_id, principal_id);
+CREATE UNIQUE INDEX PK_ONLINE_ACCESSCONTROL ON CMS_ONLINE_ACCESSCONTROL (RESOURCE_ID, PRINCIPAL_ID);
 
-CREATE INDEX online_accesscontrol_01_idx ON cms_online_accesscontrol (principal_id);
+CREATE INDEX ONLINE_ACCESSCONTROL_01_IDX ON CMS_ONLINE_ACCESSCONTROL (PRINCIPAL_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_online_properties */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_online_properties
+CREATE TABLE CMS_ONLINE_PROPERTIES
 (
-    property_id VARCHAR(36) NOT NULL,
-    propertydef_id VARCHAR(36) NOT NULL,
-    property_mapping_id VARCHAR(36) NOT NULL,
-    property_mapping_type INTEGER NOT NULL,
-    property_value VARCHAR(2048) NOT NULL,
-    PRIMARY KEY (property_id)
+    PROPERTY_ID VARCHAR(36) NOT NULL,
+    PROPERTYDEF_ID VARCHAR(36) NOT NULL,
+    PROPERTY_MAPPING_ID VARCHAR(36) NOT NULL,
+    PROPERTY_MAPPING_TYPE INTEGER NOT NULL,
+    PROPERTY_VALUE VARCHAR(2048) NOT NULL,
+    PRIMARY KEY (PROPERTY_ID)
 );
 
-CREATE UNIQUE INDEX pk_online_properties ON cms_online_properties (property_id);
+CREATE UNIQUE INDEX PK_ONLINE_PROPERTIES ON CMS_ONLINE_PROPERTIES (PROPERTY_ID);
 
-CREATE UNIQUE INDEX uk_online_properties ON cms_online_properties (propertydef_id, property_mapping_id);
+CREATE UNIQUE INDEX UK_ONLINE_PROPERTIES ON CMS_ONLINE_PROPERTIES (PROPERTYDEF_ID, PROPERTY_MAPPING_ID);
 
-CREATE INDEX cms_online_properties_01_idx ON cms_online_properties (propertydef_id);
+CREATE INDEX CMS_ONLINE_PROPERTIES_01_IDX ON CMS_ONLINE_PROPERTIES (PROPERTYDEF_ID);
 
-CREATE INDEX cms_online_properties_02_idx ON cms_online_properties (property_mapping_id);
+CREATE INDEX CMS_ONLINE_PROPERTIES_02_IDX ON CMS_ONLINE_PROPERTIES (PROPERTY_MAPPING_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_online_propertydef */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_online_propertydef
+CREATE TABLE CMS_ONLINE_PROPERTYDEF
 (
-    propertydef_id VARCHAR(36) NOT NULL,
-    propertydef_name VARCHAR(128) NOT NULL,
-    propertydef_type INTEGER NOT NULL,
-    PRIMARY KEY (propertydef_id)
+    PROPERTYDEF_ID VARCHAR(36) NOT NULL,
+    PROPERTYDEF_NAME VARCHAR(128) NOT NULL,
+    PROPERTYDEF_TYPE INTEGER NOT NULL,
+    PRIMARY KEY (PROPERTYDEF_ID)
 );
 
-CREATE UNIQUE INDEX pk_online_propertydef ON cms_online_propertydef (propertydef_id);
+CREATE UNIQUE INDEX PK_ONLINE_PROPERTYDEF ON CMS_ONLINE_PROPERTYDEF (PROPERTYDEF_ID);
 
-CREATE UNIQUE INDEX uk_online_propertydef ON cms_online_propertydef (propertydef_name);
+CREATE UNIQUE INDEX UK_ONLINE_PROPERTYDEF ON CMS_ONLINE_PROPERTYDEF (PROPERTYDEF_NAME);
 
 /* ----------------------------------------------------------------------- */
 /* cms_online_resource_relations */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_online_resource_relations
+CREATE TABLE CMS_ONLINE_RESOURCE_RELATIONS
 (
-    relation_source_id VARCHAR(36) NOT NULL,
-    relation_source_path VARCHAR(1024) NOT NULL,
-    relation_target_id VARCHAR(36) NOT NULL,
-    relation_target_path VARCHAR(1024) NOT NULL,
-    relation_type INTEGER NOT NULL
+    RELATION_SOURCE_ID VARCHAR(36) NOT NULL,
+    RELATION_SOURCE_PATH VARCHAR(1024) NOT NULL,
+    RELATION_TARGET_ID VARCHAR(36) NOT NULL,
+    RELATION_TARGET_PATH VARCHAR(1024) NOT NULL,
+    RELATION_TYPE INTEGER NOT NULL
 );
 
-CREATE INDEX cms_online_relations_01_idx ON cms_online_resource_relations (relation_source_id);
+CREATE INDEX CMS_ONLINE_RELATIONS_01_IDX ON CMS_ONLINE_RESOURCE_RELATIONS (RELATION_SOURCE_ID);
 
-CREATE INDEX cms_online_relations_02_idx ON cms_online_resource_relations (relation_target_id);
+CREATE INDEX CMS_ONLINE_RELATIONS_02_IDX ON CMS_ONLINE_RESOURCE_RELATIONS (RELATION_TARGET_ID);
 
-CREATE INDEX cms_online_relations_03_idx ON cms_online_resource_relations (relation_source_path);
+CREATE INDEX CMS_ONLINE_RELATIONS_03_IDX ON CMS_ONLINE_RESOURCE_RELATIONS (RELATION_SOURCE_PATH);
 
-CREATE INDEX cms_online_relations_04_idx ON cms_online_resource_relations (relation_target_path);
+CREATE INDEX CMS_ONLINE_RELATIONS_04_IDX ON CMS_ONLINE_RESOURCE_RELATIONS (RELATION_TARGET_PATH);
 
-CREATE INDEX cms_online_relations_05_idx ON cms_online_resource_relations (relation_type);
+CREATE INDEX CMS_ONLINE_RELATIONS_05_IDX ON CMS_ONLINE_RESOURCE_RELATIONS (RELATION_TYPE);
 
 /* ----------------------------------------------------------------------- */
 /* cms_online_resources */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_online_resources
+CREATE TABLE CMS_ONLINE_RESOURCES
 (
-    resource_id VARCHAR(36) NOT NULL,
-    resource_type INTEGER NOT NULL,
-    resource_flags INTEGER NOT NULL,
-    resource_state INTEGER NOT NULL,
-    resource_size INTEGER NOT NULL,
-    date_content BIGINT NOT NULL,
-    sibling_count INTEGER NOT NULL,
-    date_created BIGINT NOT NULL,
-    date_lastmodified BIGINT NOT NULL,
-    user_created VARCHAR(36) NOT NULL,
-    user_lastmodified VARCHAR(36) NOT NULL,
-    project_lastmodified VARCHAR(36) NOT NULL,
-    resource_version INTEGER NOT NULL,
-    PRIMARY KEY (resource_id)
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    RESOURCE_TYPE INTEGER NOT NULL,
+    RESOURCE_FLAGS INTEGER NOT NULL,
+    RESOURCE_STATE INTEGER NOT NULL,
+    RESOURCE_SIZE INTEGER NOT NULL,
+    DATE_CONTENT BIGINT NOT NULL,
+    SIBLING_COUNT INTEGER NOT NULL,
+    DATE_CREATED BIGINT NOT NULL,
+    DATE_LASTMODIFIED BIGINT NOT NULL,
+    USER_CREATED VARCHAR(36) NOT NULL,
+    USER_LASTMODIFIED VARCHAR(36) NOT NULL,
+    PROJECT_LASTMODIFIED VARCHAR(36) NOT NULL,
+    RESOURCE_VERSION INTEGER NOT NULL,
+    PRIMARY KEY (RESOURCE_ID)
 );
 
-CREATE UNIQUE INDEX pk_online_resources ON cms_online_resources (resource_id);
+CREATE UNIQUE INDEX PK_ONLINE_RESOURCES ON CMS_ONLINE_RESOURCES (RESOURCE_ID);
 
-CREATE INDEX cms_online_resources_01_idx ON cms_online_resources (project_lastmodified);
+CREATE INDEX CMS_ONLINE_RESOURCES_01_IDX ON CMS_ONLINE_RESOURCES (PROJECT_LASTMODIFIED);
 
-CREATE INDEX cms_online_resources_02_idx ON cms_online_resources (project_lastmodified, resource_size);
+CREATE INDEX CMS_ONLINE_RESOURCES_02_IDX ON CMS_ONLINE_RESOURCES (PROJECT_LASTMODIFIED, RESOURCE_SIZE);
 
-CREATE INDEX cms_online_resources_03_idx ON cms_online_resources (resource_size);
+CREATE INDEX CMS_ONLINE_RESOURCES_03_IDX ON CMS_ONLINE_RESOURCES (RESOURCE_SIZE);
 
-CREATE INDEX cms_online_resources_04_idx ON cms_online_resources (date_lastmodified);
+CREATE INDEX CMS_ONLINE_RESOURCES_04_IDX ON CMS_ONLINE_RESOURCES (DATE_LASTMODIFIED);
 
-CREATE INDEX cms_online_resources_05_idx ON cms_online_resources (resource_type);
+CREATE INDEX CMS_ONLINE_RESOURCES_05_IDX ON CMS_ONLINE_RESOURCES (RESOURCE_TYPE);
 
 /* ----------------------------------------------------------------------- */
 /* cms_online_structure */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_online_structure
+CREATE TABLE CMS_ONLINE_STRUCTURE
 (
-    structure_id VARCHAR(36) NOT NULL,
-    resource_id VARCHAR(36) NOT NULL,
-    parent_id VARCHAR(36) NOT NULL,
-    resource_path VARCHAR(1024),
-    structure_state INTEGER NOT NULL,
-    date_released BIGINT NOT NULL,
-    date_expired BIGINT NOT NULL,
-    structure_version INTEGER NOT NULL,
-    PRIMARY KEY (structure_id)
+    STRUCTURE_ID VARCHAR(36) NOT NULL,
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    PARENT_ID VARCHAR(36) NOT NULL,
+    RESOURCE_PATH VARCHAR(1024),
+    STRUCTURE_STATE INTEGER NOT NULL,
+    DATE_RELEASED BIGINT NOT NULL,
+    DATE_EXPIRED BIGINT NOT NULL,
+    STRUCTURE_VERSION INTEGER NOT NULL,
+    PRIMARY KEY (STRUCTURE_ID)
 );
 
-CREATE UNIQUE INDEX pk_online_structure ON cms_online_structure (structure_id);
+CREATE UNIQUE INDEX PK_ONLINE_STRUCTURE ON CMS_ONLINE_STRUCTURE (STRUCTURE_ID);
 
-CREATE INDEX cms_online_structure_01_idx ON cms_online_structure (structure_id, resource_path);
+CREATE INDEX CMS_ONLINE_STRUCTURE_01_IDX ON CMS_ONLINE_STRUCTURE (STRUCTURE_ID, RESOURCE_PATH);
 
-CREATE INDEX cms_online_structure_02_idx ON cms_online_structure (resource_path, resource_id);
+CREATE INDEX CMS_ONLINE_STRUCTURE_02_IDX ON CMS_ONLINE_STRUCTURE (RESOURCE_PATH, RESOURCE_ID);
 
-CREATE INDEX cms_online_structure_03_idx ON cms_online_structure (structure_id, resource_id);
+CREATE INDEX CMS_ONLINE_STRUCTURE_03_IDX ON CMS_ONLINE_STRUCTURE (STRUCTURE_ID, RESOURCE_ID);
 
-CREATE INDEX cms_online_structure_04_idx ON cms_online_structure (structure_state);
+CREATE INDEX CMS_ONLINE_STRUCTURE_04_IDX ON CMS_ONLINE_STRUCTURE (STRUCTURE_STATE);
 
-CREATE INDEX cms_online_structure_05_idx ON cms_online_structure (parent_id);
+CREATE INDEX CMS_ONLINE_STRUCTURE_05_IDX ON CMS_ONLINE_STRUCTURE (PARENT_ID);
 
-CREATE INDEX cms_online_structure_06_idx ON cms_online_structure (resource_id);
+CREATE INDEX CMS_ONLINE_STRUCTURE_06_IDX ON CMS_ONLINE_STRUCTURE (RESOURCE_ID);
 
-CREATE INDEX cms_online_structure_07_idx ON cms_online_structure (resource_path);
+CREATE INDEX CMS_ONLINE_STRUCTURE_07_IDX ON CMS_ONLINE_STRUCTURE (RESOURCE_PATH);
 
 /* ----------------------------------------------------------------------- */
 /* cms_projectresources */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_projectresources
+CREATE TABLE CMS_PROJECTRESOURCES
 (
-    project_id VARCHAR(36) NOT NULL,
-    resource_path VARCHAR(1024) NOT NULL,
-    PRIMARY KEY (project_id, resource_path)
+    PROJECT_ID VARCHAR(36) NOT NULL,
+    RESOURCE_PATH VARCHAR(1024) NOT NULL,
+    PRIMARY KEY (PROJECT_ID, RESOURCE_PATH)
 );
 
-CREATE UNIQUE INDEX pk_projectresources ON cms_projectresources (project_id, resource_path);
+CREATE UNIQUE INDEX PK_PROJECTRESOURCES ON CMS_PROJECTRESOURCES (PROJECT_ID, RESOURCE_PATH);
 
-CREATE INDEX cms_projectresources_01_idx ON cms_projectresources (resource_path);
+CREATE INDEX CMS_PROJECTRESOURCES_01_IDX ON CMS_PROJECTRESOURCES (RESOURCE_PATH);
 
 /* ----------------------------------------------------------------------- */
 /* cms_projects */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_projects
+CREATE TABLE CMS_PROJECTS
 (
-    project_id VARCHAR(36) NOT NULL,
-    project_name VARCHAR(200) NOT NULL,
-    project_description VARCHAR(255) NOT NULL,
-    project_flags INTEGER NOT NULL,
-    project_type INTEGER NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    group_id VARCHAR(36) NOT NULL,
-    managergroup_id VARCHAR(36) NOT NULL,
-    date_created BIGINT NOT NULL,
-    project_ou VARCHAR(128) NOT NULL,
-    PRIMARY KEY (project_id)
+    PROJECT_ID VARCHAR(36) NOT NULL,
+    PROJECT_NAME VARCHAR(200) NOT NULL,
+    PROJECT_DESCRIPTION VARCHAR(255) NOT NULL,
+    PROJECT_FLAGS INTEGER NOT NULL,
+    PROJECT_TYPE INTEGER NOT NULL,
+    USER_ID VARCHAR(36) NOT NULL,
+    GROUP_ID VARCHAR(36) NOT NULL,
+    MANAGERGROUP_ID VARCHAR(36) NOT NULL,
+    DATE_CREATED BIGINT NOT NULL,
+    PROJECT_OU VARCHAR(128) NOT NULL,
+    PRIMARY KEY (PROJECT_ID)
 );
 
-CREATE UNIQUE INDEX pk_projects ON cms_projects (project_id);
+CREATE UNIQUE INDEX PK_PROJECTS ON CMS_PROJECTS (PROJECT_ID);
 
-CREATE UNIQUE INDEX uk_projects ON cms_projects (project_ou, project_name, date_created);
+CREATE UNIQUE INDEX UK_PROJECTS ON CMS_PROJECTS (PROJECT_OU, PROJECT_NAME, DATE_CREATED);
 
-CREATE INDEX cms_projects_01_idx ON cms_projects (project_flags);
+CREATE INDEX CMS_PROJECTS_01_IDX ON CMS_PROJECTS (PROJECT_FLAGS);
 
-CREATE INDEX cms_projects_02_idx ON cms_projects (group_id);
+CREATE INDEX CMS_PROJECTS_02_IDX ON CMS_PROJECTS (GROUP_ID);
 
-CREATE INDEX cms_projects_03_idx ON cms_projects (managergroup_id);
+CREATE INDEX CMS_PROJECTS_03_IDX ON CMS_PROJECTS (MANAGERGROUP_ID);
 
-CREATE INDEX cms_projects_04_idx ON cms_projects (user_id);
+CREATE INDEX CMS_PROJECTS_04_IDX ON CMS_PROJECTS (USER_ID);
 
-CREATE INDEX cms_projects_05_idx ON cms_projects (project_name);
+CREATE INDEX CMS_PROJECTS_05_IDX ON CMS_PROJECTS (PROJECT_NAME);
 
-CREATE INDEX cms_projects_06_idx ON cms_projects (project_ou);
+CREATE INDEX CMS_PROJECTS_06_IDX ON CMS_PROJECTS (PROJECT_OU);
 
-CREATE INDEX cms_projects_07_idx ON cms_projects (project_ou, project_name);
+CREATE INDEX CMS_PROJECTS_07_IDX ON CMS_PROJECTS (PROJECT_OU, PROJECT_NAME);
 
 /* ----------------------------------------------------------------------- */
 /* cms_publish_history */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_publish_history
+CREATE TABLE CMS_PUBLISH_HISTORY
 (
-    history_id VARCHAR(36) NOT NULL,
-    publish_tag INTEGER NOT NULL,
-    structure_id VARCHAR(36) NOT NULL,
-    resource_id VARCHAR(36) NOT NULL,
-    resource_path VARCHAR(1024) NOT NULL,
-    resource_state INTEGER NOT NULL,
-    resource_type INTEGER NOT NULL,
-    sibling_count INTEGER NOT NULL,
-    PRIMARY KEY (history_id, publish_tag, structure_id, resource_path)
+    HISTORY_ID VARCHAR(36) NOT NULL,
+    PUBLISH_TAG INTEGER NOT NULL,
+    STRUCTURE_ID VARCHAR(36) NOT NULL,
+    RESOURCE_ID VARCHAR(36) NOT NULL,
+    RESOURCE_PATH VARCHAR(1024) NOT NULL,
+    RESOURCE_STATE INTEGER NOT NULL,
+    RESOURCE_TYPE INTEGER NOT NULL,
+    SIBLING_COUNT INTEGER NOT NULL,
+    PRIMARY KEY (HISTORY_ID, PUBLISH_TAG, STRUCTURE_ID, RESOURCE_PATH)
 );
 
-CREATE UNIQUE INDEX pk_publish_history ON cms_publish_history (history_id, publish_tag, structure_id, resource_path);
+CREATE UNIQUE INDEX PK_PUBLISH_HISTORY ON CMS_PUBLISH_HISTORY (HISTORY_ID, PUBLISH_TAG, STRUCTURE_ID, RESOURCE_PATH);
 
-CREATE INDEX cms_publish_history_01_idx ON cms_publish_history (publish_tag);
+CREATE INDEX CMS_PUBLISH_HISTORY_01_IDX ON CMS_PUBLISH_HISTORY (PUBLISH_TAG);
 
 /* ----------------------------------------------------------------------- */
 /* cms_publish_jobs */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_publish_jobs
+CREATE TABLE CMS_PUBLISH_JOBS
 (
-    history_id VARCHAR(36) NOT NULL,
-    project_id VARCHAR(36) NOT NULL,
-    project_name VARCHAR(255) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    publish_locale VARCHAR(16) NOT NULL,
-    publish_flags INTEGER NOT NULL,
-    publish_list BLOB,
-    publish_report BLOB,
-    resource_count INTEGER NOT NULL,
-    enqueue_time BIGINT NOT NULL,
-    start_time BIGINT NOT NULL,
-    finish_time BIGINT NOT NULL,
-    PRIMARY KEY (history_id)
+    HISTORY_ID VARCHAR(36) NOT NULL,
+    PROJECT_ID VARCHAR(36) NOT NULL,
+    PROJECT_NAME VARCHAR(255) NOT NULL,
+    USER_ID VARCHAR(36) NOT NULL,
+    PUBLISH_LOCALE VARCHAR(16) NOT NULL,
+    PUBLISH_FLAGS INTEGER NOT NULL,
+    PUBLISH_LIST BLOB,
+    PUBLISH_REPORT BLOB,
+    RESOURCE_COUNT INTEGER NOT NULL,
+    ENQUEUE_TIME BIGINT NOT NULL,
+    START_TIME BIGINT NOT NULL,
+    FINISH_TIME BIGINT NOT NULL,
+    PRIMARY KEY (HISTORY_ID)
 );
 
-CREATE UNIQUE INDEX pk_publish_jobs ON cms_publish_jobs (history_id);
+CREATE UNIQUE INDEX PK_PUBLISH_JOBS ON CMS_PUBLISH_JOBS (HISTORY_ID);
 
 /* ----------------------------------------------------------------------- */
 /* cms_resource_locks */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_resource_locks
+CREATE TABLE CMS_RESOURCE_LOCKS
 (
-    resource_path VARCHAR(1024),
-    user_id VARCHAR(36) NOT NULL,
-    project_id VARCHAR(36) NOT NULL,
-    lock_type INTEGER NOT NULL
+    RESOURCE_PATH VARCHAR(1024),
+    USER_ID VARCHAR(36) NOT NULL,
+    PROJECT_ID VARCHAR(36) NOT NULL,
+    LOCK_TYPE INTEGER NOT NULL
 );
 
 /* ----------------------------------------------------------------------- */
 /* cms_staticexport_links */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_staticexport_links
+CREATE TABLE CMS_STATICEXPORT_LINKS
 (
-    link_id VARCHAR(36) NOT NULL,
-    link_rfs_path VARCHAR(1024),
-    link_type INTEGER NOT NULL,
-    link_parameter VARCHAR(1024),
-    link_timestamp BIGINT NOT NULL,
-    PRIMARY KEY (link_id)
+    LINK_ID VARCHAR(36) NOT NULL,
+    LINK_RFS_PATH VARCHAR(1024),
+    LINK_TYPE INTEGER NOT NULL,
+    LINK_PARAMETER VARCHAR(1024),
+    LINK_TIMESTAMP BIGINT NOT NULL,
+    PRIMARY KEY (LINK_ID)
 );
 
-CREATE UNIQUE INDEX pk_cms_staticexport_links ON cms_staticexport_links (link_id);
+CREATE UNIQUE INDEX PK_CMS_STATICEXPORT_LINKS ON CMS_STATICEXPORT_LINKS (LINK_ID);
 
-CREATE INDEX cms_staticexport_links_01_idx ON cms_staticexport_links (link_rfs_path);
+CREATE INDEX CMS_STATICEXPORT_LINKS_01_IDX ON CMS_STATICEXPORT_LINKS (LINK_RFS_PATH);
 
 /* ----------------------------------------------------------------------- */
 /* cms_subscription */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_subscription
+CREATE TABLE CMS_SUBSCRIPTION
 (
-    principal_id VARCHAR(36) NOT NULL,
-    structure_id VARCHAR(36) NOT NULL,
-    date_deleted BIGINT NOT NULL,
-    PRIMARY KEY (principal_id, structure_id)
+    PRINCIPAL_ID VARCHAR(36) NOT NULL,
+    STRUCTURE_ID VARCHAR(36) NOT NULL,
+    DATE_DELETED BIGINT NOT NULL,
+    PRIMARY KEY (PRINCIPAL_ID, STRUCTURE_ID)
 );
 
-CREATE UNIQUE INDEX pk_subscription ON cms_subscription (principal_id, structure_id);
+CREATE UNIQUE INDEX PK_SUBSCRIPTION ON CMS_SUBSCRIPTION (PRINCIPAL_ID, STRUCTURE_ID);
 
-CREATE INDEX cms_subscription_01_idx ON cms_subscription (principal_id);
+CREATE INDEX CMS_SUBSCRIPTION_01_IDX ON CMS_SUBSCRIPTION (PRINCIPAL_ID);
 
-CREATE INDEX cms_subscription_02_idx ON cms_subscription (structure_id);
+CREATE INDEX CMS_SUBSCRIPTION_02_IDX ON CMS_SUBSCRIPTION (STRUCTURE_ID);
 
-CREATE INDEX cms_subscription_03_idx ON cms_subscription (date_deleted);
+CREATE INDEX CMS_SUBSCRIPTION_03_IDX ON CMS_SUBSCRIPTION (DATE_DELETED);
 
-CREATE INDEX cms_subscription_04_idx ON cms_subscription (principal_id, structure_id, date_deleted);
+CREATE INDEX CMS_SUBSCRIPTION_04_IDX ON CMS_SUBSCRIPTION (PRINCIPAL_ID, STRUCTURE_ID, DATE_DELETED);
 
 /* ----------------------------------------------------------------------- */
 /* cms_subscription_visit */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_subscription_visit
+CREATE TABLE CMS_SUBSCRIPTION_VISIT
 (
-    user_id VARCHAR(36) NOT NULL,
-    visit_date BIGINT NOT NULL,
-    structure_id VARCHAR(36),
-    PRIMARY KEY (user_id, visit_date)
+    USER_ID VARCHAR(36) NOT NULL,
+    VISIT_DATE BIGINT NOT NULL,
+    STRUCTURE_ID VARCHAR(36),
+    PRIMARY KEY (USER_ID, VISIT_DATE)
 );
 
-CREATE UNIQUE INDEX pk_visit ON cms_subscription_visit (user_id, visit_date);
+CREATE UNIQUE INDEX PK_VISIT ON CMS_SUBSCRIPTION_VISIT (USER_ID, VISIT_DATE);
 
-CREATE INDEX cms_subscription_visit_01_idx ON cms_subscription_visit (user_id);
+CREATE INDEX CMS_SUBSCRIPTION_VISIT_01_IDX ON CMS_SUBSCRIPTION_VISIT (USER_ID);
 
-CREATE INDEX cms_subscription_visit_02_idx ON cms_subscription_visit (visit_date);
+CREATE INDEX CMS_SUBSCRIPTION_VISIT_02_IDX ON CMS_SUBSCRIPTION_VISIT (VISIT_DATE);
 
-CREATE INDEX cms_subscription_visit_03_idx ON cms_subscription_visit (structure_id);
+CREATE INDEX CMS_SUBSCRIPTION_VISIT_03_IDX ON CMS_SUBSCRIPTION_VISIT (STRUCTURE_ID);
 
-CREATE INDEX cms_subscription_visit_04_idx ON cms_subscription_visit (user_id, structure_id);
+CREATE INDEX CMS_SUBSCRIPTION_VISIT_04_IDX ON CMS_SUBSCRIPTION_VISIT (USER_ID, STRUCTURE_ID);
 
-CREATE INDEX cms_subscription_visit_05_idx ON cms_subscription_visit (user_id, visit_date);
+CREATE INDEX CMS_SUBSCRIPTION_VISIT_05_IDX ON CMS_SUBSCRIPTION_VISIT (USER_ID, VISIT_DATE);
 
-CREATE INDEX cms_subscription_visit_06_idx ON cms_subscription_visit (user_id, structure_id, visit_date);
+CREATE INDEX CMS_SUBSCRIPTION_VISIT_06_IDX ON CMS_SUBSCRIPTION_VISIT (USER_ID, STRUCTURE_ID, VISIT_DATE);
 
 /* ----------------------------------------------------------------------- */
 /* cms_userdata */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_userdata
+CREATE TABLE CMS_USERDATA
 (
-    user_id VARCHAR(36) NOT NULL,
-    data_key VARCHAR(255) NOT NULL,
-    data_value BLOB,
-    data_type VARCHAR(128) NOT NULL,
-    PRIMARY KEY (user_id, data_key)
+    USER_ID VARCHAR(36) NOT NULL,
+    DATA_KEY VARCHAR(255) NOT NULL,
+    DATA_VALUE BLOB,
+    DATA_TYPE VARCHAR(128) NOT NULL,
+    PRIMARY KEY (USER_ID, DATA_KEY)
 );
 
-CREATE UNIQUE INDEX pk_userdata ON cms_userdata (user_id, data_key);
+CREATE UNIQUE INDEX PK_USERDATA ON CMS_USERDATA (USER_ID, DATA_KEY);
 
-CREATE INDEX cms_userdata_01_idx ON cms_userdata (user_id);
+CREATE INDEX CMS_USERDATA_01_IDX ON CMS_USERDATA (USER_ID);
 
-CREATE INDEX cms_userdata_02_idx ON cms_userdata (data_key);
+CREATE INDEX CMS_USERDATA_02_IDX ON CMS_USERDATA (DATA_KEY);
 
 /* ----------------------------------------------------------------------- */
 /* cms_users */
 /* ----------------------------------------------------------------------- */
 
-CREATE TABLE cms_users
+CREATE TABLE CMS_USERS
 (
-    user_id VARCHAR(36) NOT NULL,
-    user_name VARCHAR(128) NOT NULL,
-    user_password VARCHAR(64) NOT NULL,
-    user_firstname VARCHAR(128) NOT NULL,
-    user_lastname VARCHAR(128) NOT NULL,
-    user_email VARCHAR(128) NOT NULL,
-    user_lastlogin BIGINT NOT NULL,
-    user_flags INTEGER NOT NULL,
-    user_ou VARCHAR(128) NOT NULL,
-    user_datecreated BIGINT NOT NULL,
-    PRIMARY KEY (user_id)
+    USER_ID VARCHAR(36) NOT NULL,
+    USER_NAME VARCHAR(128) NOT NULL,
+    USER_PASSWORD VARCHAR(64) NOT NULL,
+    USER_FIRSTNAME VARCHAR(128) NOT NULL,
+    USER_LASTNAME VARCHAR(128) NOT NULL,
+    USER_EMAIL VARCHAR(128) NOT NULL,
+    USER_LASTLOGIN BIGINT NOT NULL,
+    USER_FLAGS INTEGER NOT NULL,
+    USER_OU VARCHAR(128) NOT NULL,
+    USER_DATECREATED BIGINT NOT NULL,
+    PRIMARY KEY (USER_ID)
 );
 
-CREATE UNIQUE INDEX pk_users ON cms_users (user_id);
+CREATE UNIQUE INDEX PK_USERS ON CMS_USERS (USER_ID);
 
-CREATE UNIQUE INDEX uk_users ON cms_users (user_name, user_ou);
+CREATE UNIQUE INDEX UK_USERS ON CMS_USERS (USER_NAME, USER_OU);
 
-CREATE INDEX cms_users_01_idx ON cms_users (user_name);
+CREATE INDEX CMS_USERS_01_IDX ON CMS_USERS (USER_NAME);
 
-CREATE INDEX cms_users_02_idx ON cms_users (user_ou);
+CREATE INDEX CMS_USERS_02_IDX ON CMS_USERS (USER_OU);
 
 /* ----------------------------------------------------------------------- */ 
 /*-- cms_offline_urlname_mappings                                          */ 
 /*-- -----------------------------------------------------------------------*/ 
 
-CREATE TABLE cms_offline_urlname_mappings
+CREATE TABLE CMS_OFFLINE_URLNAME_MAPPINGS
 (
-	name VARCHAR(128) NOT NULL,
-	structure_id VARCHAR(36) NOT NULL,
-	state INTEGER NOT NULL,
-	date_changed BIGINT NOT NULL,
-	locale VARCHAR(10)
+	NAME VARCHAR(128) NOT NULL,
+	STRUCTURE_ID VARCHAR(36) NOT NULL,
+	STATE INTEGER NOT NULL,
+	DATE_CHANGED BIGINT NOT NULL,
+	LOCALE VARCHAR(10)
 );
 
-CREATE INDEX cms_offline_mappings_01_idx ON cms_offline_urlname_mappings (name);
-CREATE INDEX cms_offline_mappings_02_idx ON cms_offline_urlname_mappings (structure_id);
+CREATE INDEX CMS_OFFLINE_MAPPINGS_01_IDX ON CMS_OFFLINE_URLNAME_MAPPINGS (NAME);
+CREATE INDEX CMS_OFFLINE_MAPPINGS_02_IDX ON CMS_OFFLINE_URLNAME_MAPPINGS (STRUCTURE_ID);
 
 /* -----------------------------------------------------------------------*/ 
 /* cms_online_urlname_mappings */
 /* -----------------------------------------------------------------------*/ 
 
-CREATE TABLE cms_online_urlname_mappings
+CREATE TABLE CMS_ONLINE_URLNAME_MAPPINGS
 (
-	name VARCHAR(128) NOT NULL,
-	structure_id VARCHAR(36) NOT NULL,
-	state INTEGER NOT NULL,
-	date_changed BIGINT NOT NULL,
-	locale VARCHAR(10)
+	NAME VARCHAR(128) NOT NULL,
+	STRUCTURE_ID VARCHAR(36) NOT NULL,
+	STATE INTEGER NOT NULL,
+	DATE_CHANGED BIGINT NOT NULL,
+	LOCALE VARCHAR(10)
 );
 
-CREATE INDEX cms_online_mappings_01_idx ON cms_online_urlname_mappings (name);
-CREATE INDEX cms_online_mappings_02_idx ON cms_online_urlname_mappings (structure_id);
-
-
-
-
+CREATE INDEX CMS_ONLINE_MAPPINGS_01_IDX ON CMS_ONLINE_URLNAME_MAPPINGS (NAME);
+CREATE INDEX CMS_ONLINE_MAPPINGS_02_IDX ON CMS_ONLINE_URLNAME_MAPPINGS (STRUCTURE_ID);

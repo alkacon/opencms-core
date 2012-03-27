@@ -42,7 +42,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_publish_history")
+@Table(name = "CMS_PUBLISH_HISTORY")
 @IdClass(CmsDAOPublishHistory.CmsDAOPublishHistoryPK.class)
 public class CmsDAOPublishHistory {
 
@@ -290,42 +290,42 @@ public class CmsDAOPublishHistory {
 
     /** The history id. */
     @Id
-    @Column(name = "history_id", length = 36)
+    @Column(name = "HISTORY_ID", length = 36)
     private String m_historyId;
 
     /** The publish tag. */
     @Id
-    @Column(name = "publish_tag")
+    @Column(name = "PUBLISH_TAG")
     private int m_publishTag;
 
     /** The resource id. */
     @Basic
-    @Column(name = "resource_id", nullable = false, length = 36)
+    @Column(name = "RESOURCE_ID", nullable = false, length = 36)
     private String m_resourceId;
 
     /** The resource path. */
     @Id
-    @Column(name = "resource_path", length = 1024)
+    @Column(name = "RESOURCE_PATH", length = 1024)
     private String m_resourcePath;
 
     /** The resource state. */
     @Basic
-    @Column(name = "resource_state")
+    @Column(name = "RESOURCE_STATE")
     private int m_resourceState;
 
     /** The resource type. */
     @Basic
-    @Column(name = "resource_type")
+    @Column(name = "RESOURCE_TYPE")
     private int m_resourceType;
 
     /** The sibling count. */
     @Basic
-    @Column(name = "sibling_count")
+    @Column(name = "SIBLING_COUNT")
     private int m_siblingCount;
 
     /** The structure id. */
     @Id
-    @Column(name = "structure_id", length = 36)
+    @Column(name = "STRUCTURE_ID", length = 36)
     private String m_structureId;
 
     /**
