@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<editor>
+	<label>TinyMCE</label>
+	<widgeteditor>org.opencms.editors.tinymce.CmsTinyMCEWidget</widgeteditor>
+	<resourcetypes>
+		<type>
+			<name>xmlpage</name>
+			<ranking>400</ranking>
+		</type>
+	</resourcetypes>
+	<useragents>
+		<agent>^Mozilla/[45]\.0 \(compatible; MSIE .*\)$</agent>
+		<agent>^Mozilla/5\.0 \(.*\) Gecko/20\d* .*$</agent>
+		<agent>^Mozilla/5\.0 \(.*\).*Chrome.*$</agent>
+		<agent>^Mozilla/5\.0 \(.*\).* Version/[34].* Safari.*$</agent>
+	</useragents>
+</editor>

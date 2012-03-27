@@ -55,8 +55,8 @@ gallery.table=true
 gallery.advanced=true
 
 # enhanced gallery flags
-gallery.enhancedoptions=true
-gallery.usethickbox=true
+gallery.enhancedoptions=false
+gallery.usethickbox=false
 
 # link & anchor options
 option.links=true
@@ -77,3 +77,31 @@ option.flash=false
 option.spellcheck=false
 option.print=true
 option.help=true
+
+# advanced buttons (may not work with all editors)
+button.abbr=false
+button.absolute=false
+button.acronym=false
+button.advhr=true
+button.attribs=false
+button.blockquote=true
+button.cite=false
+button.del=false
+button.image=true
+button.ins=false
+button.insertdate=false
+button.insertlayer=false
+button.inserttime=false
+button.ltr=false
+button.media=false
+button.movebackward=false
+button.moveforward=false
+button.newdocument=false
+button.nonbreaking=false
+button.pagebreak=false
+button.removeformat=true
+button.rtl=false
+button.styleprops=true
+button.template=false
+button.visualaid=true
+button.visualchars=false

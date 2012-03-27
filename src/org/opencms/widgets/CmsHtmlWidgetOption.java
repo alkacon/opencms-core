@@ -72,6 +72,8 @@ import java.util.Map;
  * <li><code>source</code>: shows the source code toggle button(s)</li>
  * <li><code>stylesxml:/vfs/path/to/stylefile.xml</code>: the absolute path in the OpenCms VFS to the user defined
  *     styles that should be displayed in the style selector (availability depends on the integrated editor)</li>
+ * <li><code>stylesformat:/vfs/path/to/stylefile.xml</code>: the absolute path in the OpenCms VFS to the user defined
+ *     styles format that should be displayed in the style selector (availability depends on the integrated editor)</li>
  * <li><code>table</code>: the table dialog button (availability depends on the integrated editor)</li>
  * </ul>
  * Some things like the button bar items should be defined in the global widget configuration of the file <code>opencms-vfs.xml</code>.<p>
@@ -90,7 +92,11 @@ public class CmsHtmlWidgetOption {
     public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;selectall;removeformat;-;cut;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
         + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
         + "[;source;-;formatselect;style;editorlink;link;anchor;unlink;];"
-        + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;]";
+        + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;];"
+        // additional buttons from TinyMCE
+        + "[;abbr;absolute;acronym;advhr;attribs;backcolor;blockquote;cite;cleanup;del;emotions;fontselect;fontsizeselect;forecolor;hr"
+        + ";ins;insertdate;insertlayer;inserttime;ltr;media;movebackward;moveforward;newdocument;nonbreaking;pagebreak;pastetext;pasteword;rtl"
+        + ";styleprops;template;visualaid;visualchars;];";
 
     /** The default button bar configuration as List. */
     public static final List<String> BUTTONBAR_DEFAULT_LIST = CmsStringUtil.splitAsList(BUTTONBAR_DEFAULT, ';');
@@ -158,11 +164,113 @@ public class CmsHtmlWidgetOption {
     /** Option for the styles XML VFS path to use in the widget area. */
     public static final String OPTION_STYLES = "stylesxml:";
 
+    /** Option for the styles format VFS path to use in the widget area. */
+    public static final String OPTION_STYLES_FORMAT = "stylesformat:";
+    
     /** Option for the "table" dialog. */
     public static final String OPTION_TABLE = "table";
 
     /** Option for the "unlink" button. */
     public static final String OPTION_UNLINK = "unlink";
+    
+    /** Option for the "abbreviation" button. */
+    public static final String OPTION_ABBR = "abbr";
+    
+    /** Option for the "absolute" button. */
+    public static final String OPTION_ABSOLUTE = "absolute";
+    
+    /** Option for the "acronym" button. */
+    public static final String OPTION_ACRONYM = "acronym";
+    
+    /** Option for the "advanced hr" button. */
+    public static final String OPTION_ADVHR = "advhr";
+    
+    /** Option for the "insert/edit attributes" button. */
+    public static final String OPTION_ATTRIBS = "attribs";
+    
+    /** Option for the "background color" button. */
+    public static final String OPTION_BACKCOLOR = "backcolor";
+    
+    /** Option for the "block quote" button. */
+    public static final String OPTION_BLOCKQUOTE = "blockquote";
+    
+    /** Option for the "citation" button. */
+    public static final String OPTION_CITE = "cite";
+    
+    /** Option for the "clean up messy code" button. */
+    public static final String OPTION_CLEANUP = "cleanup";
+    
+    /** Option for the "mark text as deletion" button. */
+    public static final String OPTION_DEL = "del";
+    
+    /** Option for the "emotions" button. */
+    public static final String OPTION_EMOTIONS = "emotions";
+    
+    /** Option for the "font select" button. */
+    public static final String OPTION_FONTSELECT = "fontselect";
+    
+    /** Option for the "font size" button. */
+    public static final String OPTION_FONTSIZESELECT = "fontsizeselect";
+    
+    /** Option for the "text color" button. */
+    public static final String OPTION_FORECOLOR = "forecolor";
+    
+    /** Option for the "hr" button. */
+    public static final String OPTION_HR = "hr";
+    
+    /** Option for the "mark text as insertion" button. */
+    public static final String OPTION_INS = "ins";
+    
+    /** Option for the "insert date" button. */
+    public static final String OPTION_INSERTDATE = "insertdate";
+    
+    /** Option for the "insert layer" button. */
+    public static final String OPTION_INSERTLAYER = "insertlayer";
+    
+    /** Option for the "insert time" button. */
+    public static final String OPTION_INSERTTIME = "inserttime";
+    
+    /** Option for the "left to right text" button. */
+    public static final String OPTION_LTR = "ltr";
+    
+    /** Option for the "insert media (flash, video, audio)" button. */
+    public static final String OPTION_MEDIA = "media";
+    
+    /** Option for the "move backward (layer context)" button. */
+    public static final String OPTION_MOVEBACKWARD = "movebackward";
+    
+    /** Option for the "move forward (layer context)" button. */
+    public static final String OPTION_MOVEFORWARD = "moveforward";
+    
+    /** Option for the "new document (remove existing content)" button. */
+    public static final String OPTION_NEWDOCUMENT = "newdocument";
+    
+    /** Option for the "non breaking white space" button. */
+    public static final String OPTION_NONBREAKING = "nonbreaking";
+    
+    /** Option for the "page break" button. */
+    public static final String OPTION_PAGEBREAK = "pagebreak";
+    
+    /** Option for the "paste text" button. */
+    public static final String OPTION_PASTETEXT = "pastetext";
+    
+    /** Option for the "paste from word" button. */
+    public static final String OPTION_PASTEWORD = "pasteword";
+    
+    /** Option for the "right to left text" button. */
+    public static final String OPTION_RTL = "rtl";
+    
+    /** Option for the "edit CSS style" button. */
+    public static final String OPTION_STYLEPROPS = "styleprops";
+    
+    /** Option for the "insert predefined template content" button. */
+    public static final String OPTION_TEMPLATE = "template";
+    
+    /** Option for the "show/hide guidelines/invisible elements" button. */
+    public static final String OPTION_VISUALAID = "visualaid";
+    
+    /** Option for the "show/hide visual control characters" button. */
+    public static final String OPTION_VISUALCHARS = "visualchars";
 
     /** The optional buttons that can be additionally added to the button bar. */
     public static final String[] OPTIONAL_BUTTONS = {
@@ -178,6 +286,39 @@ public class CmsHtmlWidgetOption {
         OPTION_STYLE,
         OPTION_TABLE,
         OPTION_UNLINK,
+        OPTION_ABBR,
+        OPTION_ABSOLUTE,
+        OPTION_ACRONYM,
+        OPTION_ADVHR,
+        OPTION_ATTRIBS,
+        OPTION_BACKCOLOR,
+        OPTION_BLOCKQUOTE,
+        OPTION_CITE,
+        OPTION_CLEANUP,
+        OPTION_DEL,
+        OPTION_EMOTIONS,
+        OPTION_FONTSELECT,
+        OPTION_FONTSIZESELECT,
+        OPTION_FORECOLOR,
+        OPTION_HR,
+        OPTION_INS,
+        OPTION_INSERTDATE,
+        OPTION_INSERTLAYER,
+        OPTION_INSERTTIME,
+        OPTION_LTR,
+        OPTION_MEDIA,
+        OPTION_MOVEBACKWARD,
+        OPTION_MOVEFORWARD,
+        OPTION_NEWDOCUMENT,
+        OPTION_NONBREAKING,
+        OPTION_PAGEBREAK,
+        OPTION_PASTETEXT,
+        OPTION_PASTEWORD,
+        OPTION_RTL,
+        OPTION_STYLEPROPS,
+        OPTION_TEMPLATE,
+        OPTION_VISUALAID,
+        OPTION_VISUALCHARS,
         CmsAjaxImageGallery.GALLERYTYPE_NAME,
         CmsAjaxDownloadGallery.GALLERYTYPE_NAME,
         CmsAjaxHtmlGallery.GALLERYTYPE_NAME,
@@ -201,6 +342,7 @@ public class CmsHtmlWidgetOption {
     private boolean m_fullPage;
     private List<String> m_hiddenButtons;
     private String m_stylesXmlPath;
+    private String m_stylesFormatPath;
 
     /**
      * Creates a new empty HTML widget object object.<p>
@@ -523,7 +665,7 @@ public class CmsHtmlWidgetOption {
                             }
                         } else if (OPTION_STYLE.equals(barItem)) {
                             // special handling of style select box to be shown only if a path to the styles XML had been defined
-                            if (!showStylesXml()) {
+                            if ((!showStylesXml()) && (!showStylesFormat())) {
                                 // skip if no path has been defined
                                 continue;
                             }
@@ -604,6 +746,16 @@ public class CmsHtmlWidgetOption {
         return m_stylesXmlPath;
     }
 
+    /**
+     * Returns the styles format VFS path to use in the widget area.<p>
+     *
+     * @return the styles XML format path to use in the widget area
+     */
+    public String getStylesFormatPath() {
+
+        return m_stylesFormatPath;
+    }
+    
     /**
      * Initializes the widget options from the given configuration String.<p>
      * 
@@ -757,6 +909,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Sets the styles format VFS path to use in the widget area.<p>
+     *
+     * @param stylesFormatPath the styles XML VFS path to use in the widget area
+     */
+    public void setStylesFormatPath(String stylesFormatPath) {
+
+        m_stylesFormatPath = stylesFormatPath;
+    }
+    
+    /**
      * Returns true if the anchor dialog button should be available.<p>
      * 
      * @return if the anchor dialog button should be available
@@ -827,6 +989,16 @@ public class CmsHtmlWidgetOption {
         return CmsStringUtil.isNotEmpty(getStylesXmlPath());
     }
 
+    /**
+     * Returns true if the styles format selector should be available.<p>
+     *
+     * @return if the styles format selector should be available
+     */
+    public boolean showStylesFormat() {
+
+        return CmsStringUtil.isNotEmpty(getStylesFormatPath());
+    }
+    
     /**
      * Returns true if the table dialog button should be available.<p>
      *
@@ -913,6 +1085,10 @@ public class CmsHtmlWidgetOption {
                     // the editor styles XML path
                     option = option.substring(OPTION_STYLES.length());
                     setStylesXmlPath(option);
+                } else if (option.startsWith(OPTION_STYLES_FORMAT)) {
+                    // the editor styles format path
+                    option = option.substring(OPTION_STYLES_FORMAT.length());
+                    setStylesFormatPath(option);
                 } else if (option.startsWith(OPTION_BUTTONBAR)) {
                     // the button bar definition string
                     option = option.substring(OPTION_BUTTONBAR.length());

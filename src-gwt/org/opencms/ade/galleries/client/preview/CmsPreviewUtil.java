@@ -267,7 +267,6 @@ public final class CmsPreviewUtil {
     public static native void setResourcePath(String path) /*-{
         //the id of the input field in the xml content
         var fieldId = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_FIELD_ID];
-
         if (fieldId != null && fieldId != "") {
             var inputField = $wnd.parent.document.getElementById(fieldId);
             inputField.setAttribute('value', path);
@@ -341,7 +340,18 @@ public final class CmsPreviewUtil {
             } catch (e) {
             }
         }
-        $wnd.parent.cmsCloseDialog(fieldId);
+        $wnd.setTimeout(function() {
+            $wnd.parent.cmsCloseDialog(fieldId);
+        }, 10);
+    }-*/;
+
+    /**
+     * Returns if the editor plugin should show a select button.<p>
+     * 
+     * @return <code>true</code> if the editor plugin should show a select button
+     */
+    public static native boolean shouldShowSelectButton()/*-{
+        return "true" == $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_SHOW_SELECT];
     }-*/;
 
     /**

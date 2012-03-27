@@ -29,6 +29,13 @@
 		params.append(CmsTree.PARAM_SHOWSITESELECTOR);
 		params.append("=true");
 	}
+	String integrator = request.getParameter(CmsTree.PARAM_INTEGRATOR);
+	if (integrator != null) {
+	    params.append("&");
+	    params.append(CmsTree.PARAM_INTEGRATOR);
+	    params.append("=");
+	    params.append(integrator);
+	}
 	
 	String frameRows = "*,0";
 	String frameSiteSelector = "";
@@ -44,6 +51,9 @@
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <title><%= wp.key(org.opencms.workplace.explorer.Messages.GUI_TITLE_EXPLORERTREE_0)%></title>
 <script Language="Javascript" type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/tree.js"></script>
+<% if (request.getParameter("integrator") != null)  { %>
+<script language="javascript" type="text/javascript" src="${param.integrator}"></script>
+<% } %>
 <script type="text/javascript"> 
 <% 
 

@@ -1,0 +1,19 @@
+
+/* These rules are used for laying out TinyMCE's button toolbar rows next to each other, not as rows. */
+
+.mceIframeContainer, .mceIframeContainer iframe, #mce_fullscreen_tbl , #mce_fullscreen_container {
+	height: 100% !important; 
+}
+
+/* Use the cmsTinyMCE class here because we need to turn the float off/on dynamically to fix a layout problem in Chrome. */
+.cmsTinyMCE .mceToolbar table, #mce_fullscreen_tbl table.mceToolbar {
+   float: left;
+}
+                    
+.mceToolbar select {
+       width: auto !important;
+}
+                    
+.mceToolbar option {
+  float: none; 
+}
