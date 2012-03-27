@@ -50,6 +50,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITOR_TITLE_1 = "GUI_EDITOR_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NAVIGATION_LEVEL_SUBTITLE_0 = "GUI_NAVIGATION_LEVEL_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NAVIGATION_LEVEL_TITLE_0 = "GUI_NAVIGATION_LEVEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_REDIRECT_TARGET_LABEL_0 = "GUI_REDIRECT_TARGET_LABEL_0";
 
     /** Message constant for key in the resource bundle. */

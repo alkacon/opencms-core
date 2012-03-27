@@ -104,6 +104,13 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
+    @Source("images/icons/big/filetypeNavlevel.png")
+    ImageResource fileTypeNavLevel();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
     @Source("images/icons/big/gotoBigIconDeactivated.png")
     ImageResource gotoBigIconDeactivated();
 

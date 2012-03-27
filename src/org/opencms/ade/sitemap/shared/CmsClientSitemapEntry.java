@@ -67,6 +67,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
         /** An entry of type leaf doesn't have any children. */
         leaf,
 
+        /** A folder without default file, linking to it's first child entry. */
+        navigationLevel,
+
         /** A redirect entry. */
         redirect,
 
@@ -473,7 +476,17 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public boolean isFolderType() {
 
-        return EntryType.folder == m_entryType;
+        return (EntryType.folder == m_entryType) || (EntryType.navigationLevel == m_entryType);
+    }
+
+    /**
+     * Returns if this entry is of type folder.<p>
+     * 
+     * @return <code>true</code> if this entry is of type folder
+     */
+    public boolean isNavigationLevelType() {
+
+        return EntryType.navigationLevel == m_entryType;
     }
 
     /**

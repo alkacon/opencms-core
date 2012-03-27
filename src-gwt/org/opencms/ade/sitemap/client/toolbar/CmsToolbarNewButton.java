@@ -122,6 +122,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
         m_functionList = new CmsList<I_CmsListItem>();
         m_functionList.add(makeRedirectItem());
+        m_functionList.add(makeNavigationLevelItem());
         for (CmsNewResourceInfo typeInfo : controller.getData().getResourceTypeInfos()) {
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
                 CmsCreatableListItem item = makeDetailPageItem(typeInfo);
@@ -209,7 +210,6 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         }
         widget.setIcon(CmsIconUtil.getResourceIconClasses(iconTypeName, false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.detailpage);
-        listItem.addTag(TAG_SPECIAL);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;
     }
@@ -262,6 +262,24 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
      * 
      * @return the new list item 
      */
+    private CmsCreatableListItem makeNavigationLevelItem() {
+
+        CmsNewResourceInfo typeInfo = getController().getData().getNewNavigationLevelElementInfo();
+        CmsListInfoBean info = new CmsListInfoBean();
+        info.setTitle(typeInfo.getTitle());
+        info.setSubTitle(typeInfo.getSubTitle());
+        CmsListItemWidget widget = new CmsListItemWidget(info);
+        widget.setIcon("cms_type_icon " + I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navigationLevelIcon());
+        CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
+        listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
+        return listItem;
+    }
+
+    /**
+     * Creates a list item representing a redirect.<p>
+     * 
+     * @return the new list item 
+     */
     private CmsCreatableListItem makeRedirectItem() {
 
         CmsNewResourceInfo typeInfo = getController().getData().getNewRedirectElementInfo();
@@ -271,9 +289,6 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         CmsListItemWidget widget = new CmsListItemWidget(info);
         widget.setIcon(CmsIconUtil.getResourceIconClasses("htmlredirect", false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.redirect);
-        listItem.addTag(TAG_REDIRECT);
-        listItem.addTag(TAG_SPECIAL);
-
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;
     }

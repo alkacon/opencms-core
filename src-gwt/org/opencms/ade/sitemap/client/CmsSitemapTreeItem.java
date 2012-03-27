@@ -340,7 +340,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     @Override
     public boolean isDropEnabled() {
 
-        return m_entry.isInNavigation() && super.isDropEnabled();
+        return m_entry.isInNavigation() && m_entry.isFolderType() && super.isDropEnabled();
     }
 
     /**
