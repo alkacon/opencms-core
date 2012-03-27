@@ -25,15 +25,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsFieldSet;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
+import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;

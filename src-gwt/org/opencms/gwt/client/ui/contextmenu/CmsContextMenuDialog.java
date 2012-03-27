@@ -25,12 +25,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
+import org.opencms.gwt.client.ui.CmsIFrame;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -188,9 +187,9 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
      */
     private native void exportClosingMethod() /*-{
         var self = this;
-        $wnd[@org.opencms.gwt.client.ui.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
+        $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
                 reload) {
-            self.@org.opencms.gwt.client.ui.CmsContextMenuDialog::onClose(Z)(reload);
+            self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
         };
     }-*/;
 
@@ -198,7 +197,7 @@ public class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsCo
      * Generates the form to post to the dialog frame.<p>
      * 
      * @param structureId the structure id of the current content
-     * @param the context menu entry bean
+     * @param menuEntryBean the context menu entry bean
      * 
      * @return the form element
      */

@@ -576,11 +576,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * Returns a bean that contains the infos for the {@link org.opencms.gwt.client.ui.CmsAvailabilityDialog}.<p>
+     * Returns a bean that contains the infos for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}.<p>
      * 
      * @param res the resource to get the availability infos for
      * 
-     * @return a bean for the {@link org.opencms.gwt.client.ui.CmsAvailabilityDialog}
+     * @return a bean for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}
      * 
      * @throws CmsRpcException if something goes wrong
      */
