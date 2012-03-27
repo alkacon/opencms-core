@@ -216,7 +216,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      *
      * @return The full path to the JSP repository
      */
-    public static String getJspRepository() {
+    public String getJspRepository() {
 
         return m_jspRepository;
     }

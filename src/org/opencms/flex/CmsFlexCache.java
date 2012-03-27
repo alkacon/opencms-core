@@ -31,6 +31,7 @@ import org.opencms.cache.CmsLruCache;
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.util.I_CmsJspDeviceSelector;
+import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -853,10 +854,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
 
         File d;
-        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + REPOSITORY_ONLINE + File.separator);
+        CmsJspLoader cmsJspLoader = (CmsJspLoader)OpenCms.getResourceManager().getLoader(
+            CmsJspLoader.RESOURCE_LOADER_ID);
+        d = new File(cmsJspLoader.getJspRepository() + REPOSITORY_ONLINE + File.separator);
         CmsFileUtil.purgeDirectory(d);
 
-        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + REPOSITORY_OFFLINE + File.separator);
+        d = new File(cmsJspLoader.getJspRepository() + REPOSITORY_OFFLINE + File.separator);
         CmsFileUtil.purgeDirectory(d);
 
         clear();
