@@ -40,60 +40,60 @@ import javax.persistence.UniqueConstraint;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_projects", uniqueConstraints = @UniqueConstraint(columnNames = {
-    "project_ou",
-    "project_name",
-    "date_created"}))
+@Table(name = "CMS_PROJECTS", uniqueConstraints = @UniqueConstraint(columnNames = {
+    "PROJECT_OU",
+    "PROJECT_NAME",
+    "DATE_CREATED"}))
 public class CmsDAOProjects {
 
     /** The date created. */
     @Basic
-    @Column(name = "date_created")
+    @Column(name = "DATE_CREATED")
     private long m_dateCreated;
 
     /** The group id. */
     @Basic
-    @Column(name = "group_id", nullable = false, length = 36)
+    @Column(name = "GROUP_ID", nullable = false, length = 36)
     private String m_groupId;
 
     /** The manager group id. */
     @Basic
-    @Column(name = "managergroup_id", nullable = false, length = 36)
+    @Column(name = "MANAGERGROUP_ID", nullable = false, length = 36)
     private String m_managerGroupId;
 
     /** the description. */
     @Basic
-    @Column(name = "project_description", nullable = false)
+    @Column(name = "PROJECT_DESCRIPTION", nullable = false)
     private String m_projectDescription;
 
     /** The flags. */
     @Basic
-    @Column(name = "project_flags")
+    @Column(name = "PROJECT_FLAGS")
     private int m_projectFlags;
 
     /** The id. */
     @Id
-    @Column(name = "project_id", length = 36)
+    @Column(name = "PROJECT_ID", length = 36)
     private String m_projectId;
 
     /** The name. */
     @Basic
-    @Column(name = "project_name", nullable = false, length = 200)
+    @Column(name = "PROJECT_NAME", nullable = false, length = 200)
     private String m_projectName;
 
     /** The ou. */
     @Basic
-    @Column(name = "project_ou", nullable = false, length = 128)
+    @Column(name = "PROJECT_OU", nullable = false, length = 128)
     private String m_projectOu;
 
     /** The type. */
     @Basic
-    @Column(name = "project_type")
+    @Column(name = "PROJECT_TYPE")
     private int m_projectType;
 
     /** The user id. */
     @Basic
-    @Column(name = "user_id", nullable = false, length = 36)
+    @Column(name = "USER_ID", nullable = false, length = 36)
     private String m_userId;
 
     /**

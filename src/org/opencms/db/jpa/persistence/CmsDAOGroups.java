@@ -40,37 +40,37 @@ import javax.persistence.UniqueConstraint;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_groups", uniqueConstraints = @UniqueConstraint(columnNames = {"group_name", "group_ou"}))
+@Table(name = "CMS_GROUPS", uniqueConstraints = @UniqueConstraint(columnNames = {"GROUP_NAME", "GROUP_OU"}))
 public class CmsDAOGroups {
 
     /** The description of this group. */
     @Basic
-    @Column(name = "group_description", nullable = false)
+    @Column(name = "GROUP_DESCRIPTION", nullable = false)
     private String m_groupDescription;
 
     /** The flags of this group. */
     @Basic
-    @Column(name = "group_flags")
+    @Column(name = "GROUP_FLAGS")
     private int m_groupFlags;
 
     /** The id of this group. */
     @Id
-    @Column(name = "group_id", length = 36)
+    @Column(name = "GROUP_ID", length = 36)
     private String m_groupId;
 
     /** The name of this group. */
     @Basic
-    @Column(name = "group_name", nullable = false, length = 128)
+    @Column(name = "GROUP_NAME", nullable = false, length = 128)
     private String m_groupName;
 
     /** The ou of this group. */
     @Basic
-    @Column(name = "group_ou", nullable = false, length = 128)
+    @Column(name = "GROUP_OU", nullable = false, length = 128)
     private String m_groupOu;
 
     /** The parent group id of this group. */
     @Basic
-    @Column(name = "parent_group_id", nullable = false, length = 36)
+    @Column(name = "PARENT_GROUP_ID", nullable = false, length = 36)
     private String m_parentGroupId;
 
     /**

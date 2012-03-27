@@ -42,7 +42,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_offline_accesscontrol")
+@Table(name = "CMS_OFFLINE_ACCESSCONTROL")
 @IdClass(CmsDAOOfflineAccessControl.CmsDAOOfflineAccessControlPK.class)
 public class CmsDAOOfflineAccessControl implements I_CmsDAOAccessControl {
 
@@ -232,27 +232,27 @@ public class CmsDAOOfflineAccessControl implements I_CmsDAOAccessControl {
 
     /** The access allowed. */
     @Basic
-    @Column(name = "access_allowed")
+    @Column(name = "ACCESS_ALLOWED")
     private int m_accessAllowed;
 
     /** The access denied. */
     @Basic
-    @Column(name = "access_denied")
+    @Column(name = "ACCESS_DENIED")
     private int m_accessDenied;
 
     /** The access flags. */
     @Basic
-    @Column(name = "access_flags")
+    @Column(name = "ACCESS_FLAGS")
     private int m_accessFlags;
 
     /** The principal id. */
     @Id
-    @Column(name = "principal_id", length = 36)
+    @Column(name = "PRINCIPAL_ID", length = 36)
     private String m_principalId;
 
     /** The resource id. */
     @Id
-    @Column(name = "resource_id", length = 36)
+    @Column(name = "RESOURCE_ID", length = 36)
     private String m_resourceId;
 
     /**

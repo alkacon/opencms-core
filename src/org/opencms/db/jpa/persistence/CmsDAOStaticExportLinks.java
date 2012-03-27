@@ -39,32 +39,32 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_staticexport_links")
+@Table(name = "CMS_STATICEXPORT_LINKS")
 public class CmsDAOStaticExportLinks {
 
     /** The link id. */
     @Id
-    @Column(name = "link_id", length = 36)
+    @Column(name = "LINK_ID", length = 36)
     private String m_linkId;
 
     /** The link parameter. */
     @Basic
-    @Column(name = "link_parameter", length = 1024)
+    @Column(name = "LINK_PARAMETER", length = 1024)
     private String m_linkParameter;
 
     /** The rfs path. */
     @Basic
-    @Column(name = "link_rfs_path", length = 1024)
+    @Column(name = "LINK_RFS_PATH", length = 1024)
     private String m_linkRfsPath;
 
     /** The link timestamp. */
     @Basic
-    @Column(name = "link_timestamp")
+    @Column(name = "LINK_TIMESTAMP")
     private long m_linkTimestamp;
 
     /** The link type. */
     @Basic
-    @Column(name = "link_type")
+    @Column(name = "LINK_TYPE")
     private int m_linkType;
 
     /**

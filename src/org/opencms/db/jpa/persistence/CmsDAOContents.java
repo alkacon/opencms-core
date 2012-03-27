@@ -43,7 +43,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_contents")
+@Table(name = "CMS_CONTENTS")
 @IdClass(CmsDAOContents.CmsDAOContentsPK.class)
 public class CmsDAOContents {
 
@@ -230,27 +230,27 @@ public class CmsDAOContents {
     /** The file contents column. */
     @Basic
     @Lob
-    @Column(name = "file_content", nullable = true)
+    @Column(name = "FILE_CONTENT", nullable = true)
     private byte[] m_fileContent;
 
     /** The online flag column. */
     @Basic
-    @Column(name = "online_flag")
+    @Column(name = "ONLINE_FLAG")
     private int m_onlineFlag;
 
     /** The publish tag from column. */
     @Id
-    @Column(name = "publish_tag_from")
+    @Column(name = "PUBLISH_TAG_FROM")
     private int m_publishTagFrom;
 
     /** The publish tag to column. */
     @Basic
-    @Column(name = "publish_tag_to")
+    @Column(name = "PUBLISH_TAG_TO")
     private int m_publishTagTo;
 
     /** The resource id column. */
     @Id
-    @Column(name = "resource_id", length = 36)
+    @Column(name = "RESOURCE_ID", length = 36)
     private String m_resourceId;
 
     /**

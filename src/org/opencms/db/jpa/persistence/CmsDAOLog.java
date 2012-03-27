@@ -42,7 +42,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_log")
+@Table(name = "CMS_LOG")
 @IdClass(org.opencms.db.jpa.persistence.CmsDAOLog.CmsDAOLogPK.class)
 public class CmsDAOLog {
 
@@ -255,27 +255,27 @@ public class CmsDAOLog {
 
     /** The log data. */
     @Basic
-    @Column(name = "log_data", length = 1024)
+    @Column(name = "LOG_DATA", length = 1024)
     private String m_logData;
 
     /** The log date. */
     @Id
-    @Column(name = "log_date")
+    @Column(name = "LOG_DATE")
     private long m_logDate;
 
     /** The log type. */
     @Id
-    @Column(name = "log_type")
+    @Column(name = "LOG_TYPE")
     private int m_logType;
 
     /** The structure id. */
     @Basic
-    @Column(name = "structure_id", length = 36)
+    @Column(name = "STRUCTURE_ID", length = 36)
     private String m_structureId;
 
     /** The user id. */
     @Id
-    @Column(name = "user_id", length = 36)
+    @Column(name = "USER_ID", length = 36)
     private String m_userId;
 
     /**

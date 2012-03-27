@@ -42,7 +42,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_groupusers")
+@Table(name = "CMS_GROUPUSERS")
 @IdClass(CmsDAOGroupUsers.CmsDAOGroupUsersPK.class)
 public class CmsDAOGroupUsers {
 
@@ -232,17 +232,17 @@ public class CmsDAOGroupUsers {
 
     /** The group id. */
     @Id
-    @Column(name = "group_id", length = 36)
+    @Column(name = "GROUP_ID", length = 36)
     private String m_groupId;
 
     /** The group users flag. */
     @Basic
-    @Column(name = "groupuser_flags")
+    @Column(name = "GROUPUSER_FLAGS")
     private int m_groupUserFlags;
 
     /** The user id. */
     @Id
-    @Column(name = "user_id", length = 36)
+    @Column(name = "USER_ID", length = 36)
     private String m_userId;
 
     /**

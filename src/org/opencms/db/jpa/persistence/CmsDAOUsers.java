@@ -40,57 +40,57 @@ import javax.persistence.UniqueConstraint;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_users", uniqueConstraints = @UniqueConstraint(columnNames = {"user_name", "user_ou"}))
+@Table(name = "CMS_USERS", uniqueConstraints = @UniqueConstraint(columnNames = {"USER_NAME", "USER_OU"}))
 public class CmsDAOUsers {
 
     /** The user date created. */
     @Basic
-    @Column(name = "user_datecreated")
+    @Column(name = "USER_DATECREATED")
     private long m_userDateCreated;
 
     /** The user email. */
     @Basic
-    @Column(name = "user_email", nullable = false, length = 128)
+    @Column(name = "USER_EMAIL", nullable = false, length = 128)
     private String m_userEmail;
 
     /** The user firstname. */
     @Basic
-    @Column(name = "user_firstname", nullable = false, length = 128)
+    @Column(name = "USER_FIRSTNAME", nullable = false, length = 128)
     private String m_userFirstName;
 
     /** The user flags. */
     @Basic
-    @Column(name = "user_flags")
+    @Column(name = "USER_FLAGS")
     private int m_userFlags;
 
     /** The user id. */
     @Id
-    @Column(name = "user_id", length = 36)
+    @Column(name = "USER_ID", length = 36)
     private String m_userId;
 
     /** The user last login date. */
     @Basic
-    @Column(name = "user_lastlogin")
+    @Column(name = "USER_LASTLOGIN")
     private long m_userLastLogin;
 
     /** The user lastname. */
     @Basic
-    @Column(name = "user_lastname", nullable = false, length = 128)
+    @Column(name = "USER_LASTNAME", nullable = false, length = 128)
     private String m_userLastName;
 
     /** The user login name. */
     @Basic
-    @Column(name = "user_name", nullable = false, length = 128)
+    @Column(name = "USER_NAME", nullable = false, length = 128)
     private String m_userName;
 
     /** The user ou. */
     @Basic
-    @Column(name = "user_ou", nullable = false, length = 128)
+    @Column(name = "USER_OU", nullable = false, length = 128)
     private String m_userOu;
 
     /** The user password. */
     @Basic
-    @Column(name = "user_password", nullable = false, length = 64)
+    @Column(name = "USER_PASSWORD", nullable = false, length = 64)
     private String m_userPassword;
 
     /**
