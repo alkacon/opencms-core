@@ -255,12 +255,9 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
         // process individual tab
         m_individualDisplay = preprocessFields(individualTabFields);
-        renderExtendedTab(individualTabFields, m_individualTab);
-
         // process shared tab
         if (m_showShared) {
             m_sharedDisplay = preprocessFields(sharedTabfields);
-            renderExtendedTab(sharedTabfields, m_sharedTab);
         }
     }
 

@@ -121,7 +121,10 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     public void buildFields() {
 
         internalBuildConfiguredFields();
-        //internalBuildOtherFields();
+        internalBuildFields(Mode.structure);
+        if (m_showResourceProperties) {
+            internalBuildFields(Mode.resource);
+        }
     }
 
     /**
