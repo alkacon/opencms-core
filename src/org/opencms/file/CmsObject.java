@@ -2196,14 +2196,16 @@ public final class CmsObject {
      * </ol>
      * 
      * @param folderResource the folder
+     * @param resourceFilter the resource filter
      * 
      * @return the default file for the given folder
      * 
      * @throws CmsSecurityException  if the user has no permissions to read the resulting file
      */
-    public CmsResource readDefaultFile(CmsResource folderResource) throws CmsSecurityException {
+    public CmsResource readDefaultFile(CmsResource folderResource, CmsResourceFilter resourceFilter)
+    throws CmsSecurityException {
 
-        return m_securityManager.readDefaultFile(m_context, folderResource);
+        return m_securityManager.readDefaultFile(m_context, folderResource, resourceFilter);
     }
 
     /**
@@ -2226,8 +2228,6 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the user has no permissions to read the resulting file
-     * 
-     * @see CmsSecurityManager#readDefaultFile(CmsRequestContext, CmsResource)
      */
     public CmsResource readDefaultFile(String resourceNameOrID) throws CmsException, CmsSecurityException {
 
@@ -2237,7 +2237,7 @@ public final class CmsObject {
         } catch (NumberFormatException e) {
             resource = readResource(resourceNameOrID);
         }
-        return m_securityManager.readDefaultFile(m_context, resource);
+        return m_securityManager.readDefaultFile(m_context, resource, CmsResourceFilter.DEFAULT);
     }
 
     /**

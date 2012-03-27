@@ -466,16 +466,6 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     }
 
     /**
-     * Returns if the navigation element represents a navigation level, linking to it's first sub-element.<p>
-     * 
-     * @return <code>true</code> if the navigation element represents a navigation level
-     */
-    public boolean isNavigationLevel() {
-
-        return CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER.equals(m_properties.get(CmsPropertyDefinition.PROPERTY_DEFAULT_FILE));
-    }
-
-    /**
      * Sets the value that will be returned by the {@link #getNavPosition()}
      * method of this class.<p>
      * 

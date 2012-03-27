@@ -623,6 +623,44 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Updates the given entry only, not evaluating any child changes.<p>
+     * 
+     * @param entryId the entry id
+     */
+    public void updateSingleEntry(final CmsUUID entryId) {
+
+        CmsRpcAction<CmsClientSitemapEntry> getChildrenAction = new CmsRpcAction<CmsClientSitemapEntry>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                getService().getChildren(getEntryPoint(), entryId, 0, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(CmsClientSitemapEntry result) {
+
+                CmsClientSitemapEntry target = getEntryById(entryId);
+                if (target == null) {
+                    // this might happen after an automated deletion
+                    stop(false);
+                    return;
+                }
+                target.update(result);
+                CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(target.getId());
+                item.updateEntry(target);
+            }
+        };
+        getChildrenAction.execute();
+    }
+
+    /**
     * Returns the sitemap data.<p>
     *
     * @return the sitemap data

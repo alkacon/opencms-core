@@ -139,9 +139,9 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
     @Override
     protected String getOpenPreviewCall(I_CmsWidgetDialog widgetDialog, String id) {
 
-        // using the 'cmsOptenImagePreview' function instead of 'cmsOpenPreview'
+        // using the 'cmsOpenImagePreview' function instead of 'cmsOpenPreview'
         StringBuffer sb = new StringBuffer(64);
-        // using the 'cmsOptenImagePreview' function instead of 'cmsOpenPreview'
+        // using the 'cmsOpenImagePreview' function instead of 'cmsOpenPreview'
         sb.append("javascript:cmsOpenImagePreview('").append(
             widgetDialog.getMessages().key(Messages.GUI_BUTTON_PREVIEW_0));
         sb.append("', '").append(OpenCms.getSystemInfo().getOpenCmsContext());

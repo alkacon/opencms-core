@@ -29,7 +29,6 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -59,9 +58,6 @@ import org.apache.commons.logging.Log;
  * @see org.opencms.jsp.CmsJspNavElement
  */
 public class CmsJspNavBuilder {
-
-    /** Default file property value to mark navigation level folders. */
-    public static final String NAVIGATION_LEVEL_FOLDER = "##navigation_level_folder##";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspNavBuilder.class);
@@ -362,7 +358,7 @@ public class CmsJspNavBuilder {
      */
     public List<CmsJspNavElement> getNavigationForFolder(String folder) {
 
-        return getNavigationForFolder(folder, false);
+        return getNavigationForFolder(folder, false, CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -370,17 +366,22 @@ public class CmsJspNavBuilder {
      *
      * @param folder the selected folder
      * @param includeInvisible <code>true</code> to include elements not visible in navigation
+     * @param resourceFilter the filter to use reading the resources
      * 
      * @return A sorted (ascending to navigation position) list of navigation elements
      */
-    public List<CmsJspNavElement> getNavigationForFolder(String folder, boolean includeInvisible) {
+    public List<CmsJspNavElement> getNavigationForFolder(
+        String folder,
+        boolean includeInvisible,
+        CmsResourceFilter resourceFilter) {
 
         folder = CmsResource.getFolderPath(folder);
         List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
 
         List<CmsResource> resources;
         try {
-            resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+
+            resources = m_cms.getResourcesInFolder(folder, resourceFilter);
         } catch (Exception e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -388,7 +389,7 @@ public class CmsJspNavBuilder {
         }
 
         for (CmsResource r : resources) {
-            CmsJspNavElement element = getNavigationForResource(m_cms.getSitePath(r));
+            CmsJspNavElement element = getNavigationForResource(m_cms.getSitePath(r), resourceFilter);
             if ((element != null) && (includeInvisible || element.isInNavigation())) {
                 result.add(element);
             }
@@ -446,7 +447,21 @@ public class CmsJspNavBuilder {
      */
     public CmsJspNavElement getNavigationForResource(String sitePath) {
 
-        return getNavigationForResource(sitePath, false);
+        return getNavigationForResource(sitePath, CmsResourceFilter.DEFAULT, false);
+    }
+
+    /**
+     * Returns a navigation element for the named resource.<p>
+     * 
+     * @param sitePath the resource name to get the navigation information for, 
+     *              must be a full path name, e.g. "/docs/index.html"
+     * @param includeExpired <code>true</code> if expired resources should be included
+     *              
+     * @return a navigation element for the given resource
+     */
+    public CmsJspNavElement getNavigationForResource(String sitePath, CmsResourceFilter includeExpired) {
+
+        return getNavigationForResource(sitePath, includeExpired, false);
     }
 
     /**
@@ -584,18 +599,23 @@ public class CmsJspNavBuilder {
     *
     * @param folder the selected folder
     * @param includeInvisible <code>true</code> to include elements not visible in navigation
+    * @param resourceFilter the filter to use reading the resources
     * @param shallow <code>true</code> for a shallow look up, not regarding next level resources
     * 
     * @return A sorted (ascending to navigation position) list of navigation elements
     */
-    private List<CmsJspNavElement> getNavigationForFolder(String folder, boolean includeInvisible, boolean shallow) {
+    private List<CmsJspNavElement> getNavigationForFolder(
+        String folder,
+        boolean includeInvisible,
+        CmsResourceFilter resourceFilter,
+        boolean shallow) {
 
         folder = CmsResource.getFolderPath(folder);
         List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
 
         List<CmsResource> resources;
         try {
-            resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+            resources = m_cms.getResourcesInFolder(folder, resourceFilter);
         } catch (Exception e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -603,7 +623,7 @@ public class CmsJspNavBuilder {
         }
 
         for (CmsResource r : resources) {
-            CmsJspNavElement element = getNavigationForResource(m_cms.getSitePath(r), shallow);
+            CmsJspNavElement element = getNavigationForResource(m_cms.getSitePath(r), resourceFilter, shallow);
             if ((element != null) && (includeInvisible || element.isInNavigation())) {
                 result.add(element);
             }
@@ -617,11 +637,12 @@ public class CmsJspNavBuilder {
      * 
      * @param sitePath the resource name to get the navigation information for, 
      *              must be a full path name, e.g. "/docs/index.html"
+     * @param resourceFilter the filter to use reading the resources
      * @param shallow <code>true</code> for a shallow look up, not regarding next level resources
      *              
      * @return a navigation element for the given resource
      */
-    private CmsJspNavElement getNavigationForResource(String sitePath, boolean shallow) {
+    private CmsJspNavElement getNavigationForResource(String sitePath, CmsResourceFilter resourceFilter, boolean shallow) {
 
         CmsResource resource;
         Map<String, String> propertiesMap;
@@ -630,22 +651,12 @@ public class CmsJspNavBuilder {
             level--;
         }
         try {
-            resource = m_cms.readResource(sitePath);
+            resource = m_cms.readResource(sitePath, resourceFilter);
             List<CmsProperty> properties = m_cms.readPropertyObjects(resource, false);
             propertiesMap = CmsProperty.toMap(properties);
             if (resource.isFolder()) {
                 if (!sitePath.endsWith("/")) {
                     sitePath = sitePath + "/";
-                }
-                if (!shallow
-                    && (NAVIGATION_LEVEL_FOLDER.equals(propertiesMap.get(CmsPropertyDefinition.PROPERTY_DEFAULT_FILE)))) {
-                    // this folder is marked as a navigation level, set the site path to the first sub element
-                    List<CmsJspNavElement> subElements = getNavigationForFolder(sitePath, false, true);
-                    if (!subElements.isEmpty()) {
-                        CmsJspNavElement subElement = subElements.get(0);
-                        subElement = getNavigationForResource(subElement.getSitePath(), false);
-                        sitePath = subElement.getSitePath();
-                    }
                 }
             }
         } catch (Exception e) {

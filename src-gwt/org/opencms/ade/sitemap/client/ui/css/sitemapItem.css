@@ -1,3 +1,7 @@
+@external vfsMode, navMode;
+
+.navMode{}
+
 .contentHide * {
 	visibility: hidden;
 }
@@ -49,15 +53,14 @@
 	cursor: default;
 }
 
+.expiredOrNotReleased div.itemTitle{
+	font-style: italic;
+}
+
 div.itemTitle{
 	cursor: text;
 }
 
-@external vfsMode, navMode;
-
-@sprite div.cms_type_icon.navigationLevelIcon{
-	gwt-image: "baseImages.bigIcons.fileTypeNavLevel";
-} 
 
 .vfsMode .notInNavigationEntry{
 	display: block;

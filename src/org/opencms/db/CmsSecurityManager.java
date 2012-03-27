@@ -189,11 +189,14 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.addRelationToResource(dbc, resource, target, type, importCase);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_ADD_RELATION_TO_RESOURCE_3,
-                context.getSitePath(resource),
-                context.getSitePath(target),
-                type), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_ADD_RELATION_TO_RESOURCE_3,
+                    context.getSitePath(resource),
+                    context.getSitePath(target),
+                    type),
+                e);
 
         } finally {
             dbc.clear();
@@ -221,10 +224,13 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(orgUnit.getName()));
             m_driverManager.addResourceToOrgUnit(dbc, orgUnit, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_ADD_RESOURCE_TO_ORGUNIT_2,
-                orgUnit.getName(),
-                dbc.removeSiteRoot(resource.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_ADD_RESOURCE_TO_ORGUNIT_2,
+                    orgUnit.getName(),
+                    dbc.removeSiteRoot(resource.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -276,10 +282,13 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.changeLock(dbc, resource, CmsLockType.EXCLUSIVE);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_CHANGE_LOCK_OF_RESOURCE_2,
-                context.getSitePath(resource),
-                " - " + e.getMessage()), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_CHANGE_LOCK_OF_RESOURCE_2,
+                    context.getSitePath(resource),
+                    " - " + e.getMessage()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -320,9 +329,12 @@ public final class CmsSecurityManager {
                 newValue,
                 recursive);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_CHANGE_RESOURCES_IN_FOLDER_WITH_PROP_4,
-                new Object[] {propertyDefinition, oldValue, newValue, context.getSitePath(resource)}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_CHANGE_RESOURCES_IN_FOLDER_WITH_PROP_4,
+                    new Object[] {propertyDefinition, oldValue, newValue, context.getSitePath(resource)}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -606,9 +618,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.chflags(dbc, resource, flags);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_CHANGE_RESOURCE_FLAGS_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_CHANGE_RESOURCE_FLAGS_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -646,9 +659,10 @@ public final class CmsSecurityManager {
             }
             m_driverManager.chtype(dbc, resource, type);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_CHANGE_RESOURCE_TYPE_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_CHANGE_RESOURCE_TYPE_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -677,10 +691,13 @@ public final class CmsSecurityManager {
             m_driverManager.copyAccessControlEntries(dbc, source, destination, true);
         } catch (Exception e) {
             CmsRequestContext rc = context;
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COPY_ACE_2,
-                rc.removeSiteRoot(source.getRootPath()),
-                rc.removeSiteRoot(destination.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_COPY_ACE_2,
+                    rc.removeSiteRoot(source.getRootPath()),
+                    rc.removeSiteRoot(destination.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -737,10 +754,13 @@ public final class CmsSecurityManager {
             // target permissions will be checked later
             m_driverManager.copyResource(dbc, source, destination, siblingMode);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COPY_RESOURCE_2,
-                dbc.removeSiteRoot(source.getRootPath()),
-                dbc.removeSiteRoot(destination)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_COPY_RESOURCE_2,
+                    dbc.removeSiteRoot(source.getRootPath()),
+                    dbc.removeSiteRoot(destination)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -767,10 +787,13 @@ public final class CmsSecurityManager {
 
             m_driverManager.copyResourceToProject(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
-                context.getSitePath(resource),
-                context.getCurrentProject().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
+                    context.getSitePath(resource),
+                    context.getCurrentProject().getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -798,10 +821,13 @@ public final class CmsSecurityManager {
             checkManagerOfProjectRole(dbc, project);
             result = m_driverManager.countLockedResources(project);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COUNT_LOCKED_RESOURCES_PROJECT_2,
-                (project == null) ? "<failed to read>" : project.getName(),
-                id), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_COUNT_LOCKED_RESOURCES_PROJECT_2,
+                    (project == null) ? "<failed to read>" : project.getName(),
+                    id),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1012,10 +1038,10 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             newResource = m_driverManager.createResource(dbc, resourcePath, resource, content, properties, false);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_IMPORT_RESOURCE_2,
-                context.getSitePath(resource),
-                resourcePath), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_IMPORT_RESOURCE_2, context.getSitePath(resource), resourcePath),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1092,9 +1118,10 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             sibling = m_driverManager.createSibling(dbc, source, destination, properties);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_CREATE_SIBLING_1,
-                context.removeSiteRoot(source.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_CREATE_SIBLING_1, context.removeSiteRoot(source.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1438,9 +1465,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.deleteRelationsForResource(dbc, resource, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_DELETE_RELATIONS_1,
-                dbc.removeSiteRoot(resource.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_DELETE_RELATIONS_1, dbc.removeSiteRoot(resource.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1592,8 +1620,10 @@ public final class CmsSecurityManager {
                         writeLocks();
                     } catch (Throwable t) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(org.opencms.lock.Messages.get().getBundle().key(
-                                org.opencms.lock.Messages.ERR_WRITE_LOCKS_FINAL_0), t);
+                            LOG.error(
+                                org.opencms.lock.Messages.get().getBundle().key(
+                                    org.opencms.lock.Messages.ERR_WRITE_LOCKS_FINAL_0),
+                                t);
                         }
                     }
                 }
@@ -1721,13 +1751,19 @@ public final class CmsSecurityManager {
             checkPublishPermissions(dbc, publishList);
         } catch (Exception e) {
             if (publishList.isDirectPublish()) {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_GET_PUBLISH_LIST_DIRECT_1,
-                    CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(
+                        Messages.ERR_GET_PUBLISH_LIST_DIRECT_1,
+                        CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())),
+                    e);
             } else {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
-                    context.getCurrentProject().getName()), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(
+                        Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
+                        context.getCurrentProject().getName()),
+                    e);
             }
         } finally {
             dbc.clear();
@@ -1816,9 +1852,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAllAccessibleProjects(dbc, orgUnit, includeSubOus);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_ALL_ACCESSIBLE_PROJECTS_1,
-                dbc.currentUser().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_GET_ALL_ACCESSIBLE_PROJECTS_1, dbc.currentUser().getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1842,9 +1879,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAllHistoricalProjects(dbc);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_ALL_ACCESSIBLE_PROJECTS_1,
-                dbc.currentUser().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_GET_ALL_ACCESSIBLE_PROJECTS_1, dbc.currentUser().getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1873,9 +1911,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAllManageableProjects(dbc, orgUnit, includeSubOus);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_ALL_MANAGEABLE_PROJECTS_1,
-                dbc.currentUser().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_GET_ALL_MANAGEABLE_PROJECTS_1, dbc.currentUser().getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1901,9 +1940,10 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List<CmsGroup> result = null;
         try {
-            result = m_driverManager.getChildren(dbc, m_driverManager.readGroup(
+            result = m_driverManager.getChildren(
                 dbc,
-                CmsOrganizationalUnit.removeLeadingSeparator(groupname)), includeSubChildren);
+                m_driverManager.readGroup(dbc, CmsOrganizationalUnit.removeLeadingSeparator(groupname)),
+                includeSubChildren);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_TRANSITIVE_1, groupname), e);
         } finally {
@@ -1932,10 +1972,13 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getDateLastVisitedBy(dbc, poolName, user, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_DATE_LASTVISITED_2,
-                user.getName(),
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_GET_DATE_LASTVISITED_2,
+                    user.getName(),
+                    context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2064,9 +2107,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
             result = m_driverManager.getLockedResources(dbc, resource, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2096,9 +2140,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
             result = m_driverManager.getLockedResourcesObjects(dbc, resource, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2130,9 +2175,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
             result = m_driverManager.getLockedResourcesObjectsWithCache(dbc, resource, filter, cache);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_COUNT_LOCKED_RESOURCES_FOLDER_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2250,9 +2296,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getOrgUnitsForRole(dbc, role, includeSubOus);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_ORGUNITS_ROLE_1,
-                role.getName(requestContext.getLocale())), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_GET_ORGUNITS_ROLE_1, role.getName(requestContext.getLocale())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2302,10 +2349,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getPermissions(dbc, resource, user);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_PERMISSIONS_2,
-                user.getName(),
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_GET_PERMISSIONS_2, user.getName(), context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2368,9 +2415,12 @@ public final class CmsSecurityManager {
             ret = m_driverManager.getRelatedResourcesToPublish(dbc, publishList, filter);
             checkPublishPermissions(dbc, ret);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1,
-                CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1,
+                    CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2404,9 +2454,12 @@ public final class CmsSecurityManager {
             }
             result = m_driverManager.getRelationsForResource(dbc, resource, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_RELATIONS_1,
-                (resource != null) ? context.removeSiteRoot(resource.getRootPath()) : "null"), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_READ_RELATIONS_1,
+                    (resource != null) ? context.removeSiteRoot(resource.getRootPath()) : "null"),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2530,10 +2583,13 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getRolesForResource(dbc, user, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_ROLES_FOR_RESOURCE_2,
-                user.getName(),
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_GET_ROLES_FOR_RESOURCE_2,
+                    user.getName(),
+                    context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -2634,9 +2690,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getUsersPubList(dbc, context.getCurrentUser().getId());
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_USER_PUBLIST_1,
-                context.getCurrentUser().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_USER_PUBLIST_1, context.getCurrentUser().getName()),
+                e);
 
         } finally {
             dbc.clear();
@@ -2973,10 +3030,10 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             newResource = m_driverManager.createResource(dbc, resourcePath, resource, content, properties, importCase);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_IMPORT_RESOURCE_2,
-                context.getSitePath(resource),
-                resourcePath), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_IMPORT_RESOURCE_2, context.getSitePath(resource), resourcePath),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3033,17 +3090,20 @@ public final class CmsSecurityManager {
                 additionalInfos);
 
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_IMPORT_USER_7,
-                new Object[] {
-                    id,
-                    name,
-                    firstname,
-                    lastname,
-                    email,
-                    new Integer(flags),
-                    new Date(dateCreated),
-                    additionalInfos}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_IMPORT_USER_7,
+                    new Object[] {
+                        id,
+                        name,
+                        firstname,
+                        lastname,
+                        email,
+                        new Integer(flags),
+                        new Date(dateCreated),
+                        additionalInfos}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3226,10 +3286,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.lockResource(dbc, resource, type);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_LOCK_RESOURCE_2,
-                context.getSitePath(resource),
-                type.toString()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_LOCK_RESOURCE_2, context.getSitePath(resource), type.toString()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3321,10 +3381,13 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.markResourceAsVisitedBy(dbc, poolName, resource, user);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_MARK_RESOURCE_AS_VISITED_2,
-                context.getSitePath(resource),
-                user.getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_MARK_RESOURCE_AS_VISITED_2,
+                    context.getSitePath(resource),
+                    user.getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3427,10 +3490,13 @@ public final class CmsSecurityManager {
             }
             moveResource(dbc, source, destination);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_MOVE_RESOURCE_2,
-                dbc.removeSiteRoot(source.getRootPath()),
-                dbc.removeSiteRoot(destination)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_MOVE_RESOURCE_2,
+                    dbc.removeSiteRoot(source.getRootPath()),
+                    dbc.removeSiteRoot(destination)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3473,9 +3539,12 @@ public final class CmsSecurityManager {
             }
             result = m_driverManager.moveToLostAndFound(dbc, resource, returnNameOnly);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_MOVE_TO_LOST_AND_FOUND_1,
-                dbc.removeSiteRoot(resource.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_MOVE_TO_LOST_AND_FOUND_1,
+                    dbc.removeSiteRoot(resource.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3529,9 +3598,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readAllAvailableVersions(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_ALL_HISTORY_FILE_HEADERS_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_ALL_HISTORY_FILE_HEADERS_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3583,13 +3653,15 @@ public final class CmsSecurityManager {
             result = m_driverManager.readAllSubscribedResources(dbc, poolName, principal);
         } catch (Exception e) {
             if (principal instanceof CmsUser) {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_READ_SUBSCRIBED_RESOURCES_ALL_USER_1,
-                    principal.getName()), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(Messages.ERR_READ_SUBSCRIBED_RESOURCES_ALL_USER_1, principal.getName()),
+                    e);
             } else {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_READ_SUBSCRIBED_RESOURCES_ALL_GROUP_1,
-                    principal.getName()), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(Messages.ERR_READ_SUBSCRIBED_RESOURCES_ALL_GROUP_1, principal.getName()),
+                    e);
             }
         } finally {
             dbc.clear();
@@ -3733,9 +3805,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             result = m_driverManager.readChildResources(dbc, resource, filter, getFolders, getFiles, true);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_CHILD_RESOURCES_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_CHILD_RESOURCES_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3758,23 +3831,24 @@ public final class CmsSecurityManager {
      * 
      * @param context the request context
      * @param resource the folder to get the default file for
-     * 
+     * @param resourceFilter the resource filter
+     *
      * @return the default file for the given folder
      * 
      * @throws CmsSecurityException if the user has no permissions to read the resulting file
      * 
      * @see CmsObject#readDefaultFile(String)
-     * @see CmsDriverManager#readDefaultFile(CmsDbContext, CmsResource)
      */
-    public CmsResource readDefaultFile(CmsRequestContext context, CmsResource resource) throws CmsSecurityException {
+    public CmsResource readDefaultFile(CmsRequestContext context, CmsResource resource, CmsResourceFilter resourceFilter)
+    throws CmsSecurityException {
 
         CmsResource result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            result = m_driverManager.readDefaultFile(dbc, resource);
+            result = m_driverManager.readDefaultFile(dbc, resource, resourceFilter);
             if (result != null) {
                 // check if the user has read access to the resource
-                checkPermissions(dbc, result, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.DEFAULT);
+                checkPermissions(dbc, result, CmsPermissionSet.ACCESS_READ, true, resourceFilter);
             }
         } catch (CmsSecurityException se) {
             // permissions deny access to the resource
@@ -3815,9 +3889,12 @@ public final class CmsSecurityManager {
             boolean isVfsManager = hasRoleForResource(dbc, dbc.currentUser(), CmsRole.VFS_MANAGER, resource);
             result = m_driverManager.readDeletedResources(dbc, resource, readTree, isVfsManager);
         } catch (CmsException e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READING_DELETED_RESOURCES_1,
-                dbc.removeSiteRoot(resource.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_READING_DELETED_RESOURCES_1,
+                    dbc.removeSiteRoot(resource.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3845,10 +3922,13 @@ public final class CmsSecurityManager {
             result = m_driverManager.readFile(dbc, resource);
         } catch (Exception e) {
             if (resource instanceof I_CmsHistoryResource) {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_READ_FILE_HISTORY_2,
-                    context.getSitePath(resource),
-                    new Integer(resource.getVersion())), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(
+                        Messages.ERR_READ_FILE_HISTORY_2,
+                        context.getSitePath(resource),
+                        new Integer(resource.getVersion())),
+                    e);
             } else {
                 dbc.report(null, Messages.get().container(Messages.ERR_READ_FILE_1, context.getSitePath(resource)), e);
             }
@@ -4005,10 +4085,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readHistoryProject(dbc, projectId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_HISTORY_PROJECT_2,
-                projectId,
-                dbc.currentProject().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_HISTORY_PROJECT_2, projectId, dbc.currentProject().getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4032,10 +4112,13 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readHistoryProject(dbc, publishTag);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_HISTORY_PROJECT_2,
-                new Integer(publishTag),
-                dbc.currentProject().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_READ_HISTORY_PROJECT_2,
+                    new Integer(publishTag),
+                    dbc.currentProject().getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4060,9 +4143,12 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readHistoryPropertyObjects(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PROPS_FOR_RESOURCE_1,
-                context.getSitePath((CmsResource)resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_READ_PROPS_FOR_RESOURCE_1,
+                    context.getSitePath((CmsResource)resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4171,10 +4257,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readOwner(dbc, project);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_OWNER_FOR_PROJECT_2,
-                project.getName(),
-                project.getUuid()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_OWNER_FOR_PROJECT_2, project.getName(), project.getUuid()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4198,10 +4284,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readParentFolder(dbc, structureId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PARENT_FOLDER_2,
-                dbc.currentProject().getName(),
-                structureId), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_PARENT_FOLDER_2, dbc.currentProject().getName(), structureId),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4306,10 +4392,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProjectResources(dbc, project);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PROJECT_RESOURCES_2,
-                project.getName(),
-                project.getUuid()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_PROJECT_RESOURCES_2, project.getName(), project.getUuid()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4402,10 +4488,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPropertyObject(dbc, resource, key, search);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PROP_FOR_RESOURCE_2,
-                key,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_PROP_FOR_RESOURCE_2, key, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4441,9 +4527,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPropertyObjects(dbc, resource, search);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PROPS_FOR_RESOURCE_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_PROPS_FOR_RESOURCE_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4468,9 +4555,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPublishedResources(dbc, publishHistoryId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1,
-                publishHistoryId.toString()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1, publishHistoryId.toString()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4500,10 +4588,13 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readResource(dbc, resource, version);
         } catch (CmsException e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READING_RESOURCE_VERSION_2,
-                dbc.removeSiteRoot(resource.getRootPath()),
-                new Integer(version)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_READING_RESOURCE_VERSION_2,
+                    dbc.removeSiteRoot(resource.getRootPath()),
+                    new Integer(version)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4632,9 +4723,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, parent, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             result = m_driverManager.readResources(dbc, parent, filter, readTree);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_RESOURCES_1,
-                context.removeSiteRoot(parent.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_RESOURCES_1, context.removeSiteRoot(parent.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4701,11 +4793,14 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readResourcesWithProperty(dbc, folder, propertyDefinition, value, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_RESOURCES_FOR_PROP_VALUE_3,
-                context.removeSiteRoot(folder.getRootPath()),
-                propertyDefinition,
-                value), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_READ_RESOURCES_FOR_PROP_VALUE_3,
+                    context.removeSiteRoot(folder.getRootPath()),
+                    propertyDefinition,
+                    value),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5038,10 +5133,13 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.removeAccessControlEntry(dbc, resource, principal);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_REMOVE_ACL_ENTRY_2,
-                context.getSitePath(resource),
-                principal.toString()), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_REMOVE_ACL_ENTRY_2,
+                    context.getSitePath(resource),
+                    principal.toString()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5068,10 +5166,13 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             m_driverManager.removeResourceFromOrgUnit(dbc, orgUnit, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_REMOVE_RESOURCE_FROM_ORGUNIT_2,
-                orgUnit.getName(),
-                dbc.removeSiteRoot(resource.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_REMOVE_RESOURCE_FROM_ORGUNIT_2,
+                    orgUnit.getName(),
+                    dbc.removeSiteRoot(resource.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5098,10 +5199,13 @@ public final class CmsSecurityManager {
 
             m_driverManager.removeResourceFromProject(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
-                context.getSitePath(resource),
-                context.getCurrentProject().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
+                    context.getSitePath(resource),
+                    context.getCurrentProject().getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5122,10 +5226,13 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.removeResourceFromUsersPubList(dbc, context.getCurrentUser().getId(), structureIds);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_REMOVE_RESOURCE_FROM_PUBLIST_2,
-                context.getCurrentUser().getName(),
-                structureIds), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_REMOVE_RESOURCE_FROM_PUBLIST_2,
+                    context.getCurrentUser().getName(),
+                    structureIds),
+                e);
 
         } finally {
             dbc.clear();
@@ -5258,9 +5365,10 @@ public final class CmsSecurityManager {
                 resource.getStructureId(),
                 true).getRootPath();
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_TEST_MOVED_RESOURCE_1,
-                dbc.removeSiteRoot(resource.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_TEST_MOVED_RESOURCE_1, dbc.removeSiteRoot(resource.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5313,10 +5421,13 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.restoreResource(dbc, resource, version);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_RESTORE_RESOURCE_2,
-                context.getSitePath(resource),
-                new Integer(version)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_RESTORE_RESOURCE_2,
+                    context.getSitePath(resource),
+                    new Integer(version)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5367,9 +5478,12 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.setDateExpired(dbc, resource, dateExpired);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_SET_DATE_EXPIRED_2,
-                new Object[] {new Date(dateExpired), context.getSitePath(resource)}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_SET_DATE_EXPIRED_2,
+                    new Object[] {new Date(dateExpired), context.getSitePath(resource)}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5397,9 +5511,12 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.setDateLastModified(dbc, resource, dateLastModified);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_SET_DATE_LAST_MODIFIED_2,
-                new Object[] {new Date(dateLastModified), context.getSitePath(resource)}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_SET_DATE_LAST_MODIFIED_2,
+                    new Object[] {new Date(dateLastModified), context.getSitePath(resource)}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5427,9 +5544,12 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.setDateReleased(dbc, resource, dateReleased);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_SET_DATE_RELEASED_2,
-                new Object[] {new Date(dateReleased), context.getSitePath(resource)}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_SET_DATE_RELEASED_2,
+                    new Object[] {new Date(dateReleased), context.getSitePath(resource)}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5508,9 +5628,12 @@ public final class CmsSecurityManager {
             m_driverManager.setSubscribedResourceAsDeleted(dbc, poolName, resource);
         } catch (Exception e) {
 
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_SET_SUBSCRIBED_RESOURCE_AS_DELETED_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_SET_SUBSCRIBED_RESOURCE_AS_DELETED_1,
+                    context.getSitePath(resource)),
+                e);
 
         } finally {
             dbc.clear();
@@ -5537,10 +5660,10 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             m_driverManager.setUsersOrganizationalUnit(dbc, orgUnit, user);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_SET_USERS_ORGUNIT_2,
-                orgUnit.getName(),
-                user.getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_SET_USERS_ORGUNIT_2, orgUnit.getName(), user.getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5567,15 +5690,21 @@ public final class CmsSecurityManager {
             m_driverManager.subscribeResourceFor(dbc, poolName, principal, resource);
         } catch (Exception e) {
             if (principal instanceof CmsUser) {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_SUBSCRIBE_RESOURCE_FOR_USER_2,
-                    context.getSitePath(resource),
-                    principal.getName()), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(
+                        Messages.ERR_SUBSCRIBE_RESOURCE_FOR_USER_2,
+                        context.getSitePath(resource),
+                        principal.getName()),
+                    e);
             } else {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_SUBSCRIBE_RESOURCE_FOR_GROUP_2,
-                    context.getSitePath(resource),
-                    principal.getName()), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(
+                        Messages.ERR_SUBSCRIBE_RESOURCE_FOR_GROUP_2,
+                        context.getSitePath(resource),
+                        principal.getName()),
+                    e);
             }
         } finally {
             dbc.clear();
@@ -5603,9 +5732,10 @@ public final class CmsSecurityManager {
 
             m_driverManager.undelete(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_UNDELETE_FOR_RESOURCE_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_UNDELETE_FOR_RESOURCE_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5636,9 +5766,10 @@ public final class CmsSecurityManager {
 
             m_driverManager.undoChanges(dbc, resource, mode);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_UNDO_CHANGES_FOR_RESOURCE_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_UNDO_CHANGES_FOR_RESOURCE_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5663,10 +5794,10 @@ public final class CmsSecurityManager {
             checkManagerOfProjectRole(dbc, project);
             m_driverManager.unlockProject(project);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_UNLOCK_PROJECT_2,
-                projectId,
-                dbc.currentUser().getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_UNLOCK_PROJECT_2, projectId, dbc.currentUser().getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5693,11 +5824,14 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.unlockResource(dbc, resource, false, false);
         } catch (CmsException e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_UNLOCK_RESOURCE_3,
-                context.getSitePath(resource),
-                dbc.currentUser().getName(),
-                e.getLocalizedMessage(dbc.getRequestContext().getLocale())), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_UNLOCK_RESOURCE_3,
+                    context.getSitePath(resource),
+                    dbc.currentUser().getName(),
+                    e.getLocalizedMessage(dbc.getRequestContext().getLocale())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5744,13 +5878,15 @@ public final class CmsSecurityManager {
             m_driverManager.unsubscribeAllResourcesFor(dbc, poolName, principal);
         } catch (Exception e) {
             if (principal instanceof CmsUser) {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_UNSUBSCRIBE_ALL_RESOURCES_USER_1,
-                    principal.getName()), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(Messages.ERR_UNSUBSCRIBE_ALL_RESOURCES_USER_1, principal.getName()),
+                    e);
             } else {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_UNSUBSCRIBE_ALL_RESOURCES_GROUP_1,
-                    principal.getName()), e);
+                dbc.report(
+                    null,
+                    Messages.get().container(Messages.ERR_UNSUBSCRIBE_ALL_RESOURCES_GROUP_1, principal.getName()),
+                    e);
             }
         } finally {
             dbc.clear();
@@ -5777,10 +5913,13 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.unsubscribeResourceFor(dbc, poolName, principal, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_UNSUBSCRIBE_RESOURCE_FOR_GROUP_2,
-                context.getSitePath(resource),
-                principal.getName()), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_UNSUBSCRIBE_RESOURCE_FOR_GROUP_2,
+                    context.getSitePath(resource),
+                    principal.getName()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5802,9 +5941,10 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.unsubscribeResourceForAll(dbc, poolName, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_UNSUBSCRIBE_RESOURCE_ALL_1,
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_UNSUBSCRIBE_RESOURCE_ALL_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5847,9 +5987,10 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.updateRelationsForResource(dbc, resource, relations);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_UPDATE_RELATIONS_1,
-                dbc.removeSiteRoot(resource.getRootPath())), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_UPDATE_RELATIONS_1, dbc.removeSiteRoot(resource.getRootPath())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -6039,13 +6180,16 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeHistoryProject(dbc, publishTag, publishDate);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_HISTORY_PROJECT_4,
-                new Object[] {
-                    new Integer(publishTag),
-                    dbc.currentProject().getName(),
-                    dbc.currentProject().getUuid(),
-                    new Long(publishDate)}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_HISTORY_PROJECT_4,
+                    new Object[] {
+                        new Integer(publishTag),
+                        dbc.currentProject().getName(),
+                        dbc.currentProject().getUuid(),
+                        new Long(publishDate)}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -6153,10 +6297,10 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.writePropertyObject(dbc, resource, property);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_WRITE_PROP_2,
-                property.getName(),
-                context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_WRITE_PROP_2, property.getName(), context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -6243,11 +6387,14 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter, timestamp);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_WRITE_STATEXP_PUBLISHED_RESOURCES_3,
-                resourceName,
-                linkParameter,
-                new Date(timestamp)), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_WRITE_STATEXP_PUBLISHED_RESOURCES_3,
+                    resourceName,
+                    linkParameter,
+                    new Date(timestamp)),
+                e);
         } finally {
             dbc.clear();
         }
