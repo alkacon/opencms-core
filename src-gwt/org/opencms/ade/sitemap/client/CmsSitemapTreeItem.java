@@ -111,11 +111,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     /** A map of sitemap tree items by entry id. */
     private static Map<CmsUUID, CmsSitemapTreeItem> m_itemsById = new HashMap<CmsUUID, CmsSitemapTreeItem>();
 
-    /** The current sitemap entry. */
-    protected CmsClientSitemapEntry m_entry;
-
     /** The detail page label title generator. */
     private DetailPageLabelTitleGenerator m_detailPageLabelTitleGenerator;
+
+    /** The current sitemap entry id. */
+    private CmsUUID m_entryId;
 
     /** Style variable for to toggle in navigation style. */
     private CmsStyleVariable m_inNavigationStyle;
@@ -132,16 +132,16 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public CmsSitemapTreeItem(CmsListItemWidget widget, CmsClientSitemapEntry entry) {
 
         super(widget, false);
+        m_entryId = entry.getId();
         m_decoratedPanel.addDecorationBoxStyle(CSS.sitemapEntryDecoration());
         m_listItemWidget = widget;
         m_detailPageLabelTitleGenerator = new DetailPageLabelTitleGenerator();
         m_listItemWidget.getSubTitleSuffix().setTitleGenerator(m_detailPageLabelTitleGenerator);
-        m_entry = entry;
         m_inNavigationStyle = new CmsStyleVariable(this);
         m_openerForNonNavigationStyle = new CmsStyleVariable(m_opener);
         m_listItemWidget.addTitleStyleName(CSS.itemTitle());
         updateInNavigation(entry);
-        m_itemsById.put(entry.getId(), this);
+        m_itemsById.put(m_entryId, this);
         setId(getName(entry.getSitePath()));
         updateSitePath(entry.getSitePath());
         updateDetailPageStatus();
@@ -149,7 +149,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         if (!entry.isFolderType()) {
             hideOpeners();
         }
-        setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
+        setDropEnabled(entry.isFolderType() && !entry.hasForeignFolderLock());
         m_listItemWidget.setTitleEditHandler(new I_CmsTitleEditHandler() {
 
             /**
@@ -167,37 +167,37 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                     alert.center();
                     return;
                 }
-                String oldTitle = m_entry.getTitle();
+                String oldTitle = getSitemapEntry().getTitle();
                 if (!oldTitle.equals(newTitle)) {
                     CmsPropertyModification propMod = new CmsPropertyModification(
-                        m_entry.getId(),
+                        getSitemapEntry().getId(),
                         CmsClientProperty.PROPERTY_NAVTEXT,
                         newTitle,
                         true);
                     final List<CmsPropertyModification> propChanges = new ArrayList<CmsPropertyModification>();
                     propChanges.add(propMod);
                     CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                    if (m_entry.isNew() && !m_entry.isRoot()) {
+                    if (getSitemapEntry().isNew() && !getSitemapEntry().isRoot()) {
                         String urlName = controller.ensureUniqueName(
-                            CmsResource.getParentFolder(m_entry.getSitePath()),
+                            CmsResource.getParentFolder(getSitemapEntry().getSitePath()),
                             newTitle);
-                        if (oldTitle.equals(m_entry.getPropertyValue(CmsClientProperty.PROPERTY_TITLE))) {
+                        if (oldTitle.equals(getSitemapEntry().getPropertyValue(CmsClientProperty.PROPERTY_TITLE))) {
                             CmsPropertyModification titleMod = new CmsPropertyModification(
-                                m_entry.getId(),
+                                getSitemapEntry().getId(),
                                 CmsClientProperty.PROPERTY_TITLE,
                                 newTitle,
                                 true);
                             propChanges.add(titleMod);
                         }
                         controller.editAndChangeName(
-                            m_entry,
+                            getSitemapEntry(),
                             urlName,
-                            m_entry.getVfsPath(),
+                            getSitemapEntry().getVfsPath(),
                             propChanges,
                             false,
                             CmsReloadMode.none);
                     } else {
-                        controller.edit(m_entry, m_entry.getVfsPath(), propChanges, false);
+                        controller.edit(getSitemapEntry(), getSitemapEntry().getVfsPath(), propChanges, false);
                     }
                 }
                 titleLabel.setVisible(true);
@@ -225,13 +225,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public String getDisplayedUrl(String sitePath) {
 
-        if (m_entry.isLeafType() && sitePath.endsWith("/")) {
+        if (getSitemapEntry().isLeafType() && sitePath.endsWith("/")) {
             sitePath = sitePath.substring(0, sitePath.length() - 1);
         }
         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        String exportProp = controller.getEffectiveProperty(m_entry, "export");
+        String exportProp = controller.getEffectiveProperty(getSitemapEntry(), "export");
         if ("true".equals(exportProp)) {
-            String exportName = m_entry.getExportName();
+            String exportName = getSitemapEntry().getExportName();
             if (exportName == null) {
                 exportName = CmsCoreProvider.get().getSiteRoot();
             }
@@ -256,6 +256,16 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * Returns the entry id.<p>
+     * 
+     * @return the entry id
+     */
+    public CmsUUID getEntryId() {
+
+        return m_entryId;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#getPath()
      */
     @Override
@@ -263,7 +273,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
         String result = getSitePath();
         // ensure that the path of a folder ends with a '/'
-        if (m_entry.isFolderType() && !result.endsWith("/")) {
+        if (getSitemapEntry().isFolderType() && !result.endsWith("/")) {
             result += "/";
         }
         return result;
@@ -276,7 +286,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public CmsClientSitemapEntry getSitemapEntry() {
 
-        return m_entry;
+        return CmsSitemapView.getInstance().getController().getEntryById(m_entryId);
     }
 
     /**
@@ -286,7 +296,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public String getSitePath() {
 
-        return m_entry.getSitePath();
+        return getSitemapEntry().getSitePath();
     }
 
     /**
@@ -340,7 +350,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     @Override
     public boolean isDropEnabled() {
 
-        return m_entry.isInNavigation() && m_entry.isFolderType() && super.isDropEnabled();
+        return getSitemapEntry().isInNavigation() && getSitemapEntry().isFolderType() && super.isDropEnabled();
     }
 
     /**
@@ -383,7 +393,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void resetEntry() {
 
-        updateEntry(m_entry);
+        updateEntry(getSitemapEntry());
     }
 
     /**
@@ -415,7 +425,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public String toString() {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(m_entry.getSitePath()).append("\n");
+        sb.append(getSitemapEntry().getSitePath()).append("\n");
         for (int i = 0; i < getChildCount(); i++) {
             CmsTreeItem child = getChild(i);
             if (child instanceof CmsLazyTreeItem.LoadingItem) {
@@ -435,14 +445,14 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         String type;
         String text = null;
         String suffixTitle = null;
-        switch (detailPageTable.getStatus(m_entry.getId())) {
+        switch (detailPageTable.getStatus(m_entryId)) {
             case firstDetailPage:
-                type = detailPageTable.get(m_entry.getId()).getDisplayType();
+                type = detailPageTable.get(m_entryId).getDisplayType();
                 suffixTitle = Messages.get().key(Messages.GUI_MAIN_DETAIL_PAGE_TITLE_1, type);
                 text = "(*" + type + ")";
                 break;
             case otherDetailPage:
-                type = detailPageTable.get(m_entry.getId()).getDisplayType();
+                type = detailPageTable.get(m_entryId).getDisplayType();
                 suffixTitle = Messages.get().key(Messages.GUI_DETAIL_PAGE_TITLE_1, type);
                 text = "(" + type + ")";
                 break;
@@ -461,7 +471,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void updateEditorMode() {
 
-        m_listItemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(m_entry));
+        m_listItemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(getSitemapEntry()));
         for (Widget child : m_children) {
             if (child instanceof CmsSitemapTreeItem) {
                 ((CmsSitemapTreeItem)child).updateEditorMode();
@@ -488,7 +498,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateLock(entry);
         updateInNavigation(entry);
         m_listItemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
-        setDropEnabled(m_entry.isFolderType() && !m_entry.hasForeignFolderLock());
+        setDropEnabled(getSitemapEntry().isFolderType() && !getSitemapEntry().hasForeignFolderLock());
         if (entry.isSubSitemapType() || entry.isLeafType()) {
             hideOpeners();
         } else {
@@ -517,7 +527,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void updateSitePath() {
 
-        updateSitePath(m_entry.getSitePath());
+        updateSitePath(getSitemapEntry().getSitePath());
     }
 
     /**

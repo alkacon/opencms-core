@@ -43,6 +43,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.A_CmsEntryPoint;
@@ -452,7 +453,48 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      */
     public void onChange(CmsSitemapChangeEvent changeEvent) {
 
-        changeEvent.getChange().applyToView(this);
+        CmsSitemapChange change = changeEvent.getChange();
+        switch (change.getChangeType()) {
+            case delete:
+                CmsSitemapTreeItem item = getTreeItem(change.getEntryId());
+                item.getParentItem().removeChild(item);
+                break;
+            case undelete:
+            case create:
+                CmsClientSitemapEntry newEntry = m_controller.getEntryById(change.getEntryId());
+                CmsSitemapTreeItem newItem = createSitemapItem(newEntry);
+                getTreeItem(change.getParentId()).insertChild(newItem, newEntry.getPosition());
+                break;
+            case bumpDetailPage:
+                updateDetailPageView(m_controller.getEntryById(change.getEntryId()));
+                updateAll(m_controller.getEntryById(change.getEntryId()));
+                break;
+            case modify:
+                if (change.hasChangedPosition() || change.hasNewParent()) {
+                    CmsClientSitemapEntry entry = m_controller.getEntryById(change.getEntryId());
+                    CmsSitemapTreeItem moveEntry = getTreeItem(change.getEntryId());
+                    CmsSitemapTreeItem sourceParent = (CmsSitemapTreeItem)moveEntry.getParentItem();
+                    getTree().setAnimationEnabled(false);
+                    sourceParent.removeChild(moveEntry);
+                    CmsSitemapTreeItem destParent = change.hasNewParent()
+                    ? getTreeItem(change.getParentId())
+                    : sourceParent;
+                    if (entry.getPosition() < destParent.getChildCount()) {
+                        destParent.insertChild(moveEntry, entry.getPosition());
+                    } else {
+                        destParent.addChild(moveEntry);
+                    }
+                    updateAll(entry);
+                    ensureVisible(moveEntry);
+                    getTree().setAnimationEnabled(true);
+                    break;
+                }
+                //$FALL-THROUGH$
+            case remove:
+                updateAll(m_controller.getEntryById(change.getEntryId()));
+                break;
+            default:
+        }
     }
 
     /**
@@ -460,7 +502,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      */
     public void onLoad(CmsSitemapLoadEvent event) {
 
-        CmsSitemapTreeItem target = getTreeItem(event.getEntry().getSitePath());
+        CmsSitemapTreeItem target = getTreeItem(event.getEntry().getId());
         target.getTree().setAnimationEnabled(false);
         target.clearChildren();
         for (CmsClientSitemapEntry child : event.getEntry().getSubEntries()) {
@@ -535,7 +577,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
              */
             public void load(final CmsSitemapTreeItem target) {
 
-                getController().getChildren(target.getSitePath(), m_setOpen, null);
+                getController().getChildren(target.getEntryId(), m_setOpen, null);
             }
 
             /**
@@ -728,6 +770,21 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         List<CmsSitemapTreeItem> itemsOnPath = getItemsOnPath(path);
         for (CmsSitemapTreeItem item : itemsOnPath) {
             item.setOpen(true);
+        }
+    }
+
+    /**
+     * Updates the entry and it's children's view.<p>
+     * 
+     * @param entry the entry to update
+     */
+    private void updateAll(CmsClientSitemapEntry entry) {
+
+        CmsSitemapTreeItem item = getTreeItem(entry.getId());
+        item.updateEntry(entry);
+        item.updateSitePath(entry.getSitePath());
+        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+            updateAll(child);
         }
     }
 }

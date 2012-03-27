@@ -59,8 +59,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
         new CmsAvailabilityDialog(entry.getId(), CmsSitemapView.getInstance().getIconForEntry(entry)).loadAndShow();
     }
 
@@ -71,7 +70,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow(CmsHoverbarShowEvent event) {
 
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
         boolean show = (entry != null);
         setVisible(show);
         if (show && (entry != null) && !entry.isEditable()) {

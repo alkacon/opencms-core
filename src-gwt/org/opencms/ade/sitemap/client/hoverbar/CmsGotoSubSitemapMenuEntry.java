@@ -57,7 +57,7 @@ public class CmsGotoSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        String sitePath = getHoverbar().getSitePath();
+        String sitePath = getHoverbar().getEntry().getSitePath();
         getHoverbar().getController().openSiteMap(sitePath);
     }
 
@@ -67,9 +67,8 @@ public class CmsGotoSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        setVisible((entry != null) && entry.isSubSitemapType() && !controller.isRoot(sitePath));
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        setVisible((entry != null) && entry.isSubSitemapType() && !controller.isRoot(entry.getSitePath()));
     }
 }

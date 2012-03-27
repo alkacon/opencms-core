@@ -58,8 +58,7 @@ public class CmsAddToNavMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        String sitepath = getHoverbar().getSitePath();
-        getHoverbar().getController().addToNavigation(sitepath);
+        getHoverbar().getController().addToNavigation(getHoverbar().getEntry());
     }
 
     /**
@@ -68,12 +67,13 @@ public class CmsAddToNavMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        String sitePath = entry.getSitePath();
         CmsResource.getParentFolder(sitePath);
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !controller.isRoot(sitePath) && (entry != null) && !entry.isInNavigation();
-        if (show && (entry != null) && entry.isFolderDefaultPage()) {
+
+        boolean show = !controller.isRoot(sitePath) && !entry.isInNavigation();
+        if (show && entry.isFolderDefaultPage()) {
             // hide this option for all default pages that are not in the first level of the root sitemap
             if ((controller.getData().getParentSitemap() != null)
                 || !controller.isRoot(CmsResource.getParentFolder(sitePath))) {
@@ -81,7 +81,7 @@ public class CmsAddToNavMenuEntry extends A_CmsSitemapMenuEntry {
             }
         }
         setVisible(show);
-        if (show && (entry != null) && !entry.isEditable()) {
+        if (show && !entry.isEditable()) {
             setActive(false);
             setDisabledReason(controller.getNoEditReason(entry));
         } else {

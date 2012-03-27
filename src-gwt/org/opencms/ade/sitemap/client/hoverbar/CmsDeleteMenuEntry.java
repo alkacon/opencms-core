@@ -74,10 +74,10 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
              */
             public void onOk() {
 
-                getHoverbar().getController().delete(getHoverbar().getSitePath());
+                getHoverbar().getController().delete(getHoverbar().getEntry().getSitePath());
             }
         };
-        CmsDeleteWarningDialog dialog = new CmsDeleteWarningDialog(getHoverbar().getSitePath());
+        CmsDeleteWarningDialog dialog = new CmsDeleteWarningDialog(getHoverbar().getEntry().getSitePath());
         dialog.setHandler(handler);
         dialog.loadAndShow(null);
     }
@@ -88,12 +88,11 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-        boolean show = !controller.isRoot(sitePath) && (entry != null) && entry.isInNavigation();
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        boolean show = !controller.isRoot(entry.getSitePath());
         setVisible(show);
-        if (show && (entry != null) && !entry.isEditable()) {
+        if (show && !entry.isEditable()) {
             setActive(false);
             setDisabledReason(controller.getNoEditReason(entry));
         } else {

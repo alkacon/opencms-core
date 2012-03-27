@@ -28,7 +28,6 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.gwt.client.CmsEditableData;
@@ -42,9 +41,6 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
  * @since 8.0.0
  */
 public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
-
-    /** The sitemap entry. */
-    private CmsClientSitemapEntry m_entry;
 
     /**
      * Constructor.<p>
@@ -66,8 +62,8 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsEditableData editableData = new CmsEditableData();
         editableData.setElementLanguage("");
-        editableData.setStructureId(getEntry().getId());
-        editableData.setSitePath(getHoverbar().getSitePath());
+        editableData.setStructureId(getHoverbar().getEntry().getId());
+        editableData.setSitePath(getHoverbar().getEntry().getSitePath());
         CmsContentEditorDialog.get().openEditDialog(editableData, false, new I_CmsContentEditorHandler() {
 
             /**
@@ -87,20 +83,8 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
-        CmsSitemapController controller = getHoverbar().getController();
-        m_entry = controller.getEntry(sitePath);
-        boolean show = (m_entry != null) && (m_entry.getEntryType() == EntryType.redirect);
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        boolean show = (entry != null) && (entry.getEntryType() == EntryType.redirect);
         setVisible(show);
-    }
-
-    /**
-     * Returns the entry to edit.<p>
-     * 
-     * @return the entry
-     */
-    protected CmsClientSitemapEntry getEntry() {
-
-        return m_entry;
     }
 }

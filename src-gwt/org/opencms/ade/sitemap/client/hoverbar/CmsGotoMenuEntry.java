@@ -56,7 +56,7 @@ public class CmsGotoMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        getHoverbar().getController().leaveEditor(getHoverbar().getSitePath());
+        getHoverbar().getController().leaveEditor(getHoverbar().getEntry().getSitePath());
     }
 
     /**

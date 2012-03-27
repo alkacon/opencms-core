@@ -65,9 +65,9 @@ public class CmsParentSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow(CmsHoverbarShowEvent event) {
 
-        String sitePath = getHoverbar().getSitePath();
         CmsSitemapController controller = getHoverbar().getController();
-        boolean show = controller.isRoot(sitePath) && (controller.getData().getParentSitemap() != null);
+        boolean show = controller.isRoot(getHoverbar().getEntry().getSitePath())
+            && (controller.getData().getParentSitemap() != null);
         setVisible(show);
     }
 }
