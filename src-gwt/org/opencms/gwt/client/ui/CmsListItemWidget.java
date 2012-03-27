@@ -565,11 +565,18 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     public void reInitAdditionalInfo(CmsListInfoBean infoBean) {
 
         m_additionalInfo.clear();
+        boolean hadOpenClose = false;
+        boolean openCloseDown = false;
         if (m_openClose != null) {
+            hadOpenClose = true;
+            openCloseDown = m_openClose.isDown();
             m_openClose.removeFromParent();
             m_openClose = null;
         }
         initAdditionalInfo(infoBean);
+        if (hadOpenClose) {
+            m_openClose.setDown(openCloseDown);
+        }
     }
 
     /**
