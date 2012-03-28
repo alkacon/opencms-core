@@ -295,9 +295,9 @@ public final class CmsContentEditorDialog {
      * Exports the close method to the window object, so it can be accessed from within the content editor iFrame.<p>
      */
     private native void exportClosingMethod() /*-{
-        $wnd[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::CLOSING_METHOD_NAME] = function() {
-            @org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::closeEditDialog()();
-        };
+      $wnd[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::CLOSING_METHOD_NAME] = function() {
+         @org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::closeEditDialog()();
+      };
     }-*/;
 
     /**
@@ -321,6 +321,7 @@ public final class CmsContentEditorDialog {
         formValues.put("backlink", CmsCoreProvider.get().getContentEditorBacklinkUrl());
         formValues.put("redirect", "true");
         formValues.put("directedit", "true");
+        formValues.put("editcontext", CmsCoreProvider.get().getUri());
         if (m_isNew) {
             formValues.put("newlink", m_editableData.getNewLink());
             formValues.put("editortitle", m_editableData.getNewTitle());
@@ -337,30 +338,29 @@ public final class CmsContentEditorDialog {
      * Saves the current editor content synchronously.<p>
      */
     private native void saveEditorContent() /*-{
-        var iFrame = $wnd.frames[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::EDITOR_IFRAME_NAME];
-        if (iFrame != null) {
-            var editFrame = iFrame["edit"];
-            if (editFrame != null) {
-                var editorFrame = editFrame.frames["editform"];
-                if (editorFrame != null) {
-                    var editForm = editorFrame.$("#EDITOR");
-                    editForm.find("input[name='action']").attr("value",
-                            "saveexit");
-                    if (editForm != null) {
-                        var data = editForm.serializeArray(editForm);
-                        editorFrame.$.ajax({
-                            type : 'POST',
-                            async : false,
-                            url : editForm.attr("action"),
-                            data : data,
-                            success : function(result) {
-                                // nothing to do
-                            },
-                            dataType : "html"
-                        });
-                    }
-                }
+      var iFrame = $wnd.frames[@org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog::EDITOR_IFRAME_NAME];
+      if (iFrame != null) {
+         var editFrame = iFrame["edit"];
+         if (editFrame != null) {
+            var editorFrame = editFrame.frames["editform"];
+            if (editorFrame != null) {
+               var editForm = editorFrame.$("#EDITOR");
+               editForm.find("input[name='action']").attr("value", "saveexit");
+               if (editForm != null) {
+                  var data = editForm.serializeArray(editForm);
+                  editorFrame.$.ajax({
+                     type : 'POST',
+                     async : false,
+                     url : editForm.attr("action"),
+                     data : data,
+                     success : function(result) {
+                        // nothing to do
+                     },
+                     dataType : "html"
+                  });
+               }
             }
-        }
+         }
+      }
     }-*/;
 }

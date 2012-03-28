@@ -321,6 +321,7 @@ function httpStateDummy() {
 <input type="hidden" name="<%= CmsEditor.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>"/>
 <input type="hidden" name="<%= CmsEditor.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>"/>
 <input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>"/>
+<input type="hidden" name="<%= CmsXmlContentEditor.PARAM_EDITCONTEXT%>" value="<%=wp.getParamEditContext()%>" %>
 <input type="hidden" name="<%= CmsXmlContentEditor.PARAM_ELEMENTINDEX %>" value=""/>
 <input type="hidden" name="<%= CmsXmlContentEditor.PARAM_ELEMENTNAME %>" value=""/>
 <input type="hidden" name="<%= CmsXmlContentEditor.PARAM_CHOICEELEMENT %>" value=""/>
