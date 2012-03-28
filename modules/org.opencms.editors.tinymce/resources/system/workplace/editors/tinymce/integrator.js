@@ -146,8 +146,13 @@ function _editorInsertElement(element) {
 }
 
 function _editorCreateLink(target) {
-   editor.execCommand("mceInsertLink", false, target);
-   return editor.selection.getNode();
+   var linkAttrs = {href: target};
+   linkAttrs["class"] = 'cmsInsertedLink';
+   editor.execCommand("mceInsertLink", false, linkAttrs);
+   var selectionNode = editor.selection.getNode();
+   var result = editor.dom.select(".cmsInsertedLink", selectionNode)[0];
+   editor.dom.removeClass(result, "cmsInsertedLink");
+   return result; 
 }
 
 function _editorInsertHtml(html) {
