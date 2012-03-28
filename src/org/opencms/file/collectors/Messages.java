@@ -56,7 +56,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_COLLECTOR_PARAM_KEY_VALUE_SYNTAX_1 = "ERR_COLLECTOR_PARAM_KEY_VALUE_SYNTAX_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_0 = "ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_0";
+    public static final String ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_1 = "ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_PARAM_SINGLE_FILE_0 = "ERR_COLLECTOR_PARAM_SINGLE_FILE_0";
