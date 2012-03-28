@@ -1,8 +1,30 @@
 <%@ page import="org.opencms.jsp.*" %><%
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 %>
-/* only used for utility functions. */ 
-<%= cms.getContent("/system/workplace/resources/editors/fckeditor/editor/dialog/common/fck_dialog_common.js") %>
+
+function SetAttribute( element, attName, attValue )
+{
+   if ( attValue == null || attValue.length == 0 )
+      element.removeAttribute( attName, 0 ) ;         // 0 : Case Insensitive
+   else
+      element.setAttribute( attName, attValue, 0 ) ;  // 0 : Case Insensitive
+}
+
+function GetAttribute( element, attName, valueIfNull )
+{
+   var oAtt = element.attributes[attName] ;
+
+   if ( oAtt == null || !oAtt.specified )
+      return valueIfNull ? valueIfNull : '' ;
+
+   var oValue = element.getAttribute( attName, 2 ) ;
+
+   if ( oValue == null )
+      oValue = oAtt.nodeValue ;
+
+   return ( oValue == null ? valueIfNull : oValue ) ;
+}
+
 <%= cms.getContent("/system/workplace/resources/editors/tinymce/jscripts/tiny_mce/tiny_mce_popup.js") %>
 /**
  * The JavaScript functions of this file serve as an interface between the API of the TinyMCE and the gallery dialog.<p>
