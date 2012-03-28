@@ -278,16 +278,14 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      */
     public void onFormatChange(String formatKey) {
 
-        if (!m_initialized) {
-            // handler is not initialized yet
-            return;
-        }
         // setting the selected format restriction
         m_currentFormat = m_formats.get(formatKey);
         m_currentFormat.adjustCroppingParam(m_croppingParam);
         adjustToCurrentFormat();
-
-        fireValueChangedEvent();
+        if (m_initialized) {
+            // fire change only if initialized
+            fireValueChangedEvent();
+        }
     }
 
     /**

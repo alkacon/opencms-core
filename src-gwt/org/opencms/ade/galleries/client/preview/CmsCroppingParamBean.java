@@ -36,6 +36,8 @@ import org.opencms.util.CmsStringUtil;
  */
 public class CmsCroppingParamBean {
 
+    private static final String SCALE_FORMAT_NAME_PARAM = "__formatName";
+
     /** The scale parameter colon. */
     private static final String SCALE_PARAM_COLON = ":";
 
@@ -65,8 +67,6 @@ public class CmsCroppingParamBean {
 
     /** Scale parameter name. */
     private static final String SCALE_PARAM_TARGETWIDTH = "w";
-
-    private static final String SCALE_FORMAT_NAME_PARAM = "__formatName";
 
     /** The cropping height parameter. */
     private int m_cropHeight = I_CmsFormatRestriction.DIMENSION_NOT_SET;
@@ -297,6 +297,22 @@ public class CmsCroppingParamBean {
     public int getOrgWidth() {
 
         return m_orgWidth;
+    }
+
+    /**
+     * Returns the resulting image ratio.<p>
+     * 
+     * @return the image ratio
+     */
+    public double getRatio() {
+
+        double ratio = 1;
+        if ((getTargetWidth() == -1) || (getTargetHeight() == -1)) {
+            ratio = (double)getOrgWidth() / getOrgHeight();
+        } else {
+            ratio = (double)getTargetWidth() / getTargetHeight();
+        }
+        return ratio;
     }
 
     /**

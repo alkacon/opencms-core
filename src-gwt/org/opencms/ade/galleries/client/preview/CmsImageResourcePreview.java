@@ -202,7 +202,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                         resourcePath,
                         param.getScaleParam(),
                         param.getFormatName(),
-                        ((double)param.getTargetWidth() / param.getTargetHeight()) + "");
+                        param.getRatio() + "");
                 } else {
                     CmsPreviewUtil.setResourcePath(resourcePath
                         + ((param.isCropped() || param.isScaled()) ? "?" + param.toString() : ""));
@@ -243,7 +243,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                         m_infoBean.getResourcePath(),
                         croppingParam.getScaleParam(),
                         croppingParam.getFormatName(),
-                        ((double)croppingParam.getTargetWidth() / croppingParam.getTargetHeight()) + "");
+                        croppingParam.getRatio() + "");
                 } else {
                     CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath()
                         + ((croppingParam.isCropped() || croppingParam.isScaled())
