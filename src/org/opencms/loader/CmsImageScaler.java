@@ -1080,6 +1080,7 @@ public class CmsImageScaler {
                     getWidth(),
                     getHeight(),
                     color);
+                imageProcessed = true;
             } else {
                 // only rescale the image, if the width and hight are different to the target size
                 int imageWidth = image.getWidth();
