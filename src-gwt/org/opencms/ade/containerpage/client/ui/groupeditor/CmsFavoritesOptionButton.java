@@ -69,7 +69,7 @@ public class CmsFavoritesOptionButton extends CmsPushButton implements I_CmsGrou
      */
     public boolean checkVisibility() {
 
-        return m_elementWidget.getInheritanceInfo().isVisibile();
+        return m_elementWidget.getInheritanceInfo().isVisible();
     }
 
     /**

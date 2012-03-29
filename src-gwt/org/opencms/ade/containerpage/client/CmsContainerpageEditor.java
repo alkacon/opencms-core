@@ -46,6 +46,7 @@ import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsPingTimer;
+import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -95,6 +96,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** The Z index manager. */
     private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
 
+    /** The selection button menu. */
+    protected CmsSelectionButtonMenu m_selectionButtonMenu;
+
     /** Style to toggle toolbar visibility. */
     protected CmsStyleVariable m_toolbarVisibility;
 
@@ -137,19 +141,16 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** Selection button. */
     private CmsToolbarSelectionButton m_selection;
 
+    /** The button for changing the display mode for small elements. */
+    private CmsToolbarShowSmallElementsButton m_showSmall;
+
     /** Sitemap button. */
     private CmsToolbarSitemapButton m_sitemap;
-
     /** The style variable for the display mode for small elements. */
     private CmsStyleVariable m_smallElementsStyle;
 
-    /** The button for changing the display mode for small elements. */
-    private CmsToolbarShowSmallElementsButton m_showSmall;
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
-
-    /** The selection button menu. */
-    protected CmsSelectionButtonMenu m_selectionButtonMenu;
 
     /** 
      * Returns the Z index manager for the container page editor.<p> 
@@ -325,7 +326,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         final CmsContainerpageController controller = new CmsContainerpageController();
         final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
         CmsContentEditorHandler contentEditorHandler = new CmsContentEditorHandler(containerpageHandler);
-        CmsContainerpageDNDController dndController = new CmsContainerpageDNDController(controller);
+        CmsCompositeDNDController dndController = new CmsCompositeDNDController();
+        dndController.addController(new CmsContainerpageDNDController(controller));
+        controller.setDndController(dndController);
         CmsDNDHandler dndHandler = new CmsDNDHandler(dndController);
 
         ClickHandler clickHandler = new ClickHandler() {
@@ -518,18 +521,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
+      $wnd.__openStacktraceDialog = function(event) {
+         event = (event) ? event : ((window.event) ? window.event : "");
+         var elem = (event.target) ? event.target : event.srcElement;
+         if (elem != null) {
+            var children = elem.getElementsByTagName("span");
+            if (children.length > 0) {
+               var title = children[0].getAttribute("title");
+               var content = children[0].innerHTML;
+               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
             }
-        }
+         }
+      }
     }-*/;
 
 }

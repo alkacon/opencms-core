@@ -67,7 +67,7 @@ public class CmsMoveOptionButton extends CmsPushButton implements I_CmsGroupEdit
      */
     public boolean checkVisibility() {
 
-        return m_elementWidget.getInheritanceInfo().isVisibile();
+        return m_elementWidget.getInheritanceInfo().isVisible();
     }
 
     /**

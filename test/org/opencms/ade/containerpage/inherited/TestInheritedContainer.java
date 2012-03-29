@@ -1028,7 +1028,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             String value = entry.getValue();
             if ("visible".equals(key)) {
                 boolean expectVisible = Boolean.parseBoolean(value);
-                assertEquals(expectVisible, element.getInheritanceInfo().isVisibile());
+                assertEquals(expectVisible, element.getInheritanceInfo().isVisible());
             } else if ("key".equals(key)) {
                 String expectedKey = value;
                 assertEquals(expectedKey, element.getInheritanceInfo().getKey());

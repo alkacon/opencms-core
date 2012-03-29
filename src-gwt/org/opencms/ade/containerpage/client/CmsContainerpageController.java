@@ -43,6 +43,7 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
@@ -394,6 +395,9 @@ public final class CmsContainerpageController {
 
     /** The prefetched data. */
     private CmsCntPageData m_data;
+
+    /** The DND controller. */
+    private CmsCompositeDNDController m_dndController;
 
     /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
@@ -787,6 +791,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Gets the DND controller.<p>
+     * 
+     * @return the DND controller
+     */
+    public CmsCompositeDNDController getDndController() {
+
+        return m_dndController;
+    }
+
+    /**
      * Returns the drag and drop handler.<p>
      *
      * @return the drag and drop handler
@@ -1024,18 +1038,6 @@ public final class CmsContainerpageController {
             }
         });
         checkLockInfo();
-    }
-
-    /**
-     * Checks if the page was locked by another user at load time.<p>
-     */
-    private void checkLockInfo() {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getData().getLockInfo())) {
-            CmsNotification.get().send(Type.ERROR, getData().getLockInfo());
-            m_lockStatus = LockStatus.failed;
-            m_handler.m_editor.disableEditing(getData().getLockInfo());
-        }
     }
 
     /**
@@ -1601,6 +1603,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Sets the DND controller.<p>
+     * 
+     * @param dnd the new DND controller 
+     */
+    public void setDndController(CmsCompositeDNDController dnd) {
+
+        m_dndController = dnd;
+    }
+
+    /**
      * Sets the page changed flag to <code>true</code>.<p>
      */
     public void setPageChanged() {
@@ -1939,6 +1951,18 @@ public final class CmsContainerpageController {
             CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
         } else {
             // ignore
+        }
+    }
+
+    /**
+     * Checks if the page was locked by another user at load time.<p>
+     */
+    private void checkLockInfo() {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getData().getLockInfo())) {
+            CmsNotification.get().send(Type.ERROR, getData().getLockInfo());
+            m_lockStatus = LockStatus.failed;
+            m_handler.m_editor.disableEditing(getData().getLockInfo());
         }
     }
 

@@ -63,6 +63,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
  * The inheritance container editor.<p>
@@ -83,11 +84,20 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     /** The editor instance. */
     private static CmsInheritanceContainerEditor INSTANCE;
 
+    /** A flag which indicates whether the inheritance configuration needs to be updated. */
+    private boolean m_changedInheritanceInfo;
+
     /** The description input. */
     private CmsTextBox m_inputDescription;
 
     /** The title input. */
     private CmsTextBox m_inputTitle;
+
+    /** A handler which keeps track of whether elements have been dropped. */
+    private CmsDropListener m_moveHandler;
+
+    /** The handler registration to remove the drop handler. */
+    private HandlerRegistration m_moveHandlerRegistration;
 
     /** Click handler for the option buttons. */
     private ClickHandler m_optionClickHandler;
@@ -125,6 +135,9 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             }
         });
         getGroupContainerWidget().addStyleName(HIDE_ELEMENTS_CLASS);
+        m_moveHandler = new CmsDropListener();
+        m_moveHandlerRegistration = getController().getDndController().addController(m_moveHandler);
+
     }
 
     /**
@@ -163,17 +176,6 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     }
 
     /**
-     * Sets the option bar on the element widget.<p>
-     * 
-     * @param elementWidget the element widget
-     */
-    public void setOptionBar(CmsContainerPageElementPanel elementWidget) {
-
-        elementWidget.setElementOptionBar(createOptionBar(elementWidget));
-        updateButtonVisibility(elementWidget);
-    }
-
-    /**
      * Either removes the locally configured element or hides the inherited element.<p>
      * 
      * @param elementWidget the element widget
@@ -193,6 +195,18 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             m_showElementsButton.enable();
             getGroupContainerWidget().refreshHighlighting();
         }
+        m_changedInheritanceInfo = true;
+    }
+
+    /**
+     * Sets the option bar on the element widget.<p>
+     * 
+     * @param elementWidget the element widget
+     */
+    public void setOptionBar(CmsContainerPageElementPanel elementWidget) {
+
+        elementWidget.setElementOptionBar(createOptionBar(elementWidget));
+        updateButtonVisibility(elementWidget);
     }
 
     /**
@@ -224,6 +238,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             // if no other hidden elements present disable toggle button
             m_showElementsButton.disable(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_NO_HIDDEN_ELEMENTS_0));
         }
+        m_changedInheritanceInfo = true;
     }
 
     /**
@@ -286,7 +301,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         for (Widget w : getGroupContainerWidget()) {
             if (w instanceof CmsContainerPageElementPanel) {
                 CmsContainerPageElementPanel elementWidget = (CmsContainerPageElementPanel)w;
-                if ((elementWidget.getInheritanceInfo() == null) || elementWidget.getInheritanceInfo().isVisibile()) {
+                if ((elementWidget.getInheritanceInfo() == null) || elementWidget.getInheritanceInfo().isVisible()) {
                     clientIds.add(elementWidget.getId());
                 }
             }
@@ -340,6 +355,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     @Override
     protected void closeDialog(boolean breakingUp) {
 
+        m_moveHandlerRegistration.removeHandler();
         getGroupContainerWidget().removeStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().hideElements());
         super.closeDialog(breakingUp);
     }
@@ -351,12 +367,15 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     protected void saveEdit() {
 
         List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
+        boolean moved = m_moveHandler.isDropped();
+        m_changedInheritanceInfo |= moved;
         for (Widget widget : getGroupContainerWidget()) {
             if (widget instanceof CmsContainerPageElementPanel) {
                 CmsContainerPageElementPanel elementWidget = (CmsContainerPageElementPanel)widget;
                 CmsInheritanceInfo inheritanceInfo = elementWidget.getInheritanceInfo();
                 if (inheritanceInfo == null) {
                     inheritanceInfo = new CmsInheritanceInfo(null, true, true);
+                    m_changedInheritanceInfo = true;
                 }
                 CmsContainerElement element = getController().getCachedElement(elementWidget.getId());
                 element.setInheritanceInfo(inheritanceInfo);
@@ -364,6 +383,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             }
         }
         CmsInheritanceContainer container = new CmsInheritanceContainer();
+        container.setElementsChanged(m_changedInheritanceInfo);
+        container.setElementsMoved(moved);
         container.setNew(getGroupContainerWidget().isNew());
         container.setClientId(getGroupContainerWidget().getId());
         container.setTitle(m_inputTitle.getText());
@@ -388,7 +409,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             removeAllChildren();
             CmsContainerpageUtil util = getController().getContainerpageUtil();
             for (CmsInheritanceInfo info : m_elementData.getInheritanceInfos()) {
-                if (info.isVisibile()) {
+                if (info.isVisible()) {
                     CmsContainerElementData element = getController().getCachedElement(info.getClientId());
                     try {
                         CmsContainerPageElementPanel elementWidget = util.createElement(
@@ -404,7 +425,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             }
             boolean hasInvisible = false;
             for (CmsInheritanceInfo info : m_elementData.getInheritanceInfos()) {
-                if (!info.isVisibile()) {
+                if (!info.isVisible()) {
                     CmsContainerElementData element = getController().getCachedElement(info.getClientId());
                     try {
                         CmsContainerPageElementPanel elementWidget = util.createElement(
@@ -447,7 +468,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Creates an option bar for the given element.<p>
-     * 
+     *  
      * @param elementWidget the element widget
      * 
      * @return the option bar

@@ -221,7 +221,7 @@ public class CmsContainerElementData extends CmsContainerElement {
         } else if (isInheritContainer()) {
             List<String> result = new ArrayList<String>();
             for (CmsInheritanceInfo info : m_inheritanceInfos) {
-                if (info.isVisibile()) {
+                if (info.isVisible()) {
                     result.add(info.getClientId());
                 }
             }

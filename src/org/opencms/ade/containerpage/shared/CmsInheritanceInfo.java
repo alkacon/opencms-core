@@ -132,16 +132,6 @@ public class CmsInheritanceInfo implements IsSerializable {
     }
 
     /**
-     * Gets the container element's visibility.<p>
-     * 
-     * @return the container element's visibility 
-     */
-    public boolean isVisibile() {
-
-        return m_visibility;
-    }
-
-    /**
      * Returns the visibilityInherited.<p>
      *
      * @return the visibilityInherited
@@ -149,6 +139,16 @@ public class CmsInheritanceInfo implements IsSerializable {
     public boolean isVisibilityInherited() {
 
         return m_visibilityInherited;
+    }
+
+    /**
+     * Gets the container element's visibility.<p>
+     * 
+     * @return the container element's visibility 
+     */
+    public boolean isVisible() {
+
+        return m_visibility;
     }
 
     /**

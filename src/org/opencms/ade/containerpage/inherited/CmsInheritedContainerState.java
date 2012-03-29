@@ -178,7 +178,7 @@ public class CmsInheritedContainerState {
         List<CmsContainerElementBean> hiddenElements = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElementBean resultElement : result) {
             CmsInheritanceInfo info = resultElement.getInheritanceInfo();
-            if (!info.isVisibile()) {
+            if (!info.isVisible()) {
                 hiddenElements.add(resultElement);
             } else {
                 resultWithoutHidden.add(resultElement);

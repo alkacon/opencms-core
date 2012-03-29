@@ -70,7 +70,7 @@ public class CmsRemoveOptionButton extends CmsPushButton implements I_CmsGroupEd
      */
     public boolean checkVisibility() {
 
-        return m_elementWidget.getInheritanceInfo().isVisibile();
+        return m_elementWidget.getInheritanceInfo().isVisible();
     }
 
     /**

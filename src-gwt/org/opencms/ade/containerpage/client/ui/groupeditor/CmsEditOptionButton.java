@@ -76,7 +76,7 @@ public class CmsEditOptionButton extends CmsPushButton implements I_CmsGroupEdit
         } else {
             enable();
         }
-        return m_elementWidget.getInheritanceInfo().isVisibile();
+        return m_elementWidget.getInheritanceInfo().isVisible();
     }
 
     /**

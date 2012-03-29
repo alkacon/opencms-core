@@ -554,12 +554,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 elements.add(elementBean);
             }
             cms.getRequestContext().setLocale(requestedLocale);
-            OpenCms.getADEManager().saveInheritedContainer(
-                cms,
-                containerPage,
-                inheritanceContainer.getName(),
-                true,
-                elements);
+            if (inheritanceContainer.getElementsChanged()) {
+                OpenCms.getADEManager().saveInheritedContainer(
+                    cms,
+                    containerPage,
+                    inheritanceContainer.getName(),
+                    true,
+                    elements);
+            }
             return getElements(
                 new ArrayList<String>(Collections.singletonList(inheritanceContainer.getClientId())),
                 sitePath,
