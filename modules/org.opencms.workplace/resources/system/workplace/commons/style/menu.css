@@ -588,7 +588,7 @@ a.button {
 /* Button - Normal style (inactive) */
 span.norm {
 	display: block;
-	border: 1px solid ThreeDFace;
+	border: 1px solid transparent;
 }
 
 /* Button - Hover style */

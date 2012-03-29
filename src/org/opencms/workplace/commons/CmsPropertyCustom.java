@@ -140,7 +140,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         boolean editable = isEditable();
 
         // create the column heads
-        result.append("<table border=\"0\">\n");
+        result.append("<table border=\"0\" style=\"width:100%\">\n");
         result.append("<tr>\n");
         result.append("\t<td class=\"textbold\">");
         result.append(key(Messages.GUI_PROPERTY_0));
