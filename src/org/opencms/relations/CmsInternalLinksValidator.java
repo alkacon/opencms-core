@@ -28,6 +28,7 @@
 package org.opencms.relations;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -53,7 +54,7 @@ public class CmsInternalLinksValidator {
     private static final Log LOG = CmsLog.getLog(CmsInternalLinksValidator.class);
 
     /** The internal computed broken relations map. */
-    protected Map m_brokenRelations;
+    protected Map<String, List<CmsRelation>> m_brokenRelations;
 
     /** The cms context object. */
     private CmsObject m_cms;
@@ -62,7 +63,7 @@ public class CmsInternalLinksValidator {
     private int m_notVisibleResourcesCount;
 
     /** All resources with broken links. */
-    private List m_resourcesWithBrokenLinks;
+    private List<CmsResource> m_resourcesWithBrokenLinks;
 
     /**
      * Creates a new helper object.<p>
@@ -70,7 +71,7 @@ public class CmsInternalLinksValidator {
      * @param cms the cms object
      * @param resourceNames a list of resource names to be deleted
      */
-    public CmsInternalLinksValidator(CmsObject cms, List resourceNames) {
+    public CmsInternalLinksValidator(CmsObject cms, List<String> resourceNames) {
 
         m_cms = cms;
         m_brokenRelations = getBrokenRelations(resourceNames);
@@ -83,9 +84,9 @@ public class CmsInternalLinksValidator {
      * 
      * @return a list of {@link CmsRelation} objects
      */
-    public List getBrokenLinksForResource(String resourceName) {
+    public List<CmsRelation> getBrokenLinksForResource(String resourceName) {
 
-        return (List)m_brokenRelations.get(resourceName);
+        return m_brokenRelations.get(resourceName);
     }
 
     /**
@@ -107,23 +108,23 @@ public class CmsInternalLinksValidator {
      * 
      * @return a list of {@link org.opencms.file.CmsResource} objects
      */
-    public List getResourcesWithBrokenLinks() {
+    public List<CmsResource> getResourcesWithBrokenLinks() {
 
         if (m_resourcesWithBrokenLinks == null) {
             // sort the resulting hash map
-            List resources = new ArrayList(m_brokenRelations.keySet());
+            List<String> resources = new ArrayList<String>(m_brokenRelations.keySet());
             Collections.sort(resources);
 
-            m_resourcesWithBrokenLinks = new ArrayList(resources.size());
+            m_resourcesWithBrokenLinks = new ArrayList<CmsResource>(resources.size());
             m_notVisibleResourcesCount = 0;
             // remove not visible resources
             CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible();
             String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             try {
                 m_cms.getRequestContext().setSiteRoot("/");
-                Iterator itResources = resources.iterator();
+                Iterator<String> itResources = resources.iterator();
                 while (itResources.hasNext()) {
-                    String resourceName = (String)itResources.next();
+                    String resourceName = itResources.next();
                     try {
                         m_resourcesWithBrokenLinks.add(m_cms.readResource(resourceName, filter));
                     } catch (Exception e) {
@@ -156,31 +157,31 @@ public class CmsInternalLinksValidator {
      * 
      * @return a map of broken relations
      */
-    private Map getBrokenRelations(List resourceNames) {
+    private Map<String, List<CmsRelation>> getBrokenRelations(List<String> resourceNames) {
 
-        Map brokenRelations = new HashMap();
+        Map<String, List<CmsRelation>> brokenRelations = new HashMap<String, List<CmsRelation>>();
 
         CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterIncludeChildren().filterStructureId(
             CmsUUID.getNullUUID());
 
-        Iterator itFolders = resourceNames.iterator();
+        Iterator<String> itFolders = resourceNames.iterator();
         while (itFolders.hasNext()) {
-            String folderName = (String)itFolders.next();
-            List relations;
+            String folderName = itFolders.next();
+            List<CmsRelation> relations;
             try {
                 relations = m_cms.getRelationsForResource(folderName, filter);
             } catch (CmsException e) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, folderName), e);
                 continue;
             }
-            Iterator itRelations = relations.iterator();
+            Iterator<CmsRelation> itRelations = relations.iterator();
             while (itRelations.hasNext()) {
-                CmsRelation relation = (CmsRelation)itRelations.next();
+                CmsRelation relation = itRelations.next();
                 // target is broken
                 String resourceName = relation.getSourcePath();
-                List broken = (List)brokenRelations.get(resourceName);
+                List<CmsRelation> broken = brokenRelations.get(resourceName);
                 if (broken == null) {
-                    broken = new ArrayList();
+                    broken = new ArrayList<CmsRelation>();
                     brokenRelations.put(resourceName, broken);
                 }
                 broken.add(relation);

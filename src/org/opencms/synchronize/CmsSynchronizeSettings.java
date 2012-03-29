@@ -56,14 +56,14 @@ public class CmsSynchronizeSettings implements Serializable {
     private boolean m_enabled;
 
     /** The source path list of the synchronization in the OpenCms VFS. */
-    private List m_sourceListInVfs;
+    private List<String> m_sourceListInVfs;
 
     /**
      * Empty constructor, called from the configuration.<p>
      */
     public CmsSynchronizeSettings() {
 
-        m_sourceListInVfs = new ArrayList();
+        m_sourceListInVfs = new ArrayList<String>();
     }
 
     /**
@@ -83,7 +83,7 @@ public class CmsSynchronizeSettings implements Serializable {
             // if enabled, it's required to have at last one source folder
             throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_NO_VFS_SOURCE_0));
         }
-        Iterator i = m_sourceListInVfs.iterator();
+        Iterator<String> i = m_sourceListInVfs.iterator();
         // store the current site root
         String currentSite = cms.getRequestContext().getSiteRoot();
         // switch to root site
@@ -91,7 +91,7 @@ public class CmsSynchronizeSettings implements Serializable {
         try {
             while (i.hasNext()) {
                 // try to read all given resources, this will cause an error if the resource does not exist
-                cms.readResource((String)i.next());
+                cms.readResource(i.next());
             }
         } finally {
             // reset to current site root
@@ -116,7 +116,7 @@ public class CmsSynchronizeSettings implements Serializable {
      * 
      * @return the source path list of the synchronization in the OpenCms VFS
      */
-    public List getSourceListInVfs() {
+    public List<String> getSourceListInVfs() {
 
         return m_sourceListInVfs;
     }
@@ -197,10 +197,10 @@ public class CmsSynchronizeSettings implements Serializable {
      * 
      * @param sourceListInVfs the source path list of the synchronization in the OpenCms VFS to set
      */
-    public void setSourceListInVfs(List sourceListInVfs) {
+    public void setSourceListInVfs(List<String> sourceListInVfs) {
 
         if (sourceListInVfs == null) {
-            m_sourceListInVfs = new ArrayList();
+            m_sourceListInVfs = new ArrayList<String>();
         } else {
             m_sourceListInVfs = optimizeSourceList(sourceListInVfs);
         }
@@ -209,6 +209,7 @@ public class CmsSynchronizeSettings implements Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();
@@ -222,9 +223,9 @@ public class CmsSynchronizeSettings implements Serializable {
         if (m_sourceListInVfs == null) {
             result.append(m_sourceListInVfs);
         } else {
-            Iterator i = m_sourceListInVfs.iterator();
+            Iterator<String> i = m_sourceListInVfs.iterator();
             while (i.hasNext()) {
-                String path = (String)i.next();
+                String path = i.next();
                 result.append(path);
                 if (i.hasNext()) {
                     result.append(", ");
@@ -242,17 +243,17 @@ public class CmsSynchronizeSettings implements Serializable {
      * @param sourceListInVfs the list of VFS resources to optimize
      * @return the optimized result list
      */
-    protected List optimizeSourceList(List sourceListInVfs) {
+    protected List<String> optimizeSourceList(List<String> sourceListInVfs) {
 
         // input should be sorted but may be immutable
-        List input = new ArrayList(sourceListInVfs);
+        List<String> input = new ArrayList<String>(sourceListInVfs);
         Collections.sort(input);
 
-        List result = new ArrayList();
-        Iterator i = input.iterator();
+        List<String> result = new ArrayList<String>();
+        Iterator<String> i = input.iterator();
         while (i.hasNext()) {
             // check all sources in the list
-            String sourceInVfs = (String)i.next();
+            String sourceInVfs = i.next();
             if (CmsStringUtil.isEmpty(sourceInVfs)) {
                 // skip empty strings
                 continue;
@@ -260,7 +261,7 @@ public class CmsSynchronizeSettings implements Serializable {
             boolean found = false;
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this source is indirectly contained because a parent folder is contained
-                String check = (String)result.get(j);
+                String check = result.get(j);
                 if (sourceInVfs.startsWith(check)) {
                     found = true;
                     break;

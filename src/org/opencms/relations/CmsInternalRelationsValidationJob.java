@@ -75,15 +75,17 @@ public class CmsInternalRelationsValidationJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         I_CmsReport report = null;
         String msg = null;
         try {
             report = new CmsStringBufferReport(cms.getRequestContext().getLocale());
-            report.println(Messages.get().container(
-                Messages.GUI_RELATIONS_VALIDATION_PROJECT_1,
-                cms.getRequestContext().getCurrentProject().getName()), I_CmsReport.FORMAT_HEADLINE);
+            report.println(
+                Messages.get().container(
+                    Messages.GUI_RELATIONS_VALIDATION_PROJECT_1,
+                    cms.getRequestContext().getCurrentProject().getName()),
+                I_CmsReport.FORMAT_HEADLINE);
             // TODO: replace by CmsObject#getRelationsForResource 
             OpenCms.getPublishManager().validateRelations(cms, null, report);
         } catch (Exception e) {
@@ -95,17 +97,17 @@ public class CmsInternalRelationsValidationJob implements I_CmsScheduledJob {
         }
 
         // parse the parameters
-        String from = (String)parameters.get(PARAM_FROM);
-        String addresses = (String)parameters.get(PARAM_EMAIL);
+        String from = parameters.get(PARAM_FROM);
+        String addresses = parameters.get(PARAM_EMAIL);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(addresses)) {
             addresses = cms.getRequestContext().getCurrentUser().getEmail();
         }
-        List to = new ArrayList();
-        Iterator it = CmsStringUtil.splitAsList(addresses, ',').iterator();
+        List<InternetAddress> to = new ArrayList<InternetAddress>();
+        Iterator<String> it = CmsStringUtil.splitAsList(addresses, ',').iterator();
         while (it.hasNext()) {
-            to.add(new InternetAddress((String)it.next()));
+            to.add(new InternetAddress(it.next()));
         }
-        String subject = (String)parameters.get(PARAM_SUBJECT);
+        String subject = parameters.get(PARAM_SUBJECT);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(subject)) {
             subject = Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                 Messages.GUI_RELATIONS_VALIDATION_DEFAULT_SUBJECT_0);

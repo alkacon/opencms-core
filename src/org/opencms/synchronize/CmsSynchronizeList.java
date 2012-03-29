@@ -137,6 +137,7 @@ public class CmsSynchronizeList implements Serializable {
      *  
      * @return string-representation for this object.
      */
+    @Override
     public String toString() {
 
         String output = m_resName + ":" + m_transResName + ":" + m_modifiedVfs + ":" + m_modifiedFs;
