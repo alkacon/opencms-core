@@ -1745,6 +1745,8 @@ public class CmsImportVersion7 implements I_CmsImport {
      */
     public void importResource() {
 
+        boolean resourceIdWasNull = false;
+
         try {
             if (m_throwable != null) {
                 getReport().println(m_throwable);
@@ -1800,6 +1802,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 if ((m_resourceId == null) || (m_type.isFolder())) {
                     // folders get always a new resource UUID
                     m_resourceId = new CmsUUID();
+                    resourceIdWasNull = true;
                 }
 
                 // create a new CmsResource                         
@@ -1827,7 +1830,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     m_properties = new HashMap();
                 }
 
-                if (m_type.isFolder() || hasContentInVfsOrImport(resource)) {
+                if (m_type.isFolder() || resourceIdWasNull || hasContentInVfsOrImport(resource)) {
                     // import this resource in the VFS
                     m_resource = getCms().importResource(
                         translatedName,
