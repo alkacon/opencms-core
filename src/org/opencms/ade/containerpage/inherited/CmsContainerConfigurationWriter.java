@@ -47,6 +47,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -118,14 +119,19 @@ public class CmsContainerConfigurationWriter {
             name);
         Set<String> keys = state.getNewElementKeys();
 
+        CmsResource configRes = null;
+        boolean needToUnlock = false;
         if (!cms.existsResource(configPath)) {
             // create it
-            cms.createResource(
+            configRes = cms.createResource(
                 configPath,
                 OpenCms.getResourceManager().getResourceType(
                     CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME).getTypeId());
+            needToUnlock = true;
         }
-        CmsResource configRes = cms.readResource(configPath);
+        if (configRes == null) {
+            configRes = cms.readResource(configPath);
+        }
         CmsFile configFile = cms.readFile(configRes);
         // make sure the internal flag is set
         configFile.setFlags(configFile.getFlags() | CmsResource.FLAG_INTERNAL);
@@ -141,8 +147,19 @@ public class CmsContainerConfigurationWriter {
         serializeSingleConfiguration(cms, name, configuration, parentElement);
         byte[] contentBytes = content.marshal();
         configFile.setContents(contentBytes);
-        cms.lockResource(configRes);
-        cms.writeFile(configFile);
+        CmsLock prevLock = cms.getLock(configRes);
+        boolean alreadyLocked = prevLock.isOwnedBy(cms.getRequestContext().getCurrentUser());
+        if (!alreadyLocked) {
+            cms.lockResourceTemporary(configRes);
+            needToUnlock = true;
+        }
+        try {
+            cms.writeFile(configFile);
+        } finally {
+            if (needToUnlock) {
+                cms.unlockResource(configRes);
+            }
+        }
     }
 
     /**
