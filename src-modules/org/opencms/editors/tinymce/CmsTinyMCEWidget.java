@@ -40,7 +40,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         + "|aligncenter:justifycenter|alignright:justifyright|justify:justifyfull|style:styleselect|formatselect:formatselect"
         + "|fontselect:fontselect|fontsizeselect:fontsizeselect"
         /* Row 2*/
-        + "|cut:cut|copy:copy|paste:paste|pastetext:pastetext|pasteword:pasteword|find:search|replace:replace|unorderedlist:bullist"
+        + "|cut:cut|copy:copy|paste:paste,pastetext,pasteword|pastetext:pastetext|pasteword:pasteword|find:search|replace:replace|unorderedlist:bullist"
         + "|orderedlist:numlist|outdent:outdent|indent:indent|blockquote:blockquote|undo:undo|redo:redo|editorlink:link|unlink:unlink"
         + "|anchor:anchor|image:image|cleanup:cleanup|source:code|insertdate:insertdate|inserttime:inserttime|forecolor:forecolor|backcolor:backcolor"
         /* Row 3*/
@@ -278,7 +278,13 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                     continue;
                 }
             }
-            processedItems.add(barItem);
+            if (barItem.indexOf(",") > -1) {
+                for (String subItem : barItem.split(",")) {
+                    processedItems.add(subItem);
+                }
+            } else {
+                processedItems.add(barItem);
+            }
             lastItem = barItem;
         }
 
