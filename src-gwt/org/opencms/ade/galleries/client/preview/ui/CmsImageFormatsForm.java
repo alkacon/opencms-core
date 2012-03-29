@@ -325,6 +325,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
             m_selectBox.setEnabled(false);
             m_resetSize.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_DIS_CROPPED_0));
             m_ratioLock.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_DIS_CROPPED_0));
+            m_cropButton.disable(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_DIS_CROPPED_0));
             if (m_formEnabled) {
                 m_removeCropButton.enable();
             }
