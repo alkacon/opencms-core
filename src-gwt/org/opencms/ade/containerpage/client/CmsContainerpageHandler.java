@@ -240,7 +240,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 I_CmsFormSubmitHandler submitHandler = new I_CmsFormSubmitHandler() {
 
                     /**
-                     * @see org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler#onSubmitForm(org.opencms.gwt.client.ui.input.form.CmsForm, java.util.Map, java.util.Set)
+                     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler#onSubmitForm(org.opencms.gwt.client.ui.input.form.CmsForm, java.util.Map, java.util.Set)
                      */
                     public void onSubmitForm(
                         CmsForm formParam,
