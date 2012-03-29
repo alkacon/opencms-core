@@ -40,18 +40,18 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_offline_contents")
+@Table(name = "CMS_OFFLINE_CONTENTS")
 public class CmsDAOOfflineContents {
 
     /** The file contents. */
     @Basic
     @Lob
-    @Column(name = "file_content", nullable = true)
+    @Column(name = "FILE_CONTENT", nullable = true)
     private byte[] m_fileContent;
 
     /** The resource id. */
     @Id
-    @Column(name = "resource_id", length = 36)
+    @Column(name = "RESOURCE_ID", length = 36)
     private String m_resourceId;
 
     /**

@@ -40,22 +40,22 @@ import javax.persistence.UniqueConstraint;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_online_propertydef", uniqueConstraints = @UniqueConstraint(columnNames = {"propertydef_name"}))
+@Table(name = "CMS_ONLINE_PROPERTYDEF", uniqueConstraints = @UniqueConstraint(columnNames = {"PROPERTYDEF_NAME"}))
 public class CmsDAOOnlinePropertyDef implements I_CmsDAOPropertyDef {
 
     /** The property definition id. */
     @Id
-    @Column(name = "propertydef_id", length = 36)
+    @Column(name = "PROPERTYDEF_ID", length = 36)
     private String m_propertyDefId;
 
     /** The property definition name. */
     @Basic
-    @Column(name = "propertydef_name", nullable = false, length = 128)
+    @Column(name = "PROPERTYDEF_NAME", nullable = false, length = 128)
     private String m_propertyDefName;
 
     /** The property definition type. */
     @Basic
-    @Column(name = "propertydef_type")
+    @Column(name = "PROPERTYDEF_TYPE")
     private int m_propertyDefType;
 
     /**

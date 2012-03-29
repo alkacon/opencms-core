@@ -42,7 +42,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_offline_resource_relations")
+@Table(name = "CMS_OFFLINE_RESOURCE_RELATIONS")
 @IdClass(org.opencms.db.jpa.persistence.CmsDAOOfflineResourceRelations.CmsDAOOfflineResourceRelationsPK.class)
 public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations {
 
@@ -330,27 +330,27 @@ public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations
 
     /** The relation source id. */
     @Id
-    @Column(name = "relation_source_id", nullable = false, length = 36)
+    @Column(name = "RELATION_SOURCE_ID", nullable = false, length = 36)
     private String m_relationSourceId;
 
     /** The relation source path. */
     @Id
-    @Column(name = "relation_source_path", nullable = false, length = 1024)
+    @Column(name = "RELATION_SOURCE_PATH", nullable = false, length = 1024)
     private String m_relationSourcePath;
 
     /** The relation target id. */
     @Id
-    @Column(name = "relation_target_id", nullable = false, length = 36)
+    @Column(name = "RELATION_TARGET_ID", nullable = false, length = 36)
     private String m_relationTargetId;
 
     /** The relation target path. */
     @Id
-    @Column(name = "relation_target_path", nullable = false, length = 1024)
+    @Column(name = "RELATION_TARGET_PATH", nullable = false, length = 1024)
     private String m_relationTargetPath;
 
     /** The relation type. */
     @Id
-    @Column(name = "relation_type")
+    @Column(name = "RELATION_TYPE")
     private int m_relationType;
 
     /**

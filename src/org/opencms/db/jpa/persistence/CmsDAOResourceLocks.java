@@ -39,27 +39,27 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_resource_locks")
+@Table(name = "CMS_RESOURCE_LOCKS")
 public class CmsDAOResourceLocks {
 
     /** The lock type. */
     @Basic
-    @Column(name = "lock_type")
+    @Column(name = "LOCK_TYPE")
     private int m_lockType;
 
     /** The project id. */
     @Basic
-    @Column(name = "project_id", nullable = false, length = 36)
+    @Column(name = "PROJECT_ID", nullable = false, length = 36)
     private String m_projectId;
 
     /** The resource path. */
     @Id
-    @Column(name = "resource_path", length = 1024)
+    @Column(name = "RESOURCE_PATH", length = 1024)
     private String m_resourcePath;
 
     /** The user id. */
     @Basic
-    @Column(name = "user_id", nullable = false, length = 36)
+    @Column(name = "USER_ID", nullable = false, length = 36)
     private String m_userId;
 
     /**

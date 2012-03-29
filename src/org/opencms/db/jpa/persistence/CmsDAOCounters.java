@@ -39,17 +39,17 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_counters")
+@Table(name = "CMS_COUNTERS")
 public class CmsDAOCounters {
 
     /** The counter.*/
     @Basic
-    @Column(name = "counter")
+    @Column(name = "COUNTER")
     private int m_counter;
 
     /** The name. */
     @Id
-    @Column(name = "name")
+    @Column(name = "NAME")
     private String m_name;
 
     /**

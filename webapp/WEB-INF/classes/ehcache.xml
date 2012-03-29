@@ -4,13 +4,19 @@
 		timeToIdleSeconds="300" timeToLiveSeconds="600" overflowToDisk="false"
 		memoryStoreEvictionPolicy="LRU" />
 
-	<!-- OpenJPA data cache -->
-	<cache name="openjpa" maxElementsInMemory="5000" eternal="false"
-		timeToIdleSeconds="300" timeToLiveSeconds="600" overflowToDisk="false"
-		memoryStoreEvictionPolicy="LRU" />
-
 	<!-- OpenJPA query cache -->
 	<cache name="openjpa-querycache" maxElementsInMemory="1000"
 		eternal="false" timeToIdleSeconds="300" timeToLiveSeconds="600"
+		overflowToDisk="false" memoryStoreEvictionPolicy="LRU" />
+	
+	<!-- Here you can tune all "org.opencms.db.jpa.persistence.CmsDAOXXX" caches according 
+	your needs, but if you don't tune them the "defaultCache" configuration will be used. -->
+	
+	<cache name="org.opencms.db.jpa.persistence.CmsDAOContents" maxElementsInMemory="300" 
+		eternal="false" timeToIdleSeconds="500" timeToLiveSeconds="600" 
+		overflowToDisk="false" memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="org.opencms.db.jpa.persistence.CmsDAOOfflineContents" maxElementsInMemory="300" 
+		eternal="false" timeToIdleSeconds="500" timeToLiveSeconds="600" 
 		overflowToDisk="false" memoryStoreEvictionPolicy="LRU" />
 </ehcache>
