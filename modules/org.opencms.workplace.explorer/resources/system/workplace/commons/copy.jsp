@@ -59,7 +59,7 @@ if (wp.isMultiOperation()) {
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_COPY_TO_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_TARGET %>" type="text" value="" class="maxwidth"></td>
-	<td><input name="selectfolder" type="button" value="<%= wp.key(Messages.GUI_LABEL_SEARCH_0) %>" onClick="top.openTreeWin('copy', <%= includeFiles %>);" class="dialogbutton" style="width: 60px;">
+	<td><input name="selectfolder" type="button" value="<%= wp.key(Messages.GUI_LABEL_SEARCH_0) %>" onClick="top.openTreeWin('copy', <%= includeFiles %>);" class="dialogbutton" style="min-width: 60px;">
 </tr>
 <%--
 <tr>
