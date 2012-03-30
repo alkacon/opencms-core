@@ -147,11 +147,11 @@ function _editorInsertElement(element) {
 
 function _editorCreateLink(target) {
    var linkAttrs = {href: target};
-   linkAttrs["class"] = 'cmsInsertedLink';
+   var specialClass = "cmsInsertedLink" + Math.floor(Math.random()*10000);
+   linkAttrs["class"] = specialClass;
    editor.execCommand("mceInsertLink", false, linkAttrs);
-   var selectionNode = editor.selection.getNode();
-   var result = editor.dom.select(".cmsInsertedLink", selectionNode)[0];
-   editor.dom.removeClass(result, "cmsInsertedLink");
+   var result = editor.dom.select("."+specialClass)[0];
+   editor.dom.removeClass(result, specialClass);
    return result; 
 }
 

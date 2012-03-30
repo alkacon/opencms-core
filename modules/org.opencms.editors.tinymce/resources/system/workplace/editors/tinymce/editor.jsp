@@ -916,7 +916,7 @@ function getEditorHeight(){
 <input type="hidden" name="<%= CmsEditor.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
 <input type="hidden" name="<%= CmsEditor.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
 <input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
-<input type="hidden" name="content" id="content" value="<%=wp.getParamContent() %>" >
+<input type="hidden" name="content" id="content" >
 
 <table cellspacing="0" cellpadding="0" border="0" style="width:100%; height:100%;">
 
