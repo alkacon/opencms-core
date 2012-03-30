@@ -8,7 +8,8 @@
   </info>
   <module>
     <name>org.opencms.ade.containerpage</name>
-    <nicename><![CDATA[OpenCms 8 ADE Containerpade Editor]]></nicename>
+    <nicename><![CDATA[<p>This module provides the OpenCms 8 ADE Containerpade Editor</p>
+    <p><i>(c) 2012 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></nicename>
     <group>OpenCms ADE</group>
     <class/>
     <description><![CDATA[The ADE containerpage editor.]]></description>

@@ -1,12 +1,8 @@
 /*
- * File   : $Source: /home/cvs/OpenCms-v8/src/org/opencms/widgets/CmsSelectGroupWidget.java,v $
- * Date   : $Date: 2010-07-23 08:29:34 $
- * Version: $Revision: 1.1 $
- *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the

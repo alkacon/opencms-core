@@ -14,7 +14,7 @@
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the tools for view the OpenCms publish queue.</p>
-<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>(c) 2012 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>8.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

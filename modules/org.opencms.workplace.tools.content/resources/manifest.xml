@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the content of resources.</p>
 <p>Install this module if you want to modify file properties or content elements.</p>
-<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>(c) 2012 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>8.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

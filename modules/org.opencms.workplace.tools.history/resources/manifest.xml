@@ -14,7 +14,7 @@
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the file history feature.</p>
-<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>(c) 2012 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>8.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

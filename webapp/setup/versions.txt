@@ -1,5 +1,5 @@
 #############################################################
-# @OPENCMS_VERSION@ (c) 2009 Alkacon Software GmbH
+# @OPENCMS_VERSION@ (c) 2012 Alkacon Software GmbH
 # 
 # This file contains the information of your currently used
 # configuration.                                         

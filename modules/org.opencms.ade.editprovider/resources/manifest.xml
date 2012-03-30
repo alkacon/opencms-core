@@ -11,7 +11,8 @@
     <nicename><![CDATA[OpenCms 8 ADE toolbar direct edit provider]]></nicename>
     <group>OpenCms ADE</group>
     <class/>
-    <description><![CDATA[This module contains an edit provider for the original Direct Edit which has a number of features from ADE.]]></description>
+    <description><![CDATA[<p>This module contains an edit provider for the original Direct Edit which has a number of features from ADE.</p>
+    <p><i>(c) 2012 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
     <version>8.0.4</version>
     <authorname><![CDATA[Alkacon Software GmbH]]></authorname>
     <authoremail><![CDATA[info@alkacon.com]]></authoremail>
