@@ -238,13 +238,19 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         if ((m_galleryDialog.getCategoriesTab() != null) && (dialogBean.getCategories() != null)) {
             setCategoriesTabContent(dialogBean.getCategories());
         }
-        if (dialogBean.getStartTab() == GalleryTabId.cms_tab_results) {
-            m_galleryDialog.fillResultTab(searchObj);
+        GalleryTabId startTab = dialogBean.getStartTab();
+        if (startTab == GalleryTabId.cms_tab_results) {
+            if (searchObj.isEmpty()) {
+                // if there are no search parameters set, don't show the result tab
+                startTab = m_mode.getTabs()[0];
+            } else {
+                m_galleryDialog.fillResultTab(searchObj);
+            }
         }
         if ((dialogBean.getVfsRootFolders() != null) && (m_galleryDialog.getVfsTab() != null)) {
             m_galleryDialog.getVfsTab().fillInitially(dialogBean.getVfsRootFolders());
         }
-        m_galleryDialog.selectTab(dialogBean.getStartTab(), dialogBean.getStartTab() != GalleryTabId.cms_tab_results);
+        m_galleryDialog.selectTab(startTab, startTab != GalleryTabId.cms_tab_results);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourcePath())
             && CmsStringUtil.isNotEmptyOrWhitespaceOnly(searchObj.getResourceType())) {
             if (m_galleryDialog.isAttached()) {
