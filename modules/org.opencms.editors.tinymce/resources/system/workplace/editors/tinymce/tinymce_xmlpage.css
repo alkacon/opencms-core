@@ -1,7 +1,7 @@
 
 /* These rules are used for laying out TinyMCE's button toolbar rows next to each other, not as rows. */
 
-.mceIframeContainer, .mceIframeContainer iframe, #content_tbl > tbody > tr:first-child + tr, #content_tbl {
+.mceIframeContainer, .mceIframeContainer iframe, #tinymce_content_tbl > tbody > tr:first-child + tr, #tinymce_content_tbl {
 	height: 100% !important; 
 }
 
