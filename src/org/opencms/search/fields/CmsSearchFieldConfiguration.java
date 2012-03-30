@@ -357,12 +357,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
      */
     public Analyzer getAnalyzer(Analyzer analyzer) {
 
+        // parent folder and last modified lookup fields must use whitespace analyzer
+        WhitespaceAnalyzer ws = new WhitespaceAnalyzer(CmsSearchIndex.LUCENE_VERSION);
+        Map<String, Analyzer> analyzers = new HashMap<String, Analyzer>();
         // first make map the default hard coded fields
-        analyzer = getAnalyzerForDefaultFields(analyzer);
-
-        PerFieldAnalyzerWrapper result = analyzer instanceof PerFieldAnalyzerWrapper
-        ? (PerFieldAnalyzerWrapper)analyzer
-        : null;
+        analyzers.put(CmsSearchField.FIELD_PARENT_FOLDERS, ws);
+        analyzers.put(CmsSearchField.FIELD_CATEGORY, ws);
+        analyzers.put(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, ws);
+        analyzers.put(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, ws);
 
         Iterator<CmsSearchField> i = m_fields.iterator();
         while (i.hasNext()) {
@@ -371,20 +373,11 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             Analyzer fieldAnalyzer = field.getAnalyzer();
             if (fieldAnalyzer != null) {
                 // this field has an individual analyzer configured
-                if (result == null) {
-                    // if required, create a new wrapper class
-                    result = new PerFieldAnalyzerWrapper(analyzer);
-                }
-                result.addAnalyzer(field.getName(), fieldAnalyzer);
+                analyzers.put(field.getName(), fieldAnalyzer);
             }
         }
-
-        if (result == null) {
-            // at least one field has an individual analyzer configured
-            return analyzer;
-        }
-        // no fields have individual analyzer configured
-        return result;
+        // return the individual field configured analyzer
+        return new PerFieldAnalyzerWrapper(analyzer, analyzers);
     }
 
     /**
@@ -631,11 +624,9 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             Field.Index.ANALYZED);
         document.add(field);
         // add date of last modification
-        field = new Field(
-            CmsSearchField.FIELD_DATE_LASTMODIFIED,
-            DateTools.dateToString(new Date(resource.getDateLastModified()), DateTools.Resolution.MILLISECOND),
-            Field.Store.YES,
-            Field.Index.NOT_ANALYZED);
+        field = new Field(CmsSearchField.FIELD_DATE_LASTMODIFIED, DateTools.dateToString(
+            new Date(resource.getDateLastModified()),
+            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.NOT_ANALYZED);
         field.setBoost(0);
         document.add(field);
         // add date of last modification optimized for fast lookup
@@ -811,32 +802,6 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         document.add(new Field(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
         return document;
-    }
-
-    /**
-     * Returns an analyzer that wraps the given base analyzer with special analyzers required for the hard coded 
-     * document fields.<p>
-     * 
-     * @param analyzer the base analyzer to wrap
-     * 
-     * @return an analyzer that wraps the given base analyzer for the hard coded document fields
-     * 
-     * @see #getAnalyzer(Analyzer)
-     */
-    protected Analyzer getAnalyzerForDefaultFields(Analyzer analyzer) {
-
-        PerFieldAnalyzerWrapper result = analyzer instanceof PerFieldAnalyzerWrapper
-        ? (PerFieldAnalyzerWrapper)analyzer
-        : new PerFieldAnalyzerWrapper(analyzer);
-
-        // parent folder and last modified lookup fields must use whitespace analyzer
-        WhitespaceAnalyzer ws = new WhitespaceAnalyzer(CmsSearchIndex.LUCENE_VERSION);
-        result.addAnalyzer(CmsSearchField.FIELD_PARENT_FOLDERS, ws);
-        result.addAnalyzer(CmsSearchField.FIELD_CATEGORY, ws);
-        result.addAnalyzer(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, ws);
-        result.addAnalyzer(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, ws);
-
-        return result;
     }
 
     /**

@@ -64,6 +64,10 @@ public interface I_CmsIndexWriter {
     /**
      * Optimizes the index.<p>
      * 
+     * Please note that as of Lucene 3.5, the direct use of optimize is discouraged
+     * as Lucene apparently is now able to manage the file structure so efficiently that
+     * frequent optimizations are not longer required.<p>
+     * 
      * @throws IOException
      */
     void optimize() throws IOException;

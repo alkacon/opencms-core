@@ -138,8 +138,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         /**
          * @see org.apache.lucene.index.IndexReader#reopen()
+         * 
+         * @deprecated since Lucene 3.5 but kept for backward compatibility
          */
         @Override
+        @Deprecated
         public synchronized IndexReader reopen() throws CorruptIndexException, IOException {
 
             return m_reader.reopen();
@@ -1181,6 +1184,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns <code>true</code> in case this index is updated incremental.<p>
+     * 
+     * An index is updated incremental if the index rebuild mode as defined by 
+     * {@link #getRebuildMode()} is either set to {@value #REBUILD_MODE_AUTO} or 
+     * {@value #REBUILD_MODE_OFFLINE}. Moreover, at least one update must have 
+     * been written to the index already.
+     * 
+     * @return <code>true</code> in case this index is updated incremental
+     */
+    public boolean isUpdatedIncremental() {
+
+        return m_indexWriter != null;
+    }
+
+    /**
      * Removes an index source from this search index.<p>
      * 
      * @param sourceName the index source name to remove
@@ -1848,11 +1866,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 oldDir.copy(newDir, fileName, fileName);
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_IO_INDEX_BACKUP_CREATE_3,
-                getName(),
-                getPath(),
-                backupPath), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_CREATE_3, getName(), getPath(), backupPath),
+                e);
             backupPath = null;
         }
         return backupPath;
@@ -2107,8 +2123,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         // in case there is an index searcher available close it
         if ((m_indexSearcher != null) && (m_indexSearcher.getIndexReader() != null)) {
             try {
-                IndexReader newReader = m_indexSearcher.getIndexReader().reopen();
+                IndexReader oldReader = m_indexSearcher.getIndexReader();
+                IndexReader newReader = IndexReader.openIfChanged(oldReader);
                 m_indexSearcher = new IndexSearcher(newReader);
+                oldReader.close();
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_REOPEN_1, getName()), e);
             }
