@@ -1523,9 +1523,16 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private CmsSitemapInfo getSitemapInfo(String basePath) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsResource baseFolder = cms.readResource(
-            cms.getRequestContext().removeSiteRoot(basePath),
-            CmsResourceFilter.ONLY_VISIBLE);
+        CmsResource baseFolder = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)) {
+            baseFolder = cms.readResource(
+                cms.getRequestContext().removeSiteRoot(basePath),
+                CmsResourceFilter.ONLY_VISIBLE);
+        } else {
+            // in case of an empty base path, use base folder of the current site
+            basePath = "/";
+            baseFolder = cms.readResource("/");
+        }
         CmsResource defaultFile = cms.readDefaultFile(baseFolder, CmsResourceFilter.ONLY_VISIBLE);
         String title = cms.readPropertyObject(baseFolder, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(title) && (defaultFile != null)) {
