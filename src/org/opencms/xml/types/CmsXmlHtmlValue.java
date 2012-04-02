@@ -253,7 +253,8 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
 
         String finalValue = value;
         if (finalValue != null) {
-            // nested CDATA tags are not allowed, so replace CDATA tags with their contents 
+            // nested CDATA tags are not allowed, so replace CDATA tags with their contents
+            finalValue = finalValue.replaceAll("(?s)// <!\\[CDATA\\[(.*?)// \\]\\]>", "$1"); // special case for embedded Javascript 
             finalValue = finalValue.replaceAll("(?s)<!\\[CDATA\\[(.*?)\\]\\]>", "$1");
         }
         if (encoding != null) {
