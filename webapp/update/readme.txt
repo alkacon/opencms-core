@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 7.x and 8.0.x to OpenCms 8.0.3
+            Instructions for updating OpenCms 7.x and 8.0.x to OpenCms 8.0.4
 
 
                                     WARNING:
@@ -21,7 +21,7 @@ IMPORTANT: Alkacon OCEE versions less than 3 will not work with OpenCms 8.
 IMPORTANT: The updater is only compatible with the database engines MySQL, 
            Oracle and PostgreSQL.
 
-Follow the following steps to update from OpenCms 7.x and 8.0.x to OpenCms 8.0.3:
+Follow the following steps to update from OpenCms 7.x and 8.0.x to OpenCms 8.0.4:
 
 
 1. Shutdown your OpenCms servlet container
@@ -31,7 +31,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_8.0.3.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_8.0.4.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
