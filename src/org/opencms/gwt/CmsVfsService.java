@@ -42,12 +42,12 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
-import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
@@ -309,6 +309,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 if (entryResource.isFolder()) {
                     descendants.addAll(cms.readResources(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
                 }
+
                 for (CmsResource deleteRes : descendants) {
                     deleteIds.add(deleteRes.getStructureId());
                 }
@@ -833,14 +834,19 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     @SuppressWarnings("unchecked")
     private List<CmsBrokenLinkBean> getBrokenLinkBeans(MultiValueMap linkMap) throws CmsException {
 
+        CmsBrokenLinkRenderer brokenLinkRenderer = new CmsBrokenLinkRenderer(
+            getCmsObject());
         List<CmsBrokenLinkBean> result = new ArrayList<CmsBrokenLinkBean>();
-        for (CmsResource entry : (Set<CmsResource>)linkMap.keySet()) {
-            CmsBrokenLinkBean parentBean = createSitemapBrokenLinkBean(entry);
+        for (CmsResource key : (Set<CmsResource>)linkMap.keySet()) {
+
+            CmsBrokenLinkBean parentBean = createSitemapBrokenLinkBean(key);
             result.add(parentBean);
-            Collection<CmsResource> values = linkMap.getCollection(entry);
+            Collection<CmsResource> values = linkMap.getCollection(key);
             for (CmsResource resource : values) {
-                CmsBrokenLinkBean childBean = createSitemapBrokenLinkBean(resource);
-                parentBean.addChild(childBean);
+                List<CmsBrokenLinkBean> brokenLinkBeans = brokenLinkRenderer.renderBrokenLink(key, resource);
+                for (CmsBrokenLinkBean childBean : brokenLinkBeans) {
+                    parentBean.addChild(childBean);
+                }
             }
         }
         return result;

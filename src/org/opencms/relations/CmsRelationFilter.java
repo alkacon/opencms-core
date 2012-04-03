@@ -82,6 +82,30 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
+     * Utility method which prepares a filter for relations which point *from* a given structure id.<p>
+     * 
+     * @param structureId the structure id 
+     * 
+     * @return the new relation filter 
+     */
+    public static CmsRelationFilter relationsFromStructureId(CmsUUID structureId) {
+
+        return SOURCES.filterStructureId(structureId);
+    }
+
+    /**
+     * Utility method which prepares a filter for relations which point *to* a given structure id.<p>
+     * 
+     * @param structureId the structure id 
+     * 
+     * @return the new relation filter 
+     */
+    public static CmsRelationFilter relationsToStructureId(CmsUUID structureId) {
+
+        return TARGETS.filterStructureId(structureId);
+    }
+
+    /**
      * @see java.lang.Object#clone()
      */
     @Override

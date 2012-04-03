@@ -60,6 +60,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -674,6 +675,30 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         CmsContainerConfigurationWriter configWriter = new CmsContainerConfigurationWriter();
         configWriter.save(cms, "alpha", true, cms.readResource("/system/level1/level2"), elements);
         checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE, "key=c", "key=a", "key=b");
+    }
+
+    /**
+     * Tests looking up inheritance groups by element resource.<p>
+     * 
+     * @throws Exception
+     */
+    public void testReverseLookup() throws Exception {
+
+        writeConfiguration(1, "a");
+        writeConfiguration(2, "b");
+        writeConfiguration(3, "c");
+        publish();
+        CmsObject cms = getCmsObject();
+        Set<String> expected = new HashSet<String>();
+        expected.add("alpha");
+        CmsResource inheritanceConfig = cms.readResource("/system/level1/level2/.inherited");
+        CmsResource target = cms.readResource("/system/content/b.txt");
+        Set<String> result = CmsInheritanceGroupUtils.getNamesOfGroupsContainingResource(cms, inheritanceConfig, target);
+        assertEquals(expected, result);
+
+        target = cms.readResource("/system/content/");
+        result = CmsInheritanceGroupUtils.getNamesOfGroupsContainingResource(cms, inheritanceConfig, target);
+        assertEquals(Collections.emptySet(), result);
     }
 
     /**

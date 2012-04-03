@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ALIAS_IS_VFS_0 = "ERR_ALIAS_IS_VFS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INHERITANCE_GROUP_NOT_FOUND_1 = "ERR_INHERITANCE_GROUP_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INSTANTIATION_FAILED_1 = "ERR_INSTANTIATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -78,6 +81,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIAS_0 = "GUI_ALIAS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCY_PAGE_PATH_0 = "GUI_DEPENDENCY_PAGE_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCY_PAGE_TITLE_0 = "GUI_DEPENDENCY_PAGE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKED_BY_1 = "GUI_LOCKED_BY_1";
