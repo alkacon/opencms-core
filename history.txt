@@ -34,7 +34,7 @@ OpenCms 8.0.4 - April xx, 2012
 * Fixed issue 2037 where proportional image cropping was not possible for certain formats.
 * Fixed issue 2039 with class cast exception in content tools dialogs.
 * Fixed issue 2040 where source search replacement didn't consider the content encoding.
-* Fixed issue 2014 where Static Export failed for files named 'index.html' with URL parameters.
+* Fixed issue 2041 where Static Export failed for files named 'index.html' with URL parameters.
 * Fixed issue 2045 where the width of workplace dialog buttons was fixed and not sufficient for other translations.
 - Improved handling of deleted users in permissions dialog.
 - Improved sitemap editor change handling.
