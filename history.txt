@@ -15,6 +15,32 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.0.4 - April xx, 2012
+! Added configurable ADE context menu dialogs.
+! Added Italian localization.
+! Added TinyMCE WYSIWYG editor.
+! Added scheduled job for search index optimization.
+* Fixed issue with VFS image widget preview function.
+* Fixed various image widget format and cropping issues.
+* Fixed issue 1999 where VFS image gallery widget would not open if 'useformats' was set to 'false'.
+* Fixed issue 2018 + 2024 typo in group permissions JSP resulting in a compile error.
+* Fixed issue 2019 incorrect form height in "Preferences -> Galleries" tab.
+* Fixed issue 2021 method org.opencms.jsp.CmsJspActionElement#link(java.util.String target, java.util.String detailPage) was not using second parameter.
+* Fixed issue 2026 CmsDefaultLinkSubstitutionHandle wrongly construct URL.
+* Fixed issue 2027 CmsFileUtil misses a value assignment.
+* Fixed issue 2028 CmsMirDirectPublish misses a return value.
+* Fixed issue 2029 where workplace crashed on occasions when using the publish dialog from the administration view.
+* Fixed issue 2032 where image gallery widget did not display images from /system/galleries/pics.
+* Fixed issue 2037 where proportional image cropping was not possible for certain formats.
+* Fixed issue 2039 with class cast exception in content tools dialogs.
+* Fixed issue 2040 where source search replacement didn't consider the content encoding.
+* Fixed issue 2014 where Static Export failed for files named 'index.html' with URL parameters.
+* Fixed issue 2045 where the width of workplace dialog buttons was fixed and not sufficient for other translations.
+- Improved handling of deleted users in permissions dialog.
+- Improved sitemap editor change handling.
+- Improved synchronized lock behavior for offline indexing.
+- Updated Lucene to version 3.5.
+
 OpenCms 8.0.3 - November 16, 2011
 ! With the introduction of "Function Pages", JSP based dynamic pages can be added with simple drag and drop in the sitemap editor.
 ! The sitemap editor's improved "Create Page" dialog offers a wider choice of types distinguishing "Container Pages", "Type Pages" and "Function Pages".
