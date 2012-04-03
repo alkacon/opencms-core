@@ -28,7 +28,6 @@
 package org.opencms.search;
 
 import org.opencms.db.CmsPublishedResource;
-import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -266,42 +265,11 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      */
     protected void addResourceToUpdateData(CmsPublishedResource pubRes, CmsSearchIndexUpdateData updateData) {
 
-        if (pubRes.getState().isNew()) {
-            // new resource just needs to be updated
-            if (pubRes.getPublishTag() < 0) {
-                // this is for an offline index
-                if (isResourceInTimeWindow(pubRes)) {
-                    // update only if resource is in time window
-                    updateData.addResourceToUpdate(pubRes);
-                } else {
-                    // for offline index state may be wrong, correct this
-                    pubRes.setState(CmsResourceState.STATE_DELETED);
-                    // in the offline indexes we must delete new resources outside of the time window
-                    updateData.addResourceToDelete(pubRes);
-                }
-            } else {
-                // for a standard index, just index the resource
-                updateData.addResourceToUpdate(pubRes);
-            }
-        } else if (pubRes.getState().isDeleted()) {
+        if (pubRes.getState().isDeleted()) {
             // deleted resource just needs to be removed
             updateData.addResourceToDelete(pubRes);
-        } else if (pubRes.getState().isChanged() || pubRes.getState().isUnchanged()) {
-            if (pubRes.getPublishTag() < 0) {
-                // this is for an offline index
-                if (isResourceInTimeWindow(pubRes)) {
-                    // update only if resource is in time window
-                    updateData.addResourceToUpdate(pubRes);
-                } else {
-                    // for offline index state may be wrong, correct this
-                    pubRes.setState(CmsResourceState.STATE_DELETED);
-                    // in the offline indexes we must delete new resources outside of the time window
-                    updateData.addResourceToDelete(pubRes);
-                }
-            } else {
-                // for a standard index, just update the resource
-                updateData.addResourceToUpdate(pubRes);
-            }
+        } else if (pubRes.getState().isNew() || pubRes.getState().isChanged() || pubRes.getState().isUnchanged()) {
+            updateData.addResourceToUpdate(pubRes);
         }
     }
 
