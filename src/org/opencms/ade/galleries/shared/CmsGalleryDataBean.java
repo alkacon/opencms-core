@@ -46,8 +46,6 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** Name of the used JS variable. */
     public static final String DICT_NAME = "cms_gallery_data_bean";
 
-    //TODO: add sitemap data, add vfs tree data, add container page data, resource locales if required
-
     /** The category tree entry to display as tree. */
     private List<CmsCategoryTreeEntry> m_categoryTreeEntry;
 
@@ -84,6 +82,7 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
 
+    /** The search scope. */
     private CmsGallerySearchScope m_scope;
 
     /**

@@ -44,6 +44,7 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     /** Flag to indicate if the current user may create a new resource of this type. */
     private boolean m_creatableType;
 
+    /** The resource type description. */
     private String m_description;
 
     /** An array of gallery type names associated with this content type. */

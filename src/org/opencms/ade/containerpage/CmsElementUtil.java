@@ -104,6 +104,7 @@ public class CmsElementUtil {
     private Locale m_locale;
 
     /** The request parameters to use while rendering the elements. */
+    @SuppressWarnings("unused")
     private Map<String, Object> m_parameterMap;
 
     /** The http request. */
