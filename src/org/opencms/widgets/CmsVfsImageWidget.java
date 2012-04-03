@@ -414,11 +414,15 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         // the current element value will be read by java-script including the image input field and the scale input field
         StringBuffer currentElement = new StringBuffer("'+document.getElementById('");
         currentElement.append(PREFIX_IMAGE).append(param.getId());
-        currentElement.append("').getAttribute('value')+'%3F__scale%3D'+document.getElementById('");
-        currentElement.append(PREFIX_SCALE).append(param.getId()).append("').getAttribute('value')+'");
-        currentElement.append("%26__formatName%3D'+escape(document.getElementById('").append(PREFIX_FORMAT).append(
-            param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(param.getId()).append(
-            "').selectedIndex].value)+'");
+        currentElement.append("').getAttribute('value')+'");
+        // only try reading scale and format info if formats are used
+        if (getWidgetConfiguration(cms, widgetDialog, param).isShowFormat()) {
+            currentElement.append("%3F__scale%3D'+document.getElementById('");
+            currentElement.append(PREFIX_SCALE).append(param.getId()).append("').getAttribute('value')+'");
+            currentElement.append("%26__formatName%3D'+escape(document.getElementById('").append(PREFIX_FORMAT).append(
+                param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(param.getId()).append(
+                "').selectedIndex].value)+'");
+        }
         result.put(GALLERY_PARAM.currentelement.name(), currentElement.toString());
         return result;
     }
