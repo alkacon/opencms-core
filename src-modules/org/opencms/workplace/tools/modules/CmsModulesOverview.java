@@ -87,6 +87,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     /** 
      * Commits the edited module.<p>
      */
+    @Override
     public void actionCommit() {
 
         // noop
@@ -97,6 +98,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      * 
      * @return the HTML for the dialog form
      */
+    @Override
     public String buildDialogForm() {
 
         StringBuffer result = new StringBuffer(1024);
@@ -115,10 +117,11 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#getCancelAction()
      */
+    @Override
     public String getCancelAction() {
 
         // set the default action
-        setParamPage((String)getPages().get(0));
+        setParamPage(getPages().get(0));
 
         return DIALOG_SET;
     }
@@ -148,6 +151,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -180,10 +184,11 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         initModule();
-
+        setKeyPrefix(CmsModulesEditBase.KEY_PREFIX);
         addWidget(new CmsWidgetDialogParameter(m_module, "name", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "niceName", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "description", PAGES[0], new CmsDisplayWidget()));
@@ -198,6 +203,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -206,6 +212,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -248,6 +255,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type
@@ -256,7 +264,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
         super.initWorkplaceRequestValues(settings, request);
 
         // refresh the list
-        Map objects = (Map)getSettings().getListObject();
+        Map<?, ?> objects = (Map<?, ?>)getSettings().getListObject();
         if (objects != null) {
             objects.remove(CmsExportpointsList.class.getName());
             objects.remove(CmsModulesDependenciesList.class.getName());
@@ -269,6 +277,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         String moduleName = getParamModule();
