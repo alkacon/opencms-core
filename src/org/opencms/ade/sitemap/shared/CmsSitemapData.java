@@ -139,7 +139,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param newElementInfos the new element information
      * @param newRedirectElementInfo the new redirect element info
      * @param newNavigationLevelElementInfo the new navigation level element info
-     * @param sitemapInfo
+     * @param sitemapInfo the sitemap info bean
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
      * @param openPath the path at which the sitemap should be opened 
