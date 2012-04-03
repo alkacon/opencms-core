@@ -599,11 +599,13 @@ function _setLinkOriginalProperties(linkElement, path, attributes){
         path=path.substring(0, path.indexOf("?"));
     }
     if (hasLightboxOption()) {
-        linkElement.href = path; //TODO: create lightbox link
+        linkElement.href = path; 
+        linkElement.setAttribute("data-mce-href", path);
         linkElement.setAttribute("title", attributes.title);
         linkElement.setAttribute("class", "thickbox");
     } else {
         linkElement.href = "#";
+        linkElement.setAttribute("data-mce-href", "#");
         var linkUri = "javascript:window.open('";
         linkUri += vfsPopupUri;
         linkUri += "?uri=";
@@ -613,7 +615,7 @@ function _setLinkOriginalProperties(linkElement, path, attributes){
         linkUri += ",height=";
         linkUri += attributes.height;
         linkUri += ",location=no,menubar=no,status=no,toolbar=no');";
-        linkElement.setAttribute("onclick", linkUri); //TODO: create popup link
+        linkElement.setAttribute("onclick", linkUri);
     }
     linkElement.setAttribute("id", LINK_PREFIX + attributes.hash);
 }
