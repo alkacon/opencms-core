@@ -30,6 +30,7 @@ package org.opencms.ade.detailpage;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
@@ -105,9 +106,18 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
             // skip in all cases above 
             return resource;
         }
-
         String path = cms.getRequestContext().getUri();
         path = CmsFileUtil.removeTrailingSeparator(path);
+        try {
+            cms.readResource(path);
+        } catch (CmsSecurityException e) {
+            // It may happen that a path is both an existing VFS path and a valid detail page link.
+            // If this is the case, and the user has insufficient permissions to read the resource at the path,
+            // no resource should be displayed, even if the user would have access to the detail page. 
+            return null;
+        } catch (CmsException e) {
+            // ignore 
+        }
         String detailName = CmsResource.getName(path);
         try {
             CmsUUID detailId = cms.readIdForUrlName(detailName);
