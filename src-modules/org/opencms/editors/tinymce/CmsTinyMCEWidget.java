@@ -148,6 +148,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("tinyMCE.init({\n");
         result.append("	// General options\n");
         result.append("relative_urls: false,\n");
+        result.append("remove_script_host: false,\n");
         result.append("skin_variant: 'ocms',\n");
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_" + id + "\",\n");

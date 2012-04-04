@@ -765,6 +765,7 @@ tinyMCE.init({
     // Skin options
     skin_variant : "ocms",
     relative_urls: false,
+    remove_script_host: false,
 
     // Example content CSS (should be your site CSS)
     content_css : "<cms:link><%= wp.getUriStyleSheet() %></cms:link>",
