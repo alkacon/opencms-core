@@ -562,11 +562,14 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void executePropertyModification(CmsPropertyModification propMod) {
 
-        Map<String, CmsClientProperty> props = getPropertiesForId(propMod.getId());
-        if (props != null) {
-            propMod.updatePropertyInMap(props);
+        CmsClientSitemapEntry entry = getEntryById(propMod.getId());
+        if (entry != null) {
+            Map<String, CmsClientProperty> props = getPropertiesForId(propMod.getId());
+            if (props != null) {
+                propMod.updatePropertyInMap(props);
+                entry.setOwnProperties(props);
+            }
         }
-
     }
 
     /**
