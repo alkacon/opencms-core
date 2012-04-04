@@ -92,6 +92,12 @@ public interface I_CmsImageBundle extends ClientBundle {
         String gotoSub();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String hideShowInNavigation();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */

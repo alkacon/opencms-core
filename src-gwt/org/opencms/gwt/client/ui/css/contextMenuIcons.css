@@ -57,3 +57,7 @@
 @sprite .cmsMenuItem .bump {
 	gwt-image: "icons.bumpIcon";
 }
+
+@sprite .cmsMenuItem .hideShowInNavigation {
+	gwt-image: "icons.hideShowInNavigationIcon";
+}

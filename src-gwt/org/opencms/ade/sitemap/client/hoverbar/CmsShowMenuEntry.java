@@ -47,7 +47,7 @@ public class CmsShowMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsShowMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().remove());
+        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().hideShowInNavigation());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_SHOW_0));
         setActive(true);
     }

@@ -174,6 +174,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
+    @Source("images/icons/hideShowInNavigationIcon.png")
+    ImageResource hideShowInNavigationIcon();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
     @Source("images/icons/lockIconActive.png")
     ImageResource lockIconActive();
 
