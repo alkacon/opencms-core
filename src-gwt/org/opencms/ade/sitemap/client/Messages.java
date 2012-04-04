@@ -145,6 +145,9 @@ public final class Messages {
     public static final String GUI_HOVERBAR_GOTO_SUB_0 = "GUI_HOVERBAR_GOTO_SUB_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_HIDE_0 = "GUI_HOVERBAR_HIDE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_MAKE_DEFAULT_0 = "GUI_HOVERBAR_MAKE_DEFAULT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -164,6 +167,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_REMOVE_0 = "GUI_HOVERBAR_REMOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_SHOW_0 = "GUI_HOVERBAR_SHOW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_SHOW_IN_NAV_0 = "GUI_HOVERBAR_SHOW_IN_NAV_0";

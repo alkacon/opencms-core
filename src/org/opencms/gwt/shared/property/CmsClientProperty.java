@@ -91,6 +91,9 @@ public class CmsClientProperty implements IsSerializable {
     public static final String PROPERTY_DESCRIPTION = "Description";
 
     /** The NavPos property name. */
+    public static final String PROPERTY_NAVINFO = "NavInfo";
+
+    /** The NavPos property name. */
     public static final String PROPERTY_NAVPOS = "NavPos";
 
     /** The NavText property name. */

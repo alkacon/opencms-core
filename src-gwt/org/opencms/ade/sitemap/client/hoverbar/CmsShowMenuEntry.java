@@ -33,22 +33,22 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
- * Sitemap context menu remove from navigation entry.<p>
+ * Sitemap context menu show in navigation entry.<p>
  * 
  * @since 8.0.0
  */
-public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsShowMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsRemoveMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsShowMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
         setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().remove());
-        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_REMOVE_0));
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_SHOW_0));
         setActive(true);
     }
 
@@ -58,7 +58,7 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         CmsSitemapController controller = getHoverbar().getController();
-        controller.removeFromNavigation(getHoverbar().getEntry().getId());
+        controller.showInNavigation(getHoverbar().getEntry().getId());
     }
 
     /**
@@ -69,7 +69,7 @@ public class CmsRemoveMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !controller.isRoot(entry.getSitePath()) && entry.isInNavigation();
+        boolean show = entry.isInNavigation() && entry.isHiddenNavigationEntry();
         setVisible(show);
         if (show && !entry.isEditable()) {
             setActive(false);

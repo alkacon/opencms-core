@@ -90,6 +90,8 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries.add(new CmsParentSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsMergeMenuEntry(hoverbar));
+        m_entries.add(new CmsHideMenuEntry(hoverbar));
+        m_entries.add(new CmsShowMenuEntry(hoverbar));
         m_entries.add(new CmsRemoveMenuEntry(hoverbar));
         m_entries.add(new CmsBumpDetailPageMenuEntry(hoverbar));
         m_entries.add(new CmsAvailabilityMenuEntry(hoverbar));

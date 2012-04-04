@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
@@ -57,6 +58,9 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
     /** The has navigation flag. */
     private Boolean m_hasNav;
+
+    /** Flag indicating whether this is a hidden navigation entry. */
+    private Boolean m_isHiddenNavigationEntry;
 
     /** The navigation tree level. */
     private int m_navTreeLevel = Integer.MIN_VALUE;
@@ -485,6 +489,21 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
             m_hasNav = Boolean.valueOf(((o1 != null) || (o2 != null)) && !CmsResource.isTemporaryFileName(m_sitePath));
         }
         return m_hasNav.booleanValue();
+    }
+
+    /**
+     * Returns if this is a hidden navigation entry.<p>
+     *
+     * @return <code>true</code> if this is a hidden navigation entry
+     */
+    public boolean isHiddenNavigationEntry() {
+
+        if (m_isHiddenNavigationEntry == null) {
+            // use "lazy initializing"
+            String navInfo = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVINFO);
+            m_isHiddenNavigationEntry = Boolean.valueOf(CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY.equals(navInfo));
+        }
+        return m_isHiddenNavigationEntry.booleanValue();
     }
 
     /**

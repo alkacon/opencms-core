@@ -1162,6 +1162,48 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Hides the entry within the site navigation.<p>
+     * 
+     * Hidden entries will still be visible in the navigation mode of the sitemap editor.
+     * They will also have a NavText and a NavPos. Only when using the NavBuilder get navigation for folder method,
+     * they will not be included.<p> 
+     * 
+     * @param entryId the entry id
+     */
+    public void hideInNavigation(CmsUUID entryId) {
+
+        CmsClientSitemapEntry entry = getEntryById(entryId);
+        CmsSitemapChange change = getChangeForEdit(
+            entry,
+            Collections.singletonList(new CmsPropertyModification(entryId.toString()
+                + "/"
+                + CmsClientProperty.PROPERTY_NAVINFO
+                + "/"
+                + CmsClientProperty.PATH_STRUCTURE_VALUE, CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY)));
+        commitChange(change, null);
+    }
+
+    /**
+     * Shows a formerly hidden entry in the navigation.<p>
+     * 
+     * @see #hideInNavigation(CmsUUID)
+     * 
+     * @param entryId the entry id
+     */
+    public void showInNavigation(CmsUUID entryId) {
+
+        CmsClientSitemapEntry entry = getEntryById(entryId);
+        CmsSitemapChange change = getChangeForEdit(
+            entry,
+            Collections.singletonList(new CmsPropertyModification(entryId.toString()
+                + "/"
+                + CmsClientProperty.PROPERTY_NAVINFO
+                + "/"
+                + CmsClientProperty.PATH_STRUCTURE_VALUE, "")));
+        commitChange(change, null);
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.I_CmsSitemapController#replaceProperties(org.opencms.util.CmsUUID, java.util.Map)
      */
     public Map<String, CmsClientProperty> replaceProperties(CmsUUID id, Map<String, CmsClientProperty> properties) {

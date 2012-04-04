@@ -60,6 +60,16 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspNavBuilder {
 
+    /** The visibility mode. */
+    public static enum Visibility {
+        /** Navigation only. */
+        navigation,
+        /** Navigation including hidden entries. */
+        includeHidden,
+        /** All entries. */
+        all
+    }
+
     /** Default file property value to mark navigation level folders. */
     public static final String NAVIGATION_LEVEL_FOLDER = "##navigation_level_folder##";
 
@@ -362,21 +372,21 @@ public class CmsJspNavBuilder {
      */
     public List<CmsJspNavElement> getNavigationForFolder(String folder) {
 
-        return getNavigationForFolder(folder, false, CmsResourceFilter.DEFAULT);
+        return getNavigationForFolder(folder, Visibility.navigation, CmsResourceFilter.DEFAULT);
     }
 
     /**
      * Collect all navigation elements from the files in the given folder.<p>
      *
      * @param folder the selected folder
-     * @param includeInvisible <code>true</code> to include elements not visible in navigation
+     * @param visibility the visibility mode 
      * @param resourceFilter the filter to use reading the resources
      * 
      * @return A sorted (ascending to navigation position) list of navigation elements
      */
     public List<CmsJspNavElement> getNavigationForFolder(
         String folder,
-        boolean includeInvisible,
+        Visibility visibility,
         CmsResourceFilter resourceFilter) {
 
         folder = CmsResource.getFolderPath(folder);
@@ -391,10 +401,12 @@ public class CmsJspNavBuilder {
             LOG.error(e.getLocalizedMessage(), e);
             return Collections.<CmsJspNavElement> emptyList();
         }
-
+        boolean includeAll = visibility == Visibility.all;
+        boolean includeHidden = visibility == Visibility.includeHidden;
         for (CmsResource r : resources) {
             CmsJspNavElement element = getNavigationForResource(m_cms.getSitePath(r), resourceFilter);
-            if ((element != null) && (includeInvisible || element.isInNavigation())) {
+            if ((element != null)
+                && (includeAll || (element.isInNavigation() && (includeHidden || !element.isHiddenNavigationEntry())))) {
                 result.add(element);
             }
         }

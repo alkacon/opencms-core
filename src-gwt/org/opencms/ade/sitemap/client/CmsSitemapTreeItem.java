@@ -346,26 +346,17 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         itemWidget.setIconTitle(entry.isSubSitemapType()
         ? Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0)
         : Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
-        setExpiredStyle(entry, itemWidget);
-        //
-        //        itemWidget.addOpenHandler(new OpenHandler<CmsListItemWidget>() {
-        //
-        //            public void onOpen(OpenEvent<CmsListItemWidget> event) {
-        //
-        //                itemWidget.reInitAdditionalInfo(getInfoBean(entry, true));
-        //            }
-        //        });
-
+        setAdditionalStyles(entry, itemWidget);
         return itemWidget;
     }
 
     /**
-     * Sets the expired item style if appropriate.<p>
+     * Sets the additional style to mark expired entries or those that have the hide in navigation property set.<p>
      * 
      * @param entry the sitemap entry
      * @param itemWidget the item widget
      */
-    private static void setExpiredStyle(CmsClientSitemapEntry entry, CmsListItemWidget itemWidget) {
+    private static void setAdditionalStyles(CmsClientSitemapEntry entry, CmsListItemWidget itemWidget) {
 
         if (!entry.isResleasedAndNotExpired()) {
             itemWidget.getContentPanel().addStyleName(
@@ -373,6 +364,13 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         } else {
             itemWidget.getContentPanel().removeStyleName(
                 I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().expiredOrNotReleased());
+        }
+        if (entry.isHiddenNavigationEntry()) {
+            itemWidget.getContentPanel().addStyleName(
+                I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().hiddenNavEntry());
+        } else {
+            itemWidget.getContentPanel().removeStyleName(
+                I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().hiddenNavEntry());
         }
     }
 
@@ -653,7 +651,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         updateLock(entry);
         updateInNavigation(entry);
         getListItemWidget().setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
-        setExpiredStyle(entry, getListItemWidget());
+        setAdditionalStyles(entry, getListItemWidget());
         setDropEnabled(getSitemapEntry().isFolderType() && !getSitemapEntry().hasForeignFolderLock());
         if (entry.isSubSitemapType() || entry.isLeafType()) {
             hideOpeners();

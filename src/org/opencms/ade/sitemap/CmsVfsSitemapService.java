@@ -71,6 +71,7 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.jsp.CmsJspNavBuilder;
+import org.opencms.jsp.CmsJspNavBuilder.Visibility;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -743,7 +744,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
         List<CmsJspNavElement> navElements = getNavBuilder().getNavigationForFolder(
             parentPath,
-            true,
+            Visibility.all,
             CmsResourceFilter.ONLY_VISIBLE);
         CmsSitemapNavPosCalculator npc = new CmsSitemapNavPosCalculator(navElements, entryFolder, change.getPosition());
         List<CmsJspNavElement> navs = npc.getNavigationChanges();
@@ -1224,7 +1225,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         int i = 0;
         for (CmsJspNavElement navElement : getNavBuilder().getNavigationForFolder(
             root,
-            true,
+            Visibility.all,
             CmsResourceFilter.ONLY_VISIBLE)) {
             CmsClientSitemapEntry child = toClientEntry(navElement, false);
             if (child != null) {

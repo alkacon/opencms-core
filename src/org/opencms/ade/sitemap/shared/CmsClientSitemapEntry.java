@@ -78,6 +78,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
         subSitemap
     }
 
+    /** NavInfo property value to mark hidden navigation entries. */
+    public static final String HIDDEN_NAVIGATION_ENTRY = "ignoreInDefaultNav";
+
     /** The entry aliases. */
     private List<String> m_aliases;
 
@@ -523,6 +526,17 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public boolean isFolderType() {
 
         return (EntryType.folder == m_entryType) || (EntryType.navigationLevel == m_entryType);
+    }
+
+    /**
+     * Returns if this is a hidden navigation entry.<p>
+     *
+     * @return <code>true</code> if this is a hidden navigation entry
+     */
+    public boolean isHiddenNavigationEntry() {
+
+        CmsClientProperty property = m_ownProperties.get(CmsClientProperty.PROPERTY_NAVINFO);
+        return (property != null) && HIDDEN_NAVIGATION_ENTRY.equals(property.getEffectiveValue());
     }
 
     /**
