@@ -653,10 +653,12 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     private void updateAll(CmsClientSitemapEntry entry) {
 
         CmsSitemapTreeItem item = getTreeItem(entry.getId());
-        item.updateEntry(entry);
-        item.updateSitePath(entry.getSitePath());
-        for (CmsClientSitemapEntry child : entry.getSubEntries()) {
-            updateAll(child);
+        if (item != null) {
+            item.updateEntry(entry);
+            item.updateSitePath(entry.getSitePath());
+            for (CmsClientSitemapEntry child : entry.getSubEntries()) {
+                updateAll(child);
+            }
         }
     }
 }

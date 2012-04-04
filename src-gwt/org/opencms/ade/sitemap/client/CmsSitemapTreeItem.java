@@ -701,8 +701,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         if (getLoadState() == LoadState.LOADED) {
             for (int i = 0; i < getChildCount(); i++) {
                 CmsSitemapTreeItem item = (CmsSitemapTreeItem)getChild(i);
-                String path = CmsStringUtil.joinPaths(sitePath, CmsResource.getName(item.getSitePath()));
-                item.updateSitePath(path);
+                if (item != null) {
+                    String path = CmsStringUtil.joinPaths(sitePath, CmsResource.getName(item.getSitePath()));
+                    item.updateSitePath(path);
+                }
             }
         }
         getListItemWidget().updateTruncation();
