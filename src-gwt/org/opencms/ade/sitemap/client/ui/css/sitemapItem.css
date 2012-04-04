@@ -54,9 +54,12 @@
 .expiredOrNotReleased div.itemTitle{
 	font-style: italic;
 }
+div.expiredOrNotReleased{
+	background-color: value("constants.css.backgroundColorSitemapExpired");
+}
 
-.hiddenNavEntry div.itemTitle{
-	color:red;
+div.hiddenNavEntry{
+	opacity: 0.4;
 }
 
 div.itemTitle{

@@ -97,6 +97,8 @@
 @def backgroundColorSitemap #E1E1E1;
 /** This constant defines the background color of the sitemap entry that is highlighted. */
 @def backgroundColorSitemapHighlight #CCFFFF;
+/** Background color for sitemap entries marked as expired or not released. */
+@def backgroundColorSitemapExpired #D8DEEA;
 
 /**
  * The following constants define background colors for transparent background images.
