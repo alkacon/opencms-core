@@ -798,6 +798,8 @@ public class CmsTreeItem extends CmsListItem {
         if (m_open) {
             fireOpen();
         }
+        // reset the leaf style according to the child count
+        setLeafStyle(0 == getChildCount());
     }
 
     /** 
@@ -850,8 +852,7 @@ public class CmsTreeItem extends CmsListItem {
      */
     protected void onChangeChildren() {
 
-        int count = getChildCount();
-        setLeafStyle(count == 0);
+        setLeafStyle(0 == getChildCount());
     }
 
     /**
