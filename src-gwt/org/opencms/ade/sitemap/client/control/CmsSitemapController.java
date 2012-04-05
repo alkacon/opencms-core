@@ -630,44 +630,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
-     * Updates the given entry only, not evaluating any child changes.<p>
-     * 
-     * @param entryId the entry id
-     */
-    public void updateSingleEntry(final CmsUUID entryId) {
-
-        CmsRpcAction<CmsClientSitemapEntry> getChildrenAction = new CmsRpcAction<CmsClientSitemapEntry>() {
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-            */
-            @Override
-            public void execute() {
-
-                getService().getChildren(getEntryPoint(), entryId, 0, this);
-            }
-
-            /**
-            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-            */
-            @Override
-            public void onResponse(CmsClientSitemapEntry result) {
-
-                CmsClientSitemapEntry target = getEntryById(entryId);
-                if (target == null) {
-                    // this might happen after an automated deletion
-                    stop(false);
-                    return;
-                }
-                target.update(result);
-                CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(target.getId());
-                item.updateEntry(target);
-            }
-        };
-        getChildrenAction.execute();
-    }
-
-    /**
     * Returns the sitemap data.<p>
     *
     * @return the sitemap data
@@ -935,6 +897,16 @@ public class CmsSitemapController implements I_CmsSitemapController {
         return m_propertyMaps.get(id);
     }
 
+    /**
+     * Returns the root entry id.<p>
+     * 
+     * @return the root entry id
+     */
+    public CmsUUID getRootId() {
+
+        return m_rootId;
+    }
+
     /** 
      * Returns the sitemap service instance.<p>
      * 
@@ -956,6 +928,28 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public void gotoParentSitemap() {
 
         openSiteMap(getData().getParentSitemap());
+    }
+
+    /**
+     * Hides the entry within the site navigation.<p>
+     * 
+     * Hidden entries will still be visible in the navigation mode of the sitemap editor.
+     * They will also have a NavText and a NavPos. Only when using the NavBuilder get navigation for folder method,
+     * they will not be included.<p> 
+     * 
+     * @param entryId the entry id
+     */
+    public void hideInNavigation(CmsUUID entryId) {
+
+        CmsClientSitemapEntry entry = getEntryById(entryId);
+        CmsSitemapChange change = getChangeForEdit(
+            entry,
+            Collections.singletonList(new CmsPropertyModification(entryId.toString()
+                + "/"
+                + CmsClientProperty.PROPERTY_NAVINFO
+                + "/"
+                + CmsClientProperty.PATH_STRUCTURE_VALUE, CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY)));
+        commitChange(change, null);
     }
 
     /**
@@ -1165,25 +1159,23 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
-     * Hides the entry within the site navigation.<p>
-     * 
-     * Hidden entries will still be visible in the navigation mode of the sitemap editor.
-     * They will also have a NavText and a NavPos. Only when using the NavBuilder get navigation for folder method,
-     * they will not be included.<p> 
-     * 
-     * @param entryId the entry id
+     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapController#replaceProperties(org.opencms.util.CmsUUID, java.util.Map)
      */
-    public void hideInNavigation(CmsUUID entryId) {
+    public Map<String, CmsClientProperty> replaceProperties(CmsUUID id, Map<String, CmsClientProperty> properties) {
 
-        CmsClientSitemapEntry entry = getEntryById(entryId);
-        CmsSitemapChange change = getChangeForEdit(
-            entry,
-            Collections.singletonList(new CmsPropertyModification(entryId.toString()
-                + "/"
-                + CmsClientProperty.PROPERTY_NAVINFO
-                + "/"
-                + CmsClientProperty.PATH_STRUCTURE_VALUE, CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY)));
-        commitChange(change, null);
+        if ((id == null) || (properties == null)) {
+            return null;
+        }
+        Map<String, CmsClientProperty> props = m_propertyMaps.get(id);
+        if (props == null) {
+            props = properties;
+            m_propertyMaps.put(id, props);
+        } else {
+            props.clear();
+            props.putAll(properties);
+        }
+        return props;
+
     }
 
     /**
@@ -1204,26 +1196,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 + "/"
                 + CmsClientProperty.PATH_STRUCTURE_VALUE, "")));
         commitChange(change, null);
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.I_CmsSitemapController#replaceProperties(org.opencms.util.CmsUUID, java.util.Map)
-     */
-    public Map<String, CmsClientProperty> replaceProperties(CmsUUID id, Map<String, CmsClientProperty> properties) {
-
-        if ((id == null) || (properties == null)) {
-            return null;
-        }
-        Map<String, CmsClientProperty> props = m_propertyMaps.get(id);
-        if (props == null) {
-            props = properties;
-            m_propertyMaps.put(id, props);
-        } else {
-            props.clear();
-            props.putAll(properties);
-        }
-        return props;
-
     }
 
     /**
@@ -1260,6 +1232,44 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
         getChildren(entry.getId(), CmsSitemapTreeItem.getItemById(entry.getId()).isOpen(), null);
+    }
+
+    /**
+     * Updates the given entry only, not evaluating any child changes.<p>
+     * 
+     * @param entryId the entry id
+     */
+    public void updateSingleEntry(final CmsUUID entryId) {
+
+        CmsRpcAction<CmsClientSitemapEntry> getChildrenAction = new CmsRpcAction<CmsClientSitemapEntry>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                getService().getChildren(getEntryPoint(), entryId, 0, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(CmsClientSitemapEntry result) {
+
+                CmsClientSitemapEntry target = getEntryById(entryId);
+                if (target == null) {
+                    // this might happen after an automated deletion
+                    stop(false);
+                    return;
+                }
+                target.update(result);
+                CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(target.getId());
+                item.updateEntry(target);
+            }
+        };
+        getChildrenAction.execute();
     }
 
     /**

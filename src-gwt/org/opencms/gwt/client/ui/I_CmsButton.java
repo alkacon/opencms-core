@@ -88,6 +88,9 @@ public interface I_CmsButton {
         ADD_TO_FAVORITES(BUTTON_CSS.toolbarClipboard(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
 
         /** Toolbar button. */
+        BACK(BUTTON_CSS.toolbarBack(), Messages.get().key(Messages.GUI_TOOLBAR_BACK_0)),
+
+        /** Toolbar button. */
         CLIPBOARD(BUTTON_CSS.toolbarClipboard(), Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_0)),
 
         /** Toolbar button. */
@@ -98,6 +101,9 @@ public interface I_CmsButton {
 
         /** Toolbar button. */
         EDIT(BUTTON_CSS.toolbarEdit(), Messages.get().key(Messages.GUI_TOOLBAR_EDIT_0)),
+
+        /** Inherited element button. */
+        INHERITED(BUTTON_CSS.toolbarInherited(), "Inherited"),
 
         /** Toolbar button. */
         MOVE(BUTTON_CSS.toolbarMove(), Messages.get().key(Messages.GUI_TOOLBAR_MOVE_IN_0)),
@@ -112,6 +118,9 @@ public interface I_CmsButton {
         PUBLISH(BUTTON_CSS.toolbarPublish(), Messages.get().key(Messages.GUI_TOOLBAR_PUBLISH_0)),
 
         /** Toolbar button. */
+        REFRESH(BUTTON_CSS.toolbarRefresh(), Messages.get().key(Messages.GUI_TOOLBAR_REFRESH_0)),
+
+        /** Toolbar button. */
         REMOVE(BUTTON_CSS.toolbarRemove(), Messages.get().key(Messages.GUI_TOOLBAR_REMOVE_0)),
 
         /** Toolbar button. */
@@ -123,20 +132,14 @@ public interface I_CmsButton {
         /** Toolbar button. */
         SELECTION(BUTTON_CSS.toolbarSelection(), Messages.get().key(Messages.GUI_TOOLBAR_SELECTION_0)),
 
-        /** Toolbar button. */
-        SITEMAP(BUTTON_CSS.toolbarSitemap(), Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
-
-        /** Toolbar button. */
-        BACK(BUTTON_CSS.toolbarBack(), Messages.get().key(Messages.GUI_TOOLBAR_BACK_0)),
-
         /** Shows formerly hidden elements. */
         SHOW(BUTTON_CSS.toolbarNew(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
 
-        /** Inherited element button. */
-        INHERITED(BUTTON_CSS.toolbarInherited(), "Inherited"),
+        /** Toolbar button. */
+        SHOWSMALL(BUTTON_CSS.toolbarShowSmall(), Messages.get().key(Messages.GUI_TOOLBAR_SHOWSMALL_0)),
 
         /** Toolbar button. */
-        SHOWSMALL(BUTTON_CSS.toolbarShowSmall(), Messages.get().key(Messages.GUI_TOOLBAR_SHOWSMALL_0));
+        SITEMAP(BUTTON_CSS.toolbarSitemap(), Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0));
 
         /** The icon class name. */
         private String m_iconClass;

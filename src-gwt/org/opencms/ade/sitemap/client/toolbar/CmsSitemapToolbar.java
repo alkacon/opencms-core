@@ -61,6 +61,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(controller.getData().getParentSitemap())) {
             addRight(new CmsToolbarGoToParentButton(this, controller));
         }
+        addRight(new CmsToolbarRefreshButton(this, controller));
         addRight(new CmsToolbarGoBackButton(this, controller));
     }
 

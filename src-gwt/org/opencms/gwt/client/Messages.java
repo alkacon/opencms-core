@@ -376,6 +376,9 @@ public final class Messages {
     public static final String GUI_TOOLBAR_PUBLISH_0 = "GUI_TOOLBAR_PUBLISH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_REFRESH_0 = "GUI_TOOLBAR_REFRESH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_REMOVE_0 = "GUI_TOOLBAR_REMOVE_0";
 
     /** Message constant for key in the resource bundle. */

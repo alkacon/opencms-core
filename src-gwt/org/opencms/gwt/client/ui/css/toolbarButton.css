@@ -96,6 +96,13 @@
     gwt-image: "sitemapBigIconActive";
 }
 
+@sprite .cmsState-up-disabled .toolbarRefresh, .cmsState-down-disabled .toolbarRefresh{
+	gwt-image: "resetBigIconActive";
+}
+@sprite .cmsState-up .toolbarRefresh, .cmsState-up-hovering .toolbarRefresh, .cmsState-down-hovering .toolbarRefresh, .cmsState-down .toolbarRefresh{
+    gwt-image: "resetBigIconActive";
+}
+
 @sprite .cmsState-up-disabled .toolbarRemove, .cmsState-down-disabled .toolbarRemove{
 	gwt-image: "removeBigIconDeactivated";
 }
