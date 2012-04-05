@@ -12,7 +12,7 @@
 
 	<xsd:complexType name="OpenCmsRedirectPage">
 		<xsd:sequence>
-			<xsd:element name="Link" type="OpenCmsVarLink" />
+			<xsd:element name="Link" type="OpenCmsVarLink" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="Type" type="OpenCmsString" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
@@ -22,7 +22,7 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.ade.config.workplace" />
 			<layouts>
-					<layout element="Type" widget="SelectorWidget" configuration="value='301' option='${key.redirect.type.permanent}'|value='307' option='${key.redirect.type.temporary}'" />
+					<layout element="Type" widget="SelectorWidget" configuration="value='301' option='${key.redirect.type.permanent}'|value='307' option='${key.redirect.type.temporary}'|value='sublevel' option='${key.redirect.type.sublevel}'" />
 			</layouts>
 			<validationrules>
 				<rule element="Link" regex=".+" type="error" message="%(key.redirect.error.emptylink)" />
@@ -31,6 +31,5 @@
 			 	<default element="Type" value="307" />
 			</defaults>
 		</xsd:appinfo>
-
 	</xsd:annotation>  
 </xsd:schema>
