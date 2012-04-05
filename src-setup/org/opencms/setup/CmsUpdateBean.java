@@ -57,16 +57,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.MapMaker;
 
 /**
  * A java bean as a controller for the OpenCms update wizard.<p>
@@ -493,6 +498,55 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Try to preload necessary classes, to avoid ugly class loader issues caused by JARs being deleted during the update.
+     */
+    public void preload() {
+
+        //opencms.jar 
+        preload(OpenCms.class);
+
+        //guava
+        preload(MapMaker.class);
+    }
+
+    /**
+     * Preloads classes from the same jar file as a given class.<p>
+     * 
+     * @param cls the class for which the classes from the same jar file should be loaded 
+     */
+    public void preload(Class<?> cls) {
+
+        try {
+            File jar = new File(cls.getProtectionDomain().getCodeSource().getLocation().getFile());
+            java.util.jar.JarFile jarfile = new JarFile(jar);
+            try {
+                Enumeration<JarEntry> entries = jarfile.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+                    if (name.endsWith(".class")) {
+                        String className = name.replaceFirst("\\.class$", "");
+                        className = className.replace('/', '.');
+                        try {
+                            Class.forName(className);
+                        } catch (VirtualMachineError e) {
+                            throw e;
+                        } catch (Throwable e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+            } finally {
+                jarfile.close();
+            }
+        } catch (VirtualMachineError e) {
+            throw e;
+        } catch (Throwable e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
      * Prepares step 1 of the update wizard.<p>
      */
     public void prepareUpdateStep1() {
@@ -568,6 +622,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     public void prepareUpdateStep5() {
 
         if (isInitialized()) {
+            preload();
             try {
                 String fileName = getWebAppRfsPath() + FOLDER_UPDATE + "cmsupdate";
                 // read the file
