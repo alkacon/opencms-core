@@ -7,7 +7,7 @@
 	overflow: auto;
 	white-space: nowrap;
 }
-@sprite .errorIcon{
+@sprite table tr td.errorIcon, div.errorIcon, span.errorIcon{
 	gwt-image: "gwtImages.errorImage";
 	margin: 0px 0px 0px 3px;
 	display: block;
