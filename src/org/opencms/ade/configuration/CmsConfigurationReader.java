@@ -64,38 +64,113 @@ public class CmsConfigurationReader {
     /** The default locale for configuration objects. */
     public static final Locale DEFAULT_LOCALE = new Locale("en");
 
-    /** The folder name node name. */
-    public static final String N_FOLDER_NAME = "Name";
+    /** The create content locally node name. */
+    public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
 
-    /** The folder path node name. */
-    public static final String N_FOLDER_PATH = "Path";
+    /** The default node name. */
+    public static final String N_DEFAULT = "Default";
 
-    /** The resource type node name. */
-    public static final String N_RESOURCE_TYPE = "ResourceType";
-
-    /** The model page node name. */
-    public static final String N_MODEL_PAGE = "ModelPage";
-
-    /** The property node name. */
-    public static final String N_PROPERTY = "Property";
+    /** The description node name. */
+    public static final String N_DESCRIPTION = "Description";
 
     /** The detail page node name. */
     public static final String N_DETAIL_PAGE = "DetailPage";
 
-    /** The function reference node name. */
-    public static final String N_FUNCTION_REF = "FunctionRef";
+    /** The detail pages disabled node name. */
+    public static final String N_DETAIL_PAGES_DISABLED = "DetailPagesDisabled";
 
-    /** The discard types node name. */
-    public static final String N_DISCARD_TYPES = "DiscardTypes";
-
-    /** The discard properties node name. */
-    public static final String N_DISCARD_PROPERTIES = "DiscardProperties";
+    /** The disabled node name. */
+    public static final String N_DISABLED = "Disabled";
 
     /** The discard model pages node name. */
     public static final String N_DISCARD_MODEL_PAGES = "DiscardModelPages";
 
-    /** The create content locally node name. */
-    public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
+    /** The discard properties node name. */
+    public static final String N_DISCARD_PROPERTIES = "DiscardProperties";
+
+    /** The discard types node name. */
+    public static final String N_DISCARD_TYPES = "DiscardTypes";
+
+    /** The display name node name. */
+    public static final String N_DISPLAY_NAME = "DisplayName";
+
+    /** The error node name. */
+    public static final String N_ERROR = "Error";
+
+    /** The folder node name. */
+    public static final String N_FOLDER = "Folder";
+
+    /** The formatter node name. */
+    public static final String N_FORMATTER = "Formatter";
+
+    /** The function node name. */
+    public static final String N_FUNCTION = "Function";
+
+    /** The function reference node name. */
+    public static final String N_FUNCTION_REF = "FunctionRef";
+
+    /** The is default node name. */
+    public static final String N_IS_DEFAULT = "IsDefault";
+
+    /** The is preview node name. */
+    public static final String N_IS_PREVIEW = "IsPreview";
+
+    /** The JSP node name. */
+    public static final String N_JSP = "Jsp";
+
+    /** The max width node name. */
+    public static final String N_MAX_WIDTH = "MaxWidth";
+
+    /** The min width node name. */
+    public static final String N_MIN_WIDTH = "MinWidth";
+
+    /** The model page node name. */
+    public static final String N_MODEL_PAGE = "ModelPage";
+
+    /** The folder name node name. */
+    public static final String N_NAME = "Name";
+
+    /** The name pattern node name. */
+    public static final String N_NAME_PATTERN = "NamePattern";
+
+    /** The order node name. */
+    public static final String N_ORDER = "Order";
+
+    /** The page node name. */
+    public static final String N_PAGE = "Page";
+
+    /** The folder path node name. */
+    public static final String N_PATH = "Path";
+
+    /** The prefer folder node name. */
+    public static final String N_PREFER_FOLDER = "PreferFolder";
+
+    /** The property node name. */
+    public static final String N_PROPERTY = "Property";
+
+    /** The property name node name. */
+    public static final String N_PROPERTY_NAME = "PropertyName";
+
+    /** The resource type node name. */
+    public static final String N_RESOURCE_TYPE = "ResourceType";
+
+    /** The regex rule node name. */
+    public static final String N_RULE_REGEX = "RuleRegex";
+
+    /** The rule type node name. */
+    public static final String N_RULE_TYPE = "RuleType";
+
+    /** The type node name. */
+    public static final String N_TYPE = "Type";
+
+    /** The type name node name. */
+    public static final String N_TYPE_NAME = "TypeName";
+
+    /** The widget node name. */
+    public static final String N_WIDGET = "Widget";
+
+    /** The widget configuration node name. */
+    public static final String N_WIDGET_CONFIG = "WidgetConfig";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationReader.class);
@@ -227,11 +302,13 @@ public class CmsConfigurationReader {
         if (location == null) {
             return null;
         }
-        I_CmsXmlContentValueLocation nameLoc = location.getSubValue(N_FOLDER_NAME);
-        I_CmsXmlContentValueLocation pathLoc = location.getSubValue(N_FOLDER_PATH);
+        I_CmsXmlContentValueLocation nameLoc = location.getSubValue(N_NAME);
+        I_CmsXmlContentValueLocation pathLoc = location.getSubValue(N_PATH);
         if (nameLoc != null) {
             String name = nameLoc.asString(m_cms);
-            return new CmsFolderOrName(basePath == null ? null : CmsStringUtil.joinPaths(basePath, ".content"), name);
+            return new CmsFolderOrName(basePath == null ? null : CmsStringUtil.joinPaths(
+                basePath,
+                CmsADEManager.CONTENT_FOLDER_NAME), name);
         } else if (pathLoc != null) {
             String path = pathLoc.asString(m_cms);
             CmsResource folder = m_cms.readResource(path);
@@ -251,13 +328,13 @@ public class CmsConfigurationReader {
      */
     public CmsFormatterBean parseFormatter(String typeName, I_CmsXmlContentLocation node) {
 
-        String type = getString(node.getSubValue("Type"));
-        String minWidth = getString(node.getSubValue("MinWidth"));
-        String maxWidth = getString(node.getSubValue("MaxWidth"));
+        String type = getString(node.getSubValue(N_TYPE));
+        String minWidth = getString(node.getSubValue(N_MIN_WIDTH));
+        String maxWidth = getString(node.getSubValue(N_MAX_WIDTH));
         boolean preview = false;
-        I_CmsXmlContentValueLocation previewLoc = node.getSubValue("IsPreview");
+        I_CmsXmlContentValueLocation previewLoc = node.getSubValue(N_IS_PREVIEW);
         preview = (previewLoc != null) && Boolean.parseBoolean(previewLoc.asString(m_cms));
-        String jsp = m_cms.getRequestContext().addSiteRoot(getString(node.getSubValue("Jsp")));
+        String jsp = m_cms.getRequestContext().addSiteRoot(getString(node.getSubValue(N_JSP)));
         boolean searchContent = true;
         CmsFormatterBean formatterBean = new CmsFormatterBean(type, jsp, minWidth, maxWidth, "" + preview, ""
             + searchContent, null);
@@ -273,10 +350,10 @@ public class CmsConfigurationReader {
      */
     public void parseModelPage(I_CmsXmlContentLocation node) throws CmsException {
 
-        String page = getString(node.getSubValue("Page"));
-        I_CmsXmlContentValueLocation disabledLoc = node.getSubValue("Disabled");
+        String page = getString(node.getSubValue(N_PAGE));
+        I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
         boolean disabled = (disabledLoc != null) && Boolean.parseBoolean(disabledLoc.asString(m_cms));
-        I_CmsXmlContentValueLocation defaultLoc = node.getSubValue("IsDefault");
+        I_CmsXmlContentValueLocation defaultLoc = node.getSubValue(N_IS_DEFAULT);
         boolean isDefault = (defaultLoc != null) && Boolean.parseBoolean(defaultLoc.asString(m_cms));
         CmsModelPageConfig modelPage = new CmsModelPageConfig(m_cms.readResource(page), isDefault, disabled);
         m_modelPageConfigs.add(modelPage);
@@ -292,26 +369,26 @@ public class CmsConfigurationReader {
      */
     public void parseResourceTypeConfig(String basePath, I_CmsXmlContentLocation node) throws CmsException {
 
-        I_CmsXmlContentValueLocation typeNameLoc = node.getSubValue("TypeName");
+        I_CmsXmlContentValueLocation typeNameLoc = node.getSubValue(N_TYPE_NAME);
         String typeName = typeNameLoc.asString(m_cms);
-        I_CmsXmlContentValueLocation disabledLoc = node.getSubValue("Disabled");
-        CmsFolderOrName folderOrName = parseFolderOrName(basePath, node.getSubValue("Folder"));
+        I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
+        CmsFolderOrName folderOrName = parseFolderOrName(basePath, node.getSubValue(N_FOLDER));
         boolean disabled = (disabledLoc != null) && Boolean.parseBoolean(disabledLoc.asString(m_cms));
-        I_CmsXmlContentValueLocation namePatternLoc = node.getSubValue("NamePattern");
+        I_CmsXmlContentValueLocation namePatternLoc = node.getSubValue(N_NAME_PATTERN);
         String namePattern = null;
         if (namePatternLoc != null) {
             namePattern = namePatternLoc.asString(m_cms);
         }
 
         boolean detailPagesDisabled = false;
-        I_CmsXmlContentValueLocation detailDisabledLoc = node.getSubValue("DetailPagesDisabled");
+        I_CmsXmlContentValueLocation detailDisabledLoc = node.getSubValue(N_DETAIL_PAGES_DISABLED);
         if (detailDisabledLoc != null) {
             String detailPagesDisabledStr = detailDisabledLoc.asString(m_cms);
             detailPagesDisabled = Boolean.parseBoolean(detailPagesDisabledStr);
         }
 
         int order = I_CmsConfigurationObject.DEFAULT_ORDER;
-        I_CmsXmlContentValueLocation orderLoc = node.getSubValue("Order");
+        I_CmsXmlContentValueLocation orderLoc = node.getSubValue(N_ORDER);
         if (orderLoc != null) {
             try {
                 String orderStr = orderLoc.asString(m_cms);
@@ -322,7 +399,7 @@ public class CmsConfigurationReader {
         }
 
         List<CmsFormatterBean> formatters = new ArrayList<CmsFormatterBean>();
-        for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues("Formatter")) {
+        for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues(N_FORMATTER)) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
             formatters.add(formatter);
         }
@@ -446,11 +523,11 @@ public class CmsConfigurationReader {
      */
     protected void parseDetailPage(I_CmsXmlContentLocation node) throws CmsException {
 
-        I_CmsXmlContentValueLocation pageLoc = node.getSubValue("Page");
+        I_CmsXmlContentValueLocation pageLoc = node.getSubValue(N_PAGE);
         String page = pageLoc.asString(m_cms);
         CmsResource detailPageRes = m_cms.readResource(page);
         CmsUUID id = detailPageRes.getStructureId();
-        String typeName = getString(node.getSubValue("Type"));
+        String typeName = getString(node.getSubValue(N_TYPE));
         CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName);
         m_detailPageConfigs.add(detailPage);
     }
@@ -462,10 +539,10 @@ public class CmsConfigurationReader {
      */
     protected void parseFunctionReference(I_CmsXmlContentLocation node) {
 
-        String name = node.getSubValue("Name").asString(m_cms);
-        CmsUUID functionId = node.getSubValue("Function").asId(m_cms);
+        String name = node.getSubValue(N_NAME).asString(m_cms);
+        CmsUUID functionId = node.getSubValue(N_FUNCTION).asId(m_cms);
 
-        I_CmsXmlContentValueLocation orderNode = node.getSubValue("Order");
+        I_CmsXmlContentValueLocation orderNode = node.getSubValue(N_ORDER);
         int order = I_CmsConfigurationObject.DEFAULT_ORDER;
         if (orderNode != null) {
             String orderStr = orderNode.asString(m_cms);
@@ -485,21 +562,21 @@ public class CmsConfigurationReader {
      */
     private void parseProperty(I_CmsXmlContentLocation field) {
 
-        String name = getString(field.getSubValue("PropertyName"));
-        String widget = getString(field.getSubValue("Widget"));
-        String widgetConfig = getString(field.getSubValue("WidgetConfig"));
-        String ruleRegex = getString(field.getSubValue("RuleRegex"));
-        String ruleType = getString(field.getSubValue("RuleType"));
-        String default1 = getString(field.getSubValue("Default"));
-        String error = getString(field.getSubValue("Error"));
-        String niceName = getString(field.getSubValue("DisplayName"));
-        String description = getString(field.getSubValue("Description"));
-        String preferFolder = getString(field.getSubValue("PreferFolder"));
+        String name = getString(field.getSubValue(N_PROPERTY_NAME));
+        String widget = getString(field.getSubValue(N_WIDGET));
+        String widgetConfig = getString(field.getSubValue(N_WIDGET_CONFIG));
+        String ruleRegex = getString(field.getSubValue(N_RULE_REGEX));
+        String ruleType = getString(field.getSubValue(N_RULE_TYPE));
+        String default1 = getString(field.getSubValue(N_DEFAULT));
+        String error = getString(field.getSubValue(N_ERROR));
+        String niceName = getString(field.getSubValue(N_DISPLAY_NAME));
+        String description = getString(field.getSubValue(N_DESCRIPTION));
+        String preferFolder = getString(field.getSubValue(N_PREFER_FOLDER));
 
-        String disabledStr = getString(field.getSubValue("Disabled"));
+        String disabledStr = getString(field.getSubValue(N_DISABLED));
         boolean disabled = ((disabledStr != null) && Boolean.parseBoolean(disabledStr));
 
-        String orderStr = getString(field.getSubValue("Order"));
+        String orderStr = getString(field.getSubValue(N_ORDER));
         int order = I_CmsConfigurationObject.DEFAULT_ORDER;
 
         try {

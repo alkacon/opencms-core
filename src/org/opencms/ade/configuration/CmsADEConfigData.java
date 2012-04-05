@@ -64,9 +64,6 @@ import com.google.common.collect.Maps;
  */
 public class CmsADEConfigData {
 
-    /** The content folder name. */
-    public static final String CONTENT_FOLDER_NAME = ".content";
-
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
 
@@ -302,7 +299,7 @@ public class CmsADEConfigData {
      */
     public String getContentFolderPath() {
 
-        return CmsStringUtil.joinPaths(m_basePath, CONTENT_FOLDER_NAME);
+        return CmsStringUtil.joinPaths(m_basePath, CmsADEManager.CONTENT_FOLDER_NAME);
 
     }
 
@@ -841,7 +838,7 @@ public class CmsADEConfigData {
         List<CmsResourceTypeConfig> result = combineConfigurationElements(parentResourceTypes, m_ownResourceTypes);
         if (m_createContentsLocally) {
             for (CmsResourceTypeConfig typeConfig : result) {
-                typeConfig.updateBasePath(CmsStringUtil.joinPaths(m_basePath, ".content"));
+                typeConfig.updateBasePath(CmsStringUtil.joinPaths(m_basePath, CmsADEManager.CONTENT_FOLDER_NAME));
             }
         }
         return result;

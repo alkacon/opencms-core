@@ -219,7 +219,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsResource subSitemapFolder = cms.readResource(entryId);
             ensureLock(subSitemapFolder);
             String sitePath = cms.getSitePath(subSitemapFolder);
-            String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONFIG_FOLDER_NAME + "/"); //$NON-NLS-1$
+            String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/"); //$NON-NLS-1$
             String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
             if (!cms.existsResource(folderName)) {
                 cms.createResource(
@@ -299,7 +299,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             String sitePath = cms.getSitePath(subSitemapFolder);
             String sitemapConfigName = CmsStringUtil.joinPaths(
                 sitePath,
-                CmsADEManager.CONFIG_FOLDER_NAME,
+                CmsADEManager.CONTENT_FOLDER_NAME,
                 CmsADEManager.CONFIG_FILE_NAME);
             if (cms.existsResource(sitemapConfigName)) {
                 cms.deleteResource(sitemapConfigName, CmsResource.DELETE_PRESERVE_SIBLINGS);
