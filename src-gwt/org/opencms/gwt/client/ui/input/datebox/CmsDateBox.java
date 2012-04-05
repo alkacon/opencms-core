@@ -819,6 +819,8 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
     /**
      * Updates the picker if the user manually modified the date of the text box.<p>
+     * 
+     * @param initial <code>true</code> if the datebox is being initially opened 
      */
     private void updateFromTextBox(boolean initial) {
 

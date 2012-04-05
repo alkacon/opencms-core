@@ -880,7 +880,7 @@ public class CmsTreeItem extends CmsListItem {
     /**
      * Determines if the draggable should be inserted into the previous siblings children list.<p>
      * 
-     * @param draggable the draggable
+     * @param originalPathLevel the original path level
      * @param parent the parent item
      * @param index the current index
      * 

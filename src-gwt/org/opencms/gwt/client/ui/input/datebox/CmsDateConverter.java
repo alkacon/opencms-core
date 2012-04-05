@@ -60,6 +60,9 @@ public final class CmsDateConverter {
     /** The formatter for the time format. */
     private static final DateTimeFormat Z_TIME_FORMAT = DateTimeFormat.getFormat(TIME_PATTERN);
 
+    /**
+     * Hiding constructor.<p>
+     */
     private CmsDateConverter() {
 
         // noop
