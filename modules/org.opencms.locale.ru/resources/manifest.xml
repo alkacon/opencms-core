@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.3</opencms_version>
-		<createdate>Wed, 04 Apr 2012 12:19:15 GMT</createdate>
+		<createdate>Fri, 06 Apr 2012 05:15:48 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[OpenCms Localization]]></description>
-		<version>1.3</version>
+		<version>1.2</version>
 		<authorname><![CDATA[ITDT Ltd.]]></authorname>
 		<authoremail><![CDATA[support@itdt.ru]]></authoremail>
 		<datecreated/>
@@ -159,7 +159,7 @@
 			<type>binary</type>
 			<uuidstructure>a1ed02b4-797e-11e1-82c1-6192c87e77fb</uuidstructure>
 			<uuidresource>a1ed02b5-797e-11e1-82c1-6192c87e77fb</uuidresource>
-			<datelastmodified>Wed, 04 Apr 2012 12:14:40 GMT</datelastmodified>
+			<datelastmodified>Wed, 04 Apr 2012 12:27:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 29 Mar 2012 09:07:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -282,7 +282,7 @@
 			<type>plain</type>
 			<uuidstructure>5136606d-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
 			<uuidresource>5136606e-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Tue, 20 Mar 2012 10:48:08 GMT</datelastmodified>
+			<datelastmodified>Fri, 06 Apr 2012 05:11:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 16 Mar 2012 08:52:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -368,7 +368,7 @@
 			<type>plain</type>
 			<uuidstructure>50dbbd3d-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
 			<uuidresource>50dbbd3e-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Wed, 04 Apr 2012 11:57:42 GMT</datelastmodified>
+			<datelastmodified>Fri, 06 Apr 2012 05:11:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 16 Mar 2012 08:52:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -383,7 +383,7 @@
 			<type>plain</type>
 			<uuidstructure>500c5f2d-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
 			<uuidresource>500c5f2e-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 12:39:29 GMT</datelastmodified>
+			<datelastmodified>Fri, 06 Apr 2012 05:11:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 16 Mar 2012 08:52:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -454,7 +454,7 @@
 			<type>plain</type>
 			<uuidstructure>50b80897-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
 			<uuidresource>50b80898-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Tue, 20 Mar 2012 10:48:09 GMT</datelastmodified>
+			<datelastmodified>Fri, 06 Apr 2012 05:11:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 16 Mar 2012 08:52:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -469,7 +469,7 @@
 			<type>plain</type>
 			<uuidstructure>50fd27f3-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
 			<uuidresource>50fd27f4-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 09:38:59 GMT</datelastmodified>
+			<datelastmodified>Fri, 06 Apr 2012 05:12:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 16 Mar 2012 08:52:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -904,7 +904,7 @@
 			<type>plain</type>
 			<uuidstructure>514e2e31-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
 			<uuidresource>514e2e32-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Wed, 04 Apr 2012 11:53:07 GMT</datelastmodified>
+			<datelastmodified>Fri, 06 Apr 2012 05:12:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 16 Mar 2012 08:52:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -922,34 +922,6 @@
 			<datelastmodified>Fri, 30 Mar 2012 05:42:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 20 Mar 2012 11:45:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/i18n</destination>
-			<type>folder</type>
-			<uuidstructure>4d602a81-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/i18n/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/i18n/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>5064915d-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>5064915e-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:09 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -978,133 +950,6 @@
 			<datelastmodified>Tue, 20 Mar 2012 10:48:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Feb 2012 08:49:53 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/jsp</destination>
-			<type>folder</type>
-			<uuidstructure>4dd75661-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/jsp/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/jsp/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>511c21a9-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>511c21aa-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/jsp/decorator</destination>
-			<type>folder</type>
-			<uuidstructure>23e39e01-7282-11e1-9dad-6192c87e77fb</uuidstructure>
-			<datelastmodified>Tue, 20 Mar 2012 11:45:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 20 Mar 2012 11:45:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/jsp/decorator/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/jsp/decorator/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>241a6579-7282-11e1-9dad-6192c87e77fb</uuidstructure>
-			<uuidresource>241a657a-7282-11e1-9dad-6192c87e77fb</uuidresource>
-			<datelastmodified>Tue, 20 Mar 2012 11:45:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 20 Mar 2012 11:45:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/jsp/util</destination>
-			<type>folder</type>
-			<uuidstructure>4f11f973-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:06 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/jsp/util/errorpage.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/jsp/util/errorpage.properties</destination>
-			<type>plain</type>
-			<uuidstructure>5c8d95b7-7184-11e1-a40f-6192c87e77fb</uuidstructure>
-			<uuidresource>5c8d95b8-7184-11e1-a40f-6192c87e77fb</uuidresource>
-			<datelastmodified>Mon, 19 Mar 2012 05:32:57 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 19 Mar 2012 05:28:30 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/jsp/util/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/jsp/util/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>5142474f-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>51424750-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Thu, 22 Mar 2012 12:47:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/loader</destination>
-			<type>folder</type>
-			<uuidstructure>4cdf61ad-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/loader/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/loader/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>5106c4e5-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>5106c4e6-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1224,34 +1069,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/monitor</destination>
-			<type>folder</type>
-			<uuidstructure>23b3db6d-7282-11e1-9dad-6192c87e77fb</uuidstructure>
-			<datelastmodified>Tue, 20 Mar 2012 11:45:06 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 20 Mar 2012 11:45:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/monitor/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/monitor/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>23ef84e3-7282-11e1-9dad-6192c87e77fb</uuidstructure>
-			<uuidresource>23ef84e4-7282-11e1-9dad-6192c87e77fb</uuidresource>
-			<datelastmodified>Tue, 20 Mar 2012 11:45:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 20 Mar 2012 11:45:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/notification</destination>
 			<type>folder</type>
 			<uuidstructure>4d3a04db-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
@@ -1301,34 +1118,6 @@
 			<datelastmodified>Fri, 30 Mar 2012 05:43:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 21 Feb 2012 09:00:14 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/relations</destination>
-			<type>folder</type>
-			<uuidstructure>4d6c1163-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/relations/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/relations/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>4fc73fd1-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>4fc73fd2-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1405,21 +1194,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/scheduler/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/scheduler/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>515a1513-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>515a1514-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/scheduler/jobs</destination>
 			<type>folder</type>
 			<uuidstructure>4ed40609-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
@@ -1454,21 +1228,6 @@
 			<datelastmodified>Fri, 16 Mar 2012 08:52:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 16 Mar 2012 08:52:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/search/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/search/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>4f6326c1-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>4f6326c2-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 30 Mar 2012 05:43:49 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1573,21 +1332,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/setup/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/setup/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>5000784b-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>5000784c-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:08 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/setup/xml</destination>
 			<type>folder</type>
 			<uuidstructure>4ea1f981-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
@@ -1644,118 +1388,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/staticexport</destination>
-			<type>folder</type>
-			<uuidstructure>4cb21017-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:02 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/staticexport/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/staticexport/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>4f5989cf-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>4f5989d0-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/synchronize</destination>
-			<type>folder</type>
-			<uuidstructure>4cf9a071-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/synchronize/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/synchronize/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>504326a7-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>504326a8-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:08 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/util</destination>
-			<type>folder</type>
-			<uuidstructure>4df19525-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/util/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/util/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>5021e301-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>5021e302-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:08 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/webdav</destination>
-			<type>folder</type>
-			<uuidstructure>4cc2b1e9-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:02 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/webdav/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/webdav/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>4f8e0757-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>4f8e0758-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/widgets</destination>
 			<type>folder</type>
 			<uuidstructure>aa0fd37c-7d8d-11e1-af2b-6731c2ae74f8</uuidstructure>
@@ -1774,7 +1406,7 @@
 			<type>plain</type>
 			<uuidstructure>b487931e-7d8d-11e1-af2b-6731c2ae74f8</uuidstructure>
 			<uuidresource>b487931f-7d8d-11e1-af2b-6731c2ae74f8</uuidresource>
-			<datelastmodified>Tue, 03 Apr 2012 13:12:16 GMT</datelastmodified>
+			<datelastmodified>Fri, 06 Apr 2012 05:12:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 03 Apr 2012 13:05:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2665,21 +2297,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/xml/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/xml/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>4fa5d51b-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>4fa5d51c-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Mon, 19 Mar 2012 07:47:46 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/xml/containerpage</destination>
 			<type>folder</type>
 			<uuidstructure>4e4e8243-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
@@ -2701,34 +2318,6 @@
 			<datelastmodified>Fri, 30 Mar 2012 11:53:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 16 Mar 2012 08:52:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/ru/messages/org/opencms/xml/content</destination>
-			<type>folder</type>
-			<uuidstructure>4ee25deb-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:06 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:06 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/ru/messages/org/opencms/xml/content/messages_ru.properties</source>
-			<destination>system/workplace/locales/ru/messages/org/opencms/xml/content/messages_ru.properties</destination>
-			<type>plain</type>
-			<uuidstructure>504f0d89-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
-			<uuidresource>504f0d8a-6f45-11e1-a62b-6192c87e77fb</uuidresource>
-			<datelastmodified>Fri, 16 Mar 2012 08:52:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 16 Mar 2012 08:52:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
