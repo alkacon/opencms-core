@@ -117,6 +117,203 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the excerpt escaping.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testExceptEscaping() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing excerpt escaping");
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        // count depend on the number of documents indexed
+        int expected = 7;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/search/");
+
+        searchBean.setQuery("alkacon");
+        searchResult = searchBean.getSearchResult();
+
+        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
+        TestCmsSearch.printResults(searchResult, cms, true);
+        assertEquals(expected, searchResult.size());
+
+        // check if "sites", "default" and "alkacon" is contained in the excerpt
+        Iterator<CmsSearchResult> i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult result = i.next();
+            if (result.getExcerpt() == null) {
+                continue;
+            }
+            String excerpt = result.getExcerpt().toLowerCase();
+            excerpt = CmsStringUtil.substitute(excerpt, "<b>alkacon</b>", "alkacon");
+            assertFalse(excerpt.toLowerCase().indexOf("<") > -1);
+            assertFalse(excerpt.toLowerCase().indexOf(">") > -1);
+        }
+    }
+
+    /**
+     * Tests the excerpt generation.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testExceptGeneration() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing excerpt generation");
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        // count depend on the number of documents indexed
+        int expected = 6;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/search/");
+
+        searchBean.setQuery("The OpenCms experts");
+        searchResult = searchBean.getSearchResult();
+
+        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
+        TestCmsSearch.printResults(searchResult, cms, true);
+        assertEquals(expected, searchResult.size());
+
+        // check if "the" and "a" is contained in the excerpt
+        // it may have been removed as term in the search, but it should be in the excerpt result anyway
+        boolean foundThe = false;
+        boolean foundA = false;
+        Iterator<CmsSearchResult> i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult result = i.next();
+            String excerpt = result.getExcerpt().toLowerCase();
+            if (excerpt.indexOf(" the ") > -1) {
+                foundThe = true;
+            }
+            if (excerpt.indexOf(" a ") > -1) {
+                foundA = true;
+            }
+        }
+        assertTrue(foundThe);
+        assertTrue(foundA);
+
+        searchBean.setQuery("Some content on the third sheet.");
+        searchResult = searchBean.getSearchResult();
+
+        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
+        TestCmsSearch.printResults(searchResult, cms, true);
+        assertEquals(expected, searchResult.size());
+
+        // check if "the", "on" and "a" is contained in the excerpt
+        foundThe = false;
+        foundA = false;
+        boolean foundOn = false;
+        i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult result = i.next();
+            String excerpt = result.getExcerpt().toLowerCase();
+            if (excerpt.indexOf(" the ") > -1) {
+                foundThe = true;
+            }
+            if (excerpt.indexOf(" a ") > -1) {
+                foundA = true;
+            }
+            if (excerpt.indexOf(" on ") > -1) {
+                foundOn = true;
+            }
+        }
+        assertTrue(foundThe);
+        assertTrue(foundOn);
+        assertTrue(foundA);
+    }
+
+    /**
+     * Tests the excerpt highlighting.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testExceptHighlighting() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing excerpt highlighting");
+
+        // create new text file 
+        String resname = "/search/highlightTest.txt";
+        cms.createResource(resname, CmsResourceTypePlain.getStaticTypeId());
+        CmsFile file = cms.readFile(resname);
+        // that matches the search query as well as the path
+        // add some html code for the testExceptEscaping method
+        file.setContents("<b>sites<font> <html>alkacon<body> <i>default</h1>".getBytes());
+        cms.writeFile(file);
+        // publish it to update the search index
+        OpenCms.getPublishManager().publishResource(cms, resname);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // rebuild search index
+        OpenCms.getSearchManager().rebuildIndex(INDEX_ONLINE, new CmsLogReport(Locale.ENGLISH, getClass()));
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        // count depend on the number of documents indexed
+        int expected = 7;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/search/");
+        searchBean.setExcerptOnlySearchedFields(false);
+
+        searchBean.setQuery("alkacon");
+        searchResult = searchBean.getSearchResult();
+
+        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
+        TestCmsSearch.printResults(searchResult, cms, true);
+        assertEquals(expected, searchResult.size());
+
+        // check if "sites", "default" and "alkacon" is contained in the excerpt
+        Iterator<CmsSearchResult> i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult result = i.next();
+            if (result.getExcerpt() == null) {
+                continue;
+            }
+            String excerpt = result.getExcerpt().toLowerCase();
+            assertTrue(excerpt.toLowerCase().indexOf("<b>alkacon</b>") > -1);
+            assertFalse(excerpt.toLowerCase().indexOf("<b>sites</b>") > -1);
+            assertFalse(excerpt.toLowerCase().indexOf("<b>default</b>") > -1);
+        }
+
+        // check again with the ExcerptOnlySearchedFields set
+        searchBean.setExcerptOnlySearchedFields(true);
+        searchResult = searchBean.getSearchResult();
+
+        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
+        TestCmsSearch.printResults(searchResult, cms, true);
+        assertEquals(expected, searchResult.size());
+
+        // check if "sites", "default" and "alkacon" is contained in the excerpt
+        i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult result = i.next();
+            if (result.getExcerpt() == null) {
+                continue;
+            }
+            String excerpt = result.getExcerpt().toLowerCase();
+            assertTrue(excerpt.toLowerCase().indexOf("<b>alkacon</b>") > -1);
+            assertFalse(excerpt.toLowerCase().indexOf("<b>sites</b>") > -1);
+            assertFalse(excerpt.toLowerCase().indexOf("<b>default</b>") > -1);
+        }
+    }
+
+    /**
      * Tests search boosting.<p>
      * 
      * @throws Exception if the test fails
@@ -524,205 +721,16 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         searchResult = searchBean.getSearchResult();
         assertEquals(expected, searchResult.size());
 
-        searchBean.setQuery("‰ˆ¸ƒ÷‹ﬂ");
+        String specialQuery = C_AUML_LOWER
+            + C_OUML_LOWER
+            + C_UUML_LOWER
+            + C_AUML_UPPER
+            + C_OUML_UPPER
+            + C_UUML_UPPER
+            + C_SHARP_S
+            + C_EURO;
+        searchBean.setQuery(specialQuery);
         searchResult = searchBean.getSearchResult();
         assertEquals(expected, searchResult.size());
-    }
-
-    /**
-     * Tests the excerpt generation.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testExceptGeneration() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing excerpt generation");
-
-        // perform a search on the newly generated index
-        CmsSearch searchBean = new CmsSearch();
-        List<CmsSearchResult> searchResult;
-
-        // count depend on the number of documents indexed
-        int expected = 6;
-
-        searchBean.init(cms);
-        searchBean.setIndex(INDEX_ONLINE);
-        searchBean.setSearchRoot("/search/");
-
-        searchBean.setQuery("The OpenCms experts");
-        searchResult = searchBean.getSearchResult();
-
-        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
-        TestCmsSearch.printResults(searchResult, cms, true);
-        assertEquals(expected, searchResult.size());
-
-        // check if "the" and "a" is contained in the excerpt
-        // it may have been removed as term in the search, but it should be in the excerpt result anyway
-        boolean foundThe = false;
-        boolean foundA = false;
-        Iterator<CmsSearchResult> i = searchResult.iterator();
-        while (i.hasNext()) {
-            CmsSearchResult result = i.next();
-            String excerpt = result.getExcerpt().toLowerCase();
-            if (excerpt.indexOf(" the ") > -1) {
-                foundThe = true;
-            }
-            if (excerpt.indexOf(" a ") > -1) {
-                foundA = true;
-            }
-        }
-        assertTrue(foundThe);
-        assertTrue(foundA);
-
-        searchBean.setQuery("Some content on the third sheet.");
-        searchResult = searchBean.getSearchResult();
-
-        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
-        TestCmsSearch.printResults(searchResult, cms, true);
-        assertEquals(expected, searchResult.size());
-
-        // check if "the", "on" and "a" is contained in the excerpt
-        foundThe = false;
-        foundA = false;
-        boolean foundOn = false;
-        i = searchResult.iterator();
-        while (i.hasNext()) {
-            CmsSearchResult result = i.next();
-            String excerpt = result.getExcerpt().toLowerCase();
-            if (excerpt.indexOf(" the ") > -1) {
-                foundThe = true;
-            }
-            if (excerpt.indexOf(" a ") > -1) {
-                foundA = true;
-            }
-            if (excerpt.indexOf(" on ") > -1) {
-                foundOn = true;
-            }
-        }
-        assertTrue(foundThe);
-        assertTrue(foundOn);
-        assertTrue(foundA);
-    }
-
-    /**
-     * Tests the excerpt highlighting.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testExceptHighlighting() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing excerpt highlighting");
-
-        // create new text file 
-        String resname = "/search/highlightTest.txt";
-        cms.createResource(resname, CmsResourceTypePlain.getStaticTypeId());
-        CmsFile file = cms.readFile(resname);
-        // that matches the search query as well as the path
-        // add some html code for the testExceptEscaping method
-        file.setContents("<b>sites<font> <html>alkacon<body> <i>default</h1>".getBytes());
-        cms.writeFile(file);
-        // publish it to update the search index
-        OpenCms.getPublishManager().publishResource(cms, resname);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        // rebuild search index
-        OpenCms.getSearchManager().rebuildIndex(INDEX_ONLINE, new CmsLogReport(Locale.ENGLISH, getClass()));
-
-        // perform a search on the newly generated index
-        CmsSearch searchBean = new CmsSearch();
-        List<CmsSearchResult> searchResult;
-
-        // count depend on the number of documents indexed
-        int expected = 7;
-
-        searchBean.init(cms);
-        searchBean.setIndex(INDEX_ONLINE);
-        searchBean.setSearchRoot("/search/");
-        searchBean.setExcerptOnlySearchedFields(false);
-
-        searchBean.setQuery("alkacon");
-        searchResult = searchBean.getSearchResult();
-
-        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
-        TestCmsSearch.printResults(searchResult, cms, true);
-        assertEquals(expected, searchResult.size());
-
-        // check if "sites", "default" and "alkacon" is contained in the excerpt
-        Iterator<CmsSearchResult> i = searchResult.iterator();
-        while (i.hasNext()) {
-            CmsSearchResult result = i.next();
-            if (result.getExcerpt() == null) {
-                continue;
-            }
-            String excerpt = result.getExcerpt().toLowerCase();
-            assertTrue(excerpt.toLowerCase().indexOf("<b>alkacon</b>") > -1);
-            assertFalse(excerpt.toLowerCase().indexOf("<b>sites</b>") > -1);
-            assertFalse(excerpt.toLowerCase().indexOf("<b>default</b>") > -1);
-        }
-
-        // check again with the ExcerptOnlySearchedFields set
-        searchBean.setExcerptOnlySearchedFields(true);
-        searchResult = searchBean.getSearchResult();
-
-        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
-        TestCmsSearch.printResults(searchResult, cms, true);
-        assertEquals(expected, searchResult.size());
-
-        // check if "sites", "default" and "alkacon" is contained in the excerpt
-        i = searchResult.iterator();
-        while (i.hasNext()) {
-            CmsSearchResult result = i.next();
-            if (result.getExcerpt() == null) {
-                continue;
-            }
-            String excerpt = result.getExcerpt().toLowerCase();
-            assertTrue(excerpt.toLowerCase().indexOf("<b>alkacon</b>") > -1);
-            assertFalse(excerpt.toLowerCase().indexOf("<b>sites</b>") > -1);
-            assertFalse(excerpt.toLowerCase().indexOf("<b>default</b>") > -1);
-        }
-    }
-
-    /**
-     * Tests the excerpt escaping.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testExceptEscaping() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing excerpt escaping");
-
-        // perform a search on the newly generated index
-        CmsSearch searchBean = new CmsSearch();
-        List<CmsSearchResult> searchResult;
-
-        // count depend on the number of documents indexed
-        int expected = 7;
-
-        searchBean.init(cms);
-        searchBean.setIndex(INDEX_ONLINE);
-        searchBean.setSearchRoot("/search/");
-
-        searchBean.setQuery("alkacon");
-        searchResult = searchBean.getSearchResult();
-
-        System.out.println("\n\n----- Searching for '" + searchBean.getQuery() + "'");
-        TestCmsSearch.printResults(searchResult, cms, true);
-        assertEquals(expected, searchResult.size());
-
-        // check if "sites", "default" and "alkacon" is contained in the excerpt
-        Iterator<CmsSearchResult> i = searchResult.iterator();
-        while (i.hasNext()) {
-            CmsSearchResult result = i.next();
-            if (result.getExcerpt() == null) {
-                continue;
-            }
-            String excerpt = result.getExcerpt().toLowerCase();
-            excerpt = CmsStringUtil.substitute(excerpt, "<b>alkacon</b>", "alkacon");
-            assertFalse(excerpt.toLowerCase().indexOf("<") > -1);
-            assertFalse(excerpt.toLowerCase().indexOf(">") > -1);
-        }
     }
 }
