@@ -17,7 +17,8 @@ Legend:
 
 OpenCms 8.0.4 - April xx, 2012
 ! Added configurable ADE context menu dialogs.
-! Added Italian localization.
+! Added Italian localization contributed by Antonio Cordeddu of coranto.it
+! Added Russian localization contributed by Alexey Chirkov of itdt.ru
 ! Added TinyMCE WYSIWYG editor.
 ! Added scheduled job for search index optimization.
 * Fixed issue with VFS image widget preview function.
