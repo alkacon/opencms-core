@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.4</opencms_version>
-		<createdate>Fri, 17 Feb 2012 08:33:07 GMT</createdate>
+		<createdate>Tue, 10 Apr 2012 14:45:50 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -38,10 +38,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>ae65fe03-4db3-11e1-ab41-c7b67799edc2</uuidstructure>
-			<datelastmodified>Thu, 02 Feb 2012 15:36:31 GMT</datelastmodified>
+			<uuidstructure>7ad470eb-830a-11e1-8a40-6f493c00dc32</uuidstructure>
+			<datelastmodified>Tue, 10 Apr 2012 12:41:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 02 Feb 2012 15:36:31 GMT</datecreated>
+			<datecreated>Tue, 10 Apr 2012 12:41:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -60,10 +60,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>af1d8e6f-4db3-11e1-ab41-c7b67799edc2</uuidstructure>
-			<datelastmodified>Thu, 02 Feb 2012 15:36:33 GMT</datelastmodified>
+			<uuidstructure>7bcc65b7-830a-11e1-8a40-6f493c00dc32</uuidstructure>
+			<datelastmodified>Tue, 10 Apr 2012 12:41:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 02 Feb 2012 15:36:33 GMT</datecreated>
+			<datecreated>Tue, 10 Apr 2012 12:41:24 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -249,11 +249,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/tinymce/htmlgallery_integrator.js</source>
-			<destination>system/workplace/editors/tinymce/htmlgallery_integrator.js</destination>
+			<source>system/workplace/editors/tinymce/filebrowser_gallery_integrator.js</source>
+			<destination>system/workplace/editors/tinymce/filebrowser_gallery_integrator.js</destination>
 			<type>jsp</type>
-			<uuidstructure>45b5acf2-f3ee-4246-bc81-b0f659721e7f</uuidstructure>
-			<uuidresource>45b5acf3-f3ee-4246-bc81-b0f659721e7f</uuidresource>
+			<uuidstructure>f8d526bb-f078-4470-9ad0-9e58205807d5</uuidstructure>
+			<uuidresource>f8d526bc-f078-4470-9ad0-9e58205807d5</uuidresource>
 			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
@@ -288,13 +288,12 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
 		<file>
-			<source>system/workplace/editors/tinymce/filebrowser_gallery_integrator.js</source>
-			<destination>system/workplace/editors/tinymce/filebrowser_gallery_integrator.js</destination>
+			<source>system/workplace/editors/tinymce/htmlgallery_integrator.js</source>
+			<destination>system/workplace/editors/tinymce/htmlgallery_integrator.js</destination>
 			<type>jsp</type>
-			<uuidstructure>f8d526bb-f078-4470-9ad0-9e58205807d5</uuidstructure>
-			<uuidresource>f8d526bc-f078-4470-9ad0-9e58205807d5</uuidresource>
+			<uuidstructure>45b5acf2-f3ee-4246-bc81-b0f659721e7f</uuidstructure>
+			<uuidresource>45b5acf3-f3ee-4246-bc81-b0f659721e7f</uuidresource>
 			<datelastmodified>Tue, 17 Jan 2012 15:19:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 11 Jan 2012 13:55:37 GMT</datecreated>
@@ -309,9 +308,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
-		
 		<file>
 			<source>system/workplace/editors/tinymce/integrator.js</source>
 			<destination>system/workplace/editors/tinymce/integrator.js</destination>
@@ -646,6 +642,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/ru.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/langs/ru.js</destination>
+			<type>plain</type>
+			<uuidstructure>b83f09e6-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b83f09e7-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins</destination>
 			<type>folder</type>
 			<uuidstructure>d4f61eb8-3c5d-11e1-9604-974a2cad26ef</uuidstructure>
@@ -885,6 +901,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[it_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advhr/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b6f60ef9-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b6f60efa-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1160,6 +1196,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advimage/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b731b86c-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b731b86d-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink</destination>
 			<type>folder</type>
 			<uuidstructure>d7305784-3c5d-11e1-9604-974a2cad26ef</uuidstructure>
@@ -1386,6 +1442,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[it_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/advlink/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b747152f-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b7471530-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2392,6 +2468,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/emotions/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b752fc12-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b752fc13-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/example</destination>
 			<type>folder</type>
 			<uuidstructure>d6edf706-3c5d-11e1-9604-974a2cad26ef</uuidstructure>
@@ -2867,6 +2963,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[it_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/fullpage/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b771f5c5-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b771f5c6-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -3783,6 +3899,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/media/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b7a1b858-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b7a1b859-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/nonbreaking</destination>
 			<type>folder</type>
 			<uuidstructure>d706fd64-3c5d-11e1-9604-974a2cad26ef</uuidstructure>
@@ -4175,6 +4311,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[it_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/paste/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b7c56cfb-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b7c56cfc-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -4645,6 +4801,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/searchreplace/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b7dd61ce-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b7dd61cf-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/spellchecker</destination>
 			<type>folder</type>
 			<uuidstructure>d77fd674-3c5d-11e1-9604-974a2cad26ef</uuidstructure>
@@ -4994,6 +5170,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[it_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/style/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b7f2be91-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b7f2be92-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -5445,6 +5641,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/table/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b8011674-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b8011675-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template</destination>
 			<type>folder</type>
 			<uuidstructure>d4f92bfa-3c5d-11e1-9604-974a2cad26ef</uuidstructure>
@@ -5691,6 +5907,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[it_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/template/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b80cfd57-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b80cfd58-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -6269,6 +6505,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[it_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/plugins/xhtmlxtras/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b81b553a-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b81b553b-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -7104,6 +7360,46 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/ru.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/ru.js</destination>
+			<type>plain</type>
+			<uuidstructure>b8273c1d-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b8273c1e-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/ru_dlg.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/langs/ru_dlg.js</destination>
+			<type>plain</type>
+			<uuidstructure>b8332300-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b8332301-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru_dlg]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/skins</destination>
 			<type>folder</type>
 			<uuidstructure>d8029b72-3c5d-11e1-9604-974a2cad26ef</uuidstructure>
@@ -7209,10 +7505,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		
-		
-		
-		
 		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/skins/default/img</destination>
 			<type>folder</type>
@@ -7819,6 +8111,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[it]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/ru.js</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/simple/langs/ru.js</destination>
+			<type>plain</type>
+			<uuidstructure>b837ddf3-831b-11e1-8a40-6f493c00dc32</uuidstructure>
+			<uuidresource>b837ddf4-831b-11e1-8a40-6f493c00dc32</uuidresource>
+			<datelastmodified>Tue, 10 Apr 2012 14:44:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 10 Apr 2012 14:44:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ru]]></value>
 				</property>
 			</properties>
 			<relations/>
