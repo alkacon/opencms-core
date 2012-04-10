@@ -104,8 +104,16 @@ public class TestDecorator extends OpenCmsTestCase {
         String inputText3 = "This is a test for VFS&nbsp;RFS and VFS.";
         String resultText3 = "This is a test for <abbr>VFS</abbr>&nbsp;<abbr>RFS</abbr> and <abbr>VFS</abbr>.";
 
-        String inputText4 = "This is a test German Umlaute: TÜV is fine, but does T&UumlV work as well?";
-        String resultText4 = "This is a test German Umlaute: <abbr title=\"Technischer Überwachungsverein\">TÜV</abbr> is fine, but does <abbr>TÜV</abbr> work as well?";
+        String inputText4 = "This is a test German Umlaute: T"
+            + C_UUML_UPPER
+            + "V is fine, but does T&UumlV work as well?";
+        String resultText4 = "This is a test German Umlaute: <abbr title=\"Technischer "
+            + C_UUML_UPPER
+            + "berwachungsverein\">T"
+            + C_UUML_UPPER
+            + "V</abbr> is fine, but does <abbr>T"
+            + C_UUML_UPPER
+            + "V</abbr> work as well?";
 
         String inputText5 = "The CMS has a nice user interface, the so called CMS-UI . This must not be mixed up with the CMS-IU!";
         String resultText5 = "The <abbr>CMS</abbr> has a nice user interface, the so called <abbr title=\"Content Management System User Interface\">CMS-UI</abbr> . This must not be mixed up with the <abbr>CMS</abbr>-IU!";
@@ -171,7 +179,9 @@ public class TestDecorator extends OpenCmsTestCase {
         decorationMap.put("CMS", new CmsDecorationObject("CMS", "Content Management System", decDef1, locale));
         decorationMap.put("VFS", new CmsDecorationObject("VFS", "Virtual File System", decDef1, locale));
         decorationMap.put("RFS", new CmsDecorationObject("RFS", "Real File System", decDef1, locale));
-        decorationMap.put("TÜV", new CmsDecorationObject("TÜV", "Technischer Überwachungsverein", decDef1, locale));
+        decorationMap.put("T" + C_UUML_UPPER + "V", new CmsDecorationObject("T" + C_UUML_UPPER + "V", "Technischer "
+            + C_UUML_UPPER
+            + "berwachungsverein", decDef1, locale));
         decorationMap.put("Dr.", new CmsDecorationObject("Dr.", "Doctor", decDef1, locale));
         decorationMap.put("z. B.", new CmsDecorationObject("z. B.", "zum Beispiel", decDef1, locale));
         decorationMap.put("e.g.", new CmsDecorationObject("e.g.", "example given", decDef1, locale));

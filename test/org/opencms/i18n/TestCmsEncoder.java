@@ -27,6 +27,8 @@
 
 package org.opencms.i18n;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -87,28 +89,17 @@ public class TestCmsEncoder extends TestCase {
     }
 
     /**
-     * @see CmsEncoder#encodeJavaEntities(String, String) 
-     */
-    public void testEncodeNonIsoEntities() {
-        
-        String result = CmsEncoder.encodeJavaEntities(STRING_1, CmsEncoder.ENCODING_US_ASCII);
-        System.out.println("\n\n" + STRING_1);
-        System.out.println(result + "\n\n");
-        assertEquals(result, STRING_6);
-    }
-    
-    /**
      * Tests decoding german "umlaute".<p>
      */
     public void testDecodeUmlauts() {
 
         Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
         System.out.println("Default Charset: " + defaultCs.name());
-        String param = "%C3%BC"; // utf-8 bytes for 'ü'
+        String param = "%C3%BC"; // utf-8 bytes for 'ï¿½'
         String decoded = CmsEncoder.decode(param, CmsEncoder.ENCODING_UTF_8);
         String decoded2 = CmsEncoder.decode(param, CmsEncoder.ENCODING_ISO_8859_1);
-        assertEquals("ü", decoded);
-        assertFalse("ü".equals(decoded2));
+        assertEquals(OpenCmsTestCase.C_UUML_LOWER, decoded);
+        assertFalse(OpenCmsTestCase.C_UUML_LOWER.equals(decoded2));
     }
 
     /**
@@ -141,18 +132,16 @@ public class TestCmsEncoder extends TestCase {
             assertEquals(result, dest);
         }
     }
-    
+
     /**
-     * Tests the encoding of a single parameter.<p>
+     * @see CmsEncoder#encodeJavaEntities(String, String) 
      */
-    public void testParamEncoding() {
-        
-        String term = "Test äöüÄÖÜß€ +-";
-        String encoded = CmsEncoder.encodeParameter(term);
-        String result = CmsEncoder.decodeParameter(encoded);
-        
-        System.out.print(encoded);
-        assertEquals(term, result);     
+    public void testEncodeNonIsoEntities() {
+
+        String result = CmsEncoder.encodeJavaEntities(STRING_1, CmsEncoder.ENCODING_US_ASCII);
+        System.out.println("\n\n" + STRING_1);
+        System.out.println(result + "\n\n");
+        assertEquals(result, STRING_6);
     }
 
     /**
@@ -192,6 +181,19 @@ public class TestCmsEncoder extends TestCase {
     }
 
     /**
+     * Tests the encoding of a single parameter.<p>
+     */
+    public void testParamEncoding() {
+
+        String term = "Test ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß€ +-";
+        String encoded = CmsEncoder.encodeParameter(term);
+        String result = CmsEncoder.decodeParameter(encoded);
+
+        System.out.print(encoded);
+        assertEquals(term, result);
+    }
+
+    /**
      * Tests encoding of parameters.<p>
      */
     public void testParameterEncoding() {
@@ -206,7 +208,7 @@ public class TestCmsEncoder extends TestCase {
 
         assertEquals(param, result);
 
-        param = "+Köln -Düsseldorf &value";
+        param = "+Kï¿½ln -Dï¿½sseldorf &value";
 
         result = CmsEncoder.encode(param, CmsEncoder.ENCODING_UTF_8);
         result = CmsEncoder.decode(result, CmsEncoder.ENCODING_UTF_8);

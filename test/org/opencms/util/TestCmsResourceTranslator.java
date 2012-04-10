@@ -27,6 +27,8 @@
 
 package org.opencms.util;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import junit.framework.TestCase;
 
 /** 
@@ -50,13 +52,13 @@ public class TestCmsResourceTranslator extends TestCase {
         "s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#",
         "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#",
         "s#[\\s]+#_#g",
-        "s#[ä]#ae#g",
-        "s#[Ä]#Ae#g",
-        "s#[ö]#oe#g",
-        "s#[Ö]#Oe#g",
-        "s#[ü]#ue#g",
-        "s#[Ü]#Ue#g",
-        "s#[ß]#ss#g",
+        "s#[" + OpenCmsTestCase.C_AUML_LOWER + "]#ae#g",
+        "s#[" + OpenCmsTestCase.C_AUML_UPPER + "]#Ae#g",
+        "s#[" + OpenCmsTestCase.C_OUML_LOWER + "]#oe#g",
+        "s#[" + OpenCmsTestCase.C_OUML_UPPER + "]#Oe#g",
+        "s#[" + OpenCmsTestCase.C_UUML_LOWER + "]#ue#g",
+        "s#[" + OpenCmsTestCase.C_UUML_UPPER + "]#Ue#g",
+        "s#[" + OpenCmsTestCase.C_SHARP_S + "]#ss#g",
         "s#[^0-9a-zA-Z_\\.\\-\\/]#!#g",
         "s#!+#x#g"};
 
@@ -85,7 +87,13 @@ public class TestCmsResourceTranslator extends TestCase {
         assertEquals(test, "/default/vfs/system/workplace/scripts/test.js");
 
         translator = new CmsResourceTranslator(rules, true);
-        test = translator.translateResource("Schöne Übung mit Fuß.js");
+        test = translator.translateResource("Sch"
+            + OpenCmsTestCase.C_OUML_LOWER
+            + "ne "
+            + OpenCmsTestCase.C_UUML_UPPER
+            + "bung mit Fu"
+            + OpenCmsTestCase.C_SHARP_S
+            + ".js");
         assertEquals(test, "Schoene_Uebung_mit_Fuss.js");
     }
 

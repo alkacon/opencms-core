@@ -158,6 +158,30 @@ public class OpenCmsTestCase extends TestCase {
     /** test article type id constant. */
     public static final int ARTICLE_TYPEID = 27;
 
+    /** Special character constant. */
+    public static final String C_AUML_LOWER = "\u00e4";
+
+    /** Special character constant. */
+    public static final String C_AUML_UPPER = "\u00c4";
+
+    /** Special character constant. */
+    public static final String C_EURO = "\u20ac";
+
+    /** Special character constant. */
+    public static final String C_OUML_LOWER = "\u00f6";
+
+    /** Special character constant. */
+    public static final String C_OUML_UPPER = "\u00d6";
+
+    /** Special character constant. */
+    public static final String C_SHARP_S = "\u00df";
+
+    /** Special character constant. */
+    public static final String C_UUML_LOWER = "\u00fc";
+
+    /** Special character constant. */
+    public static final String C_UUML_UPPER = "\u00dc";
+
     /** Key for tests on MySql database. */
     public static final String DB_MYSQL = "mysql";
 
