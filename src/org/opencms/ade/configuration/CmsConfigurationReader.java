@@ -32,6 +32,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -62,7 +63,7 @@ import com.google.common.collect.Lists;
 public class CmsConfigurationReader {
 
     /** The default locale for configuration objects. */
-    public static final Locale DEFAULT_LOCALE = new Locale("en");
+    public static final Locale DEFAULT_LOCALE = CmsLocaleManager.getLocale("en");
 
     /** The folder name node name. */
     public static final String N_FOLDER_NAME = "Name";

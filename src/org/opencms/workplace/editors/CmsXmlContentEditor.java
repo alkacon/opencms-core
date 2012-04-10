@@ -1551,7 +1551,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             if (getParamElementlanguage() == null) {
                 initElementLanguage();
             } else {
-                Locale locale = new Locale(getParamElementlanguage());
+                Locale locale = CmsLocaleManager.getLocale(getParamElementlanguage());
                 ensureLocale(locale);
             }
         }

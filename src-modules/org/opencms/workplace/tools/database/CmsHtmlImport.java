@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportException;
 import org.opencms.loader.CmsLoaderException;
@@ -1127,7 +1128,7 @@ public class CmsHtmlImport {
                 }
 
                 // create new XML page
-                Locale locale = new Locale(m_locale);
+                Locale locale = CmsLocaleManager.getLocale(m_locale);
                 CmsXmlPage page = new CmsXmlPage(locale, OpenCms.getSystemInfo().getDefaultEncoding());
                 page.addValue(m_element, locale);
                 page.setStringValue(m_cmsObject, m_element, locale, content);

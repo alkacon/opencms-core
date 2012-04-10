@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsTemplateLoaderFacade;
@@ -178,7 +179,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             }
         }
         resInfo.setProperties(props);
-        resInfo.setPreviewContent(getPreviewContent(cms, resource, new Locale(locale)));
+        resInfo.setPreviewContent(getPreviewContent(cms, resource, CmsLocaleManager.getLocale(locale)));
     }
 
     /**

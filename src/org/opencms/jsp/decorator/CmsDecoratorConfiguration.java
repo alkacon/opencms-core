@@ -30,6 +30,7 @@ package org.opencms.jsp.decorator;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -86,7 +87,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     private String m_configFile;
 
     /** The locale for extracting the configuration data. */
-    private Locale m_configurationLocale = new Locale("en");
+    private Locale m_configurationLocale = CmsLocaleManager.getLocale("en");
 
     /** Map of configured decorations. */
     private CmsDecorationBundle m_decorations;
@@ -337,41 +338,41 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
             m_locale = locale;
         }
 
-       if (m_configFile != null) { 
-       
-        // get the configuration file
-        CmsResource res = m_cms.readResource(m_configFile);
-        CmsFile file = m_cms.readFile(res);
-        CmsXmlContent configuration = CmsXmlContentFactory.unmarshal(m_cms, file);
+        if (m_configFile != null) {
 
-        // get the uselocale flag
-        // if this flag is not set to true, we must build locale independent decoration bundles
-        String uselocale = configuration.getValue(XPATH_USELOCALE, m_configurationLocale).getStringValue(m_cms);
-        if (!uselocale.equals("true")) {
-            m_locale = null;
-        }
-        // get the number of decoration definitions
-        int decorationDefCount = configuration.getIndexCount(XPATH_DECORATION, m_configurationLocale);
-        // get all the decoration definitions
-        for (int i = 1; i <= decorationDefCount; i++) {
-            CmsDecorationDefintion decDef = getDecorationDefinition(configuration, i);
-            m_decorationDefinitions.add(decDef);
-            CmsDecorationBundle decBundle = decDef.createDecorationBundle(m_cms, m_locale);
-            // merge it to the already existing decorations
-            m_decorations.putAll(decBundle.getAll());
-        }
+            // get the configuration file
+            CmsResource res = m_cms.readResource(m_configFile);
+            CmsFile file = m_cms.readFile(res);
+            CmsXmlContent configuration = CmsXmlContentFactory.unmarshal(m_cms, file);
 
-        // now read the exclude values
-        int excludeValuesCount = configuration.getIndexCount(XPATH_EXCLUDE, m_configurationLocale);
-        // get all the exclude definitions
-        for (int i = 1; i <= excludeValuesCount; i++) {
-            String excludeValue = configuration.getStringValue(
-                m_cms,
-                XPATH_EXCLUDE + "[" + i + "]",
-                m_configurationLocale);
-            m_excludes.add(excludeValue.toLowerCase());
+            // get the uselocale flag
+            // if this flag is not set to true, we must build locale independent decoration bundles
+            String uselocale = configuration.getValue(XPATH_USELOCALE, m_configurationLocale).getStringValue(m_cms);
+            if (!uselocale.equals("true")) {
+                m_locale = null;
+            }
+            // get the number of decoration definitions
+            int decorationDefCount = configuration.getIndexCount(XPATH_DECORATION, m_configurationLocale);
+            // get all the decoration definitions
+            for (int i = 1; i <= decorationDefCount; i++) {
+                CmsDecorationDefintion decDef = getDecorationDefinition(configuration, i);
+                m_decorationDefinitions.add(decDef);
+                CmsDecorationBundle decBundle = decDef.createDecorationBundle(m_cms, m_locale);
+                // merge it to the already existing decorations
+                m_decorations.putAll(decBundle.getAll());
+            }
+
+            // now read the exclude values
+            int excludeValuesCount = configuration.getIndexCount(XPATH_EXCLUDE, m_configurationLocale);
+            // get all the exclude definitions
+            for (int i = 1; i <= excludeValuesCount; i++) {
+                String excludeValue = configuration.getStringValue(
+                    m_cms,
+                    XPATH_EXCLUDE + "[" + i + "]",
+                    m_configurationLocale);
+                m_excludes.add(excludeValue.toLowerCase());
+            }
         }
-       }
     }
 
     /**

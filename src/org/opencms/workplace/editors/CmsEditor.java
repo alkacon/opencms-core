@@ -33,6 +33,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
@@ -1010,7 +1011,7 @@ public abstract class CmsEditor extends CmsEditorBase {
                 info.setBackLink(m_paramBackLink);
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramElementlanguage)) {
-                info.setElementLocale(new Locale(m_paramElementlanguage));
+                info.setElementLocale(CmsLocaleManager.getLocale(m_paramElementlanguage));
             }
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramDirectedit)) {
                 info.setDirectEdit(Boolean.parseBoolean(m_paramDirectedit));

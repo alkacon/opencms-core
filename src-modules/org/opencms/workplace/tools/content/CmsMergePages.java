@@ -424,19 +424,20 @@ public class CmsMergePages extends CmsReport {
         Iterator i = folderResources.iterator();
         int size = folderResources.size();
         // now loop through all resources and check them against those in the target merge folder
-        m_report.println(Messages.get().container(
-            Messages.RPT_SCAN_PAGES_IN_FOLDER_BEGIN_2,
-            sourceMergeFolder,
-            new Integer(size)), I_CmsReport.FORMAT_HEADLINE);
+        m_report.println(
+            Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_BEGIN_2, sourceMergeFolder, new Integer(size)),
+            I_CmsReport.FORMAT_HEADLINE);
         int count = 1;
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
             String resName = m_cms.getSitePath(res);
 
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(count++),
-                String.valueOf(size)), I_CmsReport.FORMAT_NOTE);
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(count++),
+                    String.valueOf(size)),
+                I_CmsReport.FORMAT_NOTE);
             m_report.println(Messages.get().container(Messages.RPT_PROCESS_1, resName), I_CmsReport.FORMAT_NOTE);
 
             // now analyse the page and calculate the action to do
@@ -600,10 +601,12 @@ public class CmsMergePages extends CmsReport {
                         resFolder1Name,
                         getParamFolder1(),
                         getParamFolder2());
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SUCCESSION_2,
-                        String.valueOf(count++),
-                        String.valueOf(size)), I_CmsReport.FORMAT_NOTE);
+                    m_report.print(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_SUCCESSION_2,
+                            String.valueOf(count++),
+                            String.valueOf(size)),
+                        I_CmsReport.FORMAT_NOTE);
                     m_report.print(Messages.get().container(Messages.RPT_PROCESS_0), I_CmsReport.FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -639,7 +642,7 @@ public class CmsMergePages extends CmsReport {
                         I_CmsReport.FORMAT_OK);
 
                     // now get all the text elements from the resource in folder 2 which match the the locale of folder 2
-                    Locale loc = new Locale(locale2);
+                    Locale loc = CmsLocaleManager.getLocale(locale2);
                     List textElements2 = pageFolder2.getNames(loc);
                     Iterator j = textElements2.iterator();
                     while (j.hasNext()) {
@@ -655,8 +658,9 @@ public class CmsMergePages extends CmsReport {
                             pageFolder1.addValue(textElementName, loc);
                         }
                         pageFolder1.setStringValue(m_cms, textElementName, loc, textElement);
-                        m_report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
+                        m_report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.FORMAT_OK);
                     }
                     // the resource in folder 1 now has all text elements in both locales, so update it in the vfs  
 
@@ -753,10 +757,12 @@ public class CmsMergePages extends CmsReport {
             Iterator i = collected.iterator();
             while (i.hasNext()) {
                 String resName = (String)i.next();
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(count++),
-                    String.valueOf(size)), I_CmsReport.FORMAT_NOTE);
+                m_report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(count++),
+                        String.valueOf(size)),
+                    I_CmsReport.FORMAT_NOTE);
                 m_report.println(Messages.get().container(Messages.RPT_PROCESS_1, resName), I_CmsReport.FORMAT_NOTE);
             }
         }

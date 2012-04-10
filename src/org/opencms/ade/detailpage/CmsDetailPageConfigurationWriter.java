@@ -30,6 +30,7 @@ package org.opencms.ade.detailpage;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -180,7 +181,7 @@ public class CmsDetailPageConfigurationWriter {
      */
     private void writeValue(String type, CmsUUID id, int index) {
 
-        Locale locale = new Locale("en");
+        Locale locale = CmsLocaleManager.getLocale("en");
         // todo: check actual locale.
         m_document.addValue(m_cms, N_DETAIL_PAGE, locale, index);
         String typePath = N_DETAIL_PAGE + "[" + (1 + index) + "]/" + N_TYPE;

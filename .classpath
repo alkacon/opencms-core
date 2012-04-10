@@ -73,20 +73,20 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08-gwt.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/guava-r08.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/lucene-analyzers-3.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/lucene-core-3.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/lucene-highlighter-3.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/lucene-memory-3.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/lucene-queries-3.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-beanutils-1.8.3.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/asm-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/ehcache-core-2.4.7.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/geronimo-validation_1.0_spec-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/openjpa-2.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/org.apache.bval.bundle-0.3-incubating.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/slf4j-api-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/slf4j-jdk14-1.6.1.jar"/>
-	<classpathentry kind="lib" path="webapp/setup/database/hsqldb/hsqldb-1.8.0.10.jar"/>
+	<classpathentry exported="true" kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-analyzers-3.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-3.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-highlighter-3.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-memory-3.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-queries-3.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-beanutils-1.8.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/asm-4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/ehcache-core-2.4.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/geronimo-validation_1.0_spec-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/openjpa-2.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/org.apache.bval.bundle-0.3-incubating.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-api-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-jdk14-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="webapp/setup/database/hsqldb/hsqldb-1.8.0.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

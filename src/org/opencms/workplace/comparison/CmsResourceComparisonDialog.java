@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -743,8 +744,12 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             } else {
                 resource2 = CmsXmlContentFactory.unmarshal(cms, file2);
             }
-            I_CmsXmlContentValue value1 = resource1.getValue(getParamElement(), new Locale(getParamLocale()));
-            I_CmsXmlContentValue value2 = resource2.getValue(getParamElement(), new Locale(getParamLocale()));
+            I_CmsXmlContentValue value1 = resource1.getValue(
+                getParamElement(),
+                CmsLocaleManager.getLocale(getParamLocale()));
+            I_CmsXmlContentValue value2 = resource2.getValue(
+                getParamElement(),
+                CmsLocaleManager.getLocale(getParamLocale()));
             if (value1 == null) {
                 m_differenceDialog.setOriginalSource("");
             } else {

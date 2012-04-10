@@ -29,6 +29,7 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.decorator.CmsHtmlDecorator;
 import org.opencms.jsp.decorator.I_CmsDecoratorConfiguration;
 import org.opencms.main.CmsLog;
@@ -93,7 +94,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
             if (CmsStringUtil.isEmpty(locale)) {
                 loc = controller.getCmsObject().getRequestContext().getLocale();
             } else {
-                loc = new Locale(locale);
+                loc = CmsLocaleManager.getLocale(locale);
             }
 
             // read the decorator configurator class

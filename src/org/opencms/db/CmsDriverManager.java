@@ -6165,7 +6165,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         List<Locale> availableLocales = new ArrayList<Locale>();
         for (CmsUrlNameMappingEntry entry : lastEntries) {
-            availableLocales.add(new Locale(entry.getLocale()));
+            availableLocales.add(CmsLocaleManager.getLocale(entry.getLocale()));
         }
         Locale bestLocale = localeManager.getBestMatchingLocale(locale, defaultLocales, availableLocales);
         String bestLocaleStr = bestLocale.getLanguage();
