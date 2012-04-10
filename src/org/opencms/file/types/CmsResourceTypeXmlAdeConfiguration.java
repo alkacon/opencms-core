@@ -30,6 +30,7 @@ package org.opencms.file.types;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.i18n.CmsLocaleManager;
 
 import java.util.List;
 import java.util.Locale;
@@ -51,7 +52,7 @@ public class CmsResourceTypeXmlAdeConfiguration extends CmsResourceTypeXmlConten
         String resourcename,
         List<CmsProperty> properties) {
 
-        return new Locale("en");
+        return CmsLocaleManager.getLocale("en");
     }
 
 }

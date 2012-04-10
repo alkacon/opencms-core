@@ -30,6 +30,7 @@ package org.opencms.jsp.decorator;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
@@ -208,7 +209,7 @@ public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
             if (localeName.lastIndexOf(".") > -1) {
                 localeName = localeName.substring(0, localeName.lastIndexOf("."));
             }
-            loc = new Locale(localeName);
+            loc = CmsLocaleManager.getLocale(localeName);
         }
 
         return loc;

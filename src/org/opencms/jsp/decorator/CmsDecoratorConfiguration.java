@@ -30,6 +30,7 @@ package org.opencms.jsp.decorator;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -86,7 +87,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     private String m_configFile;
 
     /** The locale for extracting the configuration data. */
-    private Locale m_configurationLocale = new Locale("en");
+    private Locale m_configurationLocale = CmsLocaleManager.getLocale("en");
 
     /** Map of configured decorations. */
     private CmsDecorationBundle m_decorations;

@@ -412,7 +412,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsPreviewInfo result = null;
         try {
-            result = getPreviewInfo(getCmsObject().readResource(structureId), new Locale(locale));
+            result = getPreviewInfo(getCmsObject().readResource(structureId), CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
             error(e);
         }
@@ -427,7 +427,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsPreviewInfo result = null;
         try {
-            result = getPreviewInfo(getCmsObject().readResource(sitePath), new Locale(locale));
+            result = getPreviewInfo(getCmsObject().readResource(sitePath), CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
             error(e);
         }
@@ -834,8 +834,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     @SuppressWarnings("unchecked")
     private List<CmsBrokenLinkBean> getBrokenLinkBeans(MultiValueMap linkMap) throws CmsException {
 
-        CmsBrokenLinkRenderer brokenLinkRenderer = new CmsBrokenLinkRenderer(
-            getCmsObject());
+        CmsBrokenLinkRenderer brokenLinkRenderer = new CmsBrokenLinkRenderer(getCmsObject());
         List<CmsBrokenLinkBean> result = new ArrayList<CmsBrokenLinkBean>();
         for (CmsResource key : (Set<CmsResource>)linkMap.keySet()) {
 

@@ -32,10 +32,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -137,7 +137,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 }
             } else {
                 // sub path is a locale -> return all elements for this locale
-                Locale locale = new Locale(path);
+                Locale locale = CmsLocaleManager.getLocale(path);
                 List<String> names = xml.getNames(locale);
                 Iterator<String> iter = names.iterator();
                 while (iter.hasNext()) {
@@ -206,7 +206,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                             } else {
 
                                 // copy locale
-                                srcXml.copyLocale(new Locale(srcTokens[0]), new Locale(destTokens[0]));
+                                srcXml.copyLocale(
+                                    CmsLocaleManager.getLocale(srcTokens[0]),
+                                    CmsLocaleManager.getLocale(destTokens[0]));
                             }
                         } else if (srcTokens.length == 2) {
 
@@ -258,8 +260,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 TMP_FILE_TABLE.add(resourcename + "/" + iter.next());
             }
 
-            return cms.createResource(resourcename, OpenCms.getResourceManager().getResourceType(
-                CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId());
+            return cms.createResource(
+                resourcename,
+                OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId());
         }
 
         // find the xml page this is for
@@ -288,7 +291,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             String[] tokens = path.split("/");
             if (tokens.length == 1) {
 
-                Locale locale = new Locale(tokens[0]);
+                Locale locale = CmsLocaleManager.getLocale(tokens[0]);
 
                 // workaround: empty xmlpages always have the default locale "en" set
                 if (file.getLength() == 0) {
@@ -318,10 +321,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 }
 
                 // create new element
-                xml.addValue(name, new Locale(tokens[0]));
+                xml.addValue(name, CmsLocaleManager.getLocale(tokens[0]));
 
                 // set the content
-                xml.setStringValue(cms, name, new Locale(tokens[0]), getStringValue(cms, file, content));
+                xml.setStringValue(cms, name, CmsLocaleManager.getLocale(tokens[0]), getStringValue(cms, file, content));
 
                 // save the xml page
                 file.setContents(xml.marshal());
@@ -387,7 +390,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 } else {
 
                     // delete locale
-                    xml.removeLocale(new Locale(tokens[0]));
+                    xml.removeLocale(CmsLocaleManager.getLocale(tokens[0]));
 
                     // save the xml page
                     file.setContents(xml.marshal());
@@ -402,7 +405,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 }
 
                 // delete element
-                xml.removeValue(name, new Locale(tokens[0]));
+                xml.removeValue(name, CmsLocaleManager.getLocale(tokens[0]));
 
                 // save the xml page
                 file.setContents(xml.marshal());
@@ -503,7 +506,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                         if (srcTokens.length == 1) {
 
                             // copy locale
-                            srcXml.moveLocale(new Locale(srcTokens[0]), new Locale(destTokens[0]));
+                            srcXml.moveLocale(
+                                CmsLocaleManager.getLocale(srcTokens[0]),
+                                CmsLocaleManager.getLocale(destTokens[0]));
                         } else if (srcTokens.length == 2) {
 
                             // TODO: move element
@@ -577,9 +582,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                     name = name.substring(0, name.length() - 5);
                 }
 
-                if (xml.hasValue(name, new Locale(tokens[0]))) {
+                if (xml.hasValue(name, CmsLocaleManager.getLocale(tokens[0]))) {
 
-                    String contentString = xml.getStringValue(cms, name, new Locale(tokens[0]));
+                    String contentString = xml.getStringValue(cms, name, CmsLocaleManager.getLocale(tokens[0]));
                     String fullPath = xmlPage.getRootPath() + "/" + tokens[0] + "/" + name + "." + EXTENSION_ELEMENT;
                     contentString = prepareContent(contentString, cms, xmlPage, fullPath);
 
@@ -666,7 +671,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                         return wrap.getResource();
                     } else {
 
-                        Locale locale = new Locale(tokens[0]);
+                        Locale locale = CmsLocaleManager.getLocale(tokens[0]);
                         if (xml.hasLocale(locale) && (file.getLength() > 0)) {
                             return getResourceForLocale(xmlPage, locale);
                         }
@@ -679,7 +684,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                         name = name.substring(0, name.length() - 5);
                     }
 
-                    Locale locale = new Locale(tokens[0]);
+                    Locale locale = CmsLocaleManager.getLocale(tokens[0]);
                     if (xml.hasValue(name, locale)) {
                         String content = xml.getStringValue(cms, name, locale);
                         String fullPath = xmlPage.getRootPath()
@@ -797,7 +802,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                     // set content
                     String content = getStringValue(cms, file, resource.getContents());
                     content = CmsStringUtil.extractHtmlBody(content).trim();
-                    xml.setStringValue(cms, name, new Locale(tokens[0]), content);
+                    xml.setStringValue(cms, name, CmsLocaleManager.getLocale(tokens[0]), content);
 
                     // write file
                     file.setContents(xml.marshal());

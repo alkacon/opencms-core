@@ -29,6 +29,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -227,7 +228,7 @@ public class CmsLocalizationWidget extends A_CmsWidget {
                 if (config.startsWith(OPTION_KEY)) {
                     m_bundleKey = config.substring(OPTION_KEY.length());
                 } else if (config.startsWith(OPTION_LOCALE)) {
-                    m_locale = new Locale(config.substring(OPTION_LOCALE.length()));
+                    m_locale = CmsLocaleManager.getLocale(config.substring(OPTION_LOCALE.length()));
                 } else {
                     bundleName = config;
                 }
