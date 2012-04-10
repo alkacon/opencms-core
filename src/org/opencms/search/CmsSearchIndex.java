@@ -149,6 +149,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         /**
+         * @see org.apache.lucene.index.FilterIndexReader#doClose()
+         */
+        @Override
+        protected void doClose() throws IOException {
+
+            super.doClose();
+            m_reader.close();
+        }
+
+        /**
          * @see org.apache.lucene.index.IndexReader#doOpenIfChanged()
          */
         @Override
@@ -172,16 +182,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 result = new LazyContentReader(result);
             }
             return result;
-        }
-
-        /**
-         * @see org.apache.lucene.index.FilterIndexReader#doClose()
-         */
-        @Override
-        protected void doClose() throws IOException {
-
-            super.doClose();
-            m_reader.close();
         }
     }
 
@@ -1821,7 +1821,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // use the current site root as the search root
             extendPathFilter(pathFilter, cms.getRequestContext().getSiteRoot());
             // also add the shared folder (v 8.0)
-            extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
+            if (OpenCms.getSiteManager().getSharedFolder() != null) {
+                extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
+            }
         }
 
         // add the calculated path filter for the root path
