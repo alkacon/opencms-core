@@ -71,6 +71,12 @@ import org.apache.lucene.search.TopDocs;
  */
 public class CmsGallerySearchIndex extends CmsSearchIndex {
 
+    /** The system galleries path. */
+    public static final String FOLDER_SYSTEM_GALLERIES = "/system/galleries/";
+
+    /** The system modules folder path. */
+    public static final String FOLDER_SYTEM_MODULES = "/system/modules/";
+
     /** The advanced gallery index name. */
     public static final String GALLERY_INDEX_NAME = "Gallery Index";
 
@@ -79,12 +85,6 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /** The gallery document type name for xml-pages. */
     public static final String TYPE_XMLPAGE_GALLERIES = "xmlpage-galleries";
-
-    /** The system modules folder path. */
-    public static final String FOLDER_SYTEM_MODULES = "/system/modules/";
-
-    /** The system galleries path. */
-    public static final String FOLDER_SYSTEM_GALLERIES = "/system/galleries/";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchIndex.class);
@@ -173,6 +173,36 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 availableLocales);
         } else {
             result = defaultLocales.get(0);
+        }
+        return result;
+    }
+
+    /**
+     * Gets the search roots to use for the given site/subsite parameters.<p>
+     *  
+     * @param scope the search scope
+     * @param subSiteParam the current subsite
+     *  
+     * @return the list of search roots for that option 
+     */
+    public List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String subSiteParam) {
+
+        List<String> result = new ArrayList<String>();
+        if (scope.isIncludeSite()) {
+            result.add("/");
+        }
+        if (scope.isIncludeSubSite() && (subSiteParam != null)) {
+            result.add(subSiteParam);
+        }
+        if (scope.isIncludeShared()) {
+            String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
+            if (sharedFolder != null) {
+                result.add(sharedFolder);
+            }
+        }
+        if (scope == CmsGallerySearchScope.siteShared) {
+            result.add(FOLDER_SYTEM_MODULES);
+            result.add(FOLDER_SYSTEM_GALLERIES);
         }
         return result;
     }
@@ -428,13 +458,14 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
         // complete the search root
         TermsFilter pathFilter = new TermsFilter();
+        String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
         if ((roots != null) && (roots.size() > 0)) {
             // add the all configured search roots with will request context
             for (int i = 0; i < roots.size(); i++) {
                 String searchRoot = roots.get(i);
                 if (!searchRoot.startsWith(FOLDER_SYTEM_MODULES)
                     && !searchRoot.startsWith(FOLDER_SYSTEM_GALLERIES)
-                    && !searchRoot.startsWith(OpenCms.getSiteManager().getSharedFolder())) {
+                    && ((sharedFolder == null) || !searchRoot.startsWith(OpenCms.getSiteManager().getSharedFolder()))) {
                     searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
                 }
                 extendPathFilter(pathFilter, searchRoot);
@@ -536,33 +567,6 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                     result.add(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, l));
                 }
             }
-        }
-        return result;
-    }
-
-    /**
-     * Gets the search roots to use for the given site/subsite parameters.<p>
-     *  
-     * @param scope the search scope
-     * @param subSiteParam the current subsite
-     *  
-     * @return the list of search roots for that option 
-     */
-    public List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String subSiteParam) {
-
-        List<String> result = new ArrayList<String>();
-        if (scope.isIncludeSite()) {
-            result.add("/");
-        }
-        if (scope.isIncludeSubSite() && (subSiteParam != null)) {
-            result.add(subSiteParam);
-        }
-        if (scope.isIncludeShared()) {
-            result.add(OpenCms.getSiteManager().getSharedFolder());
-        }
-        if (scope == CmsGallerySearchScope.siteShared) {
-            result.add(FOLDER_SYTEM_MODULES);
-            result.add(FOLDER_SYSTEM_GALLERIES);
         }
         return result;
     }
