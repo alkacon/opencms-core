@@ -120,7 +120,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
             if (indexSourceResources == null) {
                 return false;
             }
-            Element source = (Element)indexSourceResources.selectSingleNode("/resource[text()='/system/galleries/']");
+            Element source = (Element)indexSourceResources.selectSingleNode("resource[text()='/system/galleries/']");
             if (source != null) {
                 return false;
             }
