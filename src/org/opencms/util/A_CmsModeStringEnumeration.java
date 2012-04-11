@@ -60,6 +60,7 @@ public abstract class A_CmsModeStringEnumeration implements Serializable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -87,6 +88,7 @@ public abstract class A_CmsModeStringEnumeration implements Serializable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_mode.hashCode();
@@ -95,6 +97,7 @@ public abstract class A_CmsModeStringEnumeration implements Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_mode;

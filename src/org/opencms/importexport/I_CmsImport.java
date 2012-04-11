@@ -90,6 +90,7 @@ public interface I_CmsImport {
      * 
      * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
+    @Deprecated
     void importResources(
         CmsObject cms,
         String importPath,

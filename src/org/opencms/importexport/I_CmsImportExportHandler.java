@@ -112,6 +112,7 @@ public interface I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #importData(CmsObject, I_CmsReport)} instead
      */
+    @Deprecated
     void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
     throws CmsXmlException, CmsImportExportException, CmsRoleViolationException, CmsException;
 

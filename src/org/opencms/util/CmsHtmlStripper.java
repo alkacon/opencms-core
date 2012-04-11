@@ -100,7 +100,7 @@ public final class CmsHtmlStripper {
      */
     public boolean addPreserveTag(final String tagName) {
 
-        Vector attributeList = new Vector(1);
+        Vector<Attribute> attributeList = new Vector<Attribute>(1);
         Attribute tagNameAttribute = new Attribute();
         tagNameAttribute.setName(tagName.toLowerCase());
         attributeList.add(tagNameAttribute);
@@ -116,10 +116,10 @@ public final class CmsHtmlStripper {
      *      
      * @see #addPreserveTag(String)
      */
-    public void addPreserveTagList(final List preserveTags) {
+    public void addPreserveTagList(List<String> preserveTags) {
 
-        for (Iterator it = preserveTags.iterator(); it.hasNext();) {
-            addPreserveTag((String)it.next());
+        for (Iterator<String> it = preserveTags.iterator(); it.hasNext();) {
+            addPreserveTag(it.next());
         }
     }
 
@@ -139,7 +139,7 @@ public final class CmsHtmlStripper {
      */
     public void addPreserveTags(final String tagList, final char separator) {
 
-        List tags = CmsStringUtil.splitAsList(tagList, separator, true);
+        List<String> tags = CmsStringUtil.splitAsList(tagList, separator, true);
         addPreserveTagList(tags);
     }
 

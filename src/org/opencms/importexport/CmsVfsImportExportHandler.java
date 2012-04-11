@@ -58,7 +58,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     private CmsExportParameters m_exportParams;
 
     /** The VFS paths to be exported. */
-    private List m_exportPaths;
+    private List<String> m_exportPaths;
 
     /** The name of the export file in the real file system. */
     private boolean m_exportUserdata;
@@ -126,6 +126,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public long getContentAge() {
 
         return m_contentAge;
@@ -156,7 +157,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
-    public List getExportPaths() {
+    @Deprecated
+    public List<String> getExportPaths() {
 
         return m_exportPaths;
     }
@@ -168,6 +170,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public String getFileName() {
 
         return m_fileName;
@@ -202,6 +205,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #importData(CmsObject, I_CmsReport)} instead
      */
+    @Deprecated
     public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
     throws CmsXmlException, CmsImportExportException, CmsRoleViolationException, CmsException {
 
@@ -219,6 +223,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public boolean isExportUserdata() {
 
         return m_exportUserdata;
@@ -231,6 +236,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public boolean isIncludeSystem() {
 
         return m_includeSystem;
@@ -243,6 +249,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public boolean isIncludeUnchanged() {
 
         return m_includeUnchanged;
@@ -255,6 +262,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public boolean isProjectOnly() {
 
         return m_projectOnly;
@@ -267,6 +275,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public boolean isRecursive() {
 
         return m_recursive;
@@ -294,6 +303,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public void setContentAge(long contentAge) {
 
         if (contentAge < 0) {
@@ -328,7 +338,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
-    public void setExportPaths(List exportPaths) {
+    @Deprecated
+    public void setExportPaths(List<String> exportPaths) {
 
         m_exportPaths = exportPaths;
     }
@@ -340,6 +351,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public void setExportUserdata(boolean exportUserdata) {
 
         m_exportUserdata = exportUserdata;
@@ -352,6 +364,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public void setFileName(String fileName) {
 
         if (CmsStringUtil.isEmpty(fileName) || !fileName.trim().equals(fileName)) {
@@ -377,6 +390,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public void setIncludeSystem(boolean excludeSystem) {
 
         m_includeSystem = excludeSystem;
@@ -389,6 +403,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public void setIncludeUnchanged(boolean excludeUnchanged) {
 
         m_includeUnchanged = excludeUnchanged;
@@ -401,6 +416,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public void setProjectOnly(boolean projectOnly) {
 
         m_projectOnly = projectOnly;
@@ -413,6 +429,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
+    @Deprecated
     public void setRecursive(boolean recursive) {
 
         m_recursive = recursive;

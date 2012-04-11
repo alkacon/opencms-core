@@ -59,6 +59,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -83,6 +84,7 @@ import org.dom4j.Element;
  * 
  * @deprecated the import is done starting with {@link CmsImportVersion7} with the digester
  */
+@Deprecated
 public abstract class A_CmsImport implements I_CmsImport {
 
     /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "userinfo/entry@name" attribute, contains the additional user info entry name. */
@@ -269,7 +271,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected Document m_docXml;
 
     /** Groups to create during import are stored here. */
-    protected Stack m_groupsToCreate;
+    protected Stack<Map<String, String>> m_groupsToCreate;
 
     /** The import-path to write resources into the cms. */
     protected String m_importPath;
@@ -281,10 +283,10 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected ZipFile m_importZip;
 
     /** Storage for all pointer properties which must be converted into links. */
-    protected Map m_linkPropertyStorage;
+    protected Map<String, List<CmsProperty>> m_linkPropertyStorage;
 
     /** Storage for all pointers which must be converted into links. */
-    protected Map m_linkStorage;
+    protected Map<String, String> m_linkStorage;
 
     /** The object to report the log messages. */
     protected I_CmsReport m_report;
@@ -303,7 +305,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         byte[] data = new byte[value.length() / 2];
 
         for (int i = 0; i < data.length; i++) {
-            data[i] = (byte)(Integer.parseInt(value.substring(i * 2, i * 2 + 2), 16) - 128);
+            data[i] = (byte)(Integer.parseInt(value.substring(i * 2, (i * 2) + 2), 16) - 128);
         }
 
         return new String(Base64.encodeBase64(data));
@@ -374,7 +376,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param immutableResources the list of the immutable resources
      * @return true or false
      */
-    protected boolean checkImmutable(String translatedName, List immutableResources) {
+    protected boolean checkImmutable(String translatedName, List<String> immutableResources) {
 
         boolean resourceNotImmutable = true;
         if (immutableResources.contains(translatedName)) {
@@ -397,9 +399,11 @@ public abstract class A_CmsImport implements I_CmsImport {
             } catch (CmsException e) {
                 // resourceNotImmutable will be true 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1,
-                        translatedName), e);
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1,
+                            translatedName),
+                        e);
                 }
             } finally {
                 m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
@@ -433,21 +437,23 @@ public abstract class A_CmsImport implements I_CmsImport {
         try {
             int linksSize = m_linkStorage.size();
             int i = 0;
-            Iterator itEntries = m_linkStorage.entrySet().iterator();
+            Iterator<Entry<String, String>> itEntries = m_linkStorage.entrySet().iterator();
             // loop through all links to convert
             while (itEntries.hasNext()) {
-                Map.Entry entry = (Map.Entry)itEntries.next();
+                Entry<String, String> entry = itEntries.next();
 
-                String key = (String)entry.getKey();
-                String link = (String)entry.getValue();
-                List properties = (List)m_linkPropertyStorage.get(key);
+                String key = entry.getKey();
+                String link = entry.getValue();
+                List<CmsProperty> properties = m_linkPropertyStorage.get(key);
                 CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
 
                 i++;
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i),
-                    String.valueOf(linksSize)), I_CmsReport.FORMAT_NOTE);
+                m_report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i),
+                        String.valueOf(linksSize)),
+                    I_CmsReport.FORMAT_NOTE);
                 m_report.print(Messages.get().container(Messages.RPT_CONVERT_LINK_0), I_CmsReport.FORMAT_NOTE);
                 m_report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -481,8 +487,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                             0);
 
                         m_cms.importResource(key, resource, null, properties);
-                        m_report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
+                        m_report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.FORMAT_OK);
 
                         if (LOG.isInfoEnabled()) {
                             LOG.info(Messages.get().getBundle().key(
@@ -495,8 +502,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                         int pointerId = OpenCms.getResourceManager().getResourceType(
                             CmsResourceTypePointer.getStaticTypeName()).getTypeId();
                         m_cms.createResource(key, pointerId, link.getBytes(), properties);
-                        m_report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
+                        m_report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.FORMAT_OK);
 
                         if (LOG.isInfoEnabled()) {
                             LOG.info(Messages.get().getBundle().key(
@@ -513,10 +521,12 @@ public abstract class A_CmsImport implements I_CmsImport {
                         I_CmsReport.FORMAT_WARNING);
 
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.ERR_IMPORTEXPORT_LINK_CONVERSION_FAILED_2,
-                            key,
-                            link), e);
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_IMPORTEXPORT_LINK_CONVERSION_FAILED_2,
+                                key,
+                                link),
+                            e);
                     }
                 }
             }
@@ -614,7 +624,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      * 
      * @return the locale
      */
-    protected Locale getLocale(String destination, List properties) {
+    protected Locale getLocale(String destination, List<CmsProperty> properties) {
 
         String localeName = CmsProperty.get(CmsPropertyDefinition.PROPERTY_LOCALE, properties).getValue();
 
@@ -632,7 +642,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param resource the resource assigned to the access control entries
      * @param aceList the access control entries to create
      */
-    protected void importAccessControlEntries(CmsResource resource, List aceList) {
+    protected void importAccessControlEntries(CmsResource resource, List<CmsAccessControlEntry> aceList) {
 
         if (aceList.size() == 0) {
             // no ACE in the list
@@ -676,7 +686,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
             if (CmsStringUtil.isNotEmpty(parentgroupName) && (parentGroup == null)) {
                 // cannot create group, put on stack and try to create later
-                Map groupData = new HashMap();
+                Map<String, String> groupData = new HashMap<String, String>();
                 groupData.put(A_CmsImport.N_NAME, name);
                 groupData.put(A_CmsImport.N_DESCRIPTION, description);
                 groupData.put(A_CmsImport.N_FLAGS, flags);
@@ -718,9 +728,10 @@ public abstract class A_CmsImport implements I_CmsImport {
      * 
      * @throws CmsImportExportException if something goes wrong
      */
+    @SuppressWarnings("unchecked")
     protected void importGroups() throws CmsImportExportException {
 
-        List groupNodes;
+        List<Element> groupNodes;
         Element currentElement;
         String name, description, flags, parentgroup;
         try {
@@ -728,7 +739,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             groupNodes = m_docXml.selectNodes("//" + A_CmsImport.N_GROUPDATA);
             // walk through all groups in manifest
             for (int i = 0; i < groupNodes.size(); i++) {
-                currentElement = (Element)groupNodes.get(i);
+                currentElement = groupNodes.get(i);
                 name = getChildElementTextValue(currentElement, A_CmsImport.N_NAME);
                 name = OpenCms.getImportExportManager().translateGroup(name);
                 description = getChildElementTextValue(currentElement, A_CmsImport.N_DESCRIPTION);
@@ -744,14 +755,14 @@ public abstract class A_CmsImport implements I_CmsImport {
 
             // now try to import the groups in the stack
             while (!m_groupsToCreate.empty()) {
-                Stack tempStack = m_groupsToCreate;
-                m_groupsToCreate = new Stack();
+                Stack<Map<String, String>> tempStack = m_groupsToCreate;
+                m_groupsToCreate = new Stack<Map<String, String>>();
                 while (tempStack.size() > 0) {
-                    Map groupdata = (HashMap)tempStack.pop();
-                    name = (String)groupdata.get(A_CmsImport.N_NAME);
-                    description = (String)groupdata.get(A_CmsImport.N_DESCRIPTION);
-                    flags = (String)groupdata.get(A_CmsImport.N_FLAGS);
-                    parentgroup = (String)groupdata.get(A_CmsImport.N_PARENTGROUP);
+                    Map<String, String> groupdata = tempStack.pop();
+                    name = groupdata.get(A_CmsImport.N_NAME);
+                    description = groupdata.get(A_CmsImport.N_DESCRIPTION);
+                    flags = groupdata.get(A_CmsImport.N_FLAGS);
+                    parentgroup = groupdata.get(A_CmsImport.N_PARENTGROUP);
                     // try to import the group
                     importGroup(name, description, flags, parentgroup);
                 }
@@ -795,8 +806,8 @@ public abstract class A_CmsImport implements I_CmsImport {
         String lastname,
         String email,
         long dateCreated,
-        Map userInfo,
-        List userGroups) throws CmsImportExportException {
+        Map<String, Object> userInfo,
+        List<String> userGroups) throws CmsImportExportException {
 
         // create a new user id
         String id = new CmsUUID().toString();
@@ -819,7 +830,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInfo);
                 // add user to all groups list
                 for (int i = 0; i < userGroups.size(); i++) {
-                    String groupName = (String)userGroups.get(i);
+                    String groupName = userGroups.get(i);
                     try {
                         CmsGroup group = m_cms.readGroup(groupName);
                         if (group.isVirtual() || group.isRole()) {
@@ -829,10 +840,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                             m_cms.addUserToGroup(name, groupName);
                         }
                     } catch (CmsException exc) {
-                        m_report.println(Messages.get().container(
-                            Messages.RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2,
-                            name,
-                            groupName), I_CmsReport.FORMAT_WARNING);
+                        m_report.println(
+                            Messages.get().container(Messages.RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2, name, groupName),
+                            I_CmsReport.FORMAT_WARNING);
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(exc.getLocalizedMessage(), exc);
                         }
@@ -863,13 +873,14 @@ public abstract class A_CmsImport implements I_CmsImport {
      * 
      * @throws CmsImportExportException if something goes wrong
      */
+    @SuppressWarnings("unchecked")
     protected void importUsers() throws CmsImportExportException {
 
-        List userNodes;
-        List groupNodes;
-        List userGroups;
+        List<Element> userNodes;
+        List<Element> groupNodes;
+        List<String> userGroups;
         Element currentElement, currentGroup;
-        Map userInfo = new HashMap();
+        Map<String, Object> userInfo = new HashMap<String, Object>();
         String name, description, flags, password, firstname, lastname, email, address, pwd, infoNode, defaultGroup;
         // try to get the import resource
         //getImportResource();
@@ -878,7 +889,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             userNodes = m_docXml.selectNodes("//" + A_CmsImport.N_USERDATA);
             // walk threw all groups in manifest
             for (int i = 0; i < userNodes.size(); i++) {
-                currentElement = (Element)userNodes.get(i);
+                currentElement = userNodes.get(i);
                 name = getChildElementTextValue(currentElement, A_CmsImport.N_NAME);
                 name = OpenCms.getImportExportManager().translateUser(name);
                 // decode passwords using base 64 decoder
@@ -899,7 +910,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     // deserialize the object
                     ByteArrayInputStream bin = new ByteArrayInputStream(value);
                     ObjectInputStream oin = new ObjectInputStream(bin);
-                    userInfo = (Map)oin.readObject();
+                    userInfo = (Map<String, Object>)oin.readObject();
                 } catch (IOException ioex) {
                     m_report.println(ioex);
                 } catch (ClassCastException ccex) {
@@ -910,9 +921,9 @@ public abstract class A_CmsImport implements I_CmsImport {
 
                 // get the groups of the user and put them into the list
                 groupNodes = currentElement.selectNodes("*/" + A_CmsImport.N_GROUPNAME);
-                userGroups = new ArrayList();
+                userGroups = new ArrayList<String>();
                 for (int j = 0; j < groupNodes.size(); j++) {
-                    currentGroup = (Element)groupNodes.get(j);
+                    currentGroup = groupNodes.get(j);
                     String userInGroup = getChildElementTextValue(currentGroup, A_CmsImport.N_NAME);
                     userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);
                     userGroups.add(userInGroup);
@@ -951,7 +962,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected void initialize() {
 
-        m_groupsToCreate = new Stack();
+        m_groupsToCreate = new Stack<Map<String, String>>();
     }
 
     /**
@@ -962,12 +973,13 @@ public abstract class A_CmsImport implements I_CmsImport {
      * 
      * @return a list with all properties
      */
-    protected List readPropertiesFromManifest(Element parentElement, List ignoredPropertyKeys) {
+    protected List<CmsProperty> readPropertiesFromManifest(Element parentElement, List<String> ignoredPropertyKeys) {
 
         // all imported Cms property objects are collected in map first forfaster access
-        Map properties = new HashMap();
+        Map<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
         CmsProperty property = null;
-        List propertyElements = parentElement.selectNodes("./"
+        @SuppressWarnings("unchecked")
+        List<Element> propertyElements = parentElement.selectNodes("./"
             + A_CmsImport.N_PROPERTIES
             + "/"
             + A_CmsImport.N_PROPERTY);
@@ -977,7 +989,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         // iterate over all property elements
         for (int i = 0, n = propertyElements.size(); i < n; i++) {
-            propertyElement = (Element)propertyElements.get(i);
+            propertyElement = propertyElements.get(i);
             key = getChildElementTextValue(propertyElement, A_CmsImport.N_NAME);
 
             if ((key == null) || ignoredPropertyKeys.contains(key)) {
@@ -986,7 +998,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
 
             // all Cms properties are collected in a map keyed by their property keys
-            property = (CmsProperty)properties.get(key);
+            property = properties.get(key);
             if (property == null) {
                 property = new CmsProperty();
                 property.setName(key);
@@ -1009,6 +1021,6 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
         }
 
-        return new ArrayList(properties.values());
+        return new ArrayList<CmsProperty>(properties.values());
     }
 }

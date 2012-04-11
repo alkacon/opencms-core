@@ -1276,7 +1276,7 @@ public class PrintfFormat {
                     }
                 }
             }
-            if (i0 + p < ca1.length - 1) {
+            if ((i0 + p) < (ca1.length - 1)) {
                 carry = checkForCarry(ca1, i0 + p + 1);
                 if (carry) {
                     carry = startSymbolicCarry(ca1, i0 + p, i0);
@@ -1287,7 +1287,7 @@ public class PrintfFormat {
                     for (j = 0; j < i0; j++) {
                         ca2[j] = '0';
                     }
-                    for (i = i0, j = i0 + 1; j < p + 1; i++, j++) {
+                    for (i = i0, j = i0 + 1; j < (p + 1); i++, j++) {
                         ca2[j] = ca1[i];
                     }
                     expon++;
@@ -1331,7 +1331,7 @@ public class PrintfFormat {
             for (k = 0; (k < p) && (j < ca1.length); j++, i++, k++) {
                 ca2[i] = ca1[j];
             }
-            for (; i < ca2.length - eSize; i++) {
+            for (; i < (ca2.length - eSize); i++) {
                 ca2[i] = '0';
             }
             ca2[i++] = eChar;
@@ -1515,7 +1515,7 @@ public class PrintfFormat {
                 ca4 = new char[ca3.length + nThousands + lead];
                 ca4[0] = ca3[0];
                 for (i = lead, k = lead; i < dp; i++) {
-                    if ((i > 0) && ((dp - i) % 3 == 0)) {
+                    if ((i > 0) && (((dp - i) % 3) == 0)) {
                         // ca4[k]=',';
                         ca4[k] = m_dfs.getGroupingSeparator();
                         ca4[k + 1] = ca3[i];
@@ -1678,7 +1678,7 @@ public class PrintfFormat {
             for (k = 0; k < n2In; j++, i++, k++) {
                 ca2[j] = ca1[i];
             }
-            if (n1In + expon <= 0) {
+            if ((n1In + expon) <= 0) {
                 ca3 = new char[-expon + n2In];
                 for (j = 0, k = 0; k < (-n1In - expon); k++, j++) {
                     ca3[j] = '0';
@@ -1690,7 +1690,7 @@ public class PrintfFormat {
                 ca3 = ca2;
             }
             boolean carry = false;
-            if (p < -expon + n2In) {
+            if (p < (-expon + n2In)) {
                 if (expon < 0) {
                     i = p;
                 } else {
@@ -1701,7 +1701,7 @@ public class PrintfFormat {
                     carry = startSymbolicCarry(ca3, i - 1, 0);
                 }
             }
-            if (n1In + expon <= 0) {
+            if ((n1In + expon) <= 0) {
                 ca4 = new char[2 + p];
                 if (!carry) {
                     ca4[0] = '0';
@@ -1737,7 +1737,7 @@ public class PrintfFormat {
                 for (i = 0; i < Math.min(n1In + expon, ca3.length); i++, j++) {
                     ca4[j] = ca3[i];
                 }
-                for (; i < n1In + expon; i++, j++) {
+                for (; i < (n1In + expon); i++, j++) {
                     ca4[j] = '0';
                 }
                 if (m_alternateForm || !m_precisionSet || (m_precision != 0)) {
@@ -1821,7 +1821,7 @@ public class PrintfFormat {
                 ca6 = new char[ca5.length + nThousands + lead];
                 ca6[0] = ca5[0];
                 for (i = lead, k = lead; i < dp; i++) {
-                    if ((i > 0) && ((dp - i) % 3 == 0)) {
+                    if ((i > 0) && (((dp - i) % 3) == 0)) {
                         // ca6[k]=',';
                         ca6[k] = m_dfs.getGroupingSeparator();
                         ca6[k + 1] = ca5[i];
@@ -1905,11 +1905,11 @@ public class PrintfFormat {
             int i = 0;
             if (m_leftJustify) {
                 ca[0] = x;
-                for (i = 1; i <= width - nPrint; i++) {
+                for (i = 1; i <= (width - nPrint); i++) {
                     ca[i] = ' ';
                 }
             } else {
-                for (i = 0; i < width - nPrint; i++) {
+                for (i = 0; i < (width - nPrint); i++) {
                     ca[i] = ' ';
                 }
                 ca[i] = x;
@@ -2033,7 +2033,7 @@ public class PrintfFormat {
                 }
             } else {
                 if (m_precisionSet && ((sx.length() - 1) < m_precision)) {
-                    nLeadingZeros = m_precision - sx.length() + 1;
+                    nLeadingZeros = (m_precision - sx.length()) + 1;
                 }
             }
             if (nLeadingZeros < 0) {
@@ -2626,11 +2626,11 @@ public class PrintfFormat {
                         ca[i] = csx[i];
                     }
                 }
-                for (int j = 0; j < width - nPrint; j++, i++) {
+                for (int j = 0; j < (width - nPrint); j++, i++) {
                     ca[i] = ' ';
                 }
             } else {
-                for (i = 0; i < width - nPrint; i++) {
+                for (i = 0; i < (width - nPrint); i++) {
                     ca[i] = ' ';
                 }
                 if (nPrint >= x.length()) {
@@ -3210,7 +3210,7 @@ public class PrintfFormat {
                             break;
                         }
                     }
-                    if (m_pos > firstPos + 1) {
+                    if (m_pos > (firstPos + 1)) {
                         String sz = m_fmt.substring(firstPos + 1, m_pos);
                         m_precision = Integer.parseInt(sz);
                         m_precisionSet = true;
@@ -3310,7 +3310,7 @@ public class PrintfFormat {
     private int m_cPos;
 
     /** Vector of control strings and format literals. */
-    private Vector m_vFmt = new Vector();
+    private Vector<ConversionSpecification> m_vFmt = new Vector<ConversionSpecification>();
 
     /**
      * Constructs an array of control specifications
@@ -3417,12 +3417,12 @@ public class PrintfFormat {
      */
     public String sprintf() {
 
-        Enumeration e = m_vFmt.elements();
+        Enumeration<ConversionSpecification> e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
         StringBuffer sb = new StringBuffer();
         while (e.hasMoreElements()) {
-            cs = (ConversionSpecification)e.nextElement();
+            cs = e.nextElement();
             c = cs.getConversionCharacter();
             if (c == '\0') {
                 sb.append(cs.getLiteral());
@@ -3443,12 +3443,12 @@ public class PrintfFormat {
      */
     public String sprintf(double x) throws CmsIllegalArgumentException {
 
-        Enumeration e = m_vFmt.elements();
+        Enumeration<ConversionSpecification> e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
         StringBuffer sb = new StringBuffer();
         while (e.hasMoreElements()) {
-            cs = (ConversionSpecification)e.nextElement();
+            cs = e.nextElement();
             c = cs.getConversionCharacter();
             if (c == '\0') {
                 sb.append(cs.getLiteral());
@@ -3471,12 +3471,12 @@ public class PrintfFormat {
      */
     public String sprintf(int x) throws CmsIllegalArgumentException {
 
-        Enumeration e = m_vFmt.elements();
+        Enumeration<ConversionSpecification> e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
         StringBuffer sb = new StringBuffer();
         while (e.hasMoreElements()) {
-            cs = (ConversionSpecification)e.nextElement();
+            cs = e.nextElement();
             c = cs.getConversionCharacter();
             if (c == '\0') {
                 sb.append(cs.getLiteral());
@@ -3499,12 +3499,12 @@ public class PrintfFormat {
      */
     public String sprintf(long x) throws CmsIllegalArgumentException {
 
-        Enumeration e = m_vFmt.elements();
+        Enumeration<ConversionSpecification> e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
         StringBuffer sb = new StringBuffer();
         while (e.hasMoreElements()) {
-            cs = (ConversionSpecification)e.nextElement();
+            cs = e.nextElement();
             c = cs.getConversionCharacter();
             if (c == '\0') {
                 sb.append(cs.getLiteral());
@@ -3532,12 +3532,12 @@ public class PrintfFormat {
      */
     public String sprintf(Object x) throws CmsIllegalArgumentException {
 
-        Enumeration e = m_vFmt.elements();
+        Enumeration<ConversionSpecification> e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
         StringBuffer sb = new StringBuffer();
         while (e.hasMoreElements()) {
-            cs = (ConversionSpecification)e.nextElement();
+            cs = e.nextElement();
             c = cs.getConversionCharacter();
             if (c == '\0') {
                 sb.append(cs.getLiteral());
@@ -3578,13 +3578,13 @@ public class PrintfFormat {
      */
     public String sprintf(Object[] o) {
 
-        Enumeration e = m_vFmt.elements();
+        Enumeration<ConversionSpecification> e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
         int i = 0;
         StringBuffer sb = new StringBuffer();
         while (e.hasMoreElements()) {
-            cs = (ConversionSpecification)e.nextElement();
+            cs = e.nextElement();
             c = cs.getConversionCharacter();
             if (c == '\0') {
                 sb.append(cs.getLiteral());
@@ -3647,12 +3647,12 @@ public class PrintfFormat {
      */
     public String sprintf(String x) throws CmsIllegalArgumentException {
 
-        Enumeration e = m_vFmt.elements();
+        Enumeration<ConversionSpecification> e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
         StringBuffer sb = new StringBuffer();
         while (e.hasMoreElements()) {
-            cs = (ConversionSpecification)e.nextElement();
+            cs = e.nextElement();
             c = cs.getConversionCharacter();
             if (c == '\0') {
                 sb.append(cs.getLiteral());

@@ -35,7 +35,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 
@@ -61,7 +60,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * 
  * @since 6.0.0 
  */
-public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable<CmsUUID>, Externalizable {
+public final class CmsUUID extends Object implements Cloneable, Comparable<CmsUUID>, Externalizable {
 
     /** A regular expression for matching UUIDs. */
     public static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";

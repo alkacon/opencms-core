@@ -257,7 +257,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
         try {
             // first get the class of the gallery
-            Class galleryClass = Class.forName(template.getResourceType().getFolderClassName());
+            Class<?> galleryClass = Class.forName(template.getResourceType().getFolderClassName());
             // create a new instance and cast to a gallery
             A_CmsAjaxGallery galleryInstance = (A_CmsAjaxGallery)galleryClass.newInstance();
             // set the type name and id
@@ -882,10 +882,12 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             // 2: substituted file item url
             jsonObj.put("linkpath", getJsp().link(sitePath));
             // 3: file item title
-            jsonObj.put("title", CmsStringUtil.escapeJavaScript(getJsp().property(
-                CmsPropertyDefinition.PROPERTY_TITLE,
-                sitePath,
-                res.getName())));
+            jsonObj.put(
+                "title",
+                CmsStringUtil.escapeJavaScript(getJsp().property(
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    sitePath,
+                    res.getName())));
             // 4: file size (in kb)
             jsonObj.put("size", (res.getLength() / 1024)
                 + " "

@@ -44,6 +44,7 @@ public class CmsBrokenLinkBean implements IsSerializable {
     /** The child beans (usually represent link targets). */
     private List<CmsBrokenLinkBean> m_children = new ArrayList<CmsBrokenLinkBean>();
 
+    /** The broken link info. */
     private Map<String, String> m_info = new LinkedHashMap<String, String>();
 
     /** The title. */
@@ -99,6 +100,12 @@ public class CmsBrokenLinkBean implements IsSerializable {
         getChildren().add(bean);
     }
 
+    /**
+     * Adds optional page information to the broken link bean.<p>
+     * 
+     * @param name the info name
+     * @param value the info
+     */
     public void addInfo(String name, String value) {
 
         m_info.put(name, value);
@@ -114,6 +121,11 @@ public class CmsBrokenLinkBean implements IsSerializable {
         return m_children;
     }
 
+    /**
+     * Returns the additional link info.<p>
+     * 
+     * @return the broken link info
+     */
     public Map<String, String> getInfo() {
 
         return m_info;

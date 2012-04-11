@@ -288,7 +288,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     private CmsUUID m_acePrincipalId;
 
     /** The list of ACEs for the current imported resource. */
-    private List m_aces;
+    private List<CmsAccessControlEntry> m_aces;
 
     /** The cms object. */
     private CmsObject m_cms;
@@ -330,21 +330,22 @@ public class CmsImportVersion7 implements I_CmsImport {
     private String m_groupParent;
 
     /** Map of all parent groups that could not be set immediately, because of the import order. */
-    private Map m_groupParents;
+    private Map<String, List<String>> m_groupParents;
 
     /** The import helper. */
     private CmsImportHelper m_helper;
 
     /** List of ignored properties. */
-    private List m_ignoredProperties;
+    private List<String> m_ignoredProperties;
 
     /** List of immutable resources. */
-    private List m_immutables;
+    private List<String> m_immutables;
 
     /** The flag to import ACEs. */
     private boolean m_importACEs;
 
-    private Map m_membership;
+    /** The membership structure. */
+    private Map<String, Map<String, Map<String, String>>> m_membership;
 
     /** The current imported organizational unit. */
     private CmsOrganizationalUnit m_orgUnit;
@@ -359,7 +360,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     private String m_orgUnitName;
 
     /** The map of organizational unit resources, this is a global field that will be use at the end of the import. */
-    private Map m_orgUnitResources;
+    private Map<String, List<String>> m_orgUnitResources;
 
     /** The import parameters to use. */
     private CmsImportParameters m_parameters;
@@ -377,13 +378,13 @@ public class CmsImportVersion7 implements I_CmsImport {
     private String m_projectName;
 
     /** The current read project resources. */
-    private List m_projectResources;
+    private List<String> m_projectResources;
 
     /** The project users group name. */
     private String m_projectUsers;
 
     /** The map of properties for current imported resource. */
-    private Map m_properties;
+    private Map<String, CmsProperty> m_properties;
 
     /** The property name value. */
     private String m_propertyName;
@@ -398,7 +399,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     private String m_relationPath;
 
     /** The map of relations to be created, this is a global map, which will be handled at the end of the import. */
-    private Map m_relations;
+    private Map<String, List<CmsRelation>> m_relations;
 
     /** The relation type value. */
     private CmsRelationType m_relationType;
@@ -446,7 +447,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     private int m_userFlags;
 
     /** The additional information for the current imported user. */
-    private Map m_userInfos;
+    private Map<String, Object> m_userInfos;
 
     /** The user last modified value. */
     private CmsUUID m_userLastModified;
@@ -499,7 +500,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             }
             if (m_aces == null) {
                 // this list will be used and clean up in the importResource and importAccessControlEntries methods
-                m_aces = new ArrayList();
+                m_aces = new ArrayList<CmsAccessControlEntry>();
             }
             m_aces.add(new CmsAccessControlEntry(
                 m_resource.getResourceId(),
@@ -545,11 +546,11 @@ public class CmsImportVersion7 implements I_CmsImport {
             return;
         }
         if (m_orgUnitResources == null) {
-            m_orgUnitResources = new HashMap();
+            m_orgUnitResources = new HashMap<String, List<String>>();
         }
-        List resources = (List)m_orgUnitResources.get(m_orgUnitName);
+        List<String> resources = m_orgUnitResources.get(m_orgUnitName);
         if (resources == null) {
-            resources = new ArrayList();
+            resources = new ArrayList<String>();
             m_orgUnitResources.put(m_orgUnitName, resources);
         }
         resources.add(resourceName);
@@ -566,7 +567,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             return;
         }
         if (m_projectResources == null) {
-            m_projectResources = new ArrayList();
+            m_projectResources = new ArrayList<String>();
         }
         m_projectResources.add(resourceName);
     }
@@ -592,14 +593,14 @@ public class CmsImportVersion7 implements I_CmsImport {
 
         if (m_properties == null) {
             // this list will be used and clean up in the importResource method
-            m_properties = new HashMap();
+            m_properties = new HashMap<String, CmsProperty>();
         }
         try {
             if ((m_propertyName == null) || getIgnoredProperties().contains(m_propertyName)) {
                 // continue if the current property (name) should be ignored or is null
                 return;
             }
-            CmsProperty property = (CmsProperty)m_properties.get(m_propertyName);
+            CmsProperty property = m_properties.get(m_propertyName);
             if (property == null) {
                 property = new CmsProperty();
                 property.setName(m_propertyName);
@@ -632,7 +633,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     public void addRelation() {
 
         if (m_relations == null) {
-            m_relations = new HashMap();
+            m_relations = new HashMap<String, List<CmsRelation>>();
         }
         try {
             if (m_resource == null) {
@@ -653,9 +654,9 @@ public class CmsImportVersion7 implements I_CmsImport {
                 m_throwable = null;
                 return;
             }
-            List currentRelations = (List)m_relations.get(m_resource.getRootPath());
+            List<CmsRelation> currentRelations = m_relations.get(m_resource.getRootPath());
             if (currentRelations == null) {
-                currentRelations = new ArrayList();
+                currentRelations = new ArrayList<CmsRelation>();
                 m_relations.put(m_resource.getRootPath(), currentRelations);
             }
             currentRelations.add(new CmsRelation(
@@ -740,20 +741,20 @@ public class CmsImportVersion7 implements I_CmsImport {
         String site = getCms().getRequestContext().getSiteRoot();
         try {
             getCms().getRequestContext().setSiteRoot("");
-            List orgUnits = new ArrayList(m_orgUnitResources.keySet());
+            List<String> orgUnits = new ArrayList<String>(m_orgUnitResources.keySet());
             Collections.sort(orgUnits);
-            Iterator it = orgUnits.iterator();
+            Iterator<String> it = orgUnits.iterator();
             while (it.hasNext()) {
-                String orgUnitName = (String)it.next();
-                List resources = (List)m_orgUnitResources.get(orgUnitName);
+                String orgUnitName = it.next();
+                List<String> resources = m_orgUnitResources.get(orgUnitName);
 
                 if (orgUnitName.equals("")) {
                     continue;
                 }
 
-                Iterator itResources = resources.iterator();
+                Iterator<String> itResources = resources.iterator();
                 while (itResources.hasNext()) {
-                    String resourceName = (String)itResources.next();
+                    String resourceName = itResources.next();
                     try {
                         // Add the resource to the organizational unit
                         OpenCms.getOrgUnitManager().addResourceToOrgUnit(getCms(), orgUnitName, resourceName);
@@ -1376,7 +1377,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             m_groupDescription = "";
         }
         if (m_groupParents == null) {
-            m_groupParents = new HashMap();
+            m_groupParents = new HashMap<String, List<String>>();
         }
 
         String groupName = m_orgUnit.getName() + m_groupName;
@@ -1413,9 +1414,9 @@ public class CmsImportVersion7 implements I_CmsImport {
                         parentGroupId = getCms().readGroup(m_groupParent).getId();
                     } catch (CmsDbEntryNotFoundException exc) {
                         // parent group does not exist, remember to set the parent group later
-                        List childs = (List)m_groupParents.get(m_groupParent);
+                        List<String> childs = m_groupParents.get(m_groupParent);
                         if (childs == null) {
-                            childs = new ArrayList();
+                            childs = new ArrayList<String>();
                             m_groupParents.put(m_groupParent, childs);
                         }
                         childs.add(groupName);
@@ -1432,11 +1433,11 @@ public class CmsImportVersion7 implements I_CmsImport {
                     I_CmsReport.FORMAT_OK);
 
                 // set parents that could not be set before
-                List childs = (List)m_groupParents.remove(groupName);
+                List<String> childs = m_groupParents.remove(groupName);
                 if (childs != null) {
-                    Iterator it = childs.iterator();
+                    Iterator<String> it = childs.iterator();
                     while (it.hasNext()) {
-                        String childGroup = (String)it.next();
+                        String childGroup = it.next();
                         getCms().setParentGroup(childGroup, groupName);
                     }
                 }
@@ -1617,9 +1618,9 @@ public class CmsImportVersion7 implements I_CmsImport {
                     getCms().getRequestContext().setSiteRoot("");
                     getCms().getRequestContext().setCurrentProject(project);
 
-                    Iterator itResNames = m_projectResources.iterator();
+                    Iterator<String> itResNames = m_projectResources.iterator();
                     while (itResNames.hasNext()) {
-                        String resName = (String)itResNames.next();
+                        String resName = itResNames.next();
                         try {
                             getCms().copyResourceToProject(resName);
                         } catch (CmsVfsResourceNotFoundException e) {
@@ -1675,11 +1676,11 @@ public class CmsImportVersion7 implements I_CmsImport {
             I_CmsReport.FORMAT_HEADLINE);
 
         int i = 0;
-        Iterator it = m_relations.entrySet().iterator();
+        Iterator<Entry<String, List<CmsRelation>>> it = m_relations.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Entry)it.next();
-            String resourcePath = (String)entry.getKey();
-            List relations = (List)entry.getValue();
+            Entry<String, List<CmsRelation>> entry = it.next();
+            String resourcePath = entry.getKey();
+            List<CmsRelation> relations = entry.getValue();
 
             if (checkImmutable(resourcePath)) {
                 continue;
@@ -1700,9 +1701,9 @@ public class CmsImportVersion7 implements I_CmsImport {
             getReport().print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             boolean withErrors = false;
-            Iterator itRelations = relations.iterator();
+            Iterator<CmsRelation> itRelations = relations.iterator();
             while (itRelations.hasNext()) {
-                CmsRelation relation = (CmsRelation)itRelations.next();
+                CmsRelation relation = itRelations.next();
                 try {
                     // Add the relation to the resource
                     getCms().importRelation(
@@ -1827,7 +1828,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     0);
 
                 if (m_properties == null) {
-                    m_properties = new HashMap();
+                    m_properties = new HashMap<String, CmsProperty>();
                 }
 
                 if (m_type.isFolder() || resourceIdWasNull || hasContentInVfsOrImport(resource)) {
@@ -1836,7 +1837,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                         translatedName,
                         resource,
                         content,
-                        new ArrayList(m_properties.values()));
+                        new ArrayList<CmsProperty>(m_properties.values()));
                 }
 
                 // only set permissions if the resource did not exists or if the keep permissions flag is not set
@@ -1932,6 +1933,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * 
      * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
+    @Deprecated
     public void importResources(
         CmsObject cms,
         String importPath,
@@ -2053,14 +2055,14 @@ public class CmsImportVersion7 implements I_CmsImport {
                 // organizational unit does not exist
             }
             // remember the user and group for later
-            Map membership = (Map)m_membership.get(ouName);
+            Map<String, Map<String, String>> membership = m_membership.get(ouName);
             if (membership == null) {
-                membership = new HashMap();
+                membership = new HashMap<String, Map<String, String>>();
                 m_membership.put(ouName, membership);
             }
-            Map groups = (Map)membership.get(I_CmsPrincipal.PRINCIPAL_GROUP);
+            Map<String, String> groups = membership.get(I_CmsPrincipal.PRINCIPAL_GROUP);
             if (groups == null) {
-                groups = new HashMap();
+                groups = new HashMap<String, String>();
                 membership.put(I_CmsPrincipal.PRINCIPAL_GROUP, groups);
             }
             groups.put(m_user.getName(), groupName);
@@ -2084,7 +2086,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     public void importUserInfo(String infoName, String infoType, String infoValue) {
 
         if (m_userInfos == null) {
-            m_userInfos = new HashMap();
+            m_userInfos = new HashMap<String, Object>();
         }
         try {
             m_userInfos.put(infoName, CmsDataTypeUtil.dataImport(infoValue, infoType));
@@ -2122,14 +2124,14 @@ public class CmsImportVersion7 implements I_CmsImport {
                 // organizational unit does not exist
             }
             // remember the user and role for later
-            Map membership = (Map)m_membership.get(role.getOuFqn());
+            Map<String, Map<String, String>> membership = m_membership.get(role.getOuFqn());
             if (membership == null) {
-                membership = new HashMap();
+                membership = new HashMap<String, Map<String, String>>();
                 m_membership.put(role.getOuFqn(), membership);
             }
-            Map roles = (Map)membership.get(I_CmsPrincipal.PRINCIPAL_USER);
+            Map<String, String> roles = membership.get(I_CmsPrincipal.PRINCIPAL_USER);
             if (roles == null) {
-                roles = new HashMap();
+                roles = new HashMap<String, String>();
                 membership.put(I_CmsPrincipal.PRINCIPAL_USER, roles);
             }
             roles.put(m_user.getName(), role.getFqn());
@@ -2166,7 +2168,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
         m_fileCounter = 1;
         m_totalFiles = 0;
-        m_parseables = new ArrayList();
+        m_parseables = new ArrayList<String>();
 
         m_parameters = parameters;
 
@@ -2547,19 +2549,19 @@ public class CmsImportVersion7 implements I_CmsImport {
         }
 
         // get the membership data to set
-        Map membership = (Map)m_membership.get(m_orgUnit.getName());
+        Map<String, Map<String, String>> membership = m_membership.get(m_orgUnit.getName());
         if (membership == null) {
             return;
         }
 
         // set group membership
-        Map groups = (Map)membership.get(I_CmsPrincipal.PRINCIPAL_GROUP);
+        Map<String, String> groups = membership.get(I_CmsPrincipal.PRINCIPAL_GROUP);
         if (groups != null) {
-            Iterator it = groups.entrySet().iterator();
+            Iterator<Entry<String, String>> it = groups.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String userName = (String)entry.getKey();
-                String groupName = (String)entry.getValue();
+                Entry<String, String> entry = it.next();
+                String userName = entry.getKey();
+                String groupName = entry.getValue();
 
                 // set the users group
                 try {
@@ -2576,13 +2578,13 @@ public class CmsImportVersion7 implements I_CmsImport {
         }
 
         // set role membership
-        Map roles = (Map)membership.get(I_CmsPrincipal.PRINCIPAL_USER);
+        Map<String, String> roles = membership.get(I_CmsPrincipal.PRINCIPAL_USER);
         if (roles != null) {
-            Iterator it = roles.entrySet().iterator();
+            Iterator<Entry<String, String>> it = roles.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String userName = (String)entry.getKey();
-                String roleName = (String)entry.getValue();
+                Entry<String, String> entry = it.next();
+                String userName = entry.getKey();
+                String roleName = entry.getValue();
 
                 // set the users roles
                 CmsRole role = CmsRole.valueOfRoleName(roleName);
@@ -3284,13 +3286,13 @@ public class CmsImportVersion7 implements I_CmsImport {
      * 
      * @return the list of properties to ignore during import
      */
-    protected List getIgnoredProperties() {
+    protected List<String> getIgnoredProperties() {
 
         if (m_ignoredProperties == null) {
             // get list of ignored properties
             m_ignoredProperties = OpenCms.getImportExportManager().getIgnoredProperties();
             if (m_ignoredProperties == null) {
-                m_ignoredProperties = Collections.EMPTY_LIST;
+                m_ignoredProperties = Collections.emptyList();
             }
         }
         return m_ignoredProperties;
@@ -3301,13 +3303,13 @@ public class CmsImportVersion7 implements I_CmsImport {
      * 
      * @return the list of immutable resources
      */
-    protected List getImmutableResources() {
+    protected List<String> getImmutableResources() {
 
         if (m_immutables == null) {
             // get list of immutable resources
             m_immutables = OpenCms.getImportExportManager().getImmutableResources();
             if (m_immutables == null) {
-                m_immutables = Collections.EMPTY_LIST;
+                m_immutables = Collections.emptyList();
             }
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(

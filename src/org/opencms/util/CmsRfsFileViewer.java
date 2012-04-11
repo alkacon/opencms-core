@@ -45,8 +45,6 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 import org.apache.commons.logging.Log;
@@ -72,9 +70,6 @@ public class CmsRfsFileViewer implements Cloneable {
 
     /** The character encoding of the underlying file. */
     private Charset m_fileEncoding;
-
-    /** Maps file paths to internal info instances. */
-    protected Map m_fileName2lineIndex;
 
     /** The path to the underlying file. */
     protected String m_filePath;
@@ -116,7 +111,6 @@ public class CmsRfsFileViewer implements Cloneable {
             m_rootPath = new File(OpenCms.getSystemInfo().getLogFileRfsPath()).getParent();
         }
         m_isLogfile = true;
-        m_fileName2lineIndex = new HashMap();
         // system default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
         m_fileEncoding = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
         m_enabled = true;
@@ -148,6 +142,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @return a clone of this file view settings that is not "frozen" and therefore allows modifications
      */
+    @Override
     public Object clone() {
 
         // first run after installation: filePath & rootPath is null:
@@ -177,7 +172,6 @@ public class CmsRfsFileViewer implements Cloneable {
         clone.m_enabled = m_enabled;
         //clone.m_windowPos = m_windowPos;
         clone.setWindowSize(m_windowSize);
-        clone.m_fileName2lineIndex = m_fileName2lineIndex;
         // allow clone-modifications. 
         clone.m_frozen = false;
         return clone;
@@ -315,7 +309,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 // we invert the lines: latest come first
                 if (m_isLogfile) {
                     // stack is java hall of shame member... but standard
-                    Stack inverter = new Stack();
+                    Stack<String> inverter = new Stack<String>();
                     for (int i = m_windowSize; (i > 0) && (read != null); i--) {
                         inverter.push(read);
                         read = reader.readLine();

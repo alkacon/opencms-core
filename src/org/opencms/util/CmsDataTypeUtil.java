@@ -70,7 +70,7 @@ public final class CmsDataTypeUtil {
     public static Object dataDeserialize(byte[] data, String type) throws IOException, ClassNotFoundException {
 
         // check the type of the stored data
-        Class clazz = Class.forName(type);
+        Class<?> clazz = Class.forName(type);
 
         if (isParseable(clazz)) {
             // this is parseable data
@@ -119,7 +119,7 @@ public final class CmsDataTypeUtil {
      */
     public static Object dataImport(String value, String type) throws ClassNotFoundException, IOException {
 
-        Class clazz = Class.forName(type);
+        Class<?> clazz = Class.forName(type);
         if (CmsDataTypeUtil.isParseable(clazz)) {
             return CmsDataTypeUtil.parse(value, clazz);
         }
@@ -147,10 +147,11 @@ public final class CmsDataTypeUtil {
         ObjectOutputStream oout = new ObjectOutputStream(bout);
         Object obj = data;
         if (data instanceof Map) {
-            Hashtable ht = new Hashtable();
-            Iterator it = ((Map)data).entrySet().iterator();
+            Hashtable<Object, Object> ht = new Hashtable<Object, Object>();
+            @SuppressWarnings("unchecked")
+            Iterator<Entry<Object, Object>> it = ((Map<Object, Object>)data).entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Entry)it.next();
+                Entry<Object, Object> entry = it.next();
                 if ((entry.getKey() != null) && (entry.getValue() != null)) {
                     ht.put(entry.getKey(), entry.getValue());
                 }
@@ -270,7 +271,7 @@ public final class CmsDataTypeUtil {
         if (data == null) {
             return null;
         }
-        Class clazz = data.getClass();
+        Class<?> clazz = data.getClass();
         if (clazz.equals(Date.class)) {
             return format(((Date)data).getTime());
         }
@@ -296,7 +297,7 @@ public final class CmsDataTypeUtil {
      * 
      * @return if the given class is representable as a string
      */
-    public static boolean isParseable(Class clazz) {
+    public static boolean isParseable(Class<?> clazz) {
 
         boolean parseable = false;
         parseable = parseable || (clazz.equals(byte.class));
@@ -342,7 +343,7 @@ public final class CmsDataTypeUtil {
      * 
      * @return the value of the given data
      */
-    public static Object parse(String data, Class clazz) {
+    public static Object parse(String data, Class<?> clazz) {
 
         if (data == null) {
             return null;
