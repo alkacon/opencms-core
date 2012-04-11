@@ -41,6 +41,7 @@ OpenCms 8.0.4 - April xx, 2012
 - Improved sitemap editor change handling.
 - Improved synchronized lock behavior for offline indexing.
 - Updated Lucene to version 3.5.
+- Updated OpenJPA to version 2.2.0
 
 OpenCms 8.0.3 - November 16, 2011
 ! With the introduction of "Function Pages", JSP based dynamic pages can be added with simple drag and drop in the sitemap editor.
@@ -163,7 +164,7 @@ OpenCms 8.0.2 - August 18, 2011
 * Fixed issue in Sitemap Editor that icon of a subsitemap moved in tree changed to "normal containerpage icon.
 * Fixed issues with "Favorites" Dialog in ADE Clipboard where elements appeared multiple times or removal of elements failed.
 * Fixed issue in Property Dialog where inherited values were displayed ambiguously after mouse click.
-* Fixed issue #1989: When leaving the ADE sitemap “/cms/” (servlet-mapping) remains in the path.
+* Fixed issue #1989: When leaving the ADE sitemap ï¿½/cms/ï¿½ (servlet-mapping) remains in the path.
 * Fixed issue #1983: Can't create user under sub "Webuser organizational unit".
 * Fixed issue #1988: ADE toolbar covers <cms:editable/> "direct edit" button.
 * Fixed issue #1986: ADE toolbar cannot be closed when using <cms:editable />.
