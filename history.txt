@@ -15,10 +15,31 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 8.0.X - XXXX
-* Fixing issue with combo box widget default value.
-* Fixing issue with content tools dialogs.
-* Fixing issue where sitemap editor always opened in new window.
+OpenCms 8.0.4 - April xx, 2012
+! Added configurable ADE context menu dialogs.
+! Added Italian localization.
+! Added TinyMCE WYSIWYG editor.
+! Added scheduled job for search index optimization.
+* Fixed issue with VFS image widget preview function.
+* Fixed various image widget format and cropping issues.
+* Fixed issue 1999 where VFS image gallery widget would not open if 'useformats' was set to 'false'.
+* Fixed issue 2018 + 2024 typo in group permissions JSP resulting in a compile error.
+* Fixed issue 2019 incorrect form height in "Preferences -> Galleries" tab.
+* Fixed issue 2021 method org.opencms.jsp.CmsJspActionElement#link(java.util.String target, java.util.String detailPage) was not using second parameter.
+* Fixed issue 2026 CmsDefaultLinkSubstitutionHandle wrongly construct URL.
+* Fixed issue 2027 CmsFileUtil misses a value assignment.
+* Fixed issue 2028 CmsMirDirectPublish misses a return value.
+* Fixed issue 2029 where workplace crashed on occasions when using the publish dialog from the administration view.
+* Fixed issue 2032 where image gallery widget did not display images from /system/galleries/pics.
+* Fixed issue 2037 where proportional image cropping was not possible for certain formats.
+* Fixed issue 2039 with class cast exception in content tools dialogs.
+* Fixed issue 2040 where source search replacement didn't consider the content encoding.
+* Fixed issue 2041 where Static Export failed for files named 'index.html' with URL parameters.
+* Fixed issue 2045 where the width of workplace dialog buttons was fixed and not sufficient for other translations.
+- Improved handling of deleted users in permissions dialog.
+- Improved sitemap editor change handling.
+- Improved synchronized lock behavior for offline indexing.
+- Updated Lucene to version 3.5.
 
 OpenCms 8.0.3 - November 16, 2011
 ! With the introduction of "Function Pages", JSP based dynamic pages can be added with simple drag and drop in the sitemap editor.
@@ -141,7 +162,7 @@ OpenCms 8.0.2 - August 18, 2011
 * Fixed issue in Sitemap Editor that icon of a subsitemap moved in tree changed to "normal containerpage icon.
 * Fixed issues with "Favorites" Dialog in ADE Clipboard where elements appeared multiple times or removal of elements failed.
 * Fixed issue in Property Dialog where inherited values were displayed ambiguously after mouse click.
-* Fixed issue #1989: When leaving the ADE sitemap “/cms/” (servlet-mapping) remains in the path.
+* Fixed issue #1989: When leaving the ADE sitemap ï¿½/cms/ï¿½ (servlet-mapping) remains in the path.
 * Fixed issue #1983: Can't create user under sub "Webuser organizational unit".
 * Fixed issue #1988: ADE toolbar covers <cms:editable/> "direct edit" button.
 * Fixed issue #1986: ADE toolbar cannot be closed when using <cms:editable />.
