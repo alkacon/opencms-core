@@ -42,8 +42,8 @@
 			nodeprecatedlist="false"
 			nodeprecated="false"
 			stylesheetfile="${opencms.input}/doc/javadoc/javadoc.css"  
-			doctitle="OpenCms GWT Components API, version 8.0.3" 
-			Windowtitle="OpenCms GWT Components API, version 8.0.3" 
+			doctitle="OpenCms GWT Components API, version 8.0.4" 
+			Windowtitle="OpenCms GWT Components API, version 8.0.4" 
             additionalparam=" -header &quot;&lt;script&#32;type='text/javascript'&gt;&#32;if(window.location.href.indexOf('overview-frame')&#32;==&#32;-1){&#32;document.write('&lt;a&#32;id=brandingLink&#32;target=_blank&#32;href=http://www.alkacon.com&#32;&gt;&#32;&lt;img&#32;border=0&#32;id=brandingPic&#32;src={@docRoot}/logo_alkacon_100_t.gif&#32;/&gt;&lt;/a&gt;');&#32;}&#32;else{&#32;document.write('&lt;a&#32;id=brandingLink&#32;target=_blank&#32;href=http://www.opencms.org&#32;&gt;&#32;&lt;img&#32;border=0&#32;id=brandingPic&#32;src={@docRoot}logo_opencms_100.gif&#32;/&gt;&lt;/a&gt;');}&#32;&lt;/script&gt;&quot;"
 		>
        	    <classpath>
