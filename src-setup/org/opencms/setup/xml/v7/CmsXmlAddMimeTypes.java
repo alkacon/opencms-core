@@ -47,9 +47,6 @@ import org.dom4j.Node;
  */
 public class CmsXmlAddMimeTypes extends A_CmsXmlVfs {
 
-    /** List of xpaths to update. */
-    private List<String> m_xpaths;
-
     /** List of mimetypes to add. */
     private String[][] m_mimeTypes = {
         {".ez", "application/andrew-inset"},
@@ -572,7 +569,11 @@ public class CmsXmlAddMimeTypes extends A_CmsXmlVfs {
         {".onepkg", "application/onenote"},
         {".rar", "application/x-rar-compressed"},
         {".flv", "video/x-flv"},
-        {".msg", "application/vnd.ms-outlook"}};
+        {".msg", "application/vnd.ms-outlook"},
+        {".chm", "application/vnd.ms-htmlhelp"}};
+
+    /** List of xpaths to update. */
+    private List<String> m_xpaths;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
