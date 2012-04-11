@@ -1003,7 +1003,10 @@ public class CmsUpdateBean extends CmsSetupBean {
             CmsModule containerpageModule = OpenCms.getModuleManager().getModule("org.opencms.ade.containerpage");
             if (containerpageModule != null) {
                 String version = containerpageModule.getVersion().toString();
-                if ("8.0.0".equals(version) || "8.0.1".equals(version) || "8.0.2".equals(version)) {
+                if ("8.0.0".equals(version)
+                    || "8.0.1".equals(version)
+                    || "8.0.2".equals(version)
+                    || "8.0.3".equals(version)) {
                     result.add("org.opencms.ade.containerpage");
                     result.add("org.opencms.ade.sitemap");
                 }
