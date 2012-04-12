@@ -33,6 +33,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.workplace.CmsDialog;
@@ -87,14 +88,17 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /** List action edit. */
     public static final String LIST_ACTION_EDIT = "ae";
 
+    /** List action execute. */
+    public static final String LIST_ACTION_EXECUTE = "exec";
+
     /** List column activate. */
     public static final String LIST_COLUMN_ACTIVATE = "ca";
 
     /** List column class. */
-    public static final String LIST_COLUMN_CLASS = "cs";
+    public static final String LIST_COLUMN_ACTIVE = "cac";
 
     /** List column class. */
-    public static final String LIST_COLUMN_ACTIVE = "cac";
+    public static final String LIST_COLUMN_CLASS = "cs";
 
     /** List column copy. */
     public static final String LIST_COLUMN_COPY = "cc";
@@ -104,6 +108,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
     /** List column edit. */
     public static final String LIST_COLUMN_EDIT = "ce";
+
+    /** List column execute. */
+    public static final String LIST_COLUMN_EXECUTE = "c_exec";
 
     /** List column last execution. */
     public static final String LIST_COLUMN_LASTEXE = "cl";
@@ -281,6 +288,10 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_JOB_1, jobId), e);
             }
+        } else if (getParamListAction().equals(LIST_ACTION_EXECUTE)) {
+            String jobId = getSelectedItem().getId();
+            CmsScheduleManager scheduler = OpenCms.getScheduleManager();
+            scheduler.executeDirectly(jobId);
         } else {
             throwListUnsupportedActionException();
         }
@@ -461,6 +472,21 @@ public class CmsSchedulerList extends A_CmsListDialog {
         delJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_HELP_0));
         delCol.addDirectAction(delJob);
         metadata.addColumn(delCol);
+
+        // add column for delete action
+        CmsListColumnDefinition execCol = new CmsListColumnDefinition(LIST_COLUMN_EXECUTE);
+        execCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_EXECUTE_0));
+        execCol.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_COL_EXECUTE_HELP_0));
+        execCol.setWidth("20");
+        execCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        execCol.setListItemComparator(null);
+        CmsListDirectAction execJob = new CmsListDirectAction(LIST_ACTION_EXECUTE);
+        execJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EXECUTE_NAME_0));
+        execJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EXECUTE_CONF_0));
+        execJob.setIconPath("list/rightarrow.png");
+        execJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EXECUTE_HELP_0));
+        execCol.addDirectAction(execJob);
+        metadata.addColumn(execCol);
 
         // add column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);

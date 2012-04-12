@@ -144,49 +144,33 @@ public class CmsScheduleManager implements Job {
             return;
         }
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_STARTING_1, jobInfo.getJobName()));
+        executeJob(jobInfo);
+    }
+
+    /**
+     * Given a job ID, this directly executes the corresponding job.<p>
+     * 
+     * @param jobId the job id 
+     */
+    public void executeDirectly(String jobId) {
+
+        final CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)getJob(jobId).clone();
+        if (jobInfo == null) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_JOB_1, "null"));
+            return;
         }
+        Thread thread = new Thread() {
 
-        I_CmsScheduledJob job = jobInfo.getJobInstance();
+            /**
+             * @see java.lang.Thread#run()
+             */
+            @Override
+            public void run() {
 
-        if (job != null) {
-            // launch the job
-            try {
-
-                CmsObject cms = null;
-                // update the request time in the job info to the current time
-                jobInfo.updateContextRequestTime();
-                // some simple test cases might run below this runlevel
-                if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-                    // generate a CmsObject for the job context                    
-                    // must access the scheduler manager instance from the OpenCms singleton 
-                    // to get the initialized CmsObject
-                    cms = OpenCms.initCmsObject(OpenCms.getScheduleManager().getAdminCms(), jobInfo.getContextInfo());
-                }
-
-                String result = job.launch(cms, jobInfo.getParameters());
-                if (CmsStringUtil.isNotEmpty(result) && LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_JOB_EXECUTION_OK_2,
-                        jobInfo.getJobName(),
-                        result));
-                }
-            } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTION_ERROR_1, jobInfo.getJobName()), t);
+                executeJob(jobInfo);
             }
-        }
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTED_1, jobInfo.getJobName()));
-            Date nextExecution = jobInfo.getExecutionTimeNext();
-            if (nextExecution != null) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_JOB_NEXT_EXECUTION_2,
-                    jobInfo.getJobName(),
-                    nextExecution));
-            }
-        }
+        };
+        thread.start();
     }
 
     /**
@@ -551,6 +535,58 @@ public class CmsScheduleManager implements Job {
         }
 
         return jobInfo;
+    }
+
+    /**
+     * Executes the given job.<p>
+     * 
+     * @param jobInfo the job info bean 
+     */
+    protected void executeJob(CmsScheduledJobInfo jobInfo) {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_STARTING_1, jobInfo.getJobName()));
+        }
+
+        I_CmsScheduledJob job = jobInfo.getJobInstance();
+
+        if (job != null) {
+            // launch the job
+            try {
+
+                CmsObject cms = null;
+                // update the request time in the job info to the current time
+                jobInfo.updateContextRequestTime();
+                // some simple test cases might run below this runlevel
+                if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+                    // generate a CmsObject for the job context                    
+                    // must access the scheduler manager instance from the OpenCms singleton 
+                    // to get the initialized CmsObject
+                    cms = OpenCms.initCmsObject(OpenCms.getScheduleManager().getAdminCms(), jobInfo.getContextInfo());
+                }
+
+                String result = job.launch(cms, jobInfo.getParameters());
+                if (CmsStringUtil.isNotEmpty(result) && LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(
+                        Messages.LOG_JOB_EXECUTION_OK_2,
+                        jobInfo.getJobName(),
+                        result));
+                }
+            } catch (Throwable t) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTION_ERROR_1, jobInfo.getJobName()), t);
+            }
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTED_1, jobInfo.getJobName()));
+            Date nextExecution = jobInfo.getExecutionTimeNext();
+            if (nextExecution != null) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_JOB_NEXT_EXECUTION_2,
+                    jobInfo.getJobName(),
+                    nextExecution));
+            }
+        }
     }
 
     /**

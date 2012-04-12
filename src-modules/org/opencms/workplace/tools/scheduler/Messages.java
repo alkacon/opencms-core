@@ -38,9 +38,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CRONCLASS_DELETEEXPIRED_0 = "GUI_EDITOR_CRONCLASS_DELETEEXPIRED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_JOB_1 = "ERR_COPY_JOB_1";
 
     /** Message constant for key in the resource bundle. */
@@ -69,6 +66,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONCLASS_CONTENTNOTIFICATION_0 = "GUI_EDITOR_CRONCLASS_CONTENTNOTIFICATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_DELETEEXPIRED_0 = "GUI_EDITOR_CRONCLASS_DELETEEXPIRED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONCLASS_IMAGE_CACHECLEAN_0 = "GUI_EDITOR_CRONCLASS_IMAGE_CACHECLEAN_0";
@@ -233,6 +233,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_JOBS_LIST_ACTION_EDIT_NAME_0 = "GUI_JOBS_LIST_ACTION_EDIT_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_JOBS_LIST_ACTION_EXECUTE_CONF_0 = "GUI_JOBS_LIST_ACTION_EXECUTE_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JOBS_LIST_ACTION_EXECUTE_HELP_0 = "GUI_JOBS_LIST_ACTION_EXECUTE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JOBS_LIST_ACTION_EXECUTE_NAME_0 = "GUI_JOBS_LIST_ACTION_EXECUTE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_MACTIVATE_CONF_0 = "GUI_JOBS_LIST_ACTION_MACTIVATE_CONF_0";
 
     /** Message constant for key in the resource bundle. */
@@ -285,6 +294,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_EDIT_HELP_0 = "GUI_JOBS_LIST_COL_EDIT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JOBS_LIST_COL_EXECUTE_0 = "GUI_JOBS_LIST_COL_EXECUTE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JOBS_LIST_COL_EXECUTE_HELP_0 = "GUI_JOBS_LIST_COL_EXECUTE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_LASTEXE_0 = "GUI_JOBS_LIST_COL_LASTEXE_0";
