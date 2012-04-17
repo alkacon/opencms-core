@@ -217,6 +217,15 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     }
 
     /**
+     * @see org.opencms.jsp.I_CmsResourceContainer#hasMoreContent()
+     */
+    @Deprecated
+    public boolean hasMoreContent() {
+
+        return hasMoreResources();
+    }
+
+    /**
      * @see org.opencms.jsp.I_CmsXmlContentContainer#hasMoreResources()
      */
     public boolean hasMoreResources() {
