@@ -303,6 +303,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         } else {
             showIsEmptyLabel();
         }
+        onContentChange();
     }
 
     /**
@@ -412,6 +413,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         } else {
             showIsEmptyLabel();
         }
+        onContentChange();
     }
 
     /**

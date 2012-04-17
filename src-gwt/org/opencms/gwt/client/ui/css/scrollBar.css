@@ -1,0 +1,50 @@
+div.scrollBar{
+	position:absolute;
+	top: 0px;
+	right: 0px;
+	width: 8px;
+	bottom: 0px;
+}
+div.scrollBar div.scrollKnob{
+	position:absolute;
+	right: 0px;
+	width:8px;
+	background: #bbbbbb;
+	border-radius: 4px;
+	opacity:0.6;
+}
+
+div.scrollPanel{
+	overflow:hidden !important;
+	position: relative;
+}
+
+div.scrollable{
+	overflow:auto;
+	position: absolute;
+	top: 0px;
+	left:0px;
+	bottom:0px;
+	right:0px;
+}
+
+div.scrollContainer{
+	display:inline-block;
+}
+
+div.showBars div.scrollbarLayer, div.allwaysShowBars div.scrollbarLayer{
+    right:4px;
+}
+div.scrollbarLayer{
+	position:absolute;
+    top:0px;
+    bottom:0px;
+    right:-50px;
+}
+
+
+div.hiddenSize{
+	height:1px;
+	width:auto;
+	display:block;
+}
