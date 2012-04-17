@@ -387,6 +387,15 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     }
 
     /**
+     * @see org.opencms.jsp.I_CmsResourceContainer#hasMoreContent()
+     */
+    @Deprecated
+    public boolean hasMoreContent() throws JspException {
+
+        return hasMoreResources();
+    }
+
+    /**
      * @see org.opencms.jsp.I_CmsResourceContainer#hasMoreResources()
      */
     @SuppressWarnings("unused")
