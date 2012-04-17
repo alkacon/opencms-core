@@ -1330,6 +1330,78 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String stateNew();
     }
 
+    /** The scroll bar CSS classes. */
+    public interface I_CmsScrollBarCss extends I_CmsScrollPanel {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String scrollBar();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String scrollbarLayer();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String scrollKnob();
+    }
+
+    /** The scroll bar CSS classes. */
+    @Shared
+    public interface I_CmsScrollPanel extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String allwaysShowBars();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hiddenSize();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String scrollable();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String scrollContainer();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String scrollPanel();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String showBars();
+    }
+
     /** The select area CSS. */
     public interface I_CmsSelectArea extends CssResource {
 
@@ -1911,6 +1983,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("resourceState.css")
     I_CmsResourceStateCss resourceStateCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the constants CSS
+     */
+    @Source("scrollBar.css")
+    I_CmsScrollBarCss scrollBarCss();
 
     /**
      * Access method.<p>

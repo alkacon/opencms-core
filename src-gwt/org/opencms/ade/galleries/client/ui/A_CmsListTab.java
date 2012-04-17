@@ -229,6 +229,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * Call on content change to update the layout.<p>
+     */
+    protected void onContentChange() {
+
+        m_list.onResize();
+    }
+
+    /**
      * Will be triggered if the value in the select box changes.<p>
      * 
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
@@ -255,6 +263,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected void addWidgetToFrontOfList(Widget listItem) {
 
         m_scrollList.insert(listItem, 0);
+        onContentChange();
 
     }
 
@@ -266,6 +275,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected void addWidgetToList(Widget listItem) {
 
         m_scrollList.add(listItem);
+        onContentChange();
     }
 
     /**
@@ -294,6 +304,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected void clearList() {
 
         m_scrollList.clearList();
+        onContentChange();
     }
 
     /**

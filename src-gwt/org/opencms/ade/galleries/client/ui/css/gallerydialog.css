@@ -1,6 +1,6 @@
 @external html-face;
 
-div.editorGallery {}
+.editorGallery {}
 @if user.agent gecko1_8 gecko{
 	div.editorGallery{
 		-moz-box-shadow: none;
@@ -58,8 +58,6 @@ div.showPreview{
 div.criteriaList {
 	border:1px solid value("constants.css.borderColor");
 	height:414px;
-	overflow: auto;
-	position: relative;
 	background-color: value("constants.css.backgroundColorDialog");
 	padding:0 2px;
 }

@@ -18,7 +18,7 @@
 			<cms:CmsPushButton ui:field="m_selectNone" />
 		</g:FlowPanel>
 		<g:Label ui:field="m_noResources" styleName="{res.publishCss.noResources}" />
-		<cms:CmsScrollPanel ui:field="m_scrollPanel" styleName="{res.publishCss.scrollPanel}" addStyleNames="{main.generalCss.cornerAll}">
+		<cms:CmsScrollPanel ui:field="m_scrollPanel" addStyleNames="{res.publishCss.scrollPanel} {main.generalCss.cornerAll}">
 			<g:FlowPanel ui:field="m_groupPanelContainer" styleName="{res.publishCss.groupPanel}"></g:FlowPanel>
 		</cms:CmsScrollPanel>
 		<cms:CmsSimplePanel styleName="{res.publishCss.checkboxes}">
