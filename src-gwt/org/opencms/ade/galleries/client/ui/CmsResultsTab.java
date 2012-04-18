@@ -111,7 +111,7 @@ public class CmsResultsTab extends A_CmsListTab {
          * If the lower edge of the content being scrolled is at most this many pixels below the lower
          * edge of the scrolling viewport, the action is triggered.
          */
-        public static final int DEFAULT_SCROLL_THRESHOLD = 20;
+        public static final int DEFAULT_SCROLL_THRESHOLD = 200;
 
         /**
          * Constructs a new scroll handler with a custom scroll threshold.

@@ -51,7 +51,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
  * The panel for showing links which would be broken by publishing.<p>
  * 
  * @since 8.0.0
@@ -132,6 +131,7 @@ public class CmsBrokenLinksPanel extends Composite {
             item.addChild(subItem);
         }
         m_list.addItem(item);
+        m_scrollPanel.onResize();
     }
 
     /**

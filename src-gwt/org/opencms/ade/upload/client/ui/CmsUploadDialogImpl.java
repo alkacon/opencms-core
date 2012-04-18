@@ -54,17 +54,6 @@ import com.google.gwt.user.client.ui.Panel;
 public class CmsUploadDialogImpl extends A_CmsUploadDialog {
 
     /**
-     * Constructor.<p>
-     * 
-     * @throws SerializationException if deserialization fails
-     */
-    public CmsUploadDialogImpl()
-    throws SerializationException {
-
-        super();
-    }
-
-    /**
      * Implements the submit handler (Used for browsers that don't support file api).<p>
      */
     private class CmsUploadHandler implements SubmitCompleteHandler {
@@ -88,6 +77,17 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
 
     /** The input file input fields. */
     private Map<String, CmsFileInput> m_inputsToUpload = new HashMap<String, CmsFileInput>();
+
+    /**
+     * Constructor.<p>
+     * 
+     * @throws SerializationException if deserialization fails
+     */
+    public CmsUploadDialogImpl()
+    throws SerializationException {
+
+        super();
+    }
 
     /**
      * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#createInfoBean(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
