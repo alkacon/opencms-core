@@ -55,7 +55,10 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.VerticalScrollbar;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
+/**
+ * Scroll panel implementation with custom scroll bars. Works in all browsers but IE7.<p>
+ */
+public class CmsScrollPanelImpl extends CmsScrollPanel {
 
     /**
      * Handler to show and hide the scroll bar on hover.<p>
@@ -136,25 +139,27 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
 
     /** The scroll bar width. */
     private int m_verticalScrollbarWidth;
-    protected CmsScrollPanel m_panel;
 
-    public void initialize(CmsScrollPanel panel) {
+    /**
+     * Constructor.<p>
+     */
+    public CmsScrollPanelImpl() {
 
-        m_panel = panel;
-        panel.setStyleName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollPanel());
+        super(DOM.createDiv(), DOM.createDiv(), DOM.createDiv());
+        setStyleName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollPanel());
         m_hiddenSize = DOM.createDiv();
         m_hiddenSize.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().hiddenSize());
-        panel.getElement().appendChild(m_hiddenSize);
-        Element scrollable = panel.getScrollableElement();
+        getElement().appendChild(m_hiddenSize);
+        Element scrollable = getScrollableElement();
         scrollable.getStyle().clearPosition();
         scrollable.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollable());
-        panel.getElement().appendChild(scrollable);
-        Element container = panel.getContainerElement();
+        getElement().appendChild(scrollable);
+        Element container = getContainerElement();
 
         container.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollContainer());
         scrollable.appendChild(container);
         m_scrollLayer = DOM.createDiv();
-        panel.getElement().appendChild(m_scrollLayer);
+        getElement().appendChild(m_scrollLayer);
         m_scrollLayer.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollbarLayer());
         CmsScrollBar scrollbar = new CmsScrollBar(scrollable, container);
         setVerticalScrollbar(scrollbar, 12);
@@ -166,18 +171,22 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
          * element if the user clicks and drags the content, which reveals the
          * hidden scrollbars.
          */
-        Event.sinkEvents(m_panel.getElement(), Event.ONSCROLL);
+        Event.sinkEvents(getElement(), Event.ONSCROLL);
         Event.sinkEvents(scrollable, Event.ONSCROLL);
         initHoverHandler();
     }
 
-    public Iterator<Widget> getSpezialIterator() {
+    /**
+     * @see com.google.gwt.user.client.ui.SimplePanel#iterator()
+     */
+    @Override
+    public Iterator<Widget> iterator() {
 
         // Return a simple iterator that enumerates the 0 or 1 elements in this
         // panel.
         List<Widget> widgets = new ArrayList<Widget>();
-        if (m_panel.getWidget() != null) {
-            widgets.add(m_panel.getWidget());
+        if (getWidget() != null) {
+            widgets.add(getWidget());
         }
         if (getVerticalScrollBar() != null) {
             widgets.add(getVerticalScrollBar().asWidget());
@@ -202,37 +211,57 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
         };
     }
 
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt.user.client.Event)
+     */
+    @Override
     public void onBrowserEvent(Event event) {
 
         // Align the scrollbars with the content.
         if (Event.ONSCROLL == event.getTypeInt()) {
             maybeUpdateScrollbarPositions();
         }
+        super.onBrowserEvent(event);
     }
 
+    /**
+     * @see com.google.gwt.user.client.ui.ScrollPanel#onResize()
+     */
+    @Override
     public void onResize() {
 
         int width = m_hiddenSize.getClientWidth();
         if (width > 0) {
-            m_panel.getContainerElement().getStyle().setWidth(width, Unit.PX);
+            getContainerElement().getStyle().setWidth(width, Unit.PX);
             maybeUpdateScrollbars();
         }
+        super.onResize();
     }
 
-    public void onAttach() {
+    /**
+     * @see com.google.gwt.user.client.ui.ScrollPanel#onAttach()
+     */
+    @Override
+    protected void onAttach() {
 
+        super.onAttach();
         hideNativeScrollbars();
-        m_panel.onResize();
+        onResize();
     }
 
-    public void onLoad() {
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
 
+        super.onLoad();
         hideNativeScrollbars();
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             public void execute() {
 
-                m_panel.onResize();
+                onResize();
             }
         });
     }
@@ -258,10 +287,10 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
                 m_verticalScrollbarHandlerRegistration.removeHandler();
                 m_verticalScrollbarHandlerRegistration = null;
             }
-            m_panel.remove(m_scrollbar);
+            remove(m_scrollbar);
         }
         m_scrollLayer.appendChild(scrollbar.asWidget().getElement());
-        m_panel.adoptChild(scrollbar.asWidget());
+        adopt(scrollbar.asWidget());
 
         // Logical attach.
         m_scrollbar = scrollbar;
@@ -273,9 +302,9 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
             public void onValueChange(ValueChangeEvent<Integer> event) {
 
                 int vPos = scrollbar.getVerticalScrollPosition();
-                int v = m_panel.getVerticalScrollPosition();
+                int v = getVerticalScrollPosition();
                 if (v != vPos) {
-                    m_panel.setVerticalScrollPosition(vPos);
+                    setVerticalScrollPosition(vPos);
                 }
 
             }
@@ -300,10 +329,10 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
     private void hideNativeScrollbars() {
 
         m_nativeScrollbarWidth = AbstractNativeScrollbar.getNativeScrollbarWidth();
-        m_panel.getScrollableElement().getStyle().setMarginRight(-(m_nativeScrollbarWidth + 10), Unit.PX);
-        int maxHeight = CmsDomUtil.getCurrentStyleInt(m_panel.getElement(), Style.maxHeight);
+        getScrollableElement().getStyle().setMarginRight(-(m_nativeScrollbarWidth + 10), Unit.PX);
+        int maxHeight = CmsDomUtil.getCurrentStyleInt(getElement(), Style.maxHeight);
         if (maxHeight > 0) {
-            m_panel.getScrollableElement().getStyle().setPropertyPx("maxHeight", maxHeight);
+            getScrollableElement().getStyle().setPropertyPx("maxHeight", maxHeight);
         }
     }
 
@@ -312,9 +341,9 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
      */
     private void initHoverHandler() {
 
-        HoverHandler handler = new HoverHandler(m_panel.getElement());
-        m_panel.addDomHandler(handler, MouseOverEvent.getType());
-        m_panel.addDomHandler(handler, MouseOutEvent.getType());
+        HoverHandler handler = new HoverHandler(getElement());
+        addDomHandler(handler, MouseOverEvent.getType());
+        addDomHandler(handler, MouseOutEvent.getType());
     }
 
     /**
@@ -323,12 +352,12 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
      */
     private void maybeUpdateScrollbarPositions() {
 
-        if (!m_panel.isAttached()) {
+        if (!isAttached()) {
             return;
         }
 
         if (m_scrollbar != null) {
-            int vPos = m_panel.getVerticalScrollPosition();
+            int vPos = getVerticalScrollPosition();
             if (m_scrollbar.getVerticalScrollPosition() != vPos) {
                 m_scrollbar.setVerticalScrollPosition(vPos);
             }
@@ -347,7 +376,7 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
      */
     private void maybeUpdateScrollbars() {
 
-        if (!m_panel.isAttached()) {
+        if (!isAttached()) {
             return;
         }
 
@@ -356,13 +385,13 @@ public class CmsScrollPanelImpl implements I_CmsScrollPanelImpl {
          * the height and width of the container element (which should be the same)
          * doesn't work correctly in IE.
          */
-        Widget w = m_panel.getWidget();
+        Widget w = getWidget();
         int contentHeight = (w == null) ? 0 : w.getOffsetHeight();
 
         // Determine which scrollbars to show.
         int realScrollbarHeight = 0;
         int realScrollbarWidth = 0;
-        if ((m_scrollbar != null) && (m_panel.getElement().getClientHeight() < contentHeight)) {
+        if ((m_scrollbar != null) && (getElement().getClientHeight() < contentHeight)) {
             // Vertical scrollbar is defined and required.
             realScrollbarWidth = m_verticalScrollbarWidth;
         }

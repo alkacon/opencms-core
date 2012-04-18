@@ -29,17 +29,11 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.util.CmsFocusedScrollingHandler;
 
-import java.util.Iterator;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Scroll panel implementation allowing focused scrolling.<p>
@@ -52,9 +46,6 @@ public class CmsScrollPanel extends ScrollPanel {
     /** The scroll handler registration. */
     private HandlerRegistration m_handlerRegistration;
 
-    /** The browser specific scroll panel implementation. */
-    private I_CmsScrollPanelImpl m_impl;
-
     /**
      * Constructor.<p>
      * 
@@ -62,9 +53,18 @@ public class CmsScrollPanel extends ScrollPanel {
      */
     public CmsScrollPanel() {
 
-        super(DOM.createDiv(), DOM.createDiv(), DOM.createDiv());
-        m_impl = GWT.create(I_CmsScrollPanelImpl.class);
-        m_impl.initialize(this);
+    }
+
+    /**
+     * Constructor to be used by {@link org.opencms.gwt.client.ui.CmsScrollPanelImpl}.<p>
+     * 
+     * @param root the root element of the widget
+     * @param scrollabel the scrollable element of the widget
+     * @param container the container element of the widget
+     */
+    protected CmsScrollPanel(Element root, Element scrollabel, Element container) {
+
+        super(root, scrollabel, container);
     }
 
     /**
@@ -92,46 +92,6 @@ public class CmsScrollPanel extends ScrollPanel {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.SimplePanel#iterator()
-     */
-    @Override
-    public Iterator<Widget> iterator() {
-
-        Iterator<Widget> result = m_impl.getSpezialIterator();
-        return result != null ? result : super.iterator();
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt.user.client.Event)
-     */
-    @Override
-    public void onBrowserEvent(Event event) {
-
-        m_impl.onBrowserEvent(event);
-        super.onBrowserEvent(event);
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.CustomScrollPanel#onResize()
-     */
-    @Override
-    public void onResize() {
-
-        m_impl.onResize();
-        super.onResize();
-    }
-
-    /**
-     * Adopt a widget. This may be needed by the scroll panel implementations.<p>
-     * 
-     * @param child the child widget
-     */
-    protected void adoptChild(Widget child) {
-
-        super.adopt(child);
-    }
-
-    /**
      * Ensures the focused scrolling event preview handler is registered.<p>
      */
     protected void ensureFocusedScrolling() {
@@ -143,41 +103,4 @@ public class CmsScrollPanel extends ScrollPanel {
         }
     }
 
-    /**
-     * @see com.google.gwt.user.client.ui.ScrollPanel#getContainerElement()
-     */
-    @Override
-    protected Element getContainerElement() {
-
-        return super.getContainerElement();
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.ScrollPanel#getScrollableElement()
-     */
-    @Override
-    protected Element getScrollableElement() {
-
-        return super.getScrollableElement();
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.ScrollPanel#onAttach()
-     */
-    @Override
-    protected void onAttach() {
-
-        super.onAttach();
-        m_impl.onAttach();
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#onLoad()
-     */
-    @Override
-    protected void onLoad() {
-
-        super.onLoad();
-        m_impl.onLoad();
-    }
 }
