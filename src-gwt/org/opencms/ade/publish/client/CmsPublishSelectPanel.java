@@ -136,7 +136,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     private static final int MIN_BATCH_SIZE = 20;
 
     /** The scroll threshold for the list of problem resources. */
-    private static final int SCROLL_THRESHOLD = 100;
+    private static final int SCROLL_THRESHOLD = 200;
 
     /** The UiBinder instance used for this widget. */
     private static final I_CmsPublishSelectPanelUiBinder UI_BINDER = GWT.create(I_CmsPublishSelectPanelUiBinder.class);
@@ -475,6 +475,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
         m_groupPanels.clear();
         m_groupPanelContainer.clear();
+        m_scrollPanel.onResize();
         enableActions(false);
 
         int numGroups = groups.size();
@@ -564,6 +565,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 // found next item in the current group 
                 boolean found = m_currentGroupPanel.addNextItem();
                 if (found) {
+                    m_scrollPanel.onResize();
                     return true;
                 }
             } else if (m_currentGroupIndex < (m_model.getGroups().size() - 1)) {
@@ -573,6 +575,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(m_currentGroupIndex), m_currentGroupIndex);
             } else {
                 // all groups exhausted 
+                m_scrollPanel.onResize();
                 return false;
             }
         }
