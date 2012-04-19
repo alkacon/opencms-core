@@ -56,6 +56,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -1316,6 +1317,22 @@ public final class CmsDomUtil {
     public static boolean hasDimension(Element element) {
 
         return (element.getOffsetHeight() > 0) || (element.getOffsetWidth() > 0);
+    }
+
+    /**
+     * Calls {@link com.google.gwt.user.client.ui.RequiresResize#onResize()} on the closest resizable ancestor.<p>
+     * 
+     * @param parent the parent widget
+     */
+    public static void resizeAncestor(Widget parent) {
+
+        if (parent != null) {
+            if (parent instanceof RequiresResize) {
+                ((RequiresResize)parent).onResize();
+            } else {
+                resizeAncestor(parent.getParent());
+            }
+        }
     }
 
     /**

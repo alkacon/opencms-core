@@ -27,9 +27,9 @@
 
 package org.opencms.gwt.client.property;
 
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -231,22 +231,19 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         int tabIndex = m_panel.getTabPanel().getSelectedIndex();
         boolean changedTab = tabIndex != m_oldTabIndex;
         m_oldTabIndex = tabIndex;
-        Widget tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
-        Element tabElement = tabWidget.getElement();
-        Element innerElement = tabElement.getFirstChildElement();
+        CmsScrollPanel tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
+        Element innerElement = tabWidget.getWidget().getElement();
         int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
         int spaceLeft = dialog.getAvailableHeight(0);
         int newHeight = Math.min(spaceLeft, contentHeight) + 50;
         if ((m_panel.getTabPanel().getOffsetHeight() != newHeight) || changedTab) {
             m_panel.getTabPanel().setHeight(newHeight + "px");
-            if (CmsCoreProvider.get().isIe7()) {
-                int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
-                Widget widget = m_panel.getTabPanel().getWidget(selectedIndex);
-                widget.setHeight((newHeight - 45) + "px");
-                dialog.center();
-            }
+            int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
+            CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
+            widget.setHeight((newHeight - 45) + "px");
+            widget.onResize();
+            dialog.center();
         }
-
     }
 
     /**

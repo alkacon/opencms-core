@@ -30,6 +30,7 @@ package org.opencms.gwt.client.property;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
@@ -50,10 +51,14 @@ import java.util.Set;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -82,7 +87,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
     public static final String TAB_SIMPLE = "simple";
 
     /** The tab panel. */
-    protected CmsTabbedPanel<Widget> m_tabPanel = new CmsTabbedPanel<Widget>();
+    protected CmsTabbedPanel<CmsScrollPanel> m_tabPanel = new CmsTabbedPanel<CmsScrollPanel>();
 
     /** Multimap of fields by field group. */
     private Multimap<String, I_CmsFormField> m_fieldsByGroup = ArrayListMultimap.create();
@@ -125,9 +130,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
      */
     public CmsPropertyPanel(boolean showShared, CmsListInfoBean info) {
 
-        // TODO: replace with dynamic calculation
-        //m_tabPanel.getElement().getStyle().setProperty("minHeight", "300px");
-        //m_tabPanel.getElement().getStyle().setHeight(600, Unit.PX);
         CmsListItemWidget liWidget = createListItemWidget(info);
         m_simpleTabWrapper.add(liWidget);
         m_simpleTabWrapper.add(m_simpleTab);
@@ -139,25 +141,36 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
         m_individualTabWrapper.add(createListItemWidget(info));
         m_individualTabWrapper.add(m_individualTab);
-
-        m_simpleTabWrapper = CmsDomUtil.wrapScrollable(m_simpleTabWrapper);
-        m_sharedTabWrapper = CmsDomUtil.wrapScrollable(m_sharedTabWrapper);
-        m_individualTabWrapper = CmsDomUtil.wrapScrollable(m_individualTabWrapper);
-
         m_groups.put(TAB_SIMPLE, m_simpleTab);
         m_groups.put(TAB_SHARED, m_sharedTab);
         m_groups.put(TAB_INDIVIDUAL, m_individualTab);
-
-        m_tabPanel.add(m_simpleTabWrapper, Messages.get().key(Messages.GUI_PROPERTY_TAB_SIMPLE_0));
+        CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
+        scrollPanel.setWidget(m_simpleTabWrapper);
+        m_tabPanel.add(scrollPanel, Messages.get().key(Messages.GUI_PROPERTY_TAB_SIMPLE_0));
         m_showShared = showShared;
         if (m_showShared) {
-            m_tabPanel.add(m_individualTabWrapper, Messages.get().key(Messages.GUI_PROPERTY_TAB_STRUCTURE_0));
-            m_tabPanel.add(m_sharedTabWrapper, Messages.get().key(Messages.GUI_PROPERTY_TAB_RESOURCE_0));
+            scrollPanel = GWT.create(CmsScrollPanel.class);
+            scrollPanel.setWidget(m_individualTabWrapper);
+            m_tabPanel.add(scrollPanel, Messages.get().key(Messages.GUI_PROPERTY_TAB_STRUCTURE_0));
+            scrollPanel = GWT.create(CmsScrollPanel.class);
+            scrollPanel.setWidget(m_sharedTabWrapper);
+            m_tabPanel.add(scrollPanel, Messages.get().key(Messages.GUI_PROPERTY_TAB_RESOURCE_0));
         } else {
-            m_tabPanel.add(m_individualTabWrapper, Messages.get().key(Messages.GUI_PROPERTY_TAB_COMPLETE_0));
+            scrollPanel = GWT.create(CmsScrollPanel.class);
+            scrollPanel.setWidget(m_individualTabWrapper);
+            m_tabPanel.add(scrollPanel, Messages.get().key(Messages.GUI_PROPERTY_TAB_COMPLETE_0));
         }
         initWidget(m_tabPanel);
+        m_tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
+            public void onSelection(SelectionEvent<Integer> event) {
+
+                Widget selectedTab = m_tabPanel.getWidget(event.getSelectedItem().intValue());
+                if (selectedTab instanceof RequiresResize) {
+                    ((RequiresResize)selectedTab).onResize();
+                }
+            }
+        });
     }
 
     /**
@@ -237,6 +250,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
             }
             tab.add(fieldSet);
         }
+        CmsDomUtil.resizeAncestor(tab.getParent());
     }
 
     /**
@@ -304,7 +318,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
      * 
      * @return the tabbed panel
      */
-    protected CmsTabbedPanel<Widget> getTabPanel() {
+    protected CmsTabbedPanel<CmsScrollPanel> getTabPanel() {
 
         return m_tabPanel;
     }
@@ -369,5 +383,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         for (I_CmsFormField field : fields) {
             m_simpleTab.add(createRow(field));
         }
+        CmsDomUtil.resizeAncestor(m_simpleTab.getParent());
     }
 }

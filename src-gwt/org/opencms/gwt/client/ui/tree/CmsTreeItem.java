@@ -693,6 +693,7 @@ public class CmsTreeItem extends CmsListItem {
         }
         m_open = open;
         executeOpen();
+        CmsDomUtil.resizeAncestor(getParent());
     }
 
     /**

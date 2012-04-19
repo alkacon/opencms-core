@@ -654,6 +654,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
             m_openClose.setDown(false);
             CloseEvent.fire(this, this);
         }
+        CmsDomUtil.resizeAncestor(getParent());
     }
 
     /**

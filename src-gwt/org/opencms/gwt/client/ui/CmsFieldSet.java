@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
@@ -221,6 +222,7 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
             m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetInvisible());
             m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRightImage());
         }
+        CmsDomUtil.resizeAncestor(getParent());
     }
 
     /**

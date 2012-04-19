@@ -176,16 +176,13 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
      */
     public void initializeWidgets(CmsPopup dialog) {
 
-        CmsForm form = m_form;
-
         // creates tabs, etc. if necessary 
         setupFieldContainer();
-
         addSpecialFields();
         // create fields and add them to the correct location 
         buildFields();
-        form.setValidatorClass("org.opencms.gwt.CmsDefaultFormValidator");
-        form.render();
+        m_form.setValidatorClass("org.opencms.gwt.CmsDefaultFormValidator");
+        m_form.render();
     }
 
     /**
