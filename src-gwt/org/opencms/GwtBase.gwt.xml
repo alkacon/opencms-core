@@ -36,6 +36,7 @@
 	<set-property name="fileapi.support" value="formdata,fileapi,no" >
 		<any>
 			<when-property-is name="user.agent" value="gecko1_8" />
+			<when-property-is name="user.agent" value="opera" />
 		</any>
 	</set-property>
 
@@ -155,5 +156,5 @@
 	<set-property name="compiler.emulatedStack" value="true" />
 
 	<set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
-	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" /> -->
+	<set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />  -->
 </module>
