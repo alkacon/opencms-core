@@ -29,9 +29,9 @@ package org.opencms.ade.contenteditor.client;
 
 import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.I_WidgetFactory;
+import com.alkacon.acacia.client.widgets.HTMLWidget;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.StringWidget;
-import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.vie.shared.I_Entity;
 
@@ -70,7 +70,7 @@ public class CmsEditorBase extends EditorBase {
 
             public I_EditWidget createWidget(String configuration) {
 
-                I_EditWidget widget = new TinyMCEWidget();
+                I_EditWidget widget = new HTMLWidget();
                 widget.setConfiguration(configuration);
                 return widget;
             }
