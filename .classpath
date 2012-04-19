@@ -95,5 +95,5 @@
 	<classpathentry kind="lib" path="lib/compile/acacia-client.jar"/>
 	<classpathentry kind="lib" path="lib/compile/geranium-client.jar"/>
 	<classpathentry kind="lib" path="lib/compile/wrapper-client.jar"/>
-	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
