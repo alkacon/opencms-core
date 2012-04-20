@@ -93,7 +93,6 @@ public class CmsEditorBase extends EditorBase {
             @Override
             public void execute() {
 
-                start(0, true);
                 getService().loadContentDefinition(entityId, locale, this);
             }
 
@@ -102,7 +101,6 @@ public class CmsEditorBase extends EditorBase {
 
                 registerContentDefinition(result);
                 callback.execute();
-                stop(false);
             }
         };
         action.execute();

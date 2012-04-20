@@ -35,8 +35,13 @@ import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -48,6 +53,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -60,6 +66,9 @@ public class CmsInlineEditor {
 
     /** The editor base. */
     protected CmsEditorBase m_editor;
+
+    /** the edit tool-bar. */
+    protected CmsToolbar m_toolbar;
 
     /**
      * Constructor.<p>
@@ -135,46 +144,45 @@ public class CmsInlineEditor {
      * 
      * @return the button bar
      */
-    protected FlowPanel generateButtonBar(final String entityId, final String locale, final Command onClose) {
+    protected CmsToolbar generateButtonBar(final String entityId, final String locale, final Command onClose) {
 
-        FlowPanel buttonBar = new FlowPanel();
-        CmsPushButton saveButton = new CmsPushButton();
-        saveButton.setText("Save");
+        CmsToolbar toolbar = new CmsToolbar();
+        CmsPushButton saveButton = createButton("Save", I_CmsButton.ButtonData.SAVE.getIconClass());
         saveButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
                 m_editor.saveEntity(entityId, locale, true, onClose);
+                m_toolbar.removeFromParent();
             }
         });
         saveButton.disable("Nothing changed yet");
-        saveButton.getElement().getStyle().setMarginRight(5, Unit.PX);
-        buttonBar.add(saveButton);
+        toolbar.addLeft(saveButton);
 
-        CmsPushButton cancelButton = new CmsPushButton();
-        cancelButton.setText("Cancel");
+        CmsPushButton cancelButton = createButton("Cancel", I_CmsButton.ButtonData.RESET.getIconClass());
         cancelButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
                 onClose.execute();
                 m_editor.destroyFrom();
+                m_toolbar.removeFromParent();
             }
         });
-        cancelButton.getElement().getStyle().setMarginRight(5, Unit.PX);
-        buttonBar.add(cancelButton);
+        toolbar.addRight(cancelButton);
 
-        CmsPushButton formButton = new CmsPushButton();
-        formButton.setText("Open form");
+        CmsPushButton formButton = createButton("Open form", I_CmsButton.ButtonData.EDIT.getIconClass());
         formButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
+                m_toolbar.removeFromParent();
                 openForm(entityId, locale, onClose);
+
             }
         });
-        buttonBar.add(formButton);
-        return buttonBar;
+        toolbar.addLeft(formButton);
+        return toolbar;
     }
 
     /**
@@ -188,13 +196,14 @@ public class CmsInlineEditor {
     protected void initForm(final String entityId, final String locale, ComplexPanel panel, final Command onClose) {
 
         m_editor.renderInlineEntity(entityId, panel.getElement());
-        final FlowPanel buttonBar = generateButtonBar(entityId, locale, onClose);
-        panel.add(buttonBar);
+        m_toolbar = generateButtonBar(entityId, locale, onClose);
+        RootPanel.get().add(m_toolbar);
+        m_toolbar.getElement().getStyle().setDisplay(Display.BLOCK);
         m_editor.addEntityChangeHandler(entityId, new ValueChangeHandler<I_Entity>() {
 
             public void onValueChange(ValueChangeEvent<I_Entity> event) {
 
-                for (Widget button : buttonBar) {
+                for (Widget button : m_toolbar.getAll()) {
                     ((CmsPushButton)button).enable();
                 }
             }
@@ -255,5 +264,23 @@ public class CmsInlineEditor {
         popup.add(content);
         popup.centerHorizontally(50);
         m_editor.renderEntityForm(entityId, content);
+    }
+
+    /**
+     * Creates a push button for the edit tool-bar.<p>
+     * 
+     * @param title the button title
+     * @param imageClass the image class
+     * 
+     * @return the button
+     */
+    private CmsPushButton createButton(String title, String imageClass) {
+
+        CmsPushButton result = new CmsPushButton();
+        result.setTitle(title);
+        result.setImageClass(imageClass);
+        result.setButtonStyle(ButtonStyle.IMAGE, null);
+        result.setSize(Size.big);
+        return result;
     }
 }

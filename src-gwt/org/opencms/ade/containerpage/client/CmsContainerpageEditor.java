@@ -73,6 +73,7 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -145,6 +146,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The button for changing the display mode for small elements. */
     private CmsToolbarShowSmallElementsButton m_showSmall;
+
+    /** The toggle tool-bar button. */
+    private CmsPushButton m_toggleToolbarButton;
+
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
 
@@ -342,14 +347,14 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar = new CmsToolbar();
         RootPanel root = RootPanel.get();
         root.add(m_toolbar);
-        CmsPushButton toggleToolbarButton = new CmsPushButton();
-        toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
-        toggleToolbarButton.setSize(Size.small);
-        toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
-        toggleToolbarButton.removeStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        toggleToolbarButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        root.add(toggleToolbarButton);
-        toggleToolbarButton.addClickHandler(new ClickHandler() {
+        m_toggleToolbarButton = new CmsPushButton();
+        m_toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
+        m_toggleToolbarButton.setSize(Size.small);
+        m_toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
+        m_toggleToolbarButton.removeStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_toggleToolbarButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        root.add(m_toggleToolbarButton);
+        m_toggleToolbarButton.addClickHandler(new ClickHandler() {
 
             /**
              * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
@@ -360,7 +365,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             }
 
         });
-        toggleToolbarButton.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().toolbarToggle());
+        m_toggleToolbarButton.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().toolbarToggle());
 
         m_save = new CmsToolbarSaveButton(containerpageHandler);
         m_save.addClickHandler(clickHandler);
@@ -434,7 +439,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbarVisibility = new CmsStyleVariable(root);
         m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         if (CmsCoreProvider.get().isToolbarVisible()) {
-            showToolbar(true);
+            showToolbar(true, false);
             containerpageHandler.activateSelection();
         }
 
@@ -483,10 +488,17 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Shows the tool-bar.<p>
      * 
      * @param show if <code>true</code> the tool-bar will be shown
+     * @param hideToggleButton if <code>true</code> when hiding the tool-bar the toggle tool-bar button is hidden also
      */
-    public void showToolbar(boolean show) {
+    public void showToolbar(boolean show, boolean hideToggleButton) {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
+
+        if (!show && hideToggleButton) {
+            m_toggleToolbarButton.getElement().getStyle().setDisplay(Display.NONE);
+        } else {
+            m_toggleToolbarButton.getElement().getStyle().clearDisplay();
+        }
     }
 
     /**
@@ -516,18 +528,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-      $wnd.__openStacktraceDialog = function(event) {
-         event = (event) ? event : ((window.event) ? window.event : "");
-         var elem = (event.target) ? event.target : event.srcElement;
-         if (elem != null) {
-            var children = elem.getElementsByTagName("span");
-            if (children.length > 0) {
-               var title = children[0].getAttribute("title");
-               var content = children[0].innerHTML;
-               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+        $wnd.__openStacktraceDialog = function(event) {
+            event = (event) ? event : ((window.event) ? window.event : "");
+            var elem = (event.target) ? event.target : event.srcElement;
+            if (elem != null) {
+                var children = elem.getElementsByTagName("span");
+                if (children.length > 0) {
+                    var title = children[0].getAttribute("title");
+                    var content = children[0].innerHTML;
+                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                }
             }
-         }
-      }
+        }
     }-*/;
 
 }
