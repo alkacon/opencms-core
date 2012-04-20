@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsProgressBar;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
@@ -328,6 +329,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     /** The progress bar for the upload process. */
     private CmsUploadProgressInfo m_progressInfo;
 
+    /** The scroll panel. */
+    private CmsScrollPanel m_scrollPanel;
+
     /** Signals whether the selection is done or not. */
     private boolean m_selectionDone;
 
@@ -394,14 +398,15 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         m_dialogInfo = new HTML();
         m_dialogInfo.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogInfo());
         m_mainPanel.add(m_dialogInfo);
-
-        // add the content wrapper to the main panel
+        m_scrollPanel = GWT.create(CmsScrollPanel.class);
+        m_scrollPanel.getElement().getStyle().setPropertyPx("minHeight", MIN_CONTENT_HEIGHT);
+        m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().mainContentWidget());
+        m_scrollPanel.addStyleName(m_gwtCss.generalCss().cornerAll());
+        m_mainPanel.add(m_scrollPanel);
+        // add the content wrapper
         m_contentWrapper = new FlowPanel();
-        m_contentWrapper.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().mainContentWidget());
-        m_contentWrapper.addStyleName(m_gwtCss.generalCss().cornerAll());
-        m_contentWrapper.getElement().getStyle().setPropertyPx("minHeight", MIN_CONTENT_HEIGHT);
         m_contentWrapper.add(m_fileList);
-        m_mainPanel.add(m_contentWrapper);
+        m_scrollPanel.add(m_contentWrapper);
 
         m_selectionSummary = new HTML();
         m_selectionSummary.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().summary());
@@ -594,6 +599,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
                 CmsFileInfo file = m_allFiles.get(filename);
                 addFileToList(file, false, isTooLarge(file));
             }
+            onResize();
         }
         loadAndShow();
     }
@@ -659,6 +665,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         m_loadingPanel.add(messageDiv);
 
         m_contentWrapper.add(m_loadingPanel);
+        onResize();
     }
 
     /**
@@ -848,6 +855,14 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     }
 
     /**
+     * Required to be called when the content has changed.<p> 
+     */
+    protected void onResize() {
+
+        m_scrollPanel.onResize();
+    }
+
+    /**
      * Parses the upload response of the server and decides what to do.<p>
      * 
      * @param results a JSON Object
@@ -977,7 +992,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         if (m_selectionSummary.isVisible()) {
             fixedContent += m_selectionSummary.getOffsetHeight();
         }
-        m_contentWrapper.getElement().getStyle().setPropertyPx("maxHeight", getAvailableHeight(fixedContent));
+        m_scrollPanel.getElement().getStyle().setPropertyPx("maxHeight", getAvailableHeight(fixedContent));
+        onResize();
     }
 
     /**
@@ -993,6 +1009,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         getContentWrapper().add(m_dragAndDropMessage);
         getContentWrapper().getElement().getStyle().setBackgroundColor(
             I_CmsConstantsBundle.INSTANCE.css().notificationErrorBg());
+        onResize();
     }
 
     /**
@@ -1179,6 +1196,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         CmsListItem listItem = new CmsListItem(check, listItemWidget);
         m_fileList.addItem(listItem);
         m_listItems.put(file.getFileName(), listItem);
+        onResize();
     }
 
     /**
@@ -1191,7 +1209,13 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         int currentHeight = CmsDomUtil.getCurrentStyleInt(m_mainPanel.getElement(), CmsDomUtil.Style.height);
         int targetHeight = firstHeight - m_dialogInfo.getOffsetHeight() - m_selectionSummary.getOffsetHeight();
         if (currentHeight > firstHeight) {
-            CmsChangeHeightAnimation.change(m_contentWrapper.getElement(), targetHeight, null, 750);
+            CmsChangeHeightAnimation.change(m_scrollPanel.getElement(), targetHeight, new Command() {
+
+                public void execute() {
+
+                    onResize();
+                }
+            }, 750);
         }
     }
 
@@ -1207,7 +1231,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0));
 
         if (!m_selectionDone) {
-            m_firstContentHeight = CmsDomUtil.getCurrentStyleInt(m_contentWrapper.getElement(), CmsDomUtil.Style.height);
+            m_firstContentHeight = CmsDomUtil.getCurrentStyleInt(m_scrollPanel.getElement(), CmsDomUtil.Style.height);
             m_firstInfoHeight = m_dialogInfo.getOffsetHeight();
             m_firstSummaryHeight = m_selectionSummary.getOffsetHeight();
         }
@@ -1391,10 +1415,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      */
     private void removeContent() {
 
-        int widgetCount = m_contentWrapper.getWidgetCount();
-        for (int i = 0; i < widgetCount; i++) {
-            m_contentWrapper.remove(0);
-        }
+        m_contentWrapper.clear();
+        onResize();
     }
 
     /**
@@ -1406,9 +1428,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         int infoDiff = m_firstInfoHeight - m_dialogInfo.getOffsetHeight();
         int summaryDiff = m_firstSummaryHeight - m_selectionSummary.getOffsetHeight();
         int height = m_firstContentHeight + infoDiff + summaryDiff;
-        m_contentWrapper.getElement().getStyle().setHeight(height, Unit.PX);
-        m_contentWrapper.getElement().getStyle().clearProperty("minHeight");
-        m_contentWrapper.getElement().getStyle().clearProperty("maxHeight");
+        m_scrollPanel.getElement().getStyle().setHeight(height, Unit.PX);
+        m_scrollPanel.getElement().getStyle().clearProperty("minHeight");
+        m_scrollPanel.getElement().getStyle().clearProperty("maxHeight");
+        onResize();
     }
 
     /**
@@ -1497,6 +1520,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         }
         if (m_clientLoading) {
             m_contentWrapper.remove(m_loadingPanel);
+            onResize();
             m_clientLoading = false;
         }
     }

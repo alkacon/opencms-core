@@ -178,6 +178,21 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
     }
 
     /**
+     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#removeDragAndDropMessage()
+     */
+    @Override
+    protected void removeDragAndDropMessage() {
+
+        if (m_dragAndDropMessage != null) {
+            m_dragAndDropMessage.removeFromParent();
+            m_dragAndDropMessage = null;
+            m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
+            getContentWrapper().getElement().getStyle().setBackgroundColor(m_normalColor);
+            onResize();
+        }
+    }
+
+    /**
      * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#setDragAndDropMessage()
      */
     @Override
@@ -191,20 +206,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         getContentWrapper().add(m_dragAndDropMessage);
         m_normalColor = I_CmsConstantsBundle.INSTANCE.css().notificationNormalBg();
         getContentWrapper().getElement().getStyle().setBackgroundColor(m_normalColor);
-    }
-
-    /**
-     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#removeDragAndDropMessage()
-     */
-    @Override
-    protected void removeDragAndDropMessage() {
-
-        if (m_dragAndDropMessage != null) {
-            m_dragAndDropMessage.removeFromParent();
-            m_dragAndDropMessage = null;
-            m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
-            getContentWrapper().getElement().getStyle().setBackgroundColor(m_normalColor);
-        }
+        onResize();
     }
 
     /**

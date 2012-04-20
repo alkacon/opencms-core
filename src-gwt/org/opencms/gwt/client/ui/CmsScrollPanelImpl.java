@@ -257,6 +257,10 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
     @Override
     public void onResize() {
 
+        int maxHeight = CmsDomUtil.getCurrentStyleInt(getElement(), Style.maxHeight);
+        if (maxHeight > 0) {
+            getScrollableElement().getStyle().setPropertyPx("maxHeight", maxHeight);
+        }
         int width = m_hiddenSize.getClientWidth();
         if (width > 0) {
             getContainerElement().getStyle().setWidth(width, Unit.PX);
@@ -311,10 +315,6 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
         m_nativeScrollbarWidth = AbstractNativeScrollbar.getNativeScrollbarWidth();
         getScrollableElement().getStyle().setMarginRight(-(m_nativeScrollbarWidth + 10), Unit.PX);
-        int maxHeight = CmsDomUtil.getCurrentStyleInt(getElement(), Style.maxHeight);
-        if (maxHeight > 0) {
-            getScrollableElement().getStyle().setPropertyPx("maxHeight", maxHeight);
-        }
     }
 
     /**

@@ -5,7 +5,6 @@
 .mainContentWidget {
     background-color: value("constants.css.backgroundColorDialog");
     border: 1px solid value("constants.css.borderColor");
-    overflow: auto;
     padding: 0 2px;
     position: relative;
 }
