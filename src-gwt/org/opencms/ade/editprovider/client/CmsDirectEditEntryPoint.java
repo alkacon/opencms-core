@@ -189,7 +189,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
         };
         m_toolbar = new CmsToolbar();
         RootPanel root = RootPanel.get();
-        m_toolbarVisibility = new CmsStyleVariable(root);
+        m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
         root.add(m_toolbar);
         CmsPushButton toggleToolbarButton = new CmsPushButton();
         boolean initiallyVisible = CmsCoreProvider.get().isToolbarVisible();

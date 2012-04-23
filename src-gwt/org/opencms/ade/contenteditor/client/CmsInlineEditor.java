@@ -321,6 +321,5 @@ public class CmsInlineEditor {
         });
         m_toolbar.addLeft(m_openFormButton);
         RootPanel.get().add(m_toolbar);
-        m_toolbar.getElement().getStyle().setDisplay(Display.BLOCK);
     }
 }

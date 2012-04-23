@@ -441,7 +441,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_reset.addClickHandler(clickHandler);
         m_toolbar.addRight(m_reset);
         containerpageHandler.enableSaveReset(false);
-        m_toolbarVisibility = new CmsStyleVariable(root);
+        m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
         m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         if (CmsCoreProvider.get().isToolbarVisible()) {
             showToolbar(true, false);
