@@ -360,6 +360,12 @@ public class CmsContainerpageUtil {
                         containerElement.getSitePath());
                 }
             });
+        } else {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(containerElement.getNoEditReason())) {
+                listItem.disableEdit(containerElement.getNoEditReason(), true);
+            } else {
+                listItem.disableEdit(Messages.get().key(Messages.GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0), false);
+            }
         }
         return listItem;
     }

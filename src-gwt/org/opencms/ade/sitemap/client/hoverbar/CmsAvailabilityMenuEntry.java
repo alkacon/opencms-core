@@ -34,6 +34,10 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
+
 /**
  * Sitemap context menu availability entry.<p>
  * 
@@ -59,9 +63,19 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
-        new CmsAvailabilityDialog(entry.getId(), CmsSitemapView.getInstance().getIconForEntry(entry)).loadAndShow();
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        CmsAvailabilityDialog dialog = new CmsAvailabilityDialog(
+            entry.getId(),
+            CmsSitemapView.getInstance().getIconForEntry(entry));
+        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                updateEntry();
+
+            }
+        });
+        dialog.loadAndShow();
     }
 
     /**
@@ -71,7 +85,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow(CmsHoverbarShowEvent event) {
 
         CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(getHoverbar().getSitePath());
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
         boolean show = (entry != null);
         setVisible(show);
         if (show && (entry != null) && !entry.isEditable()) {
@@ -81,5 +95,13 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
             setActive(true);
             setDisabledReason(null);
         }
+    }
+
+    /**
+     * Updates the sitemap entry.<p>
+     */
+    protected void updateEntry() {
+
+        getHoverbar().getController().updateSingleEntry(getHoverbar().getEntry().getId());
     }
 }

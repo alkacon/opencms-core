@@ -975,6 +975,44 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/gwt/seo</destination>
+			<type>folder</type>
+			<uuidstructure>28f6f463-03ab-4933-82ac-071940640235</uuidstructure>
+			<datelastmodified>Wed, 04 May 2011 10:42:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 10:42:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/gwt/seo/clientmessages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/gwt/seo/clientmessages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4be56beb-3df1-4d30-b8d7-582dbfc4e13a</uuidstructure>
+			<uuidresource>109c783c-fbf1-49ca-a9ec-c32e48d70680</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 10:42:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 10:42:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
+		
+		
+		
+		
+		
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/i18n</destination>
 			<type>folder</type>

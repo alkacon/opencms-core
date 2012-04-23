@@ -27,7 +27,7 @@
 
 package org.opencms.ade.sitemap.client.control;
 
-import org.opencms.ade.sitemap.client.model.I_CmsClientSitemapChange;
+import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -44,14 +44,14 @@ public class CmsSitemapChangeEvent extends GwtEvent<I_CmsSitemapChangeHandler> {
     private static final Type<I_CmsSitemapChangeHandler> TYPE = new Type<I_CmsSitemapChangeHandler>();
 
     /** The change. */
-    private I_CmsClientSitemapChange m_change;
+    private CmsSitemapChange m_change;
 
     /**
      * Constructor.<p>
      * 
      * @param change the change
      */
-    public CmsSitemapChangeEvent(I_CmsClientSitemapChange change) {
+    public CmsSitemapChangeEvent(CmsSitemapChange change) {
 
         m_change = change;
     }
@@ -80,7 +80,7 @@ public class CmsSitemapChangeEvent extends GwtEvent<I_CmsSitemapChangeHandler> {
      *
      * @return the change
      */
-    public I_CmsClientSitemapChange getChange() {
+    public CmsSitemapChange getChange() {
 
         return m_change;
     }

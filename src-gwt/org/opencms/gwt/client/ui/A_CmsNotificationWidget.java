@@ -141,7 +141,7 @@ public abstract class A_CmsNotificationWidget extends Composite implements I_Cms
                     }
                 }
             };
-            m_timer.schedule(3000 * (type == Type.NORMAL ? 1 : 2));
+            m_timer.schedule(4000 * (type == Type.NORMAL ? 1 : 2));
         }
 
     }

@@ -145,6 +145,9 @@ public final class Messages {
     public static final String GUI_HOVERBAR_GOTO_SUB_0 = "GUI_HOVERBAR_GOTO_SUB_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_HIDE_0 = "GUI_HOVERBAR_HIDE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_MAKE_DEFAULT_0 = "GUI_HOVERBAR_MAKE_DEFAULT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -166,6 +169,9 @@ public final class Messages {
     public static final String GUI_HOVERBAR_REMOVE_0 = "GUI_HOVERBAR_REMOVE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_SHOW_0 = "GUI_HOVERBAR_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_SHOW_IN_NAV_0 = "GUI_HOVERBAR_SHOW_IN_NAV_0";
 
     /** Message constant for key in the resource bundle. */
@@ -181,10 +187,22 @@ public final class Messages {
     public static final String GUI_INHERIT_PROPERTY_2 = "GUI_INHERIT_PROPERTY_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_ALIAS_1 = "GUI_LABEL_ALIAS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DATE_0 = "GUI_LABEL_DATE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_DATE_EXPIRED_0 = "GUI_LABEL_DATE_EXPIRED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_DATE_RELEASED_0 = "GUI_LABEL_DATE_RELEASED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DESCRIPTION_0 = "GUI_LABEL_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_TARGET_0 = "GUI_LABEL_TARGET_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_VFSPATH_0 = "GUI_LABEL_VFSPATH_0";
@@ -200,6 +218,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NAME_0 = "GUI_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NAVIGATION_LEVEL_UNKOWN_TARGET_0 = "GUI_NAVIGATION_LEVEL_UNKOWN_TARGET_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_ENTRY_TITLE_0 = "GUI_NEW_ENTRY_TITLE_0";

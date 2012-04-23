@@ -39,72 +39,72 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_offline_resources")
+@Table(name = "CMS_OFFLINE_RESOURCES")
 public class CmsDAOOfflineResources implements I_CmsDAOResources {
 
     /** The date content. */
     @Basic
-    @Column(name = "date_content")
+    @Column(name = "DATE_CONTENT")
     private long m_dateContent;
 
     /** The creation date. */
     @Basic
-    @Column(name = "date_created")
+    @Column(name = "DATE_CREATED")
     private long m_dateCreated;
 
     /** The date last modified. */
     @Basic
-    @Column(name = "date_lastmodified")
+    @Column(name = "DATE_LASTMODIFIED")
     private long m_dateLastModified;
 
     /** The project last modified. */
     @Basic
-    @Column(name = "project_lastmodified", nullable = false, length = 36)
+    @Column(name = "PROJECT_LASTMODIFIED", nullable = false, length = 36)
     private String m_projectLastModified;
 
     /** The resource flags. */
     @Basic
-    @Column(name = "resource_flags")
+    @Column(name = "RESOURCE_FLAGS")
     private int m_resourceFlags;
 
     /** The resource id. */
     @Id
-    @Column(name = "resource_id", length = 36)
+    @Column(name = "RESOURCE_ID", length = 36)
     private String m_resourceId;
 
     /** The resource size. */
     @Basic
-    @Column(name = "resource_size")
+    @Column(name = "RESOURCE_SIZE")
     private int m_resourceSize;
 
     /** The resource state. */
     @Basic
-    @Column(name = "resource_state")
+    @Column(name = "RESOURCE_STATE")
     private int m_resourceState;
 
     /** The resource type. */
     @Basic
-    @Column(name = "resource_type")
+    @Column(name = "RESOURCE_TYPE")
     private int m_resourceType;
 
     /** The resource version. */
     @Basic
-    @Column(name = "resource_version")
+    @Column(name = "RESOURCE_VERSION")
     private int m_resourceVersion;
 
     /** The sibling count. */
     @Basic
-    @Column(name = "sibling_count")
+    @Column(name = "SIBLING_COUNT")
     private int m_siblingCount;
 
     /** The user created. */
     @Basic
-    @Column(name = "user_created", nullable = false, length = 36)
+    @Column(name = "USER_CREATED", nullable = false, length = 36)
     private String m_userCreated;
 
     /** The user last modified. */
     @Basic
-    @Column(name = "user_lastmodified", nullable = false, length = 36)
+    @Column(name = "USER_LASTMODIFIED", nullable = false, length = 36)
     private String m_userLastModified;
 
     /**

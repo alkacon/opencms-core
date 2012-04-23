@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
@@ -42,6 +43,7 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
@@ -393,6 +395,9 @@ public final class CmsContainerpageController {
 
     /** The prefetched data. */
     private CmsCntPageData m_data;
+
+    /** The DND controller. */
+    private CmsCompositeDNDController m_dndController;
 
     /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
@@ -786,6 +791,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Gets the DND controller.<p>
+     * 
+     * @return the DND controller
+     */
+    public CmsCompositeDNDController getDndController() {
+
+        return m_dndController;
+    }
+
+    /**
      * Returns the drag and drop handler.<p>
      *
      * @return the drag and drop handler
@@ -1022,6 +1037,7 @@ public final class CmsContainerpageController {
                 }
             }
         });
+        checkLockInfo();
     }
 
     /**
@@ -1313,6 +1329,8 @@ public final class CmsContainerpageController {
             if (isGroupcontainerEditing() && (containerElement.getInheritanceInfo() != null)) {
                 // in case of inheritance container editing, keep the inheritance info
                 replacer.setInheritanceInfo(containerElement.getInheritanceInfo());
+                // set the proper element options
+                CmsInheritanceContainerEditor.getInstance().setOptionBar(replacer);
             }
             parentContainer.insert(replacer, parentContainer.getWidgetIndex(containerElement));
             containerElement.removeFromParent();
@@ -1582,6 +1600,16 @@ public final class CmsContainerpageController {
             action.execute();
 
         }
+    }
+
+    /**
+     * Sets the DND controller.<p>
+     * 
+     * @param dnd the new DND controller 
+     */
+    public void setDndController(CmsCompositeDNDController dnd) {
+
+        m_dndController = dnd;
     }
 
     /**
@@ -1923,6 +1951,18 @@ public final class CmsContainerpageController {
             CmsDebugLog.getInstance().printLine(Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_UNLOCKED_0));
         } else {
             // ignore
+        }
+    }
+
+    /**
+     * Checks if the page was locked by another user at load time.<p>
+     */
+    private void checkLockInfo() {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getData().getLockInfo())) {
+            CmsNotification.get().send(Type.ERROR, getData().getLockInfo());
+            m_lockStatus = LockStatus.failed;
+            m_handler.m_editor.disableEditing(getData().getLockInfo());
         }
     }
 

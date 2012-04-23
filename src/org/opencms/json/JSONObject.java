@@ -60,6 +60,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -187,7 +188,21 @@ public class JSONObject {
      */
     public JSONObject() {
 
-        this.m_map = new HashMap<String, Object>();
+        this(false);
+    }
+
+    /**
+     * Construct an empty sorted JSONObject.<p>
+     * 
+     * @param sorted true for sorted, false for none sorted
+     */
+    public JSONObject(boolean sorted) {
+
+        if (sorted) {
+            this.m_map = new LinkedHashMap<String, Object>();
+        } else {
+            this.m_map = new HashMap<String, Object>();
+        }
     }
 
     /**
@@ -218,7 +233,20 @@ public class JSONObject {
     public JSONObject(JSONTokener x)
     throws JSONException {
 
-        this();
+        this(x, false);
+    }
+
+    /**
+     * Construct a JSONObject from a JSONTokener, optionally sorted.<p>
+     * 
+     * @param x a JSONTokener object containing the source string
+     * @param sorted true for sorted, false for none sorted
+     * @throws JSONException if there is a syntax error in the source string
+     */
+    public JSONObject(JSONTokener x, boolean sorted)
+    throws JSONException {
+
+        this(sorted);
         char c;
         String key;
 
@@ -381,7 +409,24 @@ public class JSONObject {
     public JSONObject(String source)
     throws JSONException {
 
-        this(new JSONTokener(source));
+        this(source, false);
+    }
+
+    /**
+     * Construct a JSONObject from a source JSON text string, optionally sorted.<p>
+     * 
+     * This is the most commonly used JSONObject constructor.<p>
+     * 
+     * @param source a string beginning
+     * @param sorted true for sorted, false for none sorted
+     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     *  with <code>}</code>&nbsp;<small>(right brace)</small>
+     * @exception JSONException if there is a syntax error in the source string
+     */
+    public JSONObject(String source, boolean sorted)
+    throws JSONException {
+
+        this(new JSONTokener(source), sorted);
     }
 
     /**

@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 
@@ -251,14 +252,14 @@ public class CmsHtmlConverter {
     public String convertToString(String htmlInput) throws UnsupportedEncodingException {
 
         // first: collect all converter classes to use on the input
-        Map converters = new HashMap();
-        for (Iterator i = getModes().iterator(); i.hasNext();) {
-            String mode = (String)i.next();
+        Map<String, List<String>> converters = new HashMap<String, List<String>>();
+        for (Iterator<String> i = getModes().iterator(); i.hasNext();) {
+            String mode = i.next();
             String converterClass = OpenCms.getResourceManager().getHtmlConverter(mode);
-            List modes = new ArrayList();
+            List<String> modes = new ArrayList<String>();
             if (converters.containsKey(converterClass)) {
                 // converter class already defined for a previous mode, get mode list
-                modes = (List)converters.get(converterClass);
+                modes = converters.get(converterClass);
             }
             // add mode name to list for the converter
             modes.add(mode);
@@ -267,10 +268,10 @@ public class CmsHtmlConverter {
         }
 
         // second: convert the content with all found converter classes
-        for (Iterator i = converters.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String className = (String)entry.getKey();
-            List modes = (List)entry.getValue();
+        for (Iterator<Entry<String, List<String>>> i = converters.entrySet().iterator(); i.hasNext();) {
+            Entry<String, List<String>> entry = i.next();
+            String className = entry.getKey();
+            List<String> modes = entry.getValue();
             try {
                 I_CmsHtmlConverter converter = (I_CmsHtmlConverter)Class.forName(className).newInstance();
                 // initialize converter
@@ -278,17 +279,23 @@ public class CmsHtmlConverter {
                 // convert input String
                 htmlInput = converter.convertToString(htmlInput);
             } catch (ClassNotFoundException e) {
-                LOG.error(org.opencms.loader.Messages.get().getBundle().key(
-                    org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
-                    className), e);
+                LOG.error(
+                    org.opencms.loader.Messages.get().getBundle().key(
+                        org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
+                        className),
+                    e);
             } catch (IllegalAccessException e) {
-                LOG.error(org.opencms.loader.Messages.get().getBundle().key(
-                    org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
-                    className), e);
+                LOG.error(
+                    org.opencms.loader.Messages.get().getBundle().key(
+                        org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
+                        className),
+                    e);
             } catch (InstantiationException e) {
-                LOG.error(org.opencms.loader.Messages.get().getBundle().key(
-                    org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
-                    className), e);
+                LOG.error(
+                    org.opencms.loader.Messages.get().getBundle().key(
+                        org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
+                        className),
+                    e);
             }
         }
         return htmlInput;
@@ -368,9 +375,9 @@ public class CmsHtmlConverter {
      * 
      * @return the conversion modes to use as List of String parameters
      */
-    private List getModes() {
+    private List<String> getModes() {
 
-        List modes = new ArrayList();
+        List<String> modes = new ArrayList<String>();
         try {
             modes = CmsStringUtil.splitAsList(getMode(), SEPARATOR_MODES, true);
         } catch (Exception e) {

@@ -60,14 +60,13 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        final String sitePath = getHoverbar().getSitePath();
         final CmsSitemapController controller = getHoverbar().getController();
-        CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        final CmsClientSitemapEntry entry = getHoverbar().getEntry();
         CmsLockReportDialog.openDialogForResource(entry.getId(), new Command() {
 
             public void execute() {
 
-                controller.updateEntry(sitePath);
+                controller.updateEntry(entry.getId());
             }
         });
 

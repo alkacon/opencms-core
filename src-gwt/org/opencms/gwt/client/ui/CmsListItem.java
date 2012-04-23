@@ -40,11 +40,9 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -146,9 +144,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** The move handle. */
     private MoveHandle m_moveHandle;
 
-    /** The list item's set of tags. */
-    private Set<String> m_tags;
-
     /** 
      * Default constructor.<p>
      */
@@ -199,19 +194,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         addDecoration(widget, width, false);
         initContent();
-    }
-
-    /**
-     * Adds a tag to the widget.<p>
-     * 
-     * @param tag the tag which should be added 
-     */
-    public void addTag(String tag) {
-
-        if (m_tags == null) {
-            m_tags = new HashSet<String>();
-        }
-        m_tags.add(tag);
     }
 
     /**
@@ -352,14 +334,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_placeholder = cloneForPlaceholder(this);
         }
         return m_placeholder;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#hasTag(java.lang.String)
-     */
-    public boolean hasTag(String tag) {
-
-        return (m_tags != null) && m_tags.contains(tag);
     }
 
     /**

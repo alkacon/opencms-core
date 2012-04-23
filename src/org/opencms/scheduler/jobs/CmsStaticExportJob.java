@@ -67,17 +67,11 @@ public class CmsStaticExportJob implements I_CmsScheduledJob {
             eventData.put(I_CmsEventListener.KEY_REPORT, report);
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FULLSTATIC_EXPORT, eventData));
         } catch (CmsException e) {
-            if (report != null) {
-                report.println(e);
-            }
+            report.println(e);
         } catch (IOException e) {
-            if (report != null) {
-                report.println(e);
-            }
+            report.println(e);
         } catch (ServletException e) {
-            if (report != null) {
-                report.println(e);
-            }
+            report.println(e);
         } finally {
             // append runtime statistics to the report
             if (report != null) {

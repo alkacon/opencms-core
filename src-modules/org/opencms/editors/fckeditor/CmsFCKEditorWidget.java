@@ -27,6 +27,7 @@
 
 package org.opencms.editors.fckeditor;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
@@ -217,11 +218,12 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
                 // cast parameter to I_CmsXmlContentValue
                 I_CmsXmlContentValue contentValue = (I_CmsXmlContentValue)param;
                 // now extract the absolute path of the edited resource
-                String editedResource = cms.getSitePath(contentValue.getDocument().getFile());
+                CmsFile editedResource = contentValue.getDocument().getFile();
+                String editedResourceSitePath = editedResource == null ? null : cms.getSitePath(editedResource);
                 while (i.hasNext()) {
                     I_CmsEditorCssHandler handler = i.next();
-                    if (handler.matches(cms, editedResource)) {
-                        cssPath = handler.getUriStyleSheet(cms, editedResource);
+                    if (handler.matches(cms, editedResourceSitePath)) {
+                        cssPath = handler.getUriStyleSheet(cms, editedResourceSitePath);
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cssPath)) {
                             cssConfigured = true;
                         }

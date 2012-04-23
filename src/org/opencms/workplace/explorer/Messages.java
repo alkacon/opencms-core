@@ -156,6 +156,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_LOCK_0 = "GUI_EXPLORER_CONTEXT_LOCK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_LOCK_REPORT_0 = "GUI_EXPLORER_CONTEXT_LOCK_REPORT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_LOCKS_0 = "GUI_EXPLORER_CONTEXT_LOCKS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -199,6 +202,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_SECURE_0 = "GUI_EXPLORER_CONTEXT_SECURE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_SEO_0 = "GUI_EXPLORER_CONTEXT_SEO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_SHOW_DELETED_0 = "GUI_EXPLORER_CONTEXT_SHOW_DELETED_0";

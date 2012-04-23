@@ -1,6 +1,6 @@
 @external html-face, cms_ade_groupcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel;
 
-.toolbarAdd, .toolbarSitemap,
+.toolbarAdd, .toolbarSitemap, .toolbarRefresh,
 .toolbarReset, .toolbarPublish, .toolbarClipboard,  .toolbarSave, .toolbarContext{}
 
 .menuTabContainer{

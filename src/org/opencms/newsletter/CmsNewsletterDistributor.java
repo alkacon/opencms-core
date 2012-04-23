@@ -59,11 +59,11 @@ public class CmsNewsletterDistributor {
      * @param newsletter the newsletter to be distributed
      * @param cms the CmsObject
      */
-    public void distribute(CmsObject cms, List recipients, I_CmsNewsletter newsletter) {
+    public void distribute(CmsObject cms, List<I_CmsNewsletterRecipient> recipients, I_CmsNewsletter newsletter) {
 
-        Iterator recipientsIterator = recipients.iterator();
+        Iterator<I_CmsNewsletterRecipient> recipientsIterator = recipients.iterator();
         while (recipientsIterator.hasNext()) {
-            I_CmsNewsletterRecipient recipient = (I_CmsNewsletterRecipient)recipientsIterator.next();
+            I_CmsNewsletterRecipient recipient = recipientsIterator.next();
             try {
                 Email mail = newsletter.getEmail(cms, recipient);
                 mail.addTo(recipient.getEmail(), recipient.getFullName());

@@ -42,9 +42,6 @@ div.galleryDialog {
 
  box-shadow: 6px 6px 12px #666666;
  border-radius: 12px;
-
- -ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=#999999, offX=2, offY=2)";
- border-radius: 12px; 
 }
 
 div.galleryDialog .ui-dialog-titlebar, div.galleryDialog .ui-dialog-content{

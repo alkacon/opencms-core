@@ -1256,8 +1256,12 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append(getWidgetInitCalls());
         result.append("\tsetTimeout(\"scrollForm();\", 200);\n");
         result.append("\tinitialized = true;\n");
+        result.append("\twindow.onbeforeunload=exitEditor;\n");
         result.append("}\n\n");
+        result.append("window.exitEditorCalled = false;\n");
         result.append("function exitEditor() {\n");
+        result.append("\tif (window.exitEditorCalled) return;\n");
+        result.append("\twindow.exitEditorCalled = true; \n");
         result.append("\ttry {\n");
         result.append("\t\t// close file selector popup if present\n");
         result.append("\t\tcloseTreeWin();\n");
@@ -1265,7 +1269,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append("}\n");
         result.append(getWidgetInitMethods());
         result.append("\n// -->\n</script>\n");
-        result.append(bodyStart(null, "onload='init();' onunload='exitEditor();'"));
+        result.append(bodyStart(null, "onload='init();'  onunload='exitEditor();'"));
         result.append(dialogStart());
         return result.toString();
     }

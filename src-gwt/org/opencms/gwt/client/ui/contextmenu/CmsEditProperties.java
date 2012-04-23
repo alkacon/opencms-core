@@ -28,9 +28,13 @@
 package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
+import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;
@@ -99,7 +103,15 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                 CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
                 editor.setShowResourceProperties(!handler.isFolder());
                 stop(false);
-                editor.start();
+                CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+                formHandler.setDialog(dialog);
+                I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
+                formHandler.setSubmitHandler(submitHandler);
+                editor.getForm().setFormHandler(formHandler);
+                editor.initializeWidgets(dialog);
+                dialog.centerHorizontally(50);
+                dialog.catchNotifications();
             }
         };
         action.execute();

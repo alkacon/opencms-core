@@ -150,21 +150,21 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
                 @Override
                 public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
+                    // ------------------------- AVAILABILITY ----------------------------------------
                     String availabilityEntry = xpath
                         + "/"
                         + CmsWorkplaceConfiguration.N_ENTRY
                         + xpathAttr(I_CmsXmlConfiguration.A_KEY, "GUI_EXPLORER_CONTEXT_AVAILABILITY_0");
-                    if (doc.selectSingleNode(availabilityEntry) != null) {
-                        return false;
-                    }
                     CmsSetupXmlHelper.setValue(
                         doc,
                         availabilityEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
-                        "org.opencms.gwt.client.ui.CmsAvailabilityDialog");
+                        "org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog");
                     CmsSetupXmlHelper.setValue(
                         doc,
                         availabilityEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
                         "containerpage");
+
+                    //--------------------------- WORKPLACE ----------------------------------------------
                     String workplaceEntry = xpath
                         + "/"
                         + CmsWorkplaceConfiguration.N_ENTRY
@@ -172,12 +172,42 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
                     CmsSetupXmlHelper.setValue(
                         doc,
                         workplaceEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
-                        "org.opencms.gwt.client.ui.CmsShowWorkplace"
+                        "org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 
                     );
                     CmsSetupXmlHelper.setValue(
                         doc,
                         workplaceEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
+                        "containerpage");
+
+                    //----------------------------- LOGOUT -----------------------------------------------
+                    String logoutEntry = xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_ENTRY
+                        + xpathAttr(I_CmsXmlConfiguration.A_KEY, "GUI_EXPLORER_CONTEXT_LOGOUT_0");
+                    CmsSetupXmlHelper.setValue(
+                        doc,
+                        logoutEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
+                        "org.opencms.gwt.client.ui.contextmenu.CmsLogout"
+
+                    );
+                    CmsSetupXmlHelper.setValue(
+                        doc,
+                        logoutEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
+                        "containerpage");
+
+                    // ------------------------------- PROPERTIES ---------------------------------------
+                    String propertyEntry = xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_ENTRY
+                        + xpathAttr(I_CmsXmlConfiguration.A_KEY, "GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0");
+                    CmsSetupXmlHelper.setValue(
+                        doc,
+                        propertyEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
+                        "org.opencms.gwt.client.ui.contextmenu.CmsEditProperties");
+                    CmsSetupXmlHelper.setValue(
+                        doc,
+                        propertyEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
                         "containerpage");
 
                     return true;

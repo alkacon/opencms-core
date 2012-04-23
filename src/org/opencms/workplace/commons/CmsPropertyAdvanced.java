@@ -463,9 +463,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         // check for presence of property definitions, should always be true
         if (properties.size() > 0) {
             // there are properties defined for this resource, build the form list
-            result.append("<table border=\"0\">\n");
+            result.append("<table border=\"0\" style=\"width:100%\">\n");
             result.append("<tr>\n");
-            result.append("\t<td class=\"textbold\">");
+            result.append("\t<td class=\"textbold\" nowrap>");
             result.append(key(Messages.GUI_PROPERTY_0));
             result.append("</td>\n");
             result.append("\t<td class=\"textbold\">");

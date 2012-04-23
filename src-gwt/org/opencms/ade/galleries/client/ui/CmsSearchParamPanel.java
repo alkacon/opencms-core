@@ -69,6 +69,9 @@ public class CmsSearchParamPanel extends Composite {
     /** The result tab. */
     private A_CmsTab m_tab;
 
+    /** The parameter key. */
+    private String m_paramKey;
+
     /**
      * Constructor.<p>
      * 
@@ -87,12 +90,14 @@ public class CmsSearchParamPanel extends Composite {
      * Sets the text content of the parameters panel.<p>
      * 
      * @param content the content
+     * @param paramKey the parameter key
      */
-    public void setContent(String content) {
+    public void setContent(String content, String paramKey) {
 
         StringBuffer sb = new StringBuffer(128);
         sb.append("<b>").append(m_title).append("</b>&nbsp;").append(content);
         m_text.setHTML(sb.toString());
+        m_paramKey = paramKey;
     }
 
     /**
@@ -103,8 +108,8 @@ public class CmsSearchParamPanel extends Composite {
     @UiHandler("m_button")
     protected void onClick(ClickEvent event) {
 
-        m_tab.clearParams();
+        m_tab.removeParam(m_paramKey);
+        m_tab = null;
         removeFromParent();
     }
-
 }

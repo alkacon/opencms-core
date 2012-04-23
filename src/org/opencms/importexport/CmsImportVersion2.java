@@ -45,6 +45,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.util.CmsStringUtil;
@@ -61,6 +62,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.zip.ZipFile;
 
@@ -82,6 +84,7 @@ import org.dom4j.Node;
  * 
  * @deprecated this import class is no longer in use and should only be used to import old export files
  */
+@Deprecated
 public class CmsImportVersion2 extends A_CmsImport {
 
     /** Parameter for content body folder. */
@@ -97,16 +100,16 @@ public class CmsImportVersion2 extends A_CmsImport {
     private static final Log LOG = CmsLog.getLog(CmsImportVersion2.class);
 
     /** Web application names for conversion support. */
-    protected List m_webAppNames;
+    protected List<String> m_webAppNames;
 
     /** Old webapp URL for import conversion. */
     protected String m_webappUrl;
 
     /** folder storage for page file and body conversion. */
-    private List m_folderStorage;
+    private List<String> m_folderStorage;
 
     /** page file storage for page file and body co.version. */
-    private List m_pageStorage;
+    private List<String> m_pageStorage;
 
     /** 
      * Translates directory Strings from OpenCms 4.x structure to new 5.0 structure.<p>
@@ -166,10 +169,10 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_importPath = params.getDestinationPath();
         m_report = report;
 
-        m_folderStorage = new ArrayList();
-        m_pageStorage = new ArrayList();
-        m_linkStorage = new HashMap();
-        m_linkPropertyStorage = new HashMap();
+        m_folderStorage = new ArrayList<String>();
+        m_pageStorage = new ArrayList<String>();
+        m_linkStorage = new HashMap<String, String>();
+        m_linkPropertyStorage = new HashMap<String, List<CmsProperty>>();
 
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_folderStorage", m_folderStorage);
@@ -213,6 +216,7 @@ public class CmsImportVersion2 extends A_CmsImport {
      * 
      * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
+    @Deprecated
     public void importResources(
         CmsObject cms,
         String importPath,
@@ -314,8 +318,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         String lastname,
         String email,
         long dateCreated,
-        Map userInfo,
-        List userGroups) throws CmsImportExportException {
+        Map<String, Object> userInfo,
+        List<String> userGroups) throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -341,7 +345,7 @@ public class CmsImportVersion2 extends A_CmsImport {
     protected void initialize() {
 
         m_convertToXmlPage = true;
-        m_webAppNames = new ArrayList();
+        m_webAppNames = new ArrayList<String>();
         super.initialize();
     }
 
@@ -373,9 +377,9 @@ public class CmsImportVersion2 extends A_CmsImport {
      * 
      * @return the compatibility web app names
      */
-    private List getCompatibilityWebAppNames() {
+    private List<String> getCompatibilityWebAppNames() {
 
-        List webAppNamesOri = new ArrayList();
+        List<String> webAppNamesOri = new ArrayList<String>();
 
         String configuredWebAppNames = (String)OpenCms.getRuntimeProperty(COMPATIBILITY_WEBAPPNAMES);
         if ((configuredWebAppNames != null) && (configuredWebAppNames.length() != 0)) {
@@ -386,10 +390,10 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
         }
 
-        List webAppNames = new ArrayList();
+        List<String> webAppNames = new ArrayList<String>();
         for (int i = 0; i < webAppNamesOri.size(); i++) {
             // remove possible white space
-            String name = ((String)webAppNamesOri.get(i)).trim();
+            String name = webAppNamesOri.get(i).trim();
             if (CmsStringUtil.isNotEmpty(name)) {
                 webAppNames.add(name);
                 if (LOG.isInfoEnabled()) {
@@ -421,14 +425,15 @@ public class CmsImportVersion2 extends A_CmsImport {
      * 
      * @throws CmsImportExportException if something goes wrong
      */
+    @SuppressWarnings("unchecked")
     private void importAllResources() throws CmsImportExportException {
 
-        List fileNodes = null, acentryNodes = null;
+        List<Element> fileNodes = null, acentryNodes = null;
         Element currentElement = null, currentEntry = null;
         String source = null, destination = null, resourceTypeName = null, timestamp = null, uuid = null, uuidresource = null;
         long lastmodified = 0;
         int resourceTypeId = CmsResourceTypePlain.getStaticTypeId();
-        List properties = null;
+        List<CmsProperty> properties = null;
         boolean old_overwriteCollidingResources = false;
         try {
             m_webAppNames = getCompatibilityWebAppNames();
@@ -456,10 +461,10 @@ public class CmsImportVersion2 extends A_CmsImport {
         }
 
         // get list of unwanted properties
-        List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
+        List<String> deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
 
         // get list of immutable resources
-        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
+        List<String> immutableResources = OpenCms.getImportExportManager().getImmutableResources();
         if (immutableResources == null) {
             immutableResources = Collections.EMPTY_LIST;
         }
@@ -490,7 +495,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         String.valueOf(i + 1),
                         String.valueOf(importSize)),
                     I_CmsReport.FORMAT_NOTE);
-                currentElement = (Element)fileNodes.get(i);
+                currentElement = fileNodes.get(i);
 
                 // get all information for a file-import
                 source = getChildElementTextValue(currentElement, A_CmsImport.N_SOURCE);
@@ -573,12 +578,12 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                     if (res != null) {
 
-                        List aceList = new ArrayList();
+                        List<CmsAccessControlEntry> aceList = new ArrayList<CmsAccessControlEntry>();
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/" + A_CmsImport.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
-                            currentEntry = (Element)acentryNodes.get(j);
+                            currentEntry = acentryNodes.get(j);
                             // get the data of the access control entry
                             String id = getChildElementTextValue(currentEntry, A_CmsImport.N_ID);
                             String acflags = getChildElementTextValue(currentEntry, A_CmsImport.N_FLAGS);
@@ -679,7 +684,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         int resourceTypeId,
         String resourceTypeName,
         long lastmodified,
-        List properties) {
+        List<CmsProperty> properties) {
 
         byte[] content = null;
         CmsResource res = null;
@@ -842,12 +847,13 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                 String bodyclass = null;
                 String bodyname = null;
-                Map bodyparams = null;
+                Map<String, String> bodyparams = null;
 
-                List nodes = ((Element)bodyNode).elements();
+                @SuppressWarnings("unchecked")
+                List<Node> nodes = ((Element)bodyNode).elements();
                 for (int i = 0, n = nodes.size(); i < n; i++) {
 
-                    Node node = (Node)nodes.get(i);
+                    Node node = nodes.get(i);
 
                     if ("CLASS".equalsIgnoreCase(node.getName())) {
                         bodyclass = node.getText().trim();
@@ -859,7 +865,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     } else if ("PARAMETER".equalsIgnoreCase(node.getName())) {
                         Element paramElement = (Element)node;
                         if (bodyparams == null) {
-                            bodyparams = new HashMap();
+                            bodyparams = new HashMap<String, String>();
                         }
                         bodyparams.put((paramElement.attribute("name")).getText(), paramElement.getTextTrim());
                     }
@@ -883,7 +889,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_cms.lockResource(resourcename);
 
                 // get all properties                               
-                List properties = m_cms.readPropertyObjects(resourcename, false);
+                List<CmsProperty> properties = m_cms.readPropertyObjects(resourcename, false);
 
                 // now get the content of the bodyfile and insert it into the control file                   
                 CmsFile bodyfile = m_cms.readFile(bodyname, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -932,10 +938,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
                 // if set, add bodyparams as properties
                 if (bodyparams != null) {
-                    for (Iterator p = bodyparams.entrySet().iterator(); p.hasNext();) {
-                        Map.Entry entry = (Map.Entry)p.next();
-                        String key = (String)entry.getKey();
-                        String value = (String)entry.getValue();
+                    for (Iterator<Entry<String, String>> p = bodyparams.entrySet().iterator(); p.hasNext();) {
+                        Entry<String, String> entry = p.next();
+                        String key = entry.getKey();
+                        String value = entry.getValue();
                         newProperty = new CmsProperty(key, value, null);
                         newProperty.setAutoCreatePropertyDefinition(true);
                         properties.remove(newProperty);
@@ -1025,11 +1031,11 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
 
             // copy all propertydefinitions of the old page to the new page
-            List definitions = m_cms.readAllPropertyDefinitions();
+            List<CmsPropertyDefinition> definitions = m_cms.readAllPropertyDefinitions();
 
-            Iterator j = definitions.iterator();
+            Iterator<CmsPropertyDefinition> j = definitions.iterator();
             while (j.hasNext()) {
-                CmsPropertyDefinition definition = (CmsPropertyDefinition)j.next();
+                CmsPropertyDefinition definition = j.next();
                 // check if this propertydef already exits
                 try {
                     m_cms.readPropertyDefinition(definition.getName());
@@ -1051,10 +1057,10 @@ public class CmsImportVersion2 extends A_CmsImport {
         // iterate through the list of all page controlfiles found during the import process
         int size = m_pageStorage.size();
         m_report.println(Messages.get().container(Messages.RPT_MERGE_START_0), I_CmsReport.FORMAT_HEADLINE);
-        Iterator i = m_pageStorage.iterator();
+        Iterator<String> i = m_pageStorage.iterator();
         int counter = 1;
         while (i.hasNext()) {
-            String resname = (String)i.next();
+            String resname = i.next();
             // adjust the resourcename if nescessary
             if (!resname.startsWith("/")) {
                 resname = "/" + resname;
@@ -1104,13 +1110,13 @@ public class CmsImportVersion2 extends A_CmsImport {
             // as folders habe to be deleted in the reverse order.
             int counter = 1;
             for (int j = (size - 1); j >= 0; j--) {
-                String resname = (String)m_folderStorage.get(j);
+                String resname = m_folderStorage.get(j);
                 resname = (resname.startsWith("/") ? "" : "/") + resname + (resname.endsWith("/") ? "" : "/");
                 // now check if the folder is really empty. Only delete empty folders
-                List files = m_cms.getFilesInFolder(resname, CmsResourceFilter.IGNORE_EXPIRATION);
+                List<CmsResource> files = m_cms.getFilesInFolder(resname, CmsResourceFilter.IGNORE_EXPIRATION);
 
                 if (files.size() == 0) {
-                    List folders = m_cms.getSubFolders(resname, CmsResourceFilter.IGNORE_EXPIRATION);
+                    List<CmsResource> folders = m_cms.getSubFolders(resname, CmsResourceFilter.IGNORE_EXPIRATION);
                     if (folders.size() == 0) {
                         m_report.print(
                             org.opencms.report.Messages.get().container(

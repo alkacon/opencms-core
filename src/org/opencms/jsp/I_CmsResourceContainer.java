@@ -87,6 +87,20 @@ public interface I_CmsResourceContainer {
     boolean hasMoreResources() throws JspException;
 
     /**
+     * Resource iteration method to be used by JSP scriptlet code.<p>
+     * 
+     * Calling this method will insert "direct edit" HTML to the output page (if required).<p>
+     * 
+     * @return <code>true</code> if more resources are to be iterated
+     * 
+     * @deprecated use {@link #hasMoreResources()}
+     * 
+     * @throws JspException in case something goes wrong
+     */
+    @Deprecated
+    boolean hasMoreContent() throws JspException;
+
+    /**
      * Returns <code>true</code> if this container is used as a resource preloader.<p> 
      * 
      * A resource preloader is used to load resources without looping through it.<p> 

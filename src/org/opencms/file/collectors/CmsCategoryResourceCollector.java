@@ -109,7 +109,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         /** The returned list will be sort by this ('category', 'date' or 'property' are excepted). */
         private String m_sortBy;
 
-        /** The returned list will be sort by this property value  */
+        /** The returned list will be sort by this property value.  */
         private String m_sortByPropertyName;
 
         /** Indicates if the sub tree of the given resource will be searched for appropriate resources too. */

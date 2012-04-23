@@ -56,6 +56,7 @@ public final class CmsNewsletterContentType {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_typeName;

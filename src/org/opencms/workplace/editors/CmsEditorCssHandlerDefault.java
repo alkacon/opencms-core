@@ -50,6 +50,40 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
      */
     public String getUriStyleSheet(CmsObject cms, String editedResourcePath) {
 
+        String editContext = (String)(cms.getRequestContext().getAttribute(CmsXmlContentEditor.ATTRIBUTE_EDITCONTEXT));
+        String result = "";
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(editContext)) {
+            // prefer the style sheet of the edit context (usually this will be a container page)
+            result = internalGetUriStyleSheet(cms, editContext);
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = internalGetUriStyleSheet(cms, editedResourcePath);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.I_CmsEditorCssHandler#matches(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public boolean matches(CmsObject cms, String editedResourcePath) {
+
+        // this returns always true, as it is the default CSS handler
+        return true;
+    }
+
+    /**
+     * Finds the style sheet by reading the template property of the template for a given path.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param editedResourcePath the resource path 
+     * 
+     * @return the CSS uri from the template for the given path 
+     */
+    private String internalGetUriStyleSheet(CmsObject cms, String editedResourcePath) {
+
+        if (editedResourcePath == null) {
+            return "";
+        }
         String result = "";
         try {
             // determine the path of the template
@@ -73,15 +107,6 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
             }
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.workplace.editors.I_CmsEditorCssHandler#matches(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public boolean matches(CmsObject cms, String editedResourcePath) {
-
-        // this returns always true, as it is the default CSS handler
-        return true;
     }
 
 }

@@ -49,6 +49,9 @@ public class CmsUriSplitter {
     /** Indicates if 'strict' URI parsing was used. */
     private boolean m_isStrict;
 
+    /** The URI protocol, for example <code>http</code> or <code>https</code>. */
+    private String m_protocol;
+
     /** The prefix part of the URI, for example <code>http://www.opencms.org/some/path/</code>. */
     private String m_prefix;
 
@@ -93,7 +96,8 @@ public class CmsUriSplitter {
             // use strict parsing 
             try {
                 URI u = new URI(uri);
-                m_prefix = ((u.getScheme() != null) ? u.getScheme() + ":" : "") + u.getRawSchemeSpecificPart();
+                m_protocol = u.getScheme();
+                m_prefix = ((m_protocol != null) ? m_protocol + ":" : "") + u.getRawSchemeSpecificPart();
                 m_anchor = u.getRawFragment();
                 m_query = u.getRawQuery();
                 if (m_prefix != null) {
@@ -129,6 +133,9 @@ public class CmsUriSplitter {
 
             for (int i = 0; i < len; i++) {
                 char c = uri.charAt(i);
+                if ((cur == 0) && (c == ':')) {
+                    m_protocol = prefix.toString();
+                }
                 if (c == '#') {
                     // start of anchor
                     cur = 1;
@@ -181,13 +188,16 @@ public class CmsUriSplitter {
         }
         if (obj instanceof CmsUriSplitter) {
             CmsUriSplitter other = (CmsUriSplitter)obj;
-            if (((m_prefix == null) && (other.m_prefix != null)) && (!other.m_prefix.equals(m_prefix))) {
+            if (!((m_protocol == other.m_protocol) || ((m_protocol != null) && m_protocol.equals(other.m_protocol)))) {
                 return false;
             }
-            if (((m_anchor == null) && (other.m_anchor != null)) && (!other.m_anchor.equals(m_anchor))) {
+            if (!((m_prefix == other.m_prefix) || ((m_prefix != null) && m_prefix.equals(other.m_prefix)))) {
                 return false;
             }
-            if (((m_query == null) && (other.m_query != null)) && (!other.m_query.equals(m_query))) {
+            if (!((m_anchor == other.m_anchor) || ((m_anchor != null) && m_anchor.equals(other.m_anchor)))) {
+                return false;
+            }
+            if (!((m_query == other.m_query) || ((m_query != null) && m_query.equals(other.m_query)))) {
                 return false;
             }
             return true;
@@ -204,6 +214,16 @@ public class CmsUriSplitter {
     public String getAnchor() {
 
         return m_anchor;
+    }
+
+    /** 
+     * Returns the URI protocol, for example <code>http</code> or <code>https</code>.<p>
+     * 
+     * @return the URI protocol
+     */
+    public String getProtocol() {
+
+        return m_protocol;
     }
 
     /**

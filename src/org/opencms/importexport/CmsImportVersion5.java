@@ -30,6 +30,7 @@ package org.opencms.importexport;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -81,6 +82,7 @@ import org.dom4j.Element;
  * 
  * @deprecated this import class is no longer in use and should only be used to import old export files
  */
+@Deprecated
 public class CmsImportVersion5 extends A_CmsImport {
 
     /** The version number of this import implementation.<p> */
@@ -90,10 +92,10 @@ public class CmsImportVersion5 extends A_CmsImport {
     private static final Log LOG = CmsLog.getLog(CmsImportVersion5.class);
 
     /** Stores all relations defined in the import file to be created after all resources has been imported. */
-    protected Map m_importedRelations;
+    protected Map<String, List<CmsRelation>> m_importedRelations;
 
     /** Stores all resources of any type that implements the {@link I_CmsLinkParseable} interface. */
-    protected List m_parseables;
+    protected List<CmsResource> m_parseables;
 
     /** The keep permissions flag. */
     protected boolean m_keepPermissions;
@@ -119,6 +121,7 @@ public class CmsImportVersion5 extends A_CmsImport {
      * 
      * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
+    @Deprecated
     public void importResources(
         CmsObject cms,
         String importPath,
@@ -151,10 +154,10 @@ public class CmsImportVersion5 extends A_CmsImport {
         m_report = report;
         m_keepPermissions = params.isKeepPermissions();
 
-        m_linkStorage = new HashMap();
-        m_linkPropertyStorage = new HashMap();
-        m_parseables = new ArrayList();
-        m_importedRelations = new HashMap();
+        m_linkStorage = new HashMap<String, String>();
+        m_linkPropertyStorage = new HashMap<String, List<CmsProperty>>();
+        m_parseables = new ArrayList<CmsResource>();
+        m_importedRelations = new HashMap<String, List<CmsRelation>>();
 
         CmsImportHelper helper = new CmsImportHelper(params);
         try {
@@ -227,11 +230,11 @@ public class CmsImportVersion5 extends A_CmsImport {
         m_report.println(Messages.get().container(Messages.RPT_START_IMPORT_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
 
         int i = 0;
-        Iterator it = m_importedRelations.entrySet().iterator();
+        Iterator<Entry<String, List<CmsRelation>>> it = m_importedRelations.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Entry)it.next();
-            String resourcePath = (String)entry.getKey();
-            List relations = (List)entry.getValue();
+            Entry<String, List<CmsRelation>> entry = it.next();
+            String resourcePath = entry.getKey();
+            List<CmsRelation> relations = entry.getValue();
 
             m_report.print(
                 org.opencms.report.Messages.get().container(
@@ -249,9 +252,9 @@ public class CmsImportVersion5 extends A_CmsImport {
             m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             boolean withErrors = false;
-            Iterator itRelations = relations.iterator();
+            Iterator<CmsRelation> itRelations = relations.iterator();
             while (itRelations.hasNext()) {
-                CmsRelation relation = (CmsRelation)itRelations.next();
+                CmsRelation relation = itRelations.next();
                 try {
                     // Add the relation to the resource
                     m_cms.importRelation(
@@ -294,13 +297,17 @@ public class CmsImportVersion5 extends A_CmsImport {
     protected void importRelations(CmsResource resource, Element parentElement) {
 
         // Get the nodes for the relations        
-        List relationElements = parentElement.selectNodes("./" + A_CmsImport.N_RELATIONS + "/" + A_CmsImport.N_RELATION);
+        @SuppressWarnings("unchecked")
+        List<Element> relationElements = parentElement.selectNodes("./"
+            + A_CmsImport.N_RELATIONS
+            + "/"
+            + A_CmsImport.N_RELATION);
 
-        List relations = new ArrayList();
+        List<CmsRelation> relations = new ArrayList<CmsRelation>();
         // iterate over the nodes
-        Iterator itRelations = relationElements.iterator();
+        Iterator<Element> itRelations = relationElements.iterator();
         while (itRelations.hasNext()) {
-            Element relationElement = (Element)itRelations.next();
+            Element relationElement = itRelations.next();
             String structureID = getChildElementTextValue(relationElement, A_CmsImport.N_RELATION_ATTRIBUTE_ID);
             String targetPath = getChildElementTextValue(relationElement, A_CmsImport.N_RELATION_ATTRIBUTE_PATH);
             String relationType = getChildElementTextValue(relationElement, A_CmsImport.N_RELATION_ATTRIBUTE_TYPE);
@@ -354,7 +361,7 @@ public class CmsImportVersion5 extends A_CmsImport {
         long datereleased,
         long dateexpired,
         String flags,
-        List properties) {
+        List<CmsProperty> properties) {
 
         byte[] content = null;
         CmsResource result = null;
@@ -463,8 +470,8 @@ public class CmsImportVersion5 extends A_CmsImport {
         String lastname,
         String email,
         long dateCreated,
-        Map userInfo,
-        List userGroups) throws CmsImportExportException {
+        Map<String, Object> userInfo,
+        List<String> userGroups) throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -486,19 +493,20 @@ public class CmsImportVersion5 extends A_CmsImport {
      * 
      * @throws CmsImportExportException if something goes wrong
      */
+    @SuppressWarnings("unchecked")
     protected void readResourcesFromManifest() throws CmsImportExportException {
 
         String source = null, destination = null, uuidstructure = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
 
-        List fileNodes = null, acentryNodes = null;
+        List<Element> fileNodes = null, acentryNodes = null;
         Element currentElement = null, currentEntry = null;
-        List properties = null;
+        List<CmsProperty> properties = null;
 
         // get list of immutable resources
-        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
+        List<String> immutableResources = OpenCms.getImportExportManager().getImmutableResources();
         if (immutableResources == null) {
-            immutableResources = Collections.EMPTY_LIST;
+            immutableResources = Collections.emptyList();
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
@@ -506,9 +514,9 @@ public class CmsImportVersion5 extends A_CmsImport {
                 Integer.toString(immutableResources.size())));
         }
         // get list of ignored properties
-        List ignoredProperties = OpenCms.getImportExportManager().getIgnoredProperties();
+        List<String> ignoredProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (ignoredProperties == null) {
-            ignoredProperties = Collections.EMPTY_LIST;
+            ignoredProperties = Collections.emptyList();
         }
 
         // get the desired page type for imported pages
@@ -527,7 +535,7 @@ public class CmsImportVersion5 extends A_CmsImport {
                         String.valueOf(i + 1),
                         String.valueOf(importSize)),
                     I_CmsReport.FORMAT_NOTE);
-                currentElement = (Element)fileNodes.get(i);
+                currentElement = fileNodes.get(i);
 
                 // <source>
                 source = getChildElementTextValue(currentElement, A_CmsImport.N_SOURCE);
@@ -648,14 +656,14 @@ public class CmsImportVersion5 extends A_CmsImport {
                         // only set permissions if the resource did not exists or if the keep permissions flag is not set
                         if (!exists || !m_keepPermissions) {
                             // if the resource was imported add the access control entries if available
-                            List aceList = new ArrayList();
+                            List<CmsAccessControlEntry> aceList = new ArrayList<CmsAccessControlEntry>();
 
                             // write all imported access control entries for this file
                             acentryNodes = currentElement.selectNodes("*/" + A_CmsImport.N_ACCESSCONTROL_ENTRY);
 
                             // collect all access control entries
                             for (int j = 0; j < acentryNodes.size(); j++) {
-                                currentEntry = (Element)acentryNodes.get(j);
+                                currentEntry = acentryNodes.get(j);
 
                                 // get the data of the access control entry
                                 String id = getChildElementTextValue(
@@ -793,9 +801,9 @@ public class CmsImportVersion5 extends A_CmsImport {
         m_report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
 
         int i = 0;
-        Iterator it = m_parseables.iterator();
+        Iterator<CmsResource> it = m_parseables.iterator();
         while (it.hasNext()) {
-            CmsResource res = (CmsResource)it.next();
+            CmsResource res = it.next();
 
             m_report.print(
                 org.opencms.report.Messages.get().container(

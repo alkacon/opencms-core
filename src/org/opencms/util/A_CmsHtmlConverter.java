@@ -42,7 +42,7 @@ public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
     private String m_encoding;
 
     /** The conversion modes to use as List of String parameters. */
-    private List m_modes;
+    private List<String> m_modes;
 
     /**
      * Empty constructor.<p>
@@ -60,7 +60,7 @@ public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
      * @param encoding the encoding used for the HTML code conversion
      * @param modes the conversion modes to use
      */
-    public A_CmsHtmlConverter(String encoding, List modes) {
+    public A_CmsHtmlConverter(String encoding, List<String> modes) {
 
         init(encoding, modes);
     }
@@ -82,7 +82,7 @@ public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
     /**
      * @see org.opencms.util.I_CmsHtmlConverter#getModes()
      */
-    public List getModes() {
+    public List<String> getModes() {
 
         return m_modes;
     }
@@ -90,7 +90,7 @@ public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
     /**
      * @see org.opencms.util.I_CmsHtmlConverter#init(java.lang.String, java.util.List)
      */
-    public void init(String encoding, List modes) {
+    public void init(String encoding, List<String> modes) {
 
         if (encoding == null) {
             m_encoding = CmsEncoder.ENCODING_UTF_8;
@@ -98,7 +98,7 @@ public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
             m_encoding = encoding;
         }
         if (modes == null) {
-            m_modes = new ArrayList();
+            m_modes = new ArrayList<String>();
         } else {
             m_modes = modes;
         }

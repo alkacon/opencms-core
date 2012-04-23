@@ -60,8 +60,6 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * 
@@ -80,20 +78,11 @@ public class CmsForm {
     /** A map from field ids to the corresponding widgets. */
     protected Map<String, I_CmsFormField> m_fields = new LinkedHashMap<String, I_CmsFormField>();
 
-    /** A reference to the dialog this form is contained in. */
-    protected I_CmsFormDialog m_formDialog;
-
     /** The form handler. */
     protected I_CmsFormHandler m_formHandler;
 
     /** A flag which indicates whether the user has pressed enter in a widget. */
     protected boolean m_pressedEnter;
-
-    /** The tab for advanced form fields. */
-    private FlowPanel m_advancedTab = new FlowPanel();
-
-    /** The tab for basic form fields. */
-    private FlowPanel m_basicTab = new FlowPanel();
 
     /** A multimap from field groups to fields. */
     private Multimap<String, I_CmsFormField> m_fieldsByGroup = ArrayListMultimap.create();
@@ -250,6 +239,29 @@ public class CmsForm {
     }
 
     /**
+     * Passes this form's data to a form submit handler.<p>
+     *  
+     * @param handler the form submit handler
+     */
+    public void handleSubmit(I_CmsFormSubmitHandler handler) {
+
+        Map<String, String> values = collectValues();
+        Set<String> editedFields = new HashSet<String>(getEditedFields());
+        editedFields.retainAll(values.keySet());
+        handler.onSubmitForm(this, values, editedFields);
+    }
+
+    /**
+     * Checks that no fields are invalid.<p>
+     * 
+     * @return true if no fields are invalid. 
+     */
+    public boolean noFieldsInvalid() {
+
+        return noFieldsInvalid(m_fields.values());
+    }
+
+    /**
      * Returns true if none of the fields in a collection are marked as invalid.<p>
      *
      * @param fields the form fields
@@ -297,16 +309,6 @@ public class CmsForm {
 
         m_widget.rerenderFields(group, m_fieldsByGroup.get(group));
 
-    }
-
-    /**
-     * Sets the form dialog in which this form is being used.<p>
-     * 
-     * @param dialog the form dialog 
-     */
-    public void setFormDialog(I_CmsFormDialog dialog) {
-
-        m_formDialog = dialog;
     }
 
     /**
@@ -367,15 +369,7 @@ public class CmsForm {
                  */
                 public void onValidationFinished(boolean ok) {
 
-                    if (ok) {
-                        m_formDialog.closeDialog();
-                        Map<String, String> values = collectValues();
-                        Set<String> editedFields = new HashSet<String>(m_editedFields);
-                        editedFields.retainAll(values.keySet());
-                        m_formHandler.onSubmitForm(values, editedFields);
-                    } else {
-                        m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
-                    }
+                    m_formHandler.onSubmitValidationResult(CmsForm.this, ok);
                 }
 
                 /**
@@ -485,18 +479,6 @@ public class CmsForm {
     }
 
     /**
-     * Returns either the basic or advanced tab based on a boolean value.<p>
-     *  
-     * @param advanced if true, the advanced tab will be returned, else the basic tab
-     *  
-     * @return the basic or advanced tab 
-     */
-    protected Panel getPanel(boolean advanced) {
-
-        return advanced ? m_advancedTab : m_basicTab;
-    }
-
-    /**
      * Updates the field validation status.<p>
      * 
      * @param field the form field 
@@ -558,7 +540,7 @@ public class CmsForm {
              */
             public void onValidationFinished(boolean ok) {
 
-                m_formDialog.setOkButtonEnabled(noFieldsInvalid(m_fields.values()));
+                m_formHandler.onValidationResult(CmsForm.this, noFieldsInvalid(m_fields.values()));
             }
 
             /**

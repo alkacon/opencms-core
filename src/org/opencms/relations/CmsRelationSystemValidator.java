@@ -134,17 +134,18 @@ public class CmsRelationSystemValidator {
                         throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                             org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                     }
-                    thread.setProgress(count * 10 / resTypes.size());
+                    thread.setProgress((count * 10) / resTypes.size());
                 }
 
                 I_CmsResourceType type = itTypes.next();
                 if (type instanceof I_CmsLinkParseable) {
                     filter = filter.addRequireType(type.getTypeId());
                     try {
-                        resources.addAll(m_driverManager.readResources(dbc, m_driverManager.readResource(
+                        resources.addAll(m_driverManager.readResources(
                             dbc,
-                            "/",
-                            filter), filter, true));
+                            m_driverManager.readResource(dbc, "/", filter),
+                            filter,
+                            true));
                     } catch (CmsException e) {
                         LOG.error(
                             Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCES_1, type.getTypeName()),
@@ -172,7 +173,7 @@ public class CmsRelationSystemValidator {
                     throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                         org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                 }
-                thread.setProgress((count * 10 / resources.size()) + 10);
+                thread.setProgress(((count * 10) / resources.size()) + 10);
             }
 
             CmsResource resource = itResources.next();
@@ -187,9 +188,6 @@ public class CmsRelationSystemValidator {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        String name = publishList == null ? "CmsPublishSitemapCache(null)" : "CmsPublishSitemapCache(pubHistId="
-            + publishList.getPublishHistoryId().toString()
-            + ")";
 
         boolean foundBrokenLinks = false;
         for (int index = 0, size = resources.size(); index < size; index++) {
@@ -201,17 +199,19 @@ public class CmsRelationSystemValidator {
                     throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                         org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                 }
-                thread.setProgress((index * 20 / resources.size()) + 20);
+                thread.setProgress(((index * 20) / resources.size()) + 20);
             }
 
             CmsResource resource = resources.get(index);
             String resourceName = resource.getRootPath();
 
             if (report != null) {
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    new Integer(index + 1),
-                    new Integer(size)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        new Integer(index + 1),
+                        new Integer(size)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -276,7 +276,6 @@ public class CmsRelationSystemValidator {
      * @param link the link target 
      * @param project the current project 
      * @param fileLookup a lookup table which contains the files which are going to be published 
-     * @param sitemapCache
      *   
      * @return true if the link will be valid after publishing 
      */
@@ -302,20 +301,24 @@ public class CmsRelationSystemValidator {
             } catch (CmsVfsResourceNotFoundException e) {
                 // reading by id failed, this means that the link variable still equals relation.getTargetPath() 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_LINK_VALIDATION_READBYID_FAILED_2,
-                        relation.getTargetId().toString(),
-                        project.getName()), e);
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_LINK_VALIDATION_READBYID_FAILED_2,
+                            relation.getTargetId().toString(),
+                            project.getName()),
+                        e);
                 }
                 m_driverManager.getVfsDriver(dbc).readResource(dbc, project.getUuid(), relation.getTargetPath(), true);
             }
         } catch (CmsException e) {
             // ... or if the linked resource is a resource that gets actually published
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_LINK_VALIDATION_READBYPATH_FAILED_2,
-                    relation.getTargetPath(),
-                    project.getName()), e);
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_LINK_VALIDATION_READBYPATH_FAILED_2,
+                        relation.getTargetPath(),
+                        project.getName()),
+                    e);
             }
             if (!fileLookup.containsKey(link)) {
                 isValidLink = false;
@@ -344,7 +347,6 @@ public class CmsRelationSystemValidator {
      * @param link the link URI 
      * @param project the current project 
      * @param fileLookup a lookup table which contains the files which are going to be published 
-     * @param sitemapCache
      * 
      * @return true if there will be no invalid link after publishing 
      */
@@ -402,7 +404,6 @@ public class CmsRelationSystemValidator {
      * @param dbc the database context
      * @param resource the resource that will be validated
      * @param fileLookup a map for faster lookup with all resources keyed by their rootpath
-     * @param sitemapCache the sitemap cache for checking sitemap links 
      * @param project the project to validate
      * @param report the report to write to
      * 
@@ -426,9 +427,9 @@ public class CmsRelationSystemValidator {
         } catch (CmsException e) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resource), e);
             if (report != null) {
-                report.println(Messages.get().container(
-                    Messages.LOG_LINK_SEARCH_1,
-                    dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_ERROR);
+                report.println(
+                    Messages.get().container(Messages.LOG_LINK_SEARCH_1, dbc.removeSiteRoot(resource.getRootPath())),
+                    I_CmsReport.FORMAT_ERROR);
             }
             return brokenRelations;
         }
@@ -469,15 +470,19 @@ public class CmsRelationSystemValidator {
                 brokenRelations.add(relation);
                 if (report != null) {
                     if (!resource.getState().isDeleted()) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_HTMLLINK_BROKEN_TARGET_2,
-                            relation.getSourcePath(),
-                            dbc.removeSiteRoot(link)), I_CmsReport.FORMAT_WARNING);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_HTMLLINK_BROKEN_TARGET_2,
+                                relation.getSourcePath(),
+                                dbc.removeSiteRoot(link)),
+                            I_CmsReport.FORMAT_WARNING);
                     } else {
-                        report.println(Messages.get().container(
-                            Messages.RPT_HTMLLINK_BROKEN_SOURCE_2,
-                            dbc.removeSiteRoot(link),
-                            relation.getTargetPath()), I_CmsReport.FORMAT_WARNING);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_HTMLLINK_BROKEN_SOURCE_2,
+                                dbc.removeSiteRoot(link),
+                                relation.getTargetPath()),
+                            I_CmsReport.FORMAT_WARNING);
                     }
                 }
             }

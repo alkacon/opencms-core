@@ -1,0 +1,94 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.gwt.client.property;
+
+import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.input.CmsLabelSelectCell;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.util.CmsStringUtil;
+
+import java.util.Map;
+
+/**
+ * This is just a select box with some special text messages for use in the property dialog.<p>
+ */
+public class CmsPropertySelectBox extends CmsSelectBox {
+
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param options the widget options 
+     */
+    public CmsPropertySelectBox(Map<String, String> options) {
+
+        super(options, true);
+    }
+
+    /**
+     * Initializes this class.<p>
+     */
+    public static void initClass() {
+
+        // do nothing, we just have to implement this method because the superclass inherits the I_CmsHasInit interface
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.CmsSelectBox#updateCell(org.opencms.gwt.client.ui.input.CmsLabelSelectCell)
+     */
+    @Override
+    public void updateCell(CmsLabelSelectCell cell) {
+
+        String value = cell.getValue();
+        if ("".equals(value)) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_ghostValue)) {
+                String unselected = Messages.get().key(Messages.GUI_SELECTBOX_UNSELECTED_0);
+                cell.setText(unselected);
+                cell.setOpenerText(unselected);
+            } else {
+                String ghostValueMessage = m_selectCells.get(m_ghostValue).getText();
+                String inheritMsg = Messages.get().key(Messages.GUI_SELECTBOX_INHERIT_1, ghostValueMessage);
+                cell.setText(inheritMsg);
+                cell.setOpenerText(ghostValueMessage);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.CmsSelectBox#updateStyle()
+     */
+    @Override
+    public void updateStyle() {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_selectedValue)) {
+            addStyleName(CSS.transparentSelectBox());
+        } else {
+            removeStyleName(CSS.transparentSelectBox());
+        }
+    }
+
+}

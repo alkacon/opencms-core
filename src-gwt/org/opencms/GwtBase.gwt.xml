@@ -149,7 +149,7 @@
 
 
 	<!-- down here only debugging stuff, should be commented out for release building -->   
-<!-- 
+<!--
 	<set-configuration-property name="CssResource.style" value="pretty" /> 
 	<set-configuration-property name="CssResource.obfuscationPrefix" value="empty" /> 
 

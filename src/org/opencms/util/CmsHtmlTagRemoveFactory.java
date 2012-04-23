@@ -103,9 +103,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      */
     private static final class CmsInvisibleTag implements Tag {
 
-        /** Generated serial version UID. */
-        private static final long serialVersionUID = -3397880117291165819L;
-
         /** The real underlying tag. */
         private Tag m_decorated;
 
@@ -151,6 +148,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Node#clone()
          */
+        @Override
         public Object clone() throws CloneNotSupportedException {
 
             return m_decorated.clone();
@@ -192,7 +190,8 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Tag#getAttributesEx()
          */
-        public Vector getAttributesEx() {
+        @SuppressWarnings("unchecked")
+        public Vector<Attribute> getAttributesEx() {
 
             return m_decorated.getAttributesEx();
         }
@@ -400,6 +399,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Tag#setAttributesEx(java.util.Vector)
          */
+        @SuppressWarnings("rawtypes")
         public void setAttributesEx(Vector arg0) {
 
             m_decorated.setAttributesEx(arg0);
@@ -512,6 +512,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Node#toString()
          */
+        @Override
         public String toString() {
 
             return m_decorated.toString();
@@ -525,10 +526,10 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
     private static final long serialVersionUID = 6961158563666656633L;
 
     /** The tags to hide tothe node visitors. */
-    private Set m_invisibleTags;
+    private Set<String> m_invisibleTags;
 
     /** The tags to show to the node visitors. */
-    private Set m_visibleTags;
+    private Set<String> m_visibleTags;
 
     /**
      * Create a new factory with all tags registered.
@@ -538,8 +539,8 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
     public CmsHtmlTagRemoveFactory() {
 
         super();
-        m_invisibleTags = new TreeSet();
-        m_visibleTags = new TreeSet();
+        m_invisibleTags = new TreeSet<String>();
+        m_visibleTags = new TreeSet<String>();
     }
 
     /**
@@ -608,6 +609,8 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * @see org.htmlparser.PrototypicalNodeFactory#createTagNode(org.htmlparser.lexer.Page, int,
      *      int, java.util.Vector)
      */
+    @SuppressWarnings("rawtypes")
+    @Override
     public Tag createTagNode(Page arg0, int arg1, int arg2, Vector arg3) {
 
         try {

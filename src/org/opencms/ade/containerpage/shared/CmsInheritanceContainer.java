@@ -45,6 +45,12 @@ public class CmsInheritanceContainer implements IsSerializable {
     /** The elements of the container. */
     private List<CmsContainerElement> m_elements;
 
+    /** Indicates whether a change has occurred. */
+    private boolean m_elementsChanged;
+
+    /** Indicates whether elements have been moved. */
+    private boolean m_elementsMoved;
+
     /** The name of the inheritance line. */
     private String m_name;
 
@@ -82,6 +88,26 @@ public class CmsInheritanceContainer implements IsSerializable {
     public List<CmsContainerElement> getElements() {
 
         return m_elements;
+    }
+
+    /**
+     * Returns true whether the inheritance information has been changed.<p>
+     * 
+     * @return true if the inheritance information has been changed  
+     */
+    public boolean getElementsChanged() {
+
+        return m_elementsChanged;
+    }
+
+    /**
+     * Returns true when the elements have been moved.<p>
+     * 
+     * @return true if the elements have been moved  
+     */
+    public boolean getElementsMoved() {
+
+        return m_elementsMoved;
     }
 
     /**
@@ -142,6 +168,26 @@ public class CmsInheritanceContainer implements IsSerializable {
     public void setElements(List<CmsContainerElement> elements) {
 
         m_elements = elements;
+    }
+
+    /**
+     * Sets the 'elements changed' flag.<p>
+     * 
+     * @param elementsChanged the 'element changed' flag's new value 
+     */
+    public void setElementsChanged(boolean elementsChanged) {
+
+        m_elementsChanged = elementsChanged;
+    }
+
+    /**
+     * Sets the 'elements moved' flag.<p>
+     * 
+     * @param moved the 'element moved' flag's new value 
+     */
+    public void setElementsMoved(boolean moved) {
+
+        m_elementsMoved = moved;
     }
 
     /**

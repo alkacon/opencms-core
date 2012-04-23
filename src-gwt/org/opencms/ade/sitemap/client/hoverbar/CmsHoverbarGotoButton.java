@@ -61,7 +61,7 @@ public class CmsHoverbarGotoButton extends CmsPushButton {
             public void onClick(ClickEvent event) {
 
                 hoverbar.hide();
-                hoverbar.getController().leaveEditor(hoverbar.getSitePath());
+                hoverbar.getController().leaveEditor(hoverbar.getEntry().getSitePath());
             }
         });
     }

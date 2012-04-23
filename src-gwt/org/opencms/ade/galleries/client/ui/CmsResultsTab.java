@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -294,6 +295,17 @@ public class CmsResultsTab extends A_CmsListTab {
     public void fillContent(final CmsGallerySearchBean searchObj, List<CmsSearchParamPanel> paramPanels) {
 
         removeNoParamMessage();
+
+        // in case there is a single type selected and the current sort order is not by type, 
+        // hide the type ascending and type descending sort order options
+        SortParams currentSorting = SortParams.valueOf(searchObj.getSortOrder());
+        if ((searchObj.getTypes().size() == 1)
+            && !((currentSorting == SortParams.type_asc) || (currentSorting == SortParams.type_desc))) {
+            m_sortSelectBox.setItems(getSortList(false));
+        } else {
+            m_sortSelectBox.setItems(getSortList(true));
+        }
+        m_sortSelectBox.selectValue(searchObj.getSortOrder());
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.getPage() == 1) {
@@ -323,13 +335,13 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
     @Override
-    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+    public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
 
         // not available for this tab
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -424,17 +436,10 @@ public class CmsResultsTab extends A_CmsListTab {
         for (CmsResultItemBean resultItem : list) {
             addSingleResult(resultItem, front);
         }
-        String selectValue = m_sortSelectBox.getFormValueAsString();
         if (m_types.size() == 1) {
             getList().addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
-            if (SortParams.valueOf(selectValue) == SortParams.title_asc) {
-                m_sortSelectBox.setItems(getSortList(false));
-            }
         } else {
             getList().removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
-            if (SortParams.valueOf(selectValue) == SortParams.title_asc) {
-                m_sortSelectBox.setItems(getSortList(true));
-            }
         }
     }
 

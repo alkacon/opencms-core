@@ -61,9 +61,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
 
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-                if (handler.ensureLockOnResource(structureId)) {
-                    openWorkplace(structureId);
-                }
+                openWorkplace(structureId);
             }
 
             public String getCommandIconClass() {
@@ -133,7 +131,9 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
                + winTop
                + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
          var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-         deWindow.focus();
+         if (deWindow) {
+            deWindow.focus();
+         }
       }
     }-*/;
 }

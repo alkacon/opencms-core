@@ -216,7 +216,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
      */
     public CmsProperty(String name, String structureValue, String resourceValue, boolean autoCreatePropertyDefinition) {
 
-        m_name = name;
+        m_name = name.trim();
         m_structureValue = structureValue;
         m_resourceValue = resourceValue;
         m_autoCreatePropertyDefinition = autoCreatePropertyDefinition;
@@ -245,7 +245,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     public static final CmsProperty get(String name, List<CmsProperty> list) {
 
         CmsProperty property = null;
-
+        name = name.trim();
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
@@ -883,7 +883,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     public void setName(String name) {
 
         checkFrozen();
-        m_name = name;
+        m_name = name.trim();
     }
 
     /**
@@ -1116,7 +1116,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
             if (index != -1) {
                 String key = entry.substring(0, index);
                 String val = "";
-                if (index + 1 < entry.length()) {
+                if ((index + 1) < entry.length()) {
                     val = entry.substring(index + 1);
                 }
                 if (CmsStringUtil.isNotEmpty(key)) {

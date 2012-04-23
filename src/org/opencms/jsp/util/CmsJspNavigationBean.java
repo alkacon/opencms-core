@@ -93,7 +93,18 @@ public class CmsJspNavigationBean {
          */
         public Object transform(Object input) {
 
-            return Boolean.valueOf(m_cms.getRequestContext().getUri().startsWith((String)input));
+            String resourceName = null;
+            if (input instanceof CmsJspNavElement) {
+                CmsJspNavElement navElement = (CmsJspNavElement)input;
+                if (navElement.getResource() != null) {
+                    resourceName = m_cms.getSitePath(navElement.getResource());
+                } else {
+                    resourceName = navElement.getResourceName();
+                }
+            } else {
+                resourceName = String.valueOf(input);
+            }
+            return Boolean.valueOf(m_cms.getRequestContext().getUri().startsWith(resourceName));
         }
     }
 

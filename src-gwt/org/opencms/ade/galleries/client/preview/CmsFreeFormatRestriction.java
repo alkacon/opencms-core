@@ -57,8 +57,10 @@ public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
      */
     public void adjustCroppingParam(CmsCroppingParamBean croppingParam) {
 
-        croppingParam.setTargetHeight(I_CmsFormatRestriction.DIMENSION_NOT_SET);
-        croppingParam.setTargetWidth(I_CmsFormatRestriction.DIMENSION_NOT_SET);
+        if (!croppingParam.isCropped()) {
+            croppingParam.setTargetHeight(I_CmsFormatRestriction.DIMENSION_NOT_SET);
+            croppingParam.setTargetWidth(I_CmsFormatRestriction.DIMENSION_NOT_SET);
+        }
         croppingParam.setFormatName(getName());
     }
 

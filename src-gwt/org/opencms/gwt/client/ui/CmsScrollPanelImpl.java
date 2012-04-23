@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
+import org.opencms.gwt.client.util.CmsFadeAnimation;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,6 +47,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -66,7 +68,13 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
     private class HoverHandler implements MouseOutHandler, MouseOverHandler {
 
         /** The owner element. */
-        private Element m_owner;
+        Element m_owner;
+
+        /** The element to fade in and out. */
+        private Element m_fadeElement;
+
+        /** The currently running hide animation. */
+        private CmsFadeAnimation m_hideAnimation;
 
         /** The timer to hide the scroll bar with a delay. */
         private Timer m_removeTimer;
@@ -75,10 +83,12 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
          * Constructor.<p>
          * 
          * @param owner the owner element
+         * @param fadeElement the element to fade in and out on hover
          */
-        HoverHandler(Element owner) {
+        HoverHandler(Element owner, Element fadeElement) {
 
             m_owner = owner;
+            m_fadeElement = fadeElement;
         }
 
         /**
@@ -97,7 +107,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
                     clearShowing();
                 }
             };
-            m_removeTimer.schedule(2000);
+            m_removeTimer.schedule(1000);
         }
 
         /**
@@ -105,7 +115,16 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
          */
         public void onMouseOver(MouseOverEvent event) {
 
-            m_owner.addClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().showBars());
+            if ((m_hideAnimation != null)
+                || !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.scrollBarCss().showBars(), m_owner)) {
+                if (m_hideAnimation != null) {
+                    m_hideAnimation.cancel();
+                    m_hideAnimation = null;
+                } else {
+                    CmsFadeAnimation.fadeIn(m_fadeElement, null, 100);
+                }
+                m_owner.addClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().showBars());
+            }
             if (m_removeTimer != null) {
                 m_removeTimer.cancel();
                 m_removeTimer = null;
@@ -117,7 +136,15 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
          */
         void clearShowing() {
 
-            m_owner.removeClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().showBars());
+            m_hideAnimation = CmsFadeAnimation.fadeOut(m_fadeElement, new Command() {
+
+                public void execute() {
+
+                    m_owner.removeClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().showBars());
+
+                }
+            }, 200);
+
             m_removeTimer = null;
         }
     }
@@ -162,7 +189,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
         getElement().appendChild(m_scrollLayer);
         m_scrollLayer.setClassName(I_CmsLayoutBundle.INSTANCE.scrollBarCss().scrollbarLayer());
         CmsScrollBar scrollbar = new CmsScrollBar(scrollable, container);
-        setVerticalScrollbar(scrollbar, 12);
+        setVerticalScrollbar(scrollbar, 8);
 
         /*
          * Listen for scroll events from the root element and the scrollable element
@@ -230,12 +257,26 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
     @Override
     public void onResize() {
 
+        int maxHeight = CmsDomUtil.getCurrentStyleInt(getElement(), Style.maxHeight);
+        if (maxHeight > 0) {
+            getScrollableElement().getStyle().setPropertyPx("maxHeight", maxHeight);
+        }
         int width = m_hiddenSize.getClientWidth();
         if (width > 0) {
             getContainerElement().getStyle().setWidth(width, Unit.PX);
             maybeUpdateScrollbars();
         }
         super.onResize();
+    }
+
+    /**
+     * Returns the vertical scroll bar.<p>
+     * 
+     * @return the vertical scroll bar
+     */
+    protected VerticalScrollbar getVerticalScrollBar() {
+
+        return m_scrollbar;
     }
 
     /**
@@ -267,62 +308,6 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
     }
 
     /**
-     * Set the scrollbar used for vertical scrolling.
-     * 
-     * @param scrollbar the scrollbar, or null to clear it
-     * @param width the width of the scrollbar in pixels
-     */
-    private void setVerticalScrollbar(final CmsScrollBar scrollbar, int width) {
-
-        // Validate.
-        if ((scrollbar == m_scrollbar) || (scrollbar == null)) {
-            return;
-        }
-        // Detach new child.
-
-        scrollbar.asWidget().removeFromParent();
-        // Remove old child.
-        if (m_scrollbar != null) {
-            if (m_verticalScrollbarHandlerRegistration != null) {
-                m_verticalScrollbarHandlerRegistration.removeHandler();
-                m_verticalScrollbarHandlerRegistration = null;
-            }
-            remove(m_scrollbar);
-        }
-        m_scrollLayer.appendChild(scrollbar.asWidget().getElement());
-        adopt(scrollbar.asWidget());
-
-        // Logical attach.
-        m_scrollbar = scrollbar;
-        m_verticalScrollbarWidth = width;
-
-        // Initialize the new scrollbar.
-        m_verticalScrollbarHandlerRegistration = scrollbar.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-
-            public void onValueChange(ValueChangeEvent<Integer> event) {
-
-                int vPos = scrollbar.getVerticalScrollPosition();
-                int v = getVerticalScrollPosition();
-                if (v != vPos) {
-                    setVerticalScrollPosition(vPos);
-                }
-
-            }
-        });
-        maybeUpdateScrollbars();
-    }
-
-    /**
-     * Returns the vertical scroll bar.<p>
-     * 
-     * @return the vertical scroll bar
-     */
-    protected VerticalScrollbar getVerticalScrollBar() {
-
-        return m_scrollbar;
-    }
-
-    /**
      * Hide the native scrollbars. We call this after attaching to ensure that we
      * inherit the direction (rtl or ltr).
      */
@@ -330,10 +315,6 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
         m_nativeScrollbarWidth = AbstractNativeScrollbar.getNativeScrollbarWidth();
         getScrollableElement().getStyle().setMarginRight(-(m_nativeScrollbarWidth + 10), Unit.PX);
-        int maxHeight = CmsDomUtil.getCurrentStyleInt(getElement(), Style.maxHeight);
-        if (maxHeight > 0) {
-            getScrollableElement().getStyle().setPropertyPx("maxHeight", maxHeight);
-        }
     }
 
     /**
@@ -341,7 +322,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
      */
     private void initHoverHandler() {
 
-        HoverHandler handler = new HoverHandler(getElement());
+        HoverHandler handler = new HoverHandler(getElement(), m_scrollbar.asWidget().getElement());
         addDomHandler(handler, MouseOverEvent.getType());
         addDomHandler(handler, MouseOutEvent.getType());
     }
@@ -407,5 +388,51 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
             ((RequiresResize)m_scrollbar).onResize();
         }
         maybeUpdateScrollbarPositions();
+    }
+
+    /**
+     * Set the scrollbar used for vertical scrolling.
+     * 
+     * @param scrollbar the scrollbar, or null to clear it
+     * @param width the width of the scrollbar in pixels
+     */
+    private void setVerticalScrollbar(final CmsScrollBar scrollbar, int width) {
+
+        // Validate.
+        if ((scrollbar == m_scrollbar) || (scrollbar == null)) {
+            return;
+        }
+        // Detach new child.
+
+        scrollbar.asWidget().removeFromParent();
+        // Remove old child.
+        if (m_scrollbar != null) {
+            if (m_verticalScrollbarHandlerRegistration != null) {
+                m_verticalScrollbarHandlerRegistration.removeHandler();
+                m_verticalScrollbarHandlerRegistration = null;
+            }
+            remove(m_scrollbar);
+        }
+        m_scrollLayer.appendChild(scrollbar.asWidget().getElement());
+        adopt(scrollbar.asWidget());
+
+        // Logical attach.
+        m_scrollbar = scrollbar;
+        m_verticalScrollbarWidth = width;
+
+        // Initialize the new scrollbar.
+        m_verticalScrollbarHandlerRegistration = scrollbar.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+
+            public void onValueChange(ValueChangeEvent<Integer> event) {
+
+                int vPos = scrollbar.getVerticalScrollPosition();
+                int v = getVerticalScrollPosition();
+                if (v != vPos) {
+                    setVerticalScrollPosition(vPos);
+                }
+
+            }
+        });
+        maybeUpdateScrollbars();
     }
 }

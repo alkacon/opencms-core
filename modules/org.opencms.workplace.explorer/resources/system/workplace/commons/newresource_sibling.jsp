@@ -114,7 +114,7 @@ default:
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_NEWSIBLING_NAME_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_LINKTARGET %>" id="<%= wp.PARAM_LINKTARGET %>" type="text" value="" class="maxwidth" onkeyup="checkValue();"></td>
-	<td><input name="selectfolder" type="button" value="<%= wp.key(Messages.GUI_BUTTON_SEARCH_0) %>" onClick="top.openTreeWin('sibling', true, 'main', '<%= wp.PARAM_LINKTARGET %>');" class="dialogbutton" style="width: 60px;"></td>
+	<td><input name="selectfolder" type="button" value="<%= wp.key(Messages.GUI_BUTTON_SEARCH_0) %>" onClick="top.openTreeWin('sibling', true, 'main', '<%= wp.PARAM_LINKTARGET %>');" class="dialogbutton" style="min-width: 60px;"></td>
 </tr>
 <tr>
 	<td>&nbsp;</td>

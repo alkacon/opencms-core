@@ -41,7 +41,7 @@ import javax.persistence.Table;
  * @since 8.0.0
  */
 @Entity
-@Table(name = "cms_projectresources")
+@Table(name = "CMS_PROJECTRESOURCES")
 @IdClass(CmsDAOProjectResources.CmsDAOProjectResourcesPK.class)
 public class CmsDAOProjectResources {
 
@@ -231,12 +231,12 @@ public class CmsDAOProjectResources {
 
     /** The project id. */
     @Id
-    @Column(name = "project_id", length = 36)
+    @Column(name = "PROJECT_ID", length = 36)
     private String m_projectId;
 
     /** The resource path. */
     @Id
-    @Column(name = "resource_path", length = 1024)
+    @Column(name = "RESOURCE_PATH", length = 1024)
     private String m_resourcePath;
 
     /**

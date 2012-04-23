@@ -996,7 +996,8 @@ public class CmsImageScaler {
     public byte[] scaleImage(byte[] content, String rootPath) {
 
         byte[] result = content;
-
+        // flag for processed image
+        boolean imageProcessed = false;
         // initialize image crop area
         initCropArea();
 
@@ -1079,36 +1080,56 @@ public class CmsImageScaler {
                     getWidth(),
                     getHeight(),
                     color);
+                imageProcessed = true;
             } else {
+                // only rescale the image, if the width and hight are different to the target size
+                int imageWidth = image.getWidth();
+                int imageHeight = image.getHeight();
+
                 // image rescale operation
                 switch (getType()) {
                 // select the "right" method of scaling according to the "t" parameter
                     case 1:
                         // thumbnail generation mode (like 0 but no image enlargement)
                         image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
+                        imageProcessed = true;
                         break;
                     case 2:
                         // scale to exact target size, crop what does not fit
-                        image = scaler.resize(image, getWidth(), getHeight(), getPosition());
+                        if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
+                            image = scaler.resize(image, getWidth(), getHeight(), getPosition());
+                            imageProcessed = true;
+                        }
                         break;
                     case 3:
                         // scale and keep image proportions, target size variable
-                        image = scaler.resize(image, getWidth(), getHeight(), true);
+                        if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
+                            image = scaler.resize(image, getWidth(), getHeight(), true);
+                            imageProcessed = true;
+                        }
                         break;
                     case 4:
                         // don't keep image proportions, use exact target size
-                        image = scaler.resize(image, getWidth(), getHeight(), false);
+                        if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
+                            image = scaler.resize(image, getWidth(), getHeight(), false);
+                            imageProcessed = true;
+                        }
                         break;
                     case 5:
                         // scale and keep image proportions, target size variable, include maxWidth / maxHeight option
                         // image proportions have already been calculated so should not be a problem, use 
                         // 'false' to make sure image size exactly matches height and width attributes of generated tag
-                        image = scaler.resize(image, getWidth(), getHeight(), false);
+                        if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
+                            image = scaler.resize(image, getWidth(), getHeight(), false);
+                            imageProcessed = true;
+                        }
                         break;
                     default:
                         // scale to exact target size with background padding
                         image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
+                        imageProcessed = true;
                 }
+
             }
 
             if (!m_filters.isEmpty()) {
@@ -1120,10 +1141,14 @@ public class CmsImageScaler {
                     Simapi.COLOR_TRANSPARENT,
                     Simapi.POS_CENTER);
                 image = scaler.applyFilters(image);
+                imageProcessed = true;
             }
 
-            // get the byte result for the scaled image
-            result = scaler.getBytes(image, imageType);
+            // get the byte result for the scaled image if some changes have been made.
+            // otherwiese use the original image
+            if (imageProcessed) {
+                result = scaler.getBytes(image, imageType);
+            }
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()), e);

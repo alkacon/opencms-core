@@ -40,7 +40,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         + "|aligncenter:justifycenter|alignright:justifyright|justify:justifyfull|style:styleselect|formatselect:formatselect"
         + "|fontselect:fontselect|fontsizeselect:fontsizeselect"
         /* Row 2*/
-        + "|cut:cut|copy:copy|paste:paste|pastetext:pastetext|pasteword:pasteword|find:search|replace:replace|unorderedlist:bullist"
+        + "|cut:cut|copy:copy|paste:paste,pastetext,pasteword|pastetext:pastetext|pasteword:pasteword|find:search|replace:replace|unorderedlist:bullist"
         + "|orderedlist:numlist|outdent:outdent|indent:indent|blockquote:blockquote|undo:undo|redo:redo|editorlink:link|unlink:unlink"
         + "|anchor:anchor|image:image|cleanup:cleanup|source:code|insertdate:insertdate|inserttime:inserttime|forecolor:forecolor|backcolor:backcolor"
         /* Row 3*/
@@ -148,6 +148,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("tinyMCE.init({\n");
         result.append("	// General options\n");
         result.append("relative_urls: false,\n");
+        result.append("remove_script_host: false,\n");
         result.append("skin_variant: 'ocms',\n");
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_" + id + "\",\n");
@@ -192,11 +193,12 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                 // cast parameter to I_CmsXmlContentValue
                 I_CmsXmlContentValue contentValue = (I_CmsXmlContentValue)param;
                 // now extract the absolute path of the edited resource
-                String editedResource = cms.getSitePath(contentValue.getDocument().getFile());
+                CmsFile editedResource = contentValue.getDocument().getFile();
+                String editedResourceSitePath = editedResource == null ? null : cms.getSitePath(editedResource);
                 while (i.hasNext()) {
                     I_CmsEditorCssHandler handler = i.next();
-                    if (handler.matches(cms, editedResource)) {
-                        cssPath = handler.getUriStyleSheet(cms, editedResource);
+                    if (handler.matches(cms, editedResourceSitePath)) {
+                        cssPath = handler.getUriStyleSheet(cms, editedResourceSitePath);
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cssPath)) {
                             cssConfigured = true;
                         }
@@ -278,7 +280,13 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                     continue;
                 }
             }
-            processedItems.add(barItem);
+            if (barItem.indexOf(",") > -1) {
+                for (String subItem : barItem.split(",")) {
+                    processedItems.add(subItem);
+                }
+            } else {
+                processedItems.add(barItem);
+            }
             lastItem = barItem;
         }
 

@@ -67,6 +67,7 @@ public class CmsNotificationCause implements Serializable {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_cause + m_resourceId.hashCode();
@@ -82,6 +83,7 @@ public class CmsNotificationCause implements Serializable {
      * 
      * @see org.opencms.notification.CmsExtendedNotificationCause#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
 
         if (!(o instanceof CmsExtendedNotificationCause) || !(o instanceof CmsNotificationCause)) {

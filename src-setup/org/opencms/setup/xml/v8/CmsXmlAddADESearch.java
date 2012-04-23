@@ -99,6 +99,38 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
     }
 
     /**
+     * An XML update action which adds the /system/galleries folder to the gallery index source. 
+     */
+    public static class CmsAddIndexSourceResourceAction extends CmsXmlUpdateAction {
+
+        /**
+         * @see org.opencms.setup.xml.CmsXmlUpdateAction#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
+         */
+        @Override
+        public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+            if (!forReal) {
+                CmsSetupXmlHelper.setValue(
+                    doc,
+                    "/opencms/search/indexsources/indexsource[name='gallery_source']/resources/resource[text()='/system/galleries/']",
+                    "/system/galleries/");
+                return true;
+            }
+            Element indexSourceResources = (Element)doc.selectSingleNode("/opencms/search/indexsources/indexsource[name='gallery_source']/resources");
+            if (indexSourceResources == null) {
+                return false;
+            }
+            Element source = (Element)indexSourceResources.selectSingleNode("resource[text()='/system/galleries/']");
+            if (source != null) {
+                return false;
+            }
+            Element resourceElement = indexSourceResources.addElement("resource");
+            resourceElement.addText("/system/galleries/");
+            return true;
+        }
+    }
+
+    /**
      * Action for updating the office document types in the index sources.<p>
      */
     public static final class CmsIndexSourceTypeUpdateAction extends CmsXmlUpdateAction {
@@ -602,11 +634,11 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 // create doc type
                 createIndexSource(doc, xpath, "gallery_source", CmsVfsIndexer.class, new String[] {
                     "/sites/",
-                    "/shared/"}, new String[] {
+                    "/shared/",
+                    "/system/galleries/"}, new String[] {
                     "xmlpage-galleries",
                     "xmlcontent-galleries",
                     "jsp",
-                    "page",
                     "text",
                     "pdf",
                     "rtf",
@@ -874,5 +906,8 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
             + "                <locale>it</locale>\n"
             + "            </analyzer>"));
 
+        m_actions.put(
+            "/opencms/search/indexsources/indexsource[name='gallery_source']/resources['systemgalleries'='systemgalleries']",
+            new CmsAddIndexSourceResourceAction());
     }
 }

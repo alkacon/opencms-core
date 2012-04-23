@@ -70,9 +70,9 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
      * @return <code>true</code> if given configuration string is valid
      */
     public static native boolean isValidConfig(String config)/*-{
-        var regex = /^(\?|\d+)x(\?|\d+)$/;
-        return regex.test(config);
-    }-*/;
+                                                             var regex = /^(\?|\d+)x(\?|\d+)$/;
+                                                             return regex.test(config);
+                                                             }-*/;
 
     /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsFormatRestriction#adjustCroppingParam(org.opencms.ade.galleries.client.preview.CmsCroppingParamBean)
@@ -198,7 +198,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
             if (conf[1].trim().equals("?")) {
                 m_height = I_CmsFormatRestriction.DIMENSION_NOT_SET;
             } else {
-                m_height = CmsClientStringUtil.parseInt(conf[0]);
+                m_height = CmsClientStringUtil.parseInt(conf[1]);
                 m_height = (m_height == 0) ? I_CmsFormatRestriction.DIMENSION_NOT_SET : m_height;
             }
         }

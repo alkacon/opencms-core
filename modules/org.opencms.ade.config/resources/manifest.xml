@@ -36,6 +36,20 @@
 			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/sitemap_config_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/containerpage.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/containerpage_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/elementgroup.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/elementgroup_big.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/containerpage_template.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/containerpage_template_big.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/inheritancegroup.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/inheritancegroup_big.png" />
 		</resources>
 		<parameters />
 		<resourcetypes>
@@ -141,8 +155,6 @@
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
-
-
 			<explorertype name="containerpage" key="fileicon.containerpage"
 				icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
 				<newresource
@@ -215,6 +227,7 @@
 								rule="standard" />
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
 								rule="standard" />
+							
 							<separator />
 							<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
 								rule="standard" />
@@ -230,20 +243,26 @@
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp"
 							rule="nondeleted" />
-						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
+						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage" />
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
+							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"  rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport"
+							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
+							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
 							rule="containerpage" />
 					</contextmenu>
 				</editoptions>
 			</explorertype>
 			<explorertype name="groupcontainer" key="fileicon.groupcontainer"
-				icon="groupcontainer.png" bigicon="groupcontainer_big.png"
-				reference="xmlcontent">
+				icon="elementgroup.png" bigicon="elementgroup_big.png" reference="xmlcontent">
 				<newresource
 					uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer"
 					order="26" autosetnavigation="false" autosettitle="false"
@@ -306,7 +325,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="inheritance_group" key="fileicon.inheritance_group"
-				icon="groupcontainer.png" bigicon="groupcontainer_big.png"
+				icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
 				reference="xmlcontent">
 				<newresource
 					uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_group"
@@ -318,7 +337,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="inheritance_config" key="fileicon.inheritance_config"
-				icon="groupcontainer.png" bigicon="groupcontainer_big.png"
+				icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
 				reference="xmlcontent">
 				<newresource
 					uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config"
@@ -672,6 +691,233 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/containerpage.png
+			</source>
+			<destination>system/workplace/resources/filetypes/containerpage.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>b690907a-7591-11e0-a914-a1b7a1ca2b7f</uuidstructure>
+			<uuidresource>b690907b-7591-11e0-a914-a1b7a1ca2b7f</uuidresource>
+			<datelastmodified>Tue, 03 May 2011 15:50:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 May 2011 14:29:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/containerpage_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/containerpage_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>d06365e2-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+			<uuidresource>d06365e3-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/function.png</source>
+			<destination>system/workplace/resources/filetypes/function.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>fd4ead16-608c-4a1b-92c0-3a417a55ae07</uuidstructure>
+			<uuidresource>fd4ead16-608c-4a1b-92c0-3a417a55ae08</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/function_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/function_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>afbccf5a-bce4-4fe9-8c8d-246265f1b3d0</uuidstructure>
+			<uuidresource>afbccf5a-bce4-4fe9-8c8d-246265f1b3d1</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/containerpage_template.png
+			</source>
+			<destination>system/workplace/resources/filetypes/containerpage_template.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>2f19b03c-759e-11e0-bda2-a1b7a1ca2b7f</uuidstructure>
+			<uuidresource>2f19b03d-759e-11e0-bda2-a1b7a1ca2b7f</uuidresource>
+			<datelastmodified>Tue, 03 May 2011 16:05:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 May 2011 15:58:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/containerpage_template_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/containerpage_template_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>d06f4cca-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+			<uuidresource>d06f4ccb-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/elementgroup.png
+			</source>
+			<destination>system/workplace/resources/filetypes/elementgroup.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>7cf8f7e7-7596-11e0-b62c-a1b7a1ca2b7f</uuidstructure>
+			<uuidresource>7cf8f7e8-7596-11e0-b62c-a1b7a1ca2b7f</uuidresource>
+			<datelastmodified>Tue, 03 May 2011 15:44:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 May 2011 15:03:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/elementgroup_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/elementgroup_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>d07d7da6-7649-11e0-89d1-5b4e51806a5b</uuidstructure>
+			<uuidresource>d07d7da7-7649-11e0-89d1-5b4e51806a5b</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/inheritancegroup.png
+			</source>
+			<destination>system/workplace/resources/filetypes/inheritancegroup.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>fa1b3707-6c26-11e1-8c1e-91bd90e3b856</uuidstructure>
+			<uuidresource>fa1b3708-6c26-11e1-8c1e-91bd90e3b856</uuidresource>
+			<datelastmodified>Mon, 12 Mar 2012 09:37:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 12 Mar 2012 09:37:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[inheritancegroup]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/inheritancegroup_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/inheritancegroup_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>fa20190b-6c26-11e1-8c1e-91bd90e3b856</uuidstructure>
+			<uuidresource>fa20190c-6c26-11e1-8c1e-91bd90e3b856</uuidresource>
+			<datelastmodified>Mon, 12 Mar 2012 09:37:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 12 Mar 2012 09:37:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[inheritancegroup_big]]></value>
+				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:24,h:24]]></value>

@@ -83,6 +83,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_WORKPLACE_EMAIL_GROUPS_ADMIN_TOOL_NAME_0 = "GUI_WORKPLACE_EMAIL_GROUPS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_LOGGING_HELP_0 = "GUI_WORKPLACE_LOGGING_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_LOGGING_NAME_0 = "GUI_WORKPLACE_LOGGING_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGINMESSAGE_HELP_0 = "GUI_WORKPLACE_LOGINMESSAGE_HELP_0";
 
     /** Message constant for key in the resource bundle. */

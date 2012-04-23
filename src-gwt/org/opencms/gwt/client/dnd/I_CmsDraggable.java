@@ -76,15 +76,6 @@ public interface I_CmsDraggable {
     Element getPlaceholder(I_CmsDropTarget target);
 
     /**
-     * Checks whether the drag item has a given tag.<p>
-     * 
-     * @param tag the tag to check
-     *  
-     * @return true if the drag item has the tag 
-     */
-    boolean hasTag(String tag);
-
-    /**
      * Executed on drag cancel.<p>
      */
     void onDragCancel();

@@ -97,17 +97,19 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
 
-        List list = new ArrayList();
-        list.add("http://www.deloitte.com/dtt/section_node/0,1042,sid%253D62862,00.html");
-        // list.add("http://www.dsb.dk/servlet/Satellite?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
-        list.add("http://www.nbi.dk/%7Enatphil/hug/hug.intro.html");
-        list.add("http://www.si-folkesundhed.dk/Forskning/Sygdomme og tilskadekomst/Ulykker/Nyhedsbrev.aspx");
-        list.add("http://www.mim.dk/Udgivelser/Milj%F8Danmark/");
-        list.add("http://www.ug.dk/Videnscenter for vejledning/Forside/Virtuelt tidsskrift.aspx");
+        List<String> list = new ArrayList<String>();
+        list.add("http://www.bing.com/search?q=%C3%BCberall&qs=n&form=QBLH&filt=all&pq=%C3%BCberall");
+
+        // removing invalid links
+        //        list.add("http://www.dsb.dk/servlet/Satellite?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
+        //        list.add("http://www.nbi.dk/%7Enatphil/hug/hug.intro.html");
+        //        list.add("http://www.si-folkesundhed.dk/Forskning/Sygdomme og tilskadekomst/Ulykker/Nyhedsbrev.aspx");
+        //        list.add("http://www.mim.dk/Udgivelser/Milj%F8Danmark/");
+        //        list.add("http://www.ug.dk/Videnscenter for vejledning/Forside/Virtuelt tidsskrift.aspx");
 
         // checks the list of external links
         for (int i = 0; i < list.size(); i++) {
-            String url = (String)list.get(i);
+            String url = list.get(i);
             System.out.println("Checking external link: " + url);
             System.out.println("  Extenal link encoded: " + new CmsUriSplitter(url, true).toURI().toURL());
             assertTrue("External link check failed:" + url, CmsExternalLinksValidator.checkUrl(cms, url));

@@ -41,6 +41,19 @@ public class CmsResourceInitException extends CmsException {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 4896514314866157082L;
 
+    /** The 'clear errors' flag. */
+    private boolean m_clearErrors;
+
+    /**
+     * Creates a resource init exception for a given resource init handler class.<p>
+     * 
+     * @param cls the resource init handler class 
+     */
+    public CmsResourceInitException(Class<? extends I_CmsResourceInit> cls) {
+
+        this(Messages.get().container(Messages.ERR_RESOURCE_INIT_ABORTED_1, cls.getName()));
+    }
+
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -69,6 +82,28 @@ public class CmsResourceInitException extends CmsException {
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         return new CmsResourceInitException(container, cause);
+    }
+
+    /**
+     * If this method returns true, the {@link OpenCmsCore#initResource(org.opencms.file.CmsObject, String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)} 
+     * method should just return null instead of throwing an exception.<p> 
+     * 
+     * @return the 'clear errors' flag
+     */
+    public boolean isClearErrors() {
+
+        return m_clearErrors;
+    }
+
+    /**
+     * Sets the 'clear errors' flag, which causes the resource init method catching this exception to return null of throwing an exception.
+     * This can be useful if you want to redirect inside a resource init handler.<p>
+     * 
+     * @param clearErrors the new value of the 'clear errors' flag 
+     */
+    public void setClearErrors(boolean clearErrors) {
+
+        m_clearErrors = clearErrors;
     }
 
 }

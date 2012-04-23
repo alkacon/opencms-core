@@ -43,7 +43,7 @@ public class CmsContentNotificationJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         CmsNotificationCandidates candidates = new CmsNotificationCandidates(cms);
         return candidates.notifyResponsibles();

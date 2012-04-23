@@ -79,6 +79,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The new element information. */
     private List<CmsNewResourceInfo> m_newElementInfos;
 
+    /** The new navigation level element info. */
+    private CmsNewResourceInfo m_newNavigatioLevelElementInfo;
+
     /** The new redirect element info. */
     private CmsNewResourceInfo m_newRedirectElementInfo;
 
@@ -135,7 +138,8 @@ public class CmsSitemapData implements IsSerializable {
      * @param defaultNewElementInfo the type of the container page resource
      * @param newElementInfos the new element information
      * @param newRedirectElementInfo the new redirect element info
-     * @param sitemapInfo
+     * @param newNavigationLevelElementInfo the new navigation level element info
+     * @param sitemapInfo the sitemap info bean
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
      * @param openPath the path at which the sitemap should be opened 
@@ -158,6 +162,7 @@ public class CmsSitemapData implements IsSerializable {
         CmsNewResourceInfo defaultNewElementInfo,
         List<CmsNewResourceInfo> newElementInfos,
         CmsNewResourceInfo newRedirectElementInfo,
+        CmsNewResourceInfo newNavigationLevelElementInfo,
         CmsSitemapInfo sitemapInfo,
         String parentSitemap,
         CmsClientSitemapEntry root,
@@ -189,6 +194,7 @@ public class CmsSitemapData implements IsSerializable {
         m_returnCode = returnCode;
         m_newElementInfos = newElementInfos;
         m_newRedirectElementInfo = newRedirectElementInfo;
+        m_newNavigatioLevelElementInfo = newNavigationLevelElementInfo;
     }
 
     /**
@@ -279,6 +285,16 @@ public class CmsSitemapData implements IsSerializable {
     public List<CmsNewResourceInfo> getNewElementInfos() {
 
         return m_newElementInfos;
+    }
+
+    /**
+     * Returns the new navigation level element info.<p>
+     * 
+     * @return the new navigation level element info
+     */
+    public CmsNewResourceInfo getNewNavigationLevelElementInfo() {
+
+        return m_newNavigatioLevelElementInfo;
     }
 
     /**

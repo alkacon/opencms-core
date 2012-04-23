@@ -133,7 +133,10 @@ public class CmsFolderOrName {
             if (m_basePath != null) {
                 return CmsStringUtil.joinPaths(m_basePath, m_folderName);
             } else {
-                return CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), ".content", m_folderName);
+                return CmsStringUtil.joinPaths(
+                    cms.getRequestContext().getSiteRoot(),
+                    CmsADEManager.CONTENT_FOLDER_NAME,
+                    m_folderName);
             }
         }
     }

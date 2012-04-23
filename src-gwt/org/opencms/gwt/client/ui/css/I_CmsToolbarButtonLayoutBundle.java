@@ -111,6 +111,12 @@ public interface I_CmsToolbarButtonLayoutBundle extends I_CmsBigIconBundle {
          * 
          * @return the CSS class name
          */
+        String toolbarRefresh();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String toolbarRemove();
 
         /** Access method.<p>

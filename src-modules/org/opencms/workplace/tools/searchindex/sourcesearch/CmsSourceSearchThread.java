@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -40,6 +41,7 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -357,7 +359,20 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
                 I_CmsReport.FORMAT_DEFAULT);
             byte[] contents = cmsFile.getContents();
-            String content = new String(contents);
+            String encoding = CmsLocaleManager.getResourceEncoding(cmsObject, cmsFile);
+            String content = null;
+            try {
+                content = new String(contents, encoding);
+            } catch (UnsupportedEncodingException e1) {
+                report.print(
+                    org.opencms.report.Messages.get().container(Messages.RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0),
+                    I_CmsReport.FORMAT_ERROR);
+                report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    I_CmsReport.FORMAT_ERROR);
+                m_errorSearch += 1;
+                continue;
+            }
             boolean matched = false;
             Matcher matcher = null;
             try {
@@ -417,10 +432,9 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
 
                 // replace the content
                 content = matcher.replaceAll(m_settings.getReplacepattern());
-                cmsFile.setContents(content.getBytes());
-
                 // write the resource
                 try {
+                    cmsFile.setContents(content.getBytes(encoding));
                     cmsObject.writeFile(cmsFile);
                 } catch (Exception e) {
                     m_errorUpdate += 1;

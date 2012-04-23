@@ -765,7 +765,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             conditions.append(BEGIN_CONDITION);
             conditions.append(m_sqlManager.readQuery(C_SUBSCRIPTION_DELETE_FILTER_DATE));
             conditions.append(END_CONDITION);
-            Query q = m_sqlManager.createQuery(dbc, conditions.toString());
+            Query q = m_sqlManager.createQueryFromJPQL(dbc, conditions.toString());
             q.setParameter(1, Long.valueOf(deletedTo));
             @SuppressWarnings("unchecked")
             List<CmsDAOSubscription> res = q.getResultList();

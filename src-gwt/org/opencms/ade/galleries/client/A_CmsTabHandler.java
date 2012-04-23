@@ -60,6 +60,13 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
     public abstract void clearParams();
 
     /**
+     * Removes the search parameter with the given key from the search object.<p>
+     * 
+     * @param paramKey the parameter key
+     */
+    public abstract void removeParam(String paramKey);
+
+    /**
      * Execute when the upload dialog is closed.<p> 
      * 
      * @param event the close event 

@@ -30,7 +30,6 @@ package org.opencms.staticexport;
 import org.opencms.ade.detailpage.CmsDetailPageUtil;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -845,13 +844,14 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                     } else {
                         // the resource is a folder, check if PROPERTY_DEFAULT_FILE is set on folder
                         try {
-                            String defaultFileName = cms.readPropertyObject(
-                                vfsName,
-                                CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                                false).getValue();
-                            if (defaultFileName != null) {
-                                resource = cms.readResource(vfsName + defaultFileName);
-                            }
+                            resource = cms.readDefaultFile(vfsName);
+                            //                            String defaultFileName = cms.readPropertyObject(
+                            //                                vfsName,
+                            //                                CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                            //                                false).getValue();
+                            //                            if (defaultFileName != null) {
+                            //                                resource = cms.readResource(vfsName + defaultFileName);
+                            //                            }
                         } catch (CmsException e) {
                             // resource is (still) a folder, check default files specified in configuration
                             for (int j = 0; j < OpenCms.getDefaultFiles().size(); j++) {

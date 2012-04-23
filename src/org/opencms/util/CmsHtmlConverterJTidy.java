@@ -121,7 +121,7 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
     private boolean m_modeXhtml;
 
     /** List of default modes if none were specified explicitly. */
-    private static final List MODES_DEFAULT = Collections.unmodifiableList(Arrays.asList(new String[] {CmsHtmlConverter.PARAM_ENABLED}));
+    private static final List<String> MODES_DEFAULT = Collections.unmodifiableList(Arrays.asList(new String[] {CmsHtmlConverter.PARAM_ENABLED}));
 
     /**
      * Constructor, creates a new CmsHtmlConverterJTidy.<p>
@@ -146,7 +146,7 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
      * @param encoding the encoding used for the HTML code conversion
      * @param modes the conversion modes to use
      */
-    public CmsHtmlConverterJTidy(String encoding, List modes) {
+    public CmsHtmlConverterJTidy(String encoding, List<String> modes) {
 
         super(encoding, modes);
     }
@@ -159,6 +159,7 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
      * 
      * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
      */
+    @Override
     public String convertToString(String htmlInput) throws UnsupportedEncodingException {
 
         // initialize the modes
@@ -242,7 +243,7 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
         m_modeXhtml = false;
 
         // extract all operation modes
-        List modes = getModes();
+        List<String> modes = getModes();
 
         // configure the tidy depending on the operation mode
         if (modes.contains(CmsHtmlConverter.PARAM_ENABLED)) {

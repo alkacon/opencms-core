@@ -68,7 +68,7 @@ public class CmsNotificationCandidates {
     private CmsObject m_cms;
 
     /** The resources which come into question for notifications of responsible users. */
-    private List m_resources;
+    private List<CmsExtendedNotificationCause> m_resources;
 
     /**
      * Collects all resources that will expire in short time, or will become valid, or are not modified since a long time.<p>
@@ -80,7 +80,7 @@ public class CmsNotificationCandidates {
     public CmsNotificationCandidates(CmsObject cms)
     throws CmsException {
 
-        m_resources = new ArrayList();
+        m_resources = new ArrayList<CmsExtendedNotificationCause>();
         m_cms = cms;
         m_cms.getRequestContext().setCurrentProject(m_cms.readProject(OpenCms.getSystemInfo().getNotificationProject()));
         String folder = "/";
@@ -88,14 +88,14 @@ public class CmsNotificationCandidates {
         now.setTimeInMillis(System.currentTimeMillis());
         GregorianCalendar inOneWeek = (GregorianCalendar)now.clone();
         inOneWeek.add(Calendar.WEEK_OF_YEAR, 1);
-        Iterator resources;
+        Iterator<CmsResource> resources;
         CmsResource resource;
 
         // read all files with the 'notification-interval' property set
         try {
             resources = m_cms.readResourcesWithProperty(folder, CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL).iterator();
             while (resources.hasNext()) {
-                resource = (CmsResource)resources.next();
+                resource = resources.next();
                 int notification_interval = Integer.parseInt(m_cms.readPropertyObject(
                     resource,
                     CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
@@ -130,7 +130,7 @@ public class CmsNotificationCandidates {
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireLastModifiedBefore(oneYearAgo.getTimeInMillis());
         resources = m_cms.readResources(folder, filter).iterator();
         while (resources.hasNext()) {
-            resource = (CmsResource)resources.next();
+            resource = resources.next();
             m_resources.add(new CmsExtendedNotificationCause(
                 resource,
                 CmsExtendedNotificationCause.RESOURCE_OUTDATED,
@@ -142,7 +142,7 @@ public class CmsNotificationCandidates {
         resourceFilter = resourceFilter.addRequireExpireAfter(now.getTimeInMillis());
         resources = m_cms.readResources(folder, resourceFilter).iterator();
         while (resources.hasNext()) {
-            resource = (CmsResource)resources.next();
+            resource = resources.next();
             m_resources.add(new CmsExtendedNotificationCause(
                 resource,
                 CmsExtendedNotificationCause.RESOURCE_EXPIRES,
@@ -154,7 +154,7 @@ public class CmsNotificationCandidates {
         resourceFilter = resourceFilter.addRequireReleaseAfter(now.getTimeInMillis());
         resources = m_cms.readResources(folder, resourceFilter).iterator();
         while (resources.hasNext()) {
-            resource = (CmsResource)resources.next();
+            resource = resources.next();
             m_resources.add(new CmsExtendedNotificationCause(
                 resource,
                 CmsExtendedNotificationCause.RESOURCE_RELEASE,
@@ -171,12 +171,12 @@ public class CmsNotificationCandidates {
      */
     public String notifyResponsibles() throws CmsException {
 
-        Iterator notifications = filterConfirmedResources(getContentNotifications()).iterator();
+        Iterator<CmsContentNotification> notifications = filterConfirmedResources(getContentNotifications()).iterator();
         if (notifications.hasNext()) {
             StringBuffer result = new StringBuffer(Messages.get().getBundle().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
             result.append(' ');
             while (notifications.hasNext()) {
-                CmsContentNotification contentNotification = (CmsContentNotification)notifications.next();
+                CmsContentNotification contentNotification = notifications.next();
                 result.append(contentNotification.getResponsible().getName());
                 if (notifications.hasNext()) {
                     result.append(", ");
@@ -200,13 +200,13 @@ public class CmsNotificationCandidates {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected Collection getContentNotifications() throws CmsException {
+    protected Collection<CmsContentNotification> getContentNotifications() throws CmsException {
 
         // get all owners for the resource
-        Iterator notificationCandidates = m_resources.iterator();
-        Map result = new HashMap();
+        Iterator<CmsExtendedNotificationCause> notificationCandidates = m_resources.iterator();
+        Map<CmsUser, CmsContentNotification> result = new HashMap<CmsUser, CmsContentNotification>();
         while (notificationCandidates.hasNext()) {
-            CmsExtendedNotificationCause resourceInfo = (CmsExtendedNotificationCause)notificationCandidates.next();
+            CmsExtendedNotificationCause resourceInfo = notificationCandidates.next();
             CmsResource resource = resourceInfo.getResource();
             // skip, if content notification is not enabled for this resource
             String enableNotification = m_cms.readPropertyObject(
@@ -215,21 +215,21 @@ public class CmsNotificationCandidates {
                 true).getValue();
             if (Boolean.valueOf(enableNotification).booleanValue()) {
                 try {
-                    Iterator responsibles = m_cms.readResponsibleUsers(resource).iterator();
+                    Iterator<CmsUser> responsibles = m_cms.readResponsibleUsers(resource).iterator();
                     while (responsibles.hasNext()) {
-                        CmsUser responsible = (CmsUser)responsibles.next();
+                        CmsUser responsible = responsibles.next();
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(responsible.getEmail())) {
                             // check, if resultset already contains a content notification for the user
-                            CmsContentNotification contentNotification = (CmsContentNotification)result.get(responsible);
+                            CmsContentNotification contentNotification = result.get(responsible);
 
                             // if not add a new content notification
                             if (contentNotification == null) {
                                 contentNotification = new CmsContentNotification(responsible, m_cms);
                                 result.put(responsible, contentNotification);
                             }
-                            List resourcesForResponsible = contentNotification.getNotificationCauses();
+                            List<CmsExtendedNotificationCause> resourcesForResponsible = contentNotification.getNotificationCauses();
                             if (resourcesForResponsible == null) {
-                                resourcesForResponsible = new ArrayList();
+                                resourcesForResponsible = new ArrayList<CmsExtendedNotificationCause>();
                                 contentNotification.setNotificationCauses(resourcesForResponsible);
                             }
                             resourcesForResponsible.add(resourceInfo);
@@ -253,24 +253,28 @@ public class CmsNotificationCandidates {
      * @param contentNotifications the list of {@link CmsContentNotification} objects to remove from the set of confirmed resources
      * @return a new CmsConfirmedResources Object which all the resource removed
      */
-    private Collection filterConfirmedResources(Collection contentNotifications) {
+    private Collection<CmsContentNotification> filterConfirmedResources(
+        Collection<CmsContentNotification> contentNotifications) {
 
-        Iterator notifications = contentNotifications.iterator();
+        Iterator<CmsContentNotification> notifications = contentNotifications.iterator();
         while (notifications.hasNext()) {
-            CmsContentNotification contentNotification = (CmsContentNotification)notifications.next();
+            CmsContentNotification contentNotification = notifications.next();
             CmsUser responsible = contentNotification.getResponsible();
             // check, if user was already notified
-            List confirmedResourcesList = (List)responsible.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CONFIRMED_RESOURCES);
+            List<?> confirmedResourcesList = (List<?>)responsible.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CONFIRMED_RESOURCES);
             if (confirmedResourcesList == null) {
-                confirmedResourcesList = new ArrayList();
-                responsible.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CONFIRMED_RESOURCES, new ArrayList());
+                confirmedResourcesList = new ArrayList<Object>();
+                responsible.setAdditionalInfo(
+                    CmsUserSettings.ADDITIONAL_INFO_CONFIRMED_RESOURCES,
+                    new ArrayList<Object>());
             }
 
-            List notificationCandidates = contentNotification.getNotificationCauses();
+            List<CmsExtendedNotificationCause> notificationCandidates = contentNotification.getNotificationCauses();
 
-            List notificationResources = new ArrayList(notificationCandidates);
+            List<CmsExtendedNotificationCause> notificationResources = new ArrayList<CmsExtendedNotificationCause>(
+                notificationCandidates);
             // remove already confirmed resources            
-            Iterator i = confirmedResourcesList.iterator();
+            Iterator<?> i = confirmedResourcesList.iterator();
             while (i.hasNext()) {
                 Object o = i.next();
                 if (notificationResources.contains(o)) {
@@ -278,7 +282,7 @@ public class CmsNotificationCandidates {
                 }
             }
             // filter confirmed resources
-            i = new ArrayList(confirmedResourcesList).iterator();
+            i = new ArrayList<Object>(confirmedResourcesList).iterator();
             while (i.hasNext()) {
                 Object o = i.next();
                 if (!notificationCandidates.contains(o)) {

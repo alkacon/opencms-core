@@ -120,6 +120,12 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
         }
     }
 
+    /**
+     * Appends an attribute.<p>
+     * 
+     * @param tag the tag
+     * @param text the attribute text
+     */
     private void appendAttribute(Tag tag, String text) {
 
         if (tag.getTagName().equals("IMG")) {
@@ -133,6 +139,9 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
         }
     }
 
+    /**
+     * Appends an indentation.<p>
+     */
     private void appendIndentation() {
 
         if (m_lineLength <= m_indent) {
@@ -148,11 +157,22 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
         }
     }
 
+    /**
+     * Appends a line break.<p>
+     * 
+     * @param count the number of lines
+     */
     private void appendLinebreak(int count) {
 
         appendLinebreak(count, false);
     }
 
+    /**
+     * Appends line breaks.<p>
+     * 
+     * @param count the number of line breaks
+     * @param force if the line break should be forced
+     */
     private void appendLinebreak(int count, boolean force) {
 
         if (m_appendBr) {
@@ -175,6 +195,12 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
         }
     }
 
+    /**
+     * Appends line breaks.<p>
+     * 
+     * @param tag the tag
+     * @param open the open flag
+     */
     private void appendLinebreaks(Tag tag, boolean open) {
 
         String name = tag.getTagName();
@@ -259,6 +285,11 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
         }
     }
 
+    /**
+     * Appends text.<p>
+     * 
+     * @param text the text
+     */
     private void appendText(String text) {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
@@ -300,6 +331,12 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
         }
     }
 
+    /**
+     * Sets the indentation.<p>
+     * 
+     * @param length the indentation length
+     * @param open if the indentation should be added or reduced
+     */
     private void setIndentation(int length, boolean open) {
 
         if (open) {
@@ -312,6 +349,12 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
         }
     }
 
+    /**
+     * Sets the marker.<p>
+     * 
+     * @param marker the marker
+     * @param open if the marker should be added
+     */
     private void setMarker(String marker, boolean open) {
 
         if (open) {

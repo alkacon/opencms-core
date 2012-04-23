@@ -187,9 +187,6 @@ public abstract class TestCmsMessageBundles extends TestCase {
             } catch (IllegalAccessException e) {
                 continue;
             }
-
-            System.out.println("Validating key '" + key + "': '" + messages.key(key) + "'");
-
             // ensure the name id identical to the value
             if (!key.equals(value)) {
                 errorMessages.add("Key '" + key + "' has bad value '" + value + "'.");
@@ -500,7 +497,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
      * 
      * @throws Exception if the test fails
      */
-    protected abstract I_CmsClientMessageBundle[] getTestClientMessageBundles() throws Exception;
+    protected abstract List<I_CmsClientMessageBundle> getTestClientMessageBundles() throws Exception;
 
     /**
      * Template method that has to be overwritten to return the <code>I_CmsMessageBundle</code> 
@@ -536,7 +533,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
                 }
             }
         }
-        I_CmsClientMessageBundle[] clientBundles = getTestClientMessageBundles();
+        List<I_CmsClientMessageBundle> clientBundles = getTestClientMessageBundles();
         for (I_CmsClientMessageBundle clientBundle : clientBundles) {
             String tmp = clientBundle.getBundleName();
             tmp = doPreTestBundle(clientBundle.getClass().getName(), clientBundle.getBundleName(), locale, true);

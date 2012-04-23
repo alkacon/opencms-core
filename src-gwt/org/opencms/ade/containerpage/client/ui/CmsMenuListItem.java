@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Draggable menu element. Needed for favorite list.<p>
@@ -55,6 +56,9 @@ public class CmsMenuListItem extends CmsListItem {
 
     /** The element delete button. */
     private CmsPushButton m_removeButton;
+
+    /** The edit click handler registration. */
+    private HandlerRegistration m_editHandlerRegistration;
 
     /**
      * Constructor.<p>
@@ -89,6 +93,12 @@ public class CmsMenuListItem extends CmsListItem {
 
             }
         });
+        m_editButton = new CmsPushButton();
+        m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
+        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_editButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+        m_editButton.setEnabled(false);
+        getListItemWidget().addButton(m_editButton);
     }
 
     /**
@@ -106,16 +116,25 @@ public class CmsMenuListItem extends CmsListItem {
      */
     public void enableEdit(ClickHandler editClickHandler) {
 
-        if (m_editButton != null) {
-            m_editButton.removeFromParent();
+        if (m_editHandlerRegistration != null) {
+            m_editHandlerRegistration.removeHandler();
         }
+        m_editHandlerRegistration = m_editButton.addClickHandler(editClickHandler);
+        m_editButton.enable();
+    }
 
-        m_editButton = new CmsPushButton();
-        m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
-        m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_editButton.setTitle(Messages.get().key(Messages.GUI_BUTTON_ELEMENT_EDIT_0));
-        m_editButton.addClickHandler(editClickHandler);
-        getListItemWidget().addButton(m_editButton);
+    /**
+     * Disables the edit button with the given reason.<p>
+     * 
+     * @param reason the disable reason
+     * @param locked <code>true</code> if the resource is locked
+     */
+    public void disableEdit(String reason, boolean locked) {
+
+        m_editButton.disable(reason);
+        if (locked) {
+            m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().lockIcon());
+        }
     }
 
     /**

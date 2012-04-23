@@ -64,7 +64,7 @@ public interface I_CmsHtmlConverter {
      * 
      * @return the conversion modes to use as List of String parameters
      */
-    List getModes();
+    List<String> getModes();
 
     /**
      * Initializes the HTML converter instance.<p>
@@ -74,6 +74,6 @@ public interface I_CmsHtmlConverter {
      * @param encoding the encoding used for the HTML code conversion
      * @param modes the conversion modes to use
      */
-    void init(String encoding, List modes);
+    void init(String encoding, List<String> modes);
 
 }

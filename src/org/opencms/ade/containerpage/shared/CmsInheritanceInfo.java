@@ -51,6 +51,9 @@ public class CmsInheritanceInfo implements IsSerializable {
     /** True if the parent is visible. */
     private boolean m_parentVisible;
 
+    /** The path from which the element has been inherited. */
+    private String m_path;
+
     /** The element's own visibility. */
     private boolean m_visibility;
 
@@ -99,6 +102,16 @@ public class CmsInheritanceInfo implements IsSerializable {
     }
 
     /**
+     * Gets the path from which this element was inherited.<p>
+     * 
+     * @return the path from which this element was inherited 
+     */
+    public String getPath() {
+
+        return m_path;
+    }
+
+    /**
      * Returns true if this container element is new.<p>
      * 
      * @return true if the container element is new 
@@ -119,16 +132,6 @@ public class CmsInheritanceInfo implements IsSerializable {
     }
 
     /**
-     * Gets the container element's visibility.<p>
-     * 
-     * @return the container element's visibility 
-     */
-    public boolean isVisibile() {
-
-        return m_visibility;
-    }
-
-    /**
      * Returns the visibilityInherited.<p>
      *
      * @return the visibilityInherited
@@ -136,6 +139,16 @@ public class CmsInheritanceInfo implements IsSerializable {
     public boolean isVisibilityInherited() {
 
         return m_visibilityInherited;
+    }
+
+    /**
+     * Gets the container element's visibility.<p>
+     * 
+     * @return the container element's visibility 
+     */
+    public boolean isVisible() {
+
+        return m_visibility;
     }
 
     /**
@@ -176,6 +189,16 @@ public class CmsInheritanceInfo implements IsSerializable {
     public void setParentVisible(boolean parentVisible) {
 
         m_parentVisible = parentVisible;
+    }
+
+    /**
+     * Sets the path.<p>
+     * 
+     * @param path the new value for the path 
+     */
+    public void setPath(String path) {
+
+        m_path = path;
     }
 
     /** 

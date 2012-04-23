@@ -304,6 +304,22 @@ public class CmsCroppingParamBean {
     }
 
     /**
+     * Returns the resulting image ratio.<p>
+     * 
+     * @return the image ratio
+     */
+    public double getRatio() {
+
+        double ratio = 1;
+        if ((getTargetWidth() == -1) || (getTargetHeight() == -1)) {
+            ratio = (double)getOrgWidth() / getOrgHeight();
+        } else {
+            ratio = (double)getTargetWidth() / getTargetHeight();
+        }
+        return ratio;
+    }
+
+    /**
      * Returns a cropping bean with a restricted maximum target size.<p>
      * 
      * @param maxHeight the max height

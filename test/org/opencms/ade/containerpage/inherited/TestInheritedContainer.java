@@ -60,6 +60,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -677,6 +678,30 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     }
 
     /**
+     * Tests looking up inheritance groups by element resource.<p>
+     * 
+     * @throws Exception
+     */
+    public void testReverseLookup() throws Exception {
+
+        writeConfiguration(1, "a");
+        writeConfiguration(2, "b");
+        writeConfiguration(3, "c");
+        publish();
+        CmsObject cms = getCmsObject();
+        Set<String> expected = new HashSet<String>();
+        expected.add("alpha");
+        CmsResource inheritanceConfig = cms.readResource("/system/level1/level2/.inherited");
+        CmsResource target = cms.readResource("/system/content/b.txt");
+        Set<String> result = CmsInheritanceGroupUtils.getNamesOfGroupsContainingResource(cms, inheritanceConfig, target);
+        assertEquals(expected, result);
+
+        target = cms.readResource("/system/content/");
+        result = CmsInheritanceGroupUtils.getNamesOfGroupsContainingResource(cms, inheritanceConfig, target);
+        assertEquals(Collections.emptySet(), result);
+    }
+
+    /**
      * Tests saving an inherited container element list with a new element added.<p>
      * @throws Exception
      */
@@ -1028,7 +1053,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             String value = entry.getValue();
             if ("visible".equals(key)) {
                 boolean expectVisible = Boolean.parseBoolean(value);
-                assertEquals(expectVisible, element.getInheritanceInfo().isVisibile());
+                assertEquals(expectVisible, element.getInheritanceInfo().isVisible());
             } else if ("key".equals(key)) {
                 String expectedKey = value;
                 assertEquals(expectedKey, element.getInheritanceInfo().getKey());

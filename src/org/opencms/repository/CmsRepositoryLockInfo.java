@@ -265,6 +265,7 @@ public class CmsRepositoryLockInfo {
      * 
      * @return a string representation of this lock
      */
+    @Override
     public String toString() {
 
         String result = "Type:" + m_type + "\n";

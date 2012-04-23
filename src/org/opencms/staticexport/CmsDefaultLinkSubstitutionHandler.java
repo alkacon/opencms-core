@@ -290,8 +290,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     }
                     if (linkType != imageId) {
                         // check the secure property of the link
-                        boolean secureLink = exportManager.isSecureLink(cms, vfsName, targetSite.getSiteRoot());
                         boolean secureRequest = exportManager.isSecureLink(cms, oriUri);
+                        boolean secureLink = exportManager.isSecureLink(
+                            cms,
+                            vfsName,
+                            targetSite.getSiteRoot(),
+                            secureRequest);
                         // if we are on a normal server, and the requested resource is secure, 
                         // the server name has to be prepended                        
                         if (secureLink && (forceSecure || !secureRequest)) {

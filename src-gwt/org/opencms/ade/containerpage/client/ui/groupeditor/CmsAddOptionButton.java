@@ -70,7 +70,7 @@ public class CmsAddOptionButton extends CmsPushButton implements I_CmsGroupEdito
      */
     public boolean checkVisibility() {
 
-        return !m_elementWidget.getInheritanceInfo().isVisibile();
+        return !m_elementWidget.getInheritanceInfo().isVisible();
     }
 
     /**

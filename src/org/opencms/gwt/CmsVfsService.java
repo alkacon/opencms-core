@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -41,6 +42,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsAliasBean;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
@@ -105,10 +107,15 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsService.class);
+
     /** The allowed preview mime types. Checked for binary content only. */
     private static Set<String> m_previewMimeTypes = new HashSet<String>();
+
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /** Initialize the preview mime types. */
     static {
@@ -234,7 +241,19 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (CmsException e) {
             error(e);
         }
+    }
 
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getAliasesForPage(org.opencms.util.CmsUUID)
+     */
+    public List<CmsAliasBean> getAliasesForPage(CmsUUID uuid) throws CmsRpcException {
+
+        try {
+            return m_aliasHelper.getAliasesForPage(uuid);
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
@@ -290,6 +309,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 if (entryResource.isFolder()) {
                     descendants.addAll(cms.readResources(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
                 }
+
                 for (CmsResource deleteRes : descendants) {
                     deleteIds.add(deleteRes.getStructureId());
                 }
@@ -392,7 +412,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsPreviewInfo result = null;
         try {
-            result = getPreviewInfo(getCmsObject().readResource(structureId), new Locale(locale));
+            result = getPreviewInfo(getCmsObject().readResource(structureId), CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
             error(e);
         }
@@ -407,7 +427,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsPreviewInfo result = null;
         try {
-            result = getPreviewInfo(getCmsObject().readResource(sitePath), new Locale(locale));
+            result = getPreviewInfo(getCmsObject().readResource(sitePath), CmsLocaleManager.getLocale(locale));
         } catch (Exception e) {
             error(e);
         }
@@ -545,6 +565,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveAliases(org.opencms.util.CmsUUID, java.util.List)
+     */
+    public void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliasBeans) throws CmsRpcException {
+
+        try {
+            m_aliasHelper.saveAliases(structureId, aliasBeans);
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveProperties(org.opencms.gwt.shared.property.CmsPropertyChangeSet)
      */
     public void saveProperties(CmsPropertyChangeSet changes) throws CmsRpcException {
@@ -554,6 +586,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (Throwable t) {
             error(t);
         }
+    }
+
+    /**
+     * Sets the current cms context.<p>
+     *
+     * @param cms the current cms context to set
+     */
+    @Override
+    public synchronized void setCms(CmsObject cms) {
+
+        super.setCms(cms);
+        m_aliasHelper.setCms(cms);
     }
 
     /**
@@ -570,6 +614,20 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#validateAliases(org.opencms.util.CmsUUID, java.util.Map)
+     */
+    public Map<String, String> validateAliases(CmsUUID uuid, Map<String, String> aliasPaths) throws CmsRpcException {
+
+        try {
+            return m_aliasHelper.validateAliases(uuid, aliasPaths);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+
     }
 
     /**
@@ -776,14 +834,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     @SuppressWarnings("unchecked")
     private List<CmsBrokenLinkBean> getBrokenLinkBeans(MultiValueMap linkMap) throws CmsException {
 
+        CmsBrokenLinkRenderer brokenLinkRenderer = new CmsBrokenLinkRenderer(getCmsObject());
         List<CmsBrokenLinkBean> result = new ArrayList<CmsBrokenLinkBean>();
-        for (CmsResource entry : (Set<CmsResource>)linkMap.keySet()) {
-            CmsBrokenLinkBean parentBean = createSitemapBrokenLinkBean(entry);
+        for (CmsResource key : (Set<CmsResource>)linkMap.keySet()) {
+
+            CmsBrokenLinkBean parentBean = createSitemapBrokenLinkBean(key);
             result.add(parentBean);
-            Collection<CmsResource> values = linkMap.getCollection(entry);
+            Collection<CmsResource> values = linkMap.getCollection(key);
             for (CmsResource resource : values) {
-                CmsBrokenLinkBean childBean = createSitemapBrokenLinkBean(resource);
-                parentBean.addChild(childBean);
+                List<CmsBrokenLinkBean> brokenLinkBeans = brokenLinkRenderer.renderBrokenLink(key, resource);
+                for (CmsBrokenLinkBean childBean : brokenLinkBeans) {
+                    parentBean.addChild(childBean);
+                }
             }
         }
         return result;
@@ -894,8 +956,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 icon = LockIcon.SHARED_OPEN;
             }
         }
-        if (lock.getUserId() != null) {
-            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, resourceUtil.getLockedByName());
+        if ((lock.getUserId() != null) && !lock.getUserId().isNullUUID()) {
+            CmsUser lockOwner = getCmsObject().readUser(lock.getUserId());
+            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
+            result.addAdditionalInfo(
+                Messages.get().getBundle().key(Messages.GUI_LOCKED_OWNER_0),
+                lockOwner.getFullName());
         }
         result.setLockIcon(icon);
         result.setLockIconTitle(iconTitle);

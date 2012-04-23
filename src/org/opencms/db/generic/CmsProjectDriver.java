@@ -14,12 +14,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the 
+ * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -103,8 +103,8 @@ import com.google.common.collect.Sets;
 
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
@@ -127,7 +127,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         /**
          * The constructor.<p>
-         * 
+         *
          * @param resourcePath resource path
          * @param userId user id
          * @param projectId project id
@@ -283,7 +283,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             readProjectResource(dbc, projectId, resourcePath);
             projectResourceExists = true;
         } catch (CmsVfsResourceNotFoundException e) {
-            // resource does not exist yet, everything is okay 
+            // resource does not exist yet, everything is okay
             projectResourceExists = false;
         }
 
@@ -395,7 +395,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            // compose statement 
+            // compose statement
             StringBuffer queryBuf = new StringBuffer(256);
             queryBuf.append(m_sqlManager.readQuery("C_LOG_DELETE_ENTRIES"));
 
@@ -433,7 +433,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // remove the project id form all resources within their project
         unmarkProjectResources(dbc, project);
 
-        // finally delete the project     
+        // finally delete the project
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -665,7 +665,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // online project stuff
-        ////////////////////////////////////////////////////////////////////////////////////////////        
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         // create the online project
         CmsProject onlineProject = createProject(
@@ -727,7 +727,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // setup project stuff
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        // important: must access through driver manager to ensure proper cascading        
+        // important: must access through driver manager to ensure proper cascading
         CmsProject setupProject = m_driverManager.getProjectDriver(dbc).createProject(
             dbc,
             CmsUUID.getConstantUUID(SETUP_PROJECT_NAME),
@@ -740,7 +740,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsProject.PROJECT_TYPE_TEMPORARY);
 
         rootFolder.setState(CmsResource.STATE_CHANGED);
-        // create the root-folder for the offline project       
+        // create the root-folder for the offline project
         CmsResource offlineRootFolder = m_driverManager.getVfsDriver(dbc).createResource(
             dbc,
             setupProject.getUuid(),
@@ -755,14 +755,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             offlineRootFolder,
             CmsDriverManager.NOTHING_CHANGED);
 
-        // important: must access through driver manager to ensure proper cascading        
+        // important: must access through driver manager to ensure proper cascading
         m_driverManager.getProjectDriver(dbc).createProjectResource(
             dbc,
             setupProject.getUuid(),
             offlineRootFolder.getRootPath());
 
         systemFolder.setState(CmsResource.STATE_CHANGED);
-        // create the system-folder for the offline project       
+        // create the system-folder for the offline project
         CmsResource offlineSystemFolder = m_driverManager.getVfsDriver(dbc).createResource(
             dbc,
             setupProject.getUuid(),
@@ -939,7 +939,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsFolder onlineFolder = m_driverManager.readFolder(dbc, currentFolder.getRootPath(), CmsResourceFilter.ALL);
 
             // if the folder in the online-project contains any files, these need to be removed.
-            // this can occur if these files were moved in the offline-project   
+            // this can occur if these files were moved in the offline-project
             List<CmsResource> movedFiles = null;
             I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver(dbc);
             movedFiles = vfsDriver.readResourceTree(
@@ -1104,10 +1104,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         /*
          * Never use onlineResource.getState() here!
          * Only use offlineResource.getState() to determine the state of an offline resource!
-         * 
+         *
          * In case a resource has siblings, after a sibling was published the structure
          * and resource states are reset to UNCHANGED -> the state of the corresponding
-         * onlineResource is still NEW, DELETED or CHANGED. 
+         * onlineResource is still NEW, DELETED or CHANGED.
          * Thus, using onlineResource.getState() will inevitably result in unpublished resources!
          */
 
@@ -1233,6 +1233,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
             }
             m_driverManager.publishUrlNameMapping(dbc, offlineResource);
+            if (offlineResource.getState().isDeleted()) {
+                m_driverManager.getVfsDriver(dbc).deleteAliasesById(
+                    dbc,
+                    onlineProject,
+                    offlineResource.getStructureId());
+            }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         } finally {
@@ -1270,7 +1276,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             offlineFile.setContents(offlineContent);
             dbc.setProjectId(projectId);
 
-            // create the file online              
+            // create the file online
             newFile = (CmsFile)offlineFile.clone();
             newFile.setState(CmsResource.STATE_UNCHANGED);
 
@@ -1901,7 +1907,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            // compose statement 
+            // compose statement
             StringBuffer queryBuf = new StringBuffer(256);
             queryBuf.append(m_sqlManager.readQuery("C_LOG_READ_ENTRIES"));
             CmsPair<String, List<I_CmsPreparedStatementParameter>> conditionsAndParameters = prepareLogConditions(filter);
@@ -2183,12 +2189,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Returns the projects of a given resource.<p>
-     * 
+     *
      * @param dbc the database context
      * @param rootPath the resource root path
-     * 
+     *
      * @return the projects of the resource, as a list of projects
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     public List<CmsProject> readProjectsForResource(CmsDbContext dbc, String rootPath) throws CmsDataAccessException {
@@ -2550,7 +2556,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      */
     public void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
 
-        // finally remove the project id form all resources 
+        // finally remove the project id form all resources
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2802,8 +2808,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Creates a <code>CmsPublishJobInfoBean</code> from a result set.<p>
-     * 
-     * @param res the result set 
+     *
+     * @param res the result set
      * @return an initialized <code>CmsPublishJobInfoBean</code>
      * @throws SQLException if something goes wrong
      */
@@ -2824,17 +2830,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Checks if the given resource (by id) is available in the online project,
-     * if there exists a resource with a different path (a moved file), then the 
+     * if there exists a resource with a different path (a moved file), then the
      * online entry is moved to the right (new) location before publishing.<p>
-     * 
+     *
      * @param dbc the db context
      * @param onlineProject the online project
      * @param offlineResource the offline resource to check
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * 
+     *
      * @return <code>true</code> if the resource has actually been moved
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     protected CmsResourceState fixMovedResource(
@@ -2853,7 +2859,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 offlineResource.getStructureId(),
                 true);
             if (onlineResource.getRootPath().equals(offlineResource.getRootPath())) {
-                // resource changed, not moved 
+                // resource changed, not moved
                 return offlineResource.getState();
             }
         } catch (CmsVfsResourceNotFoundException e) {
@@ -2891,9 +2897,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Returns a SQL parameter string for the given data.<p>
-     * 
+     *
      * @param data the data
-     * 
+     *
      * @return the SQL parameter
      */
     protected String getParameterString(Collection<?> data) {
@@ -2914,11 +2920,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Creates a new project from the current row of the given result set.<p>
-     * 
+     *
      * @param res the result set
-     * 
+     *
      * @return the new project
-     * 
+     *
      * @throws SQLException is something goes wrong
      */
     protected CmsProject internalCreateProject(ResultSet res) throws SQLException {
@@ -2938,10 +2944,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Builds a publish list from serialized data.<p>
-     * 
+     *
      * @param bytes the byte array containing the serailized data for the publish list
      * @return the initialized publish list
-     * 
+     *
      * @throws IOException if deserialization fails
      * @throws ClassNotFoundException if deserialization fails
      */
@@ -2954,11 +2960,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Creates a new {@link CmsLogEntry} object from the given result set entry.<p>
-     * 
-     * @param res the result set 
-     *  
+     *
+     * @param res the result set
+     *
      * @return the new {@link CmsLogEntry} object
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     protected CmsLogEntry internalReadLogEntry(ResultSet res) throws SQLException {
@@ -2973,10 +2979,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Resets the state to UNCHANGED for a specified resource.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the Cms resource
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     protected void internalResetResourceState(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
@@ -3004,7 +3010,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Serialize publish list to write it as byte array to the database.<p>
-     * 
+     *
      * @param publishList the publish list
      * @return byte array containing the publish list data
      * @throws IOException if something goes wrong
@@ -3021,14 +3027,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Writes the needed history entries.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the offline resource
      * @param state the state to store in the publish history entry
      * @param properties the offline properties
      * @param publishHistoryId the current publish process id
      * @param publishTag the current publish process tag
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     protected void internalWriteHistory(
@@ -3067,9 +3073,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Build the whole WHERE SQL statement part for the given log entry filter.<p>
-     * 
+     *
      * @param filter the filter
-     * 
+     *
      * @return a pair containing both the SQL and the parameters for it
      */
     protected CmsPair<String, List<I_CmsPreparedStatementParameter>> prepareLogConditions(CmsLogFilter filter) {
@@ -3175,14 +3181,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Publishes a changed file.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
      * @param publishedResourceIds contains the UUIDs of already published content records
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * 
+     *
      * @throws CmsDataAccessException is something goes wrong
      */
     protected void publishChangedFile(
@@ -3212,7 +3218,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             offlineResource.setFlags(flags);
 
             if (existsOnline) {
-                // read the file header online                   
+                // read the file header online
                 onlineResource = m_driverManager.getVfsDriver(dbc).readResource(
                     dbc,
                     onlineProject.getUuid(),
@@ -3323,13 +3329,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Publishes a deleted file.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * 
+     *
      * @throws CmsDataAccessException is something goes wrong
      */
     protected void publishDeletedFile(
@@ -3531,14 +3537,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Publishes a new file.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
      * @param publishedContentIds contains the UUIDs of already published content records
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * 
+     *
      * @throws CmsDataAccessException is something goes wrong
      */
     protected void publishNewFile(
@@ -3575,7 +3581,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         } catch (CmsVfsResourceAlreadyExistsException e) {
             try {
-                // remove the existing file and ensure that it's content is written 
+                // remove the existing file and ensure that it's content is written
                 // in any case by removing it's resource ID from the set of published resource IDs
                 m_driverManager.getVfsDriver(dbc).removeFile(dbc, onlineProject.getUuid(), offlineResource);
                 publishedContentIds.remove(offlineResource.getResourceId());

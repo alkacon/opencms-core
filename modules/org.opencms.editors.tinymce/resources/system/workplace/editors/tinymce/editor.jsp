@@ -606,7 +606,7 @@ var editedResource = "<%= wp.getParamResource() %>";
 
 // saves the editors contents
 function saveContent() {
-    document.EDITOR.content.value = encodeURIComponent(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>').getContent());
+    document.EDITOR.content.value = encodeURIComponent(tinyMCE.get('tinymce_content').getContent());
 }
 
 // Ask user whether he really wants to delete the locale
@@ -747,7 +747,7 @@ function popupCloseAction(closeObj) {
 tinyMCE.init({
     // General options
     mode : "exact",
-    elements : "<%= CmsEditor.PARAM_CONTENT %>",
+    elements : "tinymce_content",
     theme : "advanced",
     plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,-opencms",
     file_browser_callback : 'cmsTinyMceFileBrowser',
@@ -765,6 +765,7 @@ tinyMCE.init({
     // Skin options
     skin_variant : "ocms",
     relative_urls: false,
+    remove_script_host: false,
 
     // Example content CSS (should be your site CSS)
     content_css : "<cms:link><%= wp.getUriStyleSheet() %></cms:link>",
@@ -772,7 +773,9 @@ tinyMCE.init({
     // editor size
     width: "100%",
     height: "100%",
-    
+    valid_children : "+body[style]",
+    //element options
+    extended_valid_elements : "style[dir<ltr?rtl|lang|media|title|type],link[charset|class|dir<ltr?rtl|href|hreflang|id|lang|media|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|rel|rev|style|title|target|type]",
     <%
     if(formatSelectOption){
     	String format = options.getOptionValue("formatselect.options", "", displayOptions);
@@ -819,7 +822,7 @@ tinyMCE.init({
 	        	if (top.frames['cmsAdvancedDirectEditor']!=null && top.frames['cmsAdvancedDirectEditor'].document!=null){
 	        	    exitTarget='cmsAdvancedDirectEditor';
 	        	}
-	        	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVEACTION %>',exitTarget);
+	        	execAction(tinyMCE.get('tinymce_content'), '<%= CmsEditor.EDITOR_SAVEACTION %>',exitTarget);
 	        }
 	   });
 		
@@ -861,16 +864,16 @@ function setupTinyMCE(editor) {
 }
 
 function ocmsSaveExit() {
-	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVEEXIT %>','_top');
+	execAction(tinyMCE.get('tinymce_content'), '<%= CmsEditor.EDITOR_SAVEEXIT %>','_top');
 }
 
 function ocmsSave() {
-	execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_SAVE %>','_self');
+	execAction(tinyMCE.get('tinymce_content'), '<%= CmsEditor.EDITOR_SAVE %>','_self');
 }
 
 function ocmsExit() {
-	if (!tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>').isDirty() || confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
-		execAction(tinyMCE.get('<%= CmsEditor.PARAM_CONTENT %>'), '<%= CmsEditor.EDITOR_EXIT %>','_top');
+	if (!tinyMCE.get('tinymce_content').isDirty() || confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
+		execAction(tinyMCE.get('tinymce_content'), '<%= CmsEditor.EDITOR_EXIT %>','_top');
 	}
 }
 
@@ -916,6 +919,7 @@ function getEditorHeight(){
 <input type="hidden" name="<%= CmsEditor.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
 <input type="hidden" name="<%= CmsEditor.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
 <input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
+<input type="hidden" name="content" id="content" >
 
 <table cellspacing="0" cellpadding="0" border="0" style="width:100%; height:100%;">
 
@@ -966,7 +970,7 @@ if (options.showElement("option.cleanup", displayOptions)) {
 <td style="width:100%; height:100%;">
 <div id="textarea-container" class="cmsTinyMCE" style="width:100%; height:100%; background-color: Window;">
 <script language="javascript">
-document.write ('<textarea id="<%= CmsEditor.PARAM_CONTENT %>" name="<%= CmsEditor.PARAM_CONTENT %>" style="height:'+getEditorHeight()+'px; width:100%;"></textarea>');
+document.write ('<textarea id="tinymce_content" name="tinymce_content" style="height:'+getEditorHeight()+'px; width:100%;"></textarea>');
 </script>
 </div>
 </td>

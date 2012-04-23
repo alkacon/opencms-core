@@ -63,7 +63,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
      * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) {
+    public int compareTo(I_CmsNewsletterContent o) {
 
         return new Integer(m_order).compareTo(new Integer(((CmsNewsletterContent)o).getOrder()));
     }
@@ -72,6 +72,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (!(obj instanceof CmsNewsletterContent)) {
@@ -97,6 +98,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_channel.hashCode() + m_content.hashCode() + m_order + m_type.hashCode();

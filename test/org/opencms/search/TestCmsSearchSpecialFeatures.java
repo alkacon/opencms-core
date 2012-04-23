@@ -199,7 +199,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         String fileName = "/sites/default/test/master.pdf";
 
         CmsSearchIndex searchIndex = OpenCms.getSearchManager().getIndex(INDEX_SPECIAL);
-        Document doc = searchIndex.getDocument(fileName);
+        Document doc = searchIndex.getDocument(CmsSearchField.FIELD_PATH, fileName);
 
         assertNotNull("Document '" + fileName + "' not found", doc);
         assertNotNull("No 'content' field available", doc.getFieldable(CmsSearchField.FIELD_CONTENT));

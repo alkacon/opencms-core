@@ -194,6 +194,15 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.CustomButton#isDown()
+     */
+    @Override
+    public boolean isDown() {
+
+        return super.isDown();
+    }
+
+    /**
      * Checks if the button is constraint to a minimal width.<p>
      *
      * @return <code>true</code> if the button is constraint to a minimal width

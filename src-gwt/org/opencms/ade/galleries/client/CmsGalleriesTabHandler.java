@@ -93,4 +93,13 @@ public class CmsGalleriesTabHandler extends A_CmsTabHandler {
 
         m_controller.sortGalleries(sortParams, filter);
     }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
+     */
+    @Override
+    public void removeParam(String paramKey) {
+
+        m_controller.removeGalleryParam(paramKey);
+    }
 }

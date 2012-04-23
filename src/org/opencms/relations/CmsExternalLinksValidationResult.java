@@ -43,7 +43,7 @@ import java.util.Map.Entry;
 public class CmsExternalLinksValidationResult {
 
     /**  The broken links that were found.<p> */
-    private Map m_brokenLinks;
+    private Map<String, String> m_brokenLinks;
 
     /**  The date of the validation.<p> */
     private Date m_validationDate;
@@ -53,7 +53,7 @@ public class CmsExternalLinksValidationResult {
      * 
      * @param brokenLinks a list of the broken links
      */
-    public CmsExternalLinksValidationResult(Map brokenLinks) {
+    public CmsExternalLinksValidationResult(Map<String, String> brokenLinks) {
 
         m_brokenLinks = brokenLinks;
         m_validationDate = new Date();
@@ -71,13 +71,13 @@ public class CmsExternalLinksValidationResult {
         CmsMessages mg = Messages.get().getBundle(locale);
         if (m_brokenLinks.size() > 0) {
             StringBuffer result = new StringBuffer(1024);
-            Iterator brokenLinks = m_brokenLinks.entrySet().iterator();
+            Iterator<Entry<String, String>> brokenLinks = m_brokenLinks.entrySet().iterator();
             result.append(mg.key(Messages.GUI_LINK_VALIDATION_RESULTS_INTRO_1, new Object[] {m_validationDate})).append(
                 "<ul>");
             while (brokenLinks.hasNext()) {
-                Entry link = (Map.Entry)brokenLinks.next();
-                String linkPath = (String)link.getKey();
-                String linkUrl = (String)link.getValue();
+                Entry<String, String> link = brokenLinks.next();
+                String linkPath = link.getKey();
+                String linkUrl = link.getValue();
                 String msg = mg.key(Messages.GUI_LINK_POINTING_TO_2, new Object[] {linkPath, linkUrl});
                 result.append("<li>").append(msg).append("</li>");
             }

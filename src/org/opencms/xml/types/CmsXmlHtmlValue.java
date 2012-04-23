@@ -252,6 +252,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
         linkProcessor = m_document.getLinkProcessor(cms, new CmsLinkTable());
 
         String finalValue = value;
+        if (finalValue != null) {
+            // nested CDATA tags are not allowed, so replace CDATA tags with their contents
+            finalValue = finalValue.replaceAll("(?s)// <!\\[CDATA\\[(.*?)// \\]\\]>", "$1"); // special case for embedded Javascript 
+            finalValue = finalValue.replaceAll("(?s)<!\\[CDATA\\[(.*?)\\]\\]>", "$1");
+        }
         if (encoding != null) {
             // ensure all chars in the given content are valid chars for the selected charset
             finalValue = CmsEncoder.adjustHtmlEncoding(finalValue, encoding);
@@ -263,7 +268,6 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
             CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
             finalValue = converter.convertToStringSilent(finalValue);
         }
-
         if (linkProcessor != null) {
             try {
                 // replace links in HTML by macros and fill link table      

@@ -69,4 +69,11 @@ public interface I_CmsSitemapController {
      */
     Map<String, CmsClientProperty> replaceProperties(CmsUUID id, Map<String, CmsClientProperty> properties);
 
+    /**
+     * Registers the given entry within the data model.<p>
+     * 
+     * @param entry the entry to register
+     */
+    void registerEntry(CmsClientSitemapEntry entry);
+
 }

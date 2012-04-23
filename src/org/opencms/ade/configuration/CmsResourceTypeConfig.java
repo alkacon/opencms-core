@@ -353,7 +353,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         } else {
             return CmsStringUtil.joinPaths(
                 cms.getRequestContext().getSiteRoot(),
-                CmsADEConfigData.CONTENT_FOLDER_NAME,
+                CmsADEManager.CONTENT_FOLDER_NAME,
                 m_typeName);
         }
     }

@@ -73,6 +73,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
+        sb.append(org.opencms.gwt.seo.ClientMessages.get().export(getRequest()));
         String prefetchedData = serializeForJavascript(
             I_CmsContainerpageService.class.getMethod("prefetch"),
             getCntPageData());

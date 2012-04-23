@@ -27,16 +27,11 @@
 
 package org.opencms.ade.sitemap.shared.rpc;
 
-import org.opencms.ade.sitemap.shared.CmsAdditionalEntryInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
-import org.opencms.ade.sitemap.shared.CmsSitemapMergeInfo;
-import org.opencms.ade.sitemap.shared.CmsSubSitemapInfo;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
-
-import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -61,31 +56,20 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsSubSitemapInfo createSubSitemap(CmsUUID entryId) throws CmsRpcException;
-
-    /**
-     * Returns additional sitemap entry information.<p>
-     *  
-     * @param structureId the entry structure id
-     * 
-     * @return the additional information
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    CmsAdditionalEntryInfo getAdditionalEntryInfo(CmsUUID structureId) throws CmsRpcException;
+    CmsSitemapChange createSubSitemap(CmsUUID entryId) throws CmsRpcException;
 
     /**
      * Returns the sitemap children for the given path.<p>
      * 
      * @param entryPointUri the URI of the sitemap entry point
-     * @param root the site relative root
+     * @param entryId the entry id
      * @param levels the count of child levels to read
      *  
      * @return the sitemap children
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsClientSitemapEntry getChildren(String entryPointUri, String root, int levels) throws CmsRpcException;
+    CmsClientSitemapEntry getChildren(String entryPointUri, CmsUUID entryId, int levels) throws CmsRpcException;
 
     /**
      * Merges a sub-sitemap into it's parent sitemap.<p>
@@ -97,7 +81,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsSitemapMergeInfo mergeSubSitemap(String entryPoint, CmsUUID subSitemapId) throws CmsRpcException;
+    CmsSitemapChange mergeSubSitemap(String entryPoint, CmsUUID subSitemapId) throws CmsRpcException;
 
     /**
      * Returns the initialization data for the given sitemap.<p>
@@ -116,11 +100,11 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param sitemapUri the sitemap URI 
      * @param change the change to save
      * 
-     * @return a list of changed sitemap entries
+     * @return the updated change
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    List<CmsClientSitemapEntry> save(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+    CmsSitemapChange save(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 
     /**
      * Saves the change to the given sitemap.<p>
@@ -128,10 +112,11 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param sitemapUri the sitemap URI 
      * @param change the change to save
      * 
-     * @return a list of changed sitemap entries
+     * @return the updated change
      * 
      * @throws CmsRpcException if something goes wrong
      */
     @SynchronizedRpcRequest
-    List<CmsClientSitemapEntry> saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+    CmsSitemapChange saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+
 }

@@ -558,7 +558,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_errorMessageWidth)) {
                 m_error.setWidth(m_errorMessageWidth);
             } else {
-                m_error.setWidth((getOffsetWidth() - 8) + Unit.PX.toString());
+                int width = getOffsetWidth() - 8;
+                width = width > 0 ? width : 100;
+                m_error.setWidth(width + Unit.PX.toString());
             }
             m_textboxContainer.removeStyleName(CSS.textBoxPanel());
             m_textboxContainer.addStyleName(CSS.textBoxPanelError());

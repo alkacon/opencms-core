@@ -27,8 +27,6 @@
 
 package org.opencms.gwt.client.ui.input.form;
 
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The interface for objects which should be notified when a {@link CmsForm} is successfully submitted.<p>
@@ -38,15 +36,19 @@ import java.util.Set;
 public interface I_CmsFormHandler {
 
     /**
-     * The method which should be called when a {@link CmsForm} is submitted.<p>
+     * This method is called when the validation triggered by an attempt to submit the form has finished.<p>
      * 
-     * The map passed as a parameter will contain key-value pairs where the key is the 
-     * name of the field and the value is the value obtained from the field. It is explicitly
-     * allowed that the value is null; this means that the property is set to 'default'.
-     * 
-     * @param fieldValues a map of field values
-     * @param editedFields the fields which have been edited 
+     * @param form the form 
+     * @param ok the validation result  
      */
-    void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields);
+    void onSubmitValidationResult(CmsForm form, boolean ok);
+
+    /**
+     * This method is called when the normal validation triggered by changing fields has finished.<p>
+     * 
+     * @param form the form 
+     * @param ok the validation result 
+     */
+    void onValidationResult(CmsForm form, boolean ok);
 
 }

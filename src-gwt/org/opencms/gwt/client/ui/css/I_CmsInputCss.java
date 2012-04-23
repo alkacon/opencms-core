@@ -385,5 +385,12 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String transparentSelectBox();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String weakText();
 }

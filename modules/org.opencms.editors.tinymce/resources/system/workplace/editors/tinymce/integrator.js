@@ -1,8 +1,30 @@
 <%@ page import="org.opencms.jsp.*" %><%
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 %>
-/* only used for utility functions. */ 
-<%= cms.getContent("/system/workplace/resources/editors/fckeditor/editor/dialog/common/fck_dialog_common.js") %>
+
+function SetAttribute( element, attName, attValue )
+{
+   if ( attValue == null || attValue.length == 0 )
+      element.removeAttribute( attName, 0 ) ;         // 0 : Case Insensitive
+   else
+      element.setAttribute( attName, attValue, 0 ) ;  // 0 : Case Insensitive
+}
+
+function GetAttribute( element, attName, valueIfNull )
+{
+   var oAtt = element.attributes[attName] ;
+
+   if ( oAtt == null || !oAtt.specified )
+      return valueIfNull ? valueIfNull : '' ;
+
+   var oValue = element.getAttribute( attName, 2 ) ;
+
+   if ( oValue == null )
+      oValue = oAtt.nodeValue ;
+
+   return ( oValue == null ? valueIfNull : oValue ) ;
+}
+
 <%= cms.getContent("/system/workplace/resources/editors/tinymce/jscripts/tiny_mce/tiny_mce_popup.js") %>
 /**
  * The JavaScript functions of this file serve as an interface between the API of the TinyMCE and the gallery dialog.<p>
@@ -124,8 +146,13 @@ function _editorInsertElement(element) {
 }
 
 function _editorCreateLink(target) {
-   editor.execCommand("mceInsertLink", false, target);
-   return editor.selection.getNode();
+   var linkAttrs = {href: target};
+   var specialClass = "cmsInsertedLink" + Math.floor(Math.random()*10000);
+   linkAttrs["class"] = specialClass;
+   editor.execCommand("mceInsertLink", false, linkAttrs);
+   var result = editor.dom.select("."+specialClass)[0];
+   editor.dom.removeClass(result, specialClass);
+   return result; 
 }
 
 function _editorInsertHtml(html) {
@@ -572,11 +599,13 @@ function _setLinkOriginalProperties(linkElement, path, attributes){
         path=path.substring(0, path.indexOf("?"));
     }
     if (hasLightboxOption()) {
-        linkElement.href = path; //TODO: create lightbox link
+        linkElement.href = path; 
+        linkElement.setAttribute("data-mce-href", path);
         linkElement.setAttribute("title", attributes.title);
         linkElement.setAttribute("class", "thickbox");
     } else {
         linkElement.href = "#";
+        linkElement.setAttribute("data-mce-href", "#");
         var linkUri = "javascript:window.open('";
         linkUri += vfsPopupUri;
         linkUri += "?uri=";
@@ -586,7 +615,7 @@ function _setLinkOriginalProperties(linkElement, path, attributes){
         linkUri += ",height=";
         linkUri += attributes.height;
         linkUri += ",location=no,menubar=no,status=no,toolbar=no');";
-        linkElement.setAttribute("onclick", linkUri); //TODO: create popup link
+        linkElement.setAttribute("onclick", linkUri);
     }
     linkElement.setAttribute("id", LINK_PREFIX + attributes.hash);
 }

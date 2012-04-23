@@ -59,10 +59,10 @@ public class CmsNewsletter implements I_CmsNewsletter {
     private static final Log LOG = CmsLog.getLog(CmsNewsletter.class);
 
     /** The attachments, a list of {@link org.opencms.file.CmsResource} objects. */
-    private List m_attachments;
+    private List<CmsResource> m_attachments;
 
-    /** The contents, a list of {@link CmsNewsletterContent} objects. */
-    private List m_contents;
+    /** The contents, a list of {@link I_CmsNewsletterContent} objects. */
+    private List<I_CmsNewsletterContent> m_contents;
 
     /** The subject of the newsletter. */
     private String m_subject;
@@ -72,8 +72,8 @@ public class CmsNewsletter implements I_CmsNewsletter {
      */
     public CmsNewsletter() {
 
-        m_contents = new ArrayList();
-        m_attachments = new ArrayList();
+        m_contents = new ArrayList<I_CmsNewsletterContent>();
+        m_attachments = new ArrayList<CmsResource>();
     }
 
     /**
@@ -106,9 +106,9 @@ public class CmsNewsletter implements I_CmsNewsletter {
 
         StringBuffer htmlMsg = new StringBuffer(1024);
         StringBuffer txtMsg = new StringBuffer(1024);
-        Iterator contents = m_contents.iterator();
+        Iterator<I_CmsNewsletterContent> contents = m_contents.iterator();
         while (contents.hasNext()) {
-            I_CmsNewsletterContent content = (I_CmsNewsletterContent)contents.next();
+            I_CmsNewsletterContent content = contents.next();
             if (recipient.isSubscriber(content)) {
                 if (content.getType().equals(CmsNewsletterContentType.TYPE_HTML)) {
                     htmlMsg.append(content.getContent());
@@ -123,9 +123,9 @@ public class CmsNewsletter implements I_CmsNewsletter {
                 // we need to create a HTML mail
                 CmsHtmlMail htmlMail = new CmsHtmlMail();
                 htmlMail.setHtmlMsg(replaceMacros(htmlMsg.toString(), recipient));
-                Iterator attachments = m_attachments.iterator();
+                Iterator<CmsResource> attachments = m_attachments.iterator();
                 while (attachments.hasNext()) {
-                    CmsResource resource = (CmsResource)attachments.next();
+                    CmsResource resource = attachments.next();
                     // set the description of the attachment either to the
                     // property description, if it is set, or
                     // to the property title

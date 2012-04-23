@@ -28,7 +28,9 @@
 package org.opencms.gwt.shared;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -41,6 +43,9 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /** The child beans (usually represent link targets). */
     private List<CmsBrokenLinkBean> m_children = new ArrayList<CmsBrokenLinkBean>();
+
+    /** The broken link info. */
+    private Map<String, String> m_info = new LinkedHashMap<String, String>();
 
     /** The title. */
     private String m_subtitle;
@@ -96,6 +101,17 @@ public class CmsBrokenLinkBean implements IsSerializable {
     }
 
     /**
+     * Adds optional page information to the broken link bean.<p>
+     * 
+     * @param name the info name
+     * @param value the info
+     */
+    public void addInfo(String name, String value) {
+
+        m_info.put(name, value);
+    }
+
+    /**
      * Returns the child beans of this bean.<p>
      * 
      * @return the list of child beans 
@@ -103,6 +119,16 @@ public class CmsBrokenLinkBean implements IsSerializable {
     public List<CmsBrokenLinkBean> getChildren() {
 
         return m_children;
+    }
+
+    /**
+     * Returns the additional link info.<p>
+     * 
+     * @return the broken link info
+     */
+    public Map<String, String> getInfo() {
+
+        return m_info;
     }
 
     /**

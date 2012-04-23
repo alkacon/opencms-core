@@ -255,9 +255,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     /**
      * @see org.opencms.repository.I_CmsRepositorySession#list(java.lang.String)
      */
-    public List list(String path) throws CmsException {
+    public List<I_CmsRepositoryItem> list(String path) throws CmsException {
 
-        List ret = new ArrayList();
+        List<I_CmsRepositoryItem> ret = new ArrayList<I_CmsRepositoryItem>();
 
         path = validatePath(path);
 
@@ -265,10 +265,10 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_1, path));
         }
 
-        List resources = m_cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
-        Iterator iter = resources.iterator();
+        List<CmsResource> resources = m_cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
+        Iterator<CmsResource> iter = resources.iterator();
         while (iter.hasNext()) {
-            CmsResource res = (CmsResource)iter.next();
+            CmsResource res = iter.next();
 
             if (!isFiltered(m_cms.getRequestContext().removeSiteRoot(res.getRootPath()))) {
 
@@ -447,6 +447,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
      * 
      * @see org.opencms.repository.A_CmsRepositorySession#isFiltered(java.lang.String)
      */
+    @Override
     protected boolean isFiltered(String name) {
 
         boolean ret = super.isFiltered(m_cms.getRequestContext().addSiteRoot(name));

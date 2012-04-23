@@ -47,14 +47,12 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.util.CmsUUID;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanFilter;
@@ -63,7 +61,6 @@ import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermsFilter;
 import org.apache.lucene.search.TopDocs;
 
@@ -74,6 +71,12 @@ import org.apache.lucene.search.TopDocs;
  */
 public class CmsGallerySearchIndex extends CmsSearchIndex {
 
+    /** The system galleries path. */
+    public static final String FOLDER_SYSTEM_GALLERIES = "/system/galleries/";
+
+    /** The system modules folder path. */
+    public static final String FOLDER_SYTEM_MODULES = "/system/modules/";
+
     /** The advanced gallery index name. */
     public static final String GALLERY_INDEX_NAME = "Gallery Index";
 
@@ -82,12 +85,6 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /** The gallery document type name for xml-pages. */
     public static final String TYPE_XMLPAGE_GALLERIES = "xmlpage-galleries";
-
-    /** The system modules folder path. */
-    public static final String FOLDER_SYTEM_MODULES = "/system/modules/";
-
-    /** The system galleries path. */
-    public static final String FOLDER_SYSTEM_GALLERIES = "/system/galleries/";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchIndex.class);
@@ -122,29 +119,18 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     }
 
     /**
-     * Returns the Lucene document with the given root path from the index.<p>
+     * Returns the Lucene document with the given structure id from the index.<p>
      * 
      * @param structureId the structure id of the document to retrieve  
      * 
      * @return the Lucene document with the given root path from the index
+     * 
+     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link CmsGallerySearchFieldMapping#FIELD_RESOURCE_STRUCTURE_ID} as field to search in
      */
+    @Deprecated
     public Document getDocument(CmsUUID structureId) {
 
-        Document result = null;
-        IndexSearcher searcher = getSearcher();
-        if (searcher != null) {
-            // search for an exact match on the document root path
-            Term idTerm = new Term(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID, structureId.toString());
-            try {
-                TopDocs hits = searcher.search(new TermQuery(idTerm), 1);
-                if (hits.scoreDocs.length > 0) {
-                    result = searcher.doc(hits.scoreDocs[0].doc);
-                }
-            } catch (IOException e) {
-                // ignore, return null and assume document was not found
-            }
-        }
-        return result;
+        return getDocument(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID, structureId.toString());
     }
 
     /**
@@ -187,6 +173,36 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 availableLocales);
         } else {
             result = defaultLocales.get(0);
+        }
+        return result;
+    }
+
+    /**
+     * Gets the search roots to use for the given site/subsite parameters.<p>
+     *  
+     * @param scope the search scope
+     * @param subSiteParam the current subsite
+     *  
+     * @return the list of search roots for that option 
+     */
+    public List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String subSiteParam) {
+
+        List<String> result = new ArrayList<String>();
+        if (scope.isIncludeSite()) {
+            result.add("/");
+        }
+        if (scope.isIncludeSubSite() && (subSiteParam != null)) {
+            result.add(subSiteParam);
+        }
+        if (scope.isIncludeShared()) {
+            String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
+            if (sharedFolder != null) {
+                result.add(sharedFolder);
+            }
+        }
+        if (scope == CmsGallerySearchScope.siteShared) {
+            result.add(FOLDER_SYTEM_MODULES);
+            result.add(FOLDER_SYSTEM_GALLERIES);
         }
         return result;
     }
@@ -268,6 +284,10 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             // store separate fields query for excerpt highlighting  
             Query fieldsQuery = null;
 
+            // get an index searcher that is certainly up to date
+            indexSearcherUpdate();
+            IndexSearcher searcher = getSearcher();
+
             Locale locale = params.getLocale() == null ? null : CmsLocaleManager.getLocale(params.getLocale());
             if (params.getSearchWords() != null) {
                 // this search contains a full text search component
@@ -281,7 +301,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                     QueryParser p = new QueryParser(CmsSearchIndex.LUCENE_VERSION, field, getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getSearchWords()), BooleanClause.Occur.SHOULD);
                 }
-                fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
+                fieldsQuery = searcher.rewrite(booleanFieldsQuery);
             }
 
             // finally set the main query to the fields query
@@ -294,8 +314,8 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             }
 
             // perform the search operation          
-            getSearcher().setDefaultFieldSortScoring(true, true);
-            hits = getSearcher().search(query, filter, getMaxHits(), params.getSort());
+            searcher.setDefaultFieldSortScoring(true, true);
+            hits = searcher.search(query, filter, getMaxHits(), params.getSort());
 
             if (hits != null) {
                 int hitCount = hits.totalHits > hits.scoreDocs.length ? hits.scoreDocs.length : hits.totalHits;
@@ -321,7 +341,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
-                        doc = getSearcher().doc(hits.scoreDocs[i].doc);
+                        doc = searcher.doc(hits.scoreDocs[i].doc);
                         if (hasReadPermission(searchCms, doc)) {
                             // user has read permission
                             if (cnt >= start) {
@@ -438,13 +458,14 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
         // complete the search root
         TermsFilter pathFilter = new TermsFilter();
+        String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
         if ((roots != null) && (roots.size() > 0)) {
             // add the all configured search roots with will request context
             for (int i = 0; i < roots.size(); i++) {
                 String searchRoot = roots.get(i);
                 if (!searchRoot.startsWith(FOLDER_SYTEM_MODULES)
                     && !searchRoot.startsWith(FOLDER_SYSTEM_GALLERIES)
-                    && !searchRoot.startsWith(OpenCms.getSiteManager().getSharedFolder())) {
+                    && ((sharedFolder == null) || !searchRoot.startsWith(OpenCms.getSiteManager().getSharedFolder()))) {
                     searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
                 }
                 extendPathFilter(pathFilter, searchRoot);
@@ -546,33 +567,6 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                     result.add(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, l));
                 }
             }
-        }
-        return result;
-    }
-
-    /**
-     * Gets the search roots to use for the given site/subsite parameters.<p>
-     *  
-     * @param scope the search scope
-     * @param subSiteParam the current subsite
-     *  
-     * @return the list of search roots for that option 
-     */
-    public List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String subSiteParam) {
-
-        List<String> result = new ArrayList<String>();
-        if (scope.isIncludeSite()) {
-            result.add("/");
-        }
-        if (scope.isIncludeSubSite() && (subSiteParam != null)) {
-            result.add(subSiteParam);
-        }
-        if (scope.isIncludeShared()) {
-            result.add(OpenCms.getSiteManager().getSharedFolder());
-        }
-        if (scope == CmsGallerySearchScope.siteShared) {
-            result.add(FOLDER_SYTEM_MODULES);
-            result.add(FOLDER_SYSTEM_GALLERIES);
         }
         return result;
     }

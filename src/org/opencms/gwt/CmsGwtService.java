@@ -228,6 +228,19 @@ public class CmsGwtService extends RemoteServiceServlet {
     }
 
     /**
+     * Sets the current response.<p>
+     * 
+     * @param response the response to set
+     */
+    public synchronized void setResponse(HttpServletResponse response) {
+
+        if (perThreadResponse == null) {
+            perThreadResponse = new ThreadLocal<HttpServletResponse>();
+        }
+        perThreadResponse.set(response);
+    }
+
+    /**
      * We do not want that the server goes to fetch files from the servlet context.<p>
      * 
      * @see com.google.gwt.user.server.rpc.RemoteServiceServlet#doGetSerializationPolicy(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)

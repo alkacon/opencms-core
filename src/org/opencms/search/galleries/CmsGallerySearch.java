@@ -145,7 +145,7 @@ public class CmsGallerySearch {
      */
     public CmsGallerySearchResult searchById(CmsUUID id, Locale locale) throws CmsException {
 
-        Document doc = m_index.getDocument(id);
+        Document doc = m_index.getDocument(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID, id.toString());
         CmsGallerySearchResult result = null;
         if (doc != null) {
             result = new CmsGallerySearchResult(m_cms, 100, doc, null, locale);

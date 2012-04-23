@@ -571,10 +571,6 @@ public class CmsTreeItem extends CmsListItem {
         I_CmsDraggable draggable = null;
         if (getTree().getDnDHandler() != null) {
             draggable = getTree().getDnDHandler().getDraggable();
-            //            if (draggable == this) {
-            //                // can't drop item on itself, keeping previous position
-            //                return getTree().getPlaceholderIndex();
-            //            }
         }
         Element itemElement = getListItemWidget().getElement();
         // check if the mouse pointer is within the height of the element 
@@ -697,6 +693,7 @@ public class CmsTreeItem extends CmsListItem {
         }
         m_open = open;
         executeOpen();
+        CmsDomUtil.resizeAncestor(getParent());
     }
 
     /**
@@ -794,6 +791,7 @@ public class CmsTreeItem extends CmsListItem {
     protected void executeOpen() {
 
         m_styleVar.setValue(m_open ? CSS.listTreeItemOpen() : CSS.listTreeItemClosed());
+        setLeafStyle(false);
         m_children.getElement().getStyle().clearDisplay();
         if (m_opener.isDown() != m_open) {
             m_opener.setDown(m_open);
@@ -801,6 +799,8 @@ public class CmsTreeItem extends CmsListItem {
         if (m_open) {
             fireOpen();
         }
+        // reset the leaf style according to the child count
+        setLeafStyle(0 == getChildCount());
     }
 
     /** 
@@ -853,8 +853,7 @@ public class CmsTreeItem extends CmsListItem {
      */
     protected void onChangeChildren() {
 
-        int count = getChildCount();
-        setLeafStyle(count == 0);
+        setLeafStyle(0 == getChildCount());
     }
 
     /**

@@ -33,7 +33,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -164,7 +163,6 @@ public class CmsDynamicFunctionParser {
         if (xmlContent.hasLocale(contextLocale)) {
             return contextLocale;
         }
-        OpenCms.getLocaleManager();
         Locale defaultLocale = CmsLocaleManager.getDefaultLocale();
         if (xmlContent.hasLocale(defaultLocale)) {
             return defaultLocale;

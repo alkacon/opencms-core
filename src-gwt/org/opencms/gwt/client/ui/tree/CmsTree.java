@@ -31,7 +31,6 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasOpenHandlers;
@@ -156,40 +155,6 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
     }
 
     /**
-     * Returns the tree entry with the given path.<p>
-     * 
-     * @param path the path to look for
-     * 
-     * @return the tree entry with the given path, or <code>null</code> if not found
-     */
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    // method may not work correctly when the tree root has an empty id
-    // TODO: check this
-    public I getItemByPath(String path) {
-
-        String[] names = CmsStringUtil.splitAsArray(path, "/");
-        I result = null;
-        for (String name : names) {
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-                // in case of leading slash
-                continue;
-            }
-            if (result != null) {
-                result = (I)result.getChild(name);
-            } else {
-                // match the root node
-                result = getItem(name);
-            }
-            if (result == null) {
-                // not found
-                break;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Returns the placeholder path.<p>
      * 
      * @return the path
@@ -254,7 +219,7 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
                 m_placeholderIndex = item.repositionPlaceholder(x, y, m_placeholder, orientation);
                 return;
             }
-            if (isDNDTakeAll() && (index == widgetCount - 1)) {
+            if (isDNDTakeAll() && (index == (widgetCount - 1))) {
                 // last item of the list, no matching item was found and take-all is enabled
                 // check if cursor position is above or below
                 int relativeTop = CmsDomUtil.getRelativeY(y, getElement());
@@ -325,7 +290,7 @@ public class CmsTree<I extends CmsTreeItem> extends CmsList<I> implements HasOpe
             m_openTimer.cancel();
         }
         m_openTimer = new OpenTimer(item);
-        m_openTimer.schedule(150);
+        m_openTimer.schedule(100);
     }
 
     /**

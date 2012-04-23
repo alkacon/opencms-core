@@ -83,12 +83,15 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries = new ArrayList<I_CmsContextMenuEntry>();
         m_entries.add(new CmsGotoMenuEntry(hoverbar));
         m_entries.add(new CmsEditMenuEntry(hoverbar));
+        m_entries.add(new CmsSeoMenuEntry(hoverbar));
         m_entries.add(new CmsNewChoiceMenuEntry(hoverbar));
         m_entries.add(new CmsAddToNavMenuEntry(hoverbar));
         m_entries.add(new CmsSubSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsParentSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
         m_entries.add(new CmsMergeMenuEntry(hoverbar));
+        m_entries.add(new CmsHideMenuEntry(hoverbar));
+        m_entries.add(new CmsShowMenuEntry(hoverbar));
         m_entries.add(new CmsRemoveMenuEntry(hoverbar));
         m_entries.add(new CmsBumpDetailPageMenuEntry(hoverbar));
         m_entries.add(new CmsAvailabilityMenuEntry(hoverbar));
@@ -96,6 +99,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         m_entries.add(new CmsDeleteMenuEntry(hoverbar));
         m_entries.add(new CmsEditRedirectMenuEntry(hoverbar));
         m_entries.add(new CmsLockReportMenuEntry(hoverbar));
+
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_TITLE_0));
         setVisible(true);
         addClickHandler(new ClickHandler() {

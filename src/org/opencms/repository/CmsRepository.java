@@ -67,7 +67,7 @@ public class CmsRepository extends A_CmsRepository {
     private static final String PARAM_WRAPPER = "wrapper";
 
     /** The list of configured wrappers of the repository. */
-    private List m_wrappers;
+    private List<I_CmsResourceWrapper> m_wrappers;
 
     /**
      * Empty default constructor.<p>
@@ -75,7 +75,7 @@ public class CmsRepository extends A_CmsRepository {
     public CmsRepository() {
 
         super();
-        m_wrappers = new ArrayList();
+        m_wrappers = new ArrayList<I_CmsResourceWrapper>();
     }
 
     /**
@@ -90,7 +90,7 @@ public class CmsRepository extends A_CmsRepository {
             for (String classname : wrappers) {
 
                 classname = classname.trim();
-                Class nameClazz;
+                Class<?> nameClazz;
 
                 // init class for wrapper
                 try {

@@ -504,8 +504,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         m_tmpValue = value;
         if (fireEvents) {
-            fireChange(getValue(), value);
-            m_oldValue = value;
+            fireChange(value);
         }
         m_box.setFormValueAsString(CmsDateConverter.toString(value));
     }
@@ -524,12 +523,12 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * Fires the value change event if needed.<p>
      * 
-     * @param oldValue the old value
      * @param newValue the new value
      */
-    protected void fireChange(Date oldValue, Date newValue) {
+    protected void fireChange(Date newValue) {
 
-        ValueChangeEvent.<Date> fireIfNotEqual(this, oldValue, CalendarUtil.copyDate(newValue));
+        ValueChangeEvent.<Date> fireIfNotEqual(this, m_oldValue, CalendarUtil.copyDate(newValue));
+        m_oldValue = newValue;
     }
 
     /**
@@ -599,6 +598,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
                         updateCloseBehavior();
                         if (isValideDateBox()) {
                             setErrorMessage(null);
+                            fireChange(getValue());
                         }
                     }
                 });
@@ -655,6 +655,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
                     public void execute() {
 
                         executeTimeAction();
+                        fireChange(getValue());
                     }
                 });
                 break;
@@ -811,8 +812,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         date = CmsDateConverter.getDateWithTime(date, timeAsString);
         setValue(date);
         setErrorMessage(null);
-        fireChange(m_oldValue, date);
-        m_oldValue = date;
+        fireChange(date);
     }
 
     /**
@@ -828,7 +828,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         }
         setPickerValue(date, false);
         m_time.setErrorMessage(null);
-        fireChange(m_oldValue, getValue());
-        m_oldValue = date;
+        fireChange(getValue());
     }
 }

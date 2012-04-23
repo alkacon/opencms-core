@@ -166,109 +166,109 @@ public class CmsHtmlWidgetOption {
 
     /** Option for the styles format VFS path to use in the widget area. */
     public static final String OPTION_STYLES_FORMAT = "stylesformat:";
-    
+
     /** Option for the "table" dialog. */
     public static final String OPTION_TABLE = "table";
 
     /** Option for the "unlink" button. */
     public static final String OPTION_UNLINK = "unlink";
-    
+
     /** Option for the "abbreviation" button. */
     public static final String OPTION_ABBR = "abbr";
-    
+
     /** Option for the "absolute" button. */
     public static final String OPTION_ABSOLUTE = "absolute";
-    
+
     /** Option for the "acronym" button. */
     public static final String OPTION_ACRONYM = "acronym";
-    
+
     /** Option for the "advanced hr" button. */
     public static final String OPTION_ADVHR = "advhr";
-    
+
     /** Option for the "insert/edit attributes" button. */
     public static final String OPTION_ATTRIBS = "attribs";
-    
+
     /** Option for the "background color" button. */
     public static final String OPTION_BACKCOLOR = "backcolor";
-    
+
     /** Option for the "block quote" button. */
     public static final String OPTION_BLOCKQUOTE = "blockquote";
-    
+
     /** Option for the "citation" button. */
     public static final String OPTION_CITE = "cite";
-    
+
     /** Option for the "clean up messy code" button. */
     public static final String OPTION_CLEANUP = "cleanup";
-    
+
     /** Option for the "mark text as deletion" button. */
     public static final String OPTION_DEL = "del";
-    
+
     /** Option for the "emotions" button. */
     public static final String OPTION_EMOTIONS = "emotions";
-    
+
     /** Option for the "font select" button. */
     public static final String OPTION_FONTSELECT = "fontselect";
-    
+
     /** Option for the "font size" button. */
     public static final String OPTION_FONTSIZESELECT = "fontsizeselect";
-    
+
     /** Option for the "text color" button. */
     public static final String OPTION_FORECOLOR = "forecolor";
-    
+
     /** Option for the "hr" button. */
     public static final String OPTION_HR = "hr";
-    
+
     /** Option for the "mark text as insertion" button. */
     public static final String OPTION_INS = "ins";
-    
+
     /** Option for the "insert date" button. */
     public static final String OPTION_INSERTDATE = "insertdate";
-    
+
     /** Option for the "insert layer" button. */
     public static final String OPTION_INSERTLAYER = "insertlayer";
-    
+
     /** Option for the "insert time" button. */
     public static final String OPTION_INSERTTIME = "inserttime";
-    
+
     /** Option for the "left to right text" button. */
     public static final String OPTION_LTR = "ltr";
-    
+
     /** Option for the "insert media (flash, video, audio)" button. */
     public static final String OPTION_MEDIA = "media";
-    
+
     /** Option for the "move backward (layer context)" button. */
     public static final String OPTION_MOVEBACKWARD = "movebackward";
-    
+
     /** Option for the "move forward (layer context)" button. */
     public static final String OPTION_MOVEFORWARD = "moveforward";
-    
+
     /** Option for the "new document (remove existing content)" button. */
     public static final String OPTION_NEWDOCUMENT = "newdocument";
-    
+
     /** Option for the "non breaking white space" button. */
     public static final String OPTION_NONBREAKING = "nonbreaking";
-    
+
     /** Option for the "page break" button. */
     public static final String OPTION_PAGEBREAK = "pagebreak";
-    
+
     /** Option for the "paste text" button. */
     public static final String OPTION_PASTETEXT = "pastetext";
-    
+
     /** Option for the "paste from word" button. */
     public static final String OPTION_PASTEWORD = "pasteword";
-    
+
     /** Option for the "right to left text" button. */
     public static final String OPTION_RTL = "rtl";
-    
+
     /** Option for the "edit CSS style" button. */
     public static final String OPTION_STYLEPROPS = "styleprops";
-    
+
     /** Option for the "insert predefined template content" button. */
     public static final String OPTION_TEMPLATE = "template";
-    
+
     /** Option for the "show/hide guidelines/invisible elements" button. */
     public static final String OPTION_VISUALAID = "visualaid";
-    
+
     /** Option for the "show/hide visual control characters" button. */
     public static final String OPTION_VISUALCHARS = "visualchars";
 
@@ -363,6 +363,8 @@ public class CmsHtmlWidgetOption {
 
     /** The style XML path. */
     private String m_stylesXmlPath;
+
+    /** The path for custom styles. */
     private String m_stylesFormatPath;
 
     /**
@@ -776,7 +778,7 @@ public class CmsHtmlWidgetOption {
 
         return m_stylesFormatPath;
     }
-    
+
     /**
      * Initializes the widget options from the given configuration String.<p>
      * 
@@ -938,7 +940,7 @@ public class CmsHtmlWidgetOption {
 
         m_stylesFormatPath = stylesFormatPath;
     }
-    
+
     /**
      * Returns true if the anchor dialog button should be available.<p>
      * 
@@ -1019,7 +1021,7 @@ public class CmsHtmlWidgetOption {
 
         return CmsStringUtil.isNotEmpty(getStylesFormatPath());
     }
-    
+
     /**
      * Returns true if the table dialog button should be available.<p>
      *

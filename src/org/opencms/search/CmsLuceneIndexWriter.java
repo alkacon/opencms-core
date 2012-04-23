@@ -45,9 +45,6 @@ import org.apache.lucene.store.Directory;
  */
 public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
-    /** The threshold for the commits until optimize is called. */
-    public static final int COMMIT_OPTIMIZE_THRESHOLD = 1000;
-
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsLuceneIndexWriter.class);
 
@@ -56,9 +53,6 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
     /** The Lucene index writer to use. */
     private final IndexWriter m_indexWriter;
-
-    /** A counter for the commits until optimize is called. */
-    private int m_optimizeCounter;
 
     /**
      * Creates a new index writer based on the provided standard Lucene IndexWriter.<p>
@@ -83,7 +77,6 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     public CmsLuceneIndexWriter(IndexWriter indexWriter, CmsSearchIndex index) {
 
         m_indexWriter = indexWriter;
-        m_optimizeCounter = 0;
         m_index = index;
         if ((m_index != null) && LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(
@@ -127,13 +120,6 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
                 m_index.getPath()));
         }
         m_indexWriter.commit();
-        m_optimizeCounter++;
-        if (m_optimizeCounter >= COMMIT_OPTIMIZE_THRESHOLD) {
-            // optimize the search index when the threshold is reached
-            optimize();
-            m_indexWriter.commit();
-            m_optimizeCounter = 0;
-        }
     }
 
     /**
@@ -155,6 +141,9 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
     /**
      * @see org.opencms.search.I_CmsIndexWriter#optimize()
+     * 
+     * As optimize is deprecated with Lucene 3.5, this implementation 
+     * actually calls {@link IndexWriter#forceMerge(int)}.<p>
      */
     public void optimize() throws IOException {
 
@@ -167,7 +156,7 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
         int oldPriority = Thread.currentThread().getPriority();
         // we don't want the priority too low as the process should complete as fast as possible
         Thread.currentThread().setPriority(Thread.NORM_PRIORITY / 2);
-        m_indexWriter.optimize();
+        m_indexWriter.forceMerge(5);
         Thread.currentThread().setPriority(oldPriority);
     }
 

@@ -120,6 +120,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** Action that sub choices should be determined. */
     public static final int ACTION_SUBCHOICES = 159;
 
+    /** Request context attribute for the page from which the editor was opened. */
+    public static final String ATTRIBUTE_EDITCONTEXT = CmsXmlContentEditor.class.getName() + ".ATTRIBUTE_EDITCONTEXT";
+
     /** Indicates that the content should be checked before executing the direct edit action. */
     public static final String EDITOR_ACTION_CHECK = "check";
 
@@ -155,6 +158,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Parameter name for the request parameter "choicetype". */
     public static final String PARAM_CHOICETYPE = "choicetype";
+
+    /** Parameter name for the request parameter "editcontext". */
+    public static final String PARAM_EDITCONTEXT = "editcontext";
 
     /** Parameter name for the request parameter "elementindex". */
     public static final String PARAM_ELEMENTINDEX = "elementindex";
@@ -200,6 +206,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Parameter stores the flag if the element to add is a choice type. */
     private String m_paramChoiceType;
+
+    /** The page in whose context the content is being edited. */
+    private String m_paramEditContext;
 
     /** Parameter stores the index of the element to add or remove. */
     private String m_paramElementIndex;
@@ -898,6 +907,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Gets the editor context path (usually either a container page path or null).<p>
+     * 
+     * @return the editor context path 
+     */
+    public String getParamEditContext() {
+
+        return m_paramEditContext;
+    }
+
+    /**
      * Returns the index of the element to add or remove.<p>
      *
      * @return the index of the element to add or remove
@@ -1243,6 +1262,20 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Sets the edit context URI.<p>
+     *  
+     * @param editContext the edit context URI.
+     */
+    public void setParamEditContext(String editContext) {
+
+        m_paramEditContext = editContext;
+        CmsObject cms = getCms();
+        if ((cms != null) && (editContext != null)) {
+            cms.getRequestContext().setAttribute(ATTRIBUTE_EDITCONTEXT, editContext);
+        }
+    }
+
+    /**
      * Sets the index of the element to add or remove.<p>
      *
      * @param elementIndex the index of the element to add or remove
@@ -1561,7 +1594,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             if (getParamElementlanguage() == null) {
                 initElementLanguage();
             } else {
-                Locale locale = new Locale(getParamElementlanguage());
+                Locale locale = CmsLocaleManager.getLocale(getParamElementlanguage());
                 ensureLocale(locale);
             }
         }
@@ -1571,7 +1604,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * Returns the HTML for the element operation buttons add, move, remove.<p>
      * 
      * @param value the value for which the buttons are generated
-     * @param index the index of the element
      * @param addElement if true, the button to add an element is shown
      * @param removeElement if true, the button to remove an element is shown
      * @return the HTML for the element operation buttons

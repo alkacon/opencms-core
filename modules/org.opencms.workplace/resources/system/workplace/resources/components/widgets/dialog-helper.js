@@ -60,7 +60,7 @@ function _getScaleValue(scale, valueName) {
 			if (result.indexOf(",") != -1) {
 				result = result.substring(0, result.indexOf(","));
 			}
-			return result;
+			return parseInt(result);
 		}
 	}	
 	return null;
@@ -153,7 +153,7 @@ function cmsOpenImagePreview(title, context, fieldId){
 		var _dialogWidth=null;
 		var _boxWidth=null;
 		var _resizable=false;
-		if ($.browser.msie){
+		if ($.browser.msie && navigator.appVersion.match(/MSIE [6-8]./)){
 			// for IE dialog width 'auto' will not work, so try to read scaling
             // parameter to detect image width
 			var _scale=_getScaleParam(sitePath);
@@ -166,7 +166,7 @@ function cmsOpenImagePreview(title, context, fieldId){
 				// enable resize on dialog
 				_resizable=true;
 			}else{
-				_dialogWidth+=6;
+				_dialogWidth+=18;
 			}
 			
 			_boxWidth=_dialogWidth-6;
@@ -181,15 +181,13 @@ function cmsOpenImagePreview(title, context, fieldId){
 		});
 		var _imageBox=$('<div />', {'css':{
 		    'width': _boxWidth,
-	            'background-color': 'white',
-	            'padding': '6px',
-	            'text-align': 'center',
-	            '-moz-border-radius': '8px',
-	            '-webkit-border-radius': '8px',
-	            'border-radius': '8px',
-	            'border-radius': '8px'
-	        }
-		}).append(_previewImage).appendTo(document.body);
+	        'background-color': 'white',
+	        'padding': '6px',
+	        'text-align': 'center',
+	        '-moz-border-radius': '8px',
+	        '-webkit-border-radius': '8px',
+	        'border-radius': '8px'
+	    }}).append(_previewImage).appendTo(document.body);
 		_imageBox.dialog({
             /** title: title, */
 	    dialogClass: 'galleryDialog hideCaption',

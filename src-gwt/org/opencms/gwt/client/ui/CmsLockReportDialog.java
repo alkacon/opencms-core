@@ -136,7 +136,7 @@ public final class CmsLockReportDialog extends CmsPopup {
         addButton(m_closeButton);
         addDialogClose(null);
         m_unlockButton = new CmsPushButton();
-        m_unlockButton.setText(Messages.get().key(Messages.GUI_UNLOCK_ALL_0));
+        m_unlockButton.setText(Messages.get().key(Messages.GUI_UNLOCK_0));
         m_unlockButton.setUseMinWidth(true);
         m_unlockButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
         m_unlockButton.addClickHandler(new ClickHandler() {
@@ -226,19 +226,23 @@ public final class CmsLockReportDialog extends CmsPopup {
         m_resourceItem.addOpenHandler(heightHandler);
         m_resourceItem.addCloseHandler(heightHandler);
         content.add(m_resourceItem);
-
         m_scrollPanel = new FlowPanel();
         m_scrollPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().border());
         m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().logReportScrollPanel());
+        CmsList<CmsListItem> list = null;
         CmsMessageWidget message = new CmsMessageWidget();
         m_scrollPanel.add(message);
-        CmsList<CmsListItem> list = null;
-        // only show the unlock button if the resource or a descending resource is locked
+        message.setMessageText(getMessageForLock(
+            reportInfo.getResourceInfo().getLockIcon(),
+            !reportInfo.getLockedResourceInfos().isEmpty()));
         if (!reportInfo.getLockedResourceInfos().isEmpty()
             || ((reportInfo.getResourceInfo().getLockIcon() != null) && (reportInfo.getResourceInfo().getLockIcon() != LockIcon.NONE))) {
             m_unlockButton.setVisible(true);
-            message.setMessageText(Messages.get().key(Messages.GUI_LOCK_REPORT_UNLOCK_MESSAGE_0));
+        }
+        // only show the unlock button if the resource or a descending resource is locked
+        if (!reportInfo.getLockedResourceInfos().isEmpty()) {
+            m_unlockButton.setText(Messages.get().key(Messages.GUI_UNLOCK_ALL_0));
             list = new CmsList<CmsListItem>();
             for (CmsListInfoBean lockedInfo : reportInfo.getLockedResourceInfos()) {
                 CmsListItemWidget listItemWidget = new CmsListItemWidget(lockedInfo);
@@ -247,16 +251,14 @@ public final class CmsLockReportDialog extends CmsPopup {
                 list.addItem(new CmsListItem(listItemWidget));
             }
             m_scrollPanel.add(list);
-        } else {
-            message.setMessageText(Messages.get().key(Messages.GUI_LOCK_REPORT_NOTHING_LOCKED_0));
         }
 
         content.add(m_scrollPanel);
         this.setMainContent(content);
         if (isShowing()) {
-            m_resourceItem.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH);
+            m_resourceItem.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH - 10);
             if (list != null) {
-                list.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH);
+                list.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH - 10);
             }
             adjustHeight();
         }
@@ -302,6 +304,35 @@ public final class CmsLockReportDialog extends CmsPopup {
         m_closeButton.disable(Messages.get().key(Messages.GUI_LOADING_0));
         m_unlockButton.disable(Messages.get().key(Messages.GUI_LOADING_0));
         action.execute();
+    }
+
+    /**
+     * Returns the dialog message for the given lock.<p>
+     * 
+     * @param lockIcon the lock icon
+     * @param hasLockedChildren <code>true</code> if the given resource has locked children
+     * 
+     * @return the dialog message
+     */
+    private String getMessageForLock(LockIcon lockIcon, boolean hasLockedChildren) {
+
+        String result = "";
+        if (!hasLockedChildren && ((lockIcon == null) || (lockIcon == LockIcon.NONE))) {
+            result = Messages.get().key(Messages.GUI_LOCK_REPORT_NOTHING_LOCKED_0);
+        } else if ((lockIcon == LockIcon.OPEN) || (lockIcon == LockIcon.SHARED_OPEN)) {
+            if (hasLockedChildren) {
+                result = Messages.get().key(Messages.GUI_LOCK_REPORT_UNLOCK_ALL_MESSAGE_0);
+            } else {
+                result = Messages.get().key(Messages.GUI_LOCK_REPORT_UNLOCK_MESSAGE_0);
+            }
+        } else {
+            if (hasLockedChildren) {
+                result = Messages.get().key(Messages.GUI_LOCK_REPORT_STEAL_ALL_LOCKS_MESSAGE_0);
+            } else {
+                result = Messages.get().key(Messages.GUI_LOCK_REPORT_STEAL_LOCK_MESSAGE_0);
+            }
+        }
+        return result;
     }
 
 }

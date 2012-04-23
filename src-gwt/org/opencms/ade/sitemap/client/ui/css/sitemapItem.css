@@ -51,6 +51,17 @@
 	cursor: default;
 }
 
+.expiredOrNotReleased div.itemTitle{
+	font-style: italic;
+}
+div.expiredOrNotReleased{
+	background-color: value("constants.css.backgroundColorSitemapExpired");
+}
+
+div.hiddenNavEntry{
+	opacity: 0.4;
+}
+
 div.itemTitle{
 	cursor: text;
 }
@@ -59,7 +70,9 @@ div.itemTitle{
 	cursor: pointer;
 }
 
-.navMode {}  
+@sprite div.cms_type_icon.navigationLevelIcon{
+	gwt-image: "baseImages.bigIcons.fileTypeNavLevel";
+} 
 
 .vfsMode .notInNavigationEntry{
 	display: block;

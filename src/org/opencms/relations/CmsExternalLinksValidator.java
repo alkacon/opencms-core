@@ -104,9 +104,9 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
      * @return the String that is written to the OpenCms log
      * @throws CmsException if something goes wrong 
      */
-    public String launch(CmsObject cms, Map parameters) throws CmsException {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws CmsException {
 
-        if (Boolean.valueOf((String)parameters.get("writeLog")).booleanValue()) {
+        if (Boolean.valueOf(parameters.get("writeLog")).booleanValue()) {
             m_report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsExternalLinksValidator.class);
         }
         validateLinks(cms);
@@ -142,19 +142,23 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
 
         // get all links
         int pointerId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePointer.getStaticTypeName()).getTypeId();
-        List links = cms.readResources("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(pointerId));
-        Iterator iterator = links.iterator();
-        Map brokenLinks = new HashMap();
+        List<CmsResource> links = cms.readResources(
+            "/",
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(pointerId));
+        Iterator<CmsResource> iterator = links.iterator();
+        Map<String, String> brokenLinks = new HashMap<String, String>();
 
         for (int i = 1; iterator.hasNext(); i++) {
-            CmsFile link = cms.readFile(cms.getSitePath((CmsResource)iterator.next()));
+            CmsFile link = cms.readFile(cms.getSitePath(iterator.next()));
             String linkUrl = new String(link.getContents());
 
             // print to the report
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_1,
-                new Integer(i),
-                new Integer(links.size())), I_CmsReport.FORMAT_NOTE);
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_1,
+                    new Integer(i),
+                    new Integer(links.size())),
+                I_CmsReport.FORMAT_NOTE);
             m_report.print(Messages.get().container(Messages.RPT_VALIDATE_LINK_0), I_CmsReport.FORMAT_NOTE);
             m_report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -176,10 +180,12 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
             }
         }
 
-        m_report.println(Messages.get().container(
-            Messages.RPT_LINK_VALIDATION_STAT_2,
-            new Integer(links.size()),
-            new Integer(brokenLinks.size())), I_CmsReport.FORMAT_HEADLINE);
+        m_report.println(
+            Messages.get().container(
+                Messages.RPT_LINK_VALIDATION_STAT_2,
+                new Integer(links.size()),
+                new Integer(brokenLinks.size())),
+            I_CmsReport.FORMAT_HEADLINE);
         m_report.println(
             Messages.get().container(Messages.RPT_VALIDATE_EXTERNAL_LINKS_END_0),
             I_CmsReport.FORMAT_HEADLINE);

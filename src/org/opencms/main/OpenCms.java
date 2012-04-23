@@ -28,6 +28,7 @@
 package org.opencms.main;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
@@ -173,6 +174,16 @@ public final class OpenCms {
     public static CmsADEManager getADEManager() {
 
         return OpenCmsCore.getInstance().getADEManager();
+    }
+
+    /**
+     * Gets the alias manager.<p>
+     * 
+     * @return the alias manager 
+     */
+    public static CmsAliasManager getAliasManager() {
+
+        return OpenCmsCore.getInstance().getAliasManager();
     }
 
     /**

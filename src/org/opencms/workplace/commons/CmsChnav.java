@@ -31,10 +31,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavBuilder;
+import org.opencms.jsp.CmsJspNavBuilder.Visibility;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -83,8 +85,10 @@ public class CmsChnav extends CmsDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsChnav.class);
 
+    /** The NavPos parameter. */
     private String m_paramNavpos;
 
+    /** The NavText parameter. */
     private String m_paramNavtext;
 
     /**
@@ -129,7 +133,10 @@ public class CmsChnav extends CmsDialog {
         filename = CmsResource.getParentFolder(filename);
 
         // get navigation of the current folder
-        List navList = navBuilder.getNavigationForFolder(filename);
+        List<CmsJspNavElement> navList = navBuilder.getNavigationForFolder(
+            filename,
+            Visibility.includeHidden,
+            CmsResourceFilter.DEFAULT);
         float maxValue = 0;
         float nextPos = 0;
 
@@ -137,7 +144,7 @@ public class CmsChnav extends CmsDialog {
         float firstValue = 1;
         if (navList.size() > 0) {
             try {
-                CmsJspNavElement ne = (CmsJspNavElement)navList.get(0);
+                CmsJspNavElement ne = navList.get(0);
                 maxValue = ne.getNavPosition();
             } catch (Exception e) {
                 // should usually never happen
@@ -149,8 +156,8 @@ public class CmsChnav extends CmsDialog {
             firstValue = maxValue / 2;
         }
 
-        List options = new ArrayList(navList.size() + 1);
-        List values = new ArrayList(navList.size() + 1);
+        List<String> options = new ArrayList<String>(navList.size() + 1);
+        List<String> values = new ArrayList<String>(navList.size() + 1);
 
         // add the first entry: before first element
         options.add(messages.key(Messages.GUI_CHNAV_POS_FIRST_0));
@@ -158,13 +165,13 @@ public class CmsChnav extends CmsDialog {
 
         // show all present navigation elements in box
         for (int i = 0; i < navList.size(); i++) {
-            CmsJspNavElement ne = (CmsJspNavElement)navList.get(i);
+            CmsJspNavElement ne = navList.get(i);
             String navText = ne.getNavText();
             float navPos = ne.getNavPosition();
             // get position of next nav element
             nextPos = navPos + 2;
             if ((i + 1) < navList.size()) {
-                nextPos = ((CmsJspNavElement)navList.get(i + 1)).getNavPosition();
+                nextPos = navList.get(i + 1).getNavPosition();
             }
             // calculate new position of current nav element
             float newPos;
@@ -416,6 +423,7 @@ public class CmsChnav extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

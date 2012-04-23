@@ -43,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
@@ -77,6 +78,7 @@ import org.dom4j.Element;
  * 
  * @deprecated this import class is no longer in use and should only be used to import old export files
  */
+@Deprecated
 public class CmsImportVersion3 extends A_CmsImport {
 
     /** The version number of this import implementation.<p> */
@@ -107,6 +109,7 @@ public class CmsImportVersion3 extends A_CmsImport {
      * 
      * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
+    @Deprecated
     public void importResources(
         CmsObject cms,
         String importPath,
@@ -138,8 +141,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         m_importPath = params.getDestinationPath();
         m_report = report;
 
-        m_linkStorage = new HashMap();
-        m_linkPropertyStorage = new HashMap();
+        m_linkStorage = new HashMap<String, String>();
+        m_linkPropertyStorage = new HashMap<String, List<CmsProperty>>();
         CmsImportHelper helper = new CmsImportHelper(params);
         try {
             helper.openFile();
@@ -180,8 +183,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         String lastname,
         String email,
         long dateCreated,
-        Map userInfo,
-        List userGroups) throws CmsImportExportException {
+        Map<String, Object> userInfo,
+        List<String> userGroups) throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -202,22 +205,23 @@ public class CmsImportVersion3 extends A_CmsImport {
      * 
      * @throws CmsImportExportException if something goes wrong
      */
+    @SuppressWarnings("unchecked")
     private void importAllResources() throws CmsImportExportException {
 
         String source, destination, type, uuidresource, userlastmodified, usercreated, flags, timestamp;
         long datelastmodified, datecreated;
 
-        List fileNodes, acentryNodes;
+        List<Element> fileNodes, acentryNodes;
         Element currentElement, currentEntry;
-        List properties = null;
+        List<CmsProperty> properties = null;
 
         // get list of unwanted properties
-        List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
+        List<String> deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (deleteProperties == null) {
-            deleteProperties = new ArrayList();
+            deleteProperties = new ArrayList<String>();
         }
         // get list of immutable resources
-        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
+        List<String> immutableResources = OpenCms.getImportExportManager().getImmutableResources();
         if (immutableResources == null) {
             immutableResources = Collections.EMPTY_LIST;
         }
@@ -240,7 +244,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
                     String.valueOf(i + 1),
                     String.valueOf(importSize)));
-                currentElement = (Element)fileNodes.get(i);
+                currentElement = fileNodes.get(i);
                 // get all information for a file-import
                 // <source>
                 source = getChildElementTextValue(currentElement, A_CmsImport.N_SOURCE);
@@ -308,13 +312,13 @@ public class CmsImportVersion3 extends A_CmsImport {
                         flags,
                         properties);
 
-                    List aceList = new ArrayList();
+                    List<CmsAccessControlEntry> aceList = new ArrayList<CmsAccessControlEntry>();
                     if (res != null) {
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/" + A_CmsImport.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
-                            currentEntry = (Element)acentryNodes.get(j);
+                            currentEntry = acentryNodes.get(j);
                             // get the data of the access control entry
                             String id = getChildElementTextValue(currentEntry, A_CmsImport.N_ACCESSCONTROL_PRINCIPAL);
                             String acflags = getChildElementTextValue(currentEntry, A_CmsImport.N_FLAGS);
@@ -406,7 +410,7 @@ public class CmsImportVersion3 extends A_CmsImport {
         long datecreated,
         String usercreated,
         String flags,
-        List properties) {
+        List<CmsProperty> properties) {
 
         byte[] content = null;
         CmsResource result = null;

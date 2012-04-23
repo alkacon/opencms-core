@@ -138,11 +138,50 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         /**
          * @see org.apache.lucene.index.IndexReader#reopen()
+         * 
+         * @deprecated since Lucene 3.5 but kept for backward compatibility
          */
         @Override
+        @Deprecated
         public synchronized IndexReader reopen() throws CorruptIndexException, IOException {
 
             return m_reader.reopen();
+        }
+
+        /**
+         * @see org.apache.lucene.index.FilterIndexReader#doClose()
+         */
+        @Override
+        protected void doClose() throws IOException {
+
+            super.doClose();
+            m_reader.close();
+        }
+
+        /**
+         * @see org.apache.lucene.index.IndexReader#doOpenIfChanged()
+         */
+        @Override
+        protected IndexReader doOpenIfChanged() throws CorruptIndexException, IOException {
+
+            IndexReader result = IndexReader.openIfChanged(m_reader);
+            if (result != null) {
+                result = new LazyContentReader(result);
+            }
+            return result;
+        }
+
+        /**
+         * @see org.apache.lucene.index.IndexReader#doOpenIfChanged(boolean)
+         */
+        @Override
+        protected IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
+
+            IndexReader result = IndexReader.openIfChanged(m_reader, openReadOnly);
+            if (result != null) {
+                result = new LazyContentReader(result);
+            }
+            return result;
         }
     }
 
@@ -211,7 +250,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
 
     /** The Lucene Version used to create Query parsers and such. */
-    public static final Version LUCENE_VERSION = Version.LUCENE_34;
+    public static final Version LUCENE_VERSION = Version.LUCENE_35;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
     public static final String MAX_HITS = CmsSearchIndex.class.getName() + ".maxHits";
@@ -727,16 +766,34 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @param rootPath the root path of the document to get 
      * 
      * @return the Lucene document with the given root path from the index
+     * 
+     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link CmsSearchField#FIELD_PATH} as field to search in
      */
+    @Deprecated
     public Document getDocument(String rootPath) {
+
+        return getDocument(CmsSearchField.FIELD_PATH, rootPath);
+    }
+
+    /**
+     * Returns the first Lucene document where the given term matches the selected index field.<p>
+     * 
+     * Use this method to search for documents which have unique field values, like a unique id.<p>
+     * 
+     * @param field the field to search in
+     * @param term the term to search for
+     * 
+     * @return the first Lucene document where the given term matches the selected index field
+     */
+    public synchronized Document getDocument(String field, String term) {
 
         Document result = null;
         IndexSearcher searcher = getSearcher();
         if (searcher != null) {
-            // search for an exact match on the document root path
-            Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
+            // search for an exact match on the selected field
+            Term resultTerm = new Term(field, term);
             try {
-                TopDocs hits = searcher.search(new TermQuery(pathTerm), 1);
+                TopDocs hits = searcher.search(new TermQuery(resultTerm), 1);
                 if (hits.scoreDocs.length > 0) {
                     result = searcher.doc(hits.scoreDocs[0].doc);
                 }
@@ -1181,6 +1238,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns <code>true</code> in case this index is updated incremental.<p>
+     * 
+     * An index is updated incremental if the index rebuild mode as defined by 
+     * {@link #getRebuildMode()} is either set to {@value #REBUILD_MODE_AUTO} or 
+     * {@value #REBUILD_MODE_OFFLINE}. Moreover, at least one update must have 
+     * been written to the index already.
+     * 
+     * @return <code>true</code> in case this index is updated incremental
+     */
+    public boolean isUpdatedIncremental() {
+
+        return m_indexWriter != null;
+    }
+
+    /**
      * Removes an index source from this search index.<p>
      * 
      * @param sourceName the index source name to remove
@@ -1253,6 +1325,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // store separate fields query for excerpt highlighting  
             Query fieldsQuery = null;
 
+            // get an index searcher that is certainly up to date
+            indexSearcherUpdate();
+            IndexSearcher searcher = getSearcher();
+
             if (!params.isIgnoreQuery()) {
                 // since OpenCms 8 the query can be empty in which case only filters are used for the result
                 if (params.getParsedQuery() != null) {
@@ -1298,7 +1374,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     if (shouldOccur != null) {
                         booleanFieldsQuery.add(shouldOccur, BooleanClause.Occur.MUST);
                     }
-                    fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
+                    fieldsQuery = searcher.rewrite(booleanFieldsQuery);
                 } else if ((params.getFields() != null) && (params.getFields().size() > 0)) {
                     // no individual field queries have been defined, so use one query for all fields 
                     BooleanQuery booleanFieldsQuery = new BooleanQuery();
@@ -1308,11 +1384,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                         QueryParser p = new QueryParser(LUCENE_VERSION, params.getFields().get(i), getAnalyzer());
                         booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                     }
-                    fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
+                    fieldsQuery = searcher.rewrite(booleanFieldsQuery);
                 } else {
                     // if no fields are provided, just use the "content" field by default
                     QueryParser p = new QueryParser(LUCENE_VERSION, CmsSearchField.FIELD_CONTENT, getAnalyzer());
-                    fieldsQuery = getSearcher().rewrite(p.parse(params.getQuery()));
+                    fieldsQuery = searcher.rewrite(p.parse(params.getQuery()));
                 }
 
                 // finally set the main query to the fields query
@@ -1337,9 +1413,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if (params.isCalculateCategories()) {
                 // USE THIS OPTION WITH CAUTION
                 // this may slow down searched by an order of magnitude
-                categoryCollector = new CmsSearchCategoryCollector(getSearcher());
+                categoryCollector = new CmsSearchCategoryCollector(searcher);
                 // perform a first search to collect the categories
-                getSearcher().search(query, filter, categoryCollector);
+                searcher.search(query, filter, categoryCollector);
                 // store the result
                 searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
@@ -1347,11 +1423,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // perform the search operation          
             if ((params.getSort() == null) || (params.getSort() == CmsSearchParameters.SORT_DEFAULT)) {
                 // apparently scoring is always enabled by Lucene if no sort order is provided
-                hits = getSearcher().search(query, filter, m_maxHits);
+                hits = searcher.search(query, filter, m_maxHits);
             } else {
                 // if  a sort order is provided, we must check if scoring must be calculated by the searcher
-                prepareSortScoring(m_indexSearcher, params.getSort());
-                hits = getSearcher().search(query, filter, m_maxHits, params.getSort());
+                prepareSortScoring(searcher, params.getSort());
+                hits = searcher.search(query, filter, m_maxHits, params.getSort());
             }
 
             timeLucene += System.currentTimeMillis();
@@ -1380,7 +1456,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
-                        doc = getSearcher().doc(hits.scoreDocs[i].doc);
+                        doc = searcher.doc(hits.scoreDocs[i].doc);
                         if ((isInTimeRange(doc, params)) && (hasReadPermission(searchCms, doc))) {
                             // user has read permission
                             if (cnt >= start) {
@@ -1745,7 +1821,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // use the current site root as the search root
             extendPathFilter(pathFilter, cms.getRequestContext().getSiteRoot());
             // also add the shared folder (v 8.0)
-            extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
+            if (OpenCms.getSiteManager().getSharedFolder() != null) {
+                extendPathFilter(pathFilter, OpenCms.getSiteManager().getSharedFolder());
+            }
         }
 
         // add the calculated path filter for the root path
@@ -1848,11 +1926,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 oldDir.copy(newDir, fileName, fileName);
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_IO_INDEX_BACKUP_CREATE_3,
-                getName(),
-                getPath(),
-                backupPath), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_CREATE_3, getName(), getPath(), backupPath),
+                e);
             backupPath = null;
         }
         return backupPath;
@@ -2048,7 +2124,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @param searcher the searcher to close
      */
-    protected void indexSearcherClose(IndexSearcher searcher) {
+    protected synchronized void indexSearcherClose(IndexSearcher searcher) {
 
         // in case there is an index searcher available close it
         if ((searcher != null) && (searcher.getIndexReader() != null)) {
@@ -2080,7 +2156,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         try {
             Directory indexDirectory = FSDirectory.open(new File(path));
             if (IndexReader.indexExists(indexDirectory)) {
-                IndexReader reader = new LazyContentReader(IndexReader.open(indexDirectory));
+                IndexReader reader = new LazyContentReader(IndexReader.open(indexDirectory, true));
                 if (m_indexSearcher != null) {
                     // store old searcher instance to close it later
                     oldSearcher = m_indexSearcher;
@@ -2104,14 +2180,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected synchronized void indexSearcherUpdate() {
 
-        // in case there is an index searcher available close it
-        if ((m_indexSearcher != null) && (m_indexSearcher.getIndexReader() != null)) {
+        IndexSearcher oldSearcher = m_indexSearcher;
+        if ((oldSearcher != null) && (oldSearcher.getIndexReader() != null)) {
+            // in case there is an index searcher available close it
             try {
-                IndexReader newReader = m_indexSearcher.getIndexReader().reopen();
-                m_indexSearcher = new IndexSearcher(newReader);
+                IndexReader newReader = IndexReader.openIfChanged(oldSearcher.getIndexReader(), true);
+                if (newReader != null) {
+                    m_indexSearcher = new IndexSearcher(newReader);
+                    indexSearcherClose(oldSearcher);
+                }
             } catch (Exception e) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_REOPEN_1, getName()), e);
             }
+        } else {
+            // make sure we end up with an open index searcher / reader           
+            indexSearcherOpen(m_path);
         }
     }
 

@@ -56,8 +56,7 @@ public class CmsRefreshMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        String sitepath = getHoverbar().getSitePath();
-        getHoverbar().getController().updateEntry(sitepath);
+        getHoverbar().getController().updateEntry(getHoverbar().getEntry().getId());
     }
 
     /**

@@ -34,6 +34,7 @@ import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -108,7 +109,9 @@ public class CmsLinkWarningPanel extends Composite {
         if (type != null) {
             info.setResourceType(type);
         }
-
+        for (Map.Entry<String, String> entry : brokenLinkBean.getInfo().entrySet()) {
+            info.addAdditionalInfo(entry.getKey(), entry.getValue());
+        }
         CmsListItemWidget widget = new CmsListItemWidget(info);
         return widget;
     }

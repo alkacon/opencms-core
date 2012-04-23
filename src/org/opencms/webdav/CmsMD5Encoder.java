@@ -57,9 +57,24 @@ package org.opencms.webdav;
  */
 public final class CmsMD5Encoder {
 
-    private static final char[] HEXADECIMAL =
-    {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-     'a', 'b', 'c', 'd', 'e', 'f'};
+    /** Characters of hexadecimal numbers. */
+    private static final char[] HEXADECIMAL = {
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f'};
 
     /**
      * Encodes the 128 bit (16 bytes) MD5 into a 32 character String.<p>
@@ -76,15 +91,14 @@ public final class CmsMD5Encoder {
 
         char[] buffer = new char[32];
 
-        for (int i=0; i<16; i++) {
+        for (int i = 0; i < 16; i++) {
             int low = (binaryData[i] & 0x0f);
             int high = ((binaryData[i] & 0xf0) >> 4);
-            buffer[i*2] = HEXADECIMAL[high];
-            buffer[i*2 + 1] = HEXADECIMAL[low];
+            buffer[i * 2] = HEXADECIMAL[high];
+            buffer[(i * 2) + 1] = HEXADECIMAL[low];
         }
 
         return new String(buffer);
     }
 
 }
-

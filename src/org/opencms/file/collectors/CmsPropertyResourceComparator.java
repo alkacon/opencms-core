@@ -199,7 +199,7 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
         } catch (CmsDbEntryNotFoundException dbe) {
             // property are not configured
             throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_0,
+                Messages.ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_1,
                 property));
         } catch (CmsException cmse) {
             // something's gone wrong...
@@ -210,7 +210,7 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
     /**
      * Check if a string contains a numeric value.<p> 
      * 
-     * @param string to check if is a numeric value
+     * @param value string to check if is a numeric value
      *
      * @return true for a numeric value in the string
      */

@@ -27,9 +27,9 @@
 
 package org.opencms.gwt.client.property;
 
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -104,8 +104,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     public CmsVfsModePropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
 
         super(propConfig, handler);
-        m_dialog.setCaption(null);
-        m_dialog.removePadding();
         m_properties = CmsClientProperty.makeLazyCopy(handler.getOwnProperties());
     }
 
@@ -123,7 +121,33 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     public void buildFields() {
 
         internalBuildConfiguredFields();
-        //internalBuildOtherFields();
+        internalBuildFields(Mode.structure);
+        if (m_showResourceProperties) {
+            internalBuildFields(Mode.resource);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#initializeWidgets(org.opencms.gwt.client.ui.CmsPopup)
+     */
+    @Override
+    public void initializeWidgets(final CmsPopup dialog) {
+
+        super.initializeWidgets(dialog);
+        dialog.setCaption(null);
+        dialog.removePadding();
+
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+            public boolean execute() {
+
+                if (!getPropertyPanel().getTabPanel().isAttached() || !getPropertyPanel().getTabPanel().isVisible()) {
+                    return false;
+                }
+                updateHeight(dialog);
+                return true;
+            }
+        }, UPDATE_HEIGHT_INTERVAL);
     }
 
     /**
@@ -134,26 +158,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     public void setShowResourceProperties(boolean showResourceProperties) {
 
         m_showResourceProperties = showResourceProperties;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#start()
-     */
-    @Override
-    public void start() {
-
-        super.start();
-        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-
-            public boolean execute() {
-
-                if (!getPropertyPanel().getTabPanel().isAttached() || !getPropertyPanel().getTabPanel().isVisible()) {
-                    return false;
-                }
-                updateHeight();
-                return true;
-            }
-        }, UPDATE_HEIGHT_INTERVAL);
     }
 
     /**
@@ -219,28 +223,27 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Updates the panel height depending on the content of the current tab.<p>
+     * 
+     * @param dialog the dialog for which the height should be updated 
      */
-    protected void updateHeight() {
+    protected void updateHeight(CmsPopup dialog) {
 
         int tabIndex = m_panel.getTabPanel().getSelectedIndex();
         boolean changedTab = tabIndex != m_oldTabIndex;
         m_oldTabIndex = tabIndex;
-        Widget tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
-        Element tabElement = tabWidget.getElement();
-        Element innerElement = tabElement.getFirstChildElement();
+        CmsScrollPanel tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
+        Element innerElement = tabWidget.getWidget().getElement();
         int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
-        int spaceLeft = m_dialog.getAvailableHeight(0);
+        int spaceLeft = dialog.getAvailableHeight(0);
         int newHeight = Math.min(spaceLeft, contentHeight) + 50;
         if ((m_panel.getTabPanel().getOffsetHeight() != newHeight) || changedTab) {
             m_panel.getTabPanel().setHeight(newHeight + "px");
-            if (CmsCoreProvider.get().isIe7()) {
-                int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
-                Widget widget = m_panel.getTabPanel().getWidget(selectedIndex);
-                widget.setHeight((newHeight - 45) + "px");
-                m_dialog.center();
-            }
+            int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
+            CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
+            widget.setHeight((newHeight - 45) + "px");
+            widget.onResize();
+            dialog.center();
         }
-
     }
 
     /**
@@ -284,9 +287,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             propDef,
             pathValue.getPath() + "#" + tab,
             this,
-            Collections.singletonMap(
-                CmsSelectBox.NO_SELECTION_TEXT,
-                Messages.get().key(Messages.GUI_SELECTBOX_UNSELECTED_1)),
+            Collections.<String, String> emptyMap(),
             true);
 
         CmsPair<String, String> defaultValueAndOrigin = getDefaultValueToDisplay(ownProp, mode);

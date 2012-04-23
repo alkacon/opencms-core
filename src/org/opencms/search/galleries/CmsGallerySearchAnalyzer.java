@@ -27,6 +27,8 @@
 
 package org.opencms.search.galleries;
 
+import org.opencms.search.CmsSearchIndex;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -80,8 +82,11 @@ public class CmsGallerySearchAnalyzer extends StopwordAnalyzerBase {
     throws IOException {
 
         // initialize superclass
-        super(version, WordlistLoader.getWordSet(new BufferedReader(new InputStreamReader(
-            CmsGallerySearchAnalyzer.class.getResourceAsStream("stopwords_multilanguage.txt"))), "#"));
+        super(version, WordlistLoader.getWordSet(
+            new BufferedReader(new InputStreamReader(
+                CmsGallerySearchAnalyzer.class.getResourceAsStream("stopwords_multilanguage.txt"))),
+            "#",
+            CmsSearchIndex.LUCENE_VERSION));
     }
 
     /**

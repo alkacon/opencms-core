@@ -71,30 +71,43 @@ public class CmsSchedulerThreadPool implements ThreadPool {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSchedulerThreadPool.class);
 
+    /** The current thread count. */
     private int m_currentThreadCount;
 
+    /** The inheri group. */
     private boolean m_inheritGroup;
 
+    /** The inherit loader. */
     private boolean m_inheritLoader;
 
+    /** The initial thread count. */
     private int m_initialThreadCount;
 
+    /** Flag indicating if the system is shutting down. */
     private boolean m_isShutdown;
 
+    /** Flag indicating whether to create thread deamons. */
     private boolean m_makeThreadsDaemons;
 
+    /** The max thread count. */
     private int m_maxThreadCount;
 
+    /** The next runnable. */
     private Runnable m_nextRunnable;
 
+    /** The next runnable lock. */
     private Object m_nextRunnableLock;
 
+    /** The thread group. */
     private ThreadGroup m_threadGroup;
 
+    /** The thread name prefix. */
     private String m_threadNamePrefix;
 
+    /** The thread priority. */
     private int m_threadPriority;
 
+    /** The threads. */
     private CmsSchedulerThread[] m_workers;
 
     /**

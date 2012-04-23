@@ -60,9 +60,8 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        String sitePath = getHoverbar().getSitePath();
         final CmsSitemapController controller = getHoverbar().getController();
-        final CmsClientSitemapEntry entry = controller.getEntry(sitePath);
+        final CmsClientSitemapEntry entry = getHoverbar().getEntry();
         String confirmTitle = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TITLE_0);
         String confirmMessage = Messages.get().key(Messages.GUI_MERGE_SITEMAP_CONFIRM_TEXT_0);
         CmsConfirmDialog confirmDialog = new CmsConfirmDialog(confirmTitle, confirmMessage);
@@ -94,10 +93,9 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow(CmsHoverbarShowEvent event) {
 
         if (CmsSitemapView.getInstance().isNavigationMode()) {
-            String sitePath = getHoverbar().getSitePath();
             CmsSitemapController controller = getHoverbar().getController();
-            CmsClientSitemapEntry entry = controller.getEntry(sitePath);
-            boolean show = (entry != null) && entry.isSubSitemapType() && !controller.isRoot(sitePath);
+            CmsClientSitemapEntry entry = getHoverbar().getEntry();
+            boolean show = (entry != null) && entry.isSubSitemapType() && !controller.isRoot(entry.getSitePath());
             setVisible(show);
         } else {
             setVisible(false);

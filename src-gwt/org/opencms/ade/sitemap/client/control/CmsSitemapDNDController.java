@@ -320,15 +320,14 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
         if (isChangedPosition(sitemapEntry, target, true)) {
             // moving a tree entry around
-            CmsClientSitemapEntry entry = m_controller.getEntry((sitemapEntry).getSitePath());
+            CmsClientSitemapEntry entry = sitemapEntry.getSitemapEntry();
             String uniqueName = m_controller.ensureUniqueName(parent, entry.getName());
             if (!uniqueName.equals(entry.getName()) && isChangedPosition(sitemapEntry, target, false)) {
                 m_controller.editAndChangeName(
                     entry,
                     uniqueName,
-                    entry.getVfsPath(),
                     Collections.<CmsPropertyModification> emptyList(),
-                    !entry.isNew(),
+                    entry.isNew(),
                     CmsReloadMode.none);
                 m_controller.move(entry, m_insertPath + uniqueName + "/", m_insertIndex);
             } else {

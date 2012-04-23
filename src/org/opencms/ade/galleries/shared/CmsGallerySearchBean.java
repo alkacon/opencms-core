@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.shared;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -129,6 +130,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
         m_matchesPerPage = DEFAULT_MATCHES_PER_PAGE;
         m_page = 1;
+        // default sorting by date last modified
+        m_sortOrder = SortParams.dateLastModified_desc.name();
     }
 
     /**

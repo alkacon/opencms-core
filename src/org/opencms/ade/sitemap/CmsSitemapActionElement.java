@@ -76,6 +76,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
             getSitemapData());
         sb.append(CmsSitemapData.DICT_NAME).append("='").append(prefetchedData).append("';");
         sb.append(ClientMessages.get().export(getRequest()));
+        sb.append(org.opencms.gwt.seo.ClientMessages.get().export(getRequest()));
         return wrapScript(sb).toString();
     }
 

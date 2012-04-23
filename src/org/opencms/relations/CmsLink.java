@@ -111,9 +111,6 @@ public class CmsLink {
     /** The query, if any. */
     private String m_query;
 
-    /** A variable for storing the resource which the link points to. */
-    private CmsResource m_resource;
-
     /** The site root of the (internal) link. */
     private String m_siteRoot;
 
@@ -219,7 +216,6 @@ public class CmsLink {
      */
     public void checkConsistency(CmsObject cms) {
 
-        m_resource = null;
         if (!m_internal || (cms == null)) {
             return;
         }
@@ -233,7 +229,6 @@ public class CmsLink {
             CmsResource res;
             try {
                 res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
-                m_resource = res;
                 rootPath = res.getRootPath();
                 if (!res.getRootPath().equals(m_target)) {
                     // update path if needed
@@ -273,7 +268,6 @@ public class CmsLink {
                 cms.getRequestContext().setSiteRoot("");
                 // now look for the resource with the given path
                 CmsResource res = cms.readResource(m_target, CmsResourceFilter.ALL);
-                m_resource = res;
                 if (!res.getStructureId().equals(m_structureId)) {
                     // update structure id if needed
                     if (LOG.isDebugEnabled()) {

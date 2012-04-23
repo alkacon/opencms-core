@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
@@ -57,6 +58,9 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
     /** The has navigation flag. */
     private Boolean m_hasNav;
+
+    /** Flag indicating whether this is a hidden navigation entry. */
+    private Boolean m_isHiddenNavigationEntry;
 
     /** The navigation tree level. */
     private int m_navTreeLevel = Integer.MIN_VALUE;
@@ -488,6 +492,31 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
     }
 
     /**
+     * Returns if this is a hidden navigation entry.<p>
+     *
+     * @return <code>true</code> if this is a hidden navigation entry
+     */
+    public boolean isHiddenNavigationEntry() {
+
+        if (m_isHiddenNavigationEntry == null) {
+            // use "lazy initializing"
+            String navInfo = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVINFO);
+            m_isHiddenNavigationEntry = Boolean.valueOf(CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY.equals(navInfo));
+        }
+        return m_isHiddenNavigationEntry.booleanValue();
+    }
+
+    /**
+     * Returns if the navigation element represents a navigation level, linking to it's first sub-element.<p>
+     * 
+     * @return <code>true</code> if the navigation element represents a navigation level
+     */
+    public boolean isNavigationLevel() {
+
+        return CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER.equals(m_properties.get(CmsPropertyDefinition.PROPERTY_DEFAULT_FILE));
+    }
+
+    /**
      * Sets the value that will be returned by the {@link #getNavPosition()}
      * method of this class.<p>
      * 
@@ -497,6 +526,16 @@ public class CmsJspNavElement implements Comparable<CmsJspNavElement> {
 
         m_position = value;
         m_changedNavPos = true;
+    }
+
+    /**
+     * Returns the site path of the target resource. This may not be the same as the navigation resource.<p>
+     * 
+     * @return the target resource site path
+     */
+    protected String getSitePath() {
+
+        return m_sitePath;
     }
 
     /**

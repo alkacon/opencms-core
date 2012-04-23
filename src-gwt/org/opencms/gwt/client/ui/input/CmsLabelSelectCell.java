@@ -44,6 +44,9 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
     /** The label width last used in a truncate()-call. */
     private int m_labelWidth;
 
+    /** The opener text. */
+    private String m_openerText;
+
     /** The text of the select option. */
     private String m_text;
 
@@ -58,13 +61,36 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
      */
     public CmsLabelSelectCell(String value, String text) {
 
+        this(value, text, null);
+    }
+
+    /**
+     * Creates a new select cell.<p>
+     * 
+     * @param value the value of the select option
+     * @param text the text to display for the select option 
+     * @param title the title to display on mouseover 
+     */
+    public CmsLabelSelectCell(String value, String text, String title) {
+
         super();
         m_value = value;
         m_text = text;
+        m_openerText = text;
         initWidget(m_label);
         addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().selectBoxCell());
         m_label.setText(m_text);
-        m_label.setTitle(m_text);
+        m_label.setTitle(title != null ? title : m_text);
+    }
+
+    /**
+     * Gets the opener text.<p>
+     * 
+     * @return the opener text 
+     */
+    public String getOpenerText() {
+
+        return m_openerText;
     }
 
     /**
@@ -87,6 +113,16 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
     }
 
     /**
+     * Sets the opener text.<p>
+     *  
+     * @param openerText the new opener text 
+     */
+    public void setOpenerText(String openerText) {
+
+        m_openerText = openerText;
+    }
+
+    /**
      * Sets the text of the label.<p>
      * 
      * @param text the new text 
@@ -99,7 +135,6 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
         if (m_textMetricsKey != null) {
             truncate(m_textMetricsKey, m_labelWidth);
         }
-
     }
 
     /**

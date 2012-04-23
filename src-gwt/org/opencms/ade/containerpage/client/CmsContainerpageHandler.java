@@ -56,10 +56,11 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
+import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
+import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
@@ -236,23 +237,30 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 infoBean.setResourceType(elementBean.getResourceType());
                 CmsInfoBoxFormFieldPanel formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
                 form.setWidget(formFieldPanel);
-                I_CmsFormHandler formHandler = new I_CmsFormHandler() {
+
+                I_CmsFormSubmitHandler submitHandler = new I_CmsFormSubmitHandler() {
 
                     /**
-                     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitForm(java.util.Map, java.util.Set)
+                     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler#onSubmitForm(org.opencms.gwt.client.ui.input.form.CmsForm, java.util.Map, java.util.Set)
                      */
-                    public void onSubmitForm(Map<String, String> fieldValues, Set<String> editedFields) {
+                    public void onSubmitForm(
+                        CmsForm formParam,
+                        Map<String, String> fieldValues,
+                        Set<String> editedFields) {
 
                         m_controller.reloadElementWithSettings(
                             elementWidget,
                             elementBean.getClientId(),
                             CmsCollectionUtil.removeNullEntries(fieldValues));
                     }
+
                 };
+                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+                formHandler.setSubmitHandler(submitHandler);
+                form.setFormHandler(formHandler);
                 String title = Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0);
-
                 CmsFormDialog dialog = new CmsFormDialog(title, form);
-
+                formHandler.setDialog(dialog);
                 Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
 
                 for (I_CmsFormField field : formFields.values()) {
@@ -265,7 +273,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     form.addField(field, initialValue);
                 }
                 form.render();
-                dialog.setFormHandler(formHandler);
                 dialog.center();
             }
         });

@@ -121,6 +121,7 @@ public class CmsInheritedContainerState {
             newKeys.add(key);
         }
         Set<String> keysUsed = new HashSet<String>();
+        Map<String, String> pathsByKey = new HashMap<String, String>();
 
         // STEP 1: Get first defined ordering
         List<String> ordering = null;
@@ -147,11 +148,12 @@ public class CmsInheritedContainerState {
                 keysUsed.add(key);
             }
         }
-        // STEP 3: Add 'new' elements from parents
+        // STEP 3: Add 'new' elements from parents; also fill pathsByKey
         for (int i = 0; i < (m_parentConfigurations.size()); i++) {
             CmsContainerConfiguration currentConfig = m_parentConfigurations.get(i);
             for (Map.Entry<String, CmsContainerElementBean> entry : currentConfig.getNewElementsInOrder().entrySet()) {
                 String key = entry.getKey();
+                pathsByKey.put(key, currentConfig.getPath());
                 if (!keysUsed.contains(key)) {
                     CmsContainerElementBean elementToAdd = CmsContainerElementBean.cloneWithSettings(
                         entry.getValue(),
@@ -176,7 +178,7 @@ public class CmsInheritedContainerState {
         List<CmsContainerElementBean> hiddenElements = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElementBean resultElement : result) {
             CmsInheritanceInfo info = resultElement.getInheritanceInfo();
-            if (!info.isVisibile()) {
+            if (!info.isVisible()) {
                 hiddenElements.add(resultElement);
             } else {
                 resultWithoutHidden.add(resultElement);
@@ -186,6 +188,12 @@ public class CmsInheritedContainerState {
         if (includeHidden) {
             result.addAll(hiddenElements);
         }
+        for (CmsContainerElementBean elementBean : result) {
+            CmsInheritanceInfo info = elementBean.getInheritanceInfo();
+            String path = pathsByKey.get(info.getKey());
+            info.setPath(path);
+        }
+
         return result;
     }
 

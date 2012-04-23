@@ -54,10 +54,10 @@ import org.apache.log4j.spi.ThrowableInformation;
 public class CmsPatternLayout extends PatternLayout {
 
     /** List of class names which prevents displaying the stack trace. */
-    private List m_excludes;
+    private List<String> m_excludes;
 
     /** List of class names which should be filtered. */
-    private List m_filters;
+    private List<String> m_filters;
 
     /** Maximum length of the filtered stack trace. */
     private int m_maxLength;
@@ -78,14 +78,15 @@ public class CmsPatternLayout extends PatternLayout {
     CmsPatternLayout(String pattern) {
 
         super(pattern);
-        m_filters = new ArrayList();
-        m_excludes = new ArrayList();
+        m_filters = new ArrayList<String>();
+        m_excludes = new ArrayList<String>();
         m_maxLength = Integer.MAX_VALUE;
     }
 
     /**
      * @see org.apache.log4j.PatternLayout#format(org.apache.log4j.spi.LoggingEvent)
      */
+    @Override
     public String format(LoggingEvent event) {
 
         String result = super.format(event);
@@ -113,7 +114,7 @@ public class CmsPatternLayout extends PatternLayout {
 
                 // if cause trace starts reset counter (subtrace)
                 if (elem.trim().startsWith("Caused")) {
-                    if (!exclFound && (truncated > 0 || filtered > 0)) {
+                    if (!exclFound && ((truncated > 0) || (filtered > 0))) {
                         trace.append(createSummary(truncated, filtered));
                     }
                     count = 0;
@@ -143,7 +144,7 @@ public class CmsPatternLayout extends PatternLayout {
             if (exclFound) {
                 result += minTrace.toString();
             } else {
-                if (truncated > 0 || filtered > 0) {
+                if ((truncated > 0) || (filtered > 0)) {
                     trace.append(createSummary(truncated, filtered));
                 }
                 result += trace.toString();
@@ -156,6 +157,7 @@ public class CmsPatternLayout extends PatternLayout {
     /**
      * @see org.apache.log4j.PatternLayout#ignoresThrowable()
      */
+    @Override
     public boolean ignoresThrowable() {
 
         return false;
@@ -245,13 +247,13 @@ public class CmsPatternLayout extends PatternLayout {
      * 
      * @return true if filtered otherwise false
      */
-    private boolean matches(String element, List list) {
+    private boolean matches(String element, List<String> list) {
 
         boolean result = false;
 
-        Iterator iter = list.iterator();
+        Iterator<String> iter = list.iterator();
         while (iter.hasNext()) {
-            String rule = (String)iter.next();
+            String rule = iter.next();
 
             if (element.trim().startsWith(rule)) {
                 return true;

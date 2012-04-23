@@ -30,6 +30,7 @@ package org.opencms.workplace.tools.content.check;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
@@ -228,7 +229,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     public void init(CmsObject cms) {
 
         m_cms = cms;
-        m_locale = new Locale("en");
+        m_locale = CmsLocaleManager.getLocale("en");
     }
 
     /**

@@ -37,11 +37,11 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -95,9 +95,6 @@ public class CmsTypesTab extends A_CmsListTab {
 
     /** The reference to the drag handler for the list elements. */
     private CmsDNDHandler m_dndHandler;
-
-    /** The search parameter panel for this tab. */
-    private CmsSearchParamPanel m_paramPanel;
 
     /** The reference to the handler of this tab. */
     private CmsTypesTabHandler m_tabHandler;
@@ -154,46 +151,25 @@ public class CmsTypesTab extends A_CmsListTab {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanel(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
      */
     @Override
-    public CmsSearchParamPanel getParamPanel(CmsGallerySearchBean searchObj) {
+    public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
 
-        if (m_paramPanel == null) {
-            m_paramPanel = new CmsSearchParamPanel(Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0), this);
-        }
-        String content = getTypesParams(searchObj.getTypes());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
-            m_paramPanel.setContent(content);
-            return m_paramPanel;
-        }
-        return null;
-    }
-
-    /**
-     * Returns the content of the types search parameter.<p>
-     *  
-     * @param selectedTypes the list of selected resource types
-     * 
-     * @return the selected types
-     */
-    public String getTypesParams(List<String> selectedTypes) {
-
-        if (CmsCollectionUtil.isEmptyOrNull(selectedTypes)) {
-            return null;
-        }
-        StringBuffer result = new StringBuffer();
-        for (String type : selectedTypes) {
-
+        List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
+        for (String type : searchObj.getTypes()) {
             CmsResourceTypeBean typeBean = m_types.get(type);
             String title = typeBean.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = typeBean.getType();
             }
-            result.append(title).append(", ");
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_PARAMS_LABEL_TYPES_0),
+                this);
+            panel.setContent(title, type);
+            result.add(panel);
         }
-        result.delete(result.length() - 2, result.length());
-        return result.toString();
+        return result;
     }
 
     /**
