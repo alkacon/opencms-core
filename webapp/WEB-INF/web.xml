@@ -56,6 +56,25 @@
         <param-value>myopencms</param-value>
     </context-param>
     -->
+    
+    <listener>
+		<listener-class>org.apache.chemistry.opencmis.server.impl.CmisRepositoryContextListener</listener-class>
+	</listener>
+	
+	<servlet>
+		<servlet-name>cmisatom</servlet-name>
+		<servlet-class>org.apache.chemistry.opencmis.server.impl.atompub.CmisAtomPubServlet</servlet-class>
+		<init-param>
+			<param-name>callContextHandler</param-name>
+			<param-value>org.apache.chemistry.opencmis.server.shared.BasicAuthCallContextHandler</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>cmisatom</servlet-name>
+		<url-pattern>/atom/*</url-pattern>
+	</servlet-mapping>
 
     <listener>
         <listener-class>org.opencms.main.OpenCmsListener</listener-class>
