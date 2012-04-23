@@ -114,8 +114,13 @@ function _editorExecuteUnlink() {
    editor.execCommand("unlink", false, null);
 }
 
+
 function _selectionDelete() {
-   editor.selection.getNode().parentNode = null; 
+    var selectionNode = editor.selection.getNode();
+    var parent = selectionNode.parentNode; 
+    if (parent) {
+        parent.removeChild(selectionNode);
+    }
 }
 
 function _editorDocumentCreateElement(nodeName) {
