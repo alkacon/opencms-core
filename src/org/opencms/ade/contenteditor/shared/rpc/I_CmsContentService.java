@@ -27,9 +27,9 @@
 
 package org.opencms.ade.contenteditor.shared.rpc;
 
-import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.rpc.I_ContentService;
 
+import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.gwt.CmsRpcException;
 
 /**
@@ -50,6 +50,18 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    ContentDefinition prefetch() throws CmsRpcException;
+    CmsContentDefinition prefetch() throws CmsRpcException;
+
+    /**
+     * Loads the content definition for a given entity.<p>
+     * 
+     * @param entityId the entity id/URI
+     * @param locale the entity content locale
+     * 
+     * @return the content type definition
+     * 
+     * @throws Exception if something goes wrong processing the request
+     */
+    CmsContentDefinition loadDefinition(String entityId, String locale) throws Exception;
 
 }

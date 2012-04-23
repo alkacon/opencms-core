@@ -1,0 +1,22 @@
+@sprite .basePanel{
+	gwt-image: "backgrounds.sitemapBackground";
+	font-family: value("constants.css.fontFamily");
+	position: fixed;
+	margin: 0;
+	overflow: hidden;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	z-index: value("constants.css.zIndexPopup");
+}
+
+.contentPanel{
+	padding: 2px 2px 0px;
+	position: relative;
+	width: value("constants.css.toolbarWidth");
+	margin: 45px auto;
+	background-color: value("constants.css.backgroundColorDialog");
+	border: 2px solid value("constants.css.borderColor");
+	border-radius: value("constants.css.borderRadius");
+}

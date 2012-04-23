@@ -35,6 +35,7 @@ import com.alkacon.vie.shared.I_Entity;
 import com.alkacon.vie.shared.I_EntityAttribute;
 import com.alkacon.vie.shared.I_Type;
 
+import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -45,6 +46,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsException;
@@ -66,10 +68,12 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -337,21 +341,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     public ContentDefinition loadContentDefinition(String entityId, String locale) throws CmsRpcException {
 
-        ContentDefinition definition = null;
-        try {
-            CmsUUID structureId = entityIdToUuid(entityId);
-            CmsResource resource = getCmsObject().readResource(structureId);
-            definition = readContentDefinition(resource, entityId, new Locale(locale));
-        } catch (Exception e) {
-            error(e);
-        }
-        return definition;
+        return loadDefinition(entityId, locale);
     }
 
     /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#prefetch()
      */
-    public ContentDefinition prefetch() throws CmsRpcException {
+    public CmsContentDefinition prefetch() throws CmsRpcException {
 
         String paramResource = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
@@ -361,7 +357,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     String paramLocale = getRequest().getParameter(CmsEditor.PARAM_ELEMENTLANGUAGE);
                     Locale locale;
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
-                        locale = new Locale(paramLocale);
+                        locale = CmsLocaleManager.getLocale(paramLocale);
                     } else {
                         locale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), resource);
                     }
@@ -385,7 +381,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsUUID structureId = entityIdToUuid(entityId);
         CmsObject cms = getCmsObject();
         try {
-            Locale contentLocale = new Locale(locale);
+            Locale contentLocale = CmsLocaleManager.getLocale(locale);
             CmsResource resource = cms.readResource(structureId);
             ensureLock(resource);
             CmsFile file = cms.readFile(resource);
@@ -599,7 +595,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * 
      * @throws CmsException if something goes wrong
      */
-    private ContentDefinition readContentDefinition(CmsResource resource, String entityId, Locale locale)
+    private CmsContentDefinition readContentDefinition(CmsResource resource, String entityId, Locale locale)
     throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -608,8 +604,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         CmsFile file = cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+        List<String> contentLocales = new ArrayList<String>();
+        for (Locale contentLocale : content.getLocales()) {
+            contentLocales.add(contentLocale.toString());
+        }
+        Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        TreeMap<String, String> availableLocales = new TreeMap<String, String>();
+        for (Locale availableLocale : OpenCms.getLocaleManager().getAvailableLocales()) {
+            availableLocales.put(availableLocale.toString(), availableLocale.getDisplayName(workplaceLocale));
+        }
         TypeVisitor visitor = new TypeVisitor(file, locale);
-
         visitor.visitTypes(content.getContentDefinition(), locale);
         Entity entity = null;
         if (content.hasLocale(locale)) {
@@ -623,11 +627,18 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 getTypeUri(content.getContentDefinition()),
                 visitor.getTypes());
         }
-        return new ContentDefinition(
+        String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+        return new CmsContentDefinition(
             entity,
             visitor.getAttributeConfigurations(),
             visitor.getTypes(),
-            locale.toString());
+            locale.toString(),
+            contentLocales,
+            availableLocales,
+            title,
+            cms.getSitePath(resource),
+            typeName);
     }
 
     /**
@@ -654,6 +665,22 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         // the file content might have been modified during the write operation    
         file = cms.writeFile(file);
         return CmsXmlContentFactory.unmarshal(cms, file);
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String)
+     */
+    public CmsContentDefinition loadDefinition(String entityId, String locale) throws CmsRpcException {
+
+        CmsContentDefinition definition = null;
+        try {
+            CmsUUID structureId = entityIdToUuid(entityId);
+            CmsResource resource = getCmsObject().readResource(structureId);
+            definition = readContentDefinition(resource, entityId, CmsLocaleManager.getLocale(locale));
+        } catch (Exception e) {
+            error(e);
+        }
+        return definition;
     }
 
 }

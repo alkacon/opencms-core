@@ -30,26 +30,29 @@ package org.opencms.ade.contenteditor.client;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.vie.shared.I_Entity;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -67,8 +70,32 @@ public class CmsInlineEditor {
     /** The editor base. */
     protected CmsEditorBase m_editor;
 
-    /** the edit tool-bar. */
+    /** The edit tool-bar. */
     protected CmsToolbar m_toolbar;
+
+    /** The form editing base panel. */
+    private FlowPanel m_basePanel;
+
+    /** The cancel button. */
+    private CmsPushButton m_cancelButton;
+
+    /** The id of the edited entity. */
+    private String m_entityId;
+
+    /** The current content locale. */
+    private String m_locale;
+
+    /** The locale select box. */
+    private CmsSelectBox m_localeSelect;
+
+    /** The on close call back. */
+    private Command m_onClose;
+
+    /** The open form button. */
+    private CmsPushButton m_openFormButton;
+
+    /** The save button. */
+    private CmsPushButton m_saveButton;
 
     /**
      * Constructor.<p>
@@ -104,12 +131,12 @@ public class CmsInlineEditor {
      */
     public void openContentEditorDialog(final String locale, String elementId, final Command onClose) {
 
-        final String id = "http://opencms.org/resources/" + elementId;
-        m_editor.loadContentDefinition(id, locale, new Command() {
+        final String entityId = "http://opencms.org/resources/" + elementId;
+        m_editor.loadDefinition(entityId, locale, new I_CmsSimpleCallback<CmsContentDefinition>() {
 
-            public void execute() {
+            public void execute(CmsContentDefinition contentDefinition) {
 
-                openForm(id, locale, onClose);
+                openForm(entityId, locale, onClose);
 
             }
         });
@@ -126,9 +153,9 @@ public class CmsInlineEditor {
 
         final String entityId = panel.getElement().getAttribute("about");
 
-        m_editor.loadContentDefinition(entityId, locale, new Command() {
+        m_editor.loadDefinition(entityId, locale, new I_CmsSimpleCallback<CmsContentDefinition>() {
 
-            public void execute() {
+            public void execute(CmsContentDefinition contentDefinition) {
 
                 initForm(entityId, locale, panel, onClose);
             }
@@ -136,53 +163,13 @@ public class CmsInlineEditor {
     }
 
     /**
-     * Generates the button bar displayed beneath the editable fields.<p>
-     * 
-     * @param entityId the entity id
-     * @param locale the content locale
-     * @param onClose the on close command
-     * 
-     * @return the button bar
+     * Cancels the editing process.<p>
      */
-    protected CmsToolbar generateButtonBar(final String entityId, final String locale, final Command onClose) {
+    void cancelEdit() {
 
-        CmsToolbar toolbar = new CmsToolbar();
-        CmsPushButton saveButton = createButton("Save", I_CmsButton.ButtonData.SAVE.getIconClass());
-        saveButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_editor.saveEntity(entityId, locale, true, onClose);
-                m_toolbar.removeFromParent();
-            }
-        });
-        saveButton.disable("Nothing changed yet");
-        toolbar.addLeft(saveButton);
-
-        CmsPushButton cancelButton = createButton("Cancel", I_CmsButton.ButtonData.RESET.getIconClass());
-        cancelButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                onClose.execute();
-                m_editor.destroyFrom();
-                m_toolbar.removeFromParent();
-            }
-        });
-        toolbar.addRight(cancelButton);
-
-        CmsPushButton formButton = createButton("Open form", I_CmsButton.ButtonData.EDIT.getIconClass());
-        formButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                m_toolbar.removeFromParent();
-                openForm(entityId, locale, onClose);
-
-            }
-        });
-        toolbar.addLeft(formButton);
-        return toolbar;
+        m_onClose.execute();
+        m_editor.destroyFrom();
+        closeEditor();
     }
 
     /**
@@ -193,12 +180,14 @@ public class CmsInlineEditor {
      * @param panel the element panel
      * @param onClose the command to execute on close
      */
-    protected void initForm(final String entityId, final String locale, ComplexPanel panel, final Command onClose) {
+    void initForm(final String entityId, final String locale, ComplexPanel panel, final Command onClose) {
 
+        m_entityId = entityId;
+        m_locale = locale;
+        m_onClose = onClose;
         m_editor.renderInlineEntity(entityId, panel.getElement());
-        m_toolbar = generateButtonBar(entityId, locale, onClose);
-        RootPanel.get().add(m_toolbar);
-        m_toolbar.getElement().getStyle().setDisplay(Display.BLOCK);
+        initToolbar();
+
         m_editor.addEntityChangeHandler(entityId, new ValueChangeHandler<I_Entity>() {
 
             public void onValueChange(ValueChangeEvent<I_Entity> event) {
@@ -212,58 +201,67 @@ public class CmsInlineEditor {
 
     /**
      * Opens the form based editor.<p>
+     */
+    void openForm() {
+
+        I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
+        m_openFormButton.getElement().getStyle().setDisplay(Display.NONE);
+        m_basePanel = new FlowPanel();
+        m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
+        CmsScrollPanel content = GWT.create(CmsScrollPanel.class);
+        content.getElement().getStyle().setProperty("maxHeight", Window.getClientHeight() - 100, Unit.PX);
+        content.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().contentPanel());
+        content.addStyleName(I_LayoutBundle.INSTANCE.form().formParent());
+        m_basePanel.add(content);
+        // insert base panel before the tool bar too keep the tool bar visible 
+        RootPanel.get().insert(m_basePanel, RootPanel.get().getWidgetIndex(m_toolbar));
+        m_editor.renderEntityForm(m_entityId, content);
+    }
+
+    /**
+     * Opens the form based editor.<p>
      * 
      * @param entityId the entity id
      * @param locale the content locale
      * @param onClose the on close command
      */
-    protected void openForm(final String entityId, final String locale, final Command onClose) {
+    void openForm(final String entityId, final String locale, final Command onClose) {
 
-        final CmsPopup popup = new CmsPopup("Editor");
-        popup.setSpecialBackgroundClass(I_LayoutBundle.INSTANCE.form().formParent());
-        popup.setGlassEnabled(true);
-        popup.addDialogClose(new Command() {
+        m_entityId = entityId;
+        m_locale = locale;
+        m_onClose = onClose;
+        initToolbar();
+        openForm();
 
-            public void execute() {
+    }
 
-                onClose.execute();
-                m_editor.destroyFrom();
-            }
-        });
-        popup.setWidth(600);
-        final CmsPushButton saveButton = new CmsPushButton();
-        saveButton.setText("Save");
-        saveButton.addClickHandler(new ClickHandler() {
+    /**
+     * Saves the content and closes the editor.<p> 
+     */
+    void save() {
 
-            public void onClick(ClickEvent event) {
+        m_editor.saveEntity(m_entityId, m_locale, true, m_onClose);
+        closeEditor();
+    }
 
-                m_editor.saveEntity(entityId, locale, true, onClose);
-                m_editor.destroyFrom();
-                popup.hide();
-            }
-        });
+    /**
+     * Closes the editor.<p>
+     */
+    private void closeEditor() {
 
-        final CmsPushButton closeButton = new CmsPushButton();
-        closeButton.setText("Cancel");
-        closeButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                onClose.execute();
-                m_editor.destroyFrom();
-                popup.hide();
-            }
-        });
-
-        popup.addButton(closeButton);
-        popup.addButton(saveButton);
-        FlowPanel content = new FlowPanel();
-        content.getElement().getStyle().setProperty("maxHeight", popup.getAvailableHeight(0), Unit.PX);
-        content.getElement().getStyle().setOverflow(Overflow.AUTO);
-        content.getElement().getStyle().setPosition(Position.RELATIVE);
-        popup.add(content);
-        popup.centerHorizontally(50);
-        m_editor.renderEntityForm(entityId, content);
+        m_toolbar.removeFromParent();
+        m_toolbar = null;
+        m_cancelButton = null;
+        m_localeSelect = null;
+        m_openFormButton = null;
+        m_saveButton = null;
+        m_entityId = null;
+        m_onClose = null;
+        m_locale = null;
+        if (m_basePanel != null) {
+            m_basePanel.removeFromParent();
+            m_basePanel = null;
+        }
     }
 
     /**
@@ -282,5 +280,47 @@ public class CmsInlineEditor {
         result.setButtonStyle(ButtonStyle.IMAGE, null);
         result.setSize(Size.big);
         return result;
+    }
+
+    /**
+     * Generates the button bar displayed beneath the editable fields.<p>
+     */
+    private void initToolbar() {
+
+        m_toolbar = new CmsToolbar();
+        m_saveButton = createButton("Save", I_CmsButton.ButtonData.SAVE.getIconClass());
+        m_saveButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                save();
+            }
+        });
+        m_saveButton.disable("Nothing changed yet");
+        m_toolbar.addLeft(m_saveButton);
+
+        m_cancelButton = createButton("Cancel", I_CmsButton.ButtonData.RESET.getIconClass());
+        m_cancelButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                cancelEdit();
+
+            }
+        });
+        m_toolbar.addRight(m_cancelButton);
+
+        m_openFormButton = createButton("Open form", I_CmsButton.ButtonData.EDIT.getIconClass());
+        m_openFormButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                openForm();
+
+            }
+        });
+        m_toolbar.addLeft(m_openFormButton);
+        RootPanel.get().add(m_toolbar);
+        m_toolbar.getElement().getStyle().setDisplay(Display.BLOCK);
     }
 }

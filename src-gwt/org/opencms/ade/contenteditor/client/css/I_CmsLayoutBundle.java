@@ -25,33 +25,40 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.contenteditor.shared.rpc;
+package org.opencms.ade.contenteditor.client.css;
 
-import com.alkacon.acacia.shared.rpc.I_ContentServiceAsync;
-
-import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.CssResource;
 
 /**
- * The content editor asynchronous service interface.<p>
+ * Content editor CSS resources bundle.<p>
  */
-public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
+public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
+
+    /** The XML content editor CSS. */
+    public interface I_CmsXmlEditorCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String basePanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String contentPanel();
+    }
+
+    /** The bundle instance. */
+    I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
     /**
-     * Returns the content definition of the resource requested through parameter 'resource'.<p>
+     * Access method.<p>
      * 
-     * @param callback the callback 
+     * @return the XML content editor CSS
      */
-    void prefetch(AsyncCallback<CmsContentDefinition> callback);
-
-    /**
-     * Loads the content definition for a given type.<p>
-     * 
-     * @param entityId the entity id/URI
-     * @param locale the entity content locale
-     * @param callback the asynchronous callback
-     */
-    void loadDefinition(String entityId, String locale, AsyncCallback<CmsContentDefinition> callback);
-
+    @Source("editor.css")
+    I_CmsXmlEditorCss editorCss();
 }

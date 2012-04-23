@@ -32,11 +32,12 @@ import com.alkacon.acacia.client.I_WidgetFactory;
 import com.alkacon.acacia.client.widgets.HTMLWidget;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.StringWidget;
-import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.vie.shared.I_Entity;
 
+import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,9 @@ import com.google.gwt.user.client.Command;
  */
 public class CmsEditorBase extends EditorBase {
 
+    /** The content service. */
+    private I_CmsContentServiceAsync m_service;
+
     /**
      * Constructor.<p>
      * 
@@ -56,6 +60,7 @@ public class CmsEditorBase extends EditorBase {
     public CmsEditorBase(I_CmsContentServiceAsync service) {
 
         super(service);
+        m_service = service;
         Map<String, I_WidgetFactory> widgetFactories = new HashMap<String, I_WidgetFactory>();
         widgetFactories.put("org.opencms.widgets.CmsInputWidget", new I_WidgetFactory() {
 
@@ -85,25 +90,36 @@ public class CmsEditorBase extends EditorBase {
      * @param locale the content locale
      * @param callback the callback
      */
-    @Override
-    public void loadContentDefinition(final String entityId, final String locale, final Command callback) {
+    public void loadDefinition(
+        final String entityId,
+        final String locale,
+        final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
-        CmsRpcAction<ContentDefinition> action = new CmsRpcAction<ContentDefinition>() {
+        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
 
             @Override
             public void execute() {
 
-                getService().loadContentDefinition(entityId, locale, this);
+                getService().loadDefinition(entityId, locale, this);
             }
 
             @Override
-            protected void onResponse(ContentDefinition result) {
+            protected void onResponse(CmsContentDefinition result) {
 
                 registerContentDefinition(result);
-                callback.execute();
+                callback.execute(result);
             }
         };
         action.execute();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.EditorBase#getService()
+     */
+    @Override
+    public I_CmsContentServiceAsync getService() {
+
+        return m_service;
     }
 
     /**

@@ -496,8 +496,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         if (!show && hideToggleButton) {
             m_toggleToolbarButton.getElement().getStyle().setDisplay(Display.NONE);
+            RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
         } else {
             m_toggleToolbarButton.getElement().getStyle().clearDisplay();
+            RootPanel.getBodyElement().getStyle().clearOverflowY();
         }
     }
 
