@@ -86,6 +86,7 @@ function Ok() {
 
 // inserts the passed html fragment at the current cursor position
 function insertHtml(htmlContent) {
+   tinyMCEPopup.restoreSelection();
    window.parent.tinymce.activeEditor.execCommand("mceInsertContent", false, htmlContent); 
 }
 
