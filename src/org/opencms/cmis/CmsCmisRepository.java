@@ -29,9 +29,11 @@ package org.opencms.cmis;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -150,7 +152,9 @@ public class CmsCmisRepository {
     protected CmsObject getCmsObject(CallContext context) throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+        CmsProject projectBeforeLogin = cms.getRequestContext().getCurrentProject();
         cms.loginUser(context.getUsername(), context.getPassword());
+        cms.getRequestContext().setCurrentProject(projectBeforeLogin);
         return cms;
     }
 
@@ -362,6 +366,8 @@ public class CmsCmisRepository {
             for (String propName : propertiesToAdd) {
                 addPropertyString(result, typeId, filter, CmsCmisTypeManager.PROPERTY_PREFIX + propName, null);
             }
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(file);
+            addPropertyString(result, typeId, filter, CmsCmisTypeManager.PROPERTY_RESOURCE_TYPE, resType.getTypeName());
             return result;
         } catch (Exception e) {
             if (e instanceof CmisBaseException) {
@@ -707,8 +713,8 @@ public class CmsCmisRepository {
         RepositoryInfoImpl repositoryInfo = new RepositoryInfoImpl();
 
         repositoryInfo.setId(m_id);
-        repositoryInfo.setName("name of repository " + m_id);
-        repositoryInfo.setDescription("description of repo " + m_id);
+        repositoryInfo.setName(m_id);
+        repositoryInfo.setDescription(m_id);
 
         repositoryInfo.setCmisVersionSupported("1.0");
 

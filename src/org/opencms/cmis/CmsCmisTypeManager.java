@@ -73,6 +73,7 @@ public class CmsCmisTypeManager {
 
     public static final String PROPERTY_PREFIX = "opencms:";
     public static final String SPECIAL_PROPERTY_PREFIX = "opencms-special:";
+    public static final String PROPERTY_RESOURCE_TYPE = SPECIAL_PROPERTY_PREFIX + "resource-type";
 
     private static final String NAMESPACE = "http://opencms.org/opencms-cmis";
 
@@ -208,6 +209,15 @@ public class CmsCmisTypeManager {
         for (CmsPropertyDefinition propDef : m_cmsPropertyDefinitions) {
             type.addPropertyDefinition(createOpenCmsPropertyDefinition(propDef));
         }
+        type.addPropertyDefinition(createPropDef(
+            PROPERTY_RESOURCE_TYPE,
+            "Resource type",
+            "Resource type",
+            PropertyType.STRING,
+            Cardinality.SINGLE,
+            Updatability.ONCREATE,
+            false,
+            true));
     }
 
     private static void addBasePropertyDefinitions(AbstractTypeDefinition type) {

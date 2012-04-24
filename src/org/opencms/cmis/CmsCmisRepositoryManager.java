@@ -28,25 +28,42 @@
 package org.opencms.cmis;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CmsCmisRepositoryManager {
 
-    private CmsCmisRepository m_repository;
+    private Map<String, CmsCmisRepository> m_repositoryMap = new HashMap<String, CmsCmisRepository>();
 
     public void initialize(CmsObject adminCms) {
 
         try {
             CmsResource root = adminCms.readResource("/");
-            m_repository = new CmsCmisRepository(adminCms, root, "repo");
+            CmsCmisRepository onlineRepository = new CmsCmisRepository(adminCms, root, "online");
+            CmsObject offlineCms = OpenCms.initCmsObject(adminCms);
+            CmsProject offline = adminCms.readProject("Offline");
+            offlineCms.getRequestContext().setCurrentProject(offline);
+            CmsCmisRepository offlineRepository = new CmsCmisRepository(offlineCms, root, "offline");
+            m_repositoryMap.put("offline", offlineRepository);
+            m_repositoryMap.put("online", onlineRepository);
         } catch (CmsException e) {
             System.out.println("Repository could not be initialized!");
         }
     }
 
+    public Collection<CmsCmisRepository> getRepositories() {
+
+        return m_repositoryMap.values();
+    }
+
     public CmsCmisRepository getRepository(String repositoryId) {
 
-        return m_repository;
+        return m_repositoryMap.get(repositoryId);
     }
 }

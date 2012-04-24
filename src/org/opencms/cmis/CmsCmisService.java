@@ -773,7 +773,9 @@ public class CmsCmisService extends AbstractCmisService {
     public List<RepositoryInfo> getRepositoryInfos(ExtensionsData extension) {
 
         List<RepositoryInfo> result = new ArrayList<RepositoryInfo>();
-        result.add(m_repositoryManager.getRepository("foo").getRepositoryInfo(extension));
+        for (CmsCmisRepository repo : m_repositoryManager.getRepositories()) {
+            result.add(repo.getRepositoryInfo(extension));
+        }
         return result;
     }
 
