@@ -85,6 +85,7 @@ import java.util.Set;
 
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -94,7 +95,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The container-page handler.<p>
@@ -200,13 +200,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     /**
      * Deactivates all toolbar buttons.<p>
      */
-    public void deactivateToolbarButtons() {
+    public void disableToolbarButtons() {
 
-        for (Widget button : m_editor.getToolbar().getAll()) {
-            if (button instanceof I_CmsToolbarButton) {
-                ((I_CmsToolbarButton)button).setEnabled(false);
-            }
-        }
+        m_editor.disableToolbarButtons();
     }
 
     /**
@@ -311,6 +307,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void enableShowSmallElements() {
 
         m_editor.getSelectionButtonMenu().activate();
+    }
+
+    /**
+     * Enables the toolbar buttons.<p>
+     */
+    public void enableToolbarButtons() {
+
+        m_editor.enableToolbarButtons(m_controller.hasPageChanged());
     }
 
     /**
@@ -595,18 +599,19 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
             openGroupEditor((CmsGroupContainerElementPanel)element);
         } else {
-            final boolean toolbarVisible = m_editor.isToolbarVisible();
             Command onClose = new Command() {
 
                 public void execute() {
 
-                    m_editor.showToolbar(toolbarVisible, false);
                     reloadElements(element.getId());
+                    enableToolbarButtons();
                     activateSelection();
+                    RootPanel.getBodyElement().getStyle().clearOverflowY();
                 }
             };
             String entityId = element.getElement().getAttribute("about");
-            m_editor.showToolbar(false, true);
+            RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
+            disableToolbarButtons();
             deactivateCurrentButton();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
                 CmsInlineEditor.getInstance().renderInlineEditor(m_controller.getLocale(), element, onClose);
@@ -853,10 +858,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void toggleToolbar() {
 
         if (m_editor.isToolbarVisible()) {
-            m_editor.showToolbar(false, false);
+            m_editor.showToolbar(false);
             m_controller.setToolbarVisible(false);
         } else {
-            m_editor.showToolbar(true, false);
+            m_editor.showToolbar(true);
             m_controller.setToolbarVisible(true);
             activateSelection();
         }

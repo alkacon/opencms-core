@@ -74,7 +74,6 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -196,6 +195,33 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_save.disable(reason);
         m_add.disable(reason);
         m_clipboard.disable(reason);
+    }
+
+    /**
+     * Deactivates all toolbar buttons.<p>
+     */
+    public void disableToolbarButtons() {
+
+        for (Widget button : m_toolbar.getAll()) {
+            if (button instanceof I_CmsToolbarButton) {
+                ((I_CmsToolbarButton)button).setEnabled(false);
+            }
+        }
+    }
+
+    /**
+     * Enables the toolbar buttons.<p>
+     * 
+     * @param hasChanges if the page has changes 
+     */
+    public void enableToolbarButtons(boolean hasChanges) {
+
+        for (Widget button : m_toolbar.getAll()) {
+            // enable all buttons that are not equal save or reset or the page has changes 
+            if ((button instanceof I_CmsToolbarButton) && (((button != m_save) && (button != m_reset)) || hasChanges)) {
+                ((I_CmsToolbarButton)button).setEnabled(true);
+            }
+        }
     }
 
     /**
@@ -444,7 +470,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
         m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         if (CmsCoreProvider.get().isToolbarVisible()) {
-            showToolbar(true, false);
+            showToolbar(true);
             containerpageHandler.activateSelection();
         }
 
@@ -493,19 +519,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Shows the tool-bar.<p>
      * 
      * @param show if <code>true</code> the tool-bar will be shown
-     * @param hideToggleButton if <code>true</code> when hiding the tool-bar the toggle tool-bar button is hidden also
      */
-    public void showToolbar(boolean show, boolean hideToggleButton) {
+    public void showToolbar(boolean show) {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
-
-        if (!show && hideToggleButton) {
-            m_toggleToolbarButton.getElement().getStyle().setDisplay(Display.NONE);
-            RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
-        } else {
-            m_toggleToolbarButton.getElement().getStyle().clearDisplay();
-            RootPanel.getBodyElement().getStyle().clearOverflowY();
-        }
     }
 
     /**

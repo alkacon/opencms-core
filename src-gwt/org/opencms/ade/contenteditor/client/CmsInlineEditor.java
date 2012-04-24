@@ -35,6 +35,7 @@ import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -43,10 +44,12 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsIconUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -97,6 +100,9 @@ public class CmsInlineEditor {
     /** The save button. */
     private CmsPushButton m_saveButton;
 
+    /** The definition of the currently edited content. */
+    private CmsContentDefinition m_contentDefinition;
+
     /**
      * Constructor.<p>
      */
@@ -136,6 +142,7 @@ public class CmsInlineEditor {
 
             public void execute(CmsContentDefinition contentDefinition) {
 
+                setContentDefinition(contentDefinition);
                 openForm(entityId, locale, onClose);
 
             }
@@ -157,9 +164,20 @@ public class CmsInlineEditor {
 
             public void execute(CmsContentDefinition contentDefinition) {
 
+                setContentDefinition(contentDefinition);
                 initForm(entityId, locale, panel, onClose);
             }
         });
+    }
+
+    /**
+     * Sets the content definition.<p>
+     * 
+     * @param definition the content definition
+     */
+    void setContentDefinition(CmsContentDefinition definition) {
+
+        m_contentDefinition = definition;
     }
 
     /**
@@ -206,15 +224,34 @@ public class CmsInlineEditor {
 
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         m_openFormButton.getElement().getStyle().setDisplay(Display.NONE);
+        m_localeSelect = new CmsSelectBox(m_contentDefinition.getAvailableLocales());
+        m_localeSelect.setFormValueAsString(m_locale);
+        m_localeSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().inlineBlock());
+        m_localeSelect.getElement().getStyle().setWidth(100, Unit.PX);
+        m_localeSelect.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
+        m_toolbar.addLeft(m_localeSelect);
         m_basePanel = new FlowPanel();
+        CmsInfoHeader header = new CmsInfoHeader(
+            m_contentDefinition.getTitle(),
+            null,
+            m_contentDefinition.getSitePath(),
+            m_locale,
+            CmsIconUtil.getResourceIconClasses(
+                m_contentDefinition.getResourceType(),
+                m_contentDefinition.getSitePath(),
+                false));
+        m_basePanel.add(header);
         m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
         CmsScrollPanel content = GWT.create(CmsScrollPanel.class);
-        content.getElement().getStyle().setProperty("maxHeight", Window.getClientHeight() - 100, Unit.PX);
         content.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().contentPanel());
         content.addStyleName(I_LayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);
         // insert base panel before the tool bar too keep the tool bar visible 
         RootPanel.get().insert(m_basePanel, RootPanel.get().getWidgetIndex(m_toolbar));
+        content.getElement().getStyle().setProperty(
+            "maxHeight",
+            Window.getClientHeight() - (100 + header.getOffsetHeight()),
+            Unit.PX);
         m_editor.renderEntityForm(m_entityId, content);
     }
 
@@ -258,6 +295,7 @@ public class CmsInlineEditor {
         m_entityId = null;
         m_onClose = null;
         m_locale = null;
+        m_contentDefinition = null;
         if (m_basePanel != null) {
             m_basePanel.removeFromParent();
             m_basePanel = null;

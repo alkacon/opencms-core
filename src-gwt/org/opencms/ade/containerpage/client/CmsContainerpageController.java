@@ -1708,7 +1708,7 @@ public final class CmsContainerpageController {
     protected void deactivateOnClosing() {
 
         m_handler.deactivateCurrentButton();
-        m_handler.deactivateToolbarButtons();
+        m_handler.disableToolbarButtons();
     }
 
     /**
