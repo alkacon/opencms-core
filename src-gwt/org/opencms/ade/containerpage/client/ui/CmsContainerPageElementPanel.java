@@ -30,12 +30,14 @@ package org.opencms.ade.containerpage.client.ui;
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
+import org.opencms.ade.contenteditor.client.CmsEditorBase;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -51,6 +53,10 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -61,13 +67,16 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @since 8.0.0
  */
-public class CmsContainerPageElementPanel extends AbsolutePanel implements I_CmsDraggable {
+public class CmsContainerPageElementPanel extends AbsolutePanel implements I_CmsDraggable, HasClickHandlers {
 
     /** The height necessary for a container page element. */
     public static int NECESSARY_HEIGHT = 24;
 
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
+
+    /** A flag which indicates whether the height has already been checked. */
+    private boolean m_checkedHeight;
 
     /** Flag indicating the the editables are currently being checked. */
     private boolean m_checkingEditables;
@@ -78,14 +87,14 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     /** The direct edit bar instances. */
     private Map<Element, CmsListCollectorEditor> m_editables;
 
+    /** The editor click handler registration. */
+    private HandlerRegistration m_editorClickHandlerRegistration;
+
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
 
     /** The overlay for expired elements. */
     private Element m_expiredOverlay;
-
-    /** A flag which indicates whether the height has already been checked. */
-    private boolean m_checkedHeight;
 
     /** Indicates whether this element has settings to edit. */
     private boolean m_hasSettings;
@@ -158,6 +167,14 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     public static String getNecessaryHeight() {
 
         return NECESSARY_HEIGHT + "px !important";
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+     */
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+
+        return addDomHandler(handler, ClickEvent.getType());
     }
 
     /**
@@ -333,6 +350,35 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     }
 
     /**
+     * Initializes the editor click handler.<p>
+     * 
+     * @param controller the container page controller instance
+     */
+    public void initContentEditor(final CmsContainerpageController controller) {
+
+        String elementId = getElement().getAttribute("about");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(elementId) && elementId.startsWith("http://opencms.org/")) {
+            CmsEditorBase.setEditable(getElement());
+            m_editorClickHandlerRegistration = addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    Element target = event.getNativeEvent().getEventTarget().cast();
+                    while ((target != null) && (target != getElement())) {
+                        if ("true".equals(target.getAttribute("contentEditable"))) {
+                            controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this);
+                            removeEditorClickHandler();
+                            break;
+                        } else {
+                            target = target.getParentElement();
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    /**
      * Returns if this is e newly created element.<p>
      * 
      * @return <code>true</code> if the element is new
@@ -367,6 +413,17 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
         CmsDomUtil.addDisablingOverlay(getElement());
         getElement().getStyle().setOpacity(0.5);
         removeHighlighting();
+    }
+
+    /**
+     * Removes the editor click handler.<p>
+     */
+    public void removeEditorClickHandler() {
+
+        if (m_editorClickHandlerRegistration != null) {
+            m_editorClickHandlerRegistration.removeHandler();
+            m_editorClickHandlerRegistration = null;
+        }
     }
 
     /**

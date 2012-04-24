@@ -613,6 +613,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
             disableToolbarButtons();
             deactivateCurrentButton();
+            element.removeEditorClickHandler();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
                 CmsInlineEditor.getInstance().renderInlineEditor(m_controller.getLocale(), element, onClose);
             } else {

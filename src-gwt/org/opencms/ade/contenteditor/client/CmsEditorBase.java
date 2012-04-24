@@ -32,6 +32,7 @@ import com.alkacon.acacia.client.I_WidgetFactory;
 import com.alkacon.acacia.client.widgets.HTMLWidget;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.StringWidget;
+import com.alkacon.vie.client.Vie;
 import com.alkacon.vie.shared.I_Entity;
 
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
@@ -40,8 +41,10 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
 
 /**
@@ -84,6 +87,28 @@ public class CmsEditorBase extends EditorBase {
     }
 
     /**
+     * Sets all annotated child elements editable.<p>
+     * 
+     * @param element the element
+     */
+    public static void setEditable(Element element) {
+
+        List<Element> children = Vie.getInstance().select("[property^=\"opencms://\"]", element);
+        for (Element child : children) {
+            child.setAttribute("contentEditable", "true");
+        }
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.EditorBase#getService()
+     */
+    @Override
+    public I_CmsContentServiceAsync getService() {
+
+        return m_service;
+    }
+
+    /**
      * Loads the content definition for the given entity and executes the callback on success.<p>
      * 
      * @param entityId the entity id
@@ -111,15 +136,6 @@ public class CmsEditorBase extends EditorBase {
             }
         };
         action.execute();
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.EditorBase#getService()
-     */
-    @Override
-    public I_CmsContentServiceAsync getService() {
-
-        return m_service;
     }
 
     /**

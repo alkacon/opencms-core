@@ -208,7 +208,6 @@ public class CmsContainerpageUtil {
                         child.removeFromParent();
                         child = (Element)endMarker.getNextSiblingElement();
                         endMarker.removeFromParent();
-
                     }
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
                     if (elementData == null) {
@@ -416,6 +415,9 @@ public class CmsContainerpageUtil {
             elementData.hasViewPermission(),
             elementData.isReleasedAndNotExpired());
         addOptionBar(dragElement);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementData.getNoEditReason())) {
+            dragElement.initContentEditor(m_controller);
+        }
         return dragElement;
     }
 
