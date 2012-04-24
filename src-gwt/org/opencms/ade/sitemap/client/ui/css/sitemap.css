@@ -1,8 +1,5 @@
-.pageCenter {
-	padding: 0px;
-	position: relative;
-	width: value("constants.css.toolbarWidth");
-	margin: 0 auto;
+body div.pageCenter {
+	padding: 10px;
 }
 
 @sprite .root {
@@ -25,27 +22,6 @@
 	background-color: value("constants.css.backgroundColorDialog");
 	border: 2px solid value("constants.css.borderColor");
 	padding: 10px;
-}
-
-div.header{
-	border: 2px solid value("constants.css.borderColor");
-	background: value("constants.css.backgroundColorListItem");
-	padding: 10px;
-	width: 930px;
-	margin: 0px auto 10px;
-}
-
-div.header h2{
-	font-size: value("constants.css.fontSizeBig");
-	font-weight: bold;
-	margin: 0px;
-}
-
-div.header div{
-	font-size: value("constants.css.fontSize");
-	margin: 0px;
-}
-div.header p{
-	font-size: value("constants.css.fontSize");
-	margin: 8px 0px;
+	width: value("constants.css.toolbarWidth");
+	margin: 0px auto;
 }

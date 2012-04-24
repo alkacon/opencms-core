@@ -658,6 +658,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String header();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String hideOverlay();
 
         /** 
@@ -1887,14 +1894,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * @return the image bundle for the gwt module
      */
     I_CmsImageBundle gwtImages();
-
-    /**
-     * Access method.<p>
-     * 
-     * @return the header CSS
-     */
-    @Source("header.css")
-    I_CmsHeaderCss headerCss();
 
     /**
      * Access method.<p>

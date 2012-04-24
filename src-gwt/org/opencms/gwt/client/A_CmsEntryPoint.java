@@ -82,7 +82,6 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         bundle.dragdropCss().ensureInjected();
         bundle.floatDecoratedPanelCss().ensureInjected();
         bundle.generalCss().ensureInjected();
-        bundle.headerCss().ensureInjected();
         bundle.highlightCss().ensureInjected();
         bundle.linkWarningCss().ensureInjected();
         bundle.listItemWidgetCss().ensureInjected();

@@ -66,6 +66,31 @@ div.toolTip.cornerAll, div.toolTip{
 	padding: 0px;
 }
 
+div.header{
+	border: 2px solid value("constants.css.borderColor");
+	background: value("constants.css.backgroundColorDialog");
+	width: value("constants.css.toolbarWidth");
+	padding: 10px 0px;
+	margin: 0px auto 10px;
+}
+
+div.header h2{
+	font-size: value("constants.css.fontSizeBig");
+	font-weight: bold;
+	margin: 0px 10px;
+	vertical-align: middle;
+}
+
+div.header div{
+	font-size: value("constants.css.fontSize");
+	margin: 0px 0px 0px 10px;
+	vertical-align: middle;
+}
+div.header p{
+	font-size: value("constants.css.fontSize");
+	margin: 8px 10px;
+}
+
 .textSmall{
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");

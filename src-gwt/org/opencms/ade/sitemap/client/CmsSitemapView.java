@@ -35,8 +35,6 @@ import org.opencms.ade.sitemap.client.control.I_CmsSitemapChangeHandler;
 import org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
-import org.opencms.ade.sitemap.client.ui.CmsPage;
-import org.opencms.ade.sitemap.client.ui.CmsSitemapHeader;
 import org.opencms.ade.sitemap.client.ui.CmsStatusIconUpdateHandler;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
@@ -44,9 +42,11 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsPingTimer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
@@ -67,8 +67,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Sitemap editor.<p>
@@ -418,21 +418,20 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         // toolbar
         m_toolbar = new CmsSitemapToolbar(m_controller);
         rootPanel.add(m_toolbar);
-
+        CmsSitemapInfo info = m_controller.getData().getSitemapInfo();
         // header
-        CmsSitemapHeader title = new CmsSitemapHeader(m_controller.getData().getSitemapInfo());
-        title.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().pageCenter());
-        rootPanel.add(title);
-
-        // content page
-        final CmsPage page = new CmsPage();
+        CmsInfoHeader header = new CmsInfoHeader(
+            info.getTitle(),
+            info.getDescription(),
+            info.getSiteHost(),
+            info.getSiteLocale(),
+            getIconForEntry(m_controller.getData().getRoot()));
+        header.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().pageCenter());
+        rootPanel.add(header);
+        SimplePanel page = new SimplePanel();
+        page.setStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().page());
+        page.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.generalCss().cornerAll());
         rootPanel.add(page);
-
-        // initial content
-        final Label loadingLabel = new Label(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_LOADING_0));
-        page.add(loadingLabel);
-
         // read pre-fetched data
         CmsClientSitemapEntry root = m_controller.getData().getRoot();
         CmsSitemapTreeItem rootItem = createSitemapItem(root);
@@ -486,14 +485,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_tree.setAnimationEnabled(true);
         m_tree.addItem(rootItem);
         setEditorMode(EditorMode.navigation);
-        // paint
-        page.remove(loadingLabel);
-        page.add(m_tree);
-
+        page.setWidget(m_tree);
         m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
         m_controller.recomputeProperties();
         rootItem.updateSitePath();
-
         // check if editable
         if (!m_controller.isEditable()) {
             // notify user
