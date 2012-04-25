@@ -151,11 +151,18 @@ public class CmsCmisRepository {
 
     protected CmsObject getCmsObject(CallContext context) throws CmsException {
 
-        CmsObject cms = OpenCms.initCmsObject(m_adminCms);
-        CmsProject projectBeforeLogin = cms.getRequestContext().getCurrentProject();
-        cms.loginUser(context.getUsername(), context.getPassword());
-        cms.getRequestContext().setCurrentProject(projectBeforeLogin);
-        return cms;
+        if (context.getUsername() == null) {
+            // user name can be null 
+            CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+            cms.getRequestContext().setCurrentProject(m_adminCms.getRequestContext().getCurrentProject());
+            return cms;
+        } else {
+            CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+            CmsProject projectBeforeLogin = cms.getRequestContext().getCurrentProject();
+            cms.loginUser(context.getUsername(), context.getPassword());
+            cms.getRequestContext().setCurrentProject(projectBeforeLogin);
+            return cms;
+        }
     }
 
     private static final String CMIS_READ = "cmis:read";
