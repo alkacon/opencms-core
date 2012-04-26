@@ -32,22 +32,28 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsResourceManager;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -93,6 +99,8 @@ import org.apache.chemistry.opencmis.commons.enums.SupportedPermissions;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisNotSupportedException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
@@ -211,7 +219,7 @@ public class CmsCmisRepository {
         ObjectInfoImpl objectInfo) {
 
         if (file == null) {
-            throw new IllegalArgumentException("File must not be null!");
+            throw new IllegalArgumentException("Resource may not be null.");
         }
 
         // copy filter
@@ -226,7 +234,7 @@ public class CmsCmisRepository {
             objectInfo.setTypeId(typeId);
             objectInfo.setContentType(null);
             objectInfo.setFileName(null);
-            objectInfo.setHasAcl(true);
+            objectInfo.setHasAcl(false);
             objectInfo.setHasContent(false);
             objectInfo.setVersionSeriesId(null);
             objectInfo.setIsCurrentVersion(true);
@@ -243,7 +251,7 @@ public class CmsCmisRepository {
             typeId = CmsCmisTypeManager.DOCUMENT_TYPE_ID;
             objectInfo.setBaseType(BaseTypeId.CMIS_DOCUMENT);
             objectInfo.setTypeId(typeId);
-            objectInfo.setHasAcl(true);
+            objectInfo.setHasAcl(false);
             objectInfo.setHasContent(true);
             objectInfo.setHasParent(true);
             objectInfo.setVersionSeriesId(null);
@@ -275,15 +283,34 @@ public class CmsCmisRepository {
             objectInfo.setName(name);
 
             // created and modified by
-            addPropertyString(result, typeId, filter, PropertyIds.CREATED_BY, "<unknown>");
-            addPropertyString(result, typeId, filter, PropertyIds.LAST_MODIFIED_BY, "<unknown>");
-            objectInfo.setCreatedBy("<unknown>");
+            CmsUUID creatorId = file.getUserCreated();
+            CmsUUID modifierId = file.getUserLastModified();
+            String creatorName = creatorId.toString();
+            String modifierName = modifierId.toString();
+            try {
+                CmsUser user = cms.readUser(creatorId);
+                creatorName = user.getName();
+            } catch (CmsException e) {
+                // ignore, use id as name 
+            }
+            try {
+                CmsUser user = cms.readUser(modifierId);
+                modifierName = user.getName();
+            } catch (CmsException e) {
+                // ignore, use id as name
+            }
+
+            addPropertyString(result, typeId, filter, PropertyIds.CREATED_BY, creatorName);
+            addPropertyString(result, typeId, filter, PropertyIds.LAST_MODIFIED_BY, modifierName);
+            objectInfo.setCreatedBy(creatorName);
 
             // creation and modification date
             GregorianCalendar lastModified = millisToCalendar(file.getDateLastModified());
-            addPropertyDateTime(result, typeId, filter, PropertyIds.CREATION_DATE, lastModified);
+            GregorianCalendar created = millisToCalendar(file.getDateCreated());
+
+            addPropertyDateTime(result, typeId, filter, PropertyIds.CREATION_DATE, created);
             addPropertyDateTime(result, typeId, filter, PropertyIds.LAST_MODIFICATION_DATE, lastModified);
-            objectInfo.setCreationDate(lastModified);
+            objectInfo.setCreationDate(created);
             objectInfo.setLastModificationDate(lastModified);
 
             // change token - always null
@@ -406,7 +433,12 @@ public class CmsCmisRepository {
             if (file == null) {
                 throw new IllegalArgumentException("File must not be null!");
             }
-            boolean isReadOnly = !(cms.hasPermissions(file, CmsPermissionSet.ACCESS_WRITE));
+            CmsLock lock = cms.getLock(file);
+            CmsUser user = cms.getRequestContext().getCurrentUser();
+            boolean canWrite = !cms.getRequestContext().getCurrentProject().isOnlineProject()
+                && (lock.isOwnedBy(user) || lock.isLockableBy(user))
+                && cms.hasPermissions(file, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.DEFAULT);
+            boolean isReadOnly = !canWrite;
             boolean isFolder = file.isFolder();
             boolean isRoot = m_root.equals(file);
 
@@ -430,7 +462,6 @@ public class CmsCmisRepository {
             } else {
                 addAction(aas, Action.CAN_GET_CONTENT_STREAM, true);
                 addAction(aas, Action.CAN_SET_CONTENT_STREAM, !isReadOnly);
-                addAction(aas, Action.CAN_DELETE_CONTENT_STREAM, !isReadOnly);
                 addAction(aas, Action.CAN_GET_ALL_VERSIONS, true);
             }
 
@@ -444,6 +475,11 @@ public class CmsCmisRepository {
         }
     }
 
+    /**
+     * Wrap OpenCms into OpenCMIS exceptions and rethrow them.<p>
+     * 
+     * @param e the exception to handle
+     */
     protected void handleCmsException(CmsException e) {
 
         if (e instanceof CmsVfsResourceNotFoundException) {
@@ -478,6 +514,15 @@ public class CmsCmisRepository {
         props.addProperty(new PropertyIdImpl(id, value));
     }
 
+    /**
+     * Adds a string property to a PropertiesImpl.<p>
+     *  
+     * @param props the properties 
+     * @param typeId the type id 
+     * @param filter the property filter string 
+     * @param id the property id 
+     * @param value the property value 
+     */
     private void addPropertyString(PropertiesImpl props, String typeId, Set<String> filter, String id, String value) {
 
         if (!checkAddProperty(props, typeId, filter, id)) {
@@ -487,11 +532,29 @@ public class CmsCmisRepository {
         props.addProperty(new PropertyStringImpl(id, value));
     }
 
+    /**
+     * Adds an integer property to a PropertiesImpl.<p>
+     *  
+     * @param props the properties 
+     * @param typeId the type id 
+     * @param filter the property filter string 
+     * @param id the property id 
+     * @param value the property value 
+     */
     private void addPropertyInteger(PropertiesImpl props, String typeId, Set<String> filter, String id, long value) {
 
         addPropertyBigInteger(props, typeId, filter, id, BigInteger.valueOf(value));
     }
 
+    /**
+     * Adds bigint property to a PropertiesImpl.<p>
+     *  
+     * @param props the properties 
+     * @param typeId the type id 
+     * @param filter the property filter string 
+     * @param id the property id 
+     * @param value the property value 
+     */
     private void addPropertyBigInteger(
         PropertiesImpl props,
         String typeId,
@@ -506,6 +569,15 @@ public class CmsCmisRepository {
         props.addProperty(new PropertyIntegerImpl(id, value));
     }
 
+    /**
+     * Adds a boolean property to a PropertiesImpl.<p>
+     *  
+     * @param props the properties 
+     * @param typeId the type id 
+     * @param filter the property filter string 
+     * @param id the property id 
+     * @param value the property value 
+     */
     private void addPropertyBoolean(PropertiesImpl props, String typeId, Set<String> filter, String id, boolean value) {
 
         if (!checkAddProperty(props, typeId, filter, id)) {
@@ -515,6 +587,15 @@ public class CmsCmisRepository {
         props.addProperty(new PropertyBooleanImpl(id, value));
     }
 
+    /**
+     * Adds a date/time property to a PropertiesImpl.<p>
+     *  
+     * @param props the properties 
+     * @param typeId the type id 
+     * @param filter the property filter string 
+     * @param id the property id 
+     * @param value the property value 
+     */
     private void addPropertyDateTime(
         PropertiesImpl props,
         String typeId,
@@ -529,6 +610,16 @@ public class CmsCmisRepository {
         props.addProperty(new PropertyDateTimeImpl(id, value));
     }
 
+    /**
+     * Checks whether a property can be added to a Properties.
+     *  
+     * @param properties the properties object
+     * @param typeId the type id 
+     * @param filter the property filter
+     * @param id the property id
+     *  
+     * @return true if the property should be added 
+     */
     private boolean checkAddProperty(Properties properties, String typeId, Set<String> filter, String id) {
 
         if ((properties == null) || (properties.getProperties() == null)) {
@@ -562,6 +653,11 @@ public class CmsCmisRepository {
 
     /**
      * Adds the default value of property if defined.
+     *  
+     * @param props the Properties object
+     * @param propDef the property definition
+     *  
+     * @return
      */
     @SuppressWarnings("unchecked")
     private static boolean addPropertyDefault(PropertiesImpl props, PropertyDefinition<?> propDef) {
@@ -664,29 +760,6 @@ public class CmsCmisRepository {
             result.setAces(new ArrayList<Ace>());
 
             return result;
-
-            //        for (Map.Entry<String, Boolean> ue : userMap.entrySet()) {
-            //            // create principal
-            //            AccessControlPrincipalDataImpl principal = new AccessControlPrincipalDataImpl();
-            //            principal.setPrincipalId(ue.getKey());
-            //
-            //            // create ACE
-            //            AccessControlEntryImpl entry = new AccessControlEntryImpl();
-            //            entry.setPrincipal(principal);
-            //            entry.setPermissions(new ArrayList<String>());
-            //            entry.getPermissions().add(CMIS_READ);
-            //            if (!ue.getValue().booleanValue() && cms.hasPermissions(file, CmsPermissionSet.ACCESS_WRITE)) {
-            //                entry.getPermissions().add(CMIS_WRITE);
-            //                entry.getPermissions().add(CMIS_ALL);
-            //            }
-            //
-            //            entry.setDirect(true);
-            //
-            //            // add ACE
-            //            result.getAces().add(entry);
-            //        }
-            //
-            //        return result;
         } catch (CmsException e) {
             handleCmsException(e);
             return null;
@@ -725,8 +798,8 @@ public class CmsCmisRepository {
 
         repositoryInfo.setCmisVersionSupported("1.0");
 
-        repositoryInfo.setProductName("OpenCms CMIS service");
-        repositoryInfo.setProductVersion("0.1");
+        repositoryInfo.setProductName("OpenCms");
+        repositoryInfo.setProductVersion(OpenCms.getSystemInfo().getVersion());
         repositoryInfo.setVendorName("Alkacon Software GmbH");
 
         repositoryInfo.setRootFolder(m_root.getStructureId().toString());
@@ -734,21 +807,21 @@ public class CmsCmisRepository {
         repositoryInfo.setThinClientUri("");
 
         RepositoryCapabilitiesImpl capabilities = new RepositoryCapabilitiesImpl();
-        capabilities.setCapabilityAcl(CapabilityAcl.DISCOVER);
-        capabilities.setAllVersionsSearchable(false);
+        capabilities.setCapabilityAcl(CapabilityAcl.NONE);
+        capabilities.setAllVersionsSearchable(Boolean.FALSE);
         capabilities.setCapabilityJoin(CapabilityJoin.NONE);
-        capabilities.setSupportsMultifiling(false);
-        capabilities.setSupportsUnfiling(false);
-        capabilities.setSupportsVersionSpecificFiling(false);
-        capabilities.setIsPwcSearchable(false);
-        capabilities.setIsPwcUpdatable(false);
+        capabilities.setSupportsMultifiling(Boolean.FALSE);
+        capabilities.setSupportsUnfiling(Boolean.FALSE);
+        capabilities.setSupportsVersionSpecificFiling(Boolean.FALSE);
+        capabilities.setIsPwcSearchable(Boolean.FALSE);
+        capabilities.setIsPwcUpdatable(Boolean.FALSE);
         capabilities.setCapabilityQuery(CapabilityQuery.NONE);
         capabilities.setCapabilityChanges(CapabilityChanges.NONE);
         //capabilities.setCapabilityContentStreamUpdates(CapabilityContentStreamUpdates.ANYTIME);
-        capabilities.setCapabilityContentStreamUpdates(CapabilityContentStreamUpdates.NONE);
+        capabilities.setCapabilityContentStreamUpdates(CapabilityContentStreamUpdates.ANYTIME);
 
-        capabilities.setSupportsGetDescendants(true);
-        capabilities.setSupportsGetFolderTree(true);
+        capabilities.setSupportsGetDescendants(Boolean.TRUE);
+        capabilities.setSupportsGetFolderTree(Boolean.TRUE);
         capabilities.setCapabilityRendition(CapabilityRenditions.NONE);
 
         repositoryInfo.setCapabilities(capabilities);
@@ -790,7 +863,7 @@ public class CmsCmisRepository {
         }
         aclCapability.setPermissionMappingData(map);
 
-        repositoryInfo.setAclCapabilities(aclCapability);
+        //repositoryInfo.setAclCapabilities(aclCapability);
         return repositoryInfo;
     }
 
@@ -948,6 +1021,13 @@ public class CmsCmisRepository {
         try {
             CmsObject cms = getCmsObject(context);
             List<CmsResource> children = getChildren(cms, folder);
+            Collections.sort(children, new Comparator<CmsResource>() {
+
+                public int compare(CmsResource a, CmsResource b) {
+
+                    return a.getName().compareTo(b.getName());
+                }
+            });
             // iterate through children
             for (CmsResource child : children) {
 
@@ -1140,7 +1220,6 @@ public class CmsCmisRepository {
         BigInteger skipCount,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1158,7 +1237,6 @@ public class CmsCmisRepository {
         Acl removeAces,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1176,7 +1254,6 @@ public class CmsCmisRepository {
         Acl removeAces,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1192,7 +1269,6 @@ public class CmsCmisRepository {
         Acl removeAces,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1207,7 +1283,6 @@ public class CmsCmisRepository {
         Acl removeAces,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1406,7 +1481,6 @@ public class CmsCmisRepository {
         Properties properties,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
 
     }
@@ -1421,7 +1495,6 @@ public class CmsCmisRepository {
         String sourceFolderId,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
 
     }
@@ -1431,7 +1504,6 @@ public class CmsCmisRepository {
      */
     public void deleteObject(CallContext context, String objectId, Boolean allVersions, ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
 
     }
@@ -1447,8 +1519,17 @@ public class CmsCmisRepository {
         Boolean continueOnFailure,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
+    }
+
+    private boolean ensureLock(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsLock lock = cms.getLock(resource);
+        if (lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+            return false;
+        }
+        cms.lockResourceTemporary(resource);
+        return true;
     }
 
     /**
@@ -1462,9 +1543,31 @@ public class CmsCmisRepository {
         ContentStream contentStream,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
-        throw new CmisNotSupportedException("Not supported!");
-
+        try {
+            CmsObject cms = getCmsObject(context);
+            CmsUUID structureId = new CmsUUID(objectId.getValue());
+            boolean overwrite = (overwriteFlag == null) || overwriteFlag.booleanValue();
+            if (!overwrite) {
+                throw new CmisContentAlreadyExistsException();
+            }
+            CmsResource resource = cms.readResource(structureId);
+            if (resource.isFolder()) {
+                throw new CmisStreamNotSupportedException("Folders may not have content streams.");
+            }
+            CmsFile file = cms.readFile(resource);
+            InputStream contentInput = contentStream.getStream();
+            byte[] newContent = CmsFileUtil.readFully(contentInput);
+            file.setContents(newContent);
+            boolean wasLocked = ensureLock(cms, resource);
+            CmsFile newFile = cms.writeFile(file);
+            if (wasLocked) {
+                cms.unlockResource(newFile);
+            }
+        } catch (CmsException e) {
+            handleCmsException(e);
+        } catch (IOException e) {
+            throw new CmisRuntimeException(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
@@ -1476,8 +1579,7 @@ public class CmsCmisRepository {
         Holder<String> changeToken,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
-        throw new CmisNotSupportedException("Not supported!");
+        throw new CmisConstraintException("Content streams may not be deleted.");
 
     }
 
@@ -1490,7 +1592,6 @@ public class CmsCmisRepository {
         ExtensionsData extension,
         Holder<Boolean> contentCopied) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
 
     }
@@ -1500,7 +1601,6 @@ public class CmsCmisRepository {
      */
     public void cancelCheckOut(CallContext context, String objectId, ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
 
     }
@@ -1520,7 +1620,6 @@ public class CmsCmisRepository {
         Acl removeAces,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
 
     }
@@ -1541,7 +1640,6 @@ public class CmsCmisRepository {
         Boolean includeAcl,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1556,7 +1654,6 @@ public class CmsCmisRepository {
         String filter,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1572,7 +1669,6 @@ public class CmsCmisRepository {
         Boolean includeAllowableActions,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1609,7 +1705,6 @@ public class CmsCmisRepository {
         BigInteger maxItems,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1635,7 +1730,6 @@ public class CmsCmisRepository {
      */
     public void removeObjectFromFolder(CallContext context, String objectId, String folderId, ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
 
     }
@@ -1656,7 +1750,6 @@ public class CmsCmisRepository {
         BigInteger skipCount,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1682,7 +1775,6 @@ public class CmsCmisRepository {
         AclPropagation aclPropagation,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1692,7 +1784,6 @@ public class CmsCmisRepository {
      */
     public void applyPolicy(CallContext context, String policyId, String objectId, ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
 
     }
@@ -1704,7 +1795,6 @@ public class CmsCmisRepository {
     public void removePolicy(CallContext context, String policyId, String objectId, ExtensionsData extension) {
 
         throw new CmisNotSupportedException("Not supported!");
-        // TODO: Auto-generated method stub
 
     }
 
@@ -1718,7 +1808,6 @@ public class CmsCmisRepository {
         String filter,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1735,7 +1824,6 @@ public class CmsCmisRepository {
         List<String> policies,
         ExtensionsData extension) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1751,8 +1839,6 @@ public class CmsCmisRepository {
 
         throw new CmisNotSupportedException("Not supported!");
 
-        // TODO: Auto-generated method stub
-
     }
 
     /**
@@ -1761,7 +1847,6 @@ public class CmsCmisRepository {
      */
     public Acl applyAcl(CallContext context, String objectId, Acl aces, AclPropagation aclPropagation) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 
@@ -1771,7 +1856,6 @@ public class CmsCmisRepository {
      */
     public ObjectInfo getObjectInfo(CallContext context, String objectId) {
 
-        // TODO: Auto-generated method stub
         throw new CmisNotSupportedException("Not supported!");
     }
 

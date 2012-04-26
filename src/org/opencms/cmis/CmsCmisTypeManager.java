@@ -258,7 +258,7 @@ public class CmsCmisTypeManager {
             "Name",
             PropertyType.STRING,
             Cardinality.SINGLE,
-            Updatability.READWRITE,
+            Updatability.ONCREATE,
             false,
             true));
 
