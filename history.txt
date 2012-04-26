@@ -15,6 +15,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.0.x - xx, 2012
+* Fixed issue displaying preview of an expired resource from explorer in the proper locale. 
+
 OpenCms 8.0.4 - April xx, 2012
 ! Added configurable ADE context menu dialogs.
 ! Added Italian localization contributed by Antonio Cordeddu of coranto.it
