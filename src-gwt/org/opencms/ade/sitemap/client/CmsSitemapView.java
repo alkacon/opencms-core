@@ -425,7 +425,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             info.getDescription(),
             info.getSiteHost(),
             info.getSiteLocale(),
-            getIconForEntry(m_controller.getData().getRoot()));
+            CmsIconUtil.getResourceIconClasses(m_controller.getData().getRoot().getResourceTypeName(), false));
         header.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().pageCenter());
         rootPanel.add(header);
         SimplePanel page = new SimplePanel();
