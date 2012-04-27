@@ -65,9 +65,11 @@
 }
 .toolbarButtonsLeft>div{
 	margin-right: 5px;
+	vertical-align:middle;
 }
 .toolbarButtonsRight{
 	text-align: right;
+	vertical-align:middle;
 }
 .toolbarButtonsRight>div{
 	margin-left: 5px;

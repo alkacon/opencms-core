@@ -77,31 +77,31 @@ div.header{
 div.header h2{
 	font-size: value("constants.css.fontSizeBig");
 	font-weight: bold;
-	margin: 0px 10px;
+	margin: 0px;
 	vertical-align: middle;
 }
 
-div.header div{
-	font-size: value("constants.css.fontSize");
+div.header > div{
+	float:left;
 	margin: 0px 0px 0px 10px;
 	vertical-align: middle;
 }
 div.header p{
 	font-size: value("constants.css.fontSize");
-	margin: 8px 10px;
+	margin: 8px 0px;
 }
 
-.textSmall{
+.textSmall, div.textSmall{
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");
 	line-height: value("constants.css.lineHeightSmall");
 }
-.textMedium{
+.textMedium, div.textMedium{
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
 	line-height: value("constants.css.lineHeight");
 }
-.textBig{
+.textBig, div.textBig{
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeBig");
 	line-height: value("constants.css.lineHeightBig");

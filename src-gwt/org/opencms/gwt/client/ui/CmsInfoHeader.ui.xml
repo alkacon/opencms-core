@@ -4,8 +4,12 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:HTMLPanel ui:field="m_panel" styleName="{resources.generalCss.cornerAll} {resources.generalCss.header}">
-		<div ui:field="m_typeIcon" class="{resources.generalCss.inlineBlock}"></div><h2 class="{resources.generalCss.inlineBlock}" ui:field="m_title"></h2>
-		<p ui:field="m_description"></p>
-		<div><b><span ui:field="m_siteHost"></span></b>&nbsp;<span ui:field="m_locale"></span></div>
+		<div ui:field="m_typeIcon"></div>
+		<div>
+			<h2 class="{resources.generalCss.inlineBlock}" ui:field="m_title"></h2>
+			<p ui:field="m_description"></p>
+			<div><b><span ui:field="m_siteHost"></span></b>&nbsp;<span ui:field="m_locale"></span></div>
+		</div>
+		<div style="float:none; clear:left; height:0px;"></div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

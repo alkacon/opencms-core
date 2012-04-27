@@ -27,9 +27,12 @@
 
 package org.opencms.ade.contenteditor.shared.rpc;
 
+import com.alkacon.acacia.shared.Entity;
 import com.alkacon.acacia.shared.rpc.I_ContentServiceAsync;
 
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -49,9 +52,26 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * Loads the content definition for a given type.<p>
      * 
      * @param entityId the entity id/URI
-     * @param locale the entity content locale
      * @param callback the asynchronous callback
      */
-    void loadDefinition(String entityId, String locale, AsyncCallback<CmsContentDefinition> callback);
+    void loadDefinition(String entityId, AsyncCallback<CmsContentDefinition> callback);
+
+    /**
+     * Loads new entity definition.<p>
+     * This will load the entity representation of a new locale node.<p>
+     * 
+     * @param entityId the entity id/URI
+     * @param callback the asynchronous callback
+     */
+    void loadNewDefinition(String entityId, AsyncCallback<CmsContentDefinition> callback);
+
+    /**
+     * Saves and deletes the given entities.<p>
+     * 
+     * @param changedEntities the changed entities
+     * @param deletedEntities the entity id's to delete
+     * @param callback the asynchronous callback
+     */
+    void saveAndDeleteEntites(List<Entity> changedEntities, List<String> deletedEntities, AsyncCallback<Void> callback);
 
 }
