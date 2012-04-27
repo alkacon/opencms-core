@@ -47,6 +47,13 @@
     gwt-image: "clipboardBigIconActive";
 }
 
+@sprite .cmsState-up-disabled .toolbarDelete, .cmsState-down-disabled .toolbarDelete{
+	gwt-image: "deleteBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarDelete, .cmsState-up-hovering .toolbarDelete, .cmsState-down-hovering .toolbarDelete, .cmsState-down .toolbarDelete{
+    gwt-image: "deleteBigIconActive";
+}
+
 @sprite .cmsState-up-disabled .toolbarReset, .cmsState-down-disabled .toolbarReset{
 	gwt-image: "resetBigIconDeactivated";
 }
