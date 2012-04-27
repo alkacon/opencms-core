@@ -34,11 +34,16 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
@@ -56,7 +61,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,11 +79,10 @@ import org.apache.chemistry.opencmis.commons.data.ObjectInFolderData;
 import org.apache.chemistry.opencmis.commons.data.ObjectInFolderList;
 import org.apache.chemistry.opencmis.commons.data.ObjectList;
 import org.apache.chemistry.opencmis.commons.data.ObjectParentData;
-import org.apache.chemistry.opencmis.commons.data.PermissionMapping;
 import org.apache.chemistry.opencmis.commons.data.Properties;
+import org.apache.chemistry.opencmis.commons.data.PropertyData;
 import org.apache.chemistry.opencmis.commons.data.RenditionData;
 import org.apache.chemistry.opencmis.commons.data.RepositoryInfo;
-import org.apache.chemistry.opencmis.commons.definitions.PermissionDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinitionContainer;
@@ -102,6 +105,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisNameConstraintViolationException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisNotSupportedException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
@@ -111,13 +115,12 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.AccessControlListI
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AclCapabilitiesDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AllowableActionsImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
+import org.apache.chemistry.opencmis.commons.impl.dataobjects.FailedToDeleteDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectInFolderContainerImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectInFolderDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectInFolderListImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectParentDataImpl;
-import org.apache.chemistry.opencmis.commons.impl.dataobjects.PermissionDefinitionDataImpl;
-import org.apache.chemistry.opencmis.commons.impl.dataobjects.PermissionMappingDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertiesImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertyBooleanImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertyDateTimeImpl;
@@ -131,18 +134,33 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.RepositoryCapabili
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.RepositoryInfoImpl;
 import org.apache.chemistry.opencmis.commons.impl.server.ObjectInfoImpl;
 import org.apache.chemistry.opencmis.commons.server.CallContext;
-import org.apache.chemistry.opencmis.commons.server.ObjectInfo;
 import org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
 import org.apache.chemistry.opencmis.fileshare.TypeManager;
+import org.apache.commons.logging.Log;
 
 public class CmsCmisRepository {
 
+    /** The repository id. */
     private String m_id;
+
+    /** The root folder. */
     private CmsResource m_root;
+
+    /** The type manager. */
     private CmsCmisTypeManager m_typeManager;
+
+    /** The internal admin CMS context. */
     private CmsObject m_adminCms;
 
+    /** The logger instance for this class. */
+    protected static final Log LOG = CmsLog.getLog(CmsCmisRepository.class);
+
+    /**
+     * Gets the repository id.<p>
+     * 
+     * @return the repository id 
+     */
     public String getId() {
 
         return m_id;
@@ -157,6 +175,14 @@ public class CmsCmisRepository {
         m_typeManager = new CmsCmisTypeManager(adminCms);
     }
 
+    /**
+     * Initializes a CMS context for the authentication data contained in a call context.<p>
+     * 
+     * @param context the call context
+     * @return the initialized CMS context 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     protected CmsObject getCmsObject(CallContext context) throws CmsException {
 
         if (context.getUsername() == null) {
@@ -173,15 +199,22 @@ public class CmsCmisRepository {
         }
     }
 
-    private static final String CMIS_READ = "cmis:read";
-    private static final String CMIS_WRITE = "cmis:write";
-    private static final String CMIS_ALL = "cmis:all";
-
     /**
-     * Compiles an object type object from a file or folder.�
+     * Fills in an ObjectData record.<p>
+     * 
+     * @param context the call context
+     * @param cms the CMS context
+     * @param resource the resource for which we want the ObjectData
+     * @param filter the property filter string 
+     * @param includeAllowableActions true if the allowable actions should be included  
+     * @param includeAcl true if the ACL entries should be included
+     * @param objectInfos the object info handler
+     * 
+     * @return the object data 
      */
-    private ObjectData compileObjectType(
+    private ObjectData makeObjectData(
         CallContext context,
+        CmsObject cms,
         CmsResource resource,
         Set<String> filter,
         boolean includeAllowableActions,
@@ -191,15 +224,15 @@ public class CmsCmisRepository {
         ObjectDataImpl result = new ObjectDataImpl();
         ObjectInfoImpl objectInfo = new ObjectInfoImpl();
 
-        result.setProperties(compileProperties(context, resource, filter, objectInfo));
+        result.setProperties(makeProperties(cms, resource, filter, objectInfo));
 
         if (includeAllowableActions) {
-            result.setAllowableActions(compileAllowableActions(context, resource));
+            result.setAllowableActions(makeAllowableActions(cms, resource));
         }
 
         if (includeAcl) {
-            result.setAcl(compileAcl(context, resource));
-            result.setIsExactAcl(true);
+            result.setAcl(compileAcl(cms, resource));
+            result.setIsExactAcl(Boolean.TRUE);
         }
 
         if (context.isObjectInfoRequired()) {
@@ -210,13 +243,16 @@ public class CmsCmisRepository {
     }
 
     /**
-     * Gathers all base properties of a file or folder.
+     * Gathers all base properties of a file or folder. 
+     * 
+     * @param cms the current CMS context 
+     * @param file the file for which we want the properties 
+     * @param orgfilter the property filter 
+     * @param objectInfo the object info handler 
+     * 
+     * @return the properties for the given resource 
      */
-    private Properties compileProperties(
-        CallContext context,
-        CmsResource file,
-        Set<String> orgfilter,
-        ObjectInfoImpl objectInfo) {
+    private Properties makeProperties(CmsObject cms, CmsResource file, Set<String> orgfilter, ObjectInfoImpl objectInfo) {
 
         if (file == null) {
             throw new IllegalArgumentException("Resource may not be null.");
@@ -269,7 +305,6 @@ public class CmsCmisRepository {
 
         // let's do it
         try {
-            CmsObject cms = getCmsObject(context);
             PropertiesImpl result = new PropertiesImpl();
 
             // id
@@ -413,6 +448,9 @@ public class CmsCmisRepository {
 
     /**
      * Converts milliseconds into a calendar object.
+     * 
+     * @param millis a time given in milliseconds after epoch 
+     * @return the calendar object for the given time 
      */
     private static GregorianCalendar millisToCalendar(long millis) {
 
@@ -424,11 +462,15 @@ public class CmsCmisRepository {
 
     /**
      * Compiles the allowable actions for a file or folder.
+     *  
+     * @param cms the current CMS context 
+     * @param file the resource for which we want the allowable actions 
+     * 
+     * @return the allowable actions for the given resource 
      */
-    private AllowableActions compileAllowableActions(CallContext context, CmsResource file) {
+    private AllowableActions makeAllowableActions(CmsObject cms, CmsResource file) {
 
         try {
-            CmsObject cms = getCmsObject(context);
 
             if (file == null) {
                 throw new IllegalArgumentException("File must not be null!");
@@ -443,14 +485,11 @@ public class CmsCmisRepository {
             boolean isRoot = m_root.equals(file);
 
             Set<Action> aas = new HashSet<Action>();
-
             addAction(aas, Action.CAN_GET_OBJECT_PARENTS, !isRoot);
             addAction(aas, Action.CAN_GET_PROPERTIES, true);
             addAction(aas, Action.CAN_UPDATE_PROPERTIES, !isReadOnly);
             addAction(aas, Action.CAN_MOVE_OBJECT, !isReadOnly);
             addAction(aas, Action.CAN_DELETE_OBJECT, !isReadOnly && !isRoot);
-            addAction(aas, Action.CAN_GET_ACL, true);
-
             if (isFolder) {
                 addAction(aas, Action.CAN_GET_DESCENDANTS, true);
                 addAction(aas, Action.CAN_GET_CHILDREN, true);
@@ -464,10 +503,8 @@ public class CmsCmisRepository {
                 addAction(aas, Action.CAN_SET_CONTENT_STREAM, !isReadOnly);
                 addAction(aas, Action.CAN_GET_ALL_VERSIONS, true);
             }
-
             AllowableActionsImpl result = new AllowableActionsImpl();
             result.setAllowableActions(aas);
-
             return result;
         } catch (CmsException e) {
             handleCmsException(e);
@@ -491,6 +528,15 @@ public class CmsCmisRepository {
         }
     }
 
+    /**
+     * Helper method for adding an id-valued property.<p>
+     * 
+     * @param props the properties to add to 
+     * @param typeId the type id 
+     * @param filter the property filter 
+     * @param id the property id 
+     * @param value the property value 
+     */
     private void addPropertyId(PropertiesImpl props, String typeId, Set<String> filter, String id, String value) {
 
         if (!checkAddProperty(props, typeId, filter, id)) {
@@ -500,6 +546,15 @@ public class CmsCmisRepository {
         props.addProperty(new PropertyIdImpl(id, value));
     }
 
+    /**
+     * Helper method for adding an id-list-valued property.<p>
+     * 
+     * @param props the properties to add to 
+     * @param typeId the type id 
+     * @param filter the property filter 
+     * @param id the property id 
+     * @param value the property value 
+     */
     private void addPropertyIdList(
         PropertiesImpl props,
         String typeId,
@@ -584,7 +639,7 @@ public class CmsCmisRepository {
             return;
         }
 
-        props.addProperty(new PropertyBooleanImpl(id, value));
+        props.addProperty(new PropertyBooleanImpl(id, Boolean.valueOf(value)));
     }
 
     /**
@@ -657,7 +712,7 @@ public class CmsCmisRepository {
      * @param props the Properties object
      * @param propDef the property definition
      *  
-     * @return
+     * @return true if the property could be added 
      */
     @SuppressWarnings("unchecked")
     private static boolean addPropertyDefault(PropertiesImpl props, PropertyDefinition<?> propDef) {
@@ -707,6 +762,13 @@ public class CmsCmisRepository {
         return false;
     }
 
+    /**
+     * Adds an action to a set of actions if a condition is fulfilled.<p>
+     * 
+     * @param aas the set of actions 
+     * @param action the action to add 
+     * @param condition the value of the condition for adding the action 
+     */
     private static void addAction(Set<Action> aas, Action action, boolean condition) {
 
         if (condition) {
@@ -718,6 +780,9 @@ public class CmsCmisRepository {
      * Splits a filter statement into a collection of properties. If
      * <code>filter</code> is <code>null</code>, empty or one of the properties
      * is '*' , an empty collection will be returned.
+     * 
+     * @param filter the filter string 
+     * @return the set of components of the filter 
      */
     private static Set<String> splitFilter(String filter) {
 
@@ -750,42 +815,22 @@ public class CmsCmisRepository {
 
     /**
      * Compiles the ACL for a file or folder.
+     * @param Acl 
      */
-    private Acl compileAcl(CallContext context, CmsResource file) {
+    private Acl compileAcl(CmsObject cms, CmsResource file) {
 
-        try {
-            CmsObject cms = getCmsObject(context);
+        AccessControlListImpl result = new AccessControlListImpl();
+        result.setAces(new ArrayList<Ace>());
 
-            AccessControlListImpl result = new AccessControlListImpl();
-            result.setAces(new ArrayList<Ace>());
-
-            return result;
-        } catch (CmsException e) {
-            handleCmsException(e);
-            return null;
-        }
-    }
-
-    private static PermissionDefinition createPermission(String permission, String description) {
-
-        PermissionDefinitionDataImpl pd = new PermissionDefinitionDataImpl();
-        pd.setPermission(permission);
-        pd.setDescription(description);
-
-        return pd;
-    }
-
-    private static PermissionMapping createMapping(String key, String permission) {
-
-        PermissionMappingDataImpl pm = new PermissionMappingDataImpl();
-        pm.setKey(key);
-        pm.setPermissions(Collections.singletonList(permission));
-
-        return pm;
+        return result;
     }
 
     /**
-     * @see org.apache.chemistry.opencmis.commons.spi.RepositoryService#getRepositoryInfo(java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * Gets the repository information for this repository.<p>
+     * 
+     * @param extension the extension data 
+     * 
+     * @return the repository info
      */
     public RepositoryInfo getRepositoryInfo(ExtensionsData extension) {
 
@@ -830,40 +875,6 @@ public class CmsCmisRepository {
         aclCapability.setSupportedPermissions(SupportedPermissions.BASIC);
         aclCapability.setAclPropagation(AclPropagation.OBJECTONLY);
 
-        // permissions
-        List<PermissionDefinition> permissions = new ArrayList<PermissionDefinition>();
-        permissions.add(createPermission(CMIS_READ, "Read"));
-        permissions.add(createPermission(CMIS_WRITE, "Write"));
-        permissions.add(createPermission(CMIS_ALL, "All"));
-        aclCapability.setPermissionDefinitionData(permissions);
-
-        // mapping
-        List<PermissionMapping> list = new ArrayList<PermissionMapping>();
-        list.add(createMapping(PermissionMapping.CAN_CREATE_DOCUMENT_FOLDER, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_CREATE_FOLDER_FOLDER, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_DELETE_CONTENT_DOCUMENT, CMIS_WRITE));
-        list.add(createMapping(PermissionMapping.CAN_DELETE_OBJECT, CMIS_ALL));
-        list.add(createMapping(PermissionMapping.CAN_DELETE_TREE_FOLDER, CMIS_ALL));
-        list.add(createMapping(PermissionMapping.CAN_GET_ACL_OBJECT, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_GET_ALL_VERSIONS_VERSION_SERIES, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_GET_CHILDREN_FOLDER, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_GET_DESCENDENTS_FOLDER, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_GET_FOLDER_PARENT_OBJECT, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_GET_PARENTS_FOLDER, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_GET_PROPERTIES_OBJECT, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_MOVE_OBJECT, CMIS_WRITE));
-        list.add(createMapping(PermissionMapping.CAN_MOVE_SOURCE, CMIS_READ));
-        list.add(createMapping(PermissionMapping.CAN_MOVE_TARGET, CMIS_WRITE));
-        list.add(createMapping(PermissionMapping.CAN_SET_CONTENT_DOCUMENT, CMIS_WRITE));
-        list.add(createMapping(PermissionMapping.CAN_UPDATE_PROPERTIES_OBJECT, CMIS_WRITE));
-        list.add(createMapping(PermissionMapping.CAN_VIEW_CONTENT_OBJECT, CMIS_READ));
-        Map<String, PermissionMapping> map = new LinkedHashMap<String, PermissionMapping>();
-        for (PermissionMapping pm : list) {
-            map.put(pm.getKey(), pm);
-        }
-        aclCapability.setPermissionMappingData(map);
-
-        //repositoryInfo.setAclCapabilities(aclCapability);
         return repositoryInfo;
     }
 
@@ -948,7 +959,7 @@ public class CmsCmisRepository {
 
             // set object info of the the folder
             if (context.isObjectInfoRequired()) {
-                compileObjectType(context, folder, null, false, false, objectInfos);
+                makeObjectData(context, cms, folder, null, false, false, objectInfos);
             }
 
             // prepare result
@@ -976,7 +987,7 @@ public class CmsCmisRepository {
 
                 // build and add child object
                 ObjectInFolderDataImpl objectInFolder = new ObjectInFolderDataImpl();
-                objectInFolder.setObject(compileObjectType(context, child, filterCollection, iaa, false, objectInfos));
+                objectInFolder.setObject(makeObjectData(context, cms, child, filterCollection, iaa, false, objectInfos));
                 if (ips) {
                     objectInFolder.setPathSegment(child.getName());
                 }
@@ -1004,11 +1015,18 @@ public class CmsCmisRepository {
         return result;
     }
 
+    private boolean hasChildren(CmsObject cms, CmsResource resource) throws CmsException {
+
+        return !cms.getFilesInFolder(cms.getSitePath(resource), CmsResourceFilter.ALL).isEmpty()
+            || !cms.getSubFolders(cms.getSitePath(resource), CmsResourceFilter.ALL).isEmpty();
+    }
+
     /**
      * Gather the children of a folder.
      */
     private void gatherDescendants(
         CallContext context,
+        CmsObject cms,
         CmsResource folder,
         List<ObjectInFolderContainer> list,
         boolean foldersOnly,
@@ -1019,7 +1037,6 @@ public class CmsCmisRepository {
         ObjectInfoHandler objectInfos) {
 
         try {
-            CmsObject cms = getCmsObject(context);
             List<CmsResource> children = getChildren(cms, folder);
             Collections.sort(children, new Comparator<CmsResource>() {
 
@@ -1038,8 +1055,9 @@ public class CmsCmisRepository {
 
                 // add to list
                 ObjectInFolderDataImpl objectInFolder = new ObjectInFolderDataImpl();
-                objectInFolder.setObject(compileObjectType(
+                objectInFolder.setObject(makeObjectData(
                     context,
+                    cms,
                     child,
                     filter,
                     includeAllowableActions,
@@ -1059,6 +1077,7 @@ public class CmsCmisRepository {
                     container.setChildren(new ArrayList<ObjectInFolderContainer>());
                     gatherDescendants(
                         context,
+                        cms,
                         child,
                         container.getChildren(),
                         foldersOnly,
@@ -1114,12 +1133,12 @@ public class CmsCmisRepository {
 
             // set object info of the the folder
             if (context.isObjectInfoRequired()) {
-                compileObjectType(context, folder, null, false, false, objectInfos);
+                makeObjectData(context, cms, folder, null, false, false, objectInfos);
             }
 
             // get the tree
             List<ObjectInFolderContainer> result = new ArrayList<ObjectInFolderContainer>();
-            gatherDescendants(context, folder, result, foldersOnly, d, filterCollection, iaa, ips, objectInfos);
+            gatherDescendants(context, cms, folder, result, foldersOnly, d, filterCollection, iaa, ips, objectInfos);
 
             return result;
         } catch (CmsException e) {
@@ -1160,12 +1179,12 @@ public class CmsCmisRepository {
 
             // set object info of the the object
             if (context.isObjectInfoRequired()) {
-                compileObjectType(context, file, null, false, false, objectInfos);
+                makeObjectData(context, cms, file, null, false, false, objectInfos);
             }
 
             // get parent folder
             CmsResource parent = cms.readParentFolder(file.getStructureId());
-            ObjectData object = compileObjectType(context, parent, filterCollection, iaa, false, objectInfos);
+            ObjectData object = makeObjectData(context, cms, parent, filterCollection, iaa, false, objectInfos);
 
             ObjectParentDataImpl result = new ObjectParentDataImpl();
             result.setObject(object);
@@ -1228,7 +1247,7 @@ public class CmsCmisRepository {
      */
     public String createDocument(
         CallContext context,
-        Properties properties,
+        Properties propertiesObj,
         String folderId,
         ContentStream contentStream,
         VersioningState versioningState,
@@ -1237,7 +1256,68 @@ public class CmsCmisRepository {
         Acl removeAces,
         ExtensionsData extension) {
 
-        throw new CmisNotSupportedException("Not supported!");
+        String mimetype = contentStream.getMimeType();
+        String streamName = contentStream.getFileName();
+
+        if ((addAces != null) || (removeAces != null)) {
+            throw new CmisConstraintException("createDocument: ACEs not allowed");
+        }
+
+        if (contentStream == null) {
+            throw new CmisConstraintException("createDocument: no content stream given");
+        }
+
+        try {
+            CmsObject cms = getCmsObject(context);
+            Map<String, PropertyData<?>> properties = propertiesObj.getProperties();
+            String newDocName = (String)properties.get(PropertyIds.NAME).getFirstValue();
+            String defaultType = OpenCms.getResourceManager().getDefaultTypeForName(newDocName).getTypeName();
+            String resTypeName = getResourceTypeFromProperties(properties, defaultType);
+            I_CmsResourceType cmsResourceType = OpenCms.getResourceManager().getResourceType(resTypeName);
+            if (cmsResourceType.isFolder()) {
+                throw new CmisConstraintException("Not a document type: " + resTypeName);
+            }
+            List<CmsProperty> cmsProperties = getOpenCmsProperties(properties);
+            checkResourceName(newDocName);
+            InputStream stream = contentStream.getStream();
+            byte[] content = CmsFileUtil.readFully(stream);
+            CmsUUID parentFolderId = new CmsUUID(folderId);
+            CmsResource parentFolder = cms.readResource(parentFolderId);
+            String newFolderPath = CmsStringUtil.joinPaths(parentFolder.getRootPath(), newDocName);
+            try {
+                CmsResource newDocument = cms.createResource(
+                    newFolderPath,
+                    cmsResourceType.getTypeId(),
+                    content,
+                    cmsProperties);
+                cms.unlockResource(newDocument.getRootPath());
+                return newDocument.getStructureId().toString();
+            } catch (CmsVfsResourceAlreadyExistsException e) {
+                throw new CmisNameConstraintViolationException(e.getLocalizedMessage(), e);
+            }
+        } catch (CmsException e) {
+            handleCmsException(e);
+            return null;
+        } catch (IOException e) {
+            throw new CmisRuntimeException(e.getLocalizedMessage(), e);
+        }
+    }
+
+    protected List<CmsProperty> getOpenCmsProperties(Map<String, PropertyData<?>> properties) {
+
+        List<CmsProperty> cmsProperties = new ArrayList<CmsProperty>();
+        for (Map.Entry<String, PropertyData<?>> entry : properties.entrySet()) {
+            String propId = entry.getKey();
+            if (propId.startsWith(CmsCmisTypeManager.PROPERTY_PREFIX)) {
+                String propName = propId.substring(CmsCmisTypeManager.PROPERTY_PREFIX.length());
+                String value = (String)entry.getValue().getFirstValue();
+                if (value == null) {
+                    value = "";
+                }
+                cmsProperties.add(new CmsProperty(propName, value, null));
+            }
+        }
+        return cmsProperties;
     }
 
     /**
@@ -1246,7 +1326,7 @@ public class CmsCmisRepository {
     public String createDocumentFromSource(
         CallContext context,
         String sourceId,
-        Properties properties,
+        Properties propertiesObj,
         String folderId,
         VersioningState versioningState,
         List<String> policies,
@@ -1254,7 +1334,60 @@ public class CmsCmisRepository {
         Acl removeAces,
         ExtensionsData extension) {
 
-        throw new CmisNotSupportedException("Not supported!");
+        if ((addAces != null) || (removeAces != null)) {
+            throw new CmisConstraintException("createDocument: ACEs not allowed");
+        }
+
+        try {
+            CmsObject cms = getCmsObject(context);
+            Map<String, PropertyData<?>> properties = propertiesObj.getProperties();
+            String resTypeName = getResourceTypeFromProperties(properties, CmsResourceTypePlain.getStaticTypeName());
+            I_CmsResourceType cmsResourceType = OpenCms.getResourceManager().getResourceType(resTypeName);
+            List<CmsProperty> cmsProperties = getOpenCmsProperties(properties);
+            String newDocName = (String)properties.get(PropertyIds.NAME).getFirstValue();
+            checkResourceName(newDocName);
+            CmsUUID parentFolderId = new CmsUUID(folderId);
+            CmsResource parentFolder = cms.readResource(parentFolderId);
+            String targetPath = CmsStringUtil.joinPaths(parentFolder.getRootPath(), newDocName);
+            CmsUUID sourceUuid = new CmsUUID(sourceId);
+            CmsResource source = cms.readResource(sourceUuid);
+            String sourcePath = source.getRootPath();
+            try {
+                cms.copyResource(sourcePath, targetPath);
+            } catch (CmsVfsResourceAlreadyExistsException e) {
+                throw new CmisNameConstraintViolationException(e.getLocalizedMessage(), e);
+            }
+            CmsResource targetResource = cms.readResource(targetPath);
+            cms.unlockResource(targetResource);
+            boolean wasLocked = ensureLock(cms, targetResource);
+            cms.writePropertyObjects(targetResource, cmsProperties);
+            if (wasLocked) {
+                cms.unlockResource(targetResource);
+            }
+            return targetResource.getStructureId().toString();
+        } catch (CmsException e) {
+            handleCmsException(e);
+            return null;
+        }
+    }
+
+    protected String getResourceTypeFromProperties(Map<String, PropertyData<?>> properties, String defaultValue) {
+
+        PropertyData<?> typeProp = properties.get(CmsCmisTypeManager.PROPERTY_RESOURCE_TYPE);
+        String resTypeName = defaultValue;
+        if (typeProp != null) {
+            resTypeName = (String)typeProp.getFirstValue();
+        }
+        return resTypeName;
+    }
+
+    private void checkResourceName(String name) {
+
+        try {
+            CmsResource.checkResourceName(name);
+        } catch (CmsIllegalArgumentException e) {
+            throw new CmisNameConstraintViolationException(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
@@ -1262,14 +1395,46 @@ public class CmsCmisRepository {
      */
     public String createFolder(
         CallContext context,
-        Properties properties,
+        Properties propertiesObj,
         String folderId,
         List<String> policies,
         Acl addAces,
         Acl removeAces,
         ExtensionsData extension) {
 
-        throw new CmisNotSupportedException("Not supported!");
+        if ((addAces != null) || (removeAces != null)) {
+            throw new CmisConstraintException("createFolder: ACEs not allowed");
+        }
+
+        try {
+            CmsObject cms = getCmsObject(context);
+            Map<String, PropertyData<?>> properties = propertiesObj.getProperties();
+            String resTypeName = getResourceTypeFromProperties(properties, CmsResourceTypeFolder.getStaticTypeName());
+            I_CmsResourceType cmsResourceType = OpenCms.getResourceManager().getResourceType(resTypeName);
+            if (!cmsResourceType.isFolder()) {
+                throw new CmisConstraintException("Invalid folder type: " + resTypeName);
+            }
+            List<CmsProperty> cmsProperties = getOpenCmsProperties(properties);
+            String newFolderName = (String)properties.get(PropertyIds.NAME).getFirstValue();
+            checkResourceName(newFolderName);
+            CmsUUID parentFolderId = new CmsUUID(folderId);
+            CmsResource parentFolder = cms.readResource(parentFolderId);
+            String newFolderPath = CmsStringUtil.joinPaths(parentFolder.getRootPath(), newFolderName);
+            try {
+                CmsResource newFolder = cms.createResource(
+                    newFolderPath,
+                    cmsResourceType.getTypeId(),
+                    null,
+                    cmsProperties);
+                cms.unlockResource(newFolder);
+                return newFolder.getStructureId().toString();
+            } catch (CmsVfsResourceAlreadyExistsException e) {
+                throw new CmisNameConstraintViolationException(e.getLocalizedMessage(), e);
+            }
+        } catch (CmsException e) {
+            handleCmsException(e);
+            return null;
+        }
     }
 
     /**
@@ -1311,7 +1476,7 @@ public class CmsCmisRepository {
             CmsObject cms = getCmsObject(context);
             CmsUUID structureId = new CmsUUID(objectId);
             CmsResource file = cms.readResource(structureId);
-            return compileAllowableActions(context, file);
+            return makeAllowableActions(cms, file);
         } catch (CmsException e) {
             handleCmsException(e);
             return null;
@@ -1351,7 +1516,7 @@ public class CmsCmisRepository {
             Set<String> filterCollection = splitFilter(filter);
 
             // gather properties
-            return compileObjectType(context, file, filterCollection, iaa, iacl, objectInfos);
+            return makeObjectData(context, cms, file, filterCollection, iaa, iacl, objectInfos);
         } catch (CmsException e) {
             handleCmsException(e);
             return null;
@@ -1424,7 +1589,14 @@ public class CmsCmisRepository {
             CmsObject cms = getCmsObject(context);
             CmsResource file = cms.readResource(path);
 
-            return compileObjectType(context, file, filterCollection, includeAllowableActions, includeAcl, objectInfos);
+            return makeObjectData(
+                context,
+                cms,
+                file,
+                filterCollection,
+                includeAllowableActions,
+                includeAcl,
+                objectInfos);
 
         } catch (CmsException e) {
             handleCmsException(e);
@@ -1481,8 +1653,33 @@ public class CmsCmisRepository {
         Properties properties,
         ExtensionsData extension) {
 
-        throw new CmisNotSupportedException("Not supported!");
+        try {
 
+            CmsObject cms = getCmsObject(context);
+            CmsUUID structureId = new CmsUUID(objectId.getValue());
+            CmsResource resource = cms.readResource(structureId);
+            Map<String, PropertyData<?>> propertyMap = properties.getProperties();
+            List<CmsProperty> cmsProperties = getOpenCmsProperties(propertyMap);
+            boolean wasLocked = ensureLock(cms, resource);
+            try {
+                cms.writePropertyObjects(resource, cmsProperties);
+                PropertyData<String> nameProperty = (PropertyData<String>)propertyMap.get(PropertyIds.NAME);
+                if (nameProperty != null) {
+                    String newName = nameProperty.getFirstValue();
+                    checkResourceName(newName);
+                    String parentFolder = CmsResource.getParentFolder(resource.getRootPath());
+                    String newPath = CmsStringUtil.joinPaths(parentFolder, newName);
+                    cms.moveResource(resource.getRootPath(), newPath);
+                    resource = cms.readResource(resource.getStructureId());
+                }
+            } finally {
+                if (wasLocked) {
+                    cms.unlockResource(resource);
+                }
+            }
+        } catch (CmsException e) {
+            handleCmsException(e);
+        }
     }
 
     /**
@@ -1495,8 +1692,19 @@ public class CmsCmisRepository {
         String sourceFolderId,
         ExtensionsData extension) {
 
-        throw new CmisNotSupportedException("Not supported!");
-
+        try {
+            CmsObject cms = getCmsObject(context);
+            CmsUUID structureId = new CmsUUID(objectId.getValue());
+            CmsUUID targetStructureId = new CmsUUID(targetFolderId);
+            CmsResource targetFolder = cms.readResource(targetStructureId);
+            CmsResource resourceToMove = cms.readResource(structureId);
+            String name = CmsResource.getName(resourceToMove.getRootPath());
+            String newPath = CmsStringUtil.joinPaths(targetFolder.getRootPath(), name);
+            boolean wasLocked = ensureLock(cms, resourceToMove);
+            cms.moveResource(resourceToMove.getRootPath(), newPath);
+        } catch (CmsException e) {
+            handleCmsException(e);
+        }
     }
 
     /**
@@ -1504,8 +1712,21 @@ public class CmsCmisRepository {
      */
     public void deleteObject(CallContext context, String objectId, Boolean allVersions, ExtensionsData extension) {
 
-        throw new CmisNotSupportedException("Not supported!");
-
+        try {
+            CmsObject cms = getCmsObject(context);
+            CmsUUID structureId = new CmsUUID(objectId);
+            CmsResource resource = cms.readResource(structureId);
+            if (resource.isFolder()) {
+                boolean isLeaf = !hasChildren(cms, resource);
+                if (!isLeaf) {
+                    throw new CmisConstraintException("Only leaf resources can be deleted.");
+                }
+            }
+            ensureLock(cms, resource);
+            cms.deleteResource(resource.getRootPath(), CmsResource.DELETE_PRESERVE_SIBLINGS);
+        } catch (CmsException e) {
+            handleCmsException(e);
+        }
     }
 
     /**
@@ -1519,7 +1740,23 @@ public class CmsCmisRepository {
         Boolean continueOnFailure,
         ExtensionsData extension) {
 
-        throw new CmisNotSupportedException("Not supported!");
+        try {
+
+            FailedToDeleteDataImpl result = new FailedToDeleteDataImpl();
+            result.setIds(new ArrayList<String>());
+            CmsObject cms = getCmsObject(context);
+            CmsUUID structureId = new CmsUUID(folderId);
+            CmsResource folder = cms.readResource(structureId);
+            if (!folder.isFolder()) {
+                throw new CmisConstraintException("deleteTree can only be used on folders.");
+            }
+            ensureLock(cms, folder);
+            cms.deleteResource(folder.getRootPath(), CmsResource.DELETE_PRESERVE_SIBLINGS);
+            return result;
+        } catch (CmsException e) {
+            handleCmsException(e);
+            return null;
+        }
     }
 
     private boolean ensureLock(CmsObject cms, CmsResource resource) throws CmsException {
@@ -1813,48 +2050,9 @@ public class CmsCmisRepository {
 
     /**
      * 
-     * @see org.apache.chemistry.opencmis.commons.server.CmisService#create(java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, org.apache.chemistry.opencmis.commons.data.ContentStream, org.apache.chemistry.opencmis.commons.enums.VersioningState, java.util.List, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
-     */
-    public String create(
-        CallContext context,
-        Properties properties,
-        String folderId,
-        ContentStream contentStream,
-        VersioningState versioningState,
-        List<String> policies,
-        ExtensionsData extension) {
-
-        throw new CmisNotSupportedException("Not supported!");
-    }
-
-    /**
-     * 
-     * @see org.apache.chemistry.opencmis.commons.server.CmisService#deleteObjectOrCancelCheckOut(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
-     */
-    public void deleteObjectOrCancelCheckOut(
-        CallContext context,
-        String objectId,
-        Boolean allVersions,
-        ExtensionsData extension) {
-
-        throw new CmisNotSupportedException("Not supported!");
-
-    }
-
-    /**
-     * 
      * @see org.apache.chemistry.opencmis.commons.server.CmisService#applyAcl(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
      */
     public Acl applyAcl(CallContext context, String objectId, Acl aces, AclPropagation aclPropagation) {
-
-        throw new CmisNotSupportedException("Not supported!");
-    }
-
-    /**
-     * 
-     * @see org.apache.chemistry.opencmis.commons.server.CmisService#getObjectInfo(java.lang.String, java.lang.String)
-     */
-    public ObjectInfo getObjectInfo(CallContext context, String objectId) {
 
         throw new CmisNotSupportedException("Not supported!");
     }

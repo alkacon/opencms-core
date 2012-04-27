@@ -58,8 +58,6 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.RelationshipTypeDe
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.TypeDefinitionContainerImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.TypeDefinitionListImpl;
 import org.apache.chemistry.opencmis.commons.server.CallContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Type Manager.
@@ -77,13 +75,22 @@ public class CmsCmisTypeManager {
 
     private static final String NAMESPACE = "http://opencms.org/opencms-cmis";
 
-    private static final Log log = LogFactory.getLog(CmsCmisTypeManager.class);
-
+    /** The internal map of type definitions. */
     private Map<String, TypeDefinitionContainerImpl> types;
+
+    /** The internal list of type definitions. */
     private List<TypeDefinitionContainer> typesList;
 
+    /** The admin CMS context. */
     private CmsObject m_adminCms;
 
+    /**
+     * Creates a new type manager instance.<p>
+     * 
+     * @param adminCms a CMS context with admin privileges 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public CmsCmisTypeManager(CmsObject adminCms)
     throws CmsException {
 
@@ -113,17 +120,17 @@ public class CmsCmisTypeManager {
         // folder type
         FolderTypeDefinitionImpl folderType = new FolderTypeDefinitionImpl();
         folderType.setBaseTypeId(BaseTypeId.CMIS_FOLDER);
-        folderType.setIsControllableAcl(false);
-        folderType.setIsControllablePolicy(false);
-        folderType.setIsCreatable(true);
+        folderType.setIsControllableAcl(Boolean.FALSE);
+        folderType.setIsControllablePolicy(Boolean.FALSE);
+        folderType.setIsCreatable(Boolean.TRUE);
         folderType.setDescription("Folder");
         folderType.setDisplayName("Folder");
-        folderType.setIsFileable(true);
-        folderType.setIsFulltextIndexed(false);
-        folderType.setIsIncludedInSupertypeQuery(true);
+        folderType.setIsFileable(Boolean.TRUE);
+        folderType.setIsFulltextIndexed(Boolean.FALSE);
+        folderType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
         folderType.setLocalName("Folder");
         folderType.setLocalNamespace(NAMESPACE);
-        folderType.setIsQueryable(false);
+        folderType.setIsQueryable(Boolean.FALSE);
         folderType.setQueryName("cmis:folder");
         folderType.setId(FOLDER_TYPE_ID);
 
@@ -136,13 +143,13 @@ public class CmsCmisTypeManager {
         // document type
         DocumentTypeDefinitionImpl documentType = new DocumentTypeDefinitionImpl();
         documentType.setBaseTypeId(BaseTypeId.CMIS_DOCUMENT);
-        documentType.setIsControllableAcl(false);
-        documentType.setIsControllablePolicy(false);
+        documentType.setIsControllableAcl(Boolean.FALSE);
+        documentType.setIsControllablePolicy(Boolean.FALSE);
         documentType.setIsCreatable(true);
         documentType.setDescription("Document");
         documentType.setDisplayName("Document");
-        documentType.setIsFileable(true);
-        documentType.setIsFulltextIndexed(false);
+        documentType.setIsFileable(Boolean.TRUE);
+        documentType.setIsFulltextIndexed(Boolean.FALSE);
         documentType.setIsIncludedInSupertypeQuery(true);
         documentType.setLocalName("Document");
         documentType.setLocalNamespace(NAMESPACE);
@@ -151,7 +158,7 @@ public class CmsCmisTypeManager {
         documentType.setId(DOCUMENT_TYPE_ID);
 
         documentType.setIsVersionable(false);
-        documentType.setContentStreamAllowed(ContentStreamAllowed.ALLOWED);
+        documentType.setContentStreamAllowed(ContentStreamAllowed.REQUIRED);
 
         addBasePropertyDefinitions(documentType);
         addDocumentPropertyDefinitions(documentType);
@@ -162,13 +169,13 @@ public class CmsCmisTypeManager {
         // relationship types
         RelationshipTypeDefinitionImpl relationshipType = new RelationshipTypeDefinitionImpl();
         relationshipType.setBaseTypeId(BaseTypeId.CMIS_RELATIONSHIP);
-        relationshipType.setIsControllableAcl(false);
-        relationshipType.setIsControllablePolicy(false);
-        relationshipType.setIsCreatable(false);
+        relationshipType.setIsControllableAcl(Boolean.FALSE);
+        relationshipType.setIsControllablePolicy(Boolean.FALSE);
+        relationshipType.setIsCreatable(Boolean.FALSE);
         relationshipType.setDescription("Relationship");
         relationshipType.setDisplayName("Relationship");
         relationshipType.setIsFileable(false);
-        relationshipType.setIsIncludedInSupertypeQuery(true);
+        relationshipType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
         relationshipType.setLocalName("Relationship");
         relationshipType.setLocalNamespace(NAMESPACE);
         relationshipType.setIsQueryable(false);
@@ -183,16 +190,16 @@ public class CmsCmisTypeManager {
         // policy type
         PolicyTypeDefinitionImpl policyType = new PolicyTypeDefinitionImpl();
         policyType.setBaseTypeId(BaseTypeId.CMIS_POLICY);
-        policyType.setIsControllableAcl(false);
-        policyType.setIsControllablePolicy(false);
-        policyType.setIsCreatable(false);
+        policyType.setIsControllableAcl(Boolean.FALSE);
+        policyType.setIsControllablePolicy(Boolean.FALSE);
+        policyType.setIsCreatable(Boolean.FALSE);
         policyType.setDescription("Policy");
         policyType.setDisplayName("Policy");
-        policyType.setIsFileable(false);
-        policyType.setIsIncludedInSupertypeQuery(true);
+        policyType.setIsFileable(Boolean.FALSE);
+        policyType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
         policyType.setLocalName("Policy");
         policyType.setLocalNamespace(NAMESPACE);
-        policyType.setIsQueryable(false);
+        policyType.setIsQueryable(Boolean.FALSE);
         policyType.setQueryName("cmis:policy");
         policyType.setId(POLICY_TYPE_ID);
 
@@ -218,6 +225,13 @@ public class CmsCmisTypeManager {
             Updatability.ONCREATE,
             false,
             true));
+    }
+
+    private static AbstractPropertyDefinition<?> queryableAndOrderable(AbstractPropertyDefinition<?> propDef) {
+
+        propDef.setIsQueryable(Boolean.TRUE);
+        propDef.setIsOrderable(Boolean.TRUE);
+        return propDef;
     }
 
     private static void addBasePropertyDefinitions(AbstractTypeDefinition type) {
@@ -258,11 +272,11 @@ public class CmsCmisTypeManager {
             "Name",
             PropertyType.STRING,
             Cardinality.SINGLE,
-            Updatability.ONCREATE,
+            Updatability.READWRITE,
             false,
             true));
 
-        type.addPropertyDefinition(createPropDef(
+        type.addPropertyDefinition(queryableAndOrderable(createPropDef(
             PropertyIds.CREATED_BY,
             "Created By",
             "Created By",
@@ -270,9 +284,9 @@ public class CmsCmisTypeManager {
             Cardinality.SINGLE,
             Updatability.READONLY,
             false,
-            false));
+            false)));
 
-        type.addPropertyDefinition(createPropDef(
+        type.addPropertyDefinition(queryableAndOrderable(createPropDef(
             PropertyIds.CREATION_DATE,
             "Creation Date",
             "Creation Date",
@@ -280,9 +294,9 @@ public class CmsCmisTypeManager {
             Cardinality.SINGLE,
             Updatability.READONLY,
             false,
-            false));
+            false)));
 
-        type.addPropertyDefinition(createPropDef(
+        type.addPropertyDefinition(queryableAndOrderable(createPropDef(
             PropertyIds.LAST_MODIFIED_BY,
             "Last Modified By",
             "Last Modified By",
@@ -290,9 +304,9 @@ public class CmsCmisTypeManager {
             Cardinality.SINGLE,
             Updatability.READONLY,
             false,
-            false));
+            false)));
 
-        type.addPropertyDefinition(createPropDef(
+        type.addPropertyDefinition(queryableAndOrderable(createPropDef(
             PropertyIds.LAST_MODIFICATION_DATE,
             "Last Modification Date",
             "Last Modification Date",
@@ -300,7 +314,7 @@ public class CmsCmisTypeManager {
             Cardinality.SINGLE,
             Updatability.READONLY,
             false,
-            false));
+            false)));
 
         type.addPropertyDefinition(createPropDef(
             PropertyIds.CHANGE_TOKEN,
@@ -322,7 +336,7 @@ public class CmsCmisTypeManager {
             cmsDef.getName(),
             PropertyType.STRING,
             Cardinality.SINGLE,
-            Updatability.READONLY,
+            Updatability.READWRITE,
             false,
             false);
     }
@@ -410,7 +424,7 @@ public class CmsCmisTypeManager {
             Cardinality.SINGLE,
             Updatability.READONLY,
             false,
-            true));
+            false));
 
         type.addPropertyDefinition(createPropDef(
             PropertyIds.VERSION_SERIES_ID,
@@ -420,7 +434,7 @@ public class CmsCmisTypeManager {
             Cardinality.SINGLE,
             Updatability.READONLY,
             false,
-            true));
+            false));
 
         type.addPropertyDefinition(createPropDef(
             PropertyIds.IS_VERSION_SERIES_CHECKED_OUT,
@@ -506,7 +520,7 @@ public class CmsCmisTypeManager {
     /**
      * Creates a property definition object.
      */
-    private static PropertyDefinition<?> createPropDef(
+    private static AbstractPropertyDefinition<?> createPropDef(
         String id,
         String displayName,
         String description,
@@ -559,7 +573,6 @@ public class CmsCmisTypeManager {
         result.setIsQueryable(Boolean.FALSE);
         result.setIsOrderable(Boolean.FALSE);
         result.setQueryName(id);
-
         return result;
     }
 

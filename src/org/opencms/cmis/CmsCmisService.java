@@ -55,8 +55,15 @@ import org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService;
 import org.apache.chemistry.opencmis.commons.server.CallContext;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
 
+/**
+ * The CMIS service class for OpenCms repositories.<p>
+ * 
+ * Typically, a new instance of this class will be created for every CMIS service request. This class delegates the
+ * actual work to the CmsCmisRepository class.<p>
+ */
 public class CmsCmisService extends AbstractCmisService {
 
+    /** The repository manager. */
     protected CmsCmisRepositoryManager m_repositoryManager;
 
     public CmsCmisService(CmsCmisRepositoryManager repoManager) {
@@ -79,6 +86,7 @@ public class CmsCmisService extends AbstractCmisService {
      * @param extension
      * @see org.apache.chemistry.opencmis.commons.spi.MultiFilingService#addObjectToFolder(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void addObjectToFolder(
         String repositoryId,
         String objectId,
@@ -90,30 +98,18 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param policyId
-     * @param objectId
-     * @param extension
-     * @see org.apache.chemistry.opencmis.commons.spi.PolicyService#applyPolicy(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#applyPolicy(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void applyPolicy(String repositoryId, String policyId, String objectId, ExtensionsData extension) {
 
         getRepository(repositoryId).applyPolicy(m_callContext, policyId, objectId, extension);
     }
 
     /**
-     * @param repositoryId
-     * @param properties
-     * @param folderId
-     * @param contentStream
-     * @param versioningState
-     * @param policies
-     * @param addAces
-     * @param removeAces
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#createDocument(java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, org.apache.chemistry.opencmis.commons.data.ContentStream, org.apache.chemistry.opencmis.commons.enums.VersioningState, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#createDocument(java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, org.apache.chemistry.opencmis.commons.data.ContentStream, org.apache.chemistry.opencmis.commons.enums.VersioningState, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public String createDocument(
         String repositoryId,
         Properties properties,
@@ -138,18 +134,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param sourceId
-     * @param properties
-     * @param folderId
-     * @param versioningState
-     * @param policies
-     * @param addAces
-     * @param removeAces
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#createDocumentFromSource(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, org.apache.chemistry.opencmis.commons.enums.VersioningState, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#createDocumentFromSource(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, org.apache.chemistry.opencmis.commons.enums.VersioningState, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public String createDocumentFromSource(
         String repositoryId,
         String sourceId,
@@ -174,16 +161,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param properties
-     * @param folderId
-     * @param policies
-     * @param addAces
-     * @param removeAces
-     * @param extension
-     * @return
      * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#createFolder(java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public String createFolder(
         String repositoryId,
         Properties properties,
@@ -204,16 +184,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param properties
-     * @param folderId
-     * @param policies
-     * @param addAces
-     * @param removeAces
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#createPolicy(java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#createPolicy(java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public String createPolicy(
         String repositoryId,
         Properties properties,
@@ -234,15 +207,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param properties
-     * @param policies
-     * @param addAces
-     * @param removeAces
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#createRelationship(java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#createRelationship(java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public String createRelationship(
         String repositoryId,
         Properties properties,
@@ -261,12 +228,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param changeToken
-     * @param extension
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#deleteContentStream(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#deleteContentStream(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void deleteContentStream(
         String repositoryId,
         Holder<String> objectId,
@@ -277,27 +241,31 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param allVersions
-     * @param extension
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#deleteObject(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#deleteObject(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void deleteObject(String repositoryId, String objectId, Boolean allVersions, ExtensionsData extension) {
 
         getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions, extension);
     }
 
     /**
-     * @param repositoryId
-     * @param folderId
-     * @param allVersions
-     * @param unfileObjects
-     * @param continueOnFailure
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#deleteTree(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.UnfileObject, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#deleteObjectOrCancelCheckOut(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
+    public void deleteObjectOrCancelCheckOut(
+        String repositoryId,
+        String objectId,
+        Boolean allVersions,
+        ExtensionsData extension) {
+
+        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions, extension);
+    }
+
+    /**
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#deleteTree(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.UnfileObject, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     */
+    @Override
     public FailedToDeleteData deleteTree(
         String repositoryId,
         String folderId,
@@ -316,25 +284,18 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#getAllowableActions(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getAllowableActions(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public AllowableActions getAllowableActions(String repositoryId, String objectId, ExtensionsData extension) {
 
         return getRepository(repositoryId).getAllowableActions(m_callContext, objectId, extension);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param filter
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.PolicyService#getAppliedPolicies(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getAppliedPolicies(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public List<ObjectData> getAppliedPolicies(
         String repositoryId,
         String objectId,
@@ -345,19 +306,10 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param folderId
-     * @param filter
-     * @param orderBy
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param maxItems
-     * @param skipCount
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.NavigationService#getCheckedOutDocs(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * 
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getCheckedOutDocs(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ObjectList getCheckedOutDocs(
         String repositoryId,
         String folderId,
@@ -384,20 +336,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param folderId
-     * @param filter
-     * @param orderBy
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param includePathSegment
-     * @param maxItems
-     * @param skipCount
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.NavigationService#getChildren(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getChildren(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ObjectInFolderList getChildren(
         String repositoryId,
         String folderId,
@@ -427,17 +368,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param changeLogToken
-     * @param includeProperties
-     * @param filter
-     * @param includePolicyIds
-     * @param includeAcl
-     * @param maxItems
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.DiscoveryService#getContentChanges(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, java.lang.Boolean, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getContentChanges(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, java.lang.Boolean, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ObjectList getContentChanges(
         String repositoryId,
         Holder<String> changeLogToken,
@@ -460,15 +393,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param streamId
-     * @param offset
-     * @param length
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#getContentStream(java.lang.String, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getContentStream(java.lang.String, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ContentStream getContentStream(
         String repositoryId,
         String objectId,
@@ -487,18 +414,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param folderId
-     * @param depth
-     * @param filter
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param includePathSegment
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.NavigationService#getDescendants(java.lang.String, java.lang.String, java.math.BigInteger, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getDescendants(java.lang.String, java.lang.String, java.math.BigInteger, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public List<ObjectInFolderContainer> getDescendants(
         String repositoryId,
         String folderId,
@@ -522,31 +440,18 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param folderId
-     * @param filter
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.NavigationService#getFolderParent(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getFolderParent(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ObjectData getFolderParent(String repositoryId, String folderId, String filter, ExtensionsData extension) {
 
         return getRepository(repositoryId).getFolderParent(m_callContext, folderId, filter, extension, this);
     }
 
     /**
-     * @param repositoryId
-     * @param folderId
-     * @param depth
-     * @param filter
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param includePathSegment
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.NavigationService#getFolderTree(java.lang.String, java.lang.String, java.math.BigInteger, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getFolderTree(java.lang.String, java.lang.String, java.math.BigInteger, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public List<ObjectInFolderContainer> getFolderTree(
         String repositoryId,
         String folderId,
@@ -570,18 +475,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param filter
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param includePolicyIds
-     * @param includeAcl
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#getObject(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getObject(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ObjectData getObject(
         String repositoryId,
         String objectId,
@@ -607,18 +503,9 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @param repositoryId
-     * @param path
-     * @param filter
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param includePolicyIds
-     * @param includeAcl
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#getObjectByPath(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getObjectByPath(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ObjectData getObjectByPath(
         String repositoryId,
         String path,

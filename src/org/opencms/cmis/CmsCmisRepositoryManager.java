@@ -37,10 +37,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class creates the OpenCms repository objects for CMIS and provides access to them via the repository ids.<p>
+ */
 public class CmsCmisRepositoryManager {
 
+    /** The internal map of repositories. */
     private Map<String, CmsCmisRepository> m_repositoryMap = new HashMap<String, CmsCmisRepository>();
 
+    /** 
+     * Initializes the repositories.<p>
+     * 
+     * @param adminCms the admin CMS context 
+     */
     public void initialize(CmsObject adminCms) {
 
         try {
@@ -57,11 +66,22 @@ public class CmsCmisRepositoryManager {
         }
     }
 
+    /**
+     * Gets a collection of all repositories.<p>
+     * 
+     * @return the repositories provided by this object 
+     */
     public Collection<CmsCmisRepository> getRepositories() {
 
         return m_repositoryMap.values();
     }
 
+    /**
+     * Gets a repository with a given id.<p>
+     * 
+     * @param repositoryId the repository id 
+     * @return the repository with the given id 
+     */
     public CmsCmisRepository getRepository(String repositoryId) {
 
         return m_repositoryMap.get(repositoryId);

@@ -1222,7 +1222,7 @@ public final class OpenCmsCore {
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
         }
-        CmsCmisServiceFactory.initializeStatic(adminCms);
+        CmsCmisServiceFactory.initializeRepositories(adminCms);
 
         // now initialize the other managers
         try {
