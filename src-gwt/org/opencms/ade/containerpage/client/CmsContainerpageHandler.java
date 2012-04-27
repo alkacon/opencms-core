@@ -615,9 +615,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             deactivateCurrentButton();
             element.removeEditorClickHandler();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
-                CmsInlineEditor.getInstance().renderInlineEditor(m_controller.getLocale(), element, onClose);
+                CmsInlineEditor.getInstance().openInlineEditor(m_controller.getLocale(), element, onClose);
             } else {
-                CmsInlineEditor.getInstance().openContentEditorDialog(
+                CmsInlineEditor.getInstance().openFormEditor(
                     m_controller.getLocale(),
                     CmsContainerpageController.getServerId(element.getId()),
                     onClose);

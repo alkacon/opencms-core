@@ -32,6 +32,8 @@ import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
 import com.alkacon.vie.shared.I_Type;
 
+import org.opencms.util.CmsUUID;
+
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,9 @@ import java.util.Map;
  * Contains all information needed for editing an XMLContent.<p>
  */
 public class CmsContentDefinition extends ContentDefinition {
+
+    /** The entity id prefix. */
+    private static final String ENTITY_ID_PREFIX = "http://opencms.org/resources/";
 
     /** The available locales. */
     private Map<String, String> m_availableLocales;
@@ -93,6 +98,49 @@ public class CmsContentDefinition extends ContentDefinition {
     protected CmsContentDefinition() {
 
         super();
+    }
+
+    /**
+     * Returns the entity id according to the given UUID.<p>
+     * 
+     * @param uuid the UUID
+     * @param locale the content locale
+     * 
+     * @return the entity id
+     */
+    public static String uuidToEntityId(CmsUUID uuid, String locale) {
+
+        return ENTITY_ID_PREFIX + locale + "/" + uuid.toString();
+    }
+
+    /**
+     * Returns the UUID according to the given entity id.<p>
+     * 
+     * @param entityId the entity id
+     * 
+     * @return the entity id
+     */
+    public static CmsUUID entityIdToUuid(String entityId) {
+
+        if (entityId.startsWith(ENTITY_ID_PREFIX)) {
+            entityId = entityId.substring(entityId.lastIndexOf("/") + 1);
+        }
+        return new CmsUUID(entityId);
+    }
+
+    /**
+     * Extracts the locale from the entity id.<p>
+     * 
+     * @param entityId the entity id
+     * 
+     * @return the locale
+     */
+    public static String getLocaleFromId(String entityId) {
+
+        if (entityId.startsWith(ENTITY_ID_PREFIX)) {
+            return entityId.substring(ENTITY_ID_PREFIX.length(), entityId.lastIndexOf("/"));
+        }
+        return null;
     }
 
     /**

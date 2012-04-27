@@ -27,10 +27,13 @@
 
 package org.opencms.ade.contenteditor.shared.rpc;
 
+import com.alkacon.acacia.shared.Entity;
 import com.alkacon.acacia.shared.rpc.I_ContentService;
 
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.gwt.CmsRpcException;
+
+import java.util.List;
 
 /**
  * The content editor service interface.<p>
@@ -56,12 +59,33 @@ public interface I_CmsContentService extends I_ContentService {
      * Loads the content definition for a given entity.<p>
      * 
      * @param entityId the entity id/URI
-     * @param locale the entity content locale
      * 
-     * @return the content type definition
+     * @return the content definition
      * 
      * @throws Exception if something goes wrong processing the request
      */
-    CmsContentDefinition loadDefinition(String entityId, String locale) throws Exception;
+    CmsContentDefinition loadDefinition(String entityId) throws Exception;
+
+    /**
+     * Loads new entity definition.<p>
+     * This will load the entity representation of a new locale node.<p>
+     * 
+     * @param entityId the entity id/URI
+     * 
+     * @return the content definition
+     * 
+     * @throws Exception if something goes wrong processing the request
+     */
+    CmsContentDefinition loadNewDefinition(String entityId) throws Exception;
+
+    /**
+     * Saves and deletes the given entities.<p>
+     * 
+     * @param changedEntities the changed entities
+     * @param deletedEntities the entity id's to delete
+     * 
+     * @throws Exception if something goes wrong processing the request
+     */
+    void saveAndDeleteEntites(List<Entity> changedEntities, List<String> deletedEntities) throws Exception;
 
 }

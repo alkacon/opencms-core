@@ -40,9 +40,11 @@ import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
@@ -112,20 +114,16 @@ public class CmsEditorBase extends EditorBase {
      * Loads the content definition for the given entity and executes the callback on success.<p>
      * 
      * @param entityId the entity id
-     * @param locale the content locale
      * @param callback the callback
      */
-    public void loadDefinition(
-        final String entityId,
-        final String locale,
-        final I_CmsSimpleCallback<CmsContentDefinition> callback) {
+    public void loadDefinition(final String entityId, final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
 
             @Override
             public void execute() {
 
-                getService().loadDefinition(entityId, locale, this);
+                getService().loadDefinition(entityId, this);
             }
 
             @Override
@@ -139,19 +137,121 @@ public class CmsEditorBase extends EditorBase {
     }
 
     /**
+     * Loads the content definition for the given entity and executes the callback on success.<p>
+     * 
+     * @param entityId the entity id
+     * @param callback the callback
+     */
+    public void loadNewDefinition(final String entityId, final I_CmsSimpleCallback<CmsContentDefinition> callback) {
+
+        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
+
+            @Override
+            public void execute() {
+
+                getService().loadNewDefinition(entityId, this);
+            }
+
+            @Override
+            protected void onResponse(CmsContentDefinition result) {
+
+                registerContentDefinition(result);
+                callback.execute(result);
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Saves the given entities.<p>
+     * 
+     * @param entities the entities to save
+     * @param deletedEntites the deleted entity id's
+     * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
+     * @param callback the call back command
+     */
+    public void saveAndDeleteEntities(
+        final Set<String> entities,
+        final Set<String> deletedEntites,
+        final boolean clearOnSuccess,
+        final Command callback) {
+
+        List<com.alkacon.acacia.shared.Entity> changedEntites = new ArrayList<com.alkacon.acacia.shared.Entity>();
+        for (String entityId : entities) {
+            I_Entity entity = m_vie.getEntity(entityId);
+            if (entity != null) {
+                changedEntites.add(com.alkacon.acacia.shared.Entity.serializeEntity(entity));
+            }
+        }
+        saveAndDeleteEntities(changedEntites, new ArrayList<String>(deletedEntites), clearOnSuccess, callback);
+    }
+
+    /**
+     * Saves the given entities.<p>
+     * 
+     * @param entities the entities to save
+     * @param deletedEntites the deleted entity id's
+     * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
+     * @param callback the call back command
+     */
+    public void saveAndDeleteEntities(
+        final List<com.alkacon.acacia.shared.Entity> entities,
+        final List<String> deletedEntites,
+        final boolean clearOnSuccess,
+        final Command callback) {
+
+        CmsRpcAction<Void> asyncCallback = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                getService().saveAndDeleteEntites(entities, deletedEntites, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+                callback.execute();
+                if (clearOnSuccess) {
+                    destroyFrom(true);
+                }
+            }
+        };
+        asyncCallback.execute();
+    }
+
+    /**
+     * Registers a deep copy of the source entity with the given target entity id.<p>
+     * 
+     * @param sourceEntityId the source entity id
+     * @param targetEntityId the target entity id
+     */
+    public void registerClonedEntity(String sourceEntityId, String targetEntityId) {
+
+        Vie.getInstance().getEntity(sourceEntityId).createDeepCopy(targetEntityId);
+    }
+
+    /**
+     * Removes the given entity from the entity VIE store.<p>
+     * 
+     * @param entityId the entity id
+     */
+    public void unregistereEntity(String entityId) {
+
+        Vie.getInstance().removeEntity(entityId);
+    }
+
+    /**
      * Saves the given entity.<p>
      * 
      * @param entity the entity
-     * @param locale the content locale
      * @param clearOnSuccess <code>true</code> to clear all entities from VIE on success
      * @param callback the callback executed on success
      */
     @Override
-    public void saveEntity(
-        final I_Entity entity,
-        final String locale,
-        final boolean clearOnSuccess,
-        final Command callback) {
+    public void saveEntity(final I_Entity entity, final boolean clearOnSuccess, final Command callback) {
 
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
@@ -159,7 +259,7 @@ public class CmsEditorBase extends EditorBase {
             public void execute() {
 
                 start(0, true);
-                getService().saveEntity(com.alkacon.acacia.shared.Entity.serializeEntity(entity), locale, this);
+                getService().saveEntity(com.alkacon.acacia.shared.Entity.serializeEntity(entity), this);
 
             }
 
@@ -168,7 +268,7 @@ public class CmsEditorBase extends EditorBase {
 
                 callback.execute();
                 if (clearOnSuccess) {
-                    destroyFrom();
+                    destroyFrom(true);
                 }
                 stop(true);
             }

@@ -83,7 +83,6 @@ public class CmsContentEditor extends A_CmsEntryPoint {
         editor.registerContentDefinition(definition);
         final String entityId = definition.getEntityId();
 
-        final String locale = definition.getLocale();
         FlowPanel panel = new FlowPanel();
         RootPanel.get().add(panel);
         final CmsPushButton saveButton = new CmsPushButton();
@@ -92,7 +91,7 @@ public class CmsContentEditor extends A_CmsEntryPoint {
 
             public void onClick(ClickEvent event) {
 
-                editor.saveEntity(entityId, locale, new Command() {
+                editor.saveEntity(entityId, new Command() {
 
                     public void execute() {
 

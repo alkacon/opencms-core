@@ -69,6 +69,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -94,6 +95,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         /** The attribute configurations. */
         private Map<String, AttributeConfiguration> m_attributeConfigurations;
 
+        /** The content handler. */
+        private I_CmsXmlContentHandler m_contentHandler;
+
         /** The content resource. */
         private CmsFile m_file;
 
@@ -105,9 +109,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         /** The registered types. */
         private Map<String, I_Type> m_registeredTypes;
-
-        /** The content handler. */
-        private I_CmsXmlContentHandler m_contentHandler;
 
         /**
          * Constructor.<p>
@@ -300,9 +301,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** The logger for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsContentService.class);
 
-    /** The entity id prefix. */
-    private static final String ENTITY_ID_PREFIX = "http://opencms.org/resources/";
-
     /** The serial version id. */
     private static final long serialVersionUID = 7873052619331296648L;
 
@@ -325,23 +323,53 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * Returns the entity id according to the given UUID.<p>
-     * 
-     * @param uuid the UUID
-     * 
-     * @return the entity id
+     * @see com.alkacon.acacia.shared.rpc.I_ContentService#loadContentDefinition(java.lang.String)
      */
-    public static String uuidToEntityId(CmsUUID uuid) {
+    public ContentDefinition loadContentDefinition(String entityId) throws CmsRpcException {
 
-        return ENTITY_ID_PREFIX + uuid.toString();
+        return loadDefinition(entityId);
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#loadContentDefinition(java.lang.String, java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String)
      */
-    public ContentDefinition loadContentDefinition(String entityId, String locale) throws CmsRpcException {
+    public CmsContentDefinition loadDefinition(String entityId) throws CmsRpcException {
 
-        return loadDefinition(entityId, locale);
+        CmsContentDefinition definition = null;
+        try {
+            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
+            CmsResource resource = getCmsObject().readResource(structureId);
+            Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            definition = readContentDefinition(
+                resource,
+                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
+                contentLocale,
+                false);
+        } catch (Exception e) {
+            error(e);
+        }
+        return definition;
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String)
+     */
+    public CmsContentDefinition loadNewDefinition(String entityId) throws CmsRpcException {
+
+        CmsContentDefinition definition = null;
+        try {
+            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
+            CmsResource resource = getCmsObject().readResource(structureId);
+            Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            definition = readContentDefinition(
+                resource,
+                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
+                contentLocale,
+                true);
+        } catch (Exception e) {
+            error(e);
+        }
+        return definition;
     }
 
     /**
@@ -362,7 +390,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         locale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), resource);
                     }
 
-                    return readContentDefinition(resource, null, locale);
+                    return readContentDefinition(resource, null, locale, false);
                 }
             } catch (Exception e) {
                 error(e);
@@ -373,30 +401,61 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntity(com.alkacon.acacia.shared.Entity, java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntites(java.util.List, java.util.List)
      */
-    public void saveEntity(Entity entity, String locale) throws CmsRpcException {
+    public void saveAndDeleteEntites(List<Entity> changedEntities, List<String> deletedEntities) throws CmsRpcException {
 
-        String entityId = entity.getId();
-        CmsUUID structureId = entityIdToUuid(entityId);
-        CmsObject cms = getCmsObject();
-        try {
-            Locale contentLocale = CmsLocaleManager.getLocale(locale);
-            CmsResource resource = cms.readResource(structureId);
-            ensureLock(resource);
-            CmsFile file = cms.readFile(resource);
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-            if (content.hasLocale(contentLocale)) {
-                content.removeLocale(contentLocale);
-            }
-            content.addLocale(cms, contentLocale);
-            addEntityAttributes(cms, content, "", entity, contentLocale);
-            writeContent(cms, file, content, getFileEncoding(cms, file));
-            tryUnlock(resource);
-        } catch (Exception e) {
-            error(e);
+        CmsUUID structureId = null;
+        if (!changedEntities.isEmpty()) {
+            structureId = CmsContentDefinition.entityIdToUuid(changedEntities.get(0).getId());
         }
+        if ((structureId == null) && !deletedEntities.isEmpty()) {
+            structureId = CmsContentDefinition.entityIdToUuid(deletedEntities.get(0));
+        }
+        if (structureId != null) {
+            CmsObject cms = getCmsObject();
+            try {
+                CmsResource resource = cms.readResource(structureId);
+                ensureLock(resource);
+                CmsFile file = cms.readFile(resource);
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                for (Entity entity : changedEntities) {
+                    String entityId = entity.getId();
+                    Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+                    if (content.hasLocale(contentLocale)) {
+                        content.removeLocale(contentLocale);
+                    }
+                    content.addLocale(cms, contentLocale);
+                    addEntityAttributes(cms, content, "", entity, contentLocale);
+                }
+                for (String deleteId : deletedEntities) {
+                    Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(deleteId));
+                    if (content.hasLocale(contentLocale)) {
+                        content.removeLocale(contentLocale);
+                    }
+                }
+                writeContent(cms, file, content, getFileEncoding(cms, file));
+                tryUnlock(resource);
+            } catch (Exception e) {
+                error(e);
+            }
+        }
+    }
 
+    /**
+     * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntities(java.util.List)
+     */
+    public void saveEntities(List<Entity> entities) throws CmsRpcException {
+
+        saveAndDeleteEntites(entities, Collections.<String> emptyList());
+    }
+
+    /**
+     * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntity(com.alkacon.acacia.shared.Entity)
+     */
+    public void saveEntity(Entity entity) throws CmsRpcException {
+
+        saveEntities(Collections.singletonList(entity));
     }
 
     /**
@@ -570,40 +629,50 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * Returns the UUID according to the given entity id.<p>
-     * 
-     * @param entityId the entity id
-     * 
-     * @return the entity id
-     */
-    private CmsUUID entityIdToUuid(String entityId) {
-
-        if (entityId.startsWith(ENTITY_ID_PREFIX)) {
-            entityId = entityId.substring(ENTITY_ID_PREFIX.length());
-        }
-        return new CmsUUID(entityId);
-    }
-
-    /**
      * Reads the content definition for the given resource and locale.<p>
      * 
      * @param resource the resource
      * @param entityId the entity id
      * @param locale the content locale
+     * @param newLocale if the locale content should be created as new
      * 
      * @return the content definition
      * 
      * @throws CmsException if something goes wrong
      */
-    private CmsContentDefinition readContentDefinition(CmsResource resource, String entityId, Locale locale)
-    throws CmsException {
+    private CmsContentDefinition readContentDefinition(
+        CmsResource resource,
+        String entityId,
+        Locale locale,
+        boolean newLocale) throws CmsException {
 
         CmsObject cms = getCmsObject();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(entityId)) {
-            entityId = uuidToEntityId(resource.getStructureId());
+            entityId = CmsContentDefinition.uuidToEntityId(resource.getStructureId(), locale.toString());
         }
         CmsFile file = cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+
+        TypeVisitor visitor = new TypeVisitor(file, locale);
+        visitor.visitTypes(content.getContentDefinition(), locale);
+        Entity entity = null;
+        if (content.hasLocale(locale) && newLocale) {
+            // a new locale is requested, so remove the present one
+            content.removeLocale(locale);
+        }
+        if (!content.hasLocale(locale)) {
+            content.addLocale(cms, locale);
+        }
+        Element element = content.getLocaleNode(locale);
+        entity = readEntity(
+            content,
+            element,
+            locale,
+            entityId,
+            "",
+            getTypeUri(content.getContentDefinition()),
+            visitor.getTypes());
+
         List<String> contentLocales = new ArrayList<String>();
         for (Locale contentLocale : content.getLocales()) {
             contentLocales.add(contentLocale.toString());
@@ -612,20 +681,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         TreeMap<String, String> availableLocales = new TreeMap<String, String>();
         for (Locale availableLocale : OpenCms.getLocaleManager().getAvailableLocales()) {
             availableLocales.put(availableLocale.toString(), availableLocale.getDisplayName(workplaceLocale));
-        }
-        TypeVisitor visitor = new TypeVisitor(file, locale);
-        visitor.visitTypes(content.getContentDefinition(), locale);
-        Entity entity = null;
-        if (content.hasLocale(locale)) {
-            Element element = content.getLocaleNode(locale);
-            entity = readEntity(
-                content,
-                element,
-                locale,
-                entityId,
-                "",
-                getTypeUri(content.getContentDefinition()),
-                visitor.getTypes());
         }
         String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
         String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
@@ -666,21 +721,4 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         file = cms.writeFile(file);
         return CmsXmlContentFactory.unmarshal(cms, file);
     }
-
-    /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String)
-     */
-    public CmsContentDefinition loadDefinition(String entityId, String locale) throws CmsRpcException {
-
-        CmsContentDefinition definition = null;
-        try {
-            CmsUUID structureId = entityIdToUuid(entityId);
-            CmsResource resource = getCmsObject().readResource(structureId);
-            definition = readContentDefinition(resource, entityId, CmsLocaleManager.getLocale(locale));
-        } catch (Exception e) {
-            error(e);
-        }
-        return definition;
-    }
-
 }
