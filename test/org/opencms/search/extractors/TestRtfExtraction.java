@@ -60,9 +60,14 @@ public class TestRtfExtraction extends TestCase {
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorRtf.getExtractor().extractText(in);
         Map<String, String> items = extractionResult.getContentItems();
-        assertEquals(2, items.size());
+        assertEquals(5, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_AUTHOR));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_TITLE));
+        assertEquals("Alkacon Software – The OpenCms experts", items.get(I_CmsExtractionResult.ITEM_TITLE));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_COMPANY));
+        assertEquals("Alkacon Software", items.get(I_CmsExtractionResult.ITEM_COMPANY));
         String result = extractionResult.getContent();
         assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
 
