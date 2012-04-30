@@ -8,6 +8,7 @@ setSiteRoot "/"
 createFolder "/" "sites/"
 createFolder "/sites/" "default/"
 createFolder "/system/" "lost-found/"
+createFolder "/" "shared/" 
 
 # Apply folder permissions
 chacc "/" "user" "ALL_OTHERS" "+v+r+i"
