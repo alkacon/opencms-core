@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfigurationOldCategories;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -411,6 +412,9 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching for categories");
 
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        assertTrue(index.getFieldConfiguration() instanceof CmsSearchFieldConfigurationOldCategories);
+
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
         List<CmsSearchResult> searchResult;
@@ -445,6 +449,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         searchResult = searchBean.getSearchResult();
         System.out.println("Result sorted by relevance:");
         TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(13, searchResult.size());
 
         Map<String, Integer> categories = searchBean.getSearchResultCategories();
         // make sure categories where found

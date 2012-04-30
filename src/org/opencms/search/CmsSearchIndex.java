@@ -128,12 +128,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         /**
-         * @see org.apache.lucene.index.IndexReader#document(int)
+         * @see org.apache.lucene.index.FilterIndexReader#document(int, org.apache.lucene.document.FieldSelector)
          */
         @Override
-        public Document document(int n) throws CorruptIndexException, IOException {
+        public Document document(int n, FieldSelector fieldSelector) throws CorruptIndexException, IOException {
 
-            return super.document(n, CONTENT_SELECTOR);
+            return super.document(n, getFieldSelector(fieldSelector));
         }
 
         /**
@@ -146,16 +146,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         public synchronized IndexReader reopen() throws CorruptIndexException, IOException {
 
             return m_reader.reopen();
-        }
-
-        /**
-         * @see org.apache.lucene.index.FilterIndexReader#doClose()
-         */
-        @Override
-        protected void doClose() throws IOException {
-
-            super.doClose();
-            m_reader.close();
         }
 
         /**
@@ -175,6 +165,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
          * @see org.apache.lucene.index.IndexReader#doOpenIfChanged(boolean)
          */
         @Override
+        @Deprecated
         protected IndexReader doOpenIfChanged(boolean openReadOnly) throws CorruptIndexException, IOException {
 
             IndexReader result = IndexReader.openIfChanged(m_reader, openReadOnly);
@@ -250,7 +241,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
 
     /** The Lucene Version used to create Query parsers and such. */
-    public static final Version LUCENE_VERSION = Version.LUCENE_35;
+    public static final Version LUCENE_VERSION = Version.LUCENE_36;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
     public static final String MAX_HITS = CmsSearchIndex.class.getName() + ".maxHits";
@@ -287,34 +278,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The use all locale. */
     public static final String USE_ALL_LOCALE = "all";
-
-    /**
-     * Field selector for Lucene that that will ensure the OpenCms default search index fields
-     * {@link CmsSearchField#FIELD_CONTENT} and {@link CmsSearchField#FIELD_CONTENT_BLOB}
-     * are lazy loaded.<p>
-     * 
-     * This is to optimize performance - these 2 fields will be rather large especially for extracted
-     * binary documents like PDF, MS Office etc. By using lazy fields the data is only read when it is 
-     * actually used.<p>
-     */
-    protected static final FieldSelector CONTENT_SELECTOR = new FieldSelector() {
-
-        /** Required for safe serialization. */
-        private static final long serialVersionUID = 2785064181424297998L;
-
-        /**
-         * Makes the content fields lazy.<p>
-         * 
-         * @see org.apache.lucene.document.FieldSelector#accept(java.lang.String)
-         */
-        public FieldSelectorResult accept(String fieldName) {
-
-            if (CmsSearchField.FIELD_CONTENT.equals(fieldName) || CmsSearchField.FIELD_CONTENT_BLOB.equals(fieldName)) {
-                return FieldSelectorResult.LAZY_LOAD;
-            }
-            return FieldSelectorResult.LOAD;
-        }
-    };
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
@@ -510,6 +473,45 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         // sort the result, makes the range better readable in the debugger
         Collections.sort(result);
         return result;
+    }
+
+    /**
+     * Returns a field selector for Lucene that that will ensure the OpenCms default search index fields
+     * {@link CmsSearchField#FIELD_CONTENT} and {@link CmsSearchField#FIELD_CONTENT_BLOB}
+     * are lazy loaded.<p>
+     * 
+     * This is to optimize performance - these 2 fields will be rather large especially for extracted
+     * binary documents like PDF, MS Office etc. By using lazy fields the data is only read when it is 
+     * actually used.<p>
+     * 
+     * @param base the base field selector 
+     * 
+     * @return a field selector that that will ensure the OpenCms default search index fields are lazy loaded
+     */
+    protected static FieldSelector getFieldSelector(final FieldSelector base) {
+
+        return new FieldSelector() {
+
+            /** Required for safe serialization. */
+            private static final long serialVersionUID = 622179189540785073L;
+
+            /**
+             * Makes the content fields lazy.<p>
+             * 
+             * @see org.apache.lucene.document.FieldSelector#accept(java.lang.String)
+             */
+            public FieldSelectorResult accept(String fieldName) {
+
+                if (CmsSearchField.FIELD_CONTENT.equals(fieldName)
+                    || CmsSearchField.FIELD_CONTENT_BLOB.equals(fieldName)) {
+                    return FieldSelectorResult.LAZY_LOAD;
+                }
+                if (base == null) {
+                    return FieldSelectorResult.LOAD;
+                }
+                return base.accept(fieldName);
+            }
+        };
     }
 
     /**
@@ -2156,7 +2158,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         try {
             Directory indexDirectory = FSDirectory.open(new File(path));
             if (IndexReader.indexExists(indexDirectory)) {
-                IndexReader reader = new LazyContentReader(IndexReader.open(indexDirectory, true));
+                IndexReader reader = new LazyContentReader(IndexReader.open(indexDirectory));
                 if (m_indexSearcher != null) {
                     // store old searcher instance to close it later
                     oldSearcher = m_indexSearcher;
@@ -2184,7 +2186,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if ((oldSearcher != null) && (oldSearcher.getIndexReader() != null)) {
             // in case there is an index searcher available close it
             try {
-                IndexReader newReader = IndexReader.openIfChanged(oldSearcher.getIndexReader(), true);
+                IndexReader newReader = IndexReader.openIfChanged(oldSearcher.getIndexReader());
                 if (newReader != null) {
                     m_indexSearcher = new IndexSearcher(newReader);
                     indexSearcherClose(oldSearcher);

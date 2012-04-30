@@ -78,22 +78,21 @@ public class CmsSearchFieldConfigurationOldCategories extends CmsSearchFieldConf
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
 
-        Fieldable field;
-        String value;
-
         // add the category of the file (this is searched so the value can also be attached on a folder)
-        value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, propertiesSearched).getValue();
+        String value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, propertiesSearched).getValue();
         if (CmsStringUtil.isNotEmpty(value)) {
             // all categories are internally stored lower case
             value = value.trim().toLowerCase();
             if (value.length() > 0) {
-                field = new Field(CmsSearchField.FIELD_CATEGORY, value, Field.Store.YES, Field.Index.NOT_ANALYZED);
+                Fieldable field = new Field(
+                    CmsSearchField.FIELD_CATEGORY,
+                    value,
+                    Field.Store.YES,
+                    Field.Index.NOT_ANALYZED);
                 field.setBoost(0);
                 document.add(field);
             }
-
         }
-
         return document;
     }
 }

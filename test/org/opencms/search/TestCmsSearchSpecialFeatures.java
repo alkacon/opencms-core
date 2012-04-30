@@ -202,6 +202,8 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         Document doc = searchIndex.getDocument(CmsSearchField.FIELD_PATH, fileName);
 
         assertNotNull("Document '" + fileName + "' not found", doc);
+        assertNotNull("No 'title' field available", doc.getFieldable(CmsSearchField.FIELD_TITLE));
+        assertFalse("title must not be lazy loaded", doc.getFieldable(CmsSearchField.FIELD_TITLE).isLazy());
         assertNotNull("No 'content' field available", doc.getFieldable(CmsSearchField.FIELD_CONTENT));
         assertTrue("Content field not lazy", doc.getFieldable(CmsSearchField.FIELD_CONTENT).isLazy());
         assertNotNull("No 'content blob' field available", doc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB));
