@@ -30,6 +30,7 @@ package org.opencms.staticexport;
 import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
@@ -388,14 +389,26 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-                String ignoreWorkplaceStr = (String)cms.getRequestContext().getAttribute(
-                    DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS);
-                boolean ignoreWorkplace = Boolean.parseBoolean(ignoreWorkplaceStr);
-                cms.getRequestContext().setAttribute(DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS, "false");
-                if (OpenCms.getSiteManager().isWorkplaceRequest(matcher) && !ignoreWorkplace) {
-                    // workplace URL, use current site root
-                    // this is required since the workplace site does not have a site root to set 
-                    return cms.getRequestContext().addSiteRoot(path + suffix);
+                boolean isWorkplaceServer = OpenCms.getSiteManager().isWorkplaceRequest(matcher);
+                if (isWorkplaceServer) {
+                    String pathForCurrentSite = cms.getRequestContext().addSiteRoot(path);
+                    String pathForMatchedSite = cms.getRequestContext().addSiteRoot(
+                        OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
+                        path);
+                    String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+                    String selectedPath = pathForCurrentSite;
+                    try {
+                        cms.getRequestContext().setSiteRoot("");
+                        // the path for the current site normally is preferred, but if it doesn't exist and the path for the matched site
+                        // does exist, then use the path for the matched site 
+                        if (!cms.existsResource(pathForCurrentSite, CmsResourceFilter.ALL)
+                            && cms.existsResource(pathForMatchedSite, CmsResourceFilter.ALL)) {
+                            selectedPath = pathForMatchedSite;
+                        }
+                    } finally {
+                        cms.getRequestContext().setSiteRoot(originalSiteRoot);
+                    }
+                    return selectedPath + suffix;
                 } else {
                     // add the site root of the matching site
                     return cms.getRequestContext().addSiteRoot(
