@@ -33,7 +33,7 @@ import org.opencms.ade.containerpage.client.ui.groupeditor.CmsGroupContainerEdit
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
-import org.opencms.ade.contenteditor.client.CmsInlineEditor;
+import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -615,9 +615,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             deactivateCurrentButton();
             element.removeEditorClickHandler();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
-                CmsInlineEditor.getInstance().openInlineEditor(m_controller.getLocale(), element, onClose);
+                CmsContentEditor.getInstance().openInlineEditor(m_controller.getLocale(), element, onClose);
             } else {
-                CmsInlineEditor.getInstance().openFormEditor(
+                CmsContentEditor.getInstance().openFormEditor(
                     m_controller.getLocale(),
                     CmsContainerpageController.getServerId(element.getId()),
                     onClose);

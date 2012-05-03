@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="contenteditor">
 	<inherits name="org.opencms.ade.contenteditor.ContentEditorHeadless" />
-	<entry-point class="org.opencms.ade.contenteditor.client.CmsContentEditor"></entry-point>
+	<entry-point class="org.opencms.ade.contenteditor.client.CmsContentEditorEntryPoint"></entry-point>
 </module>

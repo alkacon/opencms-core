@@ -101,7 +101,7 @@ public class CmsCopyLocaleDialog extends CmsPopup {
         Map<String, String> availableLocales,
         Set<String> contentLocales,
         String currentLocale,
-        final CmsInlineEditor editor) {
+        final CmsContentEditor editor) {
 
         super(Messages.get().key(Messages.GUI_LOCALE_DIALOG_TITLE_0));
         FlowPanel main = new FlowPanel();

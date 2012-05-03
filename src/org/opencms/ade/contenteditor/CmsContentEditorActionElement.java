@@ -27,8 +27,7 @@
 
 package org.opencms.ade.contenteditor;
 
-import com.alkacon.acacia.shared.ContentDefinition;
-
+import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.util.CmsStringUtil;
@@ -93,7 +92,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
      */
     private String getPrefetch() throws Exception {
 
-        ContentDefinition definition = CmsContentService.newInstance(getRequest()).prefetch();
+        CmsContentDefinition definition = CmsContentService.newInstance(getRequest()).prefetch();
         StringBuffer sb = new StringBuffer();
         String prefetchedData = serializeForJavascript(I_CmsContentService.class.getMethod("prefetch"), definition);
         sb.append(I_CmsContentService.DICT_CONTENT_DEFINITION).append("='").append(prefetchedData).append("';\n");
