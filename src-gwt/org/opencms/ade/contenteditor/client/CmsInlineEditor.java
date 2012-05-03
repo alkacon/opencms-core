@@ -477,7 +477,9 @@ public final class CmsInlineEditor {
             m_localeSelect.removeFromParent();
         }
         if (m_deleteLocaleButton == null) {
-            m_deleteLocaleButton = createButton("Delete locale", I_CmsButton.ButtonData.DELETE.getIconClass());
+            m_deleteLocaleButton = createButton(
+                Messages.get().key(Messages.GUI_TOOLBAR_DELETE_LOCALE_0),
+                I_CmsButton.ButtonData.DELETE.getIconClass());
             m_deleteLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -489,7 +491,9 @@ public final class CmsInlineEditor {
             m_deleteLocaleButton.removeFromParent();
         }
         if (m_copyLocaleButton == null) {
-            m_copyLocaleButton = createButton("Copy locale", I_CmsButton.ButtonData.ADD.getIconClass());
+            m_copyLocaleButton = createButton(
+                Messages.get().key(Messages.GUI_TOOLBAR_COPY_LOCALE_0),
+                I_CmsButton.ButtonData.ADD.getIconClass());
             m_copyLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -504,7 +508,7 @@ public final class CmsInlineEditor {
             m_localeLabel = new CmsLabel();
             m_localeLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().inlineBlock());
             m_localeLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textBig());
-            m_localeLabel.setText("Language");
+            m_localeLabel.setText(Messages.get().key(Messages.GUI_TOOLBAR_LANGUAGE_0));
             m_toolbar.addLeft(m_localeLabel);
         }
         Map<String, String> selectOptions = new HashMap<String, String>();
@@ -542,7 +546,9 @@ public final class CmsInlineEditor {
     private void initToolbar() {
 
         m_toolbar = new CmsToolbar();
-        m_saveButton = createButton("Save", I_CmsButton.ButtonData.SAVE.getIconClass());
+        m_saveButton = createButton(
+            Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0),
+            I_CmsButton.ButtonData.SAVE.getIconClass());
         m_saveButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -550,9 +556,11 @@ public final class CmsInlineEditor {
                 save();
             }
         });
-        m_saveButton.disable("Nothing changed yet");
+        m_saveButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
         m_toolbar.addLeft(m_saveButton);
-        m_cancelButton = createButton("Cancel", I_CmsButton.ButtonData.RESET.getIconClass());
+        m_cancelButton = createButton(
+            Messages.get().key(Messages.GUI_TOOLBAR_RESET_0),
+            I_CmsButton.ButtonData.RESET.getIconClass());
         m_cancelButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -563,7 +571,9 @@ public final class CmsInlineEditor {
         });
         m_toolbar.addRight(m_cancelButton);
 
-        m_openFormButton = createButton("Open form", I_CmsButton.ButtonData.EDIT.getIconClass());
+        m_openFormButton = createButton(
+            Messages.get().key(Messages.GUI_TOOLBAR_OPEN_FORM_0),
+            I_CmsButton.ButtonData.EDIT.getIconClass());
         m_openFormButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {

@@ -77,7 +77,7 @@ public class CmsCopyLocaleDialog extends CmsPopup {
             } else {
                 m_targetLocales.remove(m_copyLocale);
                 if (m_targetLocales.isEmpty()) {
-                    m_okButton.disable("No language selected");
+                    m_okButton.disable(Messages.get().key(Messages.GUI_LOCALE_DIALOG_NO_LANGUAGE_SELECTED_0));
                 }
             }
         }
@@ -103,12 +103,12 @@ public class CmsCopyLocaleDialog extends CmsPopup {
         String currentLocale,
         final CmsInlineEditor editor) {
 
-        super("Copy locale");
+        super(Messages.get().key(Messages.GUI_LOCALE_DIALOG_TITLE_0));
         FlowPanel main = new FlowPanel();
         CmsMessageWidget message = new CmsMessageWidget();
-        message.setMessageText("Copy Fields in current language \""
-            + availableLocales.get(currentLocale)
-            + "\" to selected languages. This will overwrite the contents of the selected locales completely!");
+        message.setMessageText(Messages.get().key(
+            Messages.GUI_LOCALE_DIALOG_DESCRIPTION_1,
+            availableLocales.get(currentLocale)));
         main.add(message);
         CmsFieldSet fieldset = new CmsFieldSet();
         m_targetLocales = new HashSet<String>();
@@ -125,8 +125,8 @@ public class CmsCopyLocaleDialog extends CmsPopup {
         }
         m_okButton = new CmsPushButton();
         m_okButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
-        m_okButton.setText("OK");
-        m_okButton.disable("No language selected");
+        m_okButton.setText(Messages.get().key(Messages.GUI_LOCALE_DIALOG_OK_0));
+        m_okButton.disable(Messages.get().key(Messages.GUI_LOCALE_DIALOG_NO_LANGUAGE_SELECTED_0));
         m_okButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -136,7 +136,7 @@ public class CmsCopyLocaleDialog extends CmsPopup {
             }
         });
         CmsPushButton cancelButton = new CmsPushButton();
-        cancelButton.setText("Cancel");
+        cancelButton.setText(Messages.get().key(Messages.GUI_LOCALE_DIALOG_CANCEL_0));
         cancelButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {

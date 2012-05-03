@@ -261,6 +261,34 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/ade/contenteditor</destination>
+			<type>folder</type>
+			<uuidstructure>d0bf7d7a-9509-11e1-a78c-f9909bf5e3c2</uuidstructure>
+			<datelastmodified>Thu, 03 May 2012 10:21:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 May 2012 10:21:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/ade/contenteditor/clientmessages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/ade/contenteditor/clientmessages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e244336c-9509-11e1-a78c-f9909bf5e3c2</uuidstructure>
+			<uuidresource>e244336d-9509-11e1-a78c-f9909bf5e3c2</uuidresource>
+			<datelastmodified>Thu, 03 May 2012 10:22:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 May 2012 10:22:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/detailpage</destination>
 			<type>folder</type>
 			<uuidstructure>3cb71b94-7710-11e0-a36e-4dcd2ca9d6dc</uuidstructure>
