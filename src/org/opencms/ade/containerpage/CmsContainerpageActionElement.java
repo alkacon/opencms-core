@@ -30,6 +30,7 @@ package org.opencms.ade.containerpage;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
+import org.opencms.ade.contenteditor.CmsContentEditorActionElement;
 import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.upload.CmsUploadActionElement;
@@ -94,6 +95,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportForContainerpage());
         sb.append(export());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
+        sb.append(new CmsContentEditorActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
     }

@@ -79,6 +79,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** The current site path. */
     private String m_sitePath;
 
+    /** Flag indicating to use the classic XmlContent editor. */
+    private boolean m_useClassicEditor;
+
     /**
      * Constructor.<p>
      * 
@@ -92,6 +95,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param lastModified the last modification date of the page 
      * @param lockInfo lock information, if the page is locked by another user
      * @param locale the content locale
+     * @param useClassicEditor <code>true</code> to use the classic XmlContent editor
      */
     public CmsCntPageData(
         String cntPageUri,
@@ -103,7 +107,8 @@ public final class CmsCntPageData implements IsSerializable {
         Map<String, String> newTypes,
         long lastModified,
         String lockInfo,
-        String locale) {
+        String locale,
+        boolean useClassicEditor) {
 
         m_cntPageUri = cntPageUri;
         m_noEditReason = noEditReason;
@@ -115,6 +120,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_lockInfo = lockInfo;
         m_locale = locale;
         m_detailId = detailId;
+        m_useClassicEditor = useClassicEditor;
     }
 
     /**
@@ -243,6 +249,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * Returns if the classic XmlContent editor should be used.<p>
+     *
+     * @return <code>true</code> if the classic XmlContent editor should be used
+     */
+    public boolean isUseClassicEditor() {
+
+        return m_useClassicEditor;
     }
 
 }

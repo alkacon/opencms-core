@@ -599,30 +599,36 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
             openGroupEditor((CmsGroupContainerElementPanel)element);
         } else {
-            Command onClose = new Command() {
-
-                public void execute() {
-
-                    reloadElements(element.getId());
-                    enableToolbarButtons();
-                    activateSelection();
-                    RootPanel.getBodyElement().getStyle().clearOverflowY();
-                }
-            };
-            String entityId = element.getElement().getAttribute("about");
-            RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
-            disableToolbarButtons();
-            deactivateCurrentButton();
-            element.removeEditorClickHandler();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
-                CmsContentEditor.getInstance().openInlineEditor(m_controller.getLocale(), element, onClose);
+            // check if the classic XmlContent editor should be used
+            if (m_controller.getData().isUseClassicEditor()) {
+                m_controller.getContentEditorHandler().openDialog(element.getId(), element.getSitePath());
             } else {
-                CmsContentEditor.getInstance().openFormEditor(
-                    m_controller.getLocale(),
-                    CmsContainerpageController.getServerId(element.getId()),
-                    onClose);
+                // use the GWT based editor
+                Command onClose = new Command() {
+
+                    public void execute() {
+
+                        reloadElements(element.getId());
+                        enableToolbarButtons();
+                        activateSelection();
+                        RootPanel.getBodyElement().getStyle().clearOverflowY();
+                    }
+                };
+                String entityId = element.getElement().getAttribute("about");
+                RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
+                disableToolbarButtons();
+                deactivateCurrentButton();
+                element.removeEditorClickHandler();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
+                    CmsContentEditor.getInstance().openInlineEditor(m_controller.getLocale(), element, onClose);
+                } else {
+                    CmsContentEditor.getInstance().openFormEditor(
+                        m_controller.getLocale(),
+                        CmsContainerpageController.getServerId(element.getId()),
+                        onClose);
+                }
+                element.removeHighlighting();
             }
-            element.removeHighlighting();
         }
     }
 

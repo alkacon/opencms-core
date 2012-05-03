@@ -109,6 +109,12 @@ import org.apache.commons.logging.Log;
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
 
+    /** The runtime property setting the editor type. */
+    public static final String EDITOR_TYPE_RUNTIME_PROPERTY_NAME = "org.opencms.ade.editor";
+
+    /** The runtime property value to use the classic XmlContent editor. */
+    public static final String CLASSIC_EDITOR_PROPERTY_VALUE = "classic";
+
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsContainerpageService.class);
 
@@ -450,7 +456,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getNewTypes(cms, request),
                 lastModified,
                 getLockInfo(containerPage),
-                cms.getRequestContext().getLocale().toString());
+                cms.getRequestContext().getLocale().toString(),
+                CLASSIC_EDITOR_PROPERTY_VALUE.equals(OpenCms.getRuntimeProperty(EDITOR_TYPE_RUNTIME_PROPERTY_NAME)));
         } catch (Throwable e) {
             error(e);
         }
