@@ -330,16 +330,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The locale of this index. */
     private Locale m_locale;
 
-    /** The Lucene index merge factor setting, see {@link IndexWriter#setMaxMergeDocs(int)}. */
+    /** The Lucene index merge factor setting, see {@link LogMergePolicy#setMaxMergeDocs(int)}. */
     private Integer m_luceneMaxMergeDocs;
 
-    /** The Lucene index merge factor setting, see {@link IndexWriter#setMergeFactor(int)}. */
+    /** The Lucene index merge factor setting, see {@link LogMergePolicy#setMergeFactor(int)}. */
     private Integer m_luceneMergeFactor;
 
-    /** The Lucene index RAM buffer size, see {@link IndexWriter#setRAMBufferSizeMB(double)}. */
+    /** The Lucene index RAM buffer size, see {@link IndexWriterConfig#setRAMBufferSizeMB(double)}. */
     private Double m_luceneRAMBufferSizeMB;
 
-    /** The Lucene index setting that controls, see {@link IndexWriter#setUseCompoundFile(boolean)}.  */
+    /** The Lucene index setting that controls, see {@link LogMergePolicy#setUseCompoundFile(boolean)}.  */
     private Boolean m_luceneUseCompoundFile;
 
     /** Indicates how many hits are loaded at maximum. */

@@ -104,6 +104,7 @@ public class CmsSearchCategoryCollector extends Collector {
     /** The index searcher used. */
     private IndexSearcher m_searcher;
 
+    /** The index of the document reader. */
     private int m_docBase;
 
     /**
