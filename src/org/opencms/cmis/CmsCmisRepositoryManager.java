@@ -31,11 +31,16 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.apache.commons.logging.Log;
 
 /**
  * This class creates the OpenCms repository objects for CMIS and provides access to them via the repository ids.<p>
@@ -45,6 +50,28 @@ public class CmsCmisRepositoryManager {
     /** The internal map of repositories. */
     private Map<String, CmsCmisRepository> m_repositoryMap = new HashMap<String, CmsCmisRepository>();
 
+    /** The delay between type refreshs. */
+    public static final long REFRESH_DELAY = 1000 * 60 * 10;
+
+    /** The logger instance for this class. */
+    static final Log LOG = CmsLog.getLog(CmsCmisRepositoryManager.class);
+
+    /** The type manager instance used to keep track of types available for CMIS. */
+    CmsCmisTypeManager m_typeManager;
+
+    /** Timer instance used for refreshing the types periodically. */
+    private Timer m_timer = new Timer(true);
+
+    /**
+     * Adds a new CMIS repository.<p>
+     * 
+     * @param repository the repository to add 
+     */
+    void addRepository(CmsCmisRepository repository) {
+
+        m_repositoryMap.put(repository.getId(), repository);
+    }
+
     /** 
      * Initializes the repositories.<p>
      * 
@@ -53,16 +80,37 @@ public class CmsCmisRepositoryManager {
     public void initialize(CmsObject adminCms) {
 
         try {
+            m_typeManager = new CmsCmisTypeManager(adminCms);
+            m_timer.purge();
+            m_timer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+
+                    try {
+                        m_typeManager.setup();
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
+            }, REFRESH_DELAY, REFRESH_DELAY);
+
             CmsResource root = adminCms.readResource("/");
-            CmsCmisRepository onlineRepository = new CmsCmisRepository(adminCms, root, "online");
+            CmsCmisRepository onlineRepository = new CmsCmisRepository(m_typeManager, adminCms, root, "online", true);
             CmsObject offlineCms = OpenCms.initCmsObject(adminCms);
             CmsProject offline = adminCms.readProject("Offline");
             offlineCms.getRequestContext().setCurrentProject(offline);
-            CmsCmisRepository offlineRepository = new CmsCmisRepository(offlineCms, root, "offline");
-            m_repositoryMap.put("offline", offlineRepository);
-            m_repositoryMap.put("online", onlineRepository);
+            CmsCmisRepository offlineRepository = new CmsCmisRepository(
+                m_typeManager,
+                offlineCms,
+                root,
+                "offline",
+                false);
+            addRepository(offlineRepository);
+            addRepository(onlineRepository);
         } catch (CmsException e) {
-            System.out.println("Repository could not be initialized!");
+            LOG.error("Repository could not be initialized!");
         }
     }
 

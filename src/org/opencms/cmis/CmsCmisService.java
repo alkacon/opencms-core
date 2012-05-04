@@ -66,17 +66,30 @@ public class CmsCmisService extends AbstractCmisService {
     /** The repository manager. */
     protected CmsCmisRepositoryManager m_repositoryManager;
 
-    public CmsCmisService(CmsCmisRepositoryManager repoManager) {
+    /**
+     * Creates a new CMIS service instance.<p>
+     * 
+     * @param repoManager the repository manager 
+     * 
+     * @param context the CMIS call context 
+     */
+    public CmsCmisService(CmsCmisRepositoryManager repoManager, CallContext context) {
 
         m_repositoryManager = repoManager;
+        m_callContext = context;
     }
 
+    /**
+     * Gets the repository for a given repository id.<p>
+     * 
+     * @param repositoryId the repository id 
+     * 
+     * @return the repository with the given id 
+     */
     protected CmsCmisRepository getRepository(String repositoryId) {
 
         return m_repositoryManager.getRepository(repositoryId);
     }
-
-    private CmsCmisRepository m_repository;
 
     /**
      * @param repositoryId
@@ -94,7 +107,7 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean allVersions,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).addObjectToFolder(m_callContext, objectId, folderId, allVersions, extension);
+        getRepository(repositoryId).addObjectToFolder(m_callContext, objectId, folderId, allVersions);
     }
 
     /**
@@ -103,7 +116,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public void applyPolicy(String repositoryId, String policyId, String objectId, ExtensionsData extension) {
 
-        getRepository(repositoryId).applyPolicy(m_callContext, policyId, objectId, extension);
+        getRepository(repositoryId).applyPolicy(m_callContext, policyId, objectId);
     }
 
     /**
@@ -129,8 +142,7 @@ public class CmsCmisService extends AbstractCmisService {
             versioningState,
             policies,
             addAces,
-            removeAces,
-            extension);
+            removeAces);
     }
 
     /**
@@ -156,8 +168,7 @@ public class CmsCmisService extends AbstractCmisService {
             versioningState,
             policies,
             addAces,
-            removeAces,
-            extension);
+            removeAces);
     }
 
     /**
@@ -179,8 +190,7 @@ public class CmsCmisService extends AbstractCmisService {
             folderId,
             policies,
             addAces,
-            removeAces,
-            extension);
+            removeAces);
     }
 
     /**
@@ -202,8 +212,7 @@ public class CmsCmisService extends AbstractCmisService {
             folderId,
             policies,
             addAces,
-            removeAces,
-            extension);
+            removeAces);
     }
 
     /**
@@ -218,13 +227,7 @@ public class CmsCmisService extends AbstractCmisService {
         Acl removeAces,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).createRelationship(
-            m_callContext,
-            properties,
-            policies,
-            addAces,
-            removeAces,
-            extension);
+        return getRepository(repositoryId).createRelationship(m_callContext, properties, policies, addAces, removeAces);
     }
 
     /**
@@ -237,7 +240,7 @@ public class CmsCmisService extends AbstractCmisService {
         Holder<String> changeToken,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).deleteContentStream(m_callContext, objectId, changeToken, extension);
+        getRepository(repositoryId).deleteContentStream(m_callContext, objectId, changeToken);
     }
 
     /**
@@ -246,7 +249,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public void deleteObject(String repositoryId, String objectId, Boolean allVersions, ExtensionsData extension) {
 
-        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions, extension);
+        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions);
     }
 
     /**
@@ -259,7 +262,7 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean allVersions,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions, extension);
+        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions);
     }
 
     /**
@@ -279,8 +282,7 @@ public class CmsCmisService extends AbstractCmisService {
             folderId,
             allVersions,
             unfileObjects,
-            continueOnFailure,
-            extension);
+            continueOnFailure);
     }
 
     /**
@@ -289,7 +291,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public AllowableActions getAllowableActions(String repositoryId, String objectId, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getAllowableActions(m_callContext, objectId, extension);
+        return getRepository(repositoryId).getAllowableActions(m_callContext, objectId);
     }
 
     /**
@@ -302,7 +304,7 @@ public class CmsCmisService extends AbstractCmisService {
         String filter,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getAppliedPolicies(m_callContext, objectId, filter, extension);
+        return getRepository(repositoryId).getAppliedPolicies(m_callContext, objectId, filter);
     }
 
     /**
@@ -331,8 +333,7 @@ public class CmsCmisService extends AbstractCmisService {
             includeRelationships,
             renditionFilter,
             maxItems,
-            skipCount,
-            extension);
+            skipCount);
     }
 
     /**
@@ -363,7 +364,7 @@ public class CmsCmisService extends AbstractCmisService {
             includePathSegment,
             maxItems,
             skipCount,
-            extension,
+
             this);
     }
 
@@ -388,8 +389,7 @@ public class CmsCmisService extends AbstractCmisService {
             filter,
             includePolicyIds,
             includeAcl,
-            maxItems,
-            extension);
+            maxItems);
     }
 
     /**
@@ -404,13 +404,7 @@ public class CmsCmisService extends AbstractCmisService {
         BigInteger length,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getContentStream(
-            m_callContext,
-            objectId,
-            streamId,
-            offset,
-            length,
-            extension);
+        return getRepository(repositoryId).getContentStream(m_callContext, objectId, streamId, offset, length);
     }
 
     /**
@@ -445,7 +439,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public ObjectData getFolderParent(String repositoryId, String folderId, String filter, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getFolderParent(m_callContext, folderId, filter, extension, this);
+        return getRepository(repositoryId).getFolderParent(m_callContext, folderId, filter, this);
     }
 
     /**
@@ -498,7 +492,7 @@ public class CmsCmisService extends AbstractCmisService {
             renditionFilter,
             includePolicyIds,
             includeAcl,
-            extension,
+
             this);
     }
 
@@ -526,22 +520,14 @@ public class CmsCmisService extends AbstractCmisService {
             renditionFilter,
             includePolicyIds,
             includeAcl,
-            extension,
+
             this);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param filter
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param includeRelativePathSegment
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.NavigationService#getObjectParents(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getObjectParents(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public List<ObjectParentData> getObjectParents(
         String repositoryId,
         String objectId,
@@ -558,24 +544,13 @@ public class CmsCmisService extends AbstractCmisService {
             filter,
             includeAllowableActions,
             includeRelativePathSegment,
-            extension,
             this);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param includeSubRelationshipTypes
-     * @param relationshipDirection
-     * @param typeId
-     * @param filter
-     * @param includeAllowableActions
-     * @param maxItems
-     * @param skipCount
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.RelationshipService#getObjectRelationships(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.RelationshipDirection, java.lang.String, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getObjectRelationships(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.RelationshipDirection, java.lang.String, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ObjectList getObjectRelationships(
         String repositoryId,
         String objectId,
@@ -597,33 +572,22 @@ public class CmsCmisService extends AbstractCmisService {
             filter,
             includeAllowableActions,
             maxItems,
-            skipCount,
-            extension);
+            skipCount);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param filter
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#getProperties(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getProperties(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public Properties getProperties(String repositoryId, String objectId, String filter, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getProperties(m_callContext, objectId, filter, extension, this);
+        return getRepository(repositoryId).getProperties(m_callContext, objectId, filter, this);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param renditionFilter
-     * @param maxItems
-     * @param skipCount
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#getRenditions(java.lang.String, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getRenditions(java.lang.String, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public List<RenditionData> getRenditions(
         String repositoryId,
         String objectId,
@@ -632,50 +596,35 @@ public class CmsCmisService extends AbstractCmisService {
         BigInteger skipCount,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getRenditions(
-            m_callContext,
-            objectId,
-            renditionFilter,
-            maxItems,
-            skipCount,
-            extension);
+        return getRepository(repositoryId).getRenditions(m_callContext, objectId, renditionFilter, maxItems, skipCount);
     }
 
     /**
-     * @param repositoryId
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.RepositoryService#getRepositoryInfo(java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getRepositoryInfo(java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public RepositoryInfo getRepositoryInfo(String repositoryId, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getRepositoryInfo(extension);
+        return getRepository(repositoryId).getRepositoryInfo();
     }
 
     /**
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.RepositoryService#getRepositoryInfos(org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getRepositoryInfos(org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public List<RepositoryInfo> getRepositoryInfos(ExtensionsData extension) {
 
         List<RepositoryInfo> result = new ArrayList<RepositoryInfo>();
         for (CmsCmisRepository repo : m_repositoryManager.getRepositories()) {
-            result.add(repo.getRepositoryInfo(extension));
+            result.add(repo.getRepositoryInfo());
         }
         return result;
     }
 
     /**
-     * @param repositoryId
-     * @param typeId
-     * @param includePropertyDefinitions
-     * @param maxItems
-     * @param skipCount
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.RepositoryService#getTypeChildren(java.lang.String, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getTypeChildren(java.lang.String, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public TypeDefinitionList getTypeChildren(
         String repositoryId,
         String typeId,
@@ -689,31 +638,13 @@ public class CmsCmisService extends AbstractCmisService {
             typeId,
             includePropertyDefinitions,
             maxItems,
-            skipCount,
-            extension);
+            skipCount);
     }
 
     /**
-     * @param repositoryId
-     * @param typeId
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.RepositoryService#getTypeDefinition(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getTypeDescendants(java.lang.String, java.lang.String, java.math.BigInteger, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
-    public TypeDefinition getTypeDefinition(String repositoryId, String typeId, ExtensionsData extension) {
-
-        return getRepository(repositoryId).getTypeDefinition(m_callContext, typeId, extension);
-    }
-
-    /**
-     * @param repositoryId
-     * @param typeId
-     * @param depth
-     * @param includePropertyDefinitions
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.RepositoryService#getTypeDescendants(java.lang.String, java.lang.String, java.math.BigInteger, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
-     */
+    @Override
     public List<TypeDefinitionContainer> getTypeDescendants(
         String repositoryId,
         String typeId,
@@ -721,22 +652,13 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean includePropertyDefinitions,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getTypeDescendants(
-            m_callContext,
-            typeId,
-            depth,
-            includePropertyDefinitions,
-            extension);
+        return getRepository(repositoryId).getTypeDescendants(m_callContext, typeId, depth, includePropertyDefinitions);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param targetFolderId
-     * @param sourceFolderId
-     * @param extension
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#moveObject(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#moveObject(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void moveObject(
         String repositoryId,
         Holder<String> objectId,
@@ -744,22 +666,13 @@ public class CmsCmisService extends AbstractCmisService {
         String sourceFolderId,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).moveObject(m_callContext, objectId, targetFolderId, sourceFolderId, extension);
+        getRepository(repositoryId).moveObject(m_callContext, objectId, targetFolderId, sourceFolderId);
     }
 
     /**
-     * @param repositoryId
-     * @param statement
-     * @param searchAllVersions
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param maxItems
-     * @param skipCount
-     * @param extension
-     * @return
-     * @see org.apache.chemistry.opencmis.commons.spi.DiscoveryService#query(java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#query(java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public ObjectList query(
         String repositoryId,
         String statement,
@@ -779,43 +692,31 @@ public class CmsCmisService extends AbstractCmisService {
             includeRelationships,
             renditionFilter,
             maxItems,
-            skipCount,
-            extension);
+            skipCount);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param folderId
-     * @param extension
-     * @see org.apache.chemistry.opencmis.commons.spi.MultiFilingService#removeObjectFromFolder(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#removeObjectFromFolder(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void removeObjectFromFolder(String repositoryId, String objectId, String folderId, ExtensionsData extension) {
 
-        getRepository(repositoryId).removeObjectFromFolder(m_callContext, objectId, folderId, extension);
+        getRepository(repositoryId).removeObjectFromFolder(m_callContext, objectId, folderId);
     }
 
     /**
-     * @param repositoryId
-     * @param policyId
-     * @param objectId
-     * @param extension
-     * @see org.apache.chemistry.opencmis.commons.spi.PolicyService#removePolicy(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#removePolicy(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void removePolicy(String repositoryId, String policyId, String objectId, ExtensionsData extension) {
 
-        getRepository(repositoryId).removePolicy(m_callContext, policyId, objectId, extension);
+        getRepository(repositoryId).removePolicy(m_callContext, policyId, objectId);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param overwriteFlag
-     * @param changeToken
-     * @param contentStream
-     * @param extension
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#setContentStream(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, java.lang.Boolean, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.data.ContentStream, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#setContentStream(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, java.lang.Boolean, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.data.ContentStream, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void setContentStream(
         String repositoryId,
         Holder<String> objectId,
@@ -824,23 +725,13 @@ public class CmsCmisService extends AbstractCmisService {
         ContentStream contentStream,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).setContentStream(
-            m_callContext,
-            objectId,
-            overwriteFlag,
-            changeToken,
-            contentStream,
-            extension);
+        getRepository(repositoryId).setContentStream(m_callContext, objectId, overwriteFlag, changeToken, contentStream);
     }
 
     /**
-     * @param repositoryId
-     * @param objectId
-     * @param changeToken
-     * @param properties
-     * @param extension
-     * @see org.apache.chemistry.opencmis.commons.spi.ObjectService#updateProperties(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.data.Properties, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#updateProperties(java.lang.String, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.data.Properties, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
+    @Override
     public void updateProperties(
         String repositoryId,
         Holder<String> objectId,
@@ -848,19 +739,32 @@ public class CmsCmisService extends AbstractCmisService {
         Properties properties,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).updateProperties(m_callContext, objectId, changeToken, properties, extension);
+        getRepository(repositoryId).updateProperties(m_callContext, objectId, changeToken, properties);
     }
 
-    public void setCallContext(CallContext context) {
-
-        m_callContext = context;
-    }
-
+    /**
+     * Gets the call context.<p>
+     * 
+     * @return the call context 
+     */
     public CallContext getCallContext() {
 
         return m_callContext;
     }
 
+    /** The call context. */
     protected CallContext m_callContext;
+
+    @Override
+    public TypeDefinition getTypeDefinition(String repositoryId, String typeId, ExtensionsData extension) {
+
+        return getRepository(repositoryId).getTypeDefinition(m_callContext, typeId);
+    }
+
+    @Override
+    public Acl getAcl(String repositoryId, String objectId, Boolean onlyBasicPermissions, ExtensionsData extension) {
+
+        return getRepository(repositoryId).getAcl(getCallContext(), objectId, onlyBasicPermissions);
+    }
 
 }

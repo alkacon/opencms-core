@@ -28,8 +28,12 @@
       <resource uri="/system/modules/org.opencms.ade.editprovider/"/>
     </resources>
     <parameters>
+<<<<<<< HEAD
       
     <param name="gwt.buildid">20120404</param>
+=======
+<param name="gwt.buildid">20120113</param>
+>>>>>>> Continued CMIS connector implementation.
 </parameters>
   </module>
   <files>
@@ -131,6 +135,24 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/07A7C6B14A4E6E59EDE7B3188D061989.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/07A7C6B14A4E6E59EDE7B3188D061989.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>1a8e9338-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a8e9339-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+>>>>>>> Continued CMIS connector implementation.
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/07B79EDA917A4EB940EFF2814B61B238.cache.png</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/07B79EDA917A4EB940EFF2814B61B238.cache.png</destination>
       <type>image</type>
@@ -176,6 +198,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/11D95168377E26F3D48DD2F0E16F001B.cache.html</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/11D95168377E26F3D48DD2F0E16F001B.cache.html</destination>
       <type>plain</type>
@@ -191,6 +214,8 @@
       <accesscontrol/>
     </file>
     <file>
+=======
+>>>>>>> Continued CMIS connector implementation.
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/124DCEE507CAB7576C003C7BAF0D9924.cache.png</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/124DCEE507CAB7576C003C7BAF0D9924.cache.png</destination>
       <type>image</type>
@@ -266,6 +291,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/1E48504DCC362EA2C6439EB281B173E3.cache.html</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/1E48504DCC362EA2C6439EB281B173E3.cache.html</destination>
       <type>plain</type>
@@ -274,6 +300,16 @@
       <datelastmodified>Mon, 23 Apr 2012 15:06:18 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Mon, 23 Apr 2012 15:06:18 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/1E38309FDCC2E9CF350C33A2C8BF6B3D.cache.png</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/1E38309FDCC2E9CF350C33A2C8BF6B3D.cache.png</destination>
+      <type>image</type>
+      <uuidstructure>1a90dd2a-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a90dd2b-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -311,6 +347,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/26CCB7F6D7ADEBA3CA12AE076C9CD288.gwt.rpc</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/26CCB7F6D7ADEBA3CA12AE076C9CD288.gwt.rpc</destination>
       <type>plain</type>
@@ -334,6 +371,16 @@
       <datelastmodified>Mon, 05 Mar 2012 11:53:14 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Mon, 05 Mar 2012 11:53:14 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/27246C8DD21072403777D9C61FEA16B7.gwt.rpc</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/27246C8DD21072403777D9C61FEA16B7.gwt.rpc</destination>
+      <type>plain</type>
+      <uuidstructure>1a90dd2c-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a90dd2d-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -431,6 +478,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/3E1B3C4D2B52FD7957DA6E43F8D5D4C9.cache.png</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/3E1B3C4D2B52FD7957DA6E43F8D5D4C9.cache.png</destination>
       <type>image</type>
@@ -439,6 +487,16 @@
       <datelastmodified>Wed, 09 Nov 2011 11:09:59 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Wed, 09 Nov 2011 11:09:59 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/3C93C6A7684848A4425C970C08091B17.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/3C93C6A7684848A4425C970C08091B17.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>5e004a14-1054-11e1-a1db-017bbbefe324</uuidstructure>
+      <uuidresource>5e004a15-1054-11e1-a1db-017bbbefe324</uuidresource>
+      <datelastmodified>Wed, 16 Nov 2011 13:10:33 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 16 Nov 2011 13:10:33 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -446,6 +504,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/422DC0B0394F9192CD212C57A414C0C7.cache.html</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/422DC0B0394F9192CD212C57A414C0C7.cache.html</destination>
       <type>plain</type>
@@ -454,6 +513,16 @@
       <datelastmodified>Mon, 23 Apr 2012 15:06:18 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Mon, 23 Apr 2012 15:06:18 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/3E1B3C4D2B52FD7957DA6E43F8D5D4C9.cache.png</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/3E1B3C4D2B52FD7957DA6E43F8D5D4C9.cache.png</destination>
+      <type>image</type>
+      <uuidstructure>5cfab4a9-0ac3-11e1-bbd6-59b57c56cb9f</uuidstructure>
+      <uuidresource>5cfab4aa-0ac3-11e1-bbd6-59b57c56cb9f</uuidresource>
+      <datelastmodified>Wed, 09 Nov 2011 11:09:59 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 09 Nov 2011 11:09:59 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -461,6 +530,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/4DD7E00012673375DB71EDC0EDCDBC9B.cache.html</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/4DD7E00012673375DB71EDC0EDCDBC9B.cache.html</destination>
       <type>plain</type>
@@ -469,6 +539,16 @@
       <datelastmodified>Mon, 23 Apr 2012 15:06:18 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Mon, 23 Apr 2012 15:06:18 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/4B505B987F8A97A8CC69249DFD81CCEA.gwt.rpc</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/4B505B987F8A97A8CC69249DFD81CCEA.gwt.rpc</destination>
+      <type>plain</type>
+      <uuidstructure>5cfab4ab-0ac3-11e1-bbd6-59b57c56cb9f</uuidstructure>
+      <uuidresource>5cfab4ac-0ac3-11e1-bbd6-59b57c56cb9f</uuidresource>
+      <datelastmodified>Wed, 09 Nov 2011 11:09:59 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 09 Nov 2011 11:09:59 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -491,6 +571,24 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/53DB41CD45EDD5C7F0EAA850BCBCFC3C.gwt.rpc</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/53DB41CD45EDD5C7F0EAA850BCBCFC3C.gwt.rpc</destination>
+      <type>plain</type>
+      <uuidstructure>1a934e2e-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a934e2f-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+>>>>>>> Continued CMIS connector implementation.
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/55E6EF5AA7ECB5C3456D0C233F3D34A1.cache.png</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/55E6EF5AA7ECB5C3456D0C233F3D34A1.cache.png</destination>
       <type>image</type>
@@ -506,6 +604,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/581629B34B4BBC11C2544BB203231470.cache.png</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/581629B34B4BBC11C2544BB203231470.cache.png</destination>
       <type>image</type>
@@ -514,6 +613,16 @@
       <datelastmodified>Tue, 20 Mar 2012 07:58:20 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Tue, 20 Mar 2012 07:58:20 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/577CEC9F5CD24B8E3C2753BD67512ED2.cache.png</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/577CEC9F5CD24B8E3C2753BD67512ED2.cache.png</destination>
+      <type>image</type>
+      <uuidstructure>5cfd25ad-0ac3-11e1-bbd6-59b57c56cb9f</uuidstructure>
+      <uuidresource>5cfd25ae-0ac3-11e1-bbd6-59b57c56cb9f</uuidresource>
+      <datelastmodified>Wed, 09 Nov 2011 11:09:59 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 09 Nov 2011 11:09:59 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -581,6 +690,54 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/6E7E09058FF82EFD3181FAF4AC7F0B58.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/6E7E09058FF82EFD3181FAF4AC7F0B58.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>5e004a16-1054-11e1-a1db-017bbbefe324</uuidstructure>
+      <uuidresource>5e004a17-1054-11e1-a1db-017bbbefe324</uuidresource>
+      <datelastmodified>Wed, 16 Nov 2011 13:10:33 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 16 Nov 2011 13:10:33 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/74EFFF6F462EC6BFE58C81B3249749B6.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/74EFFF6F462EC6BFE58C81B3249749B6.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>5e004a18-1054-11e1-a1db-017bbbefe324</uuidstructure>
+      <uuidresource>5e004a19-1054-11e1-a1db-017bbbefe324</uuidresource>
+      <datelastmodified>Wed, 16 Nov 2011 13:10:33 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 16 Nov 2011 13:10:33 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/7E538C2674FA555E1AAAE5569A6D39F8.cache.png</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/7E538C2674FA555E1AAAE5569A6D39F8.cache.png</destination>
+      <type>image</type>
+      <uuidstructure>b8c074e5-c8d3-11e0-9f77-616e5ee40541</uuidstructure>
+      <uuidresource>b8c074e6-c8d3-11e0-9f77-616e5ee40541</uuidresource>
+      <datelastmodified>Wed, 17 Aug 2011 13:20:48 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 17 Aug 2011 13:20:48 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+>>>>>>> Continued CMIS connector implementation.
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/7E76FDCA9138C1F6988CF904B0281C64.cache.gif</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/7E76FDCA9138C1F6988CF904B0281C64.cache.gif</destination>
       <type>image</type>
@@ -596,6 +753,54 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/7EB7DBDD4463CA04DCB15CFA5FE577B7.gwt.rpc</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/7EB7DBDD4463CA04DCB15CFA5FE577B7.gwt.rpc</destination>
+      <type>plain</type>
+      <uuidstructure>6c9609e1-92ab-11e0-9528-63a336633ac7</uuidstructure>
+      <uuidresource>6c9609e2-92ab-11e0-9528-63a336633ac7</uuidresource>
+      <datelastmodified>Thu, 09 Jun 2011 15:16:17 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 09 Jun 2011 15:16:17 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/846FD3C4DB495760C57444AB15F06126.cache.png</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/846FD3C4DB495760C57444AB15F06126.cache.png</destination>
+      <type>image</type>
+      <uuidstructure>1a95bf30-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a95bf31-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/88FE8FFC5E4EA47C6C77B9FFA70AD3AA.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/88FE8FFC5E4EA47C6C77B9FFA70AD3AA.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>5e02bb1a-1054-11e1-a1db-017bbbefe324</uuidstructure>
+      <uuidresource>5e02bb1b-1054-11e1-a1db-017bbbefe324</uuidresource>
+      <datelastmodified>Wed, 16 Nov 2011 13:10:33 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 16 Nov 2011 13:10:33 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+>>>>>>> Continued CMIS connector implementation.
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/8AA3C50791DF9AA6DC608FDE692C9390.cache.gif</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/8AA3C50791DF9AA6DC608FDE692C9390.cache.gif</destination>
       <type>image</type>
@@ -686,6 +891,24 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/A4EBA1FBBD1455D097CBF1F21BEE7485.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/A4EBA1FBBD1455D097CBF1F21BEE7485.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>1a95bf32-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a95bf33-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+>>>>>>> Continued CMIS connector implementation.
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/A561A3D036C6711C97A1ACB01B3E9688.cache.png</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/A561A3D036C6711C97A1ACB01B3E9688.cache.png</destination>
       <type>image</type>
@@ -761,6 +984,54 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/BD3F59C366CBA213C7C413ADFF717DC1.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/BD3F59C366CBA213C7C413ADFF717DC1.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>1a980924-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a980925-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/BFA609B8BBC036A71E3E16057D56248F.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/BFA609B8BBC036A71E3E16057D56248F.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>1a9a7a26-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a9a7a27-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/C17C833301E37FAE034750CBA589AE32.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/C17C833301E37FAE034750CBA589AE32.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>5e02bb1c-1054-11e1-a1db-017bbbefe324</uuidstructure>
+      <uuidresource>5e02bb1d-1054-11e1-a1db-017bbbefe324</uuidresource>
+      <datelastmodified>Wed, 16 Nov 2011 13:10:33 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 16 Nov 2011 13:10:33 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+>>>>>>> Continued CMIS connector implementation.
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/C4E7AE2AFCDCAD9F4590E02BBF69A6EA.cache.gif</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/C4E7AE2AFCDCAD9F4590E02BBF69A6EA.cache.gif</destination>
       <type>image</type>
@@ -791,6 +1062,39 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/C6887A976324617DA058E67A32D4ADF5.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/C6887A976324617DA058E67A32D4ADF5.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>5e72bafe-1054-11e1-a1db-017bbbefe324</uuidstructure>
+      <uuidresource>5e72baff-1054-11e1-a1db-017bbbefe324</uuidresource>
+      <datelastmodified>Wed, 16 Nov 2011 13:10:34 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 16 Nov 2011 13:10:34 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/C7F63F6D0E8F95E579D332C304E22BDB.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/C7F63F6D0E8F95E579D332C304E22BDB.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>1a9a7a28-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a9a7a29-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
+>>>>>>> Continued CMIS connector implementation.
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/CD452626E44B1D27115781B923D2F971.cache.png</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/CD452626E44B1D27115781B923D2F971.cache.png</destination>
       <type>image</type>
@@ -956,6 +1260,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/EDF152F8486B3C29ED6AD6AE02350DC0.gwt.rpc</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/EDF152F8486B3C29ED6AD6AE02350DC0.gwt.rpc</destination>
       <type>plain</type>
@@ -964,6 +1269,16 @@
       <datelastmodified>Mon, 05 Mar 2012 11:53:14 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Mon, 05 Mar 2012 11:53:14 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/EDDD5A3BFFD1CBB6699C91BC43669C80.gwt.rpc</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/EDDD5A3BFFD1CBB6699C91BC43669C80.gwt.rpc</destination>
+      <type>plain</type>
+      <uuidstructure>5d0451a9-0ac3-11e1-bbd6-59b57c56cb9f</uuidstructure>
+      <uuidresource>5d0451aa-0ac3-11e1-bbd6-59b57c56cb9f</uuidresource>
+      <datelastmodified>Wed, 09 Nov 2011 11:09:59 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 09 Nov 2011 11:09:59 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -971,6 +1286,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/editprovider.nocache.js</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/editprovider.nocache.js</destination>
       <type>plain</type>
@@ -979,6 +1295,16 @@
       <datelastmodified>Thu, 28 Apr 2011 16:07:36 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Thu, 28 Apr 2011 16:07:36 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/EDF152F8486B3C29ED6AD6AE02350DC0.gwt.rpc</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/EDF152F8486B3C29ED6AD6AE02350DC0.gwt.rpc</destination>
+      <type>plain</type>
+      <uuidstructure>1a9cc41a-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a9cc41b-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -986,6 +1312,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/EF952D1CAAA122002C3215E065950630.cache.html</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/EF952D1CAAA122002C3215E065950630.cache.html</destination>
       <type>plain</type>
@@ -1009,6 +1336,16 @@
       <datelastmodified>Mon, 23 Apr 2012 15:06:18 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Mon, 23 Apr 2012 15:06:18 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/editprovider.nocache.js</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/editprovider.nocache.js</destination>
+      <type>plain</type>
+      <uuidstructure>a2110813-71b1-11e0-bb3d-7d4173ac7431</uuidstructure>
+      <uuidresource>a2110814-71b1-11e0-bb3d-7d4173ac7431</uuidresource>
+      <datelastmodified>Thu, 28 Apr 2011 16:07:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 28 Apr 2011 16:07:36 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>
@@ -1016,6 +1353,7 @@
       <accesscontrol/>
     </file>
     <file>
+<<<<<<< HEAD
       <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/F4FAB4AB0F3CB35C0BA19DBA6241776F.cache.html</source>
       <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/F4FAB4AB0F3CB35C0BA19DBA6241776F.cache.html</destination>
       <type>plain</type>
@@ -1024,6 +1362,16 @@
       <datelastmodified>Mon, 23 Apr 2012 15:06:18 GMT</datelastmodified>
       <userlastmodified>Admin</userlastmodified>
       <datecreated>Mon, 23 Apr 2012 15:06:18 GMT</datecreated>
+=======
+      <source>system/modules/org.opencms.ade.editprovider/resources/editprovider/F6724E14C37408CC757A9825227B8CE7.cache.html</source>
+      <destination>system/modules/org.opencms.ade.editprovider/resources/editprovider/F6724E14C37408CC757A9825227B8CE7.cache.html</destination>
+      <type>plain</type>
+      <uuidstructure>1a9f351c-9463-11e1-9693-d5723639de1d</uuidstructure>
+      <uuidresource>1a9f351d-9463-11e1-9693-d5723639de1d</uuidresource>
+      <datelastmodified>Wed, 02 May 2012 14:28:36 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 02 May 2012 14:28:36 GMT</datecreated>
+>>>>>>> Continued CMIS connector implementation.
       <usercreated>Admin</usercreated>
       <flags>0</flags>
       <properties/>

@@ -37,8 +37,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.chemistry.opencmis.commons.impl.server.AbstractServiceFactory;
 import org.apache.chemistry.opencmis.commons.server.CallContext;
@@ -76,7 +78,16 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
     /**
      * An invocation handler which wraps a service and is used for debugging/logging CMIS service calls.<p>
      */
-    class ServiceLogHandler implements InvocationHandler {
+    static class ServiceLogHandler implements InvocationHandler {
+
+        /** The CMIS service interfaces. */
+        private static Set<Class<?>> m_serviceInterfaces = new HashSet<Class<?>>();
+
+        static {
+            for (Class<?> svcInterface : CmisService.class.getInterfaces()) {
+                m_serviceInterfaces.add(svcInterface);
+            }
+        }
 
         /** The wrapped service. */
         private CmisService m_service;
@@ -119,21 +130,24 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
 
             try {
                 // CmisService defines some methods in addition to its base interfaces which don't correspond to CMIS service calls 
-                boolean shouldLog = LOG.isInfoEnabled() && (method.getDeclaringClass() != CmisService.class);
-                if (shouldLog) {
+
+                boolean isServiceCall = m_serviceInterfaces.contains(method.getDeclaringClass());
+                if (isServiceCall) {
                     LOG.info("CMIS service call: " + getCallString(method, args));
                 }
                 Object result = method.invoke(m_service, args);
-                if (shouldLog) {
-                    LOG.info("Returned '" + result + "'");
+                if (isServiceCall && LOG.isDebugEnabled()) {
+                    // This can generate a *VERY LARGE AMOUNT* of data in the log file, don't activate the debug channel
+                    // unless you really need to  
+                    LOG.debug("Returned '" + result + "'");
                 }
                 return result;
             } catch (InvocationTargetException e) {
-                LOG.info(e.getLocalizedMessage(), e);
-                throw e.getCause();
+                Throwable cause = e.getCause();
+                LOG.info(cause.getLocalizedMessage(), cause);
+                throw cause;
             }
         }
-
     }
 
     /**
@@ -160,8 +174,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
     @Override
     public CmisService getService(CallContext context) {
 
-        CmsCmisService service = new CmsCmisService(m_repositoryManager);
-        service.setCallContext(context);
+        CmsCmisService service = new CmsCmisService(m_repositoryManager, context);
         CmisService proxyService = (CmisService)Proxy.newProxyInstance(
             this.getClass().getClassLoader(),
             new Class[] {CmisService.class},
