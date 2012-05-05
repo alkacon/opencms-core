@@ -176,7 +176,12 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("	theme_advanced_toolbar_location : \"top\",\n");
         result.append("	theme_advanced_toolbar_align : \"left\",\n");
         result.append("	theme_advanced_statusbar_location : \"bottom\",\n");
-        result.append("width: '100%',");
+        result.append("width: '100%', \n");
+        
+        String editorHeight = getHtmlWidgetOption().getEditorHeight();
+        StringUtils.replace(editorHeight, "px", "") ;
+        result.append("height: '" + editorHeight +"', \n") ;
+        
         result.append("language: '" + OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage() + "',\n");
 
         // set CSS style sheet for current editor widget if configured
