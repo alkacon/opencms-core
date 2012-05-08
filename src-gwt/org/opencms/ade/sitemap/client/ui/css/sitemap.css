@@ -12,6 +12,26 @@ body div.pageCenter {
 	padding-top: 45px;
 }
 
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	div.page{
+		background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	}
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	div.page{
+		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	}
+} @elif user.agent opera {
+	/** opera */
+	div.page{
+		background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	}
+} @else {
+	/** ie */
+
+}
+
 @if user.agent ie6 {
 	.root * {
 		zoom: 1; 

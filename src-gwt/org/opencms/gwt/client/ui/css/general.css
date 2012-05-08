@@ -74,6 +74,27 @@ div.header{
 	margin: 0px auto 10px;
 }
 
+
+@if user.agent gecko1_8 gecko{
+	/** firefox **/
+	div.header{
+		background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	}
+} @elif user.agent safari {
+	/** chrome, safari etc. **/
+	div.header{
+		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	}
+} @elif user.agent opera {
+	/** opera */
+	div.header{
+		background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	}
+} @else {
+	/** ie */
+
+}
+
 div.header h2{
 	font-size: value("constants.css.fontSizeBig");
 	font-weight: bold;
@@ -83,6 +104,7 @@ div.header h2{
 
 div.header > div{
 	float:left;
+	font-size: value("constants.css.fontSize");
 	margin: 0px 0px 0px 10px;
 	vertical-align: middle;
 }

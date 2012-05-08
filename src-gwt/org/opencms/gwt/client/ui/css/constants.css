@@ -122,13 +122,18 @@
 @def backgroundColorStateSubSitemap #FEFEDB;
 
 /**
- * The shadow background color definitions.
+ * The shadow color definitions.
  */
- 
 /** The box shadow color for the Internet explorer. */
 @def boxShadowColorIE #999999;
 /** The box shadow color for all other browsers. */
 @def boxShadowColorOther #666666;
+
+/**
+ * Background gradients.
+ */
+/** The form dialog background gradient. */
+@def gradientFormDialog literal("left, #FFFFFF 0%, #F4F7F9 80%, #E1E4E8 100%");  
 
 
 /**
