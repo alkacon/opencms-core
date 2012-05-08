@@ -38,7 +38,6 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -61,8 +60,11 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -71,6 +73,7 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The in-line content editor.<p>
@@ -133,6 +136,9 @@ public final class CmsContentEditor {
 
     /** The registered entity id's. */
     private Set<String> m_registeredEntities;
+
+    /** The resize handler registration. */
+    private HandlerRegistration m_resizeHandlerRegistration;
 
     /** The resource type name. */
     private String m_resourceTypeName;
@@ -239,6 +245,19 @@ public final class CmsContentEditor {
     }
 
     /**
+     * Adjusts the base panel height to the current window height.<p>
+     */
+    void adjustBasePanelHeight() {
+
+        int windowHeight = Window.getClientHeight();
+        int bodyHeight = RootPanel.getBodyElement().getOffsetHeight();
+        m_basePanel.getElement().getStyle().setProperty(
+            "minHeight",
+            windowHeight > bodyHeight ? windowHeight : bodyHeight,
+            Unit.PX);
+    }
+
+    /**
      * Cancels the editing process.<p>
      */
     void cancelEdit() {
@@ -323,6 +342,14 @@ public final class CmsContentEditor {
         m_basePanel = new FlowPanel();
         // insert base panel before the tool bar too keep the tool bar visible 
         RootPanel.get().insert(m_basePanel, RootPanel.get().getWidgetIndex(m_toolbar));
+        adjustBasePanelHeight();
+        m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+
+                adjustBasePanelHeight();
+            }
+        });
     }
 
     /**
@@ -348,14 +375,11 @@ public final class CmsContentEditor {
             CmsIconUtil.getResourceIconClasses(m_resourceTypeName, m_sitePath, false));
         m_basePanel.add(header);
         m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
-        CmsScrollPanel content = GWT.create(CmsScrollPanel.class);
+        SimplePanel content = new SimplePanel();
         content.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().contentPanel());
         content.addStyleName(I_LayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);
-        content.getElement().getStyle().setProperty(
-            "maxHeight",
-            Window.getClientHeight() - (100 + header.getOffsetHeight()),
-            Unit.PX);
+
         m_editor.renderEntityForm(m_entityId, content);
     }
 
@@ -461,6 +485,10 @@ public final class CmsContentEditor {
         m_title = null;
         m_sitePath = null;
         m_resourceTypeName = null;
+        if (m_resizeHandlerRegistration != null) {
+            m_resizeHandlerRegistration.removeHandler();
+            m_resizeHandlerRegistration = null;
+        }
         if (m_isStandAlone) {
             closeEditorWidow();
         }

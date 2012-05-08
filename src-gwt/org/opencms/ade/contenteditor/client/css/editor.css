@@ -1,14 +1,13 @@
 @sprite .basePanel{
 	gwt-image: "backgrounds.sitemapBackground";
 	font-family: value("constants.css.fontFamily");
-	position: fixed;
+	position: absolute;
 	margin: 0;
 	overflow: hidden;
 	padding-top: 45px;
 	top:0;
 	left:0;
 	right:0;
-	bottom:0;
 	z-index: value("constants.css.zIndexPopup");
 }
 
