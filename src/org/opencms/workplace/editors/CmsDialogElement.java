@@ -34,7 +34,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @since 6.0.0 
  */
-public class CmsDialogElement implements Comparable {
+public class CmsDialogElement implements Comparable<CmsDialogElement> {
 
     /** Indicates if the element is existing on the page or not. */
     private boolean m_existing;
@@ -72,25 +72,23 @@ public class CmsDialogElement implements Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsDialogElement obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsDialogElement) {
-            CmsDialogElement element = (CmsDialogElement)obj;
-            if (m_name == null) {
-                return (element.m_name == null) ? 0 : -1;
-            } else {
-                return m_name.compareToIgnoreCase(element.m_name);
-            }
+        CmsDialogElement element = obj;
+        if (m_name == null) {
+            return (element.m_name == null) ? 0 : -1;
+        } else {
+            return m_name.compareToIgnoreCase(element.m_name);
         }
-        return 0;
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -152,6 +150,7 @@ public class CmsDialogElement implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_name == null) {

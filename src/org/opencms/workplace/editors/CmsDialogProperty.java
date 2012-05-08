@@ -39,7 +39,7 @@ import org.opencms.workplace.explorer.CmsNewResourceXmlPage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,6 +97,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      * 
      * @return the HTML output String for the edit properties form
      */
+    @Override
     public String buildEditForm() {
 
         CmsMessages messages = Messages.get().getBundle(getLocale());
@@ -152,11 +153,11 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      */
     public String buildSelectTemplates(String attributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
         int selectedValue = -1;
         String currentTemplate = null;
-        TreeMap templates = null;
+        TreeMap<String, String> templates = null;
         try {
             // read the current template
             currentTemplate = getCms().readPropertyObject(
@@ -180,12 +181,12 @@ public class CmsDialogProperty extends CmsPropertyCustom {
         } else {
             boolean found = false;
             // templates found, create option and value lists
-            Iterator i = templates.entrySet().iterator();
+            Iterator<Entry<String, String>> i = templates.entrySet().iterator();
             int counter = 0;
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry)i.next();
-                String key = (String)entry.getKey();
-                String path = (String)entry.getValue();
+                Entry<String, String> entry = i.next();
+                String key = entry.getKey();
+                String path = entry.getValue();
                 if (currentTemplate.equals(path)) {
                     // mark the currently selected template
                     selectedValue = counter;
@@ -228,6 +229,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      * @return true, if the properties were successfully changed, otherwise false
      * @throws CmsException if editing is not successful
      */
+    @Override
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
 
         boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();
@@ -236,10 +238,10 @@ public class CmsDialogProperty extends CmsPropertyCustom {
                 switchToTempProject();
             }
             // write the common properties defined in the explorer type settings
-            Iterator i = getExplorerTypeSettings().getProperties().iterator();
+            Iterator<String> i = getExplorerTypeSettings().getProperties().iterator();
             // iterate over the properties
             while (i.hasNext()) {
-                String curProperty = (String)i.next();
+                String curProperty = i.next();
                 String paramValue = request.getParameter(PREFIX_VALUE + curProperty);
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);
                 writeProperty(curProperty, paramValue, oldValue);
@@ -295,7 +297,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      * @param options the option list
      * @param values the value list
      */
-    private void addCurrentTemplate(String currentTemplate, List options, List values) {
+    private void addCurrentTemplate(String currentTemplate, List<String> options, List<String> values) {
 
         CmsMessages messages = Messages.get().getBundle(getLocale());
 

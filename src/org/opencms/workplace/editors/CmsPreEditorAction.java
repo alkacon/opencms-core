@@ -114,12 +114,12 @@ public class CmsPreEditorAction extends CmsDialog {
      * @param dialog the dialog instance forwarding to the editor
      * @param additionalParams eventual additional request parameters for the editor to use
      */
-    public static void sendForwardToEditor(CmsDialog dialog, Map additionalParams) {
+    public static void sendForwardToEditor(CmsDialog dialog, Map<String, String[]> additionalParams) {
 
         // create the Map of original request parameters
-        Map params = CmsRequestUtil.createParameterMap(dialog.getParamOriginalParams());
+        Map<String, String[]> params = CmsRequestUtil.createParameterMap(dialog.getParamOriginalParams());
         // put the parameter indicating that the pre editor action was executed
-        params.put(PARAM_PREACTIONDONE, CmsStringUtil.TRUE);
+        params.put(PARAM_PREACTIONDONE, new String[] {CmsStringUtil.TRUE});
         if (additionalParams != null) {
             // put the additional parameters to the Map
             params.putAll(additionalParams);
@@ -150,7 +150,8 @@ public class CmsPreEditorAction extends CmsDialog {
                 // pre editor action not executed yet now check if a pre action class is given for the resource type
                 CmsResource resource = getCms().readResource(resourceName, CmsResourceFilter.ALL);
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-                I_CmsPreEditorActionDefinition preAction = OpenCms.getWorkplaceManager().getPreEditorConditionDefinition(type);
+                I_CmsPreEditorActionDefinition preAction = OpenCms.getWorkplaceManager().getPreEditorConditionDefinition(
+                    type);
                 if (preAction != null) {
                     return preAction.doPreAction(resource, this, getOriginalParams());
                 }

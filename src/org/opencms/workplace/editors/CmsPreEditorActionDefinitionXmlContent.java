@@ -58,6 +58,7 @@ public class CmsPreEditorActionDefinitionXmlContent extends A_CmsPreEditorAction
     /**
      * @see org.opencms.workplace.editors.I_CmsPreEditorActionDefinition#doPreAction(org.opencms.file.CmsResource, org.opencms.workplace.CmsDialog, java.lang.String)
      */
+    @Override
     public boolean doPreAction(CmsResource resource, CmsDialog dialog, String originalParams) throws Exception {
 
         String newlink = dialog.getJsp().getRequest().getParameter(CmsXmlContentEditor.PARAM_NEWLINK);
@@ -73,23 +74,25 @@ public class CmsPreEditorActionDefinitionXmlContent extends A_CmsPreEditorAction
             }
             if (CmsNewResourceXmlContent.getModelFiles(dialog.getCms(), folderPath, type.getTypeName()).size() > 0) {
                 // model files present, display model file selection dialog before opening editor
-                Map params = new HashMap(4);
+                Map<String, String[]> params = new HashMap<String, String[]>(4);
                 // put the original request parameters to a new parameter value
-                params.put(CmsDialog.PARAM_ORIGINALPARAMS, originalParams);
+                params.put(CmsDialog.PARAM_ORIGINALPARAMS, new String[] {originalParams});
                 // set action for dialog to open
-                params.put(CmsDialog.PARAM_ACTION, CmsNewResourceXmlContent.DIALOG_CHOOSEMODEL);
+                params.put(CmsDialog.PARAM_ACTION, new String[] {CmsNewResourceXmlContent.DIALOG_CHOOSEMODEL});
                 // set the title for the dialog
-                params.put(CmsDialog.PARAM_TITLE, dialog.getJsp().getRequest().getParameter("editortitle"));
+                params.put(
+                    CmsDialog.PARAM_TITLE,
+                    new String[] {dialog.getJsp().getRequest().getParameter("editortitle")});
                 // set the resource type to create for the dialog
-                params.put(CmsNewResource.PARAM_NEWRESOURCETYPE, type.getTypeName());
+                params.put(CmsNewResource.PARAM_NEWRESOURCETYPE, new String[] {type.getTypeName()});
                 // set the back link URL to return to if pressing the cancel button
                 String paramBackLink = dialog.getJsp().getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
                 if (CmsStringUtil.isNotEmpty(paramBackLink)) {
-                    params.put(CmsEditor.PARAM_BACKLINK, paramBackLink);
+                    params.put(CmsEditor.PARAM_BACKLINK, new String[] {paramBackLink});
                 }
                 // set the resource name
                 if (CmsStringUtil.isNotEmpty(resName)) {
-                    params.put(CmsDialog.PARAM_RESOURCE, resName);
+                    params.put(CmsDialog.PARAM_RESOURCE, new String[] {resName});
                 }
                 // forward to model file selection dialog
                 dialog.sendForward(CmsNewResourceXmlContentModel.VFS_PATH_MODELDIALOG, params);

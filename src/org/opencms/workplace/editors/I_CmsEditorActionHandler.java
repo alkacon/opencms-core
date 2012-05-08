@@ -51,6 +51,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_AREA_END}
      */
+    @Deprecated
     String DIRECT_EDIT_AREA_END = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_AREA_END;
 
     /** 
@@ -58,6 +59,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_AREA_END}
      */
+    @Deprecated
     String DIRECT_EDIT_AREA_START = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_AREA_START;
 
     /** 
@@ -65,6 +67,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated not longer used (the file URI is not longer stored in the page context)
      */
+    @Deprecated
     String DIRECT_EDIT_INCLUDE_FILE_URI = "__directEditIncludeFileUri";
 
     /** 
@@ -72,6 +75,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT}
      */
+    @Deprecated
     String DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT;
 
     /** 
@@ -79,6 +83,7 @@ public interface I_CmsEditorActionHandler {
      *  
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_INCLUDES}
      */
+    @Deprecated
     String DIRECT_EDIT_INCLUDES = "directedit_includes";
 
     /** 
@@ -86,6 +91,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditPermissions#VALUE_DISABLED} or better {@link CmsDirectEditPermissions#DISABLED}
      */
+    @Deprecated
     String DIRECT_EDIT_MODE_DISABLED = CmsDirectEditPermissions.VALUE_DISABLED;
 
     /** 
@@ -93,6 +99,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditPermissions#VALUE_ENABLED} or better {@link CmsDirectEditPermissions#ENABLED}     
      */
+    @Deprecated
     String DIRECT_EDIT_MODE_ENABLED = CmsDirectEditPermissions.VALUE_ENABLED;
 
     /** 
@@ -100,6 +107,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditPermissions#VALUE_INACTIVE} or better {@link CmsDirectEditPermissions#INACTIVE}     
      */
+    @Deprecated
     String DIRECT_EDIT_MODE_INACTIVE = CmsDirectEditPermissions.VALUE_INACTIVE;
 
     /** 
@@ -107,6 +115,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditButtonSelection#VALUE_DELETE}    
      */
+    @Deprecated
     String DIRECT_EDIT_OPTION_DELETE = CmsDirectEditButtonSelection.VALUE_DELETE;
 
     /** 
@@ -114,6 +123,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditButtonSelection#VALUE_EDIT} or better {@link CmsDirectEditButtonSelection#EDIT}
      */
+    @Deprecated
     String DIRECT_EDIT_OPTION_EDIT = CmsDirectEditButtonSelection.VALUE_EDIT;
 
     /** 
@@ -121,6 +131,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditButtonSelection#VALUE_NEW}
      */
+    @Deprecated
     String DIRECT_EDIT_OPTION_NEW = CmsDirectEditButtonSelection.VALUE_NEW;
 
     /** 
@@ -128,6 +139,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_PARAM_BUTTONSTYLE}
      */
+    @Deprecated
     String DIRECT_EDIT_PARAM_BUTTONSTYLE = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_BUTTONSTYLE;
 
     /** 
@@ -135,6 +147,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_PARAM_ELEMENT}
      */
+    @Deprecated
     String DIRECT_EDIT_PARAM_ELEMENT = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_ELEMENT;
 
     /** 
@@ -142,6 +155,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_PARAM_LOCALE}
      */
+    @Deprecated
     String DIRECT_EDIT_PARAM_LOCALE = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_LOCALE;
 
     /** 
@@ -149,6 +163,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_PARAM_NEWLINK}
      */
+    @Deprecated
     String DIRECT_EDIT_PARAM_NEWLINK = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_NEWLINK;
 
     /** 
@@ -156,6 +171,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_PARAM_OPTIONS}
      */
+    @Deprecated
     String DIRECT_EDIT_PARAM_OPTIONS = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_OPTIONS;
 
     /** 
@@ -163,6 +179,7 @@ public interface I_CmsEditorActionHandler {
      * 
      * @deprecated use {@link CmsDirectEditJspIncludeProvider#DIRECT_EDIT_PARAM_TARGET}
      */
+    @Deprecated
     String DIRECT_EDIT_PARAM_TARGET = CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_TARGET;
 
     /**

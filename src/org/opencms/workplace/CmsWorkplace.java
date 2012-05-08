@@ -1732,7 +1732,7 @@ public abstract class CmsWorkplace {
      * @throws IOException in case the forward fails
      * @throws ServletException in case the forward fails
      */
-    public void sendForward(String location, Map<String, ?> params) throws IOException, ServletException {
+    public void sendForward(String location, Map<String, String[]> params) throws IOException, ServletException {
 
         setForwarded(true);
         // params must be arrays of String, ensure this is the case

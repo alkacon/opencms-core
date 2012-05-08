@@ -75,6 +75,7 @@ public class CmsEditorFrameset extends CmsEditor {
      * 
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
+    @Override
     public void actionClear(boolean forceUnlock) {
 
         // delete the temporary file        
@@ -95,6 +96,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
+    @Override
     public final void actionExit() {
 
         // do nothing
@@ -103,6 +105,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
+    @Override
     public final void actionSave() {
 
         // do nothing
@@ -111,6 +114,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public final String getEditorResourceUri() {
 
         // return empty String
@@ -143,6 +147,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#initContent()
      */
+    @Override
     protected final void initContent() {
 
         // do nothing
@@ -151,6 +156,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

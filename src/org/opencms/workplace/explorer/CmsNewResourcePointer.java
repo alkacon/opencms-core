@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
@@ -55,6 +56,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
     /** Request parameter name for the link target. */
     public static final String PARAM_LINKTARGET = "linktarget";
 
+    /** The link target parameter. */
     private String m_paramLinkTarget;
 
     /**
@@ -84,6 +86,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
      * 
      * @throws JspException if inclusion of error dialog fails
      */
+    @Override
     public void actionCreateResource() throws JspException {
 
         try {
@@ -92,7 +95,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
             // create the full resource name
             String fullResourceName = computeFullResourceName();
             // create the Title and Navigation properties if configured
-            List properties = createResourceProperties(
+            List<CmsProperty> properties = createResourceProperties(
                 fullResourceName,
                 CmsResourceTypePointer.getStaticTypeName(),
                 title);
@@ -137,6 +140,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

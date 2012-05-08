@@ -93,12 +93,25 @@ public class CmsWorkplaceEditorConfiguration {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplaceEditorConfiguration.class);
 
-    private List m_browserPattern;
+    /** The browser patterns. */
+    private List<Pattern> m_browserPattern;
+
+    /** The editor label. */
     private String m_editorLabel;
+
+    /** The editor URI. */
     private String m_editorUri;
-    private Map m_resTypes;
-    private List m_userAgentsRegEx;
+
+    /** The resource types. */
+    private Map<String, String[]> m_resTypes;
+
+    /** The user agents. */
+    private List<String> m_userAgentsRegEx;
+
+    /** The valid configuration flag. */
     private boolean m_validConfiguration;
+
+    /** The widget editor. */
     private String m_widgetEditor;
 
     /**
@@ -123,7 +136,7 @@ public class CmsWorkplaceEditorConfiguration {
      * 
      * @return the list of compiled browser patterns
      */
-    public List getBrowserPattern() {
+    public List<Pattern> getBrowserPattern() {
 
         return m_browserPattern;
     }
@@ -156,7 +169,7 @@ public class CmsWorkplaceEditorConfiguration {
      */
     public String getMappingForResourceType(String resourceType) {
 
-        String[] resourceTypeParams = (String[])getResourceTypes().get(resourceType);
+        String[] resourceTypeParams = getResourceTypes().get(resourceType);
         if (resourceTypeParams == null) {
             return null;
         } else {
@@ -172,7 +185,7 @@ public class CmsWorkplaceEditorConfiguration {
      */
     public float getRankingForResourceType(String resourceType) {
 
-        String[] resourceTypeParams = (String[])getResourceTypes().get(resourceType);
+        String[] resourceTypeParams = getResourceTypes().get(resourceType);
         if (resourceTypeParams == null) {
             return -1.0f;
         } else {
@@ -192,7 +205,7 @@ public class CmsWorkplaceEditorConfiguration {
      * 
      * @return the valid resource types of the editor
      */
-    public Map getResourceTypes() {
+    public Map<String, String[]> getResourceTypes() {
 
         return m_resTypes;
     }
@@ -202,7 +215,7 @@ public class CmsWorkplaceEditorConfiguration {
      * 
      * @return the valid user agents regular expressions of the editor
      */
-    public List getUserAgentsRegEx() {
+    public List<String> getUserAgentsRegEx() {
 
         return m_userAgentsRegEx;
     }
@@ -249,7 +262,7 @@ public class CmsWorkplaceEditorConfiguration {
             return false;
         }
         for (int i = 0; i < getBrowserPattern().size(); i++) {
-            boolean matches = ((Pattern)getBrowserPattern().get(i)).matcher(currentBrowser.trim()).matches();
+            boolean matches = getBrowserPattern().get(i).matcher(currentBrowser.trim()).matches();
             if (matches) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROWSER_MATCHES_CONFIG_1, currentBrowser));
@@ -277,6 +290,7 @@ public class CmsWorkplaceEditorConfiguration {
      * @param document the XML configuration document
      * @param editorUri the editor workplace URI
      */
+    @SuppressWarnings("unchecked")
     private void initialize(Document document, String editorUri) {
 
         // get the root element of the configuration
@@ -295,10 +309,10 @@ public class CmsWorkplaceEditorConfiguration {
         setEditorUri(editorUri);
 
         // create the map of valid resource types
-        Iterator i = rootElement.element(N_RESOURCETYPES).elementIterator(N_TYPE);
-        Map resTypes = new HashMap();
+        Iterator<Element> i = rootElement.element(N_RESOURCETYPES).elementIterator(N_TYPE);
+        Map<String, String[]> resTypes = new HashMap<String, String[]>();
         while (i.hasNext()) {
-            Element currentType = (Element)i.next();
+            Element currentType = i.next();
             float ranking;
             String name = currentType.elementText(N_NAME);
             if (CmsStringUtil.isEmpty(name)) {
@@ -320,9 +334,9 @@ public class CmsWorkplaceEditorConfiguration {
         // add the additional resource types
         i = rootElement.element(N_RESOURCETYPES).elementIterator(N_CLASS);
         while (i.hasNext()) {
-            Element currentClass = (Element)i.next();
+            Element currentClass = i.next();
             String name = currentClass.elementText(N_NAME);
-            List assignedTypes = new ArrayList();
+            List<String> assignedTypes = new ArrayList<String>();
             try {
                 // get the editor type matcher class
                 I_CmsEditorTypeMatcher matcher = (I_CmsEditorTypeMatcher)Class.forName(name).newInstance();
@@ -343,9 +357,9 @@ public class CmsWorkplaceEditorConfiguration {
                 mapTo = null;
             }
             // now loop through all types found and add them 
-            Iterator j = assignedTypes.iterator();
+            Iterator<String> j = assignedTypes.iterator();
             while (j.hasNext()) {
-                String typeName = (String)j.next();
+                String typeName = j.next();
                 resTypes.put(typeName, new String[] {"" + ranking, mapTo});
             }
         }
@@ -354,10 +368,10 @@ public class CmsWorkplaceEditorConfiguration {
 
         // create the list of user agents & compiled patterns for editor
         i = document.getRootElement().element(N_USERAGENTS).elementIterator(N_AGENT);
-        List pattern = new ArrayList();
-        List userAgents = new ArrayList();
+        List<Pattern> pattern = new ArrayList<Pattern>();
+        List<String> userAgents = new ArrayList<String>();
         while (i.hasNext()) {
-            Element currentAgent = (Element)i.next();
+            Element currentAgent = i.next();
             String agentName = currentAgent.getText();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(agentName)) {
                 userAgents.add(agentName);
@@ -399,7 +413,7 @@ public class CmsWorkplaceEditorConfiguration {
      * 
      * @param pattern the list of compiled browser patterns
      */
-    private void setBrowserPattern(List pattern) {
+    private void setBrowserPattern(List<Pattern> pattern) {
 
         if ((pattern == null) || (pattern.size() == 0)) {
             setValidConfiguration(false);
@@ -440,7 +454,7 @@ public class CmsWorkplaceEditorConfiguration {
      * 
      * @param types the valid resource types of the editor
      */
-    private void setResourceTypes(Map types) {
+    private void setResourceTypes(Map<String, String[]> types) {
 
         if ((types == null) || (types.size() == 0)) {
             setValidConfiguration(false);
@@ -454,7 +468,7 @@ public class CmsWorkplaceEditorConfiguration {
      * 
      * @param agents the valid user agents regular expressions of the editor
      */
-    private void setUserAgentsRegEx(List agents) {
+    private void setUserAgentsRegEx(List<String> agents) {
 
         if ((agents == null) || (agents.size() == 0)) {
             setValidConfiguration(false);

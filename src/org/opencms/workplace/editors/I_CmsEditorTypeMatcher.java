@@ -42,6 +42,6 @@ public interface I_CmsEditorTypeMatcher {
      * Returns a list of resource type names which are assigned to an editor.<p>
      * @return  list of resource type names 
      */
-    List getAdditionalResourceTypes();
+    List<String> getAdditionalResourceTypes();
 
 }

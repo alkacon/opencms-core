@@ -270,22 +270,22 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
                 // show the next dialog page, which presents a list of model files
                 setAction(ACTION_CHOOSEMODEL);
                 // put the necessary parameters to a Map before forwarding
-                Map params = new HashMap(6);
-                params.put(PARAM_RESOURCE, getParamResource());
-                params.put(PARAM_NEWRESOURCETYPE, getParamNewResourceType());
-                params.put(PARAM_TITLE, getParamTitle());
+                Map<String, String[]> params = new HashMap<String, String[]>(6);
+                params.put(PARAM_RESOURCE, new String[] {getParamResource()});
+                params.put(PARAM_NEWRESOURCETYPE, new String[] {getParamNewResourceType()});
+                params.put(PARAM_TITLE, new String[] {getParamTitle()});
                 // only add parameters if present, otherwise NPE is thrown
                 if (CmsStringUtil.isNotEmpty(getParamNewResourceEditProps())) {
                     // edit properties is checked
-                    params.put(PARAM_NEWRESOURCEEDITPROPS, getParamNewResourceEditProps());
+                    params.put(PARAM_NEWRESOURCEEDITPROPS, new String[] {getParamNewResourceEditProps()});
                 }
                 if (CmsStringUtil.isNotEmpty(getParamAppendSuffixHtml())) {
                     // append .html suffix is checked
-                    params.put(PARAM_APPENDSUFFIXHTML, getParamAppendSuffixHtml());
+                    params.put(PARAM_APPENDSUFFIXHTML, new String[] {getParamAppendSuffixHtml()});
                 }
                 if (CmsStringUtil.isNotEmpty(getParamOriginalParams())) {
                     // add the original parameters
-                    params.put(PARAM_ORIGINALPARAMS, getParamOriginalParams());
+                    params.put(PARAM_ORIGINALPARAMS, new String[] {getParamOriginalParams()});
                 }
                 try {
                     sendForward(CmsNewResourceXmlContentModel.VFS_PATH_MODELDIALOG, params);

@@ -47,6 +47,7 @@ import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -143,6 +144,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_CONTINUE) {
@@ -157,10 +159,10 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
             if (CmsPreEditorAction.isPreEditorMode(this)) {
                 // forward back to editor with different parameters!
-                Map params = new HashMap(1);
+                Map<String, String[]> params = new HashMap<String, String[]>(1);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamModelFile())) {
                     // model file was selected, put it to parameters for editor notification
-                    params.put(CmsNewResourceXmlContent.PARAM_MODELFILE, getParamModelFile());
+                    params.put(CmsNewResourceXmlContent.PARAM_MODELFILE, new String[] {getParamModelFile()});
                 }
                 CmsPreEditorAction.sendForwardToEditor(this, params);
             } else {
@@ -176,13 +178,13 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
                 actionClose();
             } else {
                 // in workplace, forward back to new xmlcontent dialog with necessary parameters
-                Map params = new HashMap(3);
-                params.put(PARAM_ACTION, DIALOG_CANCEL);
+                Map<String, String[]> params = new HashMap<String, String[]>(3);
+                params.put(PARAM_ACTION, new String[] {DIALOG_CANCEL});
                 if (CmsStringUtil.isNotEmpty(getParamFramename())) {
-                    params.put(PARAM_FRAMENAME, getParamFramename());
+                    params.put(PARAM_FRAMENAME, new String[] {getParamFramename()});
                 }
                 if (CmsStringUtil.isNotEmpty(getParamCloseLink())) {
-                    params.put(PARAM_CLOSELINK, getParamCloseLink());
+                    params.put(PARAM_CLOSELINK, new String[] {getParamCloseLink()});
                 }
                 sendForward(VFS_PATH_NEWRESOURCEDIALOG, params);
             }
@@ -202,6 +204,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
      * 
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#dialogButtons()
      */
+    @Override
     public String dialogButtons() {
 
         if (Boolean.valueOf(getParamNewResourceEditProps()).booleanValue() || CmsPreEditorAction.isPreEditorMode(this)) {
@@ -214,10 +217,11 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
-            List modelFiles = new ArrayList();
+            List<CmsResource> modelFiles = new ArrayList<CmsResource>();
             String folderPath = getSettings().getExplorerResource();
             if (isPreEditor()) {
                 // in pre edit mode, we have to use the resource parameter to get the current folder
@@ -225,12 +229,12 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
                     folderPath = CmsResource.getFolderPath(getParamResource());
                 }
             }
-            List realModelFiles = CmsNewResourceXmlContent.getModelFiles(
+            List<CmsResource> realModelFiles = CmsNewResourceXmlContent.getModelFiles(
                 getCms(),
                 folderPath,
                 getParamNewResourceType());
             // create a dummy resource object to add to be able to select "none" as model file
-            int dummyType = ((CmsResource)realModelFiles.get(0)).getTypeId();
+            int dummyType = realModelFiles.get(0).getTypeId();
             String resPath = key(Messages.GUI_NEWRESOURCE_XMLCONTENT_NO_MODEL_0);
             CmsResource dummy = new CmsResource(
                 CmsUUID.getConstantUUID(CmsNewResourceXmlContent.VALUE_NONE + "s"),
@@ -262,6 +266,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#getListTitle()
      */
+    @Override
     public String getListTitle() {
 
         return key(Messages.GUI_NEWRESOURCE_XMLCONTENT_CHOOSEMODEL_0);
@@ -320,6 +325,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#nextUrl()
      */
+    @Override
     public String nextUrl() {
 
         return VFS_PATH_COMMONS + "newresource_xmlcontent.jsp";
@@ -395,19 +401,20 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         // load the common JSP close dialog
-        sendForward(FILE_DIALOG_CLOSE, new HashMap());
+        sendForward(FILE_DIALOG_CLOSE, Collections.<String, String[]> emptyMap());
     }
 
     /**
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get listed model files
-        List modelFiles = getList().getAllContent();
-        Iterator i = modelFiles.iterator();
+        List<CmsListItem> modelFiles = getList().getAllContent();
+        Iterator<CmsListItem> i = modelFiles.iterator();
         while (i.hasNext()) {
-            CmsListItem item = (CmsListItem)i.next();
+            CmsListItem item = i.next();
             String resName = (String)item.get(LIST_COLUMN_NAME);
             String description = "";
             if (detailId.equals(LIST_DETAIL_DESCRIPTION)) {
@@ -428,6 +435,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         // only show icon, name, title and datelastmodified columns
@@ -452,13 +460,14 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
      * 
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
 
-        Iterator it = metadata.getColumnDefinitions().iterator();
+        Iterator<CmsListColumnDefinition> it = metadata.getColumnDefinitions().iterator();
         while (it.hasNext()) {
-            CmsListColumnDefinition colDefinition = (CmsListColumnDefinition)it.next();
+            CmsListColumnDefinition colDefinition = it.next();
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
 
                 // remove default "preview file" action from file name column
@@ -479,6 +488,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail: description

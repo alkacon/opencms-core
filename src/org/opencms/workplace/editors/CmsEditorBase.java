@@ -54,6 +54,7 @@ public class CmsEditorBase extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initTimeWarp(org.opencms.db.CmsUserSettings, javax.servlet.http.HttpSession)
      */
+    @Override
     protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
 
         // overridden to avoid deletion of the configured time warp: 

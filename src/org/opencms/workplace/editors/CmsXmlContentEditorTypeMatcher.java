@@ -49,15 +49,15 @@ public class CmsXmlContentEditorTypeMatcher implements I_CmsEditorTypeMatcher {
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorTypeMatcher#getAdditionalResourceTypes()
      */
-    public List getAdditionalResourceTypes() {
+    public List<String> getAdditionalResourceTypes() {
 
-        ArrayList additionalTypes = new ArrayList();
+        ArrayList<String> additionalTypes = new ArrayList<String>();
         // get all explorerTypes
-        List explorerTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
-        Iterator i = explorerTypes.iterator();
+        List<CmsExplorerTypeSettings> explorerTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
+        Iterator<CmsExplorerTypeSettings> i = explorerTypes.iterator();
         // loop through all types and select those with reference to the type xmlcontent
         while (i.hasNext()) {
-            CmsExplorerTypeSettings type = (CmsExplorerTypeSettings)i.next();
+            CmsExplorerTypeSettings type = i.next();
             if ((type.getName().equalsIgnoreCase(TYPE_XMLCONTENT))
                 || ((type.getReference() != null) && type.getReference().equalsIgnoreCase(TYPE_XMLCONTENT))) {
                 additionalTypes.add(type.getName());

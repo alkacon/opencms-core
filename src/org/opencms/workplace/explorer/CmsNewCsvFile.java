@@ -155,6 +155,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      * 
      * @throws JspException if inclusion of error dialog fails
      */
+    @Override
     public void actionUpload() throws JspException {
 
         String newResname = "";
@@ -196,7 +197,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
             try {
                 // create the resource
-                getCms().createResource(getParamResource(), resTypeId, content, Collections.EMPTY_LIST);
+                getCms().createResource(getParamResource(), resTypeId, content, Collections.<CmsProperty> emptyList());
             } catch (CmsException e) {
                 // resource was present, overwrite it
                 getCms().lockResource(getParamResource());
@@ -220,13 +221,13 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      */
     public String buildDelimiterSelect() {
 
-        Object[] optionStrings = new Object[] {
+        String[] optionStrings = new String[] {
             key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_BEST_0),
             key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_SEMICOLON_0),
             key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_COMMA_0),
             key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_TAB_0)};
-        List options = new ArrayList(Arrays.asList(optionStrings));
-        List values = new ArrayList(Arrays.asList(new Object[] {"best", ";", ",", "tab"}));
+        List<String> options = new ArrayList<String>(Arrays.<String> asList(optionStrings));
+        List<String> values = new ArrayList<String>(Arrays.<String> asList(new String[] {"best", ";", ",", "tab"}));
         String parameters = "name=\"" + PARAM_DELIMITER + "\" class=\"maxwidth\"";
         return buildSelect(parameters, options, values, 0);
     }
@@ -239,10 +240,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     public String buildXsltSelect() {
 
         // read all xslt files
-        List xsltFiles = getXsltFiles();
+        List<CmsResource> xsltFiles = getXsltFiles();
         if (xsltFiles.size() > 0) {
-            List options = new ArrayList();
-            List values = new ArrayList();
+            List<String> options = new ArrayList<String>();
+            List<String> values = new ArrayList<String>();
 
             options.add(key(Messages.GUI_NEWRESOURCE_CONVERSION_NOSTYLE_0));
             values.add("");
@@ -250,10 +251,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             CmsResource resource;
             CmsProperty titleProp = CmsProperty.getNullProperty();
 
-            Iterator i = xsltFiles.iterator();
+            Iterator<CmsResource> i = xsltFiles.iterator();
             while (i.hasNext()) {
 
-                resource = (CmsResource)i.next();
+                resource = i.next();
                 try {
                     titleProp = getCms().readPropertyObject(
                         resource.getRootPath(),
@@ -297,10 +298,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
         byte[] content;
         // get the file item from the multipart request
-        Iterator i = getMultiPartFileItems().iterator();
+        Iterator<FileItem> i = getMultiPartFileItems().iterator();
         FileItem fi = null;
         while (i.hasNext()) {
-            fi = (FileItem)i.next();
+            fi = i.next();
             if (fi.getName() != null) {
                 // found the file object, leave iteration
                 break;
@@ -377,18 +378,18 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      * 
      * @return a list of the available xslt files
      */
-    public List getXsltFiles() {
+    public List<CmsResource> getXsltFiles() {
 
-        List result = new ArrayList();
+        List<CmsResource> result = new ArrayList<CmsResource>();
         try {
             // find all files of generic xmlcontent in the modules folder
             int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
-            Iterator xmlFiles = getCms().readResources(
+            Iterator<CmsResource> xmlFiles = getCms().readResources(
                 CmsWorkplace.VFS_PATH_MODULES,
                 CmsResourceFilter.DEFAULT_FILES.addRequireType(plainId),
                 true).iterator();
             while (xmlFiles.hasNext()) {
-                CmsResource xmlFile = (CmsResource)xmlFiles.next();
+                CmsResource xmlFile = xmlFiles.next();
                 // filter all files with the suffix .table.xml
                 if (xmlFile.getName().endsWith(TABLE_XSLT_SUFFIX)) {
                     result.add(xmlFile);

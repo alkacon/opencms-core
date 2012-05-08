@@ -62,6 +62,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -122,7 +123,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public static final String ATTR_UPLOAD_FOLDER = "upload_folder";
 
     /** Default setting for the applet JSP page colors (windows style). */
-    public static final Map DEFAULT_APPLET_WINDOW_COLORS = new HashMap();
+    public static final Map<String, String> DEFAULT_APPLET_WINDOW_COLORS = new HashMap<String, String>();
 
     /** The value for the resource upload applet action. */
     // Warning: This constant has to be kept in sync with the same named constant in org.opencms.applet.FileUploadApplet!    
@@ -164,26 +165,43 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** Request parameter name for the upload folder name. */
     public static final String PARAM_UPLOADFOLDER = "uploadfolder";
 
+    /** The uploaded files attribute name. */
     private static final String ATTR_UPLOADED_FILES = "uploaded_files";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResourceUpload.class);
 
     /** The configurable colors for the applet window (content frame JSP). */
-    private Map m_appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
+    private Map<String, String> m_appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
 
     /** A flag which indicates whether we are closing the dialog after unzipping an upload. */
     private boolean m_closingAfterUnzip;
+
+    /** The client folder parameter. */
     private String m_paramClientFolder;
+
+    /** The new resource name parameter. */
     private String m_paramNewResourceName;
+
+    /** The redirect URL parameter. */
     private String m_paramRedirectUrl;
+
+    /** The target frame parameter. */
     private String m_paramTargetFrame;
+
+    /** The unzip file parameter. */
     private String m_paramUnzipFile;
+
+    /** The upload error parameter. */
     private String m_paramUploadError;
+
+    /** The upload file parameter. */
     private String m_paramUploadFile;
 
+    /** The upload folder parameter. */
     private String m_paramUploadFolder;
 
+    /** The uploaded files. */
     private List<String> m_uploadedFiles = new ArrayList<String>();
 
     /**
@@ -238,13 +256,13 @@ public class CmsNewResourceUpload extends CmsNewResource {
             CmsResource res = cms.readResource(dialog.getParamResource(), CmsResourceFilter.ALL);
             int currentResTypeId = res.getTypeId();
             // get all available explorer type settings
-            List resTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
+            List<CmsExplorerTypeSettings> resTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
             boolean isFolder = res.isFolder();
             // loop through all visible resource types
             for (int i = 0; i < resTypes.size(); i++) {
                 boolean changeable = false;
                 // get explorer type settings for current resource type
-                CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)resTypes.get(i);
+                CmsExplorerTypeSettings settings = resTypes.get(i);
 
                 // only if settings is a real resourcetype
                 boolean isResourceType;
@@ -331,7 +349,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         String currentFolder,
         String redirectUrl,
         String targetFrame,
-        Map appletWindowColors) {
+        Map<String, String> appletWindowColors) {
 
         StringBuffer applet = new StringBuffer(2048);
 
@@ -344,12 +362,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
         // get all file extensions
         String fileExtensions = "";
-        Map extensions = OpenCms.getResourceManager().getExtensionMapping();
-        Iterator keys = extensions.entrySet().iterator();
+        Map<String, String> extensions = OpenCms.getResourceManager().getExtensionMapping();
+        Iterator<Entry<String, String>> keys = extensions.entrySet().iterator();
         while (keys.hasNext()) {
-            Map.Entry entry = (Map.Entry)keys.next();
-            String key = (String)entry.getKey();
-            String value = (String)entry.getValue();
+            Entry<String, String> entry = keys.next();
+            String key = entry.getKey();
+            String value = entry.getValue();
             fileExtensions += key + "=" + value + ",";
         }
         fileExtensions = fileExtensions.substring(0, fileExtensions.length() - 1);
@@ -368,10 +386,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
         if ((appletWindowColors == null) || (appletWindowColors.size() == 0)) {
             appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
         }
-        Iterator it = appletWindowColors.entrySet().iterator();
-        Map.Entry color;
+        Iterator<Entry<String, String>> it = appletWindowColors.entrySet().iterator();
+        Entry<String, String> color;
         while (it.hasNext()) {
-            color = (Map.Entry)it.next();
+            color = it.next();
             colors.append(color.getKey()).append('=').append(color.getValue());
             if (it.hasNext()) {
                 colors.append(',');
@@ -558,10 +576,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
      *  
      * It tries to include the URI stored in the workplace settings.
      * This URI is determined by the frame name, which has to be set 
-     * in the framename parameter.<p>
+     * in the frame name parameter.<p>
      * 
      * @throws JspException if including an element fails
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         if (getAction() == ACTION_CANCEL) {
@@ -607,11 +626,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         uploadFolder);
                     if (uploadHook != null) {
 
-                        Map params = new HashMap();
+                        Map<String, String[]> params = new HashMap<String, String[]>();
                         params.put(
                             PARAM_RESOURCES,
-                            getJsp().getRequest().getSession().getAttribute(ATTR_UPLOADED_FILES));
-                        params.put(PARAM_CLOSELINK, getParamCloseLink());
+                            new String[] {(String)getJsp().getRequest().getSession().getAttribute(ATTR_UPLOADED_FILES)});
+                        params.put(PARAM_CLOSELINK, new String[] {getParamCloseLink()});
                         try {
                             forwardEditProperties(params);
                             return;
@@ -689,10 +708,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
         try {
             // get the file item from the multipart request
-            Iterator i = getMultiPartFileItems().iterator();
+            Iterator<FileItem> i = getMultiPartFileItems().iterator();
             FileItem fi = null;
             while (i.hasNext()) {
-                fi = (FileItem)i.next();
+                fi = i.next();
                 if (fi.getName() != null) {
                     // found the file object, leave iteration
                     break;
@@ -741,7 +760,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     if (title.lastIndexOf('.') != -1) {
                         title = title.substring(0, title.lastIndexOf('.'));
                     }
-                    List properties = new ArrayList(1);
+                    List<CmsProperty> properties = new ArrayList<CmsProperty>(1);
                     CmsProperty titleProp = new CmsProperty();
                     titleProp.setName(CmsPropertyDefinition.PROPERTY_TITLE);
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
@@ -848,7 +867,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
      * @see org.opencms.workplace.explorer.CmsNewResource#forwardEditProperties(java.util.Map)
      */
     @Override
-    public void forwardEditProperties(Map params) throws IOException, ServletException, JspException {
+    public void forwardEditProperties(Map<String, String[]> params) throws IOException, ServletException {
 
         String uploadFolder = (String)(getJsp().getRequest().getSession().getAttribute(ATTR_UPLOAD_FOLDER));
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(uploadFolder)) {
@@ -858,14 +877,14 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 if (params.get(PARAM_CLOSELINK) == null) {
                     params.put(
                         PARAM_CLOSELINK,
-                        OpenCms.getLinkManager().getServerLink(
+                        new String[] {OpenCms.getLinkManager().getServerLink(
                             getJsp().getCmsObject(),
-                            CmsWorkplace.FILE_EXPLORER_FILELIST));
+                            CmsWorkplace.FILE_EXPLORER_FILELIST)});
                 }
                 String uploadedFilesString = (String)getJsp().getRequest().getSession().getAttribute(
                     ATTR_UPLOADED_FILES);
                 if (uploadedFilesString != null) {
-                    params.put(PARAM_RESOURCES, uploadedFilesString);
+                    params.put(PARAM_RESOURCES, new String[] {uploadedFilesString});
                 }
                 sendForward(uploadHook, params);
                 return;
@@ -1023,15 +1042,15 @@ public class CmsNewResourceUpload extends CmsNewResource {
         if (currentFolder.endsWith("/")) {
             currentFolder = currentFolder.substring(0, currentFolder.length() - 1);
         }
-        List vfsfiles = CmsStringUtil.splitAsList(uploadFiles, '\n');
-        Iterator it = vfsfiles.iterator();
+        List<String> vfsfiles = CmsStringUtil.splitAsList(uploadFiles, '\n');
+        Iterator<String> it = vfsfiles.iterator();
         // apply directory translation only for server comparison
         String vfsfile;
         // return the clean file as know by the client
         String clientfile;
 
         while (it.hasNext()) {
-            clientfile = (String)it.next();
+            clientfile = it.next();
             vfsfile = new StringBuffer(currentFolder).append(clientfile).toString();
             vfsfile = OpenCms.getResourceManager().getFileTranslator().translateResource(vfsfile);
             if (getCms().existsResource(vfsfile)) {
@@ -1049,10 +1068,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
      * @see org.opencms.workplace.CmsWorkplace#sendForward(java.lang.String, java.util.Map)
      */
     @Override
-    public void sendForward(String location, Map params) throws IOException, ServletException {
+    public void sendForward(String location, Map<String, String[]> params) throws IOException, ServletException {
 
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_paramUploadFolder)) {
-            params.put(PARAM_UPLOADFOLDER, m_paramUploadFolder);
+            params.put(PARAM_UPLOADFOLDER, new String[] {m_paramUploadFolder});
         }
         super.sendForward(location, params);
     }
@@ -1062,7 +1081,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
      *
      * @param appletWindowColors the configurable colors for the applet window (content frame JSP).
      */
-    public final void setAppletWindowColors(final Map appletWindowColors) {
+    public final void setAppletWindowColors(final Map<String, String> appletWindowColors) {
 
         m_appletWindowColors = appletWindowColors;
     }
@@ -1170,6 +1189,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         String siteRoot = jsp.getRequestContext().getSiteRoot();
@@ -1188,6 +1208,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

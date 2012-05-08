@@ -106,22 +106,23 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
         /**
          * @see org.opencms.workplace.list.I_CmsListItemComparator#getComparator(java.lang.String, java.util.Locale)
          */
-        public Comparator getComparator(final String columnId, final Locale locale) {
+        public Comparator<CmsListItem> getComparator(final String columnId, final Locale locale) {
 
             final Collator collator = Collator.getInstance(locale);
 
-            return new Comparator() {
+            return new Comparator<CmsListItem>() {
 
                 /**
                  * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
                  */
-                public int compare(Object o1, Object o2) {
+                @SuppressWarnings({"rawtypes", "unchecked"})
+                public int compare(CmsListItem o1, CmsListItem o2) {
 
-                    if ((o1 == o2) || !(o1 instanceof CmsListItem) || !(o2 instanceof CmsListItem)) {
+                    if ((o1 == o2)) {
                         return 0;
                     }
-                    CmsListItem li1 = (CmsListItem)o1;
-                    CmsListItem li2 = (CmsListItem)o2;
+                    CmsListItem li1 = o1;
+                    CmsListItem li2 = o2;
 
                     String id1 = li1.getId();
                     String id2 = li2.getId();
@@ -203,7 +204,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
             String fullResourceName = computeFullResourceName();
 
             // create the Title and Navigation properties if configured
-            List properties = CmsNewResource.createResourceProperties(
+            List<CmsProperty> properties = CmsNewResource.createResourceProperties(
                 getCms(),
                 fullResourceName,
                 CmsResourceTypeFolder.getStaticTypeName(),
@@ -231,6 +232,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_CONTINUE) {
@@ -262,17 +264,19 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
         if (editProps) {
 
             // edit properties of folder, forward to property dialog
-            Map params = new HashMap();
-            params.put(PARAM_RESOURCE, getParamResource());
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(PARAM_RESOURCE, new String[] {getParamResource()});
             if (createIndex) {
 
                 // set dialogmode to wizard - create index page to indicate the creation of the index page
-                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX);
-                params.put(PARAM_INDEX_PAGE_TYPE, indexPageType);
+                params.put(
+                    CmsPropertyAdvanced.PARAM_DIALOGMODE,
+                    new String[] {CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX});
+                params.put(PARAM_INDEX_PAGE_TYPE, new String[] {indexPageType});
             } else {
 
                 // set dialogmode to wizard
-                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
+                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, new String[] {CmsPropertyAdvanced.MODE_WIZARD});
             }
             sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
         } else if (createIndex) {
@@ -288,14 +292,14 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
             String newUri = PATH_DIALOGS
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(indexPageType).getNewResourceUri();
             CmsUriSplitter splitter = new CmsUriSplitter(newUri);
-            Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
-            params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX);
-            params.put(PARAM_ACTION, CmsNewResource.DIALOG_NEWFORM);
+            Map<String, String[]> params = CmsRequestUtil.createParameterMap(splitter.getQuery());
+            params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, new String[] {CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX});
+            params.put(PARAM_ACTION, new String[] {CmsNewResource.DIALOG_NEWFORM});
             sendForward(splitter.getPrefix(), params);
         } else {
 
             // edit properties and create index file not checked, close the dialog and update tree
-            List folderList = new ArrayList(1);
+            List<String> folderList = new ArrayList<String>(1);
             folderList.add(CmsResource.getParentFolder(getParamResource()));
             getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
             actionCloseDialog();
@@ -331,19 +335,20 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceTypeDialog#getParamSelectedType()
      */
+    @Override
     public String getParamSelectedType() {
 
         String item = super.getParamSelectedType();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(item)) {
 
             boolean existNoIndex = false;
-            List availableResTypes = getAvailableResTypes();
+            List<String> availableResTypes = getAvailableResTypes();
 
             // search for the default in the configuration
-            Iterator iter = availableResTypes.iterator();
+            Iterator<String> iter = availableResTypes.iterator();
             while (iter.hasNext()) {
 
-                String entry = (String)iter.next();
+                String entry = iter.next();
 
                 // check if the no index page is available
                 if (entry.equals(NAME_NO_INDEX_PAGE)) {
@@ -365,7 +370,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
             // now use the first entry as the default
             if (availableResTypes.size() > 0) {
-                return (String)availableResTypes.get(0);
+                return availableResTypes.get(0);
             }
 
             return null;
@@ -377,9 +382,10 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
-        List exclude = new ArrayList();
+        List<String> exclude = new ArrayList<String>();
         exclude.add(CmsNewResource.PARAM_NEWRESOURCEEDITPROPS);
         exclude.add(PARAM_RESOURCE);
 
@@ -431,6 +437,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
      * 
      * @return the html code to add directly before the list inside the form element
      */
+    @Override
     protected String customHtmlBeforeList() {
 
         StringBuffer result = new StringBuffer();
@@ -476,6 +483,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(256);
@@ -493,6 +501,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -531,6 +540,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
+    @Override
     protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
 
         switch (button) {
@@ -565,7 +575,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
      * 
      * @return a list with all available resource types for the index page
      */
-    protected List getAvailableResTypes() {
+    protected List<String> getAvailableResTypes() {
 
         String availableResTypes = null;
 
@@ -611,14 +621,15 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    @Override
+    protected List<CmsListItem> getListItems() {
 
-        List ret = new ArrayList();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
-        List newResTypes = getAvailableResTypes();
-        Iterator k = newResTypes.iterator();
+        List<String> newResTypes = getAvailableResTypes();
+        Iterator<String> k = newResTypes.iterator();
         while (k.hasNext()) {
-            String resType = (String)k.next();
+            String resType = k.next();
 
             // strip the leading asterisk for the default
             if (resType.startsWith(DEFAULT_MARKER)) {
@@ -657,6 +668,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -684,6 +696,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceTypeDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);

@@ -70,40 +70,72 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeSettings.class);
+
+    /** The explorer type access. */
     private CmsExplorerTypeAccess m_access;
     /** Flag for showing that this is an additional resource type which defined in a module. */
     private boolean m_addititionalModuleExplorerType;
+
+    /** The auto set navigation flag. */
     private boolean m_autoSetNavigation;
+
+    /** The auto set title flag. */
     private boolean m_autoSetTitle;
     /** The name of the big icon for this explorer type. */
     private String m_bigIcon;
+
+    /** The context menu. */
     private CmsExplorerContextMenu m_contextMenu;
 
+    /** The context menu entries. */
     private List<CmsExplorerContextMenuItem> m_contextMenuEntries;
 
+    /** The description image. */
     private String m_descriptionImage;
 
+    /**The edit options flag. */
     private boolean m_hasEditOptions;
+
+    /** The icon. */
     private String m_icon;
+
     /** The icon rules for this explorer type. */
     private Map<String, CmsIconRule> m_iconRules;
 
+    /** The info. */
     private String m_info;
+
+    /** The key. */
     private String m_key;
+
+    /** The name. */
     private String m_name;
+
     /** Optional class name for a new resource handler. */
     private String m_newResourceHandlerClassName;
+
+    /** The new resource order value. */
     private Integer m_newResourceOrder;
+
+    /** The new resource page. */
     private String m_newResourcePage;
+
+    /** The new resource URI. */
     private String m_newResourceUri;
+
+    /** The properties. */
     private List<String> m_properties;
 
+    /** The enabled properties. */
     private boolean m_propertiesEnabled;
 
+    /** The reference. */
     private String m_reference;
 
+    /** The show in navigation flag. */
     private boolean m_showNavigation;
 
+    /** The title key. */
     private String m_titleKey;
 
     /**

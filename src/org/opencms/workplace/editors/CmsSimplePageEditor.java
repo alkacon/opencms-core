@@ -74,6 +74,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
@@ -82,6 +83,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -217,6 +219,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
      * @param save if set to true, the content parameter is not updated
      * @return the prepared content String
      */
+    @Override
     protected String prepareContent(boolean save) {
 
         String content = getParamContent().trim();

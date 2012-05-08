@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -68,6 +69,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResourceSibling.class);
 
+    /** The keep properties parameter. */
     private String m_paramKeepProperties;
 
     /**
@@ -97,6 +99,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
      * 
      * @throws JspException if inclusion of error dialog fails
      */
+    @Override
     public void actionCreateResource() throws JspException {
 
         try {
@@ -137,7 +140,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                     getCms().copyResource(targetName, fullResourceName, CmsResource.COPY_AS_SIBLING);
                 } else {
                     // link URL is a file, so create sibling of the link target
-                    List targetProperties = null;
+                    List<CmsProperty> targetProperties = null;
                     boolean keepProperties = Boolean.valueOf(getParamKeepProperties()).booleanValue();
                     if (keepProperties) {
                         // keep the individual properties of the original file
@@ -179,6 +182,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
      * @throws ServletException if forwarding to the property dialog fails
      * @throws JspException if an inclusion fails
      */
+    @Override
     public void actionEditProperties() throws IOException, JspException, ServletException {
 
         boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
@@ -196,9 +200,9 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
         }
         if (editProps) {
             // edit properties checkbox checked, forward to property dialog
-            Map params = new HashMap();
-            params.put(PARAM_RESOURCE, getParamResource());
-            params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(PARAM_RESOURCE, new String[] {getParamResource()});
+            params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, new String[] {CmsPropertyAdvanced.MODE_WIZARD});
             sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
         } else {
             // edit properties not checked, close the dialog
@@ -243,6 +247,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

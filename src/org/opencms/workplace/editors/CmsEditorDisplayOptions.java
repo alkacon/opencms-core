@@ -90,10 +90,10 @@ public class CmsEditorDisplayOptions {
     private static final Log LOG = CmsLog.getLog(CmsEditorDisplayOptions.class);
 
     /** Stores all loaded editor configuration options.<p> */
-    private Map m_loadedConfigurations;
+    private Map<Object, Object> m_loadedConfigurations;
 
     /** Stores the mappings of users to their configuration options to use.<p> */
-    private Map m_userMappings;
+    private Map<Object, Object> m_userMappings;
 
     /**
      * Constructor that initializes the editor display options for the workplace.<p>
@@ -150,10 +150,10 @@ public class CmsEditorDisplayOptions {
         Properties displayOptions;
         if (mappedConfigFile == null) {
             // no configuration file name stored for user, get the navigation items of the configuration folder
-            List items = new CmsJspNavBuilder(cms).getNavigationForFolder(FOLDER_EDITORCONFIGURATION);
+            List<CmsJspNavElement> items = new CmsJspNavBuilder(cms).getNavigationForFolder(FOLDER_EDITORCONFIGURATION);
             if (items.size() > 0) {
                 // get first found configuration file
-                CmsJspNavElement nav = (CmsJspNavElement)items.get(0);
+                CmsJspNavElement nav = items.get(0);
                 mappedConfigFile = nav.getFileName();
                 synchronized (m_loadedConfigurations) {
                     // must sync read/write access to shared map

@@ -28,10 +28,10 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.jsp.CmsJspActionElement;
@@ -45,7 +45,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,8 +79,14 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlPage.class);
+
+    /** The body file parameter. */
     private String m_paramBodyFile;
+
+    /** The suffix check parameter. */
     private String m_paramSuffixCheck;
+
+    /** The template parameter. */
     private String m_paramTemplate;
 
     /**
@@ -115,7 +121,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @throws CmsException if reading a folder or file fails
      */
-    public static TreeMap getBodies(CmsObject cms, String currWpPath) throws CmsException {
+    public static TreeMap<String, String> getBodies(CmsObject cms, String currWpPath) throws CmsException {
 
         return getElements(cms, CmsWorkplace.VFS_DIR_DEFAULTBODIES, currWpPath, true);
     }
@@ -131,7 +137,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @throws CmsException if reading a folder or file fails
      */
-    public static TreeMap getBodies(CmsObject cms, String currWpPath, boolean emptyMap) throws CmsException {
+    public static TreeMap<String, String> getBodies(CmsObject cms, String currWpPath, boolean emptyMap)
+    throws CmsException {
 
         return getElements(cms, CmsWorkplace.VFS_DIR_DEFAULTBODIES, currWpPath, emptyMap);
     }
@@ -146,7 +153,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @throws CmsException if reading a folder or file fails
      */
-    public static TreeMap getTemplates(CmsObject cms, String currWpPath) throws CmsException {
+    public static TreeMap<String, String> getTemplates(CmsObject cms, String currWpPath) throws CmsException {
 
         return getElements(cms, CmsWorkplace.VFS_DIR_TEMPLATES, currWpPath, true);
     }
@@ -162,7 +169,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @throws CmsException if reading a folder or file fails
      */
-    public static TreeMap getTemplates(CmsObject cms, String currWpPath, boolean emptyMap) throws CmsException {
+    public static TreeMap<String, String> getTemplates(CmsObject cms, String currWpPath, boolean emptyMap)
+    throws CmsException {
 
         return getElements(cms, CmsWorkplace.VFS_DIR_TEMPLATES, currWpPath, emptyMap);
     }
@@ -179,11 +187,14 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @throws CmsException if reading a folder or file fails
      */
-    protected static TreeMap getElements(CmsObject cms, String elementFolder, String currWpPath, boolean emptyMap)
-    throws CmsException {
+    protected static TreeMap<String, String> getElements(
+        CmsObject cms,
+        String elementFolder,
+        String currWpPath,
+        boolean emptyMap) throws CmsException {
 
-        TreeMap elements = new TreeMap();
-        TreeMap allElements = new TreeMap();
+        TreeMap<String, String> elements = new TreeMap<String, String>();
+        TreeMap<String, String> allElements = new TreeMap<String, String>();
 
         if (CmsStringUtil.isNotEmpty(currWpPath)) {
             // add site root to current workplace path
@@ -191,10 +202,12 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         }
 
         // get all visible template elements in the module folders
-        List modules = cms.getSubFolders(CmsWorkplace.VFS_PATH_MODULES, CmsResourceFilter.IGNORE_EXPIRATION);
+        List<CmsResource> modules = cms.getSubFolders(
+            CmsWorkplace.VFS_PATH_MODULES,
+            CmsResourceFilter.IGNORE_EXPIRATION);
         for (int i = 0; i < modules.size(); i++) {
-            List moduleTemplateFiles = new ArrayList();
-            String folder = cms.getSitePath((CmsFolder)modules.get(i));
+            List<CmsResource> moduleTemplateFiles = new ArrayList<CmsResource>();
+            String folder = cms.getSitePath(modules.get(i));
             try {
                 moduleTemplateFiles = cms.getFilesInFolder(
                     folder + elementFolder,
@@ -230,9 +243,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                 // check template folders property value
                 if (CmsStringUtil.isNotEmpty(currWpPath) && CmsStringUtil.isNotEmpty(folderProp)) {
                     // property value set on template, check if current workplace path fits
-                    List folders = CmsStringUtil.splitAsList(folderProp, DELIM_PROPERTYVALUES);
+                    List<String> folders = CmsStringUtil.splitAsList(folderProp, DELIM_PROPERTYVALUES);
                     for (int k = 0; k < folders.size(); k++) {
-                        String checkFolder = (String)folders.get(k);
+                        String checkFolder = folders.get(k);
                         if (currWpPath.startsWith(checkFolder)) {
                             isInFolder = true;
                             break;
@@ -268,6 +281,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @throws JspException if inclusion of error dialog fails
      */
+    @Override
     public void actionCreateResource() throws JspException {
 
         try {
@@ -295,7 +309,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             }
 
             // create the xml page   
-            List properties = new ArrayList(4);
+            List<CmsProperty> properties = new ArrayList<CmsProperty>(4);
             // add the template property to the new file
             properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, getParamTemplate(), null));
             properties.addAll(createResourceProperties(
@@ -323,9 +337,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      */
     public String buildSelectBodyFile(String attributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
-        TreeMap bodies = null;
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
+        TreeMap<String, String> bodies = null;
         try {
             // get all available body files
             bodies = getBodies(getCms(), getParamCurrentFolder(), false);
@@ -340,16 +354,14 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             return "";
         } else {
             // body files found, create option and value lists
-            Iterator i = bodies.entrySet().iterator();
-            int counter = 0;
+            Iterator<Entry<String, String>> i = bodies.entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry)i.next();
-                String key = (String)entry.getKey();
-                String path = (String)entry.getValue();
+                Entry<String, String> entry = i.next();
+                String key = entry.getKey();
+                String path = entry.getValue();
 
                 options.add(key);
                 values.add(path);
-                counter++;
             }
         }
         return buildSelect(attributes, options, values, -1, false);
@@ -364,9 +376,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      */
     public String buildSelectTemplates(String attributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
-        TreeMap templates = null;
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
+        TreeMap<String, String> templates = null;
         try {
             // get all available templates
             templates = getTemplates(getCms(), getParamCurrentFolder(), false);
@@ -381,16 +393,13 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             return "";
         } else {
             // templates found, create option and value lists
-            Iterator i = templates.entrySet().iterator();
-            int counter = 0;
+            Iterator<Entry<String, String>> i = templates.entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry)i.next();
-                String key = (String)entry.getKey();
-                String path = (String)entry.getValue();
-
+                Entry<String, String> entry = i.next();
+                String key = entry.getKey();
+                String path = entry.getValue();
                 options.add(key);
                 values.add(path);
-                counter++;
             }
         }
         return buildSelect(attributes, options, values, -1, false);
@@ -459,6 +468,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

@@ -148,22 +148,37 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResource.class);
 
+    /** The available resource types. */
     private String m_availableResTypes;
 
+    /** The limited resource types. */
     private boolean m_limitedRestypes;
 
+    /** The page. */
     private String m_page;
 
+    /** The append suffix parameter. */
     private String m_paramAppendSuffixHtml;
 
+    /** The current folder parameter. */
     private String m_paramCurrentFolder;
+
+    /** The dialog mode parameter. */
     private String m_paramDialogMode;
+
+    /** The new form URI parameter. */
     private String m_paramNewFormUri;
+
+    /** The new resource edit properties parameter. */
     private String m_paramNewResourceEditProps;
+
+    /** The new resource type parameter. */
     private String m_paramNewResourceType;
 
+    /** The new resource URI parameter. */
     private String m_paramNewResourceUri;
 
+    /** The page parameter. */
     private String m_paramPage;
 
     /** a boolean flag that indicates if the create resource operation was successfull or not. */
@@ -248,7 +263,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             className = defaultClassName;
         }
 
-        Class clazz = null;
+        Class<?> clazz = null;
         try {
             clazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
@@ -263,7 +278,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
         Object handler = null;
         try {
-            Constructor constructor = clazz.getConstructor(new Class[] {
+            Constructor<?> constructor = clazz.getConstructor(new Class[] {
                 PageContext.class,
                 HttpServletRequest.class,
                 HttpServletResponse.class});
@@ -446,12 +461,14 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         if (editProps) {
 
             // edit properties checkbox checked, forward to property dialog
-            Map params = new HashMap();
-            params.put(PARAM_RESOURCE, getParamResource());
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(PARAM_RESOURCE, new String[] {getParamResource()});
             if (isCreateIndexMode()) {
-                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_INDEXCREATED);
+                params.put(
+                    CmsPropertyAdvanced.PARAM_DIALOGMODE,
+                    new String[] {CmsPropertyAdvanced.MODE_WIZARD_INDEXCREATED});
             } else {
-                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
+                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, new String[] {CmsPropertyAdvanced.MODE_WIZARD});
             }
             forwardEditProperties(params);
         } else {
@@ -477,7 +494,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
         setParamAction(DIALOG_NEWFORM);
         CmsUriSplitter splitter = new CmsUriSplitter(nextUri);
-        Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
+        Map<String, String[]> params = CmsRequestUtil.createParameterMap(splitter.getQuery());
         params.putAll(paramsAsParameterMap());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_page)
             && (params.containsKey(PARAM_PAGE) && m_page.equals(params.get(PARAM_PAGE)))) {
@@ -909,8 +926,10 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * Forwards to a page for editing properties.<p>
      * 
      * @param parameters the request parameters which should be passed to the page which we forward to 
+     * @throws IOException if something goes wrong
+     * @throws ServletException if something goes wrong 
      */
-    protected void forwardEditProperties(Map parameters) throws JspException, IOException, ServletException {
+    protected void forwardEditProperties(Map<String, String[]> parameters) throws IOException, ServletException {
 
         sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, parameters);
     }
