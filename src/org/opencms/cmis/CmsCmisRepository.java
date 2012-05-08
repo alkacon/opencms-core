@@ -80,7 +80,6 @@ import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectInFolderContainer;
 import org.apache.chemistry.opencmis.commons.data.ObjectInFolderData;
 import org.apache.chemistry.opencmis.commons.data.ObjectInFolderList;
-import org.apache.chemistry.opencmis.commons.data.ObjectList;
 import org.apache.chemistry.opencmis.commons.data.ObjectParentData;
 import org.apache.chemistry.opencmis.commons.data.PermissionMapping;
 import org.apache.chemistry.opencmis.commons.data.Properties;
@@ -102,7 +101,6 @@ import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityQuery;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityRenditions;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
-import org.apache.chemistry.opencmis.commons.enums.RelationshipDirection;
 import org.apache.chemistry.opencmis.commons.enums.SupportedPermissions;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
@@ -153,7 +151,7 @@ import org.apache.commons.logging.Log;
 /**
  * Repository instance for CMIS repositories.<p>
  */
-public class CmsCmisRepository {
+public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /** The repository id. */
     private String m_id;
@@ -180,13 +178,21 @@ public class CmsCmisRepository {
         return m_id;
     }
 
+    /**
+     * Creates a new CMIS repository instance.<p>
+     * 
+     * @param typeManager the type manager
+     * @param adminCms the admin CMS context
+     * @param root the root folder resource 
+     * @param id the repository id 
+     * @param readonly true if this is a readonly repository
+     */
     public CmsCmisRepository(
         CmsCmisTypeManager typeManager,
         CmsObject adminCms,
         CmsResource root,
         String id,
-        boolean readonly)
-    throws CmsException {
+        boolean readonly) {
 
         m_adminCms = adminCms;
         m_id = id;
@@ -231,6 +237,7 @@ public class CmsCmisRepository {
      * @param objectInfos the object info handler
      * 
      * @return the object data 
+     * @throws CmsException if something goes wrong 
      */
     private ObjectData collectObjectData(
         CallContext context,
@@ -251,7 +258,7 @@ public class CmsCmisRepository {
         }
 
         if (includeAcl) {
-            result.setAcl(compileAcl(cms, resource, true));
+            result.setAcl(collectAcl(cms, resource, true));
             result.setIsExactAcl(Boolean.FALSE);
         }
 
@@ -829,7 +836,14 @@ public class CmsCmisRepository {
         return result;
     }
 
-    String getAcePrincipalName(CmsObject cms, CmsUUID principalId) throws CmsException {
+    /**
+     * Gets a user-readable name for a principal id read from an ACE.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param principalId the principal id from the ACE  
+     * @return the name of the principle 
+     */
+    String getAcePrincipalName(CmsObject cms, CmsUUID principalId) {
 
         if (CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.equals(principalId)) {
             return CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME;
@@ -851,11 +865,13 @@ public class CmsCmisRepository {
     /**
      * Compiles the ACL for a file or folder.
      * @param cms the CMS context
-     * @param file the file for which the ACL should be collected  
+     * @param resource the resource for which to collect the ACLs 
+     * @param onlyBasic flag to only include basic ACEs   
      * 
-     * @return the ACL for the resource 
+     * @return the ACL for the resource
+     * @throws CmsException if something goes wrong  
      */
-    private Acl compileAcl(CmsObject cms, CmsResource resource, boolean onlyBasic) throws CmsException {
+    private Acl collectAcl(CmsObject cms, CmsResource resource, boolean onlyBasic) throws CmsException {
 
         AccessControlListImpl cmisAcl = new AccessControlListImpl();
         List<Ace> cmisAces = new ArrayList<Ace>();
@@ -899,8 +915,6 @@ public class CmsCmisRepository {
 
     /**
      * Gets the repository information for this repository.<p>
-     * 
-     * @param extension the extension data 
      * 
      * @return the repository info
      */
@@ -978,15 +992,58 @@ public class CmsCmisRepository {
         return repositoryInfo;
     }
 
-    private class PermissionMappings extends HashMap<String, PermissionMapping> {
+    /**
+     * Simple helper class to simplify creating a permission mapping.<p>
+     */
+    @SuppressWarnings("serial")
+    private static class PermissionMappings extends HashMap<String, PermissionMapping> {
 
+        /** Default constructor.<p> */
+        public PermissionMappings() {
+
+        }
+
+        /**
+         * Adds a permission mapping.<p>
+         * 
+         * @param key the key 
+         * @param permission the permissions
+         *  
+         * @return the instance itself  
+         */
         public PermissionMappings add(String key, String permission) {
 
             put(key, createMapping(key, permission));
             return this;
         }
+
+        /**
+         * Creates a single mapping entry.<p>
+         * 
+         * @param key the mapping key 
+         * @param permission the permission 
+         * 
+         * @return the mapping entry 
+         */
+        private static PermissionMapping createMapping(String key, String permission) {
+
+            PermissionMappingDataImpl pm = new PermissionMappingDataImpl();
+            pm.setKey(key);
+            pm.setPermissions(Collections.singletonList(permission));
+
+            return pm;
+        }
+
     }
 
+    /**
+     * Creates a permission definition.<p>
+     * 
+     * @param permission the permission name 
+     * @param description the permission description 
+     * 
+     * @return the new permission definition 
+     */
     private static PermissionDefinition createPermission(String permission, String description) {
 
         PermissionDefinitionDataImpl pd = new PermissionDefinitionDataImpl();
@@ -994,15 +1051,6 @@ public class CmsCmisRepository {
         pd.setDescription(description);
 
         return pd;
-    }
-
-    private static PermissionMapping createMapping(String key, String permission) {
-
-        PermissionMappingDataImpl pm = new PermissionMappingDataImpl();
-        pm.setKey(key);
-        pm.setPermissions(Collections.singletonList(permission));
-
-        return pm;
     }
 
     /**
@@ -1440,35 +1488,6 @@ public class CmsCmisRepository {
     }
 
     /**
-     * Corresponds to CMIS getCheckedOutDocs service method.<p>
-     *  
-     * @param context
-     * @param folderId
-     * @param filter
-     * @param orderBy
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param maxItems
-     * @param skipCount
-     * 
-     * @return a list of CMIS objects 
-     */
-    public synchronized ObjectList getCheckedOutDocs(
-        CallContext context,
-        String folderId,
-        String filter,
-        String orderBy,
-        Boolean includeAllowableActions,
-        IncludeRelationships includeRelationships,
-        String renditionFilter,
-        BigInteger maxItems,
-        BigInteger skipCount) {
-
-        throw notSupported();
-    }
-
-    /**
      * Readonly flag to prevent write operations on the repository.<p>
      */
     private boolean m_isReadOnly;
@@ -1738,50 +1757,6 @@ public class CmsCmisRepository {
             handleCmsException(e);
             return null;
         }
-    }
-
-    /**
-     * Creates a relationship.<p>
-     * 
-     * @param context the call context 
-     * @param properties the properties 
-     * @param policies the policies 
-     * @param addAces the ACEs to add
-     * @param removeAces the ACEs to remove 
-     * 
-     * @return the new relationship id 
-     */
-    public synchronized String createRelationship(
-        CallContext context,
-        Properties properties,
-        List<String> policies,
-        Acl addAces,
-        Acl removeAces) {
-
-        throw notSupported();
-    }
-
-    /**
-     * Creates a policy.<p>
-     * 
-     * @param context the call context 
-     * @param properties the properties 
-     * @param folderId the folder id 
-     * @param policies the policies 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACEs to remove 
-     * 
-     * @return the new object id
-     */
-    public synchronized String createPolicy(
-        CallContext context,
-        Properties properties,
-        String folderId,
-        List<String> policies,
-        Acl addAces,
-        Acl removeAces) {
-
-        throw notSupported();
     }
 
     /**
@@ -2275,243 +2250,12 @@ public class CmsCmisRepository {
     }
 
     /**
-     * Checks out an object.<p>
+     * Converts an OpenCms ACE to a list of basic CMIS permissions.<p>
      * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param contentCopied indicator whether the content was copied
+     * @param ace the access control entry 
+     * 
+     * @return the list of permissions 
      */
-    public synchronized void checkOut(CallContext context, Holder<String> objectId, Holder<Boolean> contentCopied) {
-
-        throw notSupported();
-
-    }
-
-    /**
-     * Cancels a checkout.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     */
-    public synchronized void cancelCheckOut(CallContext context, String objectId) {
-
-        throw notSupported();
-
-    }
-
-    /**
-     * Checks in a document.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param major the major version flag 
-     * @param properties the properties 
-     * @param contentStream the content stream 
-     * @param checkinComment the check-in comment 
-     * @param policies the policies 
-     * @param addAces the ACEs to add
-     * @param removeAces the ACEs to remove 
-     */
-    public synchronized void checkIn(
-        CallContext context,
-        Holder<String> objectId,
-        Boolean major,
-        Properties properties,
-        ContentStream contentStream,
-        String checkinComment,
-        List<String> policies,
-        Acl addAces,
-        Acl removeAces) {
-
-        throw notSupported();
-
-    }
-
-    /**
-     * Gets the object of the latest version.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param major flag to get the latest major version 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter filter string for renditions 
-     * @param includePolicyIds flag to include policies 
-     * @param includeAcl flag to include ACLs
-     * 
-     * @return the data for the latest version 
-     */
-    public synchronized ObjectData getObjectOfLatestVersion(
-        CallContext context,
-        String objectId,
-        String versionSeriesId,
-        Boolean major,
-        String filter,
-        Boolean includeAllowableActions,
-        IncludeRelationships includeRelationships,
-        String renditionFilter,
-        Boolean includePolicyIds,
-        Boolean includeAcl) {
-
-        throw notSupported();
-    }
-
-    /**
-     * Gets the properties of the latest version.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param major flag to access the latest major version 
-     * @param filter the property filter string 
-     * 
-     * @return the properties from the latest version 
-     */
-    public synchronized Properties getPropertiesOfLatestVersion(
-        CallContext context,
-        String objectId,
-        String versionSeriesId,
-        Boolean major,
-        String filter) {
-
-        throw notSupported();
-    }
-
-    /**
-     * Gets all versions of an object.<p>
-     * 
-     * @param context the call context
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param filter the property filter string 
-     * @param includeAllowableActions the flag to include allowable actions
-     * 
-     * @return the list of versions 
-     */
-    public synchronized List<ObjectData> getAllVersions(
-        CallContext context,
-        String objectId,
-        String versionSeriesId,
-        String filter,
-        Boolean includeAllowableActions) {
-
-        throw notSupported();
-    }
-
-    /**
-     * Performs a query on the repository.<p>
-     * 
-     * @param context the call context
-     * @param statement the query 
-     * @param searchAllVersions flag to search all versions 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the filter string for renditions 
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip
-     *  
-     * @return the query result objects
-     */
-    public synchronized ObjectList query(
-        CallContext context,
-        String statement,
-        Boolean searchAllVersions,
-        Boolean includeAllowableActions,
-        IncludeRelationships includeRelationships,
-        String renditionFilter,
-        BigInteger maxItems,
-        BigInteger skipCount) {
-
-        // TODO: Auto-generated method stub
-        throw notSupported();
-    }
-
-    /**
-     * Gets content changes from the repository.<p>
-     * 
-     * @param context the call context 
-     * @param changeLogToken the change log token 
-     * @param includeProperties flag to include properties 
-     * @param filter filter string for properties 
-     * @param includePolicyIds flag to include policy ids  
-     * @param includeAcl flag to include ACLs 
-     * @param maxItems maximum number of items to return 
-     * @return
-     */
-    public synchronized ObjectList getContentChanges(
-        CallContext context,
-        Holder<String> changeLogToken,
-        Boolean includeProperties,
-        String filter,
-        Boolean includePolicyIds,
-        Boolean includeAcl,
-        BigInteger maxItems) {
-
-        throw notSupported();
-    }
-
-    /**
-     * Adds an object to a folder (multifiling). <p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param folderId the folder id 
-     * @param allVersions flag to include all versions
-     */
-    public synchronized void addObjectToFolder(
-        CallContext context,
-        String objectId,
-        String folderId,
-        Boolean allVersions) {
-
-        throw notSupported();
-
-    }
-
-    /**
-     * Unfiles an object from a folder.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the id of the object to unfile 
-     * @param folderId the folder from which the object should be unfiled  
-     */
-    public synchronized void removeObjectFromFolder(CallContext context, String objectId, String folderId) {
-
-        throw notSupported();
-
-    }
-
-    /**
-     * Gets the relationships for an object.<p>
-     * 
-     * @param context the call context
-     * @param objectId the object id 
-     * @param includeSubRelationshipTypes flag to include relationship subtypes 
-     * @param relationshipDirection the direction for the relations 
-     * @param typeId the relation type id 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions  
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip 
-     * 
-     * @return the relationships for the object
-     */
-    public synchronized ObjectList getObjectRelationships(
-        CallContext context,
-        String objectId,
-        Boolean includeSubRelationshipTypes,
-        RelationshipDirection relationshipDirection,
-        String typeId,
-        String filter,
-        Boolean includeAllowableActions,
-        BigInteger maxItems,
-        BigInteger skipCount) {
-
-        throw notSupported();
-    }
-
     protected List<String> getCmisPermissions(CmsAccessControlEntry ace) {
 
         int permissionBits = ace.getPermissions().getPermissions();
@@ -2532,6 +2276,14 @@ public class CmsCmisRepository {
         return result;
     }
 
+    /**
+     * Converts an OpenCms access control bitset to a list of CMIS permissions representing native OpenCms permissions.<p>
+     * 
+     * @param permissionBits the permission bits 
+     * @param denied if the permission bitset refers to a list of denied rather than allowed permissions
+     *   
+     * @return the list of native permissions 
+     */
     protected List<String> getNativePermissions(int permissionBits, boolean denied) {
 
         List<String> result = new ArrayList<String>();
@@ -2557,6 +2309,12 @@ public class CmsCmisRepository {
         return result;
     }
 
+    /**
+     * Converts an OpenCms access control entry to a list of CMIS permissions which represent native OpenCms permissions.<p>
+     * 
+     * @param ace the access control entry 
+     * @return the list of permissions for the entry 
+     */
     protected List<String> getNativePermissions(CmsAccessControlEntry ace) {
 
         List<String> result = getNativePermissions(ace.getPermissions().getAllowedPermissions(), false);
@@ -2580,82 +2338,11 @@ public class CmsCmisRepository {
             CmsObject cms = getCmsObject(context);
             CmsUUID structureId = new CmsUUID(objectId);
             CmsResource resource = cms.readResource(structureId);
-            return compileAcl(cms, resource, onlyBasicPermissions.booleanValue());
+            return collectAcl(cms, resource, onlyBasicPermissions.booleanValue());
         } catch (CmsException e) {
             handleCmsException(e);
             return null;
         }
-
-    }
-
-    /**
-     * Applies ACL to an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACEs to remove 
-     * @param aclPropagation the ACL propagation 
-     * @param extension extension data
-     *  
-     * @return the new ACL 
-     */
-    public synchronized Acl applyAcl(
-        CallContext context,
-        String objectId,
-        Acl addAces,
-        Acl removeAces,
-        AclPropagation aclPropagation) {
-
-        throw notSupported();
-    }
-
-    /**
-     * 
-     * @see org.apache.chemistry.opencmis.commons.spi.PolicyService#applyPolicy(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
-     */
-    public synchronized void applyPolicy(CallContext context, String policyId, String objectId) {
-
-        throw notSupported();
-
-    }
-
-    /**
-     * 
-     * @see org.apache.chemistry.opencmis.commons.spi.PolicyService#removePolicy(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
-     */
-    public synchronized void removePolicy(CallContext context, String policyId, String objectId) {
-
-        throw notSupported();
-
-    }
-
-    /**
-     * 
-     * @see org.apache.chemistry.opencmis.commons.spi.PolicyService#getAppliedPolicies(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
-     */
-    public synchronized List<ObjectData> getAppliedPolicies(CallContext context, String objectId, String filter) {
-
-        throw notSupported();
-    }
-
-    /**
-     * 
-     * @see org.apache.chemistry.opencmis.commons.server.CmisService#applyAcl(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
-     */
-    public synchronized Acl applyAcl(CallContext context, String objectId, Acl aces, AclPropagation aclPropagation) {
-
-        throw notSupported();
-    }
-
-    /**
-     * Helper method to create exceptions for unsupported features.<p>
-     * 
-     * @return the created exception 
-     */
-    private RuntimeException notSupported() {
-
-        return new CmisNotSupportedException("Not supported");
 
     }
 

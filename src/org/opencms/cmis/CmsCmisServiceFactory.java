@@ -56,9 +56,16 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
     /** The logger for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsCmisServiceFactory.class);
 
+    /** Default value for maximum number of types to return. */
     private static final BigInteger DEFAULT_MAX_ITEMS_TYPES = BigInteger.valueOf(50);
+
+    /** Default value for maximum depth of types to return. */
     private static final BigInteger DEFAULT_DEPTH_TYPES = BigInteger.valueOf(-1);
+
+    /** Default value for maximum number of objects to return. */
     private static final BigInteger DEFAULT_MAX_ITEMS_OBJECTS = BigInteger.valueOf(200);
+
+    /** Default value for maximum depth of objects to return. */
     private static final BigInteger DEFAULT_DEPTH_OBJECTS = BigInteger.valueOf(10);
 
     /** The repository manager. */
