@@ -32,7 +32,7 @@ import com.google.gwt.dom.client.Document;
 /**
  * Helper class for DOM operations not made available by the GWT core classes.<p>
  * 
- * Implementation for all MSIE browsers.<p>
+ * Implementation for MSIE 7 + 8 browsers, do not use for MSIE 9.<p>
  * 
  * @since 8.0.0
  */
@@ -43,6 +43,6 @@ public class DOMImplIE extends DOMImpl {
      */
     @Override
     public native com.google.gwt.dom.client.Element createIFrameElement(Document doc, String name) /*-{
-        return doc.createElement("<iframe name='"+name+"'/>");
+        return doc.createElement("<iframe name='" + name + "'/>");
     }-*/;
 }
