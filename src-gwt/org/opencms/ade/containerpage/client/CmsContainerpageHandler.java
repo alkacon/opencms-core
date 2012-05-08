@@ -568,12 +568,13 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * Opens the edit dialog for the specified element.<p>
      * 
      * @param element the element to edit
+     * @param inline <code>true</code> to open the inline editor for the given element if available
      */
-    public void openEditorForElement(final CmsContainerPageElementPanel element) {
+    public void openEditorForElement(final CmsContainerPageElementPanel element, boolean inline) {
 
         if (element.isNew()) {
             //openEditorForElement will be called again asynchronously when the RPC for creating the element has finished 
-            m_controller.createAndEditNewElement(element);
+            m_controller.createAndEditNewElement(element, inline);
             return;
         }
 
@@ -614,12 +615,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         RootPanel.getBodyElement().getStyle().clearOverflowY();
                     }
                 };
-                String entityId = element.getElement().getAttribute("about");
                 RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
                 disableToolbarButtons();
                 deactivateCurrentButton();
                 element.removeEditorClickHandler();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(entityId)) {
+                if (inline && CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getElement().getAttribute("about"))) {
                     CmsContentEditor.getInstance().openInlineEditor(m_controller.getLocale(), element, onClose);
                 } else {
                     CmsContentEditor.getInstance().openFormEditor(

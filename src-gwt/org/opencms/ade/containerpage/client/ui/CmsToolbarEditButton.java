@@ -71,7 +71,7 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
         CmsDomUtil.ensureMouseOut(element.getElementOptionBar().getElement());
-        getHandler().openEditorForElement(element);
+        getHandler().openEditorForElement(element, false);
         event.stopPropagation();
         event.preventDefault();
 

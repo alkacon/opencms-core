@@ -85,7 +85,7 @@ public class CmsEditOptionButton extends CmsPushButton implements I_CmsGroupEdit
     public void onClick(ClickEvent event) {
 
         CmsDomUtil.ensureMouseOut(m_elementWidget.getElementOptionBar().getElement());
-        m_editor.getHandler().openEditorForElement(m_elementWidget);
+        m_editor.getHandler().openEditorForElement(m_elementWidget, false);
         event.stopPropagation();
         event.preventDefault();
     }

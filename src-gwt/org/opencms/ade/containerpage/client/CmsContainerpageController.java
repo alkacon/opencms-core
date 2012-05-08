@@ -541,9 +541,11 @@ public final class CmsContainerpageController {
      * Creates a new resource for crag container elements with the status new and opens the content editor.<p>
      * 
      * @param element the container element
+     * @param inline <code>true</code> to open the inline editor for the given element if available
      */
     public void createAndEditNewElement(
-        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element) {
+        final org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element,
+        final boolean inline) {
 
         if (!element.isNew()) {
             return;
@@ -575,7 +577,7 @@ public final class CmsContainerpageController {
                 if (result.needsModelSelection()) {
                     getHandler().openModelResourceSelect(element, result.getModelResources());
                 } else {
-                    openEditorForNewElement(element, result.getCreatedElement());
+                    openEditorForNewElement(element, result.getCreatedElement(), inline);
                 }
             }
         };
@@ -610,7 +612,7 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(CmsContainerElement result) {
 
-                openEditorForNewElement(element, result);
+                openEditorForNewElement(element, result, false);
 
             }
         };
@@ -1806,17 +1808,19 @@ public final class CmsContainerpageController {
      * 
      * @param element the container element
      * @param newElementData the new element data
+     * @param inline <code>true</code> to open the inline editor for the given element if available
      */
     protected void openEditorForNewElement(
         org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel element,
-        CmsContainerElement newElementData) {
+        CmsContainerElement newElementData,
+        boolean inline) {
 
         element.setNewType(null);
         element.setId(newElementData.getClientId());
         element.setSitePath(newElementData.getSitePath());
         setPageChanged();
         getHandler().hidePageOverlay();
-        getHandler().openEditorForElement(element);
+        getHandler().openEditorForElement(element, inline);
     }
 
     /**

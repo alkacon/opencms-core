@@ -366,7 +366,7 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
                     Element target = event.getNativeEvent().getEventTarget().cast();
                     while ((target != null) && (target != getElement())) {
                         if ("true".equals(target.getAttribute("contentEditable"))) {
-                            controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this);
+                            controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this, true);
                             removeEditorClickHandler();
                             break;
                         } else {
