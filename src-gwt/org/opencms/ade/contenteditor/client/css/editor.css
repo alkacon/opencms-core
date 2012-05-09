@@ -1,10 +1,25 @@
+@sprite body.standAloneEditor{
+	gwt-image: "backgrounds.sitemapBackground";
+	overflow-y: scroll;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body.standAloneEditor div.basePanel{
+	background-image: none;
+	position: relative;
+}
+
 @sprite .basePanel{
 	gwt-image: "backgrounds.sitemapBackground";
 	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
 	position: absolute;
 	margin: 0;
 	overflow: hidden;
-	padding-top: 45px;
+	padding: 45px 0px 0px 0px;
 	top:0;
 	left:0;
 	right:0;

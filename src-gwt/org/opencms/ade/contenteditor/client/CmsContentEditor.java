@@ -190,18 +190,18 @@ public final class CmsContentEditor {
      * @param elementId the element id
      * @param onClose the command executed on dialog close
      */
-    public void openFormEditor(final String locale, String elementId, final Command onClose) {
+    public void openFormEditor(String locale, String elementId, Command onClose) {
 
-        m_entityId = CmsContentDefinition.uuidToEntityId(new CmsUUID(elementId), locale);
-        m_locale = locale;
         m_onClose = onClose;
-        m_editor.loadDefinition(m_entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
+        m_editor.loadDefinition(
+            CmsContentDefinition.uuidToEntityId(new CmsUUID(elementId), locale),
+            new I_CmsSimpleCallback<CmsContentDefinition>() {
 
-            public void execute(CmsContentDefinition contentDefinition) {
+                public void execute(CmsContentDefinition contentDefinition) {
 
-                initEditor(contentDefinition, null, false);
-            }
-        });
+                    initEditor(contentDefinition, null, false);
+                }
+            });
     }
 
     /**
@@ -211,12 +211,12 @@ public final class CmsContentEditor {
      * @param panel the element panel
      * @param onClose the command to execute on close
      */
-    public void openInlineEditor(final String locale, final ComplexPanel panel, final Command onClose) {
+    public void openInlineEditor(String locale, final ComplexPanel panel, Command onClose) {
 
-        m_entityId = panel.getElement().getAttribute("about");
+        String entityId = panel.getElement().getAttribute("about");
         m_locale = locale;
         m_onClose = onClose;
-        m_editor.loadDefinition(m_entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
+        m_editor.loadDefinition(entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
 
             public void execute(CmsContentDefinition contentDefinition) {
 
@@ -262,7 +262,9 @@ public final class CmsContentEditor {
      */
     void cancelEdit() {
 
-        m_onClose.execute();
+        if (m_onClose != null) {
+            m_onClose.execute();
+        }
         m_editor.destroyFrom(true);
         clearEditor();
     }
@@ -323,6 +325,8 @@ public final class CmsContentEditor {
      */
     void initEditor(CmsContentDefinition contentDefinition, ComplexPanel panel, boolean inline) {
 
+        m_locale = contentDefinition.getLocale();
+        m_entityId = contentDefinition.getEntityId();
         setContentDefinition(contentDefinition);
         initToolbar();
         if (inline && (panel != null)) {
@@ -340,16 +344,20 @@ public final class CmsContentEditor {
 
         m_openFormButton.getElement().getStyle().setDisplay(Display.NONE);
         m_basePanel = new FlowPanel();
-        // insert base panel before the tool bar too keep the tool bar visible 
+        // insert base panel before the tool bar to keep the tool bar visible 
         RootPanel.get().insert(m_basePanel, RootPanel.get().getWidgetIndex(m_toolbar));
-        adjustBasePanelHeight();
-        m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
+        if (m_isStandAlone) {
+            RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().standAloneEditor());
+        } else {
+            adjustBasePanelHeight();
+            m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
 
-            public void onResize(ResizeEvent event) {
+                public void onResize(ResizeEvent event) {
 
-                adjustBasePanelHeight();
-            }
-        });
+                    adjustBasePanelHeight();
+                }
+            });
+        }
     }
 
     /**
@@ -503,7 +511,7 @@ public final class CmsContentEditor {
         } else {
             var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
             if (backlink) {
-                $wnd.location.href = backlink;
+                $wnd.top.location.href = backlink;
             }
         }
     }-*/;
