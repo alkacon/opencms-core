@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 
@@ -40,6 +41,18 @@ import org.opencms.main.CmsException;
  * @since 6.0.0 
  */
 public interface I_CmsEditorHandler {
+
+    /**
+     * Returns the editor URI which will be used for the selected resource type.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceType the resource type name
+     * @param userAgent the user agent header
+     * @param loadDefault <code>true</code> to force the default editor
+     * 
+     * @return the absolute path to the editor
+     */
+    String getEditorUri(CmsObject cms, String resourceType, String userAgent, boolean loadDefault);
 
     /**
      * Returns the editor URI which will be used for the selected resource in the OpenCms VFS to the editor selector class.<p>
