@@ -31,6 +31,7 @@ import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.editors.CmsEditor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,9 +98,10 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         String prefetchedData = serializeForJavascript(I_CmsContentService.class.getMethod("prefetch"), definition);
         sb.append(I_CmsContentService.DICT_CONTENT_DEFINITION).append("='").append(prefetchedData).append("';\n");
         String backlink = getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(backlink)) {
-            sb.append("backlink='").append(backlink).append("';\n");
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(backlink)) {
+            backlink = link(CmsFrameset.JSP_WORKPLACE_URI);
         }
+        sb.append(I_CmsContentService.PARAM_BACKLINK).append("='").append(backlink).append("';\n");
         wrapScript(sb);
         return sb.toString();
     }
