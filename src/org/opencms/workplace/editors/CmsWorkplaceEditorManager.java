@@ -158,7 +158,8 @@ public class CmsWorkplaceEditorManager {
                     continue;
                 }
 
-                if (currentConfig.getMappingForResourceType(key) == null) {
+                if ((currentConfig.getMappingForResourceType(key) == null)
+                    || currentConfig.getMappingForResourceType(key).equals(key)) {
                     // editor is configurable for specified resource type
                     SortedMap<Float, CmsWorkplaceEditorConfiguration> editorConfigs = configurableEditors.get(key);
                     if (editorConfigs == null) {
