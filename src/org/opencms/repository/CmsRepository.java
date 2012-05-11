@@ -133,8 +133,17 @@ public class CmsRepository extends A_CmsRepository {
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String)
+     * @see org.opencms.repository.I_CmsRepository#initializeCms(org.opencms.file.CmsObject)
      */
+    public void initializeCms(CmsObject cms) {
+
+        // do nothing 
+    }
+
+    /**
+     * @see org.opencms.repository.A_CmsRepository#login(java.lang.String, java.lang.String)
+     */
+    @Override
     public I_CmsRepositorySession login(String userName, String password) throws CmsException {
 
         CmsObject cms;

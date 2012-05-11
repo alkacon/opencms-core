@@ -136,5 +136,17 @@
 				<regex>/system/modules/[^/]*/resources/.*</regex>
 			</filter>
 		</repository>
+     	<repository name="cmis-offline" class="org.opencms.cmis.CmsCmisRepository">
+			<params>
+				<param name="project">Offline</param>
+				<param name="description">Offline project CMIS repository</param>
+			</params>
+	 	</repository>
+	    <repository name="cmis-online" class="org.opencms.cmis.CmsCmisRepository">
+			<params>
+				<param name="project">Online</param>
+				<param name="description">Online project CMIS repository</param>
+			</params>
+		</repository>
 	</repositories>
 </opencms>

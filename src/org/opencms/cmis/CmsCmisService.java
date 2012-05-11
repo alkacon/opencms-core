@@ -27,6 +27,8 @@
 
 package org.opencms.cmis;
 
+import org.opencms.main.OpenCms;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +53,10 @@ import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.chemistry.opencmis.commons.enums.RelationshipDirection;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService;
 import org.apache.chemistry.opencmis.commons.server.CallContext;
+import org.apache.chemistry.opencmis.commons.server.ObjectInfo;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
 
 /**
@@ -63,32 +67,17 @@ import org.apache.chemistry.opencmis.commons.spi.Holder;
  */
 public class CmsCmisService extends AbstractCmisService {
 
-    /** The repository manager. */
-    protected CmsCmisRepositoryManager m_repositoryManager;
+    /** The call context. */
+    protected CallContext m_callContext;
 
     /**
      * Creates a new CMIS service instance.<p>
      * 
-     * @param repoManager the repository manager 
-     * 
      * @param context the CMIS call context 
      */
-    public CmsCmisService(CmsCmisRepositoryManager repoManager, CallContext context) {
+    public CmsCmisService(CallContext context) {
 
-        m_repositoryManager = repoManager;
         m_callContext = context;
-    }
-
-    /**
-     * Gets the repository for a given repository id.<p>
-     * 
-     * @param repositoryId the repository id 
-     * 
-     * @return the repository with the given id 
-     */
-    protected CmsCmisRepository getRepository(String repositoryId) {
-
-        return m_repositoryManager.getRepository(repositoryId);
     }
 
     /**
@@ -286,6 +275,15 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getAcl(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     */
+    @Override
+    public Acl getAcl(String repositoryId, String objectId, Boolean onlyBasicPermissions, ExtensionsData extension) {
+
+        return getRepository(repositoryId).getAcl(getCallContext(), objectId, onlyBasicPermissions);
+    }
+
+    /**
      * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getAllowableActions(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
     @Override
@@ -305,6 +303,16 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getAppliedPolicies(m_callContext, objectId, filter);
+    }
+
+    /**
+     * Gets the call context.<p>
+     * 
+     * @return the call context 
+     */
+    public CallContext getCallContext() {
+
+        return m_callContext;
     }
 
     /**
@@ -525,6 +533,16 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getObjectInfo(java.lang.String, java.lang.String)
+     */
+    @Override
+    public ObjectInfo getObjectInfo(String repositoryId, String objectId) {
+
+        ObjectInfo result = super.getObjectInfo(repositoryId, objectId);
+        return result;
+    }
+
+    /**
      * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getObjectParents(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
     @Override
@@ -548,7 +566,8 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getObjectRelationships(java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.RelationshipDirection, java.lang.String, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     * Gets all or a subset of relationships associated with an independent
+     * object.
      */
     @Override
     public ObjectList getObjectRelationships(
@@ -572,7 +591,8 @@ public class CmsCmisService extends AbstractCmisService {
             filter,
             includeAllowableActions,
             maxItems,
-            skipCount);
+            skipCount,
+            this);
     }
 
     /**
@@ -615,8 +635,8 @@ public class CmsCmisService extends AbstractCmisService {
     public List<RepositoryInfo> getRepositoryInfos(ExtensionsData extension) {
 
         List<RepositoryInfo> result = new ArrayList<RepositoryInfo>();
-        for (CmsCmisRepository repo : m_repositoryManager.getRepositories()) {
-            result.add(repo.getRepositoryInfo());
+        for (CmsCmisRepository repository : OpenCms.getRepositoryManager().getRepositories(CmsCmisRepository.class)) {
+            result.add(repository.getRepositoryInfo());
         }
         return result;
     }
@@ -639,6 +659,15 @@ public class CmsCmisService extends AbstractCmisService {
             includePropertyDefinitions,
             maxItems,
             skipCount);
+    }
+
+    /**
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getTypeDefinition(java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
+     */
+    @Override
+    public TypeDefinition getTypeDefinition(String repositoryId, String typeId, ExtensionsData extension) {
+
+        return getRepository(repositoryId).getTypeDefinition(m_callContext, typeId);
     }
 
     /**
@@ -743,28 +772,18 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * Gets the call context.<p>
+     * Gets the repository for a given repository id.<p>
      * 
-     * @return the call context 
+     * @param repositoryId the repository id 
+     * 
+     * @return the repository with the given id 
      */
-    public CallContext getCallContext() {
+    protected CmsCmisRepository getRepository(String repositoryId) {
 
-        return m_callContext;
+        CmsCmisRepository result = OpenCms.getRepositoryManager().getRepository(repositoryId, CmsCmisRepository.class);
+        if (result == null) {
+            throw new CmisConnectionException("missing repository: " + repositoryId);
+        }
+        return result;
     }
-
-    /** The call context. */
-    protected CallContext m_callContext;
-
-    @Override
-    public TypeDefinition getTypeDefinition(String repositoryId, String typeId, ExtensionsData extension) {
-
-        return getRepository(repositoryId).getTypeDefinition(m_callContext, typeId);
-    }
-
-    @Override
-    public Acl getAcl(String repositoryId, String objectId, Boolean onlyBasicPermissions, ExtensionsData extension) {
-
-        return getRepository(repositoryId).getAcl(getCallContext(), objectId, onlyBasicPermissions);
-    }
-
 }

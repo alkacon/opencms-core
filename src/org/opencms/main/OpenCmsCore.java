@@ -28,7 +28,6 @@
 package org.opencms.main;
 
 import org.opencms.ade.configuration.CmsADEManager;
-import org.opencms.cmis.CmsCmisServiceFactory;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
@@ -1222,8 +1221,8 @@ public final class OpenCmsCore {
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
         }
-        CmsCmisServiceFactory.initializeRepositories(adminCms);
 
+        m_repositoryManager.initializeCms(adminCms);
         // now initialize the other managers
         try {
             // initialize the scheduler

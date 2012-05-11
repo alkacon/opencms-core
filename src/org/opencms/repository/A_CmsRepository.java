@@ -29,17 +29,20 @@ package org.opencms.repository;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
+import org.opencms.main.CmsException;
 
 /**
  * Abstract implementation of the repository interface {@link I_CmsRepository}.<p>
+ * 
+ * Get a {@link I_CmsRepositorySession} through login in with the
+ * username and password ({@link #login(String, String)}).<p>
  * 
  * Handles the functionality of basic configuration. This is actually the configuration
  * of param/values and the filters ({@link CmsRepositoryFilter}) to use of the repository.<p>
  * 
  * @since 6.2.4
  */
-public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigurationParameterHandler {
+public abstract class A_CmsRepository implements I_CmsRepository {
 
     /** The repository configuration. */
     private CmsParameterConfiguration m_configuration;
@@ -108,6 +111,18 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
         }
 
     }
+
+    /**
+     * Login a user given the username and the password.<p> 
+     * 
+     * @param userName the user name
+     * @param password the user's password
+     * 
+     * @return the authenticated session
+     * 
+     * @throws CmsException if the login was not succesful
+     */
+    public abstract I_CmsRepositorySession login(String userName, String password) throws CmsException;
 
     /**
      * Sets the filter.<p>

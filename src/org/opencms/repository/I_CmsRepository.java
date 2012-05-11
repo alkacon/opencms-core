@@ -27,17 +27,25 @@
 
 package org.opencms.repository;
 
-import org.opencms.main.CmsException;
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
+import org.opencms.file.CmsObject;
 
 /**
- * Represents the entry point into the repository.<p>
- *
- * Get a {@link I_CmsRepositorySession} through login in with the
- * username and password ({@link #login(String, String)}).<p>
+ * Represents a repository.<p> 
+ * 
+ * Since different types of repositories have very different methods, this interface only
+ * provides the bare minimum of methods which are necessary for configuration.<p>
  * 
  * @since 6.2.4
  */
-public interface I_CmsRepository {
+public interface I_CmsRepository extends I_CmsConfigurationParameterHandler {
+
+    /**
+     * Gets the repository filter.<p>
+     * 
+     * @return the repository filter 
+     */
+    CmsRepositoryFilter getFilter();
 
     /**
      * Returns the name of the repository.<p>
@@ -47,16 +55,18 @@ public interface I_CmsRepository {
     String getName();
 
     /**
-     * Login a user given the username and the password.<p> 
+     * Initializes this repository with an admin CMS object.<p>
      * 
-     * @param userName the user name
-     * @param password the user's password
-     * 
-     * @return the authenticated session
-     * 
-     * @throws CmsException if the login was not succesful
+     * @param cms an admin CMS object 
      */
-    I_CmsRepositorySession login(String userName, String password) throws CmsException;
+    void initializeCms(CmsObject cms);
+
+    /**
+     * Sets the repository filter.<p>
+     * 
+     * @param filter the repository filter 
+     */
+    void setFilter(CmsRepositoryFilter filter);
 
     /**
      * Sets the name for this repository.<p>

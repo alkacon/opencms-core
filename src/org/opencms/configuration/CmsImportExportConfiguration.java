@@ -33,9 +33,9 @@ import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImport;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
-import org.opencms.repository.A_CmsRepository;
 import org.opencms.repository.CmsRepositoryFilter;
 import org.opencms.repository.CmsRepositoryManager;
+import org.opencms.repository.I_CmsRepository;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportExportRule;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -946,17 +946,17 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         }
 
         if (m_repositoryManager.isConfigured()) {
-            List<A_CmsRepository> repositories = m_repositoryManager.getRepositories();
+            List<I_CmsRepository> repositories = m_repositoryManager.getRepositories();
             if (repositories != null) {
 
                 // <repositories> node
                 Element repositoriesElement = parent.addElement(N_REPOSITORIES);
 
-                Iterator<A_CmsRepository> repositoriesIt = repositories.iterator();
+                Iterator<I_CmsRepository> repositoriesIt = repositories.iterator();
                 while (repositoriesIt.hasNext()) {
 
                     // <repository> node
-                    A_CmsRepository repository = repositoriesIt.next();
+                    I_CmsRepository repository = repositoriesIt.next();
                     Element repositoryElement = repositoriesElement.addElement(N_REPOSITORY);
                     repositoryElement.addAttribute(A_NAME, repository.getName());
                     repositoryElement.addAttribute(A_CLASS, repository.getClass().getName());

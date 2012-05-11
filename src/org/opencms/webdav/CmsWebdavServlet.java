@@ -53,8 +53,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.repository.A_CmsRepository;
 import org.opencms.repository.CmsRepositoryLockInfo;
-import org.opencms.repository.I_CmsRepository;
 import org.opencms.repository.I_CmsRepositoryItem;
 import org.opencms.repository.I_CmsRepositorySession;
 import org.opencms.security.CmsSecurityException;
@@ -268,7 +268,7 @@ public class CmsWebdavServlet extends HttpServlet {
     private static final Log LOG = CmsLog.getLog(CmsWebdavServlet.class);
 
     /** The repository used from this servlet. */
-    private static I_CmsRepository m_repository;
+    private static A_CmsRepository m_repository;
 
     /** The unique serial id for this class. */
     private static final long serialVersionUID = -122598983283724306L;
@@ -451,10 +451,9 @@ public class CmsWebdavServlet extends HttpServlet {
             }
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_READ_INIT_PARAM_ERROR_2,
-                    INIT_PARAM_READONLY,
-                    value), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_READ_INIT_PARAM_ERROR_2, INIT_PARAM_READONLY, value),
+                    e);
             }
         }
 
@@ -490,7 +489,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 INIT_PARAM_REPOSITORY));
         }
 
-        m_repository = OpenCms.getRepositoryManager().getRepository(repositoryName);
+        m_repository = OpenCms.getRepositoryManager().getRepository(repositoryName, A_CmsRepository.class);
         if (m_repository == null) {
 
             if (LOG.isErrorEnabled()) {
@@ -1938,9 +1937,9 @@ public class CmsWebdavServlet extends HttpServlet {
                         resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.LOG_LIST_ITEMS_ERROR_1,
-                                currentItem.getName()), e);
+                            LOG.error(
+                                Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_ERROR_1, currentItem.getName()),
+                                e);
                         }
 
                         return;

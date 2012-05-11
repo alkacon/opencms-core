@@ -22,30 +22,34 @@ package org.opencms.cmis;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.relations.CmsRelationType;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinitionContainer;
+import org.apache.chemistry.opencmis.commons.definitions.TypeDefinitionList;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.Cardinality;
 import org.apache.chemistry.opencmis.commons.enums.ContentStreamAllowed;
 import org.apache.chemistry.opencmis.commons.enums.PropertyType;
 import org.apache.chemistry.opencmis.commons.enums.Updatability;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.Converter;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AbstractPropertyDefinition;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.AbstractTypeDefinition;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.DocumentTypeDefinitionImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.FolderTypeDefinitionImpl;
-import org.apache.chemistry.opencmis.commons.impl.dataobjects.PolicyTypeDefinitionImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertyBooleanDefinitionImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertyDateTimeDefinitionImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertyDecimalDefinitionImpl;
@@ -56,10 +60,11 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertyStringDefi
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertyUriDefinitionImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.RelationshipTypeDefinitionImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.TypeDefinitionContainerImpl;
-import org.apache.chemistry.opencmis.commons.server.CallContext;
+import org.apache.chemistry.opencmis.commons.impl.dataobjects.TypeDefinitionListImpl;
+import org.apache.commons.logging.Log;
 
 /**
- * Type Manager.
+ * This class keeps track of all the types which should be available for a {@link CmsCmisRepository}.
  */
 public class CmsCmisTypeManager {
 
@@ -69,32 +74,47 @@ public class CmsCmisTypeManager {
     /** CMIS type id for folders. */
     public static final String FOLDER_TYPE_ID = BaseTypeId.CMIS_FOLDER.value();
 
-    /** CMIS type id for relationships. */
-    public static final String RELATIONSHIP_TYPE_ID = BaseTypeId.CMIS_RELATIONSHIP.value();
-
     /** CMIS type id for policies. */
     public static final String POLICY_TYPE_ID = BaseTypeId.CMIS_POLICY.value();
 
     /** The prefix used for normal OpenCms resource properties. */
     public static final String PROPERTY_PREFIX = "opencms:";
 
-    /** The prefix used for special properties which are OpenCms specific but are not resource properties. */
-    public static final String SPECIAL_PROPERTY_PREFIX = "opencms-special:";
+    /** The prefix for special properties. */
+    public static final String PROPERTY_PREFIX_SPECIAL = "opencms-special:";
 
     /** The name of the propery containing the resource type name. */
-    public static final String PROPERTY_RESOURCE_TYPE = SPECIAL_PROPERTY_PREFIX + "resource-type";
+    public static final String PROPERTY_RESOURCE_TYPE = PROPERTY_PREFIX_SPECIAL + "resource-type";
+
+    /** The delay between type refreshs. */
+    public static final long REFRESH_DELAY = 1000 * 60 * 10;
+
+    /** CMIS type id for relationships. */
+    public static final String RELATIONSHIP_TYPE_ID = BaseTypeId.CMIS_RELATIONSHIP.value();
+
+    /** The logger instance for this class. */
+    static final Log LOG = CmsLog.getLog(CmsCmisTypeManager.class);
+
+    /** The default instance of this class. */
+    private static CmsCmisTypeManager defaultInstance;
 
     /** The namespace used for properties. */
     private static final String NAMESPACE = "http://opencms.org/opencms-cmis";
 
-    /** The internal map of type definitions. */
-    private Map<String, TypeDefinitionContainerImpl> m_types;
+    /** Timer used for refreshing the types/properties. */
+    protected Timer m_timer = new Timer(true);
+
+    /** The admin CMS context. */
+    private CmsObject m_adminCms;
+
+    /** The list of OpenCms property definitions. */
+    private List<CmsPropertyDefinition> m_cmsPropertyDefinitions;
 
     /** The internal list of type definitions. */
     private List<TypeDefinitionContainer> m_typeList;
 
-    /** The admin CMS context. */
-    private CmsObject m_adminCms;
+    /** The internal map of type definitions. */
+    private Map<String, TypeDefinitionContainerImpl> m_types;
 
     /**
      * Creates a new type manager instance.<p>
@@ -107,163 +127,23 @@ public class CmsCmisTypeManager {
     throws CmsException {
 
         m_adminCms = adminCms;
-
         setup();
     }
 
     /**
-     * Gets a list of names of OpenCms property definitions.<p>
+     * Returns the default instance of the type manager.<p>
      * 
-     * @return the list of OpenCms property names 
-     */
-    public List<String> getCmsPropertyNames() {
-
-        List<String> result = new ArrayList<String>();
-        for (CmsPropertyDefinition propDef : m_cmsPropertyDefinitions) {
-            result.add(propDef.getName());
-        }
-        return result;
-    }
-
-    /**
-     * Creates the base types.
+     * @param adminCms the CMS object used for initializing the type manager 
      * 
+     * @return the default instance
      * @throws CmsException if something goes wrong 
      */
-    void setup() throws CmsException {
+    static CmsCmisTypeManager getDefaultInstance(CmsObject adminCms) throws CmsException {
 
-        m_types = new HashMap<String, TypeDefinitionContainerImpl>();
-        m_typeList = new ArrayList<TypeDefinitionContainer>();
-        m_cmsPropertyDefinitions = m_adminCms.readAllPropertyDefinitions();
-
-        // folder type
-        FolderTypeDefinitionImpl folderType = new FolderTypeDefinitionImpl();
-        folderType.setBaseTypeId(BaseTypeId.CMIS_FOLDER);
-        folderType.setIsControllableAcl(Boolean.TRUE);
-        folderType.setIsControllablePolicy(Boolean.FALSE);
-        folderType.setIsCreatable(Boolean.TRUE);
-        folderType.setDescription("Folder");
-        folderType.setDisplayName("Folder");
-        folderType.setIsFileable(Boolean.TRUE);
-        folderType.setIsFulltextIndexed(Boolean.FALSE);
-        folderType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
-        folderType.setLocalName("Folder");
-        folderType.setLocalNamespace(NAMESPACE);
-        folderType.setIsQueryable(Boolean.FALSE);
-        folderType.setQueryName("cmis:folder");
-        folderType.setId(FOLDER_TYPE_ID);
-
-        addBasePropertyDefinitions(folderType);
-        addFolderPropertyDefinitions(folderType);
-        addCmsPropertyDefinitions(folderType);
-
-        internalAddType(folderType);
-
-        // document type
-        DocumentTypeDefinitionImpl documentType = new DocumentTypeDefinitionImpl();
-        documentType.setBaseTypeId(BaseTypeId.CMIS_DOCUMENT);
-        documentType.setIsControllableAcl(Boolean.TRUE);
-        documentType.setIsControllablePolicy(Boolean.FALSE);
-        documentType.setIsCreatable(Boolean.TRUE);
-        documentType.setDescription("Document");
-        documentType.setDisplayName("Document");
-        documentType.setIsFileable(Boolean.TRUE);
-        documentType.setIsFulltextIndexed(Boolean.FALSE);
-        documentType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
-        documentType.setLocalName("Document");
-        documentType.setLocalNamespace(NAMESPACE);
-        documentType.setIsQueryable(Boolean.FALSE);
-        documentType.setQueryName("cmis:document");
-        documentType.setId(DOCUMENT_TYPE_ID);
-
-        documentType.setIsVersionable(Boolean.FALSE);
-        documentType.setContentStreamAllowed(ContentStreamAllowed.REQUIRED);
-
-        addBasePropertyDefinitions(documentType);
-        addDocumentPropertyDefinitions(documentType);
-        addCmsPropertyDefinitions(documentType);
-
-        internalAddType(documentType);
-
-        // relationship types
-        RelationshipTypeDefinitionImpl relationshipType = new RelationshipTypeDefinitionImpl();
-        relationshipType.setBaseTypeId(BaseTypeId.CMIS_RELATIONSHIP);
-        relationshipType.setIsControllableAcl(Boolean.FALSE);
-        relationshipType.setIsControllablePolicy(Boolean.FALSE);
-        relationshipType.setIsCreatable(Boolean.FALSE);
-        relationshipType.setDescription("Relationship");
-        relationshipType.setDisplayName("Relationship");
-        relationshipType.setIsFileable(Boolean.FALSE);
-        relationshipType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
-        relationshipType.setLocalName("Relationship");
-        relationshipType.setLocalNamespace(NAMESPACE);
-        relationshipType.setIsQueryable(Boolean.FALSE);
-        relationshipType.setQueryName("cmis:relationship");
-        relationshipType.setId(RELATIONSHIP_TYPE_ID);
-
-        addBasePropertyDefinitions(relationshipType);
-
-        // not supported - don't expose it
-        // addTypeInteral(relationshipType);
-
-        // policy type
-        PolicyTypeDefinitionImpl policyType = new PolicyTypeDefinitionImpl();
-        policyType.setBaseTypeId(BaseTypeId.CMIS_POLICY);
-        policyType.setIsControllableAcl(Boolean.FALSE);
-        policyType.setIsControllablePolicy(Boolean.FALSE);
-        policyType.setIsCreatable(Boolean.FALSE);
-        policyType.setDescription("Policy");
-        policyType.setDisplayName("Policy");
-        policyType.setIsFileable(Boolean.FALSE);
-        policyType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
-        policyType.setLocalName("Policy");
-        policyType.setLocalNamespace(NAMESPACE);
-        policyType.setIsQueryable(Boolean.FALSE);
-        policyType.setQueryName("cmis:policy");
-        policyType.setId(POLICY_TYPE_ID);
-
-        addBasePropertyDefinitions(policyType);
-
-        // not supported - don't expose it
-        // addTypeInteral(policyType);
-    }
-
-    /** The list of OpenCms property definitions. */
-    private List<CmsPropertyDefinition> m_cmsPropertyDefinitions;
-
-    /**
-     * Adds the CMIS property definitions corresponding to the OpenCms property definitions to a CMIS type definition.<p>
-     *  
-     * @param type the type to which the property definitions should be added
-     */
-    private void addCmsPropertyDefinitions(AbstractTypeDefinition type) {
-
-        for (CmsPropertyDefinition propDef : m_cmsPropertyDefinitions) {
-            type.addPropertyDefinition(createOpenCmsPropertyDefinition(propDef));
+        if (defaultInstance == null) {
+            defaultInstance = new CmsCmisTypeManager(adminCms);
         }
-        type.addPropertyDefinition(createPropDef(
-            PROPERTY_RESOURCE_TYPE,
-            "Resource type",
-            "Resource type",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.ONCREATE,
-            false,
-            true));
-    }
-
-    /**
-     * Helper method to make a property definition queryable and orderable.<p>
-     * 
-     * @param propDef the property definition 
-     * 
-     * @return the modified property definition 
-     */
-    private static AbstractPropertyDefinition<?> queryableAndOrderable(AbstractPropertyDefinition<?> propDef) {
-
-        propDef.setIsQueryable(Boolean.TRUE);
-        propDef.setIsOrderable(Boolean.TRUE);
-        return propDef;
+        return defaultInstance;
     }
 
     /**
@@ -363,64 +243,6 @@ public class CmsCmisTypeManager {
             false,
             false));
 
-    }
-
-    /**
-     * Creates the CMIS property definition for an OpenCms resource property definition.<p>
-     * 
-     * @param cmsDef the OpenCms property definition 
-     * 
-     * @return the CMIS property definition 
-     */
-    PropertyDefinition<?> createOpenCmsPropertyDefinition(CmsPropertyDefinition cmsDef) {
-
-        return createPropDef(
-            PROPERTY_PREFIX + cmsDef.getName(),
-            cmsDef.getName(),
-            cmsDef.getName(),
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READWRITE,
-            false,
-            false);
-    }
-
-    /**
-     * Adds folder specific CMIS property definitions.<p>
-     * 
-     * @param type the folder type 
-     */
-    private static void addFolderPropertyDefinitions(FolderTypeDefinitionImpl type) {
-
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.PARENT_ID,
-            "Parent Id",
-            "Parent Id",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
-
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.ALLOWED_CHILD_OBJECT_TYPE_IDS,
-            "Allowed Child Object Type Ids",
-            "Allowed Child Object Type Ids",
-            PropertyType.ID,
-            Cardinality.MULTI,
-            Updatability.READONLY,
-            false,
-            false));
-
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.PATH,
-            "Path",
-            "Path",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
     }
 
     /**
@@ -572,6 +394,129 @@ public class CmsCmisTypeManager {
     }
 
     /**
+     * Adds folder specific CMIS property definitions.<p>
+     * 
+     * @param type the folder type 
+     */
+    private static void addFolderPropertyDefinitions(FolderTypeDefinitionImpl type) {
+
+        type.addPropertyDefinition(createPropDef(
+            PropertyIds.PARENT_ID,
+            "Parent Id",
+            "Parent Id",
+            PropertyType.ID,
+            Cardinality.SINGLE,
+            Updatability.READONLY,
+            false,
+            false));
+
+        type.addPropertyDefinition(createPropDef(
+            PropertyIds.ALLOWED_CHILD_OBJECT_TYPE_IDS,
+            "Allowed Child Object Type Ids",
+            "Allowed Child Object Type Ids",
+            PropertyType.ID,
+            Cardinality.MULTI,
+            Updatability.READONLY,
+            false,
+            false));
+
+        type.addPropertyDefinition(createPropDef(
+            PropertyIds.PATH,
+            "Path",
+            "Path",
+            PropertyType.STRING,
+            Cardinality.SINGLE,
+            Updatability.READONLY,
+            false,
+            false));
+    }
+
+    /**
+     * Helper method to add the property definitions specific to relationship types.<p>
+     * 
+     * @param type the type definition to which the property definitions should be added 
+     */
+    private static void addRelationPropertyDefinitions(RelationshipTypeDefinitionImpl type) {
+
+        type.addPropertyDefinition(createPropDef(
+            PropertyIds.SOURCE_ID,
+            "Source",
+            "Source",
+            PropertyType.ID,
+            Cardinality.SINGLE,
+            Updatability.ONCREATE,
+            false,
+            true));
+
+        type.addPropertyDefinition(createPropDef(
+            PropertyIds.TARGET_ID,
+            "Target",
+            "Target",
+            PropertyType.ID,
+            Cardinality.SINGLE,
+            Updatability.ONCREATE,
+            false,
+            true));
+
+    }
+
+    /**
+     * Adds a type to collection with inheriting base type properties.
+     * 
+     * @param type the type definition to add
+     * 
+     * @return true if the type definition was added 
+     */
+    public boolean addType(TypeDefinition type) {
+
+        if (type == null) {
+            return false;
+        }
+
+        if (type.getBaseTypeId() == null) {
+            return false;
+        }
+
+        // find base type
+        TypeDefinition baseType = null;
+        if (type.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT) {
+            baseType = copyTypeDefintion(m_types.get(DOCUMENT_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_FOLDER) {
+            baseType = copyTypeDefintion(m_types.get(FOLDER_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_RELATIONSHIP) {
+            baseType = copyTypeDefintion(m_types.get(RELATIONSHIP_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_POLICY) {
+            baseType = copyTypeDefintion(m_types.get(POLICY_TYPE_ID).getTypeDefinition());
+        } else {
+            return false;
+        }
+
+        AbstractTypeDefinition newType = (AbstractTypeDefinition)copyTypeDefintion(type);
+
+        // copy property definition
+        for (PropertyDefinition<?> propDef : baseType.getPropertyDefinitions().values()) {
+            ((AbstractPropertyDefinition<?>)propDef).setIsInherited(Boolean.TRUE);
+            newType.addPropertyDefinition(propDef);
+        }
+
+        // add it
+        addTypeInternal(newType);
+        return true;
+    }
+
+    /**
+     * Copies a type definition.<p>
+     * 
+     * @param type the type definition to copy
+     *  
+     * @return the copied type definition 
+     */
+    private static TypeDefinition copyTypeDefintion(TypeDefinition type) {
+
+        return Converter.convert(Converter.convert(type));
+    }
+
+    /**
      * Creates a property definition.<p>
      * 
      * @param id the property definition id 
@@ -642,11 +587,359 @@ public class CmsCmisTypeManager {
     }
 
     /**
-     * Adds a type to collection.
+     * Helper method to make a property definition queryable and orderable.<p>
      * 
-     * @param type the type definition to add 
+     * @param propDef the property definition 
+     * 
+     * @return the modified property definition 
      */
-    private void internalAddType(AbstractTypeDefinition type) {
+    private static AbstractPropertyDefinition<?> queryableAndOrderable(AbstractPropertyDefinition<?> propDef) {
+
+        propDef.setIsQueryable(Boolean.TRUE);
+        propDef.setIsOrderable(Boolean.TRUE);
+        return propDef;
+    }
+
+    /**
+     * Gets a list of names of OpenCms property definitions.<p>
+     * 
+     * @return the list of OpenCms property names 
+     */
+    public List<String> getCmsPropertyNames() {
+
+        List<String> result = new ArrayList<String>();
+        for (CmsPropertyDefinition propDef : m_cmsPropertyDefinitions) {
+            result.add(propDef.getName());
+        }
+        return result;
+    }
+
+    /**
+     * Gets a type definition by id.<p>
+     * 
+     * @param typeId the type id 
+     * @return the type definition 
+     */
+    public TypeDefinition getType(String typeId) {
+
+        TypeDefinitionContainer tc = m_types.get(typeId);
+        if (tc == null) {
+            return null;
+        }
+
+        return tc.getTypeDefinition();
+    }
+
+    /**
+     * Gets the type definition for a given id in the given call context.<p>
+     * 
+     * @param typeId the type id
+     * 
+     * @return the matching type definition  
+     */
+    public TypeDefinition getTypeDefinition(String typeId) {
+
+        TypeDefinitionContainer tc = m_types.get(typeId);
+        if (tc == null) {
+            throw new CmisObjectNotFoundException("Type '" + typeId + "' is unknown!");
+        }
+
+        return copyTypeDefintion(tc.getTypeDefinition());
+    }
+
+    /**
+     * Creates a CMIS relationship subtype for a given OpenCms relation type.<p>
+     * 
+     * @param relType the OpenCms relation type
+     */
+    protected void createRelationshipType(CmsRelationType relType) {
+
+        // relationship types
+        RelationshipTypeDefinitionImpl relationshipType = new RelationshipTypeDefinitionImpl();
+        relationshipType.setBaseTypeId(BaseTypeId.CMIS_RELATIONSHIP);
+        relationshipType.setParentTypeId(RELATIONSHIP_TYPE_ID);
+        relationshipType.setIsControllableAcl(Boolean.FALSE);
+        relationshipType.setIsControllablePolicy(Boolean.FALSE);
+        relationshipType.setIsCreatable(Boolean.valueOf(!relType.isDefinedInContent()));
+        relationshipType.setDescription(relType.getName());
+        relationshipType.setDisplayName(relType.getName());
+        relationshipType.setIsFileable(Boolean.FALSE);
+        relationshipType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
+        relationshipType.setLocalName(relType.getName());
+        relationshipType.setLocalNamespace(NAMESPACE);
+        relationshipType.setIsQueryable(Boolean.FALSE);
+        String id = "opencms:" + relType.getName().toUpperCase();
+        relationshipType.setQueryName(id);
+        relationshipType.setId(id);
+        List<String> typeList = new ArrayList<String>();
+        typeList.add("cmis:document");
+        typeList.add("cmis:folder");
+        relationshipType.setAllowedSourceTypes(typeList);
+        relationshipType.setAllowedTargetTypes(typeList);
+        addType(relationshipType);
+    }
+
+    /**
+     * Creates the CMIS property definition for an OpenCms resource property definition.<p>
+     * 
+     * @param cmsDef the OpenCms property definition 
+     * 
+     * @return the CMIS property definition 
+     */
+    PropertyDefinition<?> createOpenCmsPropertyDefinition(CmsPropertyDefinition cmsDef) {
+
+        return createPropDef(
+            PROPERTY_PREFIX + cmsDef.getName(),
+            cmsDef.getName(),
+            cmsDef.getName(),
+            PropertyType.STRING,
+            Cardinality.SINGLE,
+            Updatability.READWRITE,
+            false,
+            false);
+    }
+
+    /**
+     * Creates the base types.
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    void setup() throws CmsException {
+
+        m_types = new HashMap<String, TypeDefinitionContainerImpl>();
+        m_typeList = new ArrayList<TypeDefinitionContainer>();
+        m_cmsPropertyDefinitions = m_adminCms.readAllPropertyDefinitions();
+
+        // folder type
+        FolderTypeDefinitionImpl folderType = new FolderTypeDefinitionImpl();
+        folderType.setBaseTypeId(BaseTypeId.CMIS_FOLDER);
+        folderType.setIsControllableAcl(Boolean.TRUE);
+        folderType.setIsControllablePolicy(Boolean.FALSE);
+        folderType.setIsCreatable(Boolean.TRUE);
+        folderType.setDescription("Folder");
+        folderType.setDisplayName("Folder");
+        folderType.setIsFileable(Boolean.TRUE);
+        folderType.setIsFulltextIndexed(Boolean.FALSE);
+        folderType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
+        folderType.setLocalName("Folder");
+        folderType.setLocalNamespace(NAMESPACE);
+        folderType.setIsQueryable(Boolean.TRUE);
+        folderType.setQueryName("cmis:folder");
+        folderType.setId(FOLDER_TYPE_ID);
+
+        addBasePropertyDefinitions(folderType);
+        addFolderPropertyDefinitions(folderType);
+        addCmsPropertyDefinitions(folderType);
+
+        addTypeInternal(folderType);
+
+        // document type
+        DocumentTypeDefinitionImpl documentType = new DocumentTypeDefinitionImpl();
+        documentType.setBaseTypeId(BaseTypeId.CMIS_DOCUMENT);
+        documentType.setIsControllableAcl(Boolean.TRUE);
+        documentType.setIsControllablePolicy(Boolean.FALSE);
+        documentType.setIsCreatable(Boolean.TRUE);
+        documentType.setDescription("Document");
+        documentType.setDisplayName("Document");
+        documentType.setIsFileable(Boolean.TRUE);
+        documentType.setIsFulltextIndexed(Boolean.FALSE);
+        documentType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
+        documentType.setLocalName("Document");
+        documentType.setLocalNamespace(NAMESPACE);
+        documentType.setIsQueryable(Boolean.TRUE);
+        documentType.setQueryName("cmis:document");
+        documentType.setId(DOCUMENT_TYPE_ID);
+
+        documentType.setIsVersionable(Boolean.FALSE);
+        documentType.setContentStreamAllowed(ContentStreamAllowed.REQUIRED);
+
+        addBasePropertyDefinitions(documentType);
+        addDocumentPropertyDefinitions(documentType);
+        addCmsPropertyDefinitions(documentType);
+
+        addTypeInternal(documentType);
+
+        // relationship types
+        RelationshipTypeDefinitionImpl relationshipType = new RelationshipTypeDefinitionImpl();
+        relationshipType.setBaseTypeId(BaseTypeId.CMIS_RELATIONSHIP);
+        relationshipType.setIsControllableAcl(Boolean.FALSE);
+        relationshipType.setIsControllablePolicy(Boolean.FALSE);
+        relationshipType.setIsCreatable(Boolean.FALSE);
+        relationshipType.setDescription("Relationship");
+        relationshipType.setDisplayName("Relationship");
+        relationshipType.setIsFileable(Boolean.FALSE);
+        relationshipType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
+        relationshipType.setLocalName("Relationship");
+        relationshipType.setLocalNamespace(NAMESPACE);
+        relationshipType.setIsQueryable(Boolean.FALSE);
+        relationshipType.setQueryName("cmis:relationship");
+        relationshipType.setId(RELATIONSHIP_TYPE_ID);
+        List<String> typeList = new ArrayList<String>();
+        typeList.add("cmis:document");
+        typeList.add("cmis:folder");
+        relationshipType.setAllowedSourceTypes(typeList);
+        relationshipType.setAllowedTargetTypes(typeList);
+        addBasePropertyDefinitions(relationshipType);
+        addRelationPropertyDefinitions(relationshipType);
+        addTypeInternal(relationshipType);
+
+        for (CmsRelationType relType : CmsRelationType.getAll()) {
+            createRelationshipType(relType);
+        }
+
+        m_timer.purge();
+        m_timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+
+                try {
+                    setup();
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+
+        }, REFRESH_DELAY, REFRESH_DELAY);
+
+    }
+
+    /**
+     * Adds the CMIS property definitions corresponding to the OpenCms property definitions to a CMIS type definition.<p>
+     *  
+     * @param type the type to which the property definitions should be added
+     */
+    private void addCmsPropertyDefinitions(AbstractTypeDefinition type) {
+
+        for (CmsPropertyDefinition propDef : m_cmsPropertyDefinitions) {
+            type.addPropertyDefinition(createOpenCmsPropertyDefinition(propDef));
+        }
+        type.addPropertyDefinition(createPropDef(
+            PROPERTY_RESOURCE_TYPE,
+            "Resource type",
+            "Resource type",
+            PropertyType.STRING,
+            Cardinality.SINGLE,
+            Updatability.ONCREATE,
+            false,
+            true));
+    }
+
+    /**
+     * Collects the children of a type.<p>
+     * 
+     * @param typeId the id of the type 
+     * @param includePropertyDefinitions true if the property definitions should be included 
+     * @param maxItems the maximum number of items to return 
+     * @param skipCount the number of items to skip 
+     * 
+     * @return the children of the type 
+     */
+    public TypeDefinitionList getTypeChildren(
+
+    String typeId, boolean includePropertyDefinitions, BigInteger maxItems, BigInteger skipCount) {
+
+        TypeDefinitionListImpl result = new TypeDefinitionListImpl(new ArrayList<TypeDefinition>());
+
+        int skip = (skipCount == null ? 0 : skipCount.intValue());
+        if (skip < 0) {
+            skip = 0;
+        }
+
+        int max = (maxItems == null ? Integer.MAX_VALUE : maxItems.intValue());
+        if (max < 1) {
+            return result;
+        }
+
+        if (typeId == null) {
+            if (skip < 1) {
+                result.getList().add(copyTypeDefintion(m_types.get(FOLDER_TYPE_ID).getTypeDefinition()));
+                max--;
+            }
+            if ((skip < 2) && (max > 0)) {
+                result.getList().add(copyTypeDefintion(m_types.get(DOCUMENT_TYPE_ID).getTypeDefinition()));
+                max--;
+            }
+
+            result.setHasMoreItems(Boolean.valueOf((result.getList().size() + skip) < 2));
+            result.setNumItems(BigInteger.valueOf(2));
+        } else {
+            TypeDefinitionContainer tc = m_types.get(typeId);
+            if ((tc == null) || (tc.getChildren() == null)) {
+                return result;
+            }
+
+            for (TypeDefinitionContainer child : tc.getChildren()) {
+                if (skip > 0) {
+                    skip--;
+                    continue;
+                }
+
+                result.getList().add(copyTypeDefintion(child.getTypeDefinition()));
+
+                max--;
+                if (max == 0) {
+                    break;
+                }
+            }
+
+            result.setHasMoreItems(Boolean.valueOf((result.getList().size() + skip) < tc.getChildren().size()));
+            result.setNumItems(BigInteger.valueOf(tc.getChildren().size()));
+        }
+
+        if (!includePropertyDefinitions) {
+            for (TypeDefinition type : result.getList()) {
+                type.getPropertyDefinitions().clear();
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets the descendants of a type.<p>
+     *  
+     * @param typeId the parent type id
+     * @param depth the depth up to which the descendant types should be collected 
+     * @param includePropertyDefinitions true if the property definitions should be included 
+     * 
+     * @return the descendants of the type 
+     */
+    public List<TypeDefinitionContainer> getTypeDescendants(
+
+    String typeId, BigInteger depth, Boolean includePropertyDefinitions) {
+
+        List<TypeDefinitionContainer> result = new ArrayList<TypeDefinitionContainer>();
+
+        // check depth
+        int d = (depth == null ? -1 : depth.intValue());
+        if (d == 0) {
+            throw new CmisInvalidArgumentException("Depth must not be 0!");
+        }
+
+        // set property definition flag to default value if not set
+        boolean ipd = (includePropertyDefinitions == null ? false : includePropertyDefinitions.booleanValue());
+
+        if (typeId == null) {
+            result.add(getTypeDescendants(d, m_types.get(FOLDER_TYPE_ID), ipd));
+            result.add(getTypeDescendants(d, m_types.get(DOCUMENT_TYPE_ID), ipd));
+            result.add(getTypeDescendants(d, m_types.get(RELATIONSHIP_TYPE_ID), ipd));
+        } else {
+            TypeDefinitionContainer tc = m_types.get(typeId);
+            if (tc != null) {
+                result.add(getTypeDescendants(d, tc, ipd));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Internal method which adds a new type, without adding any property definitions automatically.<p>
+     * 
+     * @param type the type to add 
+     */
+    private void addTypeInternal(AbstractTypeDefinition type) {
 
         if (type == null) {
             return;
@@ -676,95 +969,39 @@ public class CmsCmisTypeManager {
     }
 
     /**
-     * Gets a type definition by id.<p>
+     * Collects the descendants of a type.<p>
      * 
-     * @param typeId the type id 
-     * @return the type definition 
-     */
-    public TypeDefinition getType(String typeId) {
-
-        TypeDefinitionContainer tc = m_types.get(typeId);
-        if (tc == null) {
-            return null;
-        }
-
-        return tc.getTypeDefinition();
-    }
-
-    /**
-     * Gets the type definition for a given id in the given call context.<p>
-     * 
-     * @param context the call context 
-     * @param typeId the type id
-     * 
-     *  @return the matching type definition 
-     */
-    public TypeDefinition getTypeDefinition(CallContext context, String typeId) {
-
-        TypeDefinitionContainer tc = m_types.get(typeId);
-        if (tc == null) {
-            throw new CmisObjectNotFoundException("Type '" + typeId + "' is unknown!");
-        }
-
-        return copyTypeDefintion(tc.getTypeDefinition());
-    }
-
-    /**
-     * Copies a type definition.<p>
-     * 
-     * @param type the type definition to copy
+     * @param depth the depth up to which the descendants should be collected 
+     * @param tc the parent type 
+     * @param includePropertyDefinitions true if the property definitions should be included
      *  
-     * @return the copied type definition 
+     * @return the descendants of the type 
      */
-    private static TypeDefinition copyTypeDefintion(TypeDefinition type) {
+    private TypeDefinitionContainer getTypeDescendants(
+        int depth,
+        TypeDefinitionContainer tc,
+        boolean includePropertyDefinitions) {
 
-        return Converter.convert(Converter.convert(type));
-    }
+        TypeDefinitionContainerImpl result = new TypeDefinitionContainerImpl();
 
-    /**
-     * Copies a type definition.<p>
-     * 
-     * @param type the type definition to copy
-     *  
-     * @return the copied type definition 
-     */
-    private static TypeDefinition copyTypeDefintion(TypeDefinition type, boolean keepProperties) {
-
-        TypeDefinition result = Converter.convert(Converter.convert(type));
-        if (!keepProperties) {
-            result.getPropertyDefinitions().clear();
+        TypeDefinition type = copyTypeDefintion(tc.getTypeDefinition());
+        if (!includePropertyDefinitions) {
+            type.getPropertyDefinitions().clear();
         }
+
+        result.setTypeDefinition(type);
+
+        if (depth != 0) {
+            if (tc.getChildren() != null) {
+                result.setChildren(new ArrayList<TypeDefinitionContainer>());
+                for (TypeDefinitionContainer tdc : tc.getChildren()) {
+                    result.getChildren().add(
+                        getTypeDescendants(depth < 0 ? -1 : depth - 1, tdc, includePropertyDefinitions));
+                }
+            }
+        }
+
         return result;
     }
 
-    protected List getTypeChildren(TypeDefinition typeDef) {
-
-        return Collections.<TypeDefinition> emptyList();
-    }
-
-    public List<TypeDefinitionContainer> getTypeDescendants(
-        CallContext context,
-        String typeId,
-        BigInteger depth,
-        Boolean includePropertyDefinitions) {
-
-        if (typeId == null) {
-            List<TypeDefinitionContainer> result = new ArrayList<TypeDefinitionContainer>();
-            TypeDefinitionContainerImpl folderType = new TypeDefinitionContainerImpl();
-            folderType.setTypeDefinition(copyTypeDefintion(
-                getType(FOLDER_TYPE_ID),
-                includePropertyDefinitions.booleanValue()));
-            folderType.setChildren(Collections.<TypeDefinitionContainer> emptyList());
-            result.add(folderType);
-            TypeDefinitionContainerImpl documentType = new TypeDefinitionContainerImpl();
-            documentType.setTypeDefinition(copyTypeDefintion(
-                getType(DOCUMENT_TYPE_ID),
-                includePropertyDefinitions.booleanValue()));
-            documentType.setChildren(Collections.<TypeDefinitionContainer> emptyList());
-            result.add(documentType);
-            return result;
-        } else {
-            return Collections.emptyList();
-        }
-    }
 }

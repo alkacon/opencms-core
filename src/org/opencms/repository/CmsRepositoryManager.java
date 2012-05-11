@@ -28,6 +28,7 @@
 package org.opencms.repository;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
@@ -55,10 +56,10 @@ public class CmsRepositoryManager {
     private boolean m_frozen;
 
     /** A list with all configured repositories. */
-    private List<A_CmsRepository> m_repositoryList;
+    private List<I_CmsRepository> m_repositoryList;
 
     /** All initialized repositories, mapped to their name. */
-    private Map<String, A_CmsRepository> m_repositoryMap;
+    private Map<String, I_CmsRepository> m_repositoryMap;
 
     /**
      * Creates a new instance for the resource manager, 
@@ -70,8 +71,8 @@ public class CmsRepositoryManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_REPOSITORY_CONFIG_0));
         }
 
-        m_repositoryList = new ArrayList<A_CmsRepository>();
-        m_repositoryMap = new HashMap<String, A_CmsRepository>();
+        m_repositoryList = new ArrayList<I_CmsRepository>();
+        m_repositoryMap = new HashMap<String, I_CmsRepository>();
         m_frozen = false;
         m_configured = true;
     }
@@ -95,18 +96,18 @@ public class CmsRepositoryManager {
     /**
      * Adds a new configured repository.<p>
      * 
-     * @param rep the repository to add
+     * @param repository the repository to add
      * 
      * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
-    public void addRepositoryClass(A_CmsRepository rep) throws CmsConfigurationException {
+    public void addRepositoryClass(I_CmsRepository repository) throws CmsConfigurationException {
 
         // check if new repositories can still be added
         if (m_frozen) {
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
 
-        m_repositoryList.add(rep);
+        m_repositoryList.add(repository);
     }
 
     /**
@@ -114,9 +115,28 @@ public class CmsRepositoryManager {
      *
      * @return the repositories
      */
-    public List<A_CmsRepository> getRepositories() {
+    public List<I_CmsRepository> getRepositories() {
 
         return m_repositoryList;
+    }
+
+    /**
+     * Gets a list of the repositories for the given superclass.<p>
+     *
+     * @param cls the superclass 
+     * 
+     * @return the repositories for whose classes the given class is a superclass 
+     */
+    @SuppressWarnings("unchecked")
+    public <REPO extends I_CmsRepository> List<REPO> getRepositories(Class<REPO> cls) {
+
+        List<REPO> result = new ArrayList<REPO>();
+        for (I_CmsRepository repo : m_repositoryMap.values()) {
+            if (cls.isInstance(repo)) {
+                result.add((REPO)repo);
+            }
+        }
+        return result;
     }
 
     /**
@@ -126,9 +146,33 @@ public class CmsRepositoryManager {
      * 
      * @return the repository configured for that name
      */
-    public A_CmsRepository getRepository(String name) {
+    public I_CmsRepository getRepository(String name) {
 
         return m_repositoryMap.get(name);
+    }
+
+    /**
+     * Gets a repository by name, but only if its class is a subclass of the class passed as a parameter.<p>
+     * Otherwise, null will be returned.<p>
+     * 
+     * @param name the repository name 
+     * @param cls the class used to filter repositories 
+     * 
+     * @return the repository with the given name, or null  
+     */
+    @SuppressWarnings("unchecked")
+    public <REPO extends I_CmsRepository> REPO getRepository(String name, Class<REPO> cls) {
+
+        I_CmsRepository repo = getRepository(name);
+        if (repo == null) {
+            return null;
+        }
+        if (cls.isInstance(repo)) {
+            return (REPO)repo;
+        } else {
+            return null;
+        }
+
     }
 
     /**
@@ -140,9 +184,9 @@ public class CmsRepositoryManager {
 
         m_repositoryList = Collections.unmodifiableList(m_repositoryList);
 
-        Iterator<A_CmsRepository> iter = m_repositoryList.iterator();
+        Iterator<I_CmsRepository> iter = m_repositoryList.iterator();
         while (iter.hasNext()) {
-            A_CmsRepository rep = iter.next();
+            I_CmsRepository rep = iter.next();
             m_repositoryMap.put(rep.getName(), rep);
 
             if (CmsLog.INIT.isInfoEnabled()) {
@@ -160,6 +204,18 @@ public class CmsRepositoryManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_REPOSITORY_CONFIG_FINISHED_0));
         }
 
+    }
+
+    /**
+     * Initializes repositories using an admin CMS object.<p>
+     * 
+     * @param cms the CMS object with admin privileges 
+     */
+    public void initializeCms(CmsObject cms) {
+
+        for (I_CmsRepository repository : m_repositoryMap.values()) {
+            repository.initializeCms(cms);
+        }
     }
 
     /**

@@ -27,7 +27,6 @@
 
 package org.opencms.cmis;
 
-import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
@@ -53,35 +52,6 @@ import org.apache.commons.logging.Log;
  */
 public class CmsCmisServiceFactory extends AbstractServiceFactory {
 
-    /** The logger for this class. */
-    protected static final Log LOG = CmsLog.getLog(CmsCmisServiceFactory.class);
-
-    /** Default value for maximum number of types to return. */
-    private static final BigInteger DEFAULT_MAX_ITEMS_TYPES = BigInteger.valueOf(50);
-
-    /** Default value for maximum depth of types to return. */
-    private static final BigInteger DEFAULT_DEPTH_TYPES = BigInteger.valueOf(-1);
-
-    /** Default value for maximum number of objects to return. */
-    private static final BigInteger DEFAULT_MAX_ITEMS_OBJECTS = BigInteger.valueOf(200);
-
-    /** Default value for maximum depth of objects to return. */
-    private static final BigInteger DEFAULT_DEPTH_OBJECTS = BigInteger.valueOf(10);
-
-    /** The repository manager. */
-    private static CmsCmisRepositoryManager m_repositoryManager;
-
-    /** 
-     * Initializes the repository manager.<p>
-     * 
-     * @param adminCms a CMS context with Admin privileges 
-     */
-    public static void initializeRepositories(CmsObject adminCms) {
-
-        m_repositoryManager = new CmsCmisRepositoryManager();
-        m_repositoryManager.initialize(adminCms);
-    }
-
     /**
      * An invocation handler which wraps a service and is used for debugging/logging CMIS service calls.<p>
      */
@@ -89,12 +59,6 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
 
         /** The CMIS service interfaces. */
         private static Set<Class<?>> m_serviceInterfaces = new HashSet<Class<?>>();
-
-        static {
-            for (Class<?> svcInterface : CmisService.class.getInterfaces()) {
-                m_serviceInterfaces.add(svcInterface);
-            }
-        }
 
         /** The wrapped service. */
         private CmisService m_service;
@@ -109,25 +73,10 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
             m_service = service;
         }
 
-        /** 
-         * Creates a string representation of a given method call, which is used for logging.<p>
-         *  
-         * @param method the method 
-         * @param args the method call arguments
-         *  
-         * @return a string representation of the method call 
-         */
-        private String getCallString(Method method, Object[] args) {
-
-            List<String> tokens = new ArrayList<String>();
-            tokens.add(method.getName());
-            if ((args != null) && (args.length > 0)) {
-                tokens.add("=>");
-                for (Object arg : args) {
-                    tokens.add("'" + arg + "'");
-                }
+        static {
+            for (Class<?> svcInterface : CmisService.class.getInterfaces()) {
+                m_serviceInterfaces.add(svcInterface);
             }
-            return CmsStringUtil.listAsString(tokens, " ");
         }
 
         /**
@@ -155,16 +104,43 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
                 throw cause;
             }
         }
+
+        /** 
+         * Creates a string representation of a given method call, which is used for logging.<p>
+         *  
+         * @param method the method 
+         * @param args the method call arguments
+         *  
+         * @return a string representation of the method call 
+         */
+        private String getCallString(Method method, Object[] args) {
+
+            List<String> tokens = new ArrayList<String>();
+            tokens.add(method.getName());
+            if ((args != null) && (args.length > 0)) {
+                tokens.add("=>");
+                for (Object arg : args) {
+                    tokens.add("'" + arg + "'");
+                }
+            }
+            return CmsStringUtil.listAsString(tokens, " ");
+        }
     }
 
-    /**
-     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractServiceFactory#init(java.util.Map)
-     */
-    @Override
-    public void init(Map<String, String> parameters) {
+    /** The logger for this class. */
+    protected static final Log LOG = CmsLog.getLog(CmsCmisServiceFactory.class);
 
-        // do nothing for now 
-    }
+    /** Default value for maximum depth of objects to return. */
+    private static final BigInteger DEFAULT_DEPTH_OBJECTS = BigInteger.valueOf(10);
+
+    /** Default value for maximum depth of types to return. */
+    private static final BigInteger DEFAULT_DEPTH_TYPES = BigInteger.valueOf(-1);
+
+    /** Default value for maximum number of objects to return. */
+    private static final BigInteger DEFAULT_MAX_ITEMS_OBJECTS = BigInteger.valueOf(200);
+
+    /** Default value for maximum number of types to return. */
+    private static final BigInteger DEFAULT_MAX_ITEMS_TYPES = BigInteger.valueOf(50);
 
     /**
      * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractServiceFactory#destroy()
@@ -181,7 +157,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
     @Override
     public CmisService getService(CallContext context) {
 
-        CmsCmisService service = new CmsCmisService(m_repositoryManager, context);
+        CmsCmisService service = new CmsCmisService(context);
         CmisService proxyService = (CmisService)Proxy.newProxyInstance(
             this.getClass().getClassLoader(),
             new Class[] {CmisService.class},
@@ -193,5 +169,14 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
             DEFAULT_MAX_ITEMS_OBJECTS,
             DEFAULT_DEPTH_OBJECTS);
         return wrapperService;
+    }
+
+    /**
+     * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractServiceFactory#init(java.util.Map)
+     */
+    @Override
+    public void init(Map<String, String> parameters) {
+
+        // do nothing for now 
     }
 }
