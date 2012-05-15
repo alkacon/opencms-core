@@ -56,8 +56,6 @@ import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.chemistry.opencmis.commons.enums.RelationshipDirection;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
-import org.apache.chemistry.opencmis.commons.server.CallContext;
-import org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
 
 /**
@@ -85,7 +83,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the object id of the new document
      */
     String createDocument(
-        CallContext context,
+        CmsCmisCallContext context,
         Properties propertiesObj,
         String folderId,
         ContentStream contentStream,
@@ -109,7 +107,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the object id of the new document 
      */
     String createDocumentFromSource(
-        CallContext context,
+        CmsCmisCallContext context,
         String sourceId,
         Properties propertiesObj,
         String folderId,
@@ -131,7 +129,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the object id of the created folder 
      */
     String createFolder(
-        CallContext context,
+        CmsCmisCallContext context,
         Properties propertiesObj,
         String folderId,
         List<String> policies,
@@ -150,7 +148,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the new relationship id 
      */
     String createRelationship(
-        CallContext context,
+        CmsCmisCallContext context,
         Properties properties,
         List<String> policies,
         Acl addAces,
@@ -163,7 +161,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param objectId the object id 
      * @param changeToken the change token 
      */
-    void deleteContentStream(CallContext context, Holder<String> objectId, Holder<String> changeToken);
+    void deleteContentStream(CmsCmisCallContext context, Holder<String> objectId, Holder<String> changeToken);
 
     /**
      * Deletes a CMIS object.<p>
@@ -172,7 +170,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param objectId the id of the object to delete 
      * @param allVersions flag to delete all version 
      */
-    void deleteObject(CallContext context, String objectId, boolean allVersions);
+    void deleteObject(CmsCmisCallContext context, String objectId, boolean allVersions);
 
     /**
      * Deletes a whole file tree.<p>
@@ -186,7 +184,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return data containing the objects which weren'T deleted successfully 
      */
     FailedToDeleteData deleteTree(
-        CallContext context,
+        CmsCmisCallContext context,
         String folderId,
         boolean allVersions,
         UnfileObject unfileObjects,
@@ -201,7 +199,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * 
      * @return the ACL for the object 
      */
-    Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions);
+    Acl getAcl(CmsCmisCallContext context, String objectId, boolean onlyBasicPermissions);
 
     /**
      * Gets the allowable actions for an object.<p>
@@ -210,7 +208,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param objectId the object id 
      * @return the allowable actions 
      */
-    AllowableActions getAllowableActions(CallContext context, String objectId);
+    AllowableActions getAllowableActions(CmsCmisCallContext context, String objectId);
 
     /**
      * Corresponds to CMIS getCheckedOutDocs service method.<p>
@@ -228,7 +226,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return a list of CMIS objects 
      */
     ObjectList getCheckedOutDocs(
-        CallContext context,
+        CmsCmisCallContext context,
         String folderId,
         String filter,
         String orderBy,
@@ -251,13 +249,11 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param includePathSegment flag to include the path segment 
      * @param maxItems the maximum number of items 
      * @param skipCount the index from which to start 
-     * 
-     * @param objectInfos the combined object info for the children
      *  
      * @return the object information 
      */
     ObjectInFolderList getChildren(
-        CallContext context,
+        CmsCmisCallContext context,
         String folderId,
         String filter,
         String orderBy,
@@ -266,8 +262,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
         String renditionFilter,
         boolean includePathSegment,
         BigInteger maxItems,
-        BigInteger skipCount,
-        ObjectInfoHandler objectInfos);
+        BigInteger skipCount);
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
@@ -286,7 +281,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the content stream 
      */
     ContentStream getContentStream(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String streamId,
         BigInteger offset,
@@ -300,19 +295,17 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param filter the property filter 
      * @param includeAllowableActions flag to include allowable actions 
      * @param includePathSegment flag to include path segments 
-     * @param objectInfos object info handler 
      * @param foldersOnly flag to ignore documents and only return folders
      * 
      * @return the list of descendants 
      */
     List<ObjectInFolderContainer> getDescendants(
-        CallContext context,
+        CmsCmisCallContext context,
         String folderId,
         BigInteger depth,
         String filter,
         boolean includeAllowableActions,
         boolean includePathSegment,
-        ObjectInfoHandler objectInfos,
         boolean foldersOnly);
 
     /**
@@ -333,11 +326,10 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param context the call context 
      * @param folderId the folder id 
      * @param filter the property filter 
-     * @param objectInfos the object info handler 
      * 
      * @return the parent object data 
      */
-    ObjectData getFolderParent(CallContext context, String folderId, String filter, ObjectInfoHandler objectInfos);
+    ObjectData getFolderParent(CmsCmisCallContext context, String folderId, String filter);
 
     /**
      * Gets the repository id.<p>
@@ -364,20 +356,18 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param renditionFilter the rendition filter string 
      * @param includePolicyIds flag to include policy ids 
      * @param includeAcl flag to include ACLs 
-     * @param objectInfos the object info handler 
      * 
      * @return the CMIS object data 
      */
     ObjectData getObject(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String filter,
         boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
         boolean includePolicyIds,
-        boolean includeAcl,
-        ObjectInfoHandler objectInfos);
+        boolean includeAcl);
 
     /**
      * Reads a CMIS object by path.<p>
@@ -390,21 +380,18 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param renditionFilter the rendition filter string 
      * @param includePolicyIds flag to include policy ids 
      * @param includeAcl flag to include ACLs 
-     * @param objectInfos the object info handler 
      * 
      * @return the object data 
      */
     ObjectData getObjectByPath(
-        CallContext context,
+        CmsCmisCallContext context,
         String path,
         String filter,
         boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
         boolean includePolicyIds,
-        boolean includeAcl,
-
-        ObjectInfoHandler objectInfos);
+        boolean includeAcl);
 
     /**
      * Gets the parents of an object.<p>
@@ -414,17 +401,15 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param filter
      * @param includeAllowableActions
      * @param includeRelativePathSegment
-     * @param objectInfos
      * 
      * @return the data for the object parents 
      */
     List<ObjectParentData> getObjectParents(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String filter,
         boolean includeAllowableActions,
-        boolean includeRelativePathSegment,
-        ObjectInfoHandler objectInfos);
+        boolean includeRelativePathSegment);
 
     /**
      * Gets the relationships for an object.<p>
@@ -438,12 +423,11 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param includeAllowableActions flag to include allowable actions  
      * @param maxItems the maximum number of items to return 
      * @param skipCount the number of items to skip 
-     * @param objectInfos the object info handler
      * 
      * @return the relationships for the object
      */
     ObjectList getObjectRelationships(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         boolean includeSubRelationshipTypes,
         RelationshipDirection relationshipDirection,
@@ -451,8 +435,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
         String filter,
         boolean includeAllowableActions,
         BigInteger maxItems,
-        BigInteger skipCount,
-        ObjectInfoHandler objectInfos);
+        BigInteger skipCount);
 
     /**
      * Gets the properties for a CMIS object.<p>
@@ -460,13 +443,10 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param context the call context 
      * @param objectId the CMIS object id 
      * @param filter the property filter string 
-     * @param objectInfos the object info handler 
      * 
      * @return the set of properties 
      */
-    Properties getProperties(CallContext context, String objectId, String filter,
-
-    ObjectInfoHandler objectInfos);
+    Properties getProperties(CmsCmisCallContext context, String objectId, String filter);
 
     /**
      * Gets the renditions for a CMIS object.<p>
@@ -480,7 +460,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the list of renditions 
      */
     List<RenditionData> getRenditions(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String renditionFilter,
         BigInteger maxItems,
@@ -505,7 +485,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the list of child type definitions 
      */
     TypeDefinitionList getTypeChildren(
-        CallContext context,
+        CmsCmisCallContext context,
         String typeId,
         boolean includePropertyDefinitions,
         BigInteger maxItems,
@@ -519,7 +499,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * 
      * @return the type definition for the given id 
      */
-    TypeDefinition getTypeDefinition(CallContext context, String typeId);
+    TypeDefinition getTypeDefinition(CmsCmisCallContext context, String typeId);
 
     /**
      * Gets the type descendants.<p>
@@ -532,7 +512,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the list of type definitions 
      */
     List<TypeDefinitionContainer> getTypeDescendants(
-        CallContext context,
+        CmsCmisCallContext context,
         String typeId,
         BigInteger depth,
         boolean includePropertyDefinitions);
@@ -555,7 +535,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param targetFolderId source source folder id 
      * @param sourceFolderId the target folder id 
      */
-    void moveObject(CallContext context, Holder<String> objectId, String targetFolderId, String sourceFolderId);
+    void moveObject(CmsCmisCallContext context, Holder<String> objectId, String targetFolderId, String sourceFolderId);
 
     /**
      * Sets the content stream of an object.<p>
@@ -567,7 +547,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param contentStream the new content stream 
      */
     void setContentStream(
-        CallContext context,
+        CmsCmisCallContext context,
         Holder<String> objectId,
         boolean overwriteFlag,
         Holder<String> changeToken,
@@ -592,7 +572,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param properties the properties 
      */
     void updateProperties(
-        CallContext context,
+        CmsCmisCallContext context,
         Holder<String> objectId,
         Holder<String> changeToken,
         Properties properties);
@@ -612,7 +592,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the query result objects
      */
     ObjectList query(
-        CallContext context,
+        CmsCmisCallContext context,
         String statement,
         boolean searchAllVersions,
         boolean includeAllowableActions,
@@ -629,7 +609,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param folderId the folder id 
      * @param allVersions flag to include all versions
      */
-    void addObjectToFolder(CallContext context, String objectId, String folderId, boolean allVersions);
+    void addObjectToFolder(CmsCmisCallContext context, String objectId, String folderId, boolean allVersions);
 
     /**
      * Applies ACL to an object.<p>
@@ -642,7 +622,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      *  
      * @return the new ACL 
      */
-    Acl applyAcl(CallContext context, String objectId, Acl addAces, Acl removeAces, AclPropagation aclPropagation);
+    Acl applyAcl(CmsCmisCallContext context, String objectId, Acl addAces, Acl removeAces, AclPropagation aclPropagation);
 
     /**
      * Changes the ACL for an object.<p>
@@ -654,7 +634,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * 
      * @return the new ACL 
      */
-    Acl applyAcl(CallContext context, String objectId, Acl aces, AclPropagation aclPropagation);
+    Acl applyAcl(CmsCmisCallContext context, String objectId, Acl aces, AclPropagation aclPropagation);
 
     /**
      * Applies a policy to an object.<p>
@@ -663,7 +643,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param policyId the policy id 
      * @param objectId the object id 
      */
-    void applyPolicy(CallContext context, String policyId, String objectId);
+    void applyPolicy(CmsCmisCallContext context, String policyId, String objectId);
 
     /**
      * Cancels a checkout.<p>
@@ -671,7 +651,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param context the call context 
      * @param objectId the object id 
      */
-    void cancelCheckOut(CallContext context, String objectId);
+    void cancelCheckOut(CmsCmisCallContext context, String objectId);
 
     /**
      * Checks in a document.<p>
@@ -687,7 +667,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param removeAces the ACEs to remove 
      */
     void checkIn(
-        CallContext context,
+        CmsCmisCallContext context,
         Holder<String> objectId,
         boolean major,
         Properties properties,
@@ -704,7 +684,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param objectId the object id 
      * @param contentCopied indicator whether the content was copied
      */
-    void checkOut(CallContext context, Holder<String> objectId, Holder<Boolean> contentCopied);
+    void checkOut(CmsCmisCallContext context, Holder<String> objectId, Holder<Boolean> contentCopied);
 
     /**
      * Creates a policy.<p>
@@ -719,7 +699,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the new object id
      */
     String createPolicy(
-        CallContext context,
+        CmsCmisCallContext context,
         Properties properties,
         String folderId,
         List<String> policies,
@@ -738,7 +718,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the list of versions 
      */
     List<ObjectData> getAllVersions(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String versionSeriesId,
         String filter,
@@ -753,7 +733,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      *  
      * @return the policies for the object 
      */
-    List<ObjectData> getAppliedPolicies(CallContext context, String objectId, String filter);
+    List<ObjectData> getAppliedPolicies(CmsCmisCallContext context, String objectId, String filter);
 
     /**
      * Gets content changes from the repository.<p>
@@ -769,7 +749,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the list of content changes 
      */
     ObjectList getContentChanges(
-        CallContext context,
+        CmsCmisCallContext context,
         Holder<String> changeLogToken,
         boolean includeProperties,
         String filter,
@@ -794,7 +774,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the data for the latest version 
      */
     ObjectData getObjectOfLatestVersion(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String versionSeriesId,
         boolean major,
@@ -817,7 +797,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @return the properties from the latest version 
      */
     Properties getPropertiesOfLatestVersion(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String versionSeriesId,
         boolean major,
@@ -830,7 +810,7 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param objectId the id of the object to unfile 
      * @param folderId the folder from which the object should be unfiled  
      */
-    void removeObjectFromFolder(CallContext context, String objectId, String folderId);
+    void removeObjectFromFolder(CmsCmisCallContext context, String objectId, String folderId);
 
     /**
      * Removes a policy from an object.<p>
@@ -839,6 +819,6 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param policyId the policy id 
      * @param objectId the object id
      */
-    void removePolicy(CallContext context, String policyId, String objectId);
+    void removePolicy(CmsCmisCallContext context, String policyId, String objectId);
 
 }

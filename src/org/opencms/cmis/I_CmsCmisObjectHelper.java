@@ -31,8 +31,6 @@ import org.apache.chemistry.opencmis.commons.data.Acl;
 import org.apache.chemistry.opencmis.commons.data.AllowableActions;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
-import org.apache.chemistry.opencmis.commons.server.CallContext;
-import org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler;
 
 /**
  * Interface containing the basic CRUD operations for CMIS objects.<p>
@@ -46,7 +44,7 @@ public interface I_CmsCmisObjectHelper {
      * @param objectId the id of the object to delete 
      * @param allVersions flag to delete all version 
      */
-    void deleteObject(CallContext context, String objectId, boolean allVersions);
+    void deleteObject(CmsCmisCallContext context, String objectId, boolean allVersions);
 
     /**
      * Gets the ACL for an object.<p>
@@ -57,7 +55,7 @@ public interface I_CmsCmisObjectHelper {
      * 
      * @return the ACL for the object 
      */
-    Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions);
+    Acl getAcl(CmsCmisCallContext context, String objectId, boolean onlyBasicPermissions);
 
     /**
      * Gets the allowable actions for an object.<p>
@@ -66,7 +64,7 @@ public interface I_CmsCmisObjectHelper {
      * @param objectId the object id 
      * @return the allowable actions 
      */
-    AllowableActions getAllowableActions(CallContext context, String objectId);
+    AllowableActions getAllowableActions(CmsCmisCallContext context, String objectId);
 
     /**
      * Gets the data for a CMIS object.<p>
@@ -79,18 +77,16 @@ public interface I_CmsCmisObjectHelper {
      * @param renditionFilter the rendition filter string 
      * @param includePolicyIds flag to include policy ids 
      * @param includeAcl flag to include ACLs 
-     * @param objectInfos the object info handler 
      * 
      * @return the CMIS object data 
      */
     ObjectData getObject(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String filter,
         boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
         boolean includePolicyIds,
-        boolean includeAcl,
-        ObjectInfoHandler objectInfos);
+        boolean includeAcl);
 }

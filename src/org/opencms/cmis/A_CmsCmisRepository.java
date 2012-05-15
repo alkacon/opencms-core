@@ -50,7 +50,6 @@ import org.apache.chemistry.opencmis.commons.data.PropertyData;
 import org.apache.chemistry.opencmis.commons.enums.AclPropagation;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisNotSupportedException;
-import org.apache.chemistry.opencmis.commons.server.CallContext;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
 
 /**
@@ -65,10 +64,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     protected CmsCmisTypeManager m_typeManager;
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#addObjectToFolder(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean)
+     * @see org.opencms.cmis.I_CmsCmisRepository#addObjectToFolder(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, boolean)
      */
     public synchronized void addObjectToFolder(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String folderId,
         boolean allVersions) {
@@ -78,10 +77,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#applyAcl(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
+     * @see org.opencms.cmis.I_CmsCmisRepository#applyAcl(org.opencms.cmis.CmsCmisCallContext, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
      */
     public synchronized Acl applyAcl(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         Acl addAces,
         Acl removeAces,
@@ -91,36 +90,40 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#applyAcl(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
+     * @see org.opencms.cmis.I_CmsCmisRepository#applyAcl(org.opencms.cmis.CmsCmisCallContext, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
      */
-    public synchronized Acl applyAcl(CallContext context, String objectId, Acl aces, AclPropagation aclPropagation) {
+    public synchronized Acl applyAcl(
+        CmsCmisCallContext context,
+        String objectId,
+        Acl aces,
+        AclPropagation aclPropagation) {
 
         throw notSupported();
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#applyPolicy(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String)
+     * @see org.opencms.cmis.I_CmsCmisRepository#applyPolicy(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String)
      */
-    public synchronized void applyPolicy(CallContext context, String policyId, String objectId) {
-
-        throw notSupported();
-
-    }
-
-    /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#cancelCheckOut(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String)
-     */
-    public synchronized void cancelCheckOut(CallContext context, String objectId) {
+    public synchronized void applyPolicy(CmsCmisCallContext context, String policyId, String objectId) {
 
         throw notSupported();
 
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#checkIn(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, boolean, org.apache.chemistry.opencmis.commons.data.Properties, org.apache.chemistry.opencmis.commons.data.ContentStream, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
+     * @see org.opencms.cmis.I_CmsCmisRepository#cancelCheckOut(org.opencms.cmis.CmsCmisCallContext, java.lang.String)
+     */
+    public synchronized void cancelCheckOut(CmsCmisCallContext context, String objectId) {
+
+        throw notSupported();
+
+    }
+
+    /**
+     * @see org.opencms.cmis.I_CmsCmisRepository#checkIn(org.opencms.cmis.CmsCmisCallContext, org.apache.chemistry.opencmis.commons.spi.Holder, boolean, org.apache.chemistry.opencmis.commons.data.Properties, org.apache.chemistry.opencmis.commons.data.ContentStream, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
      */
     public synchronized void checkIn(
-        CallContext context,
+        CmsCmisCallContext context,
         Holder<String> objectId,
         boolean major,
         Properties properties,
@@ -135,19 +138,19 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#checkOut(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder)
+     * @see org.opencms.cmis.I_CmsCmisRepository#checkOut(org.opencms.cmis.CmsCmisCallContext, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder)
      */
-    public synchronized void checkOut(CallContext context, Holder<String> objectId, Holder<Boolean> contentCopied) {
+    public synchronized void checkOut(CmsCmisCallContext context, Holder<String> objectId, Holder<Boolean> contentCopied) {
 
         throw notSupported();
 
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#createPolicy(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
+     * @see org.opencms.cmis.I_CmsCmisRepository#createPolicy(org.opencms.cmis.CmsCmisCallContext, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
      */
     public synchronized String createPolicy(
-        CallContext context,
+        CmsCmisCallContext context,
         Properties properties,
         String folderId,
         List<String> policies,
@@ -158,10 +161,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#getAllVersions(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, java.lang.String, boolean)
+     * @see org.opencms.cmis.I_CmsCmisRepository#getAllVersions(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, java.lang.String, boolean)
      */
     public synchronized List<ObjectData> getAllVersions(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String versionSeriesId,
         String filter,
@@ -171,18 +174,18 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#getAppliedPolicies(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String)
+     * @see org.opencms.cmis.I_CmsCmisRepository#getAppliedPolicies(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String)
      */
-    public synchronized List<ObjectData> getAppliedPolicies(CallContext context, String objectId, String filter) {
+    public synchronized List<ObjectData> getAppliedPolicies(CmsCmisCallContext context, String objectId, String filter) {
 
         throw notSupported();
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#getContentChanges(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, boolean, java.lang.String, boolean, boolean, java.math.BigInteger)
+     * @see org.opencms.cmis.I_CmsCmisRepository#getContentChanges(org.opencms.cmis.CmsCmisCallContext, org.apache.chemistry.opencmis.commons.spi.Holder, boolean, java.lang.String, boolean, boolean, java.math.BigInteger)
      */
     public synchronized ObjectList getContentChanges(
-        CallContext context,
+        CmsCmisCallContext context,
         Holder<String> changeLogToken,
         boolean includeProperties,
         String filter,
@@ -194,10 +197,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#getObjectOfLatestVersion(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, boolean)
+     * @see org.opencms.cmis.I_CmsCmisRepository#getObjectOfLatestVersion(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, boolean, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, boolean)
      */
     public synchronized ObjectData getObjectOfLatestVersion(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String versionSeriesId,
         boolean major,
@@ -212,10 +215,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#getPropertiesOfLatestVersion(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, java.lang.String)
+     * @see org.opencms.cmis.I_CmsCmisRepository#getPropertiesOfLatestVersion(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, boolean, java.lang.String)
      */
     public synchronized Properties getPropertiesOfLatestVersion(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String versionSeriesId,
         boolean major,
@@ -225,18 +228,18 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#removeObjectFromFolder(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String)
+     * @see org.opencms.cmis.I_CmsCmisRepository#removeObjectFromFolder(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String)
      */
-    public synchronized void removeObjectFromFolder(CallContext context, String objectId, String folderId) {
+    public synchronized void removeObjectFromFolder(CmsCmisCallContext context, String objectId, String folderId) {
 
         throw notSupported();
 
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#removePolicy(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String)
+     * @see org.opencms.cmis.I_CmsCmisRepository#removePolicy(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String)
      */
-    public synchronized void removePolicy(CallContext context, String policyId, String objectId) {
+    public synchronized void removePolicy(CmsCmisCallContext context, String policyId, String objectId) {
 
         throw notSupported();
 
@@ -327,4 +330,21 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
         return new CmisNotSupportedException("Not supported");
 
     }
+
+    /**
+     * @see org.opencms.cmis.I_CmsCmisRepository#query(org.opencms.cmis.CmsCmisCallContext, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger)
+     */
+    public synchronized ObjectList query(
+        CmsCmisCallContext context,
+        String statement,
+        boolean searchAllVersions,
+        boolean includeAllowableActions,
+        IncludeRelationships includeRelationships,
+        String renditionFilter,
+        BigInteger maxItems,
+        BigInteger skipCount) {
+
+        throw notSupported();
+    }
+
 }

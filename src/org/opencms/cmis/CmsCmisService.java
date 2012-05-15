@@ -96,7 +96,7 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean allVersions,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).addObjectToFolder(m_callContext, objectId, folderId, allVersions.booleanValue());
+        getRepository(repositoryId).addObjectToFolder(makeContext(), objectId, folderId, allVersions.booleanValue());
     }
 
     /**
@@ -105,7 +105,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public void applyPolicy(String repositoryId, String policyId, String objectId, ExtensionsData extension) {
 
-        getRepository(repositoryId).applyPolicy(m_callContext, policyId, objectId);
+        getRepository(repositoryId).applyPolicy(makeContext(), policyId, objectId);
     }
 
     /**
@@ -124,7 +124,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).createDocument(
-            m_callContext,
+            makeContext(),
             properties,
             folderId,
             contentStream,
@@ -150,7 +150,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).createDocumentFromSource(
-            m_callContext,
+            makeContext(),
             sourceId,
             properties,
             folderId,
@@ -174,7 +174,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).createFolder(
-            m_callContext,
+            makeContext(),
             properties,
             folderId,
             policies,
@@ -196,7 +196,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).createPolicy(
-            m_callContext,
+            makeContext(),
             properties,
             folderId,
             policies,
@@ -216,7 +216,7 @@ public class CmsCmisService extends AbstractCmisService {
         Acl removeAces,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).createRelationship(m_callContext, properties, policies, addAces, removeAces);
+        return getRepository(repositoryId).createRelationship(makeContext(), properties, policies, addAces, removeAces);
     }
 
     /**
@@ -229,7 +229,7 @@ public class CmsCmisService extends AbstractCmisService {
         Holder<String> changeToken,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).deleteContentStream(m_callContext, objectId, changeToken);
+        getRepository(repositoryId).deleteContentStream(makeContext(), objectId, changeToken);
     }
 
     /**
@@ -238,7 +238,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public void deleteObject(String repositoryId, String objectId, Boolean allVersions, ExtensionsData extension) {
 
-        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions.booleanValue());
+        getRepository(repositoryId).deleteObject(makeContext(), objectId, allVersions.booleanValue());
     }
 
     /**
@@ -251,7 +251,7 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean allVersions,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions.booleanValue());
+        getRepository(repositoryId).deleteObject(makeContext(), objectId, allVersions.booleanValue());
     }
 
     /**
@@ -267,7 +267,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).deleteTree(
-            m_callContext,
+            makeContext(),
             folderId,
             allVersions.booleanValue(),
             unfileObjects,
@@ -280,7 +280,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public Acl getAcl(String repositoryId, String objectId, Boolean onlyBasicPermissions, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getAcl(getCallContext(), objectId, onlyBasicPermissions.booleanValue());
+        return getRepository(repositoryId).getAcl(makeContext(), objectId, onlyBasicPermissions.booleanValue());
     }
 
     /**
@@ -289,7 +289,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public AllowableActions getAllowableActions(String repositoryId, String objectId, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getAllowableActions(m_callContext, objectId);
+        return getRepository(repositoryId).getAllowableActions(makeContext(), objectId);
     }
 
     /**
@@ -302,17 +302,7 @@ public class CmsCmisService extends AbstractCmisService {
         String filter,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getAppliedPolicies(m_callContext, objectId, filter);
-    }
-
-    /**
-     * Gets the call context.<p>
-     * 
-     * @return the call context 
-     */
-    public CallContext getCallContext() {
-
-        return m_callContext;
+        return getRepository(repositoryId).getAppliedPolicies(makeContext(), objectId, filter);
     }
 
     /**
@@ -333,7 +323,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getCheckedOutDocs(
-            m_callContext,
+            makeContext(),
             folderId,
             filter,
             orderBy,
@@ -362,7 +352,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getChildren(
-            m_callContext,
+            makeContext(),
             folderId,
             filter,
             orderBy,
@@ -371,9 +361,7 @@ public class CmsCmisService extends AbstractCmisService {
             renditionFilter,
             includePathSegment.booleanValue(),
             maxItems,
-            skipCount,
-
-            this);
+            skipCount);
     }
 
     /**
@@ -391,7 +379,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getContentChanges(
-            m_callContext,
+            makeContext(),
             changeLogToken,
             includeProperties.booleanValue(),
             filter,
@@ -412,7 +400,7 @@ public class CmsCmisService extends AbstractCmisService {
         BigInteger length,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getContentStream(m_callContext, objectId, streamId, offset, length);
+        return getRepository(repositoryId).getContentStream(makeContext(), objectId, streamId, offset, length);
     }
 
     /**
@@ -431,13 +419,12 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getDescendants(
-            getCallContext(),
+            makeContext(),
             folderId,
             depth,
             filter,
             includeAllowableActions.booleanValue(),
             includePathSegment.booleanValue(),
-            this,
             false);
     }
 
@@ -447,7 +434,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public ObjectData getFolderParent(String repositoryId, String folderId, String filter, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getFolderParent(m_callContext, folderId, filter, this);
+        return getRepository(repositoryId).getFolderParent(makeContext(), folderId, filter);
     }
 
     /**
@@ -466,13 +453,12 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getDescendants(
-            getCallContext(),
+            makeContext(),
             folderId,
             depth,
             filter,
             includeAllowableActions.booleanValue(),
             includePathSegment.booleanValue(),
-            this,
             true);
     }
 
@@ -492,16 +478,14 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getObject(
-            m_callContext,
+            makeContext(),
             objectId,
             filter,
             includeAllowableActions.booleanValue(),
             includeRelationships,
             renditionFilter,
             includePolicyIds.booleanValue(),
-            includeAcl.booleanValue(),
-
-            this);
+            includeAcl.booleanValue());
     }
 
     /**
@@ -520,16 +504,14 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getObjectByPath(
-            m_callContext,
+            makeContext(),
             path,
             filter,
             includeAllowableActions.booleanValue(),
             includeRelationships,
             renditionFilter,
             includePolicyIds.booleanValue(),
-            includeAcl.booleanValue(),
-
-            this);
+            includeAcl.booleanValue());
     }
 
     /**
@@ -557,12 +539,11 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getObjectParents(
-            m_callContext,
+            makeContext(),
             objectId,
             filter,
             includeAllowableActions.booleanValue(),
-            includeRelativePathSegment.booleanValue(),
-            this);
+            includeRelativePathSegment.booleanValue());
     }
 
     /**
@@ -583,7 +564,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getObjectRelationships(
-            m_callContext,
+            makeContext(),
             objectId,
             includeSubRelationshipTypes.booleanValue(),
             relationshipDirection,
@@ -591,8 +572,7 @@ public class CmsCmisService extends AbstractCmisService {
             filter,
             includeAllowableActions.booleanValue(),
             maxItems,
-            skipCount,
-            this);
+            skipCount);
     }
 
     /**
@@ -601,7 +581,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public Properties getProperties(String repositoryId, String objectId, String filter, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getProperties(m_callContext, objectId, filter, this);
+        return getRepository(repositoryId).getProperties(makeContext(), objectId, filter);
     }
 
     /**
@@ -616,7 +596,7 @@ public class CmsCmisService extends AbstractCmisService {
         BigInteger skipCount,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getRenditions(m_callContext, objectId, renditionFilter, maxItems, skipCount);
+        return getRepository(repositoryId).getRenditions(makeContext(), objectId, renditionFilter, maxItems, skipCount);
     }
 
     /**
@@ -642,6 +622,16 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
+     * Creates a call context wrapper.<p>
+     * 
+     * @return the created wrapper 
+     */
+    private CmsCmisCallContext makeContext() {
+
+        return new CmsCmisCallContext(m_callContext, this);
+    }
+
+    /**
      * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getTypeChildren(java.lang.String, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
     @Override
@@ -654,7 +644,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getTypeChildren(
-            m_callContext,
+            makeContext(),
             typeId,
             includePropertyDefinitions.booleanValue(),
             maxItems,
@@ -667,7 +657,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public TypeDefinition getTypeDefinition(String repositoryId, String typeId, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getTypeDefinition(m_callContext, typeId);
+        return getRepository(repositoryId).getTypeDefinition(makeContext(), typeId);
     }
 
     /**
@@ -682,7 +672,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).getTypeDescendants(
-            m_callContext,
+            makeContext(),
             typeId,
             depth,
             includePropertyDefinitions.booleanValue());
@@ -699,7 +689,7 @@ public class CmsCmisService extends AbstractCmisService {
         String sourceFolderId,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).moveObject(m_callContext, objectId, targetFolderId, sourceFolderId);
+        getRepository(repositoryId).moveObject(makeContext(), objectId, targetFolderId, sourceFolderId);
     }
 
     /**
@@ -718,7 +708,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         return getRepository(repositoryId).query(
-            m_callContext,
+            makeContext(),
             statement,
             searchAllVersions.booleanValue(),
             includeAllowableActions.booleanValue(),
@@ -734,7 +724,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public void removeObjectFromFolder(String repositoryId, String objectId, String folderId, ExtensionsData extension) {
 
-        getRepository(repositoryId).removeObjectFromFolder(m_callContext, objectId, folderId);
+        getRepository(repositoryId).removeObjectFromFolder(makeContext(), objectId, folderId);
     }
 
     /**
@@ -743,7 +733,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public void removePolicy(String repositoryId, String policyId, String objectId, ExtensionsData extension) {
 
-        getRepository(repositoryId).removePolicy(m_callContext, policyId, objectId);
+        getRepository(repositoryId).removePolicy(makeContext(), policyId, objectId);
     }
 
     /**
@@ -759,7 +749,7 @@ public class CmsCmisService extends AbstractCmisService {
         ExtensionsData extension) {
 
         getRepository(repositoryId).setContentStream(
-            m_callContext,
+            makeContext(),
             objectId,
             overwriteFlag.booleanValue(),
             changeToken,
@@ -777,7 +767,7 @@ public class CmsCmisService extends AbstractCmisService {
         Properties properties,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).updateProperties(m_callContext, objectId, changeToken, properties);
+        getRepository(repositoryId).updateProperties(makeContext(), objectId, changeToken, properties);
     }
 
     /**

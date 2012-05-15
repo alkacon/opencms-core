@@ -87,9 +87,6 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.AllowableActionsIm
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertiesImpl;
 import org.apache.chemistry.opencmis.commons.impl.server.ObjectInfoImpl;
-import org.apache.chemistry.opencmis.commons.server.CallContext;
-import org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler;
-import org.apache.chemistry.opencmis.fileshare.TypeManager;
 
 /**
  * Helper class for CRUD operations on resources.<p>
@@ -116,7 +113,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
      * @param objectId the id of the object to delete 
      * @param allVersions flag to delete all version 
      */
-    public synchronized void deleteObject(CallContext context, String objectId, boolean allVersions) {
+    public synchronized void deleteObject(CmsCmisCallContext context, String objectId, boolean allVersions) {
 
         try {
             CmsObject cms = m_repository.getCmsObject(context);
@@ -144,7 +141,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
      * 
      * @return the ACL for the object 
      */
-    public synchronized Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions) {
+    public synchronized Acl getAcl(CmsCmisCallContext context, String objectId, boolean onlyBasicPermissions) {
 
         try {
 
@@ -166,7 +163,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
      * @param objectId the object id 
      * @return the allowable actions 
      */
-    public synchronized AllowableActions getAllowableActions(CallContext context, String objectId) {
+    public synchronized AllowableActions getAllowableActions(CmsCmisCallContext context, String objectId) {
 
         try {
             CmsObject cms = m_repository.getCmsObject(context);
@@ -190,20 +187,18 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
      * @param renditionFilter the rendition filter string 
      * @param includePolicyIds flag to include policy ids 
      * @param includeAcl flag to include ACLs 
-     * @param objectInfos the object info handler 
      * 
      * @return the CMIS object data 
      */
     public synchronized ObjectData getObject(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String filter,
         boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
         boolean includePolicyIds,
-        boolean includeAcl,
-        ObjectInfoHandler objectInfos) {
+        boolean includeAcl) {
 
         try {
 
@@ -226,8 +221,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 filterCollection,
                 includeAllowableActions,
                 includeAcl,
-                includeRelationships,
-                objectInfos);
+                includeRelationships);
         } catch (CmsException e) {
             handleCmsException(e);
             return null;
@@ -327,20 +321,18 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
      * @param includeAllowableActions true if the allowable actions should be included  
      * @param includeAcl true if the ACL entries should be included
      * @param includeRelationships true if relationships should be included 
-     * @param objectInfos the object info handler
      * 
      * @return the object data 
      * @throws CmsException if something goes wrong 
      */
     protected ObjectData collectObjectData(
-        CallContext context,
+        CmsCmisCallContext context,
         CmsObject cms,
         CmsResource resource,
         Set<String> filter,
         boolean includeAllowableActions,
         boolean includeAcl,
-        IncludeRelationships includeRelationships,
-        ObjectInfoHandler objectInfos) throws CmsException {
+        IncludeRelationships includeRelationships) throws CmsException {
 
         ObjectDataImpl result = new ObjectDataImpl();
         ObjectInfoImpl objectInfo = new ObjectInfoImpl();
@@ -372,14 +364,13 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 resource,
                 direction,
                 CmsCmisUtil.splitFilter("*"),
-                false,
-                objectInfos);
+                false);
             result.setRelationships(relationData);
         }
 
         if (context.isObjectInfoRequired()) {
             objectInfo.setObject(result);
-            objectInfos.addObjectInfo(objectInfo);
+            context.getObjectInfoHandler().addObjectInfo(objectInfo);
         }
         return result;
     }
@@ -519,7 +510,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             if (resource.isFolder()) {
                 // base type and type name
                 addPropertyId(tm, result, typeId, filter, PropertyIds.BASE_TYPE_ID, BaseTypeId.CMIS_FOLDER.value());
-                addPropertyId(tm, result, typeId, filter, PropertyIds.OBJECT_TYPE_ID, TypeManager.FOLDER_TYPE_ID);
+                addPropertyId(tm, result, typeId, filter, PropertyIds.OBJECT_TYPE_ID, CmsCmisTypeManager.FOLDER_TYPE_ID);
                 String path = resource.getRootPath();
                 addPropertyString(tm, result, typeId, filter, PropertyIds.PATH, (path.length() == 0 ? "/" : path));
 
@@ -539,7 +530,13 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             } else {
                 // base type and type name
                 addPropertyId(tm, result, typeId, filter, PropertyIds.BASE_TYPE_ID, BaseTypeId.CMIS_DOCUMENT.value());
-                addPropertyId(tm, result, typeId, filter, PropertyIds.OBJECT_TYPE_ID, TypeManager.DOCUMENT_TYPE_ID);
+                addPropertyId(
+                    tm,
+                    result,
+                    typeId,
+                    filter,
+                    PropertyIds.OBJECT_TYPE_ID,
+                    CmsCmisTypeManager.DOCUMENT_TYPE_ID);
 
                 // file properties
                 addPropertyBoolean(tm, result, typeId, filter, PropertyIds.IS_IMMUTABLE, false);

@@ -71,8 +71,6 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.AllowableActionsIm
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertiesImpl;
 import org.apache.chemistry.opencmis.commons.impl.server.ObjectInfoImpl;
-import org.apache.chemistry.opencmis.commons.server.CallContext;
-import org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler;
 
 /**
  * Helper class for CMIS CRUD operations on relation objects.<p>
@@ -284,9 +282,9 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisObjectHelper#deleteObject(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean)
+     * @see org.opencms.cmis.I_CmsCmisObjectHelper#deleteObject(org.opencms.cmis.CmsCmisCallContext, java.lang.String, boolean)
      */
-    public void deleteObject(CallContext context, String objectId, boolean allVersions) {
+    public void deleteObject(CmsCmisCallContext context, String objectId, boolean allVersions) {
 
         try {
 
@@ -310,9 +308,9 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getAcl(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean)
+     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getAcl(org.opencms.cmis.CmsCmisCallContext, java.lang.String, boolean)
      */
-    public Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions) {
+    public Acl getAcl(CmsCmisCallContext context, String objectId, boolean onlyBasicPermissions) {
 
         CmsObject cms = m_repository.getCmsObject(context);
         RelationKey rk = parseRelationKey(objectId);
@@ -321,9 +319,9 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getAllowableActions(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String)
+     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getAllowableActions(org.opencms.cmis.CmsCmisCallContext, java.lang.String)
      */
-    public AllowableActions getAllowableActions(CallContext context, String objectId) {
+    public AllowableActions getAllowableActions(CmsCmisCallContext context, String objectId) {
 
         CmsObject cms = m_repository.getCmsObject(context);
         RelationKey rk = parseRelationKey(objectId);
@@ -332,18 +330,17 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getObject(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
+     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getObject(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, boolean)
      */
     public ObjectData getObject(
-        CallContext context,
+        CmsCmisCallContext context,
         String objectId,
         String filter,
         boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
         boolean includePolicyIds,
-        boolean includeAcl,
-        ObjectInfoHandler objectInfos) {
+        boolean includeAcl) {
 
         CmsObject cms = m_repository.getCmsObject(context);
         RelationKey rk = parseRelationKey(objectId);
@@ -356,8 +353,7 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
             rk.getRelation(),
             filterSet,
             includeAllowableActions,
-            includeAcl,
-            objectInfos);
+            includeAcl);
         return result;
     }
 
@@ -419,19 +415,17 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
      * @param filter the property filter string 
      * @param includeAllowableActions true if the allowable actions should be included  
      * @param includeAcl true if the ACL entries should be included
-     * @param objectInfos the object info handler
      * 
      * @return the object data 
      */
     protected ObjectData collectObjectData(
-        CallContext context,
+        CmsCmisCallContext context,
         CmsObject cms,
         CmsResource resource,
         CmsRelation relation,
         Set<String> filter,
         boolean includeAllowableActions,
-        boolean includeAcl,
-        ObjectInfoHandler objectInfos) {
+        boolean includeAcl) {
 
         ObjectDataImpl result = new ObjectDataImpl();
         ObjectInfoImpl objectInfo = new ObjectInfoImpl();
@@ -449,7 +443,7 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         if (context.isObjectInfoRequired()) {
             objectInfo.setObject(result);
-            objectInfos.addObjectInfo(objectInfo);
+            context.getObjectInfoHandler().addObjectInfo(objectInfo);
         }
         return result;
     }
