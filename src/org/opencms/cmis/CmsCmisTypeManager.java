@@ -64,7 +64,7 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.TypeDefinitionList
 import org.apache.commons.logging.Log;
 
 /**
- * This class keeps track of all the types which should be available for a {@link CmsCmisRepository}.
+ * This class keeps track of all the types which should be available for a {@link I_CmsCmisRepository}.
  */
 public class CmsCmisTypeManager {
 

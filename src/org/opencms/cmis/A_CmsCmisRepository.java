@@ -59,18 +59,13 @@ import org.apache.chemistry.opencmis.commons.spi.Holder;
  * This class was introduced to separate the CMIS methods which are not supported from those which are,
  * so only unsupported operations and utility should go into this class.<p>
  */
-public abstract class A_CmsCmisRepository {
+public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
 
     /** The type manager instance. */
     protected CmsCmisTypeManager m_typeManager;
 
     /**
-     * Adds an object to a folder (multifiling). <p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param folderId the folder id 
-     * @param allVersions flag to include all versions
+     * @see org.opencms.cmis.I_CmsCmisRepository#addObjectToFolder(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean)
      */
     public synchronized void addObjectToFolder(
         CallContext context,
@@ -83,15 +78,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Applies ACL to an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACEs to remove 
-     * @param aclPropagation the ACL propagation 
-     *  
-     * @return the new ACL 
+     * @see org.opencms.cmis.I_CmsCmisRepository#applyAcl(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
      */
     public synchronized Acl applyAcl(
         CallContext context,
@@ -104,14 +91,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Changes the ACL for an object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param aces the access control entries 
-     * @param aclPropagation the propagation mode 
-     * 
-     * @return the new ACL 
+     * @see org.opencms.cmis.I_CmsCmisRepository#applyAcl(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
      */
     public synchronized Acl applyAcl(CallContext context, String objectId, Acl aces, AclPropagation aclPropagation) {
 
@@ -119,11 +99,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Applies a policy to an object.<p>
-     * 
-     * @param context the call context 
-     * @param policyId the policy id 
-     * @param objectId the object id 
+     * @see org.opencms.cmis.I_CmsCmisRepository#applyPolicy(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String)
      */
     public synchronized void applyPolicy(CallContext context, String policyId, String objectId) {
 
@@ -132,10 +108,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Cancels a checkout.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
+     * @see org.opencms.cmis.I_CmsCmisRepository#cancelCheckOut(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String)
      */
     public synchronized void cancelCheckOut(CallContext context, String objectId) {
 
@@ -144,17 +117,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Checks in a document.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param major the major version flag 
-     * @param properties the properties 
-     * @param contentStream the content stream 
-     * @param checkinComment the check-in comment 
-     * @param policies the policies 
-     * @param addAces the ACEs to add
-     * @param removeAces the ACEs to remove 
+     * @see org.opencms.cmis.I_CmsCmisRepository#checkIn(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, boolean, org.apache.chemistry.opencmis.commons.data.Properties, org.apache.chemistry.opencmis.commons.data.ContentStream, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
      */
     public synchronized void checkIn(
         CallContext context,
@@ -172,11 +135,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Checks out an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param contentCopied indicator whether the content was copied
+     * @see org.opencms.cmis.I_CmsCmisRepository#checkOut(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder)
      */
     public synchronized void checkOut(CallContext context, Holder<String> objectId, Holder<Boolean> contentCopied) {
 
@@ -185,16 +144,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Creates a policy.<p>
-     * 
-     * @param context the call context 
-     * @param properties the properties 
-     * @param folderId the folder id 
-     * @param policies the policies 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACEs to remove 
-     * 
-     * @return the new object id
+     * @see org.opencms.cmis.I_CmsCmisRepository#createPolicy(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
      */
     public synchronized String createPolicy(
         CallContext context,
@@ -208,15 +158,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Gets all versions of an object.<p>
-     * 
-     * @param context the call context
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param filter the property filter string 
-     * @param includeAllowableActions the flag to include allowable actions
-     * 
-     * @return the list of versions 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getAllVersions(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, java.lang.String, boolean)
      */
     public synchronized List<ObjectData> getAllVersions(
         CallContext context,
@@ -229,13 +171,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Gets the policies for an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id
-     * @param filter the property filter
-     *  
-     * @return the policies for the object 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getAppliedPolicies(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String)
      */
     public synchronized List<ObjectData> getAppliedPolicies(CallContext context, String objectId, String filter) {
 
@@ -243,17 +179,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Gets content changes from the repository.<p>
-     * 
-     * @param context the call context 
-     * @param changeLogToken the change log token 
-     * @param includeProperties flag to include properties 
-     * @param filter filter string for properties 
-     * @param includePolicyIds flag to include policy ids  
-     * @param includeAcl flag to include ACLs 
-     * @param maxItems maximum number of items to return
-     *  
-     * @return the list of content changes 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getContentChanges(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, boolean, java.lang.String, boolean, boolean, java.math.BigInteger)
      */
     public synchronized ObjectList getContentChanges(
         CallContext context,
@@ -268,20 +194,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Gets the object of the latest version.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param major flag to get the latest major version 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter filter string for renditions 
-     * @param includePolicyIds flag to include policies 
-     * @param includeAcl flag to include ACLs
-     * 
-     * @return the data for the latest version 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getObjectOfLatestVersion(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, boolean)
      */
     public synchronized ObjectData getObjectOfLatestVersion(
         CallContext context,
@@ -299,15 +212,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Gets the properties of the latest version.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param major flag to access the latest major version 
-     * @param filter the property filter string 
-     * 
-     * @return the properties from the latest version 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getPropertiesOfLatestVersion(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, java.lang.String)
      */
     public synchronized Properties getPropertiesOfLatestVersion(
         CallContext context,
@@ -320,11 +225,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Unfiles an object from a folder.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the id of the object to unfile 
-     * @param folderId the folder from which the object should be unfiled  
+     * @see org.opencms.cmis.I_CmsCmisRepository#removeObjectFromFolder(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String)
      */
     public synchronized void removeObjectFromFolder(CallContext context, String objectId, String folderId) {
 
@@ -333,11 +234,7 @@ public abstract class A_CmsCmisRepository {
     }
 
     /**
-     * Removes a policy from an object.<p>
-     * 
-     * @param context the call context
-     * @param policyId the policy id 
-     * @param objectId the object id
+     * @see org.opencms.cmis.I_CmsCmisRepository#removePolicy(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String)
      */
     public synchronized void removePolicy(CallContext context, String policyId, String objectId) {
 

@@ -49,7 +49,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.repository.CmsRepositoryFilter;
-import org.opencms.repository.I_CmsRepository;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -128,7 +127,7 @@ import org.apache.commons.logging.Log;
 /**
  * Repository instance for CMIS repositories.<p>
  */
-public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepository {
+public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Simple helper class to simplify creating a permission mapping.<p>
@@ -221,7 +220,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     * @see org.opencms.cmis.I_CmsCmisRepository#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
@@ -230,18 +229,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Creates a new document.<p>
-     *  
-     * @param context the call context 
-     * @param propertiesObj the properties 
-     * @param folderId the parent folder id 
-     * @param contentStream the content stream 
-     * @param versioningState the versioning state 
-     * @param policies the policies 
-     * @param addAces the access control entries 
-     * @param removeAces the access control entries to remove
-     *  
-     * @return the object id of the new document
+     * @see org.opencms.cmis.I_CmsCmisRepository#createDocument(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, org.apache.chemistry.opencmis.commons.data.ContentStream, org.apache.chemistry.opencmis.commons.enums.VersioningState, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
      */
     public synchronized String createDocument(
         CallContext context,
@@ -300,18 +288,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Copies a document.<p>
-     * 
-     * @param context the call context 
-     * @param sourceId the source object id 
-     * @param propertiesObj the properties 
-     * @param folderId the target folder id 
-     * @param versioningState the versioning state 
-     * @param policies the policies 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACES to remove 
-     * 
-     * @return the object id of the new document 
+     * @see org.opencms.cmis.I_CmsCmisRepository#createDocumentFromSource(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, org.apache.chemistry.opencmis.commons.enums.VersioningState, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
      */
     public synchronized String createDocumentFromSource(
         CallContext context,
@@ -374,16 +351,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Creates a new folder.<p>
-     *  
-     * @param context the call context 
-     * @param propertiesObj the properties 
-     * @param folderId the parent folder id
-     * @param policies the policies 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACEs to remove 
-     * 
-     * @return the object id of the created folder 
+     * @see org.opencms.cmis.I_CmsCmisRepository#createFolder(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.data.Properties, java.lang.String, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
      */
     public synchronized String createFolder(
         CallContext context,
@@ -431,15 +399,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Creates a relationship.<p>
-     * 
-     * @param context the call context 
-     * @param properties the properties 
-     * @param policies the policies 
-     * @param addAces the ACEs to add
-     * @param removeAces the ACEs to remove 
-     * 
-     * @return the new relationship id 
+     * @see org.opencms.cmis.I_CmsCmisRepository#createRelationship(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.data.Properties, java.util.List, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl)
      */
     public synchronized String createRelationship(
         CallContext context,
@@ -478,11 +438,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Deletes the content stream of an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param changeToken the change token 
+     * @see org.opencms.cmis.I_CmsCmisRepository#deleteContentStream(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder)
      */
     public synchronized void deleteContentStream(
         CallContext context,
@@ -494,11 +450,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Deletes a CMIS object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the id of the object to delete 
-     * @param allVersions flag to delete all version 
+     * @see org.opencms.cmis.I_CmsCmisRepository#deleteObject(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean)
      */
     public synchronized void deleteObject(CallContext context, String objectId, boolean allVersions) {
 
@@ -507,15 +459,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Deletes a whole file tree.<p>
-     * 
-     * @param context the call context 
-     * @param folderId the folder id 
-     * @param allVersions flag to include all versions 
-     * @param unfileObjects flag to unfile objects 
-     * @param continueOnFailure flag to continue on failure 
-     * 
-     * @return data containing the objects which weren'T deleted successfully 
+     * @see org.opencms.cmis.I_CmsCmisRepository#deleteTree(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.UnfileObject, boolean)
      */
     public synchronized FailedToDeleteData deleteTree(
         CallContext context,
@@ -546,13 +490,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the ACL for an object.<p>
-     * 
-     * @param context the call context
-     * @param objectId the object id 
-     * @param onlyBasicPermissions flag to only get basic permissions 
-     * 
-     * @return the ACL for the object 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getAcl(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean)
      */
     public synchronized Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions) {
 
@@ -560,11 +498,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the allowable actions for an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @return the allowable actions 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getAllowableActions(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String)
      */
     public synchronized AllowableActions getAllowableActions(CallContext context, String objectId) {
 
@@ -572,19 +506,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Corresponds to CMIS getCheckedOutDocs service method.<p>
-     *  
-     * @param context
-     * @param folderId
-     * @param filter
-     * @param orderBy
-     * @param includeAllowableActions
-     * @param includeRelationships
-     * @param renditionFilter
-     * @param maxItems
-     * @param skipCount
-     * 
-     * @return a list of CMIS objects 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getCheckedOutDocs(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger)
      */
     public synchronized ObjectList getCheckedOutDocs(
         CallContext context,
@@ -603,22 +525,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the children of a folder.<p>
-     *  
-     * @param context the call context 
-     * @param folderId the parent folder id 
-     * @param filter the property filter 
-     * @param orderBy the ordering clause
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relations 
-     * @param renditionFilter the rendition filter string 
-     * @param includePathSegment flag to include the path segment 
-     * @param maxItems the maximum number of items 
-     * @param skipCount the index from which to start 
-     * 
-     * @param objectInfos the combined object info for the children
-     *  
-     * @return the object information 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getChildren(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
      */
     public synchronized ObjectInFolderList getChildren(
         CallContext context,
@@ -699,7 +606,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     * @see org.opencms.cmis.I_CmsCmisRepository#getConfiguration()
      */
     public CmsParameterConfiguration getConfiguration() {
 
@@ -707,15 +614,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the content stream for a CMIS object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param streamId the rendition stream id 
-     * @param offset 
-     * @param length
-     * 
-     * @return the content stream 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getContentStream(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger)
      */
     public synchronized ContentStream getContentStream(
         CallContext context,
@@ -754,17 +653,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * 
-     * @param context the call context 
-     * @param folderId the folder id 
-     * @param depth the maximum depth 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includePathSegment flag to include path segments 
-     * @param objectInfos object info handler 
-     * @param foldersOnly flag to ignore documents and only return folders
-     * 
-     * @return the list of descendants 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getDescendants(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.math.BigInteger, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler, boolean)
      */
     public synchronized List<ObjectInFolderContainer> getDescendants(
         CallContext context,
@@ -833,9 +722,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the description of the repository.<p>
-     * 
-     * @return the repository description 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getDescription()
      */
     public String getDescription() {
 
@@ -848,8 +735,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         return m_id;
     }
 
-    /** 
-     * @see org.opencms.repository.I_CmsRepository#getFilter()
+    /**
+     * @see org.opencms.cmis.I_CmsCmisRepository#getFilter()
      */
     public CmsRepositoryFilter getFilter() {
 
@@ -857,14 +744,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Corresponds to CMIS getFolderParent service method.<p>
-     * 
-     * @param context the call context 
-     * @param folderId the folder id 
-     * @param filter the property filter 
-     * @param objectInfos the object info handler 
-     * 
-     * @return the parent object data 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getFolderParent(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
      */
     public synchronized ObjectData getFolderParent(
         CallContext context,
@@ -880,9 +760,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the repository id.<p>
-     * 
-     * @return the repository id 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getId()
      */
     public String getId() {
 
@@ -890,9 +768,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the name of the repository.<p>
-     * 
-     * @return the name of the repository 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getName()
      */
     public String getName() {
 
@@ -900,19 +776,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the data for a CMIS object.<p>
-     *  
-     * @param context the CMIS call context 
-     * @param objectId the id of the object 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the rendition filter string 
-     * @param includePolicyIds flag to include policy ids 
-     * @param includeAcl flag to include ACLs 
-     * @param objectInfos the object info handler 
-     * 
-     * @return the CMIS object data 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getObject(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
      */
     public synchronized ObjectData getObject(
         CallContext context,
@@ -938,19 +802,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Reads a CMIS object by path.<p>
-     * 
-     * @param context the call context 
-     * @param path the repository path 
-     * @param filter the property filter string 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the rendition filter string 
-     * @param includePolicyIds flag to include policy ids 
-     * @param includeAcl flag to include ACLs 
-     * @param objectInfos the object info handler 
-     * 
-     * @return the object data 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getObjectByPath(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
      */
     public synchronized ObjectData getObjectByPath(
         CallContext context,
@@ -994,16 +846,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the parents of an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param filter
-     * @param includeAllowableActions
-     * @param includeRelativePathSegment
-     * @param objectInfos
-     * 
-     * @return the data for the object parents 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getObjectParents(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
      */
     public synchronized List<ObjectParentData> getObjectParents(
         CallContext context,
@@ -1059,20 +902,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the relationships for an object.<p>
-     * 
-     * @param context the call context
-     * @param objectId the object id 
-     * @param includeSubRelationshipTypes flag to include relationship subtypes 
-     * @param relationshipDirection the direction for the relations 
-     * @param typeId the relation type id 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions  
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip 
-     * @param objectInfos the object info handler
-     * 
-     * @return the relationships for the object
+     * @see org.opencms.cmis.I_CmsCmisRepository#getObjectRelationships(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.RelationshipDirection, java.lang.String, java.lang.String, boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
      */
     public synchronized ObjectList getObjectRelationships(
         CallContext context,
@@ -1119,14 +949,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the properties for a CMIS object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the CMIS object id 
-     * @param filter the property filter string 
-     * @param objectInfos the object info handler 
-     * 
-     * @return the set of properties 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getProperties(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
      */
     public synchronized Properties getProperties(CallContext context, String objectId, String filter,
 
@@ -1137,15 +960,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the renditions for a CMIS object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the  object id 
-     * @param renditionFilter the rendition filter 
-     * @param maxItems the maximum number of renditions 
-     * @param skipCount the number of renditions to skip 
-     * 
-     * @return the list of renditions 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getRenditions(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger)
      */
     public synchronized List<RenditionData> getRenditions(
         CallContext context,
@@ -1171,9 +986,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the repository information for this repository.<p>
-     * 
-     * @return the repository info
+     * @see org.opencms.cmis.I_CmsCmisRepository#getRepositoryInfo()
      */
     public synchronized RepositoryInfo getRepositoryInfo() {
 
@@ -1247,15 +1060,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the children of a given type.<p>
-     * 
-     * @param context the call context 
-     * @param typeId the parent type id 
-     * @param includePropertyDefinitions flag to include property definitions 
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip 
-     * 
-     * @return the list of child type definitions 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getTypeChildren(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean, java.math.BigInteger, java.math.BigInteger)
      */
     public synchronized TypeDefinitionList getTypeChildren(
         CallContext context,
@@ -1268,12 +1073,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets a type definition by id.<p>
-     * 
-     * @param context the call context 
-     * @param typeId the type id 
-     * 
-     * @return the type definition for the given id 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getTypeDefinition(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String)
      */
     public synchronized TypeDefinition getTypeDefinition(CallContext context, String typeId) {
 
@@ -1281,14 +1081,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Gets the type descendants.<p>
-     * 
-     * @param context the call context 
-     * @param typeId the parent type id 
-     * @param depth the maximum type depth 
-     * @param includePropertyDefinitions flag to include the property definitions for types 
-     * 
-     * @return the list of type definitions 
+     * @see org.opencms.cmis.I_CmsCmisRepository#getTypeDescendants(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.math.BigInteger, boolean)
      */
     public synchronized List<TypeDefinitionContainer> getTypeDescendants(
         CallContext context,
@@ -1300,7 +1093,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     * @see org.opencms.cmis.I_CmsCmisRepository#initConfiguration()
      */
     public void initConfiguration() throws CmsConfigurationException {
 
@@ -1311,7 +1104,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepository#initializeCms(org.opencms.file.CmsObject)
+     * @see org.opencms.cmis.I_CmsCmisRepository#initializeCms(org.opencms.file.CmsObject)
      */
     public void initializeCms(CmsObject cms) {
 
@@ -1334,12 +1127,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Moves an object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param targetFolderId source source folder id 
-     * @param sourceFolderId the target folder id 
+     * @see org.opencms.cmis.I_CmsCmisRepository#moveObject(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, java.lang.String, java.lang.String)
      */
     public synchronized void moveObject(
         CallContext context,
@@ -1372,13 +1160,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Sets the content stream of an object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the id of the object 
-     * @param overwriteFlag flag to overwrite the content stream 
-     * @param changeToken the change token 
-     * @param contentStream the new content stream 
+     * @see org.opencms.cmis.I_CmsCmisRepository#setContentStream(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, boolean, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.data.ContentStream)
      */
     public synchronized void setContentStream(
         CallContext context,
@@ -1416,7 +1198,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepository#setFilter(org.opencms.repository.CmsRepositoryFilter)
+     * @see org.opencms.cmis.I_CmsCmisRepository#setFilter(org.opencms.repository.CmsRepositoryFilter)
      */
     public void setFilter(CmsRepositoryFilter filter) {
 
@@ -1424,7 +1206,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepository#setName(java.lang.String)
+     * @see org.opencms.cmis.I_CmsCmisRepository#setName(java.lang.String)
      */
     public void setName(String name) {
 
@@ -1432,12 +1214,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Updates the properties for an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param changeToken the change token 
-     * @param properties the properties 
+     * @see org.opencms.cmis.I_CmsCmisRepository#updateProperties(org.apache.chemistry.opencmis.commons.server.CallContext, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.data.Properties)
      */
     public synchronized void updateProperties(
         CallContext context,
@@ -1704,18 +1481,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     }
 
     /**
-     * Performs a query on the repository.<p>
-     * 
-     * @param context the call context
-     * @param statement the query 
-     * @param searchAllVersions flag to search all versions 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the filter string for renditions 
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip
-     *  
-     * @return the query result objects
+     * @see org.opencms.cmis.I_CmsCmisRepository#query(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger)
      */
     public synchronized ObjectList query(
         CallContext context,

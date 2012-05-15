@@ -63,7 +63,7 @@ import org.apache.chemistry.opencmis.commons.spi.Holder;
  * The CMIS service class for OpenCms repositories.<p>
  * 
  * Typically, a new instance of this class will be created for every CMIS service request. This class delegates the
- * actual work to the CmsCmisRepository class.<p>
+ * actual work to an implementation of the {@link I_CmsCmisRepository} class.<p>
  */
 public class CmsCmisService extends AbstractCmisService {
 
@@ -635,7 +635,7 @@ public class CmsCmisService extends AbstractCmisService {
     public List<RepositoryInfo> getRepositoryInfos(ExtensionsData extension) {
 
         List<RepositoryInfo> result = new ArrayList<RepositoryInfo>();
-        for (CmsCmisRepository repository : OpenCms.getRepositoryManager().getRepositories(CmsCmisRepository.class)) {
+        for (I_CmsCmisRepository repository : OpenCms.getRepositoryManager().getRepositories(I_CmsCmisRepository.class)) {
             result.add(repository.getRepositoryInfo());
         }
         return result;
@@ -787,9 +787,11 @@ public class CmsCmisService extends AbstractCmisService {
      * 
      * @return the repository with the given id 
      */
-    protected CmsCmisRepository getRepository(String repositoryId) {
+    protected I_CmsCmisRepository getRepository(String repositoryId) {
 
-        CmsCmisRepository result = OpenCms.getRepositoryManager().getRepository(repositoryId, CmsCmisRepository.class);
+        I_CmsCmisRepository result = OpenCms.getRepositoryManager().getRepository(
+            repositoryId,
+            I_CmsCmisRepository.class);
         if (result == null) {
             throw new CmisConnectionException("missing repository: " + repositoryId);
         }
