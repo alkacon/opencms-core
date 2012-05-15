@@ -116,7 +116,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
      * @param objectId the id of the object to delete 
      * @param allVersions flag to delete all version 
      */
-    public synchronized void deleteObject(CallContext context, String objectId, Boolean allVersions) {
+    public synchronized void deleteObject(CallContext context, String objectId, boolean allVersions) {
 
         try {
             CmsObject cms = m_repository.getCmsObject(context);
@@ -144,14 +144,14 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
      * 
      * @return the ACL for the object 
      */
-    public synchronized Acl getAcl(CallContext context, String objectId, Boolean onlyBasicPermissions) {
+    public synchronized Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions) {
 
         try {
 
             CmsObject cms = m_repository.getCmsObject(context);
             CmsUUID structureId = new CmsUUID(objectId);
             CmsResource resource = cms.readResource(structureId);
-            return collectAcl(cms, resource, onlyBasicPermissions.booleanValue());
+            return collectAcl(cms, resource, onlyBasicPermissions);
         } catch (CmsException e) {
             handleCmsException(e);
             return null;
@@ -198,11 +198,11 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
         CallContext context,
         String objectId,
         String filter,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
-        Boolean includePolicyIds,
-        Boolean includeAcl,
+        boolean includePolicyIds,
+        boolean includeAcl,
         ObjectInfoHandler objectInfos) {
 
         try {
@@ -215,14 +215,19 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             // get the file or folder
             CmsResource file = cms.readResource(new CmsUUID(objectId));
 
-            // set defaults if values not set
-            boolean iaa = (includeAllowableActions == null ? false : includeAllowableActions.booleanValue());
-            boolean iacl = (includeAcl == null ? false : includeAcl.booleanValue());
             // split filter
             Set<String> filterCollection = splitFilter(filter);
 
             // gather properties
-            return collectObjectData(context, cms, file, filterCollection, iaa, iacl, includeRelationships, objectInfos);
+            return collectObjectData(
+                context,
+                cms,
+                file,
+                filterCollection,
+                includeAllowableActions,
+                includeAcl,
+                includeRelationships,
+                objectInfos);
         } catch (CmsException e) {
             handleCmsException(e);
             return null;
@@ -367,7 +372,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 resource,
                 direction,
                 CmsCmisUtil.splitFilter("*"),
-                Boolean.FALSE,
+                false,
                 objectInfos);
             result.setRelationships(relationData);
         }

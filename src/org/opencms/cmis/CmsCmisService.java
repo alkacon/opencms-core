@@ -96,7 +96,7 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean allVersions,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).addObjectToFolder(m_callContext, objectId, folderId, allVersions);
+        getRepository(repositoryId).addObjectToFolder(m_callContext, objectId, folderId, allVersions.booleanValue());
     }
 
     /**
@@ -238,7 +238,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public void deleteObject(String repositoryId, String objectId, Boolean allVersions, ExtensionsData extension) {
 
-        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions);
+        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions.booleanValue());
     }
 
     /**
@@ -251,7 +251,7 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean allVersions,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions);
+        getRepository(repositoryId).deleteObject(m_callContext, objectId, allVersions.booleanValue());
     }
 
     /**
@@ -269,9 +269,9 @@ public class CmsCmisService extends AbstractCmisService {
         return getRepository(repositoryId).deleteTree(
             m_callContext,
             folderId,
-            allVersions,
+            allVersions.booleanValue(),
             unfileObjects,
-            continueOnFailure);
+            continueOnFailure.booleanValue());
     }
 
     /**
@@ -280,7 +280,7 @@ public class CmsCmisService extends AbstractCmisService {
     @Override
     public Acl getAcl(String repositoryId, String objectId, Boolean onlyBasicPermissions, ExtensionsData extension) {
 
-        return getRepository(repositoryId).getAcl(getCallContext(), objectId, onlyBasicPermissions);
+        return getRepository(repositoryId).getAcl(getCallContext(), objectId, onlyBasicPermissions.booleanValue());
     }
 
     /**
@@ -337,7 +337,7 @@ public class CmsCmisService extends AbstractCmisService {
             folderId,
             filter,
             orderBy,
-            includeAllowableActions,
+            includeAllowableActions.booleanValue(),
             includeRelationships,
             renditionFilter,
             maxItems,
@@ -366,10 +366,10 @@ public class CmsCmisService extends AbstractCmisService {
             folderId,
             filter,
             orderBy,
-            includeAllowableActions,
+            includeAllowableActions.booleanValue(),
             includeRelationships,
             renditionFilter,
-            includePathSegment,
+            includePathSegment.booleanValue(),
             maxItems,
             skipCount,
 
@@ -393,10 +393,10 @@ public class CmsCmisService extends AbstractCmisService {
         return getRepository(repositoryId).getContentChanges(
             m_callContext,
             changeLogToken,
-            includeProperties,
+            includeProperties.booleanValue(),
             filter,
-            includePolicyIds,
-            includeAcl,
+            includePolicyIds.booleanValue(),
+            includeAcl.booleanValue(),
             maxItems);
     }
 
@@ -435,8 +435,8 @@ public class CmsCmisService extends AbstractCmisService {
             folderId,
             depth,
             filter,
-            includeAllowableActions,
-            includePathSegment,
+            includeAllowableActions.booleanValue(),
+            includePathSegment.booleanValue(),
             this,
             false);
     }
@@ -470,8 +470,8 @@ public class CmsCmisService extends AbstractCmisService {
             folderId,
             depth,
             filter,
-            includeAllowableActions,
-            includePathSegment,
+            includeAllowableActions.booleanValue(),
+            includePathSegment.booleanValue(),
             this,
             true);
     }
@@ -495,11 +495,11 @@ public class CmsCmisService extends AbstractCmisService {
             m_callContext,
             objectId,
             filter,
-            includeAllowableActions,
+            includeAllowableActions.booleanValue(),
             includeRelationships,
             renditionFilter,
-            includePolicyIds,
-            includeAcl,
+            includePolicyIds.booleanValue(),
+            includeAcl.booleanValue(),
 
             this);
     }
@@ -523,11 +523,11 @@ public class CmsCmisService extends AbstractCmisService {
             m_callContext,
             path,
             filter,
-            includeAllowableActions,
+            includeAllowableActions.booleanValue(),
             includeRelationships,
             renditionFilter,
-            includePolicyIds,
-            includeAcl,
+            includePolicyIds.booleanValue(),
+            includeAcl.booleanValue(),
 
             this);
     }
@@ -560,8 +560,8 @@ public class CmsCmisService extends AbstractCmisService {
             m_callContext,
             objectId,
             filter,
-            includeAllowableActions,
-            includeRelativePathSegment,
+            includeAllowableActions.booleanValue(),
+            includeRelativePathSegment.booleanValue(),
             this);
     }
 
@@ -585,11 +585,11 @@ public class CmsCmisService extends AbstractCmisService {
         return getRepository(repositoryId).getObjectRelationships(
             m_callContext,
             objectId,
-            includeSubRelationshipTypes,
+            includeSubRelationshipTypes.booleanValue(),
             relationshipDirection,
             typeId,
             filter,
-            includeAllowableActions,
+            includeAllowableActions.booleanValue(),
             maxItems,
             skipCount,
             this);
@@ -656,7 +656,7 @@ public class CmsCmisService extends AbstractCmisService {
         return getRepository(repositoryId).getTypeChildren(
             m_callContext,
             typeId,
-            includePropertyDefinitions,
+            includePropertyDefinitions.booleanValue(),
             maxItems,
             skipCount);
     }
@@ -681,7 +681,11 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean includePropertyDefinitions,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getTypeDescendants(m_callContext, typeId, depth, includePropertyDefinitions);
+        return getRepository(repositoryId).getTypeDescendants(
+            m_callContext,
+            typeId,
+            depth,
+            includePropertyDefinitions.booleanValue());
     }
 
     /**
@@ -716,8 +720,8 @@ public class CmsCmisService extends AbstractCmisService {
         return getRepository(repositoryId).query(
             m_callContext,
             statement,
-            searchAllVersions,
-            includeAllowableActions,
+            searchAllVersions.booleanValue(),
+            includeAllowableActions.booleanValue(),
             includeRelationships,
             renditionFilter,
             maxItems,
@@ -754,7 +758,12 @@ public class CmsCmisService extends AbstractCmisService {
         ContentStream contentStream,
         ExtensionsData extension) {
 
-        getRepository(repositoryId).setContentStream(m_callContext, objectId, overwriteFlag, changeToken, contentStream);
+        getRepository(repositoryId).setContentStream(
+            m_callContext,
+            objectId,
+            overwriteFlag.booleanValue(),
+            changeToken,
+            contentStream);
     }
 
     /**

@@ -907,7 +907,7 @@ public class CmsCmisTypeManager {
      */
     public List<TypeDefinitionContainer> getTypeDescendants(
 
-    String typeId, BigInteger depth, Boolean includePropertyDefinitions) {
+    String typeId, BigInteger depth, boolean includePropertyDefinitions) {
 
         List<TypeDefinitionContainer> result = new ArrayList<TypeDefinitionContainer>();
 
@@ -917,17 +917,14 @@ public class CmsCmisTypeManager {
             throw new CmisInvalidArgumentException("Depth must not be 0!");
         }
 
-        // set property definition flag to default value if not set
-        boolean ipd = (includePropertyDefinitions == null ? false : includePropertyDefinitions.booleanValue());
-
         if (typeId == null) {
-            result.add(getTypeDescendants(d, m_types.get(FOLDER_TYPE_ID), ipd));
-            result.add(getTypeDescendants(d, m_types.get(DOCUMENT_TYPE_ID), ipd));
-            result.add(getTypeDescendants(d, m_types.get(RELATIONSHIP_TYPE_ID), ipd));
+            result.add(getTypeDescendants(d, m_types.get(FOLDER_TYPE_ID), includePropertyDefinitions));
+            result.add(getTypeDescendants(d, m_types.get(DOCUMENT_TYPE_ID), includePropertyDefinitions));
+            result.add(getTypeDescendants(d, m_types.get(RELATIONSHIP_TYPE_ID), includePropertyDefinitions));
         } else {
             TypeDefinitionContainer tc = m_types.get(typeId);
             if (tc != null) {
-                result.add(getTypeDescendants(d, tc, ipd));
+                result.add(getTypeDescendants(d, tc, includePropertyDefinitions));
             }
         }
 

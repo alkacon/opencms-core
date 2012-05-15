@@ -284,9 +284,9 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisObjectHelper#deleteObject(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.Boolean)
+     * @see org.opencms.cmis.I_CmsCmisObjectHelper#deleteObject(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean)
      */
-    public void deleteObject(CallContext context, String objectId, Boolean allVersions) {
+    public void deleteObject(CallContext context, String objectId, boolean allVersions) {
 
         try {
 
@@ -310,14 +310,14 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getAcl(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.Boolean)
+     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getAcl(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, boolean)
      */
-    public Acl getAcl(CallContext context, String objectId, Boolean onlyBasicPermissions) {
+    public Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions) {
 
         CmsObject cms = m_repository.getCmsObject(context);
         RelationKey rk = parseRelationKey(objectId);
         rk.fillRelation(cms);
-        return collectAcl(cms, rk.getSource(), onlyBasicPermissions.booleanValue());
+        return collectAcl(cms, rk.getSource(), onlyBasicPermissions);
     }
 
     /**
@@ -332,17 +332,17 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getObject(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.lang.Boolean, java.lang.Boolean, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
+     * @see org.opencms.cmis.I_CmsCmisObjectHelper#getObject(org.apache.chemistry.opencmis.commons.server.CallContext, java.lang.String, java.lang.String, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.server.ObjectInfoHandler)
      */
     public ObjectData getObject(
         CallContext context,
         String objectId,
         String filter,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
-        Boolean includePolicyIds,
-        Boolean includeAcl,
+        boolean includePolicyIds,
+        boolean includeAcl,
         ObjectInfoHandler objectInfos) {
 
         CmsObject cms = m_repository.getCmsObject(context);
@@ -355,8 +355,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
             rk.getSource(),
             rk.getRelation(),
             filterSet,
-            (includeAllowableActions.booleanValue()),
-            (includeAcl.booleanValue()),
+            includeAllowableActions,
+            includeAcl,
             objectInfos);
         return result;
     }

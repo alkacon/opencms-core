@@ -76,7 +76,7 @@ public abstract class A_CmsCmisRepository {
         CallContext context,
         String objectId,
         String folderId,
-        Boolean allVersions) {
+        boolean allVersions) {
 
         throw notSupported();
 
@@ -159,7 +159,7 @@ public abstract class A_CmsCmisRepository {
     public synchronized void checkIn(
         CallContext context,
         Holder<String> objectId,
-        Boolean major,
+        boolean major,
         Properties properties,
         ContentStream contentStream,
         String checkinComment,
@@ -223,7 +223,7 @@ public abstract class A_CmsCmisRepository {
         String objectId,
         String versionSeriesId,
         String filter,
-        Boolean includeAllowableActions) {
+        boolean includeAllowableActions) {
 
         throw notSupported();
     }
@@ -258,10 +258,10 @@ public abstract class A_CmsCmisRepository {
     public synchronized ObjectList getContentChanges(
         CallContext context,
         Holder<String> changeLogToken,
-        Boolean includeProperties,
+        boolean includeProperties,
         String filter,
-        Boolean includePolicyIds,
-        Boolean includeAcl,
+        boolean includePolicyIds,
+        boolean includeAcl,
         BigInteger maxItems) {
 
         throw notSupported();
@@ -287,13 +287,13 @@ public abstract class A_CmsCmisRepository {
         CallContext context,
         String objectId,
         String versionSeriesId,
-        Boolean major,
+        boolean major,
         String filter,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
-        Boolean includePolicyIds,
-        Boolean includeAcl) {
+        boolean includePolicyIds,
+        boolean includeAcl) {
 
         throw notSupported();
     }
@@ -313,7 +313,7 @@ public abstract class A_CmsCmisRepository {
         CallContext context,
         String objectId,
         String versionSeriesId,
-        Boolean major,
+        boolean major,
         String filter) {
 
         throw notSupported();

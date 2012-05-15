@@ -46,7 +46,7 @@ public interface I_CmsCmisObjectHelper {
      * @param objectId the id of the object to delete 
      * @param allVersions flag to delete all version 
      */
-    void deleteObject(CallContext context, String objectId, Boolean allVersions);
+    void deleteObject(CallContext context, String objectId, boolean allVersions);
 
     /**
      * Gets the ACL for an object.<p>
@@ -57,7 +57,7 @@ public interface I_CmsCmisObjectHelper {
      * 
      * @return the ACL for the object 
      */
-    Acl getAcl(CallContext context, String objectId, Boolean onlyBasicPermissions);
+    Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions);
 
     /**
      * Gets the allowable actions for an object.<p>
@@ -87,10 +87,10 @@ public interface I_CmsCmisObjectHelper {
         CallContext context,
         String objectId,
         String filter,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
-        Boolean includePolicyIds,
-        Boolean includeAcl,
+        boolean includePolicyIds,
+        boolean includeAcl,
         ObjectInfoHandler objectInfos);
 }

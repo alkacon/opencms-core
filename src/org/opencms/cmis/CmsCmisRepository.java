@@ -500,7 +500,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
      * @param objectId the id of the object to delete 
      * @param allVersions flag to delete all version 
      */
-    public synchronized void deleteObject(CallContext context, String objectId, Boolean allVersions) {
+    public synchronized void deleteObject(CallContext context, String objectId, boolean allVersions) {
 
         checkWriteAccess();
         createHelper(objectId, getCmsObject(context)).deleteObject(context, objectId, allVersions);
@@ -520,9 +520,9 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     public synchronized FailedToDeleteData deleteTree(
         CallContext context,
         String folderId,
-        Boolean allVersions,
+        boolean allVersions,
         UnfileObject unfileObjects,
-        Boolean continueOnFailure) {
+        boolean continueOnFailure) {
 
         checkWriteAccess();
 
@@ -554,7 +554,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
      * 
      * @return the ACL for the object 
      */
-    public synchronized Acl getAcl(CallContext context, String objectId, Boolean onlyBasicPermissions) {
+    public synchronized Acl getAcl(CallContext context, String objectId, boolean onlyBasicPermissions) {
 
         return createHelper(objectId, getCmsObject(context)).getAcl(context, objectId, onlyBasicPermissions);
     }
@@ -591,7 +591,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         String folderId,
         String filter,
         String orderBy,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
         BigInteger maxItems,
@@ -625,10 +625,10 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         String folderId,
         String filter,
         String orderBy,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
-        Boolean includePathSegment,
+        boolean includePathSegment,
         BigInteger maxItems,
         BigInteger skipCount,
         ObjectInfoHandler objectInfos) {
@@ -638,11 +638,6 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
 
             // split filter
             Set<String> filterCollection = splitFilter(filter);
-
-            // set defaults if values not set
-            boolean iaa = (includeAllowableActions == null ? false : includeAllowableActions.booleanValue());
-            boolean ips = (includePathSegment == null ? false : includePathSegment.booleanValue());
-
             // skip and max
             int skip = (skipCount == null ? 0 : skipCount.intValue());
             if (skip < 0) {
@@ -683,11 +678,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
                     cms,
                     child,
                     filterCollection,
-                    iaa,
+                    includeAllowableActions,
                     false,
                     includeRelationships,
                     objectInfos));
-                if (ips) {
+                if (includePathSegment) {
                     objectInFolder.setPathSegment(child.getName());
                 }
                 resultObjects.add(objectInFolder);
@@ -776,8 +771,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         String folderId,
         BigInteger depth,
         String filter,
-        Boolean includeAllowableActions,
-        Boolean includePathSegment,
+        boolean includeAllowableActions,
+        boolean includePathSegment,
         ObjectInfoHandler objectInfos,
         boolean foldersOnly) {
 
@@ -795,10 +790,6 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
 
             // split filter
             Set<String> filterCollection = splitFilter(filter);
-
-            // set defaults if values not set
-            boolean iaa = (includeAllowableActions == null ? false : includeAllowableActions.booleanValue());
-            boolean ips = (includePathSegment == null ? false : includePathSegment.booleanValue());
 
             CmsObject cms = getCmsObject(context);
             CmsUUID folderStructureId = new CmsUUID(folderId);
@@ -822,7 +813,17 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
 
             // get the tree
             List<ObjectInFolderContainer> result = new ArrayList<ObjectInFolderContainer>();
-            gatherDescendants(context, cms, folder, result, foldersOnly, d, filterCollection, iaa, ips, objectInfos);
+            gatherDescendants(
+                context,
+                cms,
+                folder,
+                result,
+                foldersOnly,
+                d,
+                filterCollection,
+                includeAllowableActions,
+                includePathSegment,
+                objectInfos);
 
             return result;
         } catch (CmsException e) {
@@ -871,13 +872,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         String filter,
         ObjectInfoHandler objectInfos) {
 
-        List<ObjectParentData> parents = getObjectParents(
-            context,
-            folderId,
-            filter,
-            Boolean.FALSE,
-            Boolean.FALSE,
-            objectInfos);
+        List<ObjectParentData> parents = getObjectParents(context, folderId, filter, false, false, objectInfos);
         if (parents.size() == 0) {
             throw new CmisInvalidArgumentException("The root folder has no parent!");
         }
@@ -923,11 +918,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         CallContext context,
         String objectId,
         String filter,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
-        Boolean includePolicyIds,
-        Boolean includeAcl,
+        boolean includePolicyIds,
+        boolean includeAcl,
         ObjectInfoHandler objectInfos) {
 
         return createHelper(objectId, getCmsObject(context)).getObject(
@@ -961,11 +956,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         CallContext context,
         String path,
         String filter,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
-        Boolean includePolicyIds,
-        Boolean includeAcl,
+        boolean includePolicyIds,
+        boolean includeAcl,
 
         ObjectInfoHandler objectInfos) {
 
@@ -987,8 +982,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
                 cms,
                 file,
                 filterCollection,
-                includeAllowableActions.booleanValue(),
-                includeAcl.booleanValue(),
+                includeAllowableActions,
+                includeAcl,
                 IncludeRelationships.NONE,
                 objectInfos);
 
@@ -1014,8 +1009,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         CallContext context,
         String objectId,
         String filter,
-        Boolean includeAllowableActions,
-        Boolean includeRelativePathSegment,
+        boolean includeAllowableActions,
+        boolean includeRelativePathSegment,
         ObjectInfoHandler objectInfos) {
 
         try {
@@ -1023,11 +1018,6 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
 
             // split filter
             Set<String> filterCollection = splitFilter(filter);
-
-            // set defaults if values not set
-            boolean iaa = (includeAllowableActions == null ? false : includeAllowableActions.booleanValue());
-            boolean irps = (includeRelativePathSegment == null ? false : includeRelativePathSegment.booleanValue());
-
             CmsObject cms = getCmsObject(context);
             CmsUUID structureId = new CmsUUID(objectId);
             CmsResource file = cms.readResource(structureId);
@@ -1049,14 +1039,14 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
                 cms,
                 parent,
                 filterCollection,
-                iaa,
+                includeAllowableActions,
                 false,
                 IncludeRelationships.NONE,
                 objectInfos);
 
             ObjectParentDataImpl result = new ObjectParentDataImpl();
             result.setObject(object);
-            if (irps) {
+            if (includeRelativePathSegment) {
                 result.setRelativePathSegment(file.getName());
             }
 
@@ -1087,11 +1077,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     public synchronized ObjectList getObjectRelationships(
         CallContext context,
         String objectId,
-        Boolean includeSubRelationshipTypes,
+        boolean includeSubRelationshipTypes,
         RelationshipDirection relationshipDirection,
         String typeId,
         String filter,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         BigInteger maxItems,
         BigInteger skipCount,
         ObjectInfoHandler objectInfos) {
@@ -1142,16 +1132,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
 
     ObjectInfoHandler objectInfos) {
 
-        ObjectData object = getObject(
-            context,
-            objectId,
-            null,
-            Boolean.FALSE,
-            null,
-            null,
-            Boolean.FALSE,
-            Boolean.FALSE,
-            objectInfos);
+        ObjectData object = getObject(context, objectId, null, false, null, null, false, false, objectInfos);
         return object.getProperties();
     }
 
@@ -1279,11 +1260,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     public synchronized TypeDefinitionList getTypeChildren(
         CallContext context,
         String typeId,
-        Boolean includePropertyDefinitions,
+        boolean includePropertyDefinitions,
         BigInteger maxItems,
         BigInteger skipCount) {
 
-        return m_typeManager.getTypeChildren(typeId, includePropertyDefinitions.booleanValue(), maxItems, skipCount);
+        return m_typeManager.getTypeChildren(typeId, includePropertyDefinitions, maxItems, skipCount);
     }
 
     /**
@@ -1313,7 +1294,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         CallContext context,
         String typeId,
         BigInteger depth,
-        Boolean includePropertyDefinitions) {
+        boolean includePropertyDefinitions) {
 
         return m_typeManager.getTypeDescendants(typeId, depth, includePropertyDefinitions);
     }
@@ -1402,7 +1383,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     public synchronized void setContentStream(
         CallContext context,
         Holder<String> objectId,
-        Boolean overwriteFlag,
+        boolean overwriteFlag,
         Holder<String> changeToken,
         ContentStream contentStream) {
 
@@ -1411,8 +1392,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         try {
             CmsObject cms = getCmsObject(context);
             CmsUUID structureId = new CmsUUID(objectId.getValue());
-            boolean overwrite = (overwriteFlag == null) || overwriteFlag.booleanValue();
-            if (!overwrite) {
+            if (!overwriteFlag) {
                 throw new CmisContentAlreadyExistsException();
             }
             CmsResource resource = cms.readResource(structureId);
@@ -1554,7 +1534,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
         CmsResource resource,
         RelationshipDirection relationshipDirection,
         Set<String> filterSet,
-        Boolean includeAllowableActions,
+        boolean includeAllowableActions,
         ObjectInfoHandler objectInfos) throws CmsException {
 
         List<ObjectData> resultObjects = new ArrayList<ObjectData>();
@@ -1583,7 +1563,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
                 resource,
                 relation,
                 filterSet,
-                includeAllowableActions.booleanValue(),
+                includeAllowableActions,
                 false,
                 objectInfos);
             resultObjects.add(objData);
@@ -1740,8 +1720,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
     public synchronized ObjectList query(
         CallContext context,
         String statement,
-        Boolean searchAllVersions,
-        Boolean includeAllowableActions,
+        boolean searchAllVersions,
+        boolean includeAllowableActions,
         IncludeRelationships includeRelationships,
         String renditionFilter,
         BigInteger maxItems,
@@ -1758,7 +1738,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
                 cms,
                 frotz,
                 null,
-                includeAllowableActions.booleanValue(),
+                includeAllowableActions,
                 false,
                 includeRelationships,
                 null);
@@ -1767,7 +1747,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository implements I_CmsRepos
                 cms,
                 xyzzy,
                 null,
-                includeAllowableActions.booleanValue(),
+                includeAllowableActions,
                 false,
                 includeRelationships,
                 null);
