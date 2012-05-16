@@ -78,34 +78,6 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#getRenditions(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger)
-     */
-    public synchronized List<RenditionData> getRenditions(
-        CmsCmisCallContext context,
-        String objectId,
-        String renditionFilter,
-        BigInteger maxItems,
-        BigInteger skipCount) {
-
-        throw notSupported();
-        //
-        //        try {
-        //            CmsObject cms = getCmsObject(context);
-        //            CmsUUID structureId = new CmsUUID(objectId);
-        //            CmsResource resource = cms.readResource(structureId);
-        //            RenditionDataImpl rendition = new RenditionDataImpl();
-        //            rendition.setKind("opencms:rendered");
-        //            rendition.setMimeType(OpenCms.getResourceManager().getMimeType(resource.getRootPath(), "UTF-8"));
-        //            rendition.setStreamId("rendered");
-        //            List<RenditionData> result = Collections.singletonList((RenditionData)rendition);
-        //            return result;
-        //        } catch (CmsException e) {
-        //            handleCmsException(e);
-        //            return null;
-        //        }
-    }
-
-    /**
      * @see org.opencms.cmis.I_CmsCmisRepository#applyAcl(org.opencms.cmis.CmsCmisCallContext, java.lang.String, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.data.Acl, org.apache.chemistry.opencmis.commons.enums.AclPropagation)
      */
     public synchronized Acl applyAcl(
@@ -257,6 +229,50 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     }
 
     /**
+     * @see org.opencms.cmis.I_CmsCmisRepository#getRenditions(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger)
+     */
+    public synchronized List<RenditionData> getRenditions(
+        CmsCmisCallContext context,
+        String objectId,
+        String renditionFilter,
+        BigInteger maxItems,
+        BigInteger skipCount) {
+
+        throw notSupported();
+        //
+        //        try {
+        //            CmsObject cms = getCmsObject(context);
+        //            CmsUUID structureId = new CmsUUID(objectId);
+        //            CmsResource resource = cms.readResource(structureId);
+        //            RenditionDataImpl rendition = new RenditionDataImpl();
+        //            rendition.setKind("opencms:rendered");
+        //            rendition.setMimeType(OpenCms.getResourceManager().getMimeType(resource.getRootPath(), "UTF-8"));
+        //            rendition.setStreamId("rendered");
+        //            List<RenditionData> result = Collections.singletonList((RenditionData)rendition);
+        //            return result;
+        //        } catch (CmsException e) {
+        //            handleCmsException(e);
+        //            return null;
+        //        }
+    }
+
+    /**
+     * @see org.opencms.cmis.I_CmsCmisRepository#query(org.opencms.cmis.CmsCmisCallContext, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger)
+     */
+    public synchronized ObjectList query(
+        CmsCmisCallContext context,
+        String statement,
+        boolean searchAllVersions,
+        boolean includeAllowableActions,
+        IncludeRelationships includeRelationships,
+        String renditionFilter,
+        BigInteger maxItems,
+        BigInteger skipCount) {
+
+        throw notSupported();
+    }
+
+    /**
      * @see org.opencms.cmis.I_CmsCmisRepository#removeObjectFromFolder(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String)
      */
     public synchronized void removeObjectFromFolder(CmsCmisCallContext context, String objectId, String folderId) {
@@ -358,22 +374,6 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
 
         return new CmisNotSupportedException("Not supported");
 
-    }
-
-    /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#query(org.opencms.cmis.CmsCmisCallContext, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger)
-     */
-    public synchronized ObjectList query(
-        CmsCmisCallContext context,
-        String statement,
-        boolean searchAllVersions,
-        boolean includeAllowableActions,
-        IncludeRelationships includeRelationships,
-        String renditionFilter,
-        BigInteger maxItems,
-        BigInteger skipCount) {
-
-        throw notSupported();
     }
 
 }

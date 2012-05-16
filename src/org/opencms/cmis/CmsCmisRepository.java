@@ -195,6 +195,12 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     /** The project of the repository. */
     private CmsProject m_project;
 
+    /** The relation object helper. */
+    private CmsCmisRelationHelper m_relationHelper = new CmsCmisRelationHelper(this);
+
+    /** The resource object helper. */
+    private CmsCmisResourceHelper m_resourceHelper = new CmsCmisResourceHelper(this);
+
     /** The root folder. */
     private CmsResource m_root;
 
@@ -1331,32 +1337,6 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         }
     }
 
-    /** The resource object helper. */
-    private CmsCmisResourceHelper m_resourceHelper = new CmsCmisResourceHelper(this);
-
-    /** The relation object helper. */
-    private CmsCmisRelationHelper m_relationHelper = new CmsCmisRelationHelper(this);
-
-    /**
-     * Gets the resource object helper.<p>
-     * 
-     * @return the resource object helper 
-     */
-    private CmsCmisResourceHelper getResourceHelper() {
-
-        return m_resourceHelper;
-    }
-
-    /**
-     * Gets the relation object helper.<p>
-     * 
-     * @return the relation object helper 
-     */
-    private CmsCmisRelationHelper getRelationHelper() {
-
-        return m_relationHelper;
-    }
-
     /**
      * Helper method to collect the descendants of a given folder.<p>
      *  
@@ -1436,6 +1416,26 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         } catch (CmsException e) {
             handleCmsException(e);
         }
+    }
+
+    /**
+     * Gets the relation object helper.<p>
+     * 
+     * @return the relation object helper 
+     */
+    private CmsCmisRelationHelper getRelationHelper() {
+
+        return m_relationHelper;
+    }
+
+    /**
+     * Gets the resource object helper.<p>
+     * 
+     * @return the resource object helper 
+     */
+    private CmsCmisResourceHelper getResourceHelper() {
+
+        return m_resourceHelper;
     }
 
 }

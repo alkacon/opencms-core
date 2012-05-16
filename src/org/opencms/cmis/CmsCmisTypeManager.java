@@ -461,50 +461,6 @@ public class CmsCmisTypeManager {
     }
 
     /**
-     * Adds a type to collection with inheriting base type properties.
-     * 
-     * @param type the type definition to add
-     * 
-     * @return true if the type definition was added 
-     */
-    public boolean addType(TypeDefinition type) {
-
-        if (type == null) {
-            return false;
-        }
-
-        if (type.getBaseTypeId() == null) {
-            return false;
-        }
-
-        // find base type
-        TypeDefinition baseType = null;
-        if (type.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT) {
-            baseType = copyTypeDefintion(m_types.get(DOCUMENT_TYPE_ID).getTypeDefinition());
-        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_FOLDER) {
-            baseType = copyTypeDefintion(m_types.get(FOLDER_TYPE_ID).getTypeDefinition());
-        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_RELATIONSHIP) {
-            baseType = copyTypeDefintion(m_types.get(RELATIONSHIP_TYPE_ID).getTypeDefinition());
-        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_POLICY) {
-            baseType = copyTypeDefintion(m_types.get(POLICY_TYPE_ID).getTypeDefinition());
-        } else {
-            return false;
-        }
-
-        AbstractTypeDefinition newType = (AbstractTypeDefinition)copyTypeDefintion(type);
-
-        // copy property definition
-        for (PropertyDefinition<?> propDef : baseType.getPropertyDefinitions().values()) {
-            ((AbstractPropertyDefinition<?>)propDef).setIsInherited(Boolean.TRUE);
-            newType.addPropertyDefinition(propDef);
-        }
-
-        // add it
-        addTypeInternal(newType);
-        return true;
-    }
-
-    /**
      * Copies a type definition.<p>
      * 
      * @param type the type definition to copy
@@ -601,6 +557,50 @@ public class CmsCmisTypeManager {
     }
 
     /**
+     * Adds a type to collection with inheriting base type properties.
+     * 
+     * @param type the type definition to add
+     * 
+     * @return true if the type definition was added 
+     */
+    public boolean addType(TypeDefinition type) {
+
+        if (type == null) {
+            return false;
+        }
+
+        if (type.getBaseTypeId() == null) {
+            return false;
+        }
+
+        // find base type
+        TypeDefinition baseType = null;
+        if (type.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT) {
+            baseType = copyTypeDefintion(m_types.get(DOCUMENT_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_FOLDER) {
+            baseType = copyTypeDefintion(m_types.get(FOLDER_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_RELATIONSHIP) {
+            baseType = copyTypeDefintion(m_types.get(RELATIONSHIP_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_POLICY) {
+            baseType = copyTypeDefintion(m_types.get(POLICY_TYPE_ID).getTypeDefinition());
+        } else {
+            return false;
+        }
+
+        AbstractTypeDefinition newType = (AbstractTypeDefinition)copyTypeDefintion(type);
+
+        // copy property definition
+        for (PropertyDefinition<?> propDef : baseType.getPropertyDefinitions().values()) {
+            ((AbstractPropertyDefinition<?>)propDef).setIsInherited(Boolean.TRUE);
+            newType.addPropertyDefinition(propDef);
+        }
+
+        // add it
+        addTypeInternal(newType);
+        return true;
+    }
+
+    /**
      * Gets a list of names of OpenCms property definitions.<p>
      * 
      * @return the list of OpenCms property names 
@@ -631,6 +631,77 @@ public class CmsCmisTypeManager {
     }
 
     /**
+     * Collects the children of a type.<p>
+     * 
+     * @param typeId the id of the type 
+     * @param includePropertyDefinitions true if the property definitions should be included 
+     * @param maxItems the maximum number of items to return 
+     * @param skipCount the number of items to skip 
+     * 
+     * @return the children of the type 
+     */
+    public TypeDefinitionList getTypeChildren(
+
+    String typeId, boolean includePropertyDefinitions, BigInteger maxItems, BigInteger skipCount) {
+
+        TypeDefinitionListImpl result = new TypeDefinitionListImpl(new ArrayList<TypeDefinition>());
+
+        int skip = (skipCount == null ? 0 : skipCount.intValue());
+        if (skip < 0) {
+            skip = 0;
+        }
+
+        int max = (maxItems == null ? Integer.MAX_VALUE : maxItems.intValue());
+        if (max < 1) {
+            return result;
+        }
+
+        if (typeId == null) {
+            if (skip < 1) {
+                result.getList().add(copyTypeDefintion(m_types.get(FOLDER_TYPE_ID).getTypeDefinition()));
+                max--;
+            }
+            if ((skip < 2) && (max > 0)) {
+                result.getList().add(copyTypeDefintion(m_types.get(DOCUMENT_TYPE_ID).getTypeDefinition()));
+                max--;
+            }
+
+            result.setHasMoreItems(Boolean.valueOf((result.getList().size() + skip) < 2));
+            result.setNumItems(BigInteger.valueOf(2));
+        } else {
+            TypeDefinitionContainer tc = m_types.get(typeId);
+            if ((tc == null) || (tc.getChildren() == null)) {
+                return result;
+            }
+
+            for (TypeDefinitionContainer child : tc.getChildren()) {
+                if (skip > 0) {
+                    skip--;
+                    continue;
+                }
+
+                result.getList().add(copyTypeDefintion(child.getTypeDefinition()));
+
+                max--;
+                if (max == 0) {
+                    break;
+                }
+            }
+
+            result.setHasMoreItems(Boolean.valueOf((result.getList().size() + skip) < tc.getChildren().size()));
+            result.setNumItems(BigInteger.valueOf(tc.getChildren().size()));
+        }
+
+        if (!includePropertyDefinitions) {
+            for (TypeDefinition type : result.getList()) {
+                type.getPropertyDefinitions().clear();
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Gets the type definition for a given id in the given call context.<p>
      * 
      * @param typeId the type id
@@ -645,6 +716,41 @@ public class CmsCmisTypeManager {
         }
 
         return copyTypeDefintion(tc.getTypeDefinition());
+    }
+
+    /**
+     * Gets the descendants of a type.<p>
+     *  
+     * @param typeId the parent type id
+     * @param depth the depth up to which the descendant types should be collected 
+     * @param includePropertyDefinitions true if the property definitions should be included 
+     * 
+     * @return the descendants of the type 
+     */
+    public List<TypeDefinitionContainer> getTypeDescendants(
+
+    String typeId, BigInteger depth, boolean includePropertyDefinitions) {
+
+        List<TypeDefinitionContainer> result = new ArrayList<TypeDefinitionContainer>();
+
+        // check depth
+        int d = (depth == null ? -1 : depth.intValue());
+        if (d == 0) {
+            throw new CmisInvalidArgumentException("Depth must not be 0!");
+        }
+
+        if (typeId == null) {
+            result.add(getTypeDescendants(d, m_types.get(FOLDER_TYPE_ID), includePropertyDefinitions));
+            result.add(getTypeDescendants(d, m_types.get(DOCUMENT_TYPE_ID), includePropertyDefinitions));
+            result.add(getTypeDescendants(d, m_types.get(RELATIONSHIP_TYPE_ID), includePropertyDefinitions));
+        } else {
+            TypeDefinitionContainer tc = m_types.get(typeId);
+            if (tc != null) {
+                result.add(getTypeDescendants(d, tc, includePropertyDefinitions));
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -823,112 +929,6 @@ public class CmsCmisTypeManager {
             Updatability.ONCREATE,
             false,
             true));
-    }
-
-    /**
-     * Collects the children of a type.<p>
-     * 
-     * @param typeId the id of the type 
-     * @param includePropertyDefinitions true if the property definitions should be included 
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip 
-     * 
-     * @return the children of the type 
-     */
-    public TypeDefinitionList getTypeChildren(
-
-    String typeId, boolean includePropertyDefinitions, BigInteger maxItems, BigInteger skipCount) {
-
-        TypeDefinitionListImpl result = new TypeDefinitionListImpl(new ArrayList<TypeDefinition>());
-
-        int skip = (skipCount == null ? 0 : skipCount.intValue());
-        if (skip < 0) {
-            skip = 0;
-        }
-
-        int max = (maxItems == null ? Integer.MAX_VALUE : maxItems.intValue());
-        if (max < 1) {
-            return result;
-        }
-
-        if (typeId == null) {
-            if (skip < 1) {
-                result.getList().add(copyTypeDefintion(m_types.get(FOLDER_TYPE_ID).getTypeDefinition()));
-                max--;
-            }
-            if ((skip < 2) && (max > 0)) {
-                result.getList().add(copyTypeDefintion(m_types.get(DOCUMENT_TYPE_ID).getTypeDefinition()));
-                max--;
-            }
-
-            result.setHasMoreItems(Boolean.valueOf((result.getList().size() + skip) < 2));
-            result.setNumItems(BigInteger.valueOf(2));
-        } else {
-            TypeDefinitionContainer tc = m_types.get(typeId);
-            if ((tc == null) || (tc.getChildren() == null)) {
-                return result;
-            }
-
-            for (TypeDefinitionContainer child : tc.getChildren()) {
-                if (skip > 0) {
-                    skip--;
-                    continue;
-                }
-
-                result.getList().add(copyTypeDefintion(child.getTypeDefinition()));
-
-                max--;
-                if (max == 0) {
-                    break;
-                }
-            }
-
-            result.setHasMoreItems(Boolean.valueOf((result.getList().size() + skip) < tc.getChildren().size()));
-            result.setNumItems(BigInteger.valueOf(tc.getChildren().size()));
-        }
-
-        if (!includePropertyDefinitions) {
-            for (TypeDefinition type : result.getList()) {
-                type.getPropertyDefinitions().clear();
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Gets the descendants of a type.<p>
-     *  
-     * @param typeId the parent type id
-     * @param depth the depth up to which the descendant types should be collected 
-     * @param includePropertyDefinitions true if the property definitions should be included 
-     * 
-     * @return the descendants of the type 
-     */
-    public List<TypeDefinitionContainer> getTypeDescendants(
-
-    String typeId, BigInteger depth, boolean includePropertyDefinitions) {
-
-        List<TypeDefinitionContainer> result = new ArrayList<TypeDefinitionContainer>();
-
-        // check depth
-        int d = (depth == null ? -1 : depth.intValue());
-        if (d == 0) {
-            throw new CmisInvalidArgumentException("Depth must not be 0!");
-        }
-
-        if (typeId == null) {
-            result.add(getTypeDescendants(d, m_types.get(FOLDER_TYPE_ID), includePropertyDefinitions));
-            result.add(getTypeDescendants(d, m_types.get(DOCUMENT_TYPE_ID), includePropertyDefinitions));
-            result.add(getTypeDescendants(d, m_types.get(RELATIONSHIP_TYPE_ID), includePropertyDefinitions));
-        } else {
-            TypeDefinitionContainer tc = m_types.get(typeId);
-            if (tc != null) {
-                result.add(getTypeDescendants(d, tc, includePropertyDefinitions));
-            }
-        }
-
-        return result;
     }
 
     /**

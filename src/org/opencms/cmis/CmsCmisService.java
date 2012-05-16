@@ -622,16 +622,6 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * Creates a call context wrapper.<p>
-     * 
-     * @return the created wrapper 
-     */
-    private CmsCmisCallContext makeContext() {
-
-        return new CmsCmisCallContext(m_callContext, this);
-    }
-
-    /**
      * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getTypeChildren(java.lang.String, java.lang.String, java.lang.Boolean, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
     @Override
@@ -786,5 +776,15 @@ public class CmsCmisService extends AbstractCmisService {
             throw new CmisConnectionException("missing repository: " + repositoryId);
         }
         return result;
+    }
+
+    /**
+     * Creates a call context wrapper.<p>
+     * 
+     * @return the created wrapper 
+     */
+    private CmsCmisCallContext makeContext() {
+
+        return new CmsCmisCallContext(m_callContext, this);
     }
 }

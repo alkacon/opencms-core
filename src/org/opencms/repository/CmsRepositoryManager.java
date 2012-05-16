@@ -26,7 +26,6 @@
  */
 
 package org.opencms.repository;
-
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
+
 
 /**
  * The RepositoryManager keeps a list with all configured {@link I_CmsRepository}
@@ -60,11 +60,11 @@ public class CmsRepositoryManager {
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
 
-    /** All initialized repositories, mapped to their name. */
-    private Map<String, I_CmsRepository> m_repositoryMap = new LinkedHashMap<String, I_CmsRepository>();
-
     /** The list of repositories. */
     private List<I_CmsRepository> m_repositoryList = new ArrayList<I_CmsRepository>();
+
+    /** All initialized repositories, mapped to their name. */
+    private Map<String, I_CmsRepository> m_repositoryMap = new LinkedHashMap<String, I_CmsRepository>();
 
     /**
      * Creates a new instance for the resource manager, 

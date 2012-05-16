@@ -26,10 +26,10 @@
  */
 
 package org.opencms.repository;
-
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.CmsException;
+
 
 /**
  * Abstract implementation of the repository interface {@link I_CmsRepository}.<p>

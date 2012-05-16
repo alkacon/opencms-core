@@ -26,7 +26,6 @@
  */
 
 package org.opencms.repository;
-
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
@@ -41,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
+
 
 /**
  * Creates a repository session to access OpenCms.<p>

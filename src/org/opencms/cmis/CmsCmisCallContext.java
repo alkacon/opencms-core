@@ -57,16 +57,6 @@ public class CmsCmisCallContext implements CallContext {
     }
 
     /**
-     * The object info handler to use.<p>
-     * 
-     * @return the object info handler 
-     */
-    public ObjectInfoHandler getObjectInfoHandler() {
-
-        return m_objectInfo;
-    }
-
-    /**
      * @see org.apache.chemistry.opencmis.commons.server.CallContext#get(java.lang.String)
      */
     public Object get(String attr) {
@@ -104,6 +94,16 @@ public class CmsCmisCallContext implements CallContext {
     public int getMemoryThreshold() {
 
         return m_context.getMemoryThreshold();
+    }
+
+    /**
+     * The object info handler to use.<p>
+     * 
+     * @return the object info handler 
+     */
+    public ObjectInfoHandler getObjectInfoHandler() {
+
+        return m_objectInfo;
     }
 
     /**
