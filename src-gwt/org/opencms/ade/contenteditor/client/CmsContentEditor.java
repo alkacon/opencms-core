@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
+import com.alkacon.acacia.client.I_InlineFormParent;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.vie.shared.I_Entity;
 
@@ -69,7 +70,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -211,7 +211,7 @@ public final class CmsContentEditor {
      * @param panel the element panel
      * @param onClose the command to execute on close
      */
-    public void openInlineEditor(String locale, final ComplexPanel panel, Command onClose) {
+    public void openInlineEditor(String locale, final I_InlineFormParent panel, Command onClose) {
 
         String entityId = panel.getElement().getAttribute("about");
         m_locale = locale;
@@ -320,17 +320,17 @@ public final class CmsContentEditor {
      * Initializes the editor.<p>
      * 
      * @param contentDefinition the content definition
-     * @param panel the associated content panel, needed for inline editing only
+     * @param formParnet the inline form parent panel, used for inline editing only
      * @param inline <code>true</code> to render the editor for inline editing
      */
-    void initEditor(CmsContentDefinition contentDefinition, ComplexPanel panel, boolean inline) {
+    void initEditor(CmsContentDefinition contentDefinition, I_InlineFormParent formParnet, boolean inline) {
 
         m_locale = contentDefinition.getLocale();
         m_entityId = contentDefinition.getEntityId();
         setContentDefinition(contentDefinition);
         initToolbar();
-        if (inline && (panel != null)) {
-            m_editor.renderInlineEntity(m_entityId, panel.getElement());
+        if (inline && (formParnet != null)) {
+            m_editor.renderInlineEntity(m_entityId, formParnet);
         } else {
             initFormPanel();
             renderFormContent();

@@ -27,6 +27,9 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import com.alkacon.acacia.client.I_InlineFormParent;
+import com.alkacon.acacia.client.widgets.I_EditWidget;
+
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
@@ -67,7 +70,8 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @since 8.0.0
  */
-public class CmsContainerPageElementPanel extends AbsolutePanel implements I_CmsDraggable, HasClickHandlers {
+public class CmsContainerPageElementPanel extends AbsolutePanel
+implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
 
     /** The height necessary for a container page element. */
     public static int NECESSARY_HEIGHT = 24;
@@ -175,6 +179,15 @@ public class CmsContainerPageElementPanel extends AbsolutePanel implements I_Cms
     public HandlerRegistration addClickHandler(ClickHandler handler) {
 
         return addDomHandler(handler, ClickEvent.getType());
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.I_InlineFormParent#adoptWidget(com.alkacon.acacia.client.widgets.I_EditWidget)
+     */
+    public void adoptWidget(I_EditWidget widget) {
+
+        getChildren().add(widget.asWidget());
+        adopt(widget.asWidget());
     }
 
     /**
