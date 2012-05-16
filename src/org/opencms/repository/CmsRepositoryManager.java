@@ -29,14 +29,16 @@ package org.opencms.repository;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * The RepositoryManager keeps a list with all configured {@link I_CmsRepository}
@@ -49,17 +51,20 @@ import java.util.Map;
  */
 public class CmsRepositoryManager {
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsRepositoryManager.class);
+
     /** Determines if the repository manager was configured or not. */
     private boolean m_configured;
 
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
 
-    /** A list with all configured repositories. */
-    private List<I_CmsRepository> m_repositoryList;
-
     /** All initialized repositories, mapped to their name. */
-    private Map<String, I_CmsRepository> m_repositoryMap;
+    private Map<String, I_CmsRepository> m_repositoryMap = new LinkedHashMap<String, I_CmsRepository>();
+
+    /** The list of repositories. */
+    private List<I_CmsRepository> m_repositoryList = new ArrayList<I_CmsRepository>();
 
     /**
      * Creates a new instance for the resource manager, 
@@ -70,8 +75,6 @@ public class CmsRepositoryManager {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_REPOSITORY_CONFIG_0));
         }
-
-        m_repositoryList = new ArrayList<I_CmsRepository>();
         m_repositoryMap = new HashMap<String, I_CmsRepository>();
         m_frozen = false;
         m_configured = true;
@@ -88,8 +91,6 @@ public class CmsRepositoryManager {
 
         this();
         m_configured = configured;
-
-        m_repositoryList = Collections.unmodifiableList(m_repositoryList);
         m_frozen = true;
     }
 
@@ -106,7 +107,6 @@ public class CmsRepositoryManager {
         if (m_frozen) {
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
-
         m_repositoryList.add(repository);
     }
 
@@ -117,7 +117,7 @@ public class CmsRepositoryManager {
      */
     public List<I_CmsRepository> getRepositories() {
 
-        return m_repositoryList;
+        return new ArrayList<I_CmsRepository>(m_repositoryMap.values());
     }
 
     /**
@@ -182,13 +182,7 @@ public class CmsRepositoryManager {
      */
     public void initConfiguration() throws CmsConfigurationException {
 
-        m_repositoryList = Collections.unmodifiableList(m_repositoryList);
-
-        Iterator<I_CmsRepository> iter = m_repositoryList.iterator();
-        while (iter.hasNext()) {
-            I_CmsRepository rep = iter.next();
-            m_repositoryMap.put(rep.getName(), rep);
-
+        for (I_CmsRepository rep : m_repositoryList) {
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_ADD_REPOSITORY_2,
@@ -196,8 +190,8 @@ public class CmsRepositoryManager {
                     rep.getName()));
             }
             rep.initConfiguration();
+            m_repositoryMap.put(rep.getName(), rep);
         }
-
         m_frozen = true;
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -213,8 +207,19 @@ public class CmsRepositoryManager {
      */
     public void initializeCms(CmsObject cms) {
 
+        List<String> toRemove = new ArrayList<String>();
+        // Repositories which can't be fully initialized need to be removed. 
         for (I_CmsRepository repository : m_repositoryMap.values()) {
-            repository.initializeCms(cms);
+            String repoName = repository.getName();
+            try {
+                repository.initializeCms(cms);
+            } catch (CmsException e) {
+                LOG.warn("Could not fully initialize repository " + repoName, e);
+                toRemove.add(repoName);
+            }
+        }
+        for (String removeRepo : toRemove) {
+            m_repositoryMap.remove(removeRepo);
         }
     }
 

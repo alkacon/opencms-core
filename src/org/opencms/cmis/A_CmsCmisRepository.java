@@ -47,6 +47,7 @@ import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectList;
 import org.apache.chemistry.opencmis.commons.data.Properties;
 import org.apache.chemistry.opencmis.commons.data.PropertyData;
+import org.apache.chemistry.opencmis.commons.data.RenditionData;
 import org.apache.chemistry.opencmis.commons.enums.AclPropagation;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisNotSupportedException;
@@ -74,6 +75,34 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
 
         throw notSupported();
 
+    }
+
+    /**
+     * @see org.opencms.cmis.I_CmsCmisRepository#getRenditions(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger)
+     */
+    public synchronized List<RenditionData> getRenditions(
+        CmsCmisCallContext context,
+        String objectId,
+        String renditionFilter,
+        BigInteger maxItems,
+        BigInteger skipCount) {
+
+        throw notSupported();
+        //
+        //        try {
+        //            CmsObject cms = getCmsObject(context);
+        //            CmsUUID structureId = new CmsUUID(objectId);
+        //            CmsResource resource = cms.readResource(structureId);
+        //            RenditionDataImpl rendition = new RenditionDataImpl();
+        //            rendition.setKind("opencms:rendered");
+        //            rendition.setMimeType(OpenCms.getResourceManager().getMimeType(resource.getRootPath(), "UTF-8"));
+        //            rendition.setStreamId("rendered");
+        //            List<RenditionData> result = Collections.singletonList((RenditionData)rendition);
+        //            return result;
+        //        } catch (CmsException e) {
+        //            handleCmsException(e);
+        //            return null;
+        //        }
     }
 
     /**

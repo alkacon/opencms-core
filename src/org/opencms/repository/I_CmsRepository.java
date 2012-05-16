@@ -29,6 +29,7 @@ package org.opencms.repository;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 
 /**
  * Represents a repository.<p> 
@@ -58,8 +59,9 @@ public interface I_CmsRepository extends I_CmsConfigurationParameterHandler {
      * Initializes this repository with an admin CMS object.<p>
      * 
      * @param cms an admin CMS object 
+     * @throws CmsException if something goes wrong 
      */
-    void initializeCms(CmsObject cms);
+    void initializeCms(CmsObject cms) throws CmsException;
 
     /**
      * Sets the repository filter.<p>

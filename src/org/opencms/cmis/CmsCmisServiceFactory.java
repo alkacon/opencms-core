@@ -55,7 +55,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
     /**
      * An invocation handler which wraps a service and is used for debugging/logging CMIS service calls.<p>
      */
-    static class ServiceLogHandler implements InvocationHandler {
+    static class LoggingServiceProxy implements InvocationHandler {
 
         /** The CMIS service interfaces. */
         private static Set<Class<?>> m_serviceInterfaces = new HashSet<Class<?>>();
@@ -68,7 +68,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
          * 
          * @param service the service to wrap
          */
-        public ServiceLogHandler(CmisService service) {
+        public LoggingServiceProxy(CmisService service) {
 
             m_service = service;
         }
@@ -131,7 +131,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
     protected static final Log LOG = CmsLog.getLog(CmsCmisServiceFactory.class);
 
     /** Default value for maximum depth of objects to return. */
-    private static final BigInteger DEFAULT_DEPTH_OBJECTS = BigInteger.valueOf(10);
+    private static final BigInteger DEFAULT_DEPTH_OBJECTS = BigInteger.valueOf(100);
 
     /** Default value for maximum depth of types to return. */
     private static final BigInteger DEFAULT_DEPTH_TYPES = BigInteger.valueOf(-1);
@@ -161,7 +161,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
         CmisService proxyService = (CmisService)Proxy.newProxyInstance(
             this.getClass().getClassLoader(),
             new Class[] {CmisService.class},
-            new ServiceLogHandler(service));
+            new LoggingServiceProxy(service));
         CmisServiceWrapper<CmisService> wrapperService = new CmisServiceWrapper<CmisService>(
             proxyService,
             DEFAULT_MAX_ITEMS_TYPES,

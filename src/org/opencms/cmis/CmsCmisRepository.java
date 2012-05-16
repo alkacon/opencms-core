@@ -79,7 +79,6 @@ import org.apache.chemistry.opencmis.commons.data.ObjectParentData;
 import org.apache.chemistry.opencmis.commons.data.PermissionMapping;
 import org.apache.chemistry.opencmis.commons.data.Properties;
 import org.apache.chemistry.opencmis.commons.data.PropertyData;
-import org.apache.chemistry.opencmis.commons.data.RenditionData;
 import org.apache.chemistry.opencmis.commons.data.RepositoryInfo;
 import org.apache.chemistry.opencmis.commons.definitions.PermissionDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
@@ -116,7 +115,6 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectListImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectParentDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PermissionDefinitionDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PermissionMappingDataImpl;
-import org.apache.chemistry.opencmis.commons.impl.dataobjects.RenditionDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.RepositoryCapabilitiesImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.RepositoryInfoImpl;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
@@ -453,7 +451,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     public synchronized void deleteObject(CmsCmisCallContext context, String objectId, boolean allVersions) {
 
         checkWriteAccess();
-        getHelper(objectId, getCmsObject(context)).deleteObject(context, objectId, allVersions);
+        getHelper(objectId).deleteObject(context, objectId, allVersions);
     }
 
     /**
@@ -492,7 +490,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
      */
     public synchronized Acl getAcl(CmsCmisCallContext context, String objectId, boolean onlyBasicPermissions) {
 
-        return getHelper(objectId, getCmsObject(context)).getAcl(context, objectId, onlyBasicPermissions);
+        return getHelper(objectId).getAcl(context, objectId, onlyBasicPermissions);
     }
 
     /**
@@ -500,7 +498,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
      */
     public synchronized AllowableActions getAllowableActions(CmsCmisCallContext context, String objectId) {
 
-        return getHelper(objectId, getCmsObject(context)).getAllowableActions(context, objectId);
+        return getHelper(objectId).getAllowableActions(context, objectId);
     }
 
     /**
@@ -538,7 +536,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         BigInteger skipCount) {
 
         try {
-            CmsCmisResourceHelper helper = new CmsCmisResourceHelper(this);
+            CmsCmisResourceHelper helper = getResourceHelper();
 
             // split filter
             Set<String> filterCollection = splitFilter(filter);
@@ -661,7 +659,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         boolean foldersOnly) {
 
         try {
-            CmsCmisResourceHelper helper = new CmsCmisResourceHelper(this);
+            CmsCmisResourceHelper helper = getResourceHelper();
 
             // check depth
             int d = (depth == null ? 2 : depth.intValue());
@@ -770,7 +768,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         boolean includePolicyIds,
         boolean includeAcl) {
 
-        return getHelper(objectId, getCmsObject(context)).getObject(
+        return getHelper(objectId).getObject(
             context,
             objectId,
             filter,
@@ -797,7 +795,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     ) {
 
         try {
-            CmsCmisResourceHelper helper = new CmsCmisResourceHelper(this);
+            CmsCmisResourceHelper helper = getResourceHelper();
 
             // split filter
             Set<String> filterCollection = splitFilter(filter);
@@ -835,7 +833,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         boolean includeRelativePathSegment) {
 
         try {
-            CmsCmisResourceHelper helper = new CmsCmisResourceHelper(this);
+            CmsCmisResourceHelper helper = getResourceHelper();
 
             // split filter
             Set<String> filterCollection = splitFilter(filter);
@@ -930,32 +928,6 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
         ObjectData object = getObject(context, objectId, null, false, null, null, false, false);
         return object.getProperties();
-    }
-
-    /**
-     * @see org.opencms.cmis.I_CmsCmisRepository#getRenditions(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger)
-     */
-    public synchronized List<RenditionData> getRenditions(
-        CmsCmisCallContext context,
-        String objectId,
-        String renditionFilter,
-        BigInteger maxItems,
-        BigInteger skipCount) {
-
-        try {
-            CmsObject cms = getCmsObject(context);
-            CmsUUID structureId = new CmsUUID(objectId);
-            CmsResource resource = cms.readResource(structureId);
-            RenditionDataImpl rendition = new RenditionDataImpl();
-            rendition.setKind("opencms:rendered");
-            rendition.setMimeType(OpenCms.getResourceManager().getMimeType(resource.getRootPath(), "UTF-8"));
-            rendition.setStreamId("rendered");
-            List<RenditionData> result = Collections.singletonList((RenditionData)rendition);
-            return result;
-        } catch (CmsException e) {
-            handleCmsException(e);
-            return null;
-        }
     }
 
     /**
@@ -1079,24 +1051,19 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     /**
      * @see org.opencms.cmis.I_CmsCmisRepository#initializeCms(org.opencms.file.CmsObject)
      */
-    public void initializeCms(CmsObject cms) {
+    public void initializeCms(CmsObject cms) throws CmsException {
 
         m_adminCms = cms;
-        try {
-            m_typeManager = CmsCmisTypeManager.getDefaultInstance(m_adminCms);
-            String projectName = m_parameterConfiguration.getString("project", "Online");
-            CmsResource root = m_adminCms.readResource("/");
-            CmsObject offlineCms = OpenCms.initCmsObject(m_adminCms);
-            CmsProject project = m_adminCms.readProject(projectName);
-            m_project = project;
-            offlineCms.getRequestContext().setCurrentProject(project);
-            m_adminCms = offlineCms;
-            m_root = root;
-            m_isReadOnly = project.isOnlineProject();
-        } catch (CmsException e) {
-            throw new RuntimeException(e);
-        }
-
+        m_typeManager = CmsCmisTypeManager.getDefaultInstance(m_adminCms);
+        String projectName = m_parameterConfiguration.getString("project", "Online");
+        CmsResource root = m_adminCms.readResource("/");
+        CmsObject offlineCms = OpenCms.initCmsObject(m_adminCms);
+        CmsProject project = m_adminCms.readProject(projectName);
+        m_project = project;
+        offlineCms.getRequestContext().setCurrentProject(project);
+        m_adminCms = offlineCms;
+        m_root = root;
+        m_isReadOnly = project.isOnlineProject();
     }
 
     /**
@@ -1303,7 +1270,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
             }
             relations.add(relation);
         }
-        CmsCmisRelationHelper helper = new CmsCmisRelationHelper(this);
+        CmsCmisRelationHelper helper = getRelationHelper();
         for (CmsRelation relation : relations) {
             ObjectData objData = helper.collectObjectData(
                 context,
@@ -1347,14 +1314,13 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     }
 
     /**
-     * Creates a helper object to perform CRUD operations for the given object id.<p>
+     * Gets the correct helper object for a given object id to perform operations on the corresponding object.<p>
      * 
      * @param objectId the object id 
-     * @param cms the CMS context 
      * 
      * @return the helper object to use for the given object id 
      */
-    I_CmsCmisObjectHelper getHelper(String objectId, CmsObject cms) {
+    I_CmsCmisObjectHelper getHelper(String objectId) {
 
         if (CmsUUID.isValidUUID(objectId)) {
             return getResourceHelper();
@@ -1416,7 +1382,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         boolean includePathSegments) {
 
         try {
-            CmsCmisResourceHelper helper = new CmsCmisResourceHelper(this);
+            CmsCmisResourceHelper helper = getResourceHelper();
             List<CmsResource> children = cms.getResourcesInFolder(cms.getSitePath(folder), CmsResourceFilter.DEFAULT);
             Collections.sort(children, new Comparator<CmsResource>() {
 

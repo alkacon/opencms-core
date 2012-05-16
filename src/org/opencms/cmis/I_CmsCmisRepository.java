@@ -27,9 +27,7 @@
 
 package org.opencms.cmis;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.file.CmsObject;
 import org.opencms.repository.CmsRepositoryFilter;
 import org.opencms.repository.I_CmsRepository;
 
@@ -62,11 +60,6 @@ import org.apache.chemistry.opencmis.commons.spi.Holder;
  * Base interface for OpenCms CMIS repositories.<p>
  */
 public interface I_CmsCmisRepository extends I_CmsRepository {
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
-     */
-    void addConfigurationParameter(String paramName, String paramValue);
 
     /**
      * Creates a new document.<p>
@@ -518,16 +511,6 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
         boolean includePropertyDefinitions);
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
-     */
-    void initConfiguration() throws CmsConfigurationException;
-
-    /**
-     * @see org.opencms.repository.I_CmsRepository#initializeCms(org.opencms.file.CmsObject)
-     */
-    void initializeCms(CmsObject cms);
-
-    /**
      * Moves an object.<p>
      *  
      * @param context the call context 
@@ -552,16 +535,6 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
         boolean overwriteFlag,
         Holder<String> changeToken,
         ContentStream contentStream);
-
-    /**
-     * @see org.opencms.repository.I_CmsRepository#setFilter(org.opencms.repository.CmsRepositoryFilter)
-     */
-    void setFilter(CmsRepositoryFilter filter);
-
-    /**
-     * @see org.opencms.repository.I_CmsRepository#setName(java.lang.String)
-     */
-    void setName(String name);
 
     /**
      * Updates the properties for an object.<p>
