@@ -1149,6 +1149,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     public void setFilter(CmsRepositoryFilter filter) {
 
         m_filter = filter;
+        LOG.warn("Filters not supported by CMIS repositories, ignoring configuration...");
     }
 
     /**
