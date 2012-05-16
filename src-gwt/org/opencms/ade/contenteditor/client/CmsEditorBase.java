@@ -29,9 +29,10 @@ package org.opencms.ade.contenteditor.client;
 
 import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.I_WidgetFactory;
-import com.alkacon.acacia.client.widgets.HTMLWidget;
+import com.alkacon.acacia.client.widgets.HalloWidget;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.StringWidget;
+import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 import com.alkacon.vie.client.Vie;
 import com.alkacon.vie.shared.I_Entity;
 
@@ -71,18 +72,25 @@ public class CmsEditorBase extends EditorBase {
 
             public I_EditWidget createWidget(String configuration) {
 
-                I_EditWidget widget = new StringWidget();
-                widget.setConfiguration(configuration);
-                return widget;
+                return new StringWidget();
+            }
+
+            public I_EditWidget wrapElement(String configuration, com.google.gwt.user.client.Element element) {
+
+                return new StringWidget(element);
             }
         });
         widgetFactories.put("org.opencms.widgets.CmsHtmlWidget", new I_WidgetFactory() {
 
             public I_EditWidget createWidget(String configuration) {
 
-                I_EditWidget widget = new HTMLWidget();
-                widget.setConfiguration(configuration);
+                I_EditWidget widget = new TinyMCEWidget();
                 return widget;
+            }
+
+            public I_EditWidget wrapElement(String configuration, com.google.gwt.user.client.Element element) {
+
+                return new HalloWidget(element);
             }
         });
         getWidgetService().setWidgetFactories(widgetFactories);
