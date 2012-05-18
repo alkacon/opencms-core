@@ -446,17 +446,17 @@ public final class CmsCmisUtil {
         int permissionBits = ace.getPermissions().getPermissions();
         List<String> result = new ArrayList<String>();
         if (0 != (permissionBits & CmsPermissionSet.PERMISSION_READ)) {
-            result.add("cmis:read");
+            result.add(A_CmsCmisRepository.CMIS_READ);
         }
         if (0 != (permissionBits & CmsPermissionSet.PERMISSION_WRITE)) {
-            result.add("cmis:write");
+            result.add(A_CmsCmisRepository.CMIS_WRITE);
         }
         int all = CmsPermissionSet.PERMISSION_WRITE
             | CmsPermissionSet.PERMISSION_READ
             | CmsPermissionSet.PERMISSION_CONTROL
             | CmsPermissionSet.PERMISSION_DIRECT_PUBLISH;
         if ((permissionBits & all) == all) {
-            result.add("cmis:all");
+            result.add(A_CmsCmisRepository.CMIS_ALL);
         }
         return result;
     }

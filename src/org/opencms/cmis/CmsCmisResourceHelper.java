@@ -71,6 +71,7 @@ import org.apache.chemistry.opencmis.commons.data.Acl;
 import org.apache.chemistry.opencmis.commons.data.AllowableActions;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.Properties;
+import org.apache.chemistry.opencmis.commons.data.RenditionData;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
@@ -87,6 +88,8 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.AllowableActionsIm
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ObjectDataImpl;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.PropertiesImpl;
 import org.apache.chemistry.opencmis.commons.impl.server.ObjectInfoImpl;
+import org.apache.chemistry.opencmis.commons.impl.server.RenditionInfoImpl;
+import org.apache.chemistry.opencmis.commons.server.RenditionInfo;
 
 /**
  * Helper class for CRUD operations on resources.<p>
@@ -201,7 +204,9 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
         boolean includeAcl) {
 
         try {
-
+            //            if (renditionFilter.equals("cmis:none") && context.isObjectInfoRequired()) {
+            //                renditionFilter = "*";
+            //            }
             // check id
             if (objectId == null) {
                 throw new CmisInvalidArgumentException("Object Id must be set.");
@@ -219,6 +224,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 cms,
                 file,
                 filterCollection,
+                renditionFilter,
                 includeAllowableActions,
                 includeAcl,
                 includeRelationships);
@@ -317,7 +323,8 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
      * @param context the call context
      * @param cms the CMS context
      * @param resource the resource for which we want the ObjectData
-     * @param filter the property filter string 
+     * @param filter the property filter
+     * @param renditionFilter the rendition filter string 
      * @param includeAllowableActions true if the allowable actions should be included  
      * @param includeAcl true if the ACL entries should be included
      * @param includeRelationships true if relationships should be included 
@@ -330,13 +337,13 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
         CmsObject cms,
         CmsResource resource,
         Set<String> filter,
+        String renditionFilter,
         boolean includeAllowableActions,
         boolean includeAcl,
         IncludeRelationships includeRelationships) throws CmsException {
 
         ObjectDataImpl result = new ObjectDataImpl();
         ObjectInfoImpl objectInfo = new ObjectInfoImpl();
-
         result.setProperties(collectProperties(cms, resource, filter, objectInfo));
 
         if (includeAllowableActions) {
@@ -367,6 +374,8 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 false);
             result.setRelationships(relationData);
         }
+
+        result.setRenditions(collectRenditions(cms, resource, renditionFilter, objectInfo));
 
         if (context.isObjectInfoRequired()) {
             objectInfo.setObject(result);
@@ -431,7 +440,6 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             objectInfo.setIsCurrentVersion(true);
             objectInfo.setRelationshipSourceIds(relationSourceIds);
             objectInfo.setRelationshipTargetIds(relationTargetIds);
-            objectInfo.setRenditionInfos(null);
             objectInfo.setSupportsDescendants(true);
             objectInfo.setSupportsFolderTree(true);
             objectInfo.setSupportsPolicies(false);
@@ -449,7 +457,6 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             objectInfo.setIsCurrentVersion(true);
             objectInfo.setRelationshipSourceIds(relationSourceIds);
             objectInfo.setRelationshipTargetIds(relationTargetIds);
-            objectInfo.setRenditionInfos(null);
             objectInfo.setSupportsDescendants(false);
             objectInfo.setSupportsFolderTree(false);
             objectInfo.setSupportsPolicies(false);
@@ -457,17 +464,13 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             objectInfo.setWorkingCopyId(null);
             objectInfo.setWorkingCopyOriginalId(null);
         }
-
-        // let's do it
         try {
             PropertiesImpl result = new PropertiesImpl();
 
-            // id
             String id = resource.getStructureId().toString();
             addPropertyId(tm, result, typeId, filter, PropertyIds.OBJECT_ID, id);
             objectInfo.setId(id);
 
-            // name
             String name = resource.getName();
             addPropertyString(tm, result, typeId, filter, PropertyIds.NAME, name);
             objectInfo.setName(name);
@@ -606,6 +609,44 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             }
             throw new CmisRuntimeException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Collects renditions for a resource.<p>
+     * 
+     * @param cms the CMS context
+     * @param resource the resource for which we want the renditions 
+     * @param renditionFilterString the filter string for the renditions 
+     * @param objectInfo the object info in which the renditions should be saved
+     *  
+     * @return the rendition data for the given resource
+     */
+    protected List<RenditionData> collectRenditions(
+        CmsObject cms,
+        CmsResource resource,
+        String renditionFilterString,
+        ObjectInfoImpl objectInfo) {
+
+        List<I_CmsCmisRenditionProvider> providers = m_repository.getRenditionProviders(new CmsCmisRenditionFilter(
+            renditionFilterString));
+        List<RenditionData> result = new ArrayList<RenditionData>();
+        List<RenditionInfo> renditionInfos = new ArrayList<RenditionInfo>();
+        for (I_CmsCmisRenditionProvider provider : providers) {
+            RenditionData renditionData = provider.getRendition(cms, resource);
+            if (renditionData != null) {
+                RenditionInfoImpl renditionInfo = new RenditionInfoImpl();
+                renditionInfo.setContentType(renditionData.getMimeType());
+                renditionInfo.setKind(renditionData.getKind());
+                renditionInfo.setId(renditionData.getStreamId());
+                result.add(renditionData);
+                renditionInfos.add(renditionInfo);
+            }
+        }
+        if (objectInfo != null) {
+            objectInfo.setRenditionInfos(renditionInfos);
+        }
+        return result;
+
     }
 
 }

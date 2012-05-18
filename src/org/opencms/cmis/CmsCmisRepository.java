@@ -79,6 +79,7 @@ import org.apache.chemistry.opencmis.commons.data.ObjectParentData;
 import org.apache.chemistry.opencmis.commons.data.PermissionMapping;
 import org.apache.chemistry.opencmis.commons.data.Properties;
 import org.apache.chemistry.opencmis.commons.data.PropertyData;
+import org.apache.chemistry.opencmis.commons.data.RenditionData;
 import org.apache.chemistry.opencmis.commons.data.RepositoryInfo;
 import org.apache.chemistry.opencmis.commons.definitions.PermissionDefinition;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
@@ -197,6 +198,9 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /** The relation object helper. */
     private CmsCmisRelationHelper m_relationHelper = new CmsCmisRelationHelper(this);
+
+    /** The map of rendition providers by stream ids. */
+    private Map<String, I_CmsCmisRenditionProvider> m_renditionProviders = new HashMap<String, I_CmsCmisRenditionProvider>();
 
     /** The resource object helper. */
     private CmsCmisResourceHelper m_resourceHelper = new CmsCmisResourceHelper(this);
@@ -566,7 +570,15 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
             // set object info of the the folder
             if (context.isObjectInfoRequired()) {
-                helper.collectObjectData(context, cms, folder, null, false, false, includeRelationships);
+                helper.collectObjectData(
+                    context,
+                    cms,
+                    folder,
+                    null,
+                    renditionFilter,
+                    false,
+                    false,
+                    includeRelationships);
             }
 
             // prepare result
@@ -586,6 +598,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
                     cms,
                     child,
                     filterCollection,
+                    renditionFilter,
                     includeAllowableActions,
                     false,
                     includeRelationships));
@@ -624,12 +637,20 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         BigInteger length) {
 
         try {
-
+            CmsObject cms = getCmsObject(context);
             if ((offset != null) || (length != null)) {
                 throw new CmisInvalidArgumentException("Offset and Length are not supported!");
             }
-            CmsObject cms = getCmsObject(context);
             CmsResource resource = cms.readResource(new CmsUUID(objectId));
+
+            if ((streamId != null) && CmsUUID.isValidUUID(objectId)) {
+                I_CmsCmisRenditionProvider renditionProvider = m_renditionProviders.get(streamId);
+                if (renditionProvider == null) {
+                    throw new CmisRuntimeException("Invalid stream id " + streamId);
+                }
+                ContentStream result = renditionProvider.getContentStream(cms, resource);
+                return result;
+            }
             if (resource.isFolder()) {
                 throw new CmisStreamNotSupportedException("Not a file!");
             }
@@ -688,7 +709,15 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
             // set object info of the the folder
             if (context.isObjectInfoRequired()) {
-                helper.collectObjectData(context, cms, folder, null, false, false, IncludeRelationships.NONE);
+                helper.collectObjectData(
+                    context,
+                    cms,
+                    folder,
+                    null,
+                    "cmis:none",
+                    false,
+                    false,
+                    IncludeRelationships.NONE);
             }
 
             // get the tree
@@ -818,6 +847,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
                 cms,
                 file,
                 filterCollection,
+                renditionFilter,
                 includeAllowableActions,
                 includeAcl,
                 IncludeRelationships.NONE);
@@ -854,7 +884,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
             // set object info of the the object
             if (context.isObjectInfoRequired()) {
-                helper.collectObjectData(context, cms, file, null, false, false, IncludeRelationships.NONE);
+                helper.collectObjectData(context, cms, file, null, "cmis:none", false, false, IncludeRelationships.NONE);
             }
 
             // get parent folder
@@ -864,6 +894,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
                 cms,
                 parent,
                 filterCollection,
+                "cmis:none",
                 includeAllowableActions,
                 false,
                 IncludeRelationships.NONE);
@@ -937,6 +968,34 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     }
 
     /**
+     * @see org.opencms.cmis.I_CmsCmisRepository#getRenditions(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String, java.math.BigInteger, java.math.BigInteger)
+     */
+    public synchronized List<RenditionData> getRenditions(
+        CmsCmisCallContext context,
+        String objectId,
+        String renditionFilter,
+        BigInteger maxItems,
+        BigInteger skipCount) {
+
+        try {
+            CmsObject cms = getCmsObject(context);
+            CmsResource resource = cms.readResource(new CmsUUID(objectId));
+            return getResourceHelper().collectObjectData(
+                context,
+                cms,
+                resource,
+                null,
+                renditionFilter,
+                false,
+                false,
+                IncludeRelationships.NONE).getRenditions();
+        } catch (CmsException e) {
+            handleCmsException(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.cmis.I_CmsCmisRepository#getRepositoryInfo()
      */
     public synchronized RepositoryInfo getRepositoryInfo() {
@@ -971,7 +1030,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         capabilities.setCapabilityContentStreamUpdates(CapabilityContentStreamUpdates.ANYTIME);
         capabilities.setSupportsGetDescendants(Boolean.TRUE);
         capabilities.setSupportsGetFolderTree(Boolean.TRUE);
-        capabilities.setCapabilityRendition(CapabilityRenditions.NONE);
+        capabilities.setCapabilityRendition(CapabilityRenditions.READ);
         repositoryInfo.setCapabilities(capabilities);
 
         AclCapabilitiesDataImpl aclCapability = new AclCapabilitiesDataImpl();
@@ -980,31 +1039,31 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
         // permissions
         List<PermissionDefinition> permissions = new ArrayList<PermissionDefinition>();
-        permissions.add(createPermission("cmis:read", "Read"));
-        permissions.add(createPermission("cmis:write", "Write"));
-        permissions.add(createPermission("cmis:all", "All"));
+        permissions.add(createPermission(CMIS_READ, "Read"));
+        permissions.add(createPermission(CMIS_WRITE, "Write"));
+        permissions.add(createPermission(CMIS_ALL, "All"));
         aclCapability.setPermissionDefinitionData(permissions);
 
         // mappings
         PermissionMappings m = new PermissionMappings();
-        m.add(PermissionMapping.CAN_CREATE_DOCUMENT_FOLDER, "cmis:write");
-        m.add(PermissionMapping.CAN_CREATE_FOLDER_FOLDER, "cmis:write");
-        m.add(PermissionMapping.CAN_DELETE_CONTENT_DOCUMENT, "cmis:write");
-        m.add(PermissionMapping.CAN_DELETE_OBJECT, "cmis:write");
-        m.add(PermissionMapping.CAN_DELETE_TREE_FOLDER, "cmis:write");
-        m.add(PermissionMapping.CAN_GET_ACL_OBJECT, "cmis:read");
-        m.add(PermissionMapping.CAN_GET_ALL_VERSIONS_VERSION_SERIES, "cmis:read");
-        m.add(PermissionMapping.CAN_GET_CHILDREN_FOLDER, "cmis:read");
-        m.add(PermissionMapping.CAN_GET_DESCENDENTS_FOLDER, "cmis:read");
-        m.add(PermissionMapping.CAN_GET_FOLDER_PARENT_OBJECT, "cmis:read");
-        m.add(PermissionMapping.CAN_GET_PARENTS_FOLDER, "cmis:read");
-        m.add(PermissionMapping.CAN_GET_PROPERTIES_OBJECT, "cmis:read");
-        m.add(PermissionMapping.CAN_MOVE_OBJECT, "cmis:write");
-        m.add(PermissionMapping.CAN_MOVE_SOURCE, "cmis:write");
-        m.add(PermissionMapping.CAN_MOVE_TARGET, "cmis:write");
-        m.add(PermissionMapping.CAN_SET_CONTENT_DOCUMENT, "cmis:write");
-        m.add(PermissionMapping.CAN_UPDATE_PROPERTIES_OBJECT, "cmis:write");
-        m.add(PermissionMapping.CAN_VIEW_CONTENT_OBJECT, "cmis:read");
+        m.add(PermissionMapping.CAN_CREATE_DOCUMENT_FOLDER, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_CREATE_FOLDER_FOLDER, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_DELETE_CONTENT_DOCUMENT, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_DELETE_OBJECT, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_DELETE_TREE_FOLDER, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_GET_ACL_OBJECT, CMIS_READ);
+        m.add(PermissionMapping.CAN_GET_ALL_VERSIONS_VERSION_SERIES, CMIS_READ);
+        m.add(PermissionMapping.CAN_GET_CHILDREN_FOLDER, CMIS_READ);
+        m.add(PermissionMapping.CAN_GET_DESCENDENTS_FOLDER, CMIS_READ);
+        m.add(PermissionMapping.CAN_GET_FOLDER_PARENT_OBJECT, CMIS_READ);
+        m.add(PermissionMapping.CAN_GET_PARENTS_FOLDER, CMIS_READ);
+        m.add(PermissionMapping.CAN_GET_PROPERTIES_OBJECT, CMIS_READ);
+        m.add(PermissionMapping.CAN_MOVE_OBJECT, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_MOVE_SOURCE, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_MOVE_TARGET, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_SET_CONTENT_DOCUMENT, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_UPDATE_PROPERTIES_OBJECT, CMIS_WRITE);
+        m.add(PermissionMapping.CAN_VIEW_CONTENT_OBJECT, CMIS_READ);
         aclCapability.setPermissionMappingData(m);
         repositoryInfo.setAclCapabilities(aclCapability);
         return repositoryInfo;
@@ -1052,6 +1111,18 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
             m_filter.initConfiguration();
         }
         m_description = m_parameterConfiguration.getString("description", null);
+        List<String> renditionProviderClasses = m_parameterConfiguration.getList(
+            "rendition",
+            Collections.<String> emptyList());
+        for (String className : renditionProviderClasses) {
+            try {
+                I_CmsCmisRenditionProvider provider = (I_CmsCmisRenditionProvider)(Class.forName(className).newInstance());
+                String id = provider.getId();
+                m_renditionProviders.put(id, provider);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**
@@ -1293,6 +1364,26 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     }
 
     /**
+     * Gets the rendition providers matching the given filter.<p>
+     * 
+     * @param filter the rendition filter 
+     * 
+     * @return the rendition providers matching the filter 
+     */
+    protected List<I_CmsCmisRenditionProvider> getRenditionProviders(CmsCmisRenditionFilter filter) {
+
+        List<I_CmsCmisRenditionProvider> result = new ArrayList<I_CmsCmisRenditionProvider>();
+        for (I_CmsCmisRenditionProvider provider : m_renditionProviders.values()) {
+            String mimetype = provider.getMimeType();
+            String kind = provider.getKind();
+            if (filter.accept(kind, mimetype)) {
+                result.add(provider);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Extracts the resource type from a set of CMIS properties.<p>
      * 
      * @param properties the CMIS properties 
@@ -1387,6 +1478,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
                     cms,
                     child,
                     filter,
+                    "cmis:none",
                     includeAllowableActions,
                     false,
                     IncludeRelationships.NONE));
