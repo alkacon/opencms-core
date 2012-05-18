@@ -37,6 +37,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/chemistry-opencmis-server-support-0.6.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-beanutils-1.8.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-codec-1.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-beanutils-1.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-collections-3.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-dbcp-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-digester-1.8.jar"/>
@@ -126,4 +127,13 @@
 	<classpathentry exported="true" kind="src" path="src-components"/>
 	<classpathentry exported="true" kind="src" path="src-modules"/>
 	<classpathentry exported="true" kind="src" path="src-setup"/>
+	<classpathentry exported="true" kind="lib" path="webapp/setup/database/hsqldb/hsqldb-1.8.0.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="webapp/setup/database/oracle/ojdbc14-10.2.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-codec-1.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-io-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/chemistry-opencmis-commons-api-0.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/chemistry-opencmis-commons-impl-0.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/chemistry-opencmis-server-bindings-0.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/chemistry-opencmis-server-support-0.7.0.jar"/>
+	<classpathentry exported="true" kind="output" path="bin"/>
 </classpath>
