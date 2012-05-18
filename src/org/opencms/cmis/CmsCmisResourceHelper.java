@@ -472,6 +472,9 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             objectInfo.setId(id);
 
             String name = resource.getName();
+            if ("".equals(name)) {
+                name = "/";
+            }
             addPropertyString(tm, result, typeId, filter, PropertyIds.NAME, name);
             objectInfo.setName(name);
 
