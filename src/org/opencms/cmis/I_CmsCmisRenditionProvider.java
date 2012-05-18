@@ -30,7 +30,6 @@ package org.opencms.cmis;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 
-import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.data.RenditionData;
 
 /** 
@@ -46,7 +45,7 @@ public interface I_CmsCmisRenditionProvider {
      * 
      * @return the content stream for the rendition of the resource 
      */
-    ContentStream getContentStream(CmsObject cms, CmsResource resource);
+    byte[] getContent(CmsObject cms, CmsResource resource);
 
     /**
      * Gets the rendition stream id.<p>

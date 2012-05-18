@@ -170,6 +170,15 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     }
 
+    /** The description parameter name. */
+    public static final String PARAM_DESCRIPTION = "description";
+
+    /** The project parameter name. */
+    public static final String PARAM_PROJECT = "project";
+
+    /** The rendition parameter name. */
+    public static final String PARAM_RENDITION = "rendition";
+
     /** The logger instance for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsCmisRepository.class);
 
@@ -638,32 +647,26 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
         try {
             CmsObject cms = getCmsObject(context);
-            if ((offset != null) || (length != null)) {
-                throw new CmisInvalidArgumentException("Offset and Length are not supported!");
-            }
             CmsResource resource = cms.readResource(new CmsUUID(objectId));
-
-            if ((streamId != null) && CmsUUID.isValidUUID(objectId)) {
+            byte[] contents = null;
+            if (streamId != null) {
                 I_CmsCmisRenditionProvider renditionProvider = m_renditionProviders.get(streamId);
                 if (renditionProvider == null) {
                     throw new CmisRuntimeException("Invalid stream id " + streamId);
                 }
-                ContentStream result = renditionProvider.getContentStream(cms, resource);
-                return result;
-            }
-            if (resource.isFolder()) {
+                contents = renditionProvider.getContent(cms, resource);
+            } else if (resource.isFolder()) {
                 throw new CmisStreamNotSupportedException("Not a file!");
+            } else {
+                CmsFile file = cms.readFile(resource);
+                contents = file.getContents();
             }
-            CmsFile file = cms.readFile(resource);
-            byte[] contents;
-            contents = file.getContents();
             contents = extractRange(contents, offset, length);
             InputStream stream = new ByteArrayInputStream(contents);
-
             ContentStreamImpl result = new ContentStreamImpl();
-            result.setFileName(file.getName());
+            result.setFileName(resource.getName());
             result.setLength(BigInteger.valueOf(contents.length));
-            result.setMimeType(OpenCms.getResourceManager().getMimeType(file.getRootPath(), null, "text/plain"));
+            result.setMimeType(OpenCms.getResourceManager().getMimeType(resource.getRootPath(), null, "text/plain"));
             result.setStream(stream);
 
             return result;
@@ -1110,9 +1113,9 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         if (m_filter != null) {
             m_filter.initConfiguration();
         }
-        m_description = m_parameterConfiguration.getString("description", null);
+        m_description = m_parameterConfiguration.getString(PARAM_DESCRIPTION, null);
         List<String> renditionProviderClasses = m_parameterConfiguration.getList(
-            "rendition",
+            PARAM_RENDITION,
             Collections.<String> emptyList());
         for (String className : renditionProviderClasses) {
             try {
@@ -1132,7 +1135,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
         m_adminCms = cms;
         m_typeManager = CmsCmisTypeManager.getDefaultInstance(m_adminCms);
-        String projectName = m_parameterConfiguration.getString("project", "Online");
+        String projectName = m_parameterConfiguration.getString(PARAM_PROJECT, CmsProject.ONLINE_PROJECT_NAME);
         CmsResource root = m_adminCms.readResource("/");
         CmsObject offlineCms = OpenCms.initCmsObject(m_adminCms);
         CmsProject project = m_adminCms.readProject(projectName);
