@@ -166,6 +166,7 @@
 
 		<for list="${module.dependencies}" param="dependency" trim="true">
 			<sequential>
+				<echo message="Processing dependency @{dependency} of ${module.name}" />
 				<findmoduledir name="@{dependency}" result="@{dependency}.input" external="dummy" />
 				<property name="@{dependency}.output.classes" location="${opencms.build}/classes-@{dependency}" />
 				<property name="@{dependency}.output.jar" location="${opencms.build}/jars-@{dependency}" />
