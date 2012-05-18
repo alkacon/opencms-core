@@ -57,9 +57,15 @@
     </context-param>
     -->
     
-    <listener>
+    <!-- *************************** start of CMIS configuration ******************************** -->
+     <listener>
 		<listener-class>org.apache.chemistry.opencmis.server.impl.CmisRepositoryContextListener</listener-class>
 	</listener>
+	
+	<listener>
+		<listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+	</listener>
+	
 	
 	<servlet>
 		<servlet-name>cmisatom</servlet-name>
@@ -71,10 +77,23 @@
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	
+   <servlet>
+		<servlet-name>cmisws</servlet-name>
+		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>cmisws</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>cmisatom</servlet-name>
 		<url-pattern>/atom/*</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>	
+	<!-- *************************** end of CMIS configuration ******************************** -->
 
     <listener>
         <listener-class>org.opencms.main.OpenCmsListener</listener-class>
