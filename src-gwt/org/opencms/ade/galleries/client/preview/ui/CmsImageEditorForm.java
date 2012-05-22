@@ -48,7 +48,6 @@ import java.util.Map.Entry;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -180,21 +179,6 @@ public class CmsImageEditorForm extends Composite {
         m_selectAlign.addOption("", Messages.get().key(Messages.GUI_IMAGE_ALIGN_NOT_SET_0));
         m_selectAlign.addOption("left", Messages.get().key(Messages.GUI_IMAGE_ALIGN_LEFT_0));
         m_selectAlign.addOption("right", Messages.get().key(Messages.GUI_IMAGE_ALIGN_RIGHT_0));
-
-        m_checkboxSpacing.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-
-                // if spacing is activated and no previous values present, set '5' as default 
-                if (event.getValue().booleanValue()
-                    && CmsStringUtil.isEmptyOrWhitespaceOnly(m_inputHSpace.getFormValueAsString())
-                    && CmsStringUtil.isEmptyOrWhitespaceOnly(m_inputVSpace.getFormValueAsString())) {
-                    m_inputHSpace.setFormValueAsString("5");
-                    m_inputVSpace.setFormValueAsString("5");
-                }
-            }
-        });
-
         m_fields = new HashMap<Attribute, I_CmsFormWidget>();
         m_fields.put(Attribute.alt, m_inputAltTitle);
         m_fields.put(Attribute.hspace, m_inputHSpace);
@@ -217,10 +201,14 @@ public class CmsImageEditorForm extends Composite {
     public void fillContent(CmsImageInfoBean imageInfo, CmsJSONMap imageAttributes, boolean initialFill) {
 
         m_initialImageAttributes = imageAttributes;
+        boolean hasSpacing = false;
         for (Entry<Attribute, I_CmsFormWidget> entry : m_fields.entrySet()) {
             String val = imageAttributes.getString(entry.getKey().name());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
                 entry.getValue().setFormValueAsString(val);
+                if ((entry.getKey() == Attribute.hspace) || (entry.getKey() == Attribute.vspace)) {
+                    hasSpacing = true;
+                }
             } else {
                 if (entry.getKey() == Attribute.alt) {
                     entry.getValue().setFormValueAsString(
@@ -234,6 +222,7 @@ public class CmsImageEditorForm extends Composite {
                 }
             }
         }
+        m_checkboxSpacing.setFormValueAsString("" + hasSpacing);
     }
 
     /**
@@ -292,6 +281,28 @@ public class CmsImageEditorForm extends Composite {
     protected void onResetTitleClick(ClickEvent event) {
 
         resetValue(Attribute.alt);
+    }
+
+    /**
+     * Handles value changes on the insert spacing check box.<p>
+     * 
+     * @param event the event to handle
+     */
+    @UiHandler("m_checkboxSpacing")
+    protected void onChangeSpacing(ValueChangeEvent<Boolean> event) {
+
+        // if spacing is activated and no previous values present, set '5' as default 
+        if (event.getValue().booleanValue()) {
+            m_inputHSpace.setEnabled(true);
+            m_inputVSpace.setEnabled(true);
+            m_inputHSpace.setFormValueAsString("5");
+            m_inputVSpace.setFormValueAsString("5");
+        } else {
+            m_inputHSpace.setFormValueAsString("");
+            m_inputVSpace.setFormValueAsString("");
+            m_inputHSpace.setEnabled(false);
+            m_inputVSpace.setEnabled(false);
+        }
     }
 
     /**
