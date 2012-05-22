@@ -30,6 +30,7 @@ package org.opencms.db.jpa;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsAlias;
+import org.opencms.db.CmsAliasFilter;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -1215,14 +1216,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#deleteAliasesById(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#deleteAliases(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.db.CmsAliasFilter)
      */
-    public void deleteAliasesById(CmsDbContext dbc, CmsProject project, CmsUUID structureId)
+    public void deleteAliases(CmsDbContext dbc, CmsProject project, CmsAliasFilter filter)
     throws CmsDataAccessException {
 
+        String baseQuery = "DELETE FROM CmsDAOAlias alias ";
         try {
-            Query query = m_sqlManager.createQuery(dbc, "C_ALIAS_DELETE_BY_ID_1");
-            query.setParameter(1, structureId.toString());
+            Query query = getAliasQueryForFilter(dbc, baseQuery, filter);
             query.executeUpdate();
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
@@ -1815,41 +1816,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readAliasByPath(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#readAliases(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.db.CmsAliasFilter)
      */
-    public CmsAlias readAliasByPath(CmsDbContext dbc, CmsProject project, String siteRoot, String path)
+    public List<CmsAlias> readAliases(CmsDbContext dbc, CmsProject project, CmsAliasFilter filter)
     throws CmsDataAccessException {
 
         try {
-            Query query = m_sqlManager.createQuery(dbc, "C_ALIAS_GET_BY_PATH_2");
-            query.setParameter(1, siteRoot);
-            query.setParameter(2, path);
-            @SuppressWarnings("unchecked")
-            List<CmsDAOAlias> resultList = new ArrayList<CmsDAOAlias>(query.getResultList());
-            if (resultList.isEmpty()) {
-                return null;
-            } else {
-                CmsDAOAlias bean = (resultList.get(0));
-                return new CmsAlias(
-                    new CmsUUID(bean.getStructureId()),
-                    bean.getSiteRoot(),
-                    bean.getAliasPath(),
-                    CmsAliasMode.fromInt(bean.getMode()));
-            }
-        } catch (PersistenceException e) {
-            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readAliasesByStructureId(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
-     */
-    public List<CmsAlias> readAliasesByStructureId(CmsDbContext dbc, CmsProject project, CmsUUID structureId)
-    throws CmsDataAccessException {
-
-        try {
-            Query query = m_sqlManager.createQuery(dbc, "C_ALIAS_GET_BY_ID_1");
-            query.setParameter(1, structureId.toString());
+            Query query = getAliasQueryForFilter(dbc, "SELECT alias FROM CmsDAOAlias alias ", filter);
             @SuppressWarnings("unchecked")
             List<CmsDAOAlias> resultList = query.getResultList();
             List<CmsAlias> result = new ArrayList<CmsAlias>();
@@ -4382,6 +4355,54 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
         }
+    }
+
+    /** 
+     * Helper method to convert an alias filter to JPQL conditions.<p>
+     * 
+     * @param filter the alias filter
+     * @return a pair containing a condition string and the parameters which are necessary for the conditions 
+     */
+    private CmsPair<String, List<String>> buildAliasConditions(CmsAliasFilter filter) {
+
+        List<String> conditions = new ArrayList<String>();
+        conditions.add("1 = 1");
+        List<String> conditionParams = new ArrayList<String>();
+        if (filter.getSiteRoot() != null) {
+            conditions.add("alias.m_siteRoot = ?");
+            conditionParams.add(filter.getSiteRoot());
+        }
+        if (filter.getStructureId() != null) {
+            conditions.add("alias.m_structureId = ?");
+            conditionParams.add(filter.getStructureId().toString());
+        }
+        if (filter.getPath() != null) {
+            conditions.add("alias.m_aliasPath = ?");
+            conditionParams.add(filter.getPath());
+        }
+        String conditionString = CmsStringUtil.listAsString(conditions, " AND ");
+        return CmsPair.create(conditionString, conditionParams);
+    }
+
+    /**
+     * Helper method to create a full query for aliases from a given base query and an alias filter.<p>
+     * 
+     * @param dbc the database context 
+     * @param baseQuery the base query, which will be used as the prefix for the full query
+     * @param filter the alias filter 
+     * 
+     * @return the full query
+     */
+    private Query getAliasQueryForFilter(CmsDbContext dbc, String baseQuery, CmsAliasFilter filter) {
+
+        CmsPair<String, List<String>> conditionData = buildAliasConditions(filter);
+        String query = baseQuery + " WHERE " + conditionData.getFirst();
+        Query q = m_sqlManager.createQueryFromJPQL(dbc, query);
+        List<String> conditionParams = conditionData.getSecond();
+        for (int i = 0; i < conditionParams.size(); i++) {
+            q.setParameter(1 + i, conditionParams.get(i));
+        }
+        return q;
     }
 
     /**

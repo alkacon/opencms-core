@@ -29,6 +29,7 @@ package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.db.CmsAliasFilter;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
@@ -1234,10 +1235,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
             m_driverManager.publishUrlNameMapping(dbc, offlineResource);
             if (offlineResource.getState().isDeleted()) {
-                m_driverManager.getVfsDriver(dbc).deleteAliasesById(
+                m_driverManager.getVfsDriver(dbc).deleteAliases(
                     dbc,
                     onlineProject,
-                    offlineResource.getStructureId());
+                    new CmsAliasFilter(null, null, offlineResource.getStructureId()));
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);

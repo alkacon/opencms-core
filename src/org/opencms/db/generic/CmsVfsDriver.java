@@ -30,6 +30,7 @@ package org.opencms.db.generic;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsAlias;
+import org.opencms.db.CmsAliasFilter;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
@@ -967,18 +968,26 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#deleteAliasesById(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#deleteAliases(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.db.CmsAliasFilter)
      */
-    public void deleteAliasesById(CmsDbContext dbc, CmsProject project, CmsUUID structureId)
+    public void deleteAliases(CmsDbContext dbc, CmsProject project, CmsAliasFilter filter)
     throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
+        if (filter.isNullFilter()) {
+            throw new IllegalArgumentException("Trivial filter is not allowed for deleting aliases.");
+        }
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ALIAS_DELETE_BY_ID_1");
-            stmt.setString(1, structureId.toString());
+            CmsPair<String, List<String>> filterData = buildAliasConditions(filter);
+            String sql = "DELETE FROM CMS_ALIASES WHERE " + filterData.getFirst();
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
+            List<String> conditionParams = filterData.getSecond();
+            for (int i = 0; i < conditionParams.size(); i++) {
+                stmt.setString(1 + i, conditionParams.get(i));
+            }
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1630,9 +1639,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readAliasByPath(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#readAliases(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.db.CmsAliasFilter)
      */
-    public CmsAlias readAliasByPath(CmsDbContext dbc, CmsProject project, String siteRoot, String path)
+    public List<CmsAlias> readAliases(CmsDbContext dbc, CmsProject project, CmsAliasFilter filter)
     throws CmsDataAccessException {
 
         Connection conn = null;
@@ -1640,37 +1649,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         ResultSet res = null;
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ALIAS_GET_BY_PATH_2");
-            stmt.setString(1, siteRoot);
-            stmt.setString(2, path);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                return internalReadAlias(res);
-            } else {
-                return null;
+            CmsPair<String, List<String>> conditionPair = buildAliasConditions(filter);
+            String conditionString = conditionPair.getFirst();
+            List<String> conditionParams = conditionPair.getSecond();
+            String sql = "SELECT site_root, path, alias_mode, structure_id FROM CMS_ALIASES WHERE " + conditionString;
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
+            for (int i = 0; i < conditionParams.size(); i++) {
+                stmt.setString(1 + i, conditionParams.get(i));
             }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readAliasesByStructureId(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
-     */
-    public List<CmsAlias> readAliasesByStructureId(CmsDbContext dbc, CmsProject project, CmsUUID structureId)
-    throws CmsDataAccessException {
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ALIAS_GET_BY_ID_1");
-            stmt.setString(1, structureId.toString());
             res = stmt.executeQuery();
             List<CmsAlias> result = new ArrayList<CmsAlias>();
             while (res.next()) {
@@ -1685,6 +1671,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
+
     }
 
     /**
@@ -4572,6 +4559,33 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             counter += 1;
         }
         return stmt;
+    }
+
+    /** 
+     * Helper method to convert an alias filter to SQL conditions.<p>
+     * 
+     * @param filter the alias filter
+     * @return a pair containing a condition string and the parameters which are necessary for the conditions 
+     */
+    private CmsPair<String, List<String>> buildAliasConditions(CmsAliasFilter filter) {
+
+        List<String> conditions = new ArrayList<String>();
+        conditions.add("1 = 1");
+        List<String> conditionParams = new ArrayList<String>();
+        if (filter.getSiteRoot() != null) {
+            conditions.add("site_root = ?");
+            conditionParams.add(filter.getSiteRoot());
+        }
+        if (filter.getStructureId() != null) {
+            conditions.add("structure_id = ?");
+            conditionParams.add(filter.getStructureId().toString());
+        }
+        if (filter.getPath() != null) {
+            conditions.add("path = ?");
+            conditionParams.add(filter.getPath());
+        }
+        String conditionString = CmsStringUtil.listAsString(conditions, " AND ");
+        return CmsPair.create(conditionString, conditionParams);
     }
 
     /**

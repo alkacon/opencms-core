@@ -226,15 +226,14 @@ public interface I_CmsVfsDriver {
     void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource) throws CmsDataAccessException;
 
     /**
-     * Deletes all the aliases which point to a given structure id.<p>
+     * Deletes the aliases matching a given filter.<p>
      *
-     * @param dbc the current database context
+     * @param dbc the database context
      * @param project the current project
-     * @param structureId the structure id whose aliases should be deleted
-     *
+     * @param filter the alias filter
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteAliasesById(CmsDbContext dbc, CmsProject project, CmsUUID structureId) throws CmsDataAccessException;
+    void deleteAliases(CmsDbContext dbc, CmsProject project, CmsAliasFilter filter) throws CmsDataAccessException;
 
     /**
      * Deletes a property definition.<p>
@@ -294,7 +293,7 @@ public interface I_CmsVfsDriver {
     /**
      * Destroys this driver.<p>
      *
-     * @throws Throwable if something goes wrong 
+     * @throws Throwable if something goes wrong
      */
     void destroy() throws Throwable;
 
@@ -396,33 +395,19 @@ public interface I_CmsVfsDriver {
      */
     void publishVersions(CmsDbContext dbc, CmsResource resource, boolean firstSibling) throws CmsDataAccessException;
 
-    /**
-     * Reads the alias for a given path.<p>
-     *
-     * @param dbc the current database context
-     * @param project the current project
-     * @param siteRoot the site root of the alias
-     * @param path the path of the alias
-     * @return the alias for the path, or null if no such alias exists
-     *
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    CmsAlias readAliasByPath(CmsDbContext dbc, CmsProject project, String siteRoot, String path)
-    throws CmsDataAccessException;
 
     /**
-     * Reads the aliases which point to a given structure id.<p>
+     * Reads the aliases matching a given filter.<p>
      *
-     * @param dbc the current database context
+     * @param dbc the database context
      * @param project the current project
-     * @param structureId the structure id for which the aliases should be read
-     *
-     * @return the list of aliases for the structure id which was passed in
+     * @param filter the alias filter
+     * @return the list of aliases which were read
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    List<CmsAlias> readAliasesByStructureId(CmsDbContext dbc, CmsProject project, CmsUUID structureId)
-    throws CmsDataAccessException;
+    List<CmsAlias> readAliases(CmsDbContext dbc, CmsProject project, CmsAliasFilter filter) throws CmsDataAccessException;
+
 
     /**
      * Reads all child-files and/or child-folders of a specified parent resource.<p>
