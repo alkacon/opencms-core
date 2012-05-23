@@ -30,12 +30,14 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 
+import java.util.List;
+
 /**
  * Provides a standard HTML form input widget, for use on a widget dialog.<p>
  * 
  * @since 6.0.0 
  */
-public class CmsInputWidget extends A_CmsWidget {
+public class CmsInputWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new input widget.<p>
@@ -54,6 +56,15 @@ public class CmsInputWidget extends A_CmsWidget {
     public CmsInputWidget(String configuration) {
 
         super(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        // not needed for internal widget
+        return null;
     }
 
     /**
@@ -81,6 +92,32 @@ public class CmsInputWidget extends A_CmsWidget {
         result.append("</td>");
 
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        // not needed for internal widget
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        // not needed for internal widget
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        return true;
     }
 
     /**

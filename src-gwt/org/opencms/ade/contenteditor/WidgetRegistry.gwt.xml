@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<inherits name="com.alkacon.acacia.Acacia" />
+	<source path="widgetregistry/client" />
+	<source path="shared" />
+</module>

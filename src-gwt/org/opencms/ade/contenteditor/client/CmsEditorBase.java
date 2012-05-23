@@ -28,23 +28,17 @@
 package org.opencms.ade.contenteditor.client;
 
 import com.alkacon.acacia.client.EditorBase;
-import com.alkacon.acacia.client.I_WidgetFactory;
-import com.alkacon.acacia.client.widgets.HalloWidget;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-import com.alkacon.acacia.client.widgets.StringWidget;
-import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 import com.alkacon.vie.client.Vie;
 import com.alkacon.vie.shared.I_Entity;
 
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
+import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.dom.client.Element;
@@ -67,33 +61,7 @@ public class CmsEditorBase extends EditorBase {
 
         super(service);
         m_service = service;
-        Map<String, I_WidgetFactory> widgetFactories = new HashMap<String, I_WidgetFactory>();
-        widgetFactories.put("org.opencms.widgets.CmsInputWidget", new I_WidgetFactory() {
-
-            public I_EditWidget createWidget(String configuration) {
-
-                return new StringWidget();
-            }
-
-            public I_EditWidget wrapElement(String configuration, com.google.gwt.user.client.Element element) {
-
-                return new StringWidget(element);
-            }
-        });
-        widgetFactories.put("org.opencms.widgets.CmsHtmlWidget", new I_WidgetFactory() {
-
-            public I_EditWidget createWidget(String configuration) {
-
-                I_EditWidget widget = new TinyMCEWidget();
-                return widget;
-            }
-
-            public I_EditWidget wrapElement(String configuration, com.google.gwt.user.client.Element element) {
-
-                return new HalloWidget(element);
-            }
-        });
-        getWidgetService().setWidgetFactories(widgetFactories);
+        getWidgetService().setWidgetFactories(WidgetRegistry.getInstance().getWidgetFactories());
     }
 
     /**
@@ -131,14 +99,24 @@ public class CmsEditorBase extends EditorBase {
             @Override
             public void execute() {
 
+                start(0, true);
                 getService().loadDefinition(entityId, this);
             }
 
             @Override
-            protected void onResponse(CmsContentDefinition result) {
+            protected void onResponse(final CmsContentDefinition result) {
 
                 registerContentDefinition(result);
-                callback.execute(result);
+                WidgetRegistry.getInstance().registerExternalWidgets(
+                    result.getExternalWidgetConfigurations(),
+                    new Command() {
+
+                        public void execute() {
+
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
             }
         };
         action.execute();
@@ -161,10 +139,19 @@ public class CmsEditorBase extends EditorBase {
             }
 
             @Override
-            protected void onResponse(CmsContentDefinition result) {
+            protected void onResponse(final CmsContentDefinition result) {
 
                 registerContentDefinition(result);
-                callback.execute(result);
+                WidgetRegistry.getInstance().registerExternalWidgets(
+                    result.getExternalWidgetConfigurations(),
+                    new Command() {
+
+                        public void execute() {
+
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
             }
         };
         action.execute();

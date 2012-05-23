@@ -36,6 +36,7 @@ import com.alkacon.vie.shared.I_EntityAttribute;
 import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -55,6 +56,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.I_CmsADEWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.editors.CmsEditor;
@@ -69,6 +71,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +113,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         /** The registered types. */
         private Map<String, I_Type> m_registeredTypes;
 
+        /** The widget configurations. */
+        private Map<String, CmsExternalWidgetConfiguration> m_widgetConfigurations;
+
         /**
          * Constructor.<p>
          * 
@@ -143,6 +149,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
 
         /**
+         * Returns the external widget configurations.<p>
+         * 
+         * @return the external widget configurations
+         */
+        protected Collection<CmsExternalWidgetConfiguration> getWidgetConfigurations() {
+
+            return m_widgetConfigurations.values();
+        }
+
+        /**
          * Visits all types within the XML content definition.<p>
          * 
          * @param xmlContentDefinition the content definition
@@ -163,6 +179,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             // generate a new multi messages object and add the messages from the workplace
 
             m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
+            m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
             m_registeredTypes = new HashMap<String, I_Type>();
             readTypes(xmlContentDefinition, "");
         }
@@ -231,6 +248,17 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 I_CmsWidget widget = m_contentHandler.getWidget(schemaType);
                 widgetName = widget.getClass().getName();
                 widgetConfig = widget.getConfiguration();
+                if (widget instanceof I_CmsADEWidget) {
+                    I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
+                    if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
+                        CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
+                            widgetName,
+                            adeWidget.getInitCall(),
+                            adeWidget.getJavaScriptResourceLinks(getCmsObject()),
+                            adeWidget.getCssResourceLinks(getCmsObject()));
+                        m_widgetConfigurations.put(widgetName, externalConfiguration);
+                    }
+                }
             } catch (Exception e) {
                 // may happen if no widget was set for the value
                 LOG.debug(e.getMessage(), e);
@@ -687,6 +715,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         return new CmsContentDefinition(
             entity,
             visitor.getAttributeConfigurations(),
+            visitor.getWidgetConfigurations(),
             visitor.getTypes(),
             locale.toString(),
             contentLocales,

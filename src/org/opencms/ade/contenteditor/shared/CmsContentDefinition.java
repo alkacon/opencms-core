@@ -34,6 +34,8 @@ import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +53,9 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The content locales. */
     private List<String> m_contentLocales;
 
+    /** The external widget configurations. */
+    private List<CmsExternalWidgetConfiguration> m_externalWidgetConfigurations;
+
     /** The resource type name. */
     private String m_resourceType;
 
@@ -65,6 +70,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * 
      * @param entity the entity
      * @param configurations the attribute configurations
+     * @param externalWidgetConfigurations the external widget configurations
      * @param types the types
      * @param locale the content locale
      * @param contentLocales the content locales
@@ -76,6 +82,7 @@ public class CmsContentDefinition extends ContentDefinition {
     public CmsContentDefinition(
         Entity entity,
         Map<String, AttributeConfiguration> configurations,
+        Collection<CmsExternalWidgetConfiguration> externalWidgetConfigurations,
         Map<String, I_Type> types,
         String locale,
         List<String> contentLocales,
@@ -90,6 +97,7 @@ public class CmsContentDefinition extends ContentDefinition {
         m_title = title;
         m_sitePath = sitePath;
         m_resourceType = resourceType;
+        m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
     }
 
     /**
@@ -98,19 +106,6 @@ public class CmsContentDefinition extends ContentDefinition {
     protected CmsContentDefinition() {
 
         super();
-    }
-
-    /**
-     * Returns the entity id according to the given UUID.<p>
-     * 
-     * @param uuid the UUID
-     * @param locale the content locale
-     * 
-     * @return the entity id
-     */
-    public static String uuidToEntityId(CmsUUID uuid, String locale) {
-
-        return ENTITY_ID_PREFIX + locale + "/" + uuid.toString();
     }
 
     /**
@@ -144,6 +139,19 @@ public class CmsContentDefinition extends ContentDefinition {
     }
 
     /**
+     * Returns the entity id according to the given UUID.<p>
+     * 
+     * @param uuid the UUID
+     * @param locale the content locale
+     * 
+     * @return the entity id
+     */
+    public static String uuidToEntityId(CmsUUID uuid, String locale) {
+
+        return ENTITY_ID_PREFIX + locale + "/" + uuid.toString();
+    }
+
+    /**
      * Returns the available locales.<p>
      *
      * @return the available locales
@@ -161,6 +169,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public List<String> getContentLocales() {
 
         return m_contentLocales;
+    }
+
+    /**
+     * Returns the external widget configurations.<p>
+     *
+     * @return the external widget configurations
+     */
+    public List<CmsExternalWidgetConfiguration> getExternalWidgetConfigurations() {
+
+        return m_externalWidgetConfigurations;
     }
 
     /**

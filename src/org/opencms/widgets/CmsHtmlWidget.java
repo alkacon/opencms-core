@@ -33,6 +33,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -44,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 6.0.1 
  */
-public class CmsHtmlWidget extends A_CmsHtmlWidget {
+public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlWidget.class);
@@ -82,6 +83,15 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        // not needed for internal widget
+        return null;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     @Override
@@ -114,6 +124,32 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         return getEditorWidget(cms, widgetDialog).getDialogWidget(cms, widgetDialog, param);
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        // not needed for internal widget
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        // not needed for internal widget
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        return true;
     }
 
     /**
