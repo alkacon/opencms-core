@@ -78,6 +78,20 @@ public class CmsAliasManager {
     }
 
     /**
+     * Gets the list of aliases for a given site root.<p>
+     * 
+     * @param cms the current CMS context  
+     * @param siteRoot the site root 
+     * @return the list of aliases for the given site 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsAlias> getAliasesForSite(CmsObject cms, String siteRoot) throws CmsException {
+
+        return m_securityManager.getAliasesForSite(cms.getRequestContext(), siteRoot);
+    }
+
+    /**
      * Gets the aliases for a given structure id.<p>
      *
      * @param cms the current CMS context

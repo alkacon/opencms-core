@@ -60,7 +60,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.I_CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
-import org.opencms.gwt.shared.CmsAliasMode;
+import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;

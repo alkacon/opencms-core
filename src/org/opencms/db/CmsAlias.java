@@ -27,7 +27,7 @@
 
 package org.opencms.db;
 
-import org.opencms.gwt.shared.CmsAliasMode;
+import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.util.CmsUUID;
 
 import java.util.regex.Pattern;

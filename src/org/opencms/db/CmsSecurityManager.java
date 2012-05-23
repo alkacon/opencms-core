@@ -1834,6 +1834,33 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Gets the aliases for a given site.<p>
+     * 
+     * @param requestContext the current request context 
+     * @param siteRoot the site root 
+     * 
+     * @return the list of aliases for the given site root 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsAlias> getAliasesForSite(CmsRequestContext requestContext, String siteRoot) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
+        try {
+            List<CmsAlias> aliases = m_driverManager.readAliasesBySite(
+                dbc,
+                requestContext.getCurrentProject(),
+                siteRoot);
+            return aliases;
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
+            return null; // will never be executed
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Returns all projects which are owned by the current user or which are
      * accessible for the group of the user.<p>
      *

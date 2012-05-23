@@ -2984,7 +2984,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         dbc,
                         false,
                         CmsUrlNameMappingFilter.ALL.filterStructureId(currentResource.getStructureId()));
-                    getVfsDriver(dbc).deleteAliases(dbc, dbc.currentProject(), new CmsAliasFilter(null, null, currentResource.getStructureId()));
+                    getVfsDriver(dbc).deleteAliases(
+                        dbc,
+                        dbc.currentProject(),
+                        new CmsAliasFilter(null, null, currentResource.getStructureId()));
                 } else {
                     // the resource exists online => mark the resource as deleted
                     // structure record is removed during next publish
@@ -6080,15 +6083,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsAlias readAliasByPath(CmsDbContext dbc, CmsProject project, String siteRoot, String path)
     throws CmsException {
 
-        List<CmsAlias> aliases = getVfsDriver(dbc).readAliases(
-            dbc,
-            project,
-            new CmsAliasFilter(siteRoot, path, null));
+        List<CmsAlias> aliases = getVfsDriver(dbc).readAliases(dbc, project, new CmsAliasFilter(siteRoot, path, null));
         if (aliases.isEmpty()) {
             return null;
         } else {
             return aliases.get(0);
         }
+    }
+
+    /**
+     * Reads the aliases for a given site root.<p>
+     * 
+     * @param dbc the current database context 
+     * @param currentProject the current project 
+     * @param siteRoot the site root 
+     * 
+     * @return the list of aliases for the given site root 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsAlias> readAliasesBySite(CmsDbContext dbc, CmsProject currentProject, String siteRoot)
+    throws CmsException {
+
+        return getVfsDriver(dbc).readAliases(dbc, currentProject, new CmsAliasFilter(siteRoot, null, null));
     }
 
     /**
@@ -6103,6 +6120,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List<CmsAlias> readAliasesByStructureId(CmsDbContext dbc, CmsProject project, CmsUUID structureId)
     throws CmsException {
+
         return getVfsDriver(dbc).readAliases(dbc, project, new CmsAliasFilter(null, null, structureId));
     }
 
