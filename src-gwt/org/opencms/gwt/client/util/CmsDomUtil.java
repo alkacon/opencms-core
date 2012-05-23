@@ -666,6 +666,28 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Ensures a script tag is present within the window document context.<p>
+     * 
+     * @param javascriptLink the link to the java script resource
+     */
+    public static native void ensureJavaScriptIncluded(String javascriptLink)/*-{
+        var scripts = $wnd.document.scripts;
+        for ( var i = 0; i < scripts.length; i++) {
+            if (scripts[i].src != null
+                    && scripts[i].src.indexOf(javascriptLink) >= 0) {
+                // script resource is present
+                return;
+            }
+        }
+        // append the script tag to the head element
+        var head = $wnd.document.getElementsByTagName("head")[0];
+        var scriptNode = $wnd.document.createElement('link');
+        scriptNode.type = 'text/javascript';
+        scriptNode.src = javascriptLink;
+        head.appendChild(scriptNode);
+    }-*/;
+
+    /**
      * Triggers a mouse-out event for the given element.<p>
      * 
      * Useful in case something is capturing all events.<p>
@@ -1320,22 +1342,6 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Calls {@link com.google.gwt.user.client.ui.RequiresResize#onResize()} on the closest resizable ancestor.<p>
-     * 
-     * @param parent the parent widget
-     */
-    public static void resizeAncestor(Widget parent) {
-
-        if (parent != null) {
-            if (parent instanceof RequiresResize) {
-                ((RequiresResize)parent).onResize();
-            } else {
-                resizeAncestor(parent.getParent());
-            }
-        }
-    }
-
-    /**
      * Gives an element the overflow:auto property.<p>
      * 
      * @param elem a DOM element
@@ -1569,6 +1575,22 @@ public final class CmsDomUtil {
         var matchTag = /<script[^>]*?>[\s\S]*?<\/script>/g;
         return source.replace(matchTag, "");
     }-*/;
+
+    /**
+     * Calls {@link com.google.gwt.user.client.ui.RequiresResize#onResize()} on the closest resizable ancestor.<p>
+     * 
+     * @param parent the parent widget
+     */
+    public static void resizeAncestor(Widget parent) {
+
+        if (parent != null) {
+            if (parent instanceof RequiresResize) {
+                ((RequiresResize)parent).onResize();
+            } else {
+                resizeAncestor(parent.getParent());
+            }
+        }
+    }
 
     /**
      * Sets an attribute on a Javascript object.<p>
