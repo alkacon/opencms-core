@@ -587,6 +587,22 @@ public class CmsADEManager implements I_CmsEventListener {
     }
 
     /**
+     * Checks whether the given resource is configured as a detail page.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the resource which should be tested 
+     * 
+     * @return true if the resource is configured as a detail page 
+     */
+    public boolean isDetailPage(CmsObject cms, CmsResource resource) {
+
+        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
+        ? m_onlineCache
+        : m_offlineCache;
+        return cache.isDetailPage(cms, resource);
+    }
+
+    /**
      * Checks whether the ADE manager is initialized (this should usually be the case except during the setup).<p>
      * 
      * @return true if the ADE manager is initialized 
