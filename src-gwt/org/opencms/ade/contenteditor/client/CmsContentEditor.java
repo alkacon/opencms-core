@@ -29,6 +29,7 @@ package org.opencms.ade.contenteditor.client;
 
 import com.alkacon.acacia.client.I_InlineFormParent;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
+import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.vie.shared.I_Entity;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
@@ -51,6 +52,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -148,6 +150,9 @@ public final class CmsContentEditor {
 
     /** The resource site path. */
     private String m_sitePath;
+
+    /** The tab informations for this form. */
+    private List<TabInfo> m_tabInfos;
 
     /** The resource title. */
     private String m_title;
@@ -388,7 +393,7 @@ public final class CmsContentEditor {
         content.addStyleName(I_LayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);
 
-        m_editor.renderEntityForm(m_entityId, content);
+        m_editor.renderEntityForm(m_entityId, m_tabInfos, content);
     }
 
     /**
@@ -423,6 +428,7 @@ public final class CmsContentEditor {
         m_sitePath = definition.getSitePath();
         m_resourceTypeName = definition.getResourceType();
         m_registeredEntities.add(definition.getEntityId());
+        m_tabInfos = definition.getTabInfos();
         m_editor.addEntityChangeHandler(definition.getEntityId(), new ValueChangeHandler<I_Entity>() {
 
             public void onValueChange(ValueChangeEvent<I_Entity> event) {

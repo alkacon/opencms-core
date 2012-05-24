@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.shared;
 import com.alkacon.acacia.shared.AttributeConfiguration;
 import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
+import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.util.CmsUUID;
@@ -72,6 +73,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param configurations the attribute configurations
      * @param externalWidgetConfigurations the external widget configurations
      * @param types the types
+     * @param tabInfos the tab information
      * @param locale the content locale
      * @param contentLocales the content locales
      * @param availableLocales the available locales
@@ -84,6 +86,7 @@ public class CmsContentDefinition extends ContentDefinition {
         Map<String, AttributeConfiguration> configurations,
         Collection<CmsExternalWidgetConfiguration> externalWidgetConfigurations,
         Map<String, I_Type> types,
+        List<TabInfo> tabInfos,
         String locale,
         List<String> contentLocales,
         Map<String, String> availableLocales,
@@ -91,7 +94,7 @@ public class CmsContentDefinition extends ContentDefinition {
         String sitePath,
         String resourceType) {
 
-        super(entity, configurations, types, locale);
+        super(entity, configurations, types, tabInfos, locale);
         m_contentLocales = contentLocales;
         m_availableLocales = availableLocales;
         m_title = title;

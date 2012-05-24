@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor;
 import com.alkacon.acacia.shared.AttributeConfiguration;
 import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
+import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.acacia.shared.Type;
 import com.alkacon.vie.shared.I_Entity;
 import com.alkacon.vie.shared.I_EntityAttribute;
@@ -64,6 +65,7 @@ import org.opencms.workplace.editors.Messages;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -113,6 +115,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         /** The registered types. */
         private Map<String, I_Type> m_registeredTypes;
 
+        /** The tab informations. */
+        private List<TabInfo> m_tabInfos;
+
         /** The widget configurations. */
         private Map<String, CmsExternalWidgetConfiguration> m_widgetConfigurations;
 
@@ -126,6 +131,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
             m_file = file;
             m_locale = locale;
+        }
+
+        /**
+         * Returns the tabInfos.<p>
+         *
+         * @return the tabInfos
+         */
+        public List<TabInfo> getTabInfos() {
+
+            return m_tabInfos;
         }
 
         /**
@@ -182,6 +197,29 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
             m_registeredTypes = new HashMap<String, I_Type>();
             readTypes(xmlContentDefinition, "");
+            m_tabInfos = collectTabInfos(xmlContentDefinition);
+        }
+
+        /**
+         * Returns the tab informations for the given content definition.<p>
+         * 
+         * @param definition the content definition
+         * 
+         * @return the tab informations
+         */
+        private List<TabInfo> collectTabInfos(CmsXmlContentDefinition definition) {
+
+            List<TabInfo> result = new ArrayList<TabInfo>();
+            if (definition.getContentHandler().getTabs() != null) {
+                for (CmsXmlContentTab xmlTab : definition.getContentHandler().getTabs()) {
+                    String tabName = m_messages.keyDefault(A_CmsWidget.LABEL_PREFIX
+                        + definition.getInnerName()
+                        + "."
+                        + xmlTab.getTabName(), xmlTab.getTabName());
+                    result.add(new TabInfo(tabName, xmlTab.getIdName(), xmlTab.getStartName(), xmlTab.isCollapsed()));
+                }
+            }
+            return result;
         }
 
         /**
@@ -334,6 +372,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /** The type name prefix. */
     private static final String TYPE_NAME_PREFIX = "http://opencms.org/types/";
+
+    /** The current users workplace locale. */
+    private Locale m_workplaceLocale;
 
     /**
      * Returns a new configured service instance.<p>
@@ -657,6 +698,21 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Returns the workplace locale.<p>
+     * 
+     * @param cms the current OpenCms context 
+     * 
+     * @return the current users workplace locale
+     */
+    private Locale getWorkplaceLocale(CmsObject cms) {
+
+        if (m_workplaceLocale == null) {
+            m_workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        }
+        return m_workplaceLocale;
+    }
+
+    /**
      * Reads the content definition for the given resource and locale.<p>
      * 
      * @param resource the resource
@@ -681,8 +737,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsFile file = cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
 
-        TypeVisitor visitor = new TypeVisitor(file, locale);
-        visitor.visitTypes(content.getContentDefinition(), locale);
+        TypeVisitor visitor = new TypeVisitor(file, getWorkplaceLocale(cms));
+        visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
         Entity entity = null;
         if (content.hasLocale(locale) && newLocale) {
             // a new locale is requested, so remove the present one
@@ -707,7 +763,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         TreeMap<String, String> availableLocales = new TreeMap<String, String>();
-        for (Locale availableLocale : OpenCms.getLocaleManager().getAvailableLocales()) {
+        for (Locale availableLocale : OpenCms.getLocaleManager().getAvailableLocales(cms, resource)) {
             availableLocales.put(availableLocale.toString(), availableLocale.getDisplayName(workplaceLocale));
         }
         String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
@@ -717,6 +773,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             visitor.getAttributeConfigurations(),
             visitor.getWidgetConfigurations(),
             visitor.getTypes(),
+            visitor.getTabInfos(),
             locale.toString(),
             contentLocales,
             availableLocales,
