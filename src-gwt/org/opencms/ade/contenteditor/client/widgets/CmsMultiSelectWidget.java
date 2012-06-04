@@ -142,7 +142,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
         CmsMultiSelectCell cell = new CmsMultiSelectCell(parse(config));
         cell.setOpenerText("Select value");
         // Place the check above the box using a vertical panel.
-        CmsPaddedPanel panel = new CmsPaddedPanel(10);
+        CmsPaddedPanel panel = new CmsPaddedPanel(0);
         // All composites must call initWidget() in their constructors.
         initWidget(panel);
         panel.add(m_selectBox);

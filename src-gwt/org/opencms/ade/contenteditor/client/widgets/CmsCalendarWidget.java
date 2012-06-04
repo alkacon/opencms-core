@@ -62,7 +62,7 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
     public CmsCalendarWidget(String config) {
 
         // Place the check above the box using a vertical panel.
-        CmsPaddedPanel panel = new CmsPaddedPanel(10);
+        CmsPaddedPanel panel = new CmsPaddedPanel(0);
 
         panel.add(m_dateBox);
         ValueChangeHandler<Date> test = new ValueChangeHandler<Date>() {

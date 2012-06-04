@@ -29,6 +29,8 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
+
 import java.text.ParseException;
 
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -36,8 +38,8 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Provides a standard HTML form password widget, for use on a widget dialog.<p>
@@ -54,7 +56,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     public CmsPasswordWidget() {
 
         // Place the check above the box using a vertical panel.
-        VerticalPanel panel = new VerticalPanel();
+        Panel panel = new CmsPaddedPanel(11);
         panel.add(m_passwordTextBox);
 
         m_passwordTextBox.addValueChangeHandler(new ValueChangeHandler<String>() {
