@@ -274,7 +274,7 @@ public class CmsElementUtil {
         if (elementBean.isCreateNew()) {
             CmsResourceTypeConfig typeConfig = OpenCms.getADEManager().lookupConfiguration(
                 m_cms,
-                m_cms.getRequestContext().getRootUri()).getResourceType(typeName);
+                m_cms.addSiteRoot(m_currentPageUri)).getResourceType(typeName);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
                 && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
                 String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
