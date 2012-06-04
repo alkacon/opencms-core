@@ -29,18 +29,22 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.CmsMultiSelectBox;
+import org.opencms.gwt.client.ui.input.CmsMultiSelectCell;
 import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
+import org.opencms.util.CmsPair;
 
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ListBox;
 
 /**
   * An option of a select type widget.<p>
@@ -98,6 +102,18 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     /** Delimiter between option sets. */
     private static final String INPUT_DELIMITER = "|";
 
+    /** Key prefix for the 'default'. */
+    private static final String KEY_DEFAULT = "default='true'";
+
+    /** Empty String to replaces unnecessary keys */
+    private static final String KEY_EMPTY = "";
+
+    /** Key prefix for the 'help' text. */
+    private static final String KEY_HELP = "help='";
+
+    /** Key prefix for the 'option' text. */
+    private static final String KEY_OPTION = "option='";
+
     /** Short key prefix for the 'option' text. */
     private static final String KEY_SHORT_OPTION = ":";
 
@@ -107,18 +123,6 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     /** Key suffix for the 'default' , 'help', 'option' text without following entrances.*/
     private static final String KEY_SUFFIX_SHORT = "'";
 
-    /** Empty String to replaces unnecessary keys */
-    private static final String KEY_EMPTY = "";
-
-    /** Key prefix for the 'default'. */
-    private static final String KEY_DEFAULT = "default='true'";
-
-    /** Key prefix for the 'help' text. */
-    private static final String KEY_HELP = "help='";
-
-    /** Key prefix for the 'option' text. */
-    private static final String KEY_OPTION = "option='";
-
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
 
@@ -126,7 +130,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     private boolean m_active = true;
 
     /** The global select box. */
-    private ListBox m_selectBox = new ListBox(true);
+    private CmsMultiSelectBox m_selectBox = new CmsMultiSelectBox();
 
     /**
      * Constructs an CmsMultiSelectWidget with the in XSD schema declared configuration.<p>
@@ -134,96 +138,40 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public CmsMultiSelectWidget(String config) {
 
-        // parse configruation
-        parseconfig(config);
-
+        // parse configuration and create a new CmsMultiSelectCell
+        CmsMultiSelectCell cell = new CmsMultiSelectCell(parse(config));
+        cell.setOpenerText("Select value");
         // Place the check above the box using a vertical panel.
         CmsPaddedPanel panel = new CmsPaddedPanel(10);
-        panel.add(m_selectBox);
-        // add change handler to the multi select box
-        m_selectBox.addChangeHandler(new ChangeHandler() {
-
-            public void onChange(ChangeEvent arg0) {
-
-                fireChangeEvent();
-
-            }
-        });
-
         // All composites must call initWidget() in their constructors.
         initWidget(panel);
+        panel.add(m_selectBox);
 
-    }
+        m_selectBox.addOption(cell);
 
-    /**
-     * Represents a value change event.<p>
-     * 
-     */
-    public void fireChangeEvent() {
+        // add change handler to the multi select box
+        List<CmsCheckBox> checkboxes = m_selectBox.getCheckboxes();
+        Iterator<CmsCheckBox> it = checkboxes.iterator();
+        while (it.hasNext()) {
+            it.next().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
-        // generate save string
-        String values = "";
-        // iterate about all parameters of the multi select box
-        for (int i = 0; i < m_selectBox.getItemCount(); i++) {
-            // if the parameter is selected add it to the save stirng and ad an ','
-            if (m_selectBox.isItemSelected(i)) {
-                values += m_selectBox.getItemText(i) + ",";
-            }
-        }
-        // if there are items to save.
-        if (values.length() > 0) {
-            // remove the last 'r' from saving string
-            values = values.substring(0, values.lastIndexOf(","));
-        }
+                public void onValueChange(ValueChangeEvent<Boolean> arg0) {
 
-        // save string
-        ValueChangeEvent.fire(this, values);
+                    fireChangeEvent();
 
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#getValue()
-     */
-    public String getValue() {
-
-        return m_selectBox.getSelectedIndex() + "";
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
-     */
-    public void setValue(String value) {
-
-        setValue(value, true);
-
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
-     */
-    public void setValue(String value, boolean fireEvents) {
-
-        // parse the saved values to all its parts
-        String selectedvalues[] = value.split(",");
-
-        // iterate about all parts of the saved values
-        for (int i = 0; i < selectedvalues.length; i++) {
-            // iterate about all given parameters
-            for (int y = 0; y < m_selectBox.getItemCount(); y++) {
-                // if the part from the saved values equals the given parameter select it
-                if (m_selectBox.getItemText(y).equals(selectedvalues[i])) {
-                    m_selectBox.setItemSelected(y, true);
-                } else {
-                    // if not deselect it
-                    m_selectBox.setItemSelected(y, false);
                 }
-            }
+
+            });
         }
 
-        if (fireEvents) {
-            fireChangeEvent();
-        }
+    }
 
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return null;
     }
 
     /**
@@ -235,11 +183,32 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     * Represents a value change event.<p>
+     * 
      */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+    public void fireChangeEvent() {
 
-        return null;
+        // generate save string
+        String values = m_selectBox.getFormValueAsString();
+        // save string
+        ValueChangeEvent.fire(this, values);
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#getValue()
+     */
+    public String getValue() {
+
+        return m_selectBox.getFormValueAsString();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     */
+    public boolean isActive() {
+
+        return m_active;
     }
 
     /**
@@ -263,30 +232,49 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
-    public boolean isActive() {
+    public void setValue(String value) {
 
-        return m_active;
+        setValue(value, true);
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
+     */
+    public void setValue(String value, boolean fireEvents) {
+
+        m_selectBox.setFormValueAsString(value);
+
+        if (fireEvents) {
+            fireChangeEvent();
+        }
+
     }
 
     /**
      * Helper class for parsing the configuration in to a list for the combobox. <p>
+     * @param config the configuration string given from xsd
+     * @return the pares values from the configuration in a Map
      * */
-    private void parseconfig(String config) {
+    Map<String, CmsPair<String, Boolean>> parse(String config) {
 
+        // key = option
+        // Pair = 1. label
+        // Pair = 2. selected
+
+        Map<String, CmsPair<String, Boolean>> result = new LinkedHashMap<String, CmsPair<String, Boolean>>();
+        CmsPair<String, Boolean> pair = new CmsPair<String, Boolean>();
         //split the configuration in single strings to handle every string single. 
         String[] labels = config.split("\\" + INPUT_DELIMITER);
 
-        boolean selected[] = new boolean[labels.length];
+        boolean selected = false;
 
         //declare some string arrays with the same size of labels.
         String[] value = new String[labels.length];
         String[] options = new String[labels.length];
         String[] help = new String[labels.length];
-
-        //declare a Map to handle the single values of the configuration. 
-        HashMap<String, String> values = new HashMap<String, String>();
 
         for (int i = 0; i < labels.length; i++) {
             //check if there are one or more parameters set in this substring.
@@ -296,14 +284,14 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
             boolean test_short_option = labels[i].indexOf(KEY_SHORT_OPTION) >= 0;
             boolean test_help = labels[i].indexOf(KEY_HELP) >= 0;
             try {
+                selected = false;
                 //check if there is a default value set.
-                selected[i] = false;
                 if ((labels[i].indexOf(DEFAULT_MARKER) >= 0) || test_default) {
-                    //remember the position in the array.
-                    selected[i] = true;
                     //remove the declaration parameters.
                     labels[i] = labels[i].replace(DEFAULT_MARKER, KEY_EMPTY);
                     labels[i] = labels[i].replace(KEY_DEFAULT, KEY_EMPTY);
+                    //remember the value of the selected.                    
+                    selected = true;
                 }
                 //check for values (e.g.:"value='XvalueX' ") set in configuration.
                 if (test_value) {
@@ -382,20 +370,16 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
 
                 }
                 //copy value and option to the Map.
-                values.put(options[i], value[i]);
+                pair = new CmsPair<String, Boolean>(value[i], Boolean.valueOf(selected));
+                result.put(options[i], pair);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        //set value and option to the multiselect box.
-        for (int i = 0; i < values.size(); i++) {
-            m_selectBox.addItem(options[i], value[i]);
+        // TODO: implement
+        // CmsPair<String, Boolean> entry;
 
-        }
-        for (int i = 0; i < values.size(); i++) {
-            //if one or more entrance is declared for default.
-            m_selectBox.setItemSelected(i, selected[i]);
-        }
+        return result;
     }
 }

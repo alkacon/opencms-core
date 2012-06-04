@@ -29,13 +29,13 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
@@ -43,8 +43,8 @@ import com.google.gwt.user.client.ui.Composite;
  * */
 public class CmsDisplayWidget extends Composite implements I_EditWidget {
 
-    private CmsTextBox m_textbox = new CmsTextBox();
     private boolean m_active = true;
+    private CmsTextBox m_textbox = new CmsTextBox();
 
     /**
      * Creates a new display widget.<p>
@@ -52,13 +52,29 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     public CmsDisplayWidget() {
 
         // Place the check above the text box using a vertical panel.
-        CmsPaddedPanel panel = new CmsPaddedPanel(10);
+        ScrollPanel panel = new ScrollPanel();
         // All composites must call initWidget() in their constructors.
         initWidget(panel);
         // Set the textbox enabled for only show.
         m_textbox.setReadOnly(true);
         panel.add(m_textbox);
 
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return null;
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return null;
     }
 
     /**
@@ -70,31 +86,11 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
      */
-    public void setValue(String value) {
+    public boolean isActive() {
 
-        setValue(value, true);
-
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
-     */
-    public void setValue(String value, boolean fireEvents) {
-
-        // add the saved value to the display field
-        m_textbox.setFormValueAsString(value);
-        m_textbox.setReadOnly(true);
-
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
-     */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
-
-        return null;
+        return m_active;
     }
 
     /**
@@ -115,19 +111,23 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
-    public boolean isActive() {
+    public void setValue(String value) {
 
-        return m_active;
+        setValue(value, true);
+
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+    public void setValue(String value, boolean fireEvents) {
 
-        return null;
+        // add the saved value to the display field
+        m_textbox.setFormValueAsString(value);
+        m_textbox.setReadOnly(true);
+
     }
 
 }

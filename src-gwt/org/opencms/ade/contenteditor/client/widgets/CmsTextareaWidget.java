@@ -29,7 +29,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 
 import java.util.Iterator;
@@ -47,6 +47,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -55,17 +56,17 @@ import com.google.gwt.user.client.ui.Widget;
  * */
 public class CmsTextareaWidget extends Composite implements I_EditWidget {
 
-    /** The input test area.*/
-    private CmsTextArea m_textarea = new CmsTextArea();
-
     /** The token to control activation*/
     private boolean m_active = true;
 
+    /** The master panel for all added input fields. */
+    private Panel m_panel;
+
+    /** The input test area.*/
+    private CmsTextArea m_textarea = new CmsTextArea();
+
     /** The value changed handler initialized flag. */
     private boolean m_valueChangeHandlerInitialized;
-
-    /** The master panel for all added input fields. */
-    private CmsPaddedPanel m_panel;
 
     /**
      * Creates a new display widget.<p>
@@ -73,50 +74,12 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
     public CmsTextareaWidget() {
 
         // Place the check above the text box using a vertical panel.
-        m_panel = new CmsPaddedPanel(10);
+        m_panel = new CmsScrollPanel();
+        m_panel.setHeight("90px");
         // All composites must call initWidget() in their constructors.
         initWidget(m_panel);
         m_panel.add(m_textarea);
 
-    }
-
-    /**
-     * Represents a value change event.<p>
-     * 
-     */
-    public void fireChangeEvent() {
-
-        ValueChangeEvent.fire(this, m_textarea.getFormValueAsString());
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#getValue()
-     */
-    public String getValue() {
-
-        return m_textarea.getFormValueAsString();
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
-     */
-    public void setValue(String value) {
-
-        // set the value and start changeEvent
-        setValue(value, true);
-
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
-     */
-    public void setValue(String value, boolean fireEvents) {
-
-        // set the saved value to the textArea
-        m_textarea.setFormValueAsString(value);
-        if (fireEvents) {
-            fireChangeEvent();
-        }
     }
 
     /**
@@ -125,38 +88,6 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
         return null;
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
-     */
-    public void onAttachWidget() {
-
-        super.onAttach();
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
-     */
-    public void setActive(boolean active) {
-
-        m_active = active;
-        // set all parameters of the panel visible or invisible
-        Iterator<Widget> it = m_panel.iterator();
-        while (it.hasNext()) {
-            CmsTextArea ta = (CmsTextArea)it.next();
-            ta.setVisible(active);
-            ta.setFormValueAsString("");
-        }
-
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
-     */
-    public boolean isActive() {
-
-        return m_active;
     }
 
     /**
@@ -198,6 +129,77 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
             }, BlurEvent.getType());
         }
         return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * Represents a value change event.<p>
+     * 
+     */
+    public void fireChangeEvent() {
+
+        ValueChangeEvent.fire(this, m_textarea.getFormValueAsString());
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#getValue()
+     */
+    public String getValue() {
+
+        return m_textarea.getFormValueAsString();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     */
+    public boolean isActive() {
+
+        return m_active;
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
+     */
+    public void onAttachWidget() {
+
+        super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
+     */
+    public void setActive(boolean active) {
+
+        m_active = active;
+        // set all parameters of the panel visible or invisible
+        Iterator<Widget> it = m_panel.iterator();
+        while (it.hasNext()) {
+            CmsTextArea ta = (CmsTextArea)it.next();
+            ta.setVisible(active);
+            ta.setFormValueAsString("");
+        }
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     */
+    public void setValue(String value) {
+
+        // set the value and start changeEvent
+        setValue(value, true);
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
+     */
+    public void setValue(String value, boolean fireEvents) {
+
+        // set the saved value to the textArea
+        m_textarea.setFormValueAsString(value);
+        if (fireEvents) {
+            fireChangeEvent();
+        }
     }
 
 }

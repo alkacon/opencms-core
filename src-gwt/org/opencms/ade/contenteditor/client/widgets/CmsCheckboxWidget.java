@@ -44,8 +44,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * */
 public class CmsCheckboxWidget extends Composite implements I_EditWidget {
 
-    private CmsCheckBox m_checkbox = new CmsCheckBox();
     private boolean m_active = true;
+    private CmsCheckBox m_checkbox = new CmsCheckBox();
 
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
@@ -77,52 +77,11 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     *  Represents a value change event.<p>
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
      */
-    public void fireChangeEvent() {
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
-        ValueChangeEvent.fire(this, m_checkbox.getFormValueAsString());
-    }
-
-    /**
-     * Sets the caption associated with the check box.<p>
-     * 
-     * @param caption the check box's caption
-     */
-    public void setCaption(String caption) {
-
-        // Note how we use the use composition of the contained widgets to provide
-        // only the methods that we want to.
-        m_checkbox.setText(caption);
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#getValue()
-     */
-    public String getValue() {
-
-        return m_checkbox.getFormValueAsString();
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
-     */
-    public void setValue(String value) {
-
-        m_checkbox.setFormValueAsString(value);
-
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
-     */
-    public void setValue(String value, boolean fireEvents) {
-
-        m_checkbox.setFormValueAsString(value);
-        if (fireEvents) {
-            fireChangeEvent();
-        }
-
+        return null;
     }
 
     /**
@@ -134,11 +93,27 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     *  Represents a value change event.<p>
      */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+    public void fireChangeEvent() {
 
-        return null;
+        ValueChangeEvent.fire(this, m_checkbox.getFormValueAsString());
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#getValue()
+     */
+    public String getValue() {
+
+        return m_checkbox.getFormValueAsString();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     */
+    public boolean isActive() {
+
+        return m_active;
     }
 
     /**
@@ -163,11 +138,36 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * Sets the caption associated with the check box.<p>
+     * 
+     * @param caption the check box's caption
      */
-    public boolean isActive() {
+    public void setCaption(String caption) {
 
-        return m_active;
+        // Note how we use the use composition of the contained widgets to provide
+        // only the methods that we want to.
+        m_checkbox.setText(caption);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     */
+    public void setValue(String value) {
+
+        m_checkbox.setFormValueAsString(value);
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
+     */
+    public void setValue(String value, boolean fireEvents) {
+
+        m_checkbox.setFormValueAsString(value);
+        if (fireEvents) {
+            fireChangeEvent();
+        }
+
     }
 
 }

@@ -96,6 +96,18 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     /** Delimiter between option sets. */
     private static final String INPUT_DELIMITER = "|";
 
+    /** Key prefix for the 'default'. */
+    private static final String KEY_DEFAULT = "default='true'";
+
+    /** Empty String to replaces unnecessary keys */
+    private static final String KEY_EMPTY = "";
+
+    /** Key prefix for the 'help' text. */
+    private static final String KEY_HELP = "help='";
+
+    /** Key prefix for the 'option' text. */
+    private static final String KEY_OPTION = "option='";
+
     /** Short key prefix for the 'option' text. */
     private static final String KEY_SHORT_OPTION = ":";
 
@@ -104,18 +116,6 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
 
     /** Key suffix for the 'default' , 'help', 'option' text without following entrances.*/
     private static final String KEY_SUFFIX_SHORT = "'";
-
-    /** Empty String to replaces unnecessary keys */
-    private static final String KEY_EMPTY = "";
-
-    /** Key prefix for the 'default'. */
-    private static final String KEY_DEFAULT = "default='true'";
-
-    /** Key prefix for the 'help' text. */
-    private static final String KEY_HELP = "help='";
-
-    /** Key prefix for the 'option' text. */
-    private static final String KEY_OPTION = "option='";
 
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
@@ -154,6 +154,22 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return null;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
      * Represents a value change event.<p>
      * 
      */
@@ -172,40 +188,11 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
      */
-    public void setValue(String value) {
+    public boolean isActive() {
 
-        setValue(value, true);
-
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
-     */
-    public void setValue(String value, boolean fireEvents) {
-
-        m_selectBox.selectValue(value);
-        if (fireEvents) {
-            fireChangeEvent();
-        }
-
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        return addHandler(handler, ValueChangeEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
-     */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
-
-        return null;
+        return m_active;
     }
 
     /**
@@ -229,11 +216,24 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
-    public boolean isActive() {
+    public void setValue(String value) {
 
-        return m_active;
+        setValue(value, true);
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
+     */
+    public void setValue(String value, boolean fireEvents) {
+
+        m_selectBox.selectValue(value);
+        if (fireEvents) {
+            fireChangeEvent();
+        }
+
     }
 
     /**

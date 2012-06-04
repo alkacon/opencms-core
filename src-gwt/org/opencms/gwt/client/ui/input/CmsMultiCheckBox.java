@@ -124,6 +124,16 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
     }
 
     /**
+     * Returns a list of all checkboxes.<p>
+     * 
+     * @return a list of checkboxes
+     * */
+    public List<CmsCheckBox> getCheckboxes() {
+
+        return m_checkboxes;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {
@@ -271,6 +281,7 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
             FlowPanel checkboxWrapper = new FlowPanel();
             checkboxWrapper.add(checkbox);
             m_panel.add(checkboxWrapper);
+            m_checkboxes.add(checkbox);
         }
         m_panel.add(m_error);
     }

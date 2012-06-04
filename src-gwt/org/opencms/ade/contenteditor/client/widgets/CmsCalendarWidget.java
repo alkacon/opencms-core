@@ -29,44 +29,68 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import java.text.ParseException;
+import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
+import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
+
+import java.util.Date;
 
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * Provides a standard HTML form password widget, for use on a widget dialog.<p>
+ * Provides a DHTML calendar widget, for use on a widget dialog.<p>
  * 
  * */
-public class CmsPasswordWidget extends Composite implements I_EditWidget {
+public class CmsCalendarWidget extends Composite implements I_EditWidget {
 
+    /** Value of the activation. */
     private boolean m_active = true;
-    private PasswordTextBox m_passwordTextBox = new PasswordTextBox();
+
+    /** The global select box. */
+    private CmsDateBox m_dateBox = new CmsDateBox();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
+     * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsPasswordWidget() {
+    public CmsCalendarWidget(String config) {
 
         // Place the check above the box using a vertical panel.
-        VerticalPanel panel = new VerticalPanel();
-        panel.add(m_passwordTextBox);
+        CmsPaddedPanel panel = new CmsPaddedPanel(10);
 
-        m_passwordTextBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+        panel.add(m_dateBox);
+        ValueChangeHandler<Date> test = new ValueChangeHandler<Date>() {
 
-            public void onValueChange(ValueChangeEvent<String> event) {
+            public void onValueChange(ValueChangeEvent<Date> arg0) {
 
                 fireChangeEvent();
 
             }
 
-        });
+        };
 
+        m_dateBox.addValueChangeHandler(test);
+        m_dateBox.addKeyPressHandler(new KeyPressHandler() {
+
+            public void onKeyPress(KeyPressEvent arg0) {
+
+                int keyCode = arg0.getUnicodeCharCode();
+                if (keyCode == 0) {
+                    // Probably Firefox
+                    keyCode = arg0.getNativeEvent().getKeyCode();
+                }
+                if (keyCode == KeyCodes.KEY_ENTER) {
+                    fireChangeEvent();
+                }
+
+            }
+        });
         // All composites must call initWidget() in their constructors.
         initWidget(panel);
 
@@ -94,11 +118,10 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        try {
-            ValueChangeEvent.fire(this, m_passwordTextBox.getValueOrThrow());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (m_dateBox.isValideDateBox()) {
+            ValueChangeEvent.fire(this, m_dateBox.getFormValueAsString());
         }
+
     }
 
     /**
@@ -106,12 +129,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        try {
-            return m_passwordTextBox.getValueOrThrow();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return m_dateBox.getFormValueAsString();
     }
 
     /**
@@ -136,10 +154,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        if (active) {
-            fireChangeEvent();
-        }
-
+        m_dateBox.setEnabled(active);
     }
 
     /**
@@ -156,8 +171,10 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_passwordTextBox.setValue(value, fireEvents);
+        m_dateBox.setFormValueAsString(value);
+        if (fireEvents) {
+            fireChangeEvent();
+        }
 
     }
-
 }

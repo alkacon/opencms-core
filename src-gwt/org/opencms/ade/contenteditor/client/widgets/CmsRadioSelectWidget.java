@@ -86,6 +86,23 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
      * Represents a value change event.<p>
      * 
      */
@@ -100,6 +117,35 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     public String getValue() {
 
         return m_group.getSelectedButton().getName();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     */
+    public boolean isActive() {
+
+        return m_active;
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
+     */
+    public void onAttachWidget() {
+
+        super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
+     */
+    public void setActive(boolean active) {
+
+        m_active = active;
+        if (active) {
+            fireChangeEvent();
+
+        }
+
     }
 
     /**
@@ -127,52 +173,6 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
             }
         }
 
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        return addHandler(handler, ValueChangeEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
-     */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
-
-        // TODO: Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
-     */
-    public void onAttachWidget() {
-
-        super.onAttach();
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
-     */
-    public void setActive(boolean active) {
-
-        m_active = active;
-        if (active) {
-            fireChangeEvent();
-
-        }
-
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
-     */
-    public boolean isActive() {
-
-        return m_active;
     }
 
     /**

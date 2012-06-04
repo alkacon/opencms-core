@@ -340,6 +340,17 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
         m_button.setText(text);
     }
 
+    /**
+     * Returns the text.<p>
+     * 
+     * @return the text as String
+     */
+    public String getText() {
+
+        return m_button.getText();
+
+    }
+
     /** 
      * Helper method for firing a 'value changed' event.<p>
      */

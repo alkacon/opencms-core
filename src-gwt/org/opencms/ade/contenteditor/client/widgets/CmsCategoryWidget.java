@@ -64,20 +64,20 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** Configuration parameter to set the 'property' parameter. */
     public static final String CONFIGURATION_PROPERTY = "property";
 
-    /** String of the configured category folder. */
-    private String m_categoryFolder = "/sites/default/_categories/";
-
-    /** Value of the activation. */
-    private boolean m_active = true;
-
-    /** Horizontal panel. It holds all the select boxes. */
-    private HorizontalPanel m_panel = new HorizontalPanel();
-
     /** Map of selected Values in relation to the select level. */
     Map<Integer, String> m_selectedValue = new HashMap<Integer, String>();
 
     /** List off all categories. */
     List<CmsCategoryTreeEntry> results = new ArrayList<CmsCategoryTreeEntry>();
+
+    /** Value of the activation. */
+    private boolean m_active = true;
+
+    /** String of the configured category folder. */
+    private String m_categoryFolder = "/sites/default/_categories/";
+
+    /** Horizontal panel. It holds all the select boxes. */
+    private HorizontalPanel m_panel = new HorizontalPanel();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -94,6 +94,22 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         // All composites must call initWidget() in their constructors.
         initWidget(m_panel);
 
+    }
+
+    /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return null;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
@@ -133,6 +149,23 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * Creates all the selectboxes and add them to the panel.<p>
+     * */
+    public void getSelections() {
+
+        // remove all widgets from panel.
+        m_panel.clear();
+        // add the root selectbox to the panel.
+        m_panel.add(getRootSelectBox());
+        // check if there are more selected sub categories.  
+        for (int i = 1; i < m_selectedValue.size(); i++) {
+            // create and add the sub category to the panel.
+            m_panel.add(getNextSelectbox((CmsSelectBox)m_panel.getWidget(i - 1), i));
+        }
+
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     public String getValue() {
@@ -144,6 +177,34 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             selectedCategories = selectBox.getFormValueAsString();
         }
         return selectedCategories;
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     */
+    public boolean isActive() {
+
+        return m_active;
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
+     */
+    public void onAttachWidget() {
+
+        super.onAttach();
+    }
+
+    /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
+     */
+    public void setActive(boolean active) {
+
+        m_active = active;
+        if (active) {
+            fireChangeEvent();
+        }
+
     }
 
     /**
@@ -169,67 +230,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         }
         if (fireEvents) {
             fireChangeEvent();
-        }
-
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        return addHandler(handler, ValueChangeEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
-     */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
-
-        return null;
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
-     */
-    public void onAttachWidget() {
-
-        super.onAttach();
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
-     */
-    public void setActive(boolean active) {
-
-        m_active = active;
-        if (active) {
-            fireChangeEvent();
-        }
-
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
-     */
-    public boolean isActive() {
-
-        return m_active;
-    }
-
-    /**
-     * Creates all the selectboxes and add them to the panel.<p>
-     * */
-    public void getSelections() {
-
-        // remove all widgets from panel.
-        m_panel.clear();
-        // add the root selectbox to the panel.
-        m_panel.add(getRootSelectBox());
-        // check if there are more selected sub categories.  
-        for (int i = 1; i < m_selectedValue.size(); i++) {
-            // create and add the sub category to the panel.
-            m_panel.add(getNextSelectbox((CmsSelectBox)m_panel.getWidget(i - 1), i));
         }
 
     }
@@ -342,23 +342,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * Helper function to check if the select box has children.<p>
-     * 
-     * @param parent the select box to be checked.
-     * */
-    private boolean hasNext(CmsSelectBox parent) {
-
-        // try to get the children of the given parent.
-        List<CmsCategoryTreeEntry> childs = getCategoryTree(parent.getFormValueAsString());
-        // if there are no children return false.
-        if (childs == null) {
-            return false;
-        }
-        // if there are one or more children return true.      
-        return !childs.isEmpty();
-    }
-
-    /**
      * Helper function to get the root select box.<p>
      * */
     private CmsSelectBox getRootSelectBox() {
@@ -396,42 +379,20 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * Helper function to remove all select boxes beginning after the given select box.<p>
+     * Helper function to check if the select box has children.<p>
      * 
-     * @param value the starting select box.
+     * @param parent the select box to be checked.
      * */
-    private void removeTillSelectBox(CmsSelectBox value) {
+    private boolean hasNext(CmsSelectBox parent) {
 
-        // iterate about all widgets of the panel.
-        Iterator<Widget> it = m_panel.iterator();
-        // marker if the widgets should be removed. 
-        boolean remove = false;
-        // counter to get the point the removing starts.
-        int k = 0;
-        int i = 0;
-        // start to iterate 
-        while (it.hasNext()) {
-            CmsSelectBox selectbox = (CmsSelectBox)it.next();
-            // check if this one is to remove.
-            if (remove) {
-                it.remove();
-            }
-            // check if this select box is like the given one.
-            if (selectbox.equals(value) && !remove) {
-                // set the marker to true.
-                remove = true;
-                // stop counting the widgets.
-                k = i;
-            }
-            i++;
+        // try to get the children of the given parent.
+        List<CmsCategoryTreeEntry> childs = getCategoryTree(parent.getFormValueAsString());
+        // if there are no children return false.
+        if (childs == null) {
+            return false;
         }
-        // remove all values from the map of selected values.
-        for (i = 0; i < m_selectedValue.size(); i++) {
-            // check if the counter has reached the widgetcounter.
-            if (i > k) {
-                m_selectedValue.remove(m_selectedValue.get(Integer.valueOf(i)));
-            }
-        }
+        // if there are one or more children return true.      
+        return !childs.isEmpty();
     }
 
     /**
@@ -474,6 +435,45 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                 }
                 m_property = property;
             }*/
+        }
+    }
+
+    /**
+     * Helper function to remove all select boxes beginning after the given select box.<p>
+     * 
+     * @param value the starting select box.
+     * */
+    private void removeTillSelectBox(CmsSelectBox value) {
+
+        // iterate about all widgets of the panel.
+        Iterator<Widget> it = m_panel.iterator();
+        // marker if the widgets should be removed. 
+        boolean remove = false;
+        // counter to get the point the removing starts.
+        int k = 0;
+        int i = 0;
+        // start to iterate 
+        while (it.hasNext()) {
+            CmsSelectBox selectbox = (CmsSelectBox)it.next();
+            // check if this one is to remove.
+            if (remove) {
+                it.remove();
+            }
+            // check if this select box is like the given one.
+            if (selectbox.equals(value) && !remove) {
+                // set the marker to true.
+                remove = true;
+                // stop counting the widgets.
+                k = i;
+            }
+            i++;
+        }
+        // remove all values from the map of selected values.
+        for (i = 0; i < m_selectedValue.size(); i++) {
+            // check if the counter has reached the widgetcounter.
+            if (i > k) {
+                m_selectedValue.remove(m_selectedValue.get(Integer.valueOf(i)));
+            }
         }
     }
 }

@@ -64,6 +64,22 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+     */
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+
+        return null;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
      * Represents a value change event.<p>
      * 
      */
@@ -81,40 +97,11 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
      */
-    public void setValue(String value) {
+    public boolean isActive() {
 
-        setValue(value, true);
-
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
-     */
-    public void setValue(String value, boolean fireEvents) {
-
-        m_LinkSelect.setFormValueAsString(value);
-        if (fireEvents) {
-            fireChangeEvent();
-        }
-
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        return addHandler(handler, ValueChangeEvent.getType());
-    }
-
-    /**
-     * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
-     */
-    public HandlerRegistration addFocusHandler(FocusHandler handler) {
-
-        return null;
+        return m_active;
     }
 
     /**
@@ -138,11 +125,24 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
-    public boolean isActive() {
+    public void setValue(String value) {
 
-        return m_active;
+        setValue(value, true);
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
+     */
+    public void setValue(String value, boolean fireEvents) {
+
+        m_LinkSelect.setFormValueAsString(value);
+        if (fireEvents) {
+            fireChangeEvent();
+        }
+
     }
 
 }
