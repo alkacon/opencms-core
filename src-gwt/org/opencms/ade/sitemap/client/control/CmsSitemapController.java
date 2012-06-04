@@ -491,9 +491,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
         final CmsUUID entryId = entry.getId();
         final boolean newStatus = keepNewStatus && entry.isNew();
 
-        final String updateTarget = ((reloadStatus == CmsReloadMode.reloadParent))
-        ? getParentEntry(entry).getSitePath()
-        : entry.getSitePath();
+        final CmsUUID updateTarget = ((reloadStatus == CmsReloadMode.reloadParent))
+        ? getParentEntry(entry).getId()
+        : entryId;
         Command callback = new Command() {
 
             public void execute() {
