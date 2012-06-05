@@ -47,15 +47,6 @@ public interface I_CmsContentService extends I_ContentService {
     String PARAM_BACKLINK = "backlink";
 
     /**
-     * Returns the content definition of the resource requested through parameter 'resource'.<p>
-     * 
-     * @return the content definition
-     * 
-     * @throws CmsRpcException if something goes wrong
-     */
-    CmsContentDefinition prefetch() throws CmsRpcException;
-
-    /**
      * Loads the content definition for a given entity.<p>
      * 
      * @param entityId the entity id/URI
@@ -79,6 +70,15 @@ public interface I_CmsContentService extends I_ContentService {
     CmsContentDefinition loadNewDefinition(String entityId) throws Exception;
 
     /**
+     * Returns the content definition of the resource requested through parameter 'resource'.<p>
+     * 
+     * @return the content definition
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsContentDefinition prefetch() throws CmsRpcException;
+
+    /**
      * Saves and deletes the given entities.<p>
      * 
      * @param changedEntities the changed entities
@@ -86,6 +86,5 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @throws Exception if something goes wrong processing the request
      */
-    void saveAndDeleteEntites(List<Entity> changedEntities, List<String> deletedEntities) throws Exception;
-
+    void saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities) throws Exception;
 }

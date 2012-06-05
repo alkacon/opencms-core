@@ -42,13 +42,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
 
     /**
-     * Returns the content definition of the resource requested through parameter 'resource'.<p>
-     * 
-     * @param callback the callback 
-     */
-    void prefetch(AsyncCallback<CmsContentDefinition> callback);
-
-    /**
      * Loads the content definition for a given type.<p>
      * 
      * @param entityId the entity id/URI
@@ -66,12 +59,19 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
     void loadNewDefinition(String entityId, AsyncCallback<CmsContentDefinition> callback);
 
     /**
+     * Returns the content definition of the resource requested through parameter 'resource'.<p>
+     * 
+     * @param callback the callback 
+     */
+    void prefetch(AsyncCallback<CmsContentDefinition> callback);
+
+    /**
      * Saves and deletes the given entities.<p>
      * 
      * @param changedEntities the changed entities
      * @param deletedEntities the entity id's to delete
      * @param callback the asynchronous callback
      */
-    void saveAndDeleteEntites(List<Entity> changedEntities, List<String> deletedEntities, AsyncCallback<Void> callback);
+    void saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities, AsyncCallback<Void> callback);
 
 }

@@ -64,6 +64,7 @@ import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
@@ -79,6 +80,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -470,9 +472,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntites(java.util.List, java.util.List)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(java.util.List, java.util.List)
      */
-    public void saveAndDeleteEntites(List<Entity> changedEntities, List<String> deletedEntities) throws CmsRpcException {
+    public void saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities)
+    throws CmsRpcException {
 
         CmsUUID structureId = null;
         if (!changedEntities.isEmpty()) {
@@ -516,7 +519,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     public void saveEntities(List<Entity> entities) throws CmsRpcException {
 
-        saveAndDeleteEntites(entities, Collections.<String> emptyList());
+        saveAndDeleteEntities(entities, Collections.<String> emptyList());
     }
 
     /**
@@ -525,6 +528,56 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public void saveEntity(Entity entity) throws CmsRpcException {
 
         saveEntities(Collections.singletonList(entity));
+    }
+
+    /**
+     * @see com.alkacon.acacia.shared.rpc.I_ContentService#validateEntities(java.util.List)
+     */
+    public Map<String, Map<String, String>> validateEntities(List<Entity> changedEntities) throws CmsRpcException {
+
+        CmsUUID structureId = null;
+        if (changedEntities.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        structureId = CmsContentDefinition.entityIdToUuid(changedEntities.get(0).getId());
+        if (structureId != null) {
+            CmsObject cms = getCmsObject();
+            try {
+                CmsResource resource = cms.readResource(structureId);
+                ensureLock(resource);
+                CmsFile file = cms.readFile(resource);
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                for (Entity entity : changedEntities) {
+                    String entityId = entity.getId();
+                    Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+                    if (content.hasLocale(contentLocale)) {
+                        content.removeLocale(contentLocale);
+                    }
+                    content.addLocale(cms, contentLocale);
+                    addEntityAttributes(cms, content, "", entity, contentLocale);
+                }
+                CmsXmlContentErrorHandler errorHandler = content.validate(cms);
+                if (errorHandler.hasErrors()) {
+                    Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
+                    for (Entry<Locale, Map<String, String>> localeEntry : errorHandler.getErrors().entrySet()) {
+                        Map<String, String> errors = new HashMap<String, String>();
+                        for (Entry<String, String> error : localeEntry.getValue().entrySet()) {
+                            I_CmsXmlContentValue value = content.getValue(error.getKey(), localeEntry.getKey());
+                            String typeUri = getTypeUri(value.getContentDefinition());
+                            String attributeName = getAttributeName(value.getName(), typeUri);
+                            errors.put(attributeName + "[" + value.getXmlIndex() + "]", error.getValue());
+                        }
+                        result.put(
+                            CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
+                            errors);
+                    }
+                    return result;
+                }
+            } catch (Exception e) {
+                error(e);
+            }
+        }
+        return Collections.emptyMap();
     }
 
     /**
