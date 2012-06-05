@@ -52,6 +52,21 @@ public interface I_CmsSitemapController {
     Map<String, CmsClientProperty> getPropertiesForId(CmsUUID id);
 
     /**
+     * Registers the given entry within the data model.<p>
+     * 
+     * @param entry the entry to register
+     */
+    void registerEntry(CmsClientSitemapEntry entry);
+
+    /**
+     * Registers the change of the sitepath with the given controller.<p>
+     * 
+     * @param entry the sitemap entry
+     * @param oldPath the old path
+     */
+    void registerPathChange(CmsClientSitemapEntry entry, String oldPath);
+
+    /**
      * This method is used to establish a unique property map object for each id, but replaces the contents of the 
      * map object with new values for each call.<p>
      * 
@@ -68,12 +83,4 @@ public interface I_CmsSitemapController {
      * @return the original properties object for the given id, but with its contents replaced
      */
     Map<String, CmsClientProperty> replaceProperties(CmsUUID id, Map<String, CmsClientProperty> properties);
-
-    /**
-     * Registers the given entry within the data model.<p>
-     * 
-     * @param entry the entry to register
-     */
-    void registerEntry(CmsClientSitemapEntry entry);
-
 }

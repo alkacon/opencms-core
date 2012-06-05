@@ -303,7 +303,12 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                 entry.setSitePath(m_insertPath + uniqueName + "/");
                 entry.setResourceTypeName("folder");
         }
-        m_controller.create(entry, typeInfo.getId(), typeInfo.getCopyResourceId(), typeInfo.getCreateParameter());
+        m_controller.create(
+            entry,
+            parent.getId(),
+            typeInfo.getId(),
+            typeInfo.getCopyResourceId(),
+            typeInfo.getCreateParameter());
     }
 
     /**
