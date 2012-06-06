@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>8.0.4</opencms_version>
+		<createdate>Wed, 06 Jun 2012 09:53:21 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.editors.tinymce.config</name>
+		<nicename><![CDATA[OpenCms 8 TinyMCE special configuration]]></nicename>
+		<class/>
+		<description><![CDATA[Extended configuration options for the TinyMCE module.]]></description>
+		<version>8.0.4</version>
+		<authorname/>
+		<authoremail/>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/org.opencms.editors.tinymce.config/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>bf4541a4-ae4c-11e1-81d9-0f7301b09f7b</uuidstructure>
+			<datelastmodified>Mon, 04 Jun 2012 13:54:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jun 2012 13:54:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>bff81720-ae4c-11e1-81d9-0f7301b09f7b</uuidstructure>
+			<datelastmodified>Mon, 04 Jun 2012 13:54:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jun 2012 13:54:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.tinymce.config</destination>
+			<type>folder</type>
+			<uuidstructure>dae67f2a-afac-11e1-a9ee-0f7301b09f7b</uuidstructure>
+			<datelastmodified>Wed, 06 Jun 2012 07:54:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 06 Jun 2012 07:54:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.tinymce.config/tinymce.properties</source>
+			<destination>system/modules/org.opencms.editors.tinymce.config/tinymce.properties</destination>
+			<type>plain</type>
+			<uuidstructure>edcbfd9c-afac-11e1-a9ee-0f7301b09f7b</uuidstructure>
+			<uuidresource>edcbfd9d-afac-11e1-a9ee-0f7301b09f7b</uuidresource>
+			<datelastmodified>Wed, 06 Jun 2012 09:52:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 06 Jun 2012 07:55:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

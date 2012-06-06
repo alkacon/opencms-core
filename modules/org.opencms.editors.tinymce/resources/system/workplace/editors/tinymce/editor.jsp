@@ -744,7 +744,8 @@ function popupCloseAction(closeObj) {
 <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
 <script type="text/javascript">
 <!--
-tinyMCE.init({
+<%=CmsTinyMCEConfiguration.get(cms.getCmsObject()).generateOptionPreprocessor("cms_preprocess_options")%>
+tinyMCE.init(cms_preprocess_options({
     // General options
     mode : "exact",
     elements : "tinymce_content",
@@ -847,7 +848,7 @@ tinyMCE.init({
 	        onclick : ocmsExit
 	   });
 	}
-});
+}));
 
 function setupTinyMCE(editor) {
    if (tinyMCE.isWebKit) {

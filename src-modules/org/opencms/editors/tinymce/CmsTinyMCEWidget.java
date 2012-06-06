@@ -122,9 +122,8 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         String id = param.getId();
         String value = param.getStringValue(cms);
         StringBuilder result = new StringBuilder();
-
+        CmsTinyMCEConfiguration configuration = CmsTinyMCEConfiguration.get(cms);
         result.append("<td class=\"cmsTinyMCE xmlTd\">");
-
         result.append("<textarea class=\"xmlInput maxwidth\" name=\"ta_");
         result.append(id);
         result.append("\" id=\"ta_");
@@ -145,7 +144,9 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("<script type=\"text/javascript\">\n");
         CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
         Properties displayOptions = options.getDisplayOptions(cms);
-        result.append("tinyMCE.init({\n");
+        String preprocessorFunction = configuration.generateOptionPreprocessor("cms_preprocess_options");
+        result.append(preprocessorFunction);
+        result.append("tinyMCE.init(cms_preprocess_options({\n");
         result.append("	// General options\n");
         result.append("relative_urls: false,\n");
         result.append("remove_script_host: false,\n");
@@ -176,6 +177,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("	theme_advanced_toolbar_location : \"top\",\n");
         result.append("	theme_advanced_toolbar_align : \"left\",\n");
         result.append("	theme_advanced_statusbar_location : \"bottom\",\n");
+        result.append("paste_retain_style_properties : '*',\n");
         result.append("width: '100%',");
         result.append("language: '" + OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage() + "',\n");
 
@@ -236,7 +238,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
         result.append("theme_advanced_resizing : false,\n");
         result.append("theme_advanced_resizing_use_cookie : false");
-        result.append("});\n");
+        result.append("}));\n");
 
         result.append("contentFields[contentFields.length] = document.getElementById(\"").append(id).append("\");\n");
 
