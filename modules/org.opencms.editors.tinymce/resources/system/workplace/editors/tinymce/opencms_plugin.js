@@ -299,6 +299,28 @@ window.createLink = createLink;
 
 tinymce.create('tinymce.opencms', {
    init : function(ed, url) {
+      
+      // periodically check if we are in fullscreen mode and the content has changed.
+      // if this is the case, transfer the content from the fullscreen editor to the editor from which
+      // the fullscreen mode has been started.
+      
+      var checkFullscreen = function() {
+         var active = tinyMCE.activeEditor;
+         if (active && (active.id == "mce_fullscreen")) {
+           actualEditor = tinyMCE.get(active.settings.fullscreen_editor_id);
+           var oldContent = tinyMCE.trim(actualEditor.getContent({format : 'raw', no_events : 1}));
+           var newContent = tinyMCE.trim(active.getContent({format : 'raw', no_events : 1}));
+           if (oldContent != newContent) {
+             actualEditor.setContent(newContent);
+           }
+        }
+     }
+      
+     if (!window.installedFullscreenSaveTimer) {
+         window.setInterval(checkFullscreen, 600);
+         window.installedFullscreenSaveTimer = true; 
+     }
+      
       ed.addCommand("cmsImageGallery", function() {
          doShowCmsGalleries(ed, imageGalleryDialogUrl());
       });
