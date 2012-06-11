@@ -131,7 +131,10 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
                 if (!isValidDetailPage(cms, detailPage, detailRes)) {
                     return null;
                 }
-                req.setAttribute(ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
+                if (res != null) {
+                    // response will be null if this run through the init handler is only for determining the locale
+                    req.setAttribute(ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
+                }
                 // set the resource path
                 cms.getRequestContext().setUri(cms.getSitePath(detailPage));
                 return detailPage;
