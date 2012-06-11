@@ -128,9 +128,8 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append(id);
         result.append("\" id=\"ta_");
         result.append(id);
-        result.append("\" style=\"height: ");
-        result.append(getHtmlWidgetOption().getEditorHeight());
-        result.append(";\" rows=\"20\" cols=\"60\">");
+        result.append("\" style=\"");
+        result.append("\" rows=\"20\" cols=\"60\">");
         result.append(CmsEncoder.escapeXml(value));
         result.append("</textarea>");
         result.append("<input type=\"hidden\" name=\"");
@@ -150,9 +149,15 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("	// General options\n");
         result.append("relative_urls: false,\n");
         result.append("remove_script_host: false,\n");
+        result.append("theme_advanced_row_height: 0,\n");
         result.append("skin_variant: 'ocms',\n");
         result.append("	mode : \"exact\",\n");
         result.append("	elements : \"ta_" + id + "\",\n");
+        String editorHeight = getHtmlWidgetOption().getEditorHeight();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
+            editorHeight = editorHeight.replaceAll("px", "");
+            result.append("height: \"" + editorHeight + "\",\n");
+        }
         result.append("	theme : \"advanced\",\n");
         result.append(" file_browser_callback : 'cmsTinyMceFileBrowser',\n");
         result.append("setup : function(editor) { setupTinyMCE(editor); },\n");

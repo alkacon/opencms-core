@@ -1,14 +1,20 @@
 
 /* These rules are used for laying out TinyMCE's button toolbar rows next to each other, not as rows. */
 
-.mceIframeContainer, .mceIframeContainer iframe, #mce_fullscreen_tbl , #mce_fullscreen_container {
+#mce_fullscreen_container .mceIframeContainer, #mce_fullscreen_container .mceIframeContainer iframe, #mce_fullscreen_tbl , #mce_fullscreen_container {
 	height: 100% !important; 
 }
 
-/* Use the cmsTinyMCE class here because we need to turn the float off/on dynamically to fix a layout problem in Chrome. */
+#mce_fullscreen_container {
+	position: absolute !important; /* IE8 has problems with position:fixed, which TinyMCE uses normally for this. */ 
+	top: 0 !important;
+}
+
+/* (use the cmsTinyMCE class here because we need to turn the float off/on dynamically to fix a layout problem in Chrome) */
 .cmsTinyMCE .mceToolbar table, #mce_fullscreen_tbl table.mceToolbar {
    float: left;
 }
+
                     
 .mceToolbar select {
        width: auto !important;
