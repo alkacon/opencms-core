@@ -27,12 +27,11 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
+import com.alkacon.geranium.client.ui.input.PaddedPanel;
 
-import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
-
-import java.util.Iterator;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -47,8 +46,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
@@ -60,7 +57,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
     private boolean m_active = true;
 
     /** The master panel for all added input fields. */
-    private Panel m_panel;
+    private PaddedPanel m_panel;
 
     /** The input test area.*/
     private CmsTextArea m_textarea = new CmsTextArea();
@@ -74,10 +71,13 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
     public CmsTextareaWidget() {
 
         // Place the check above the text box using a vertical panel.
-        m_panel = new CmsScrollPanel();
-        m_panel.setHeight("90px");
+        m_panel = new PaddedPanel(0);
         // All composites must call initWidget() in their constructors.
         initWidget(m_panel);
+        m_panel.setHeight("90px");
+        m_panel.addStyleName(I_LayoutBundle.INSTANCE.form().input());
+        m_textarea.getTextAreaContainer().setPaddingX(0);
+        m_textarea.addStyleName(I_LayoutBundle.INSTANCE.form().input());
         m_panel.add(m_textarea);
 
     }
@@ -170,12 +170,9 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        // set all parameters of the panel visible or invisible
-        Iterator<Widget> it = m_panel.iterator();
-        while (it.hasNext()) {
-            CmsTextArea ta = (CmsTextArea)it.next();
-            ta.setVisible(active);
-            ta.setFormValueAsString("");
+        m_textarea.setEnabled(active);
+        if (active) {
+            fireChangeEvent();
         }
 
     }

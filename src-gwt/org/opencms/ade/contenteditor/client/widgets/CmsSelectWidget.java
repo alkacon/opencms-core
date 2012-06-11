@@ -29,7 +29,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.input.CmsComboBox;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 
 import java.util.HashMap;
 
@@ -88,7 +88,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * Please note: If an entry in the configuration String is malformed, this error is silently ignored (but written 
  * to the log channel of this class at <code>INFO</code>level.<p>
  * */
-public class CmsComboWidget extends Composite implements I_EditWidget {
+public class CmsSelectWidget extends Composite implements I_EditWidget {
 
     /** Optional shortcut default marker. */
     private static final String DEFAULT_MARKER = "*";
@@ -124,21 +124,21 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     private boolean m_active = true;
 
     /** The global select box. */
-    private CmsComboBox m_comboBox = new CmsComboBox();
+    private CmsSelectBox m_selectBox = new CmsSelectBox();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsComboWidget(String config) {
+    public CmsSelectWidget(String config) {
 
         parseconfig(config);
 
         // Place the check above the box using a vertical panel.
         VerticalPanel panel = new VerticalPanel();
-        panel.add(m_comboBox);
+        panel.add(m_selectBox);
 
-        m_comboBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+        m_selectBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
@@ -175,7 +175,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        ValueChangeEvent.fire(this, m_comboBox.getFormValueAsString());
+        ValueChangeEvent.fire(this, m_selectBox.getFormValueAsString());
 
     }
 
@@ -184,7 +184,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        return m_comboBox.getFormValueAsString();
+        return m_selectBox.getFormValueAsString();
     }
 
     /**
@@ -209,7 +209,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        m_comboBox.setActive(active);
+        m_selectBox.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }
@@ -230,8 +230,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        //m_selectBox.selectValue(value);
-        m_comboBox.setFormValueAsString(value);
+        m_selectBox.selectValue(value);
         if (fireEvents) {
             fireChangeEvent();
         }
@@ -355,12 +354,12 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
             }
         }
         //set value and option to the combo box.
-        m_comboBox.setItems(values);
+        m_selectBox.setItems(values);
         // TODO: transfer the help values to the select box.
         //if one entrance is declared for default.
         if (selected >= 0) {
             //set the declared value selected. 
-            m_comboBox.selectValue(options[selected]);
+            m_selectBox.selectValue(options[selected]);
         }
     }
 }

@@ -27,8 +27,10 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLinkSelector;
 
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -36,7 +38,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  *
@@ -52,14 +53,17 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
      */
     public CmsVfsFileWidget(String config) {
 
-        //parseconfig(config);
+        initWidget(m_LinkSelect);
 
         // Place the check above the box using a vertical panel.
-        VerticalPanel panel = new VerticalPanel();
-        panel.add(m_LinkSelect);
-
+        // VerticalPanel panel = new VerticalPanel();
+        // panel.add(m_LinkSelect.getTextBox());
+        m_LinkSelect.getTextBox().getTextBox().addStyleName(I_LayoutBundle.INSTANCE.form().input());
+        m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
+            I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
+            I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         // All composites must call initWidget() in their constructors.
-        initWidget(panel);
 
     }
 

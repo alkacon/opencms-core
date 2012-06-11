@@ -70,8 +70,8 @@ public class CmsMultiCheckboxWidget extends Composite implements I_EditWidget {
         // Place the check above the text box using a vertical panel.
         CmsPaddedPanel panel = new CmsPaddedPanel(10);
         // All composites must call initWidget() in their constructors.
-        initWidget(panel);
-        panel.add(m_multicheckbox);
+        initWidget(m_multicheckbox);
+        //panel.add(m_multicheckbox);
 
         List<CmsCheckBox> checkboxes = m_multicheckbox.getCheckboxes();
         Iterator<CmsCheckBox> it = checkboxes.iterator();
@@ -146,10 +146,10 @@ public class CmsMultiCheckboxWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
+        m_multicheckbox.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }
-        m_multicheckbox.setEnabled(active);
 
     }
 

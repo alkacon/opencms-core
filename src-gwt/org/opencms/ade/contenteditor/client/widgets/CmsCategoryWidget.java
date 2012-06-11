@@ -201,6 +201,11 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
+        Iterator<Widget> it = m_panel.iterator();
+        while (it.hasNext()) {
+            CmsSelectBox selectbox = (CmsSelectBox)it.next();
+            selectbox.setEnabled(active);
+        }
         if (active) {
             fireChangeEvent();
         }

@@ -141,6 +141,11 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
+        Iterator<CmsRadioButton> i = m_listRadioButtons.iterator();
+        while (i.hasNext()) {
+            CmsRadioButton rb = i.next();
+            rb.setEnabled(active);
+        }
         if (active) {
             fireChangeEvent();
 

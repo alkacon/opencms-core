@@ -216,7 +216,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public void onAttachWidget() {
 
-        super.onAttach();
+        onAttach();
     }
 
     /**
@@ -251,6 +251,13 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
             fireChangeEvent();
         }
 
+    }
+
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        getElement().getParentElement().getOffsetWidth();
     }
 
     /**

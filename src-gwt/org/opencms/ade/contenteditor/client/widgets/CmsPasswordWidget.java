@@ -27,9 +27,11 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
+import org.opencms.gwt.client.ui.css.I_CmsInputCss;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
 import java.text.ParseException;
 
@@ -38,7 +40,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 
 /**
@@ -47,18 +48,21 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
  * */
 public class CmsPasswordWidget extends Composite implements I_EditWidget {
 
+    /** The CSS bundle for this widget. */
+    private static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
     private boolean m_active = true;
     private PasswordTextBox m_passwordTextBox = new PasswordTextBox();
 
     /**
-     * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
+     * Constructs an CmsComboWidget.<p>
      */
     public CmsPasswordWidget() {
 
-        // Place the check above the box using a vertical panel.
-        Panel panel = new CmsPaddedPanel(11);
-        panel.add(m_passwordTextBox);
-
+        // All composites must call initWidget() in their constructors.
+        initWidget(m_passwordTextBox);
+        addStyleName(I_LayoutBundle.INSTANCE.form().input());
+        m_passwordTextBox.addStyleName(CSS.passwordBox());
         m_passwordTextBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -68,9 +72,6 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
             }
 
         });
-
-        // All composites must call initWidget() in their constructors.
-        initWidget(panel);
 
     }
 
@@ -96,11 +97,10 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        try {
-            ValueChangeEvent.fire(this, m_passwordTextBox.getValueOrThrow());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if ((m_passwordTextBox.getValue() == "")) {
+            m_passwordTextBox.setValue("");
         }
+        ValueChangeEvent.fire(this, m_passwordTextBox.getValue());
     }
 
     /**
@@ -138,6 +138,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
+        m_passwordTextBox.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }
@@ -159,7 +160,6 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     public void setValue(String value, boolean fireEvents) {
 
         m_passwordTextBox.setValue(value, fireEvents);
-
     }
 
 }

@@ -27,36 +27,39 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.input.CmsTextBox;
-
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * Provides a display only widget, for use on a widget dialog.<p>
- *  
+ *
  * */
-public class CmsDisplayWidget extends Composite implements I_EditWidget {
+public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
 
     private boolean m_active = true;
-    private CmsTextBox m_textbox = new CmsTextBox();
+    private org.opencms.gwt.client.ui.input.CmsVfsLinkWidget m_LinkSelect = new org.opencms.gwt.client.ui.input.CmsVfsLinkWidget();
 
     /**
-     * Creates a new display widget.<p>
+     * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
+     * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsDisplayWidget() {
+    public CmsVfsLinkWidget(String config) {
 
-        // All composites must call initWidget() in their constructors.
-        initWidget(m_textbox.getTextBox());
-        // Set the textbox enabled for only show.
-        addStyleName(I_LayoutBundle.INSTANCE.form().input());
-        m_textbox.getTextBox().getElement().getStyle().setWidth(900, Unit.PX);
+        initWidget(m_LinkSelect);
+        m_LinkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> arg0) {
+
+                fireChangeEvent();
+
+            }
+
+        });
+
     }
 
     /**
@@ -68,11 +71,20 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        return null;
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * Represents a value change event.<p>
+     * 
+     */
+    public void fireChangeEvent() {
+
+        ValueChangeEvent.fire(this, m_LinkSelect.getFormValueAsString());
     }
 
     /**
@@ -80,7 +92,7 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        return m_textbox.getFormValueAsString();
+        return m_LinkSelect.getFormValueAsString();
     }
 
     /**
@@ -105,6 +117,9 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
+        if (active) {
+            fireChangeEvent();
+        }
 
     }
 
@@ -122,9 +137,10 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        // add the saved value to the display field
-        m_textbox.setFormValueAsString(value);
-        m_textbox.setReadOnly(true);
+        m_LinkSelect.setFormValueAsString(value);
+        if (fireEvents) {
+            fireChangeEvent();
+        }
 
     }
 

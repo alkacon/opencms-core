@@ -27,9 +27,10 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 
 import java.util.Date;
@@ -61,10 +62,14 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
      */
     public CmsCalendarWidget(String config) {
 
-        // Place the check above the box using a vertical panel.
-        CmsPaddedPanel panel = new CmsPaddedPanel(0);
+        // All composites must call initWidget() in their constructors.
+        initWidget(m_dateBox);
 
-        panel.add(m_dateBox);
+        m_dateBox.getTextField().getTextBoxContainer().addStyleName(I_LayoutBundle.INSTANCE.form().input());
+        m_dateBox.getTextField().getTextBoxContainer().removeStyleName(
+            I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_dateBox.getTextField().getTextBoxContainer().removeStyleName(
+            I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         ValueChangeHandler<Date> test = new ValueChangeHandler<Date>() {
 
             public void onValueChange(ValueChangeEvent<Date> arg0) {
@@ -91,8 +96,6 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
 
             }
         });
-        // All composites must call initWidget() in their constructors.
-        initWidget(panel);
 
     }
 
