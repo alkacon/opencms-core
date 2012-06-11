@@ -33,6 +33,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
+    /** Path of the base content CSS. */
+    public static final String BASE_CONTENT_CSS = "/system/workplace/editors/tinymce/base_content.css";
+
     /** The translation of the generic widget button names to TinyMCE specific button names. */
     public static final String BUTTON_TRANSLATION =
     /* Row 1*/
@@ -149,6 +152,8 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("	// General options\n");
         result.append("relative_urls: false,\n");
         result.append("remove_script_host: false,\n");
+        // the flexible menu bars produced by the special CSS throw off the height calculations
+        // of TinyMCE; the following setting corrects this 
         result.append("theme_advanced_row_height: 0,\n");
         result.append("skin_variant: 'ocms',\n");
         result.append("	mode : \"exact\",\n");
@@ -215,11 +220,15 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                 // ignore, CSS could not be set
             }
         }
+
+        List<String> contentCssLinks = new ArrayList<String>();
+        contentCssLinks.add(OpenCms.getLinkManager().substituteLink(cms, BASE_CONTENT_CSS));
         if (cssConfigured) {
-            result.append("content_css : \"");
-            result.append(OpenCms.getLinkManager().substituteLink(cms, cssPath));
-            result.append("\",\n");
+            contentCssLinks.add(OpenCms.getLinkManager().substituteLink(cms, cssPath));
         }
+        result.append("content_css : \"");
+        result.append(CmsStringUtil.listAsString(contentCssLinks, ","));
+        result.append("\",\n");
 
         if (getHtmlWidgetOption().showStylesFormat()) {
             try {

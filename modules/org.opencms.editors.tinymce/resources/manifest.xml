@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.4</opencms_version>
-		<createdate>Tue, 10 Apr 2012 14:45:50 GMT</createdate>
+		<createdate>Mon, 11 Jun 2012 15:08:14 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -38,10 +38,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>7ad470eb-830a-11e1-8a40-6f493c00dc32</uuidstructure>
-			<datelastmodified>Tue, 10 Apr 2012 12:41:23 GMT</datelastmodified>
+			<uuidstructure>6d2e8cba-b39d-11e1-bfbf-43f8f38677e0</uuidstructure>
+			<datelastmodified>Mon, 11 Jun 2012 08:14:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 10 Apr 2012 12:41:23 GMT</datecreated>
+			<datecreated>Mon, 11 Jun 2012 08:14:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -60,10 +60,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>7bcc65b7-830a-11e1-8a40-6f493c00dc32</uuidstructure>
-			<datelastmodified>Tue, 10 Apr 2012 12:41:24 GMT</datelastmodified>
+			<uuidstructure>6defba16-b39d-11e1-bfbf-43f8f38677e0</uuidstructure>
+			<datelastmodified>Mon, 11 Jun 2012 08:14:13 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 10 Apr 2012 12:41:24 GMT</datecreated>
+			<datecreated>Mon, 11 Jun 2012 08:14:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -201,6 +201,21 @@
 					<value><![CDATA[TinyMCE]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/tinymce/base_content.css</source>
+			<destination>system/workplace/editors/tinymce/base_content.css</destination>
+			<type>plain</type>
+			<uuidstructure>126b832a-b3d4-11e1-9f11-43f8f38677e0</uuidstructure>
+			<uuidresource>126b832b-b3d4-11e1-9f11-43f8f38677e0</uuidresource>
+			<datelastmodified>Mon, 11 Jun 2012 14:54:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jun 2012 14:45:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -8626,7 +8641,7 @@
 			<type>plain</type>
 			<uuidstructure>72ce1d7d-0d71-4946-86c6-2db4afdb5058</uuidstructure>
 			<uuidresource>c1f1d97a-0c7e-4f18-b477-676341c77a76</uuidresource>
-			<datelastmodified>Thu, 02 Feb 2012 15:02:03 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jun 2012 13:52:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 02 Feb 2012 15:02:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
