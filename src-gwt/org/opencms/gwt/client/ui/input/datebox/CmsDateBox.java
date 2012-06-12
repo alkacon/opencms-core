@@ -350,6 +350,16 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
+     * Returns the text box of this widget.<p>
+     * 
+     * @return the CmsText Box
+     */
+    public CmsTextBox getTextField() {
+
+        return m_box;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     public Date getValue() {
