@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -91,7 +92,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             // now get default m_locale names
             CmsResource res = null;
             try {
-                res = adminCms.readResource(resourceName);
+                res = adminCms.readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 // unable to read the resource - maybe we need the init handlers                
             }

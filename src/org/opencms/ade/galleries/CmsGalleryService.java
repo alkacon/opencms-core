@@ -784,19 +784,28 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             "/",
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
 
+        String siteRoot = getCmsObject().getRequestContext().getSiteRoot();
         // if the current site is NOT the root site - add all other galleries from the system path
-        if (!getCmsObject().getRequestContext().getSiteRoot().equals("")) {
+        if (!siteRoot.equals("")) {
             List<CmsResource> systemGalleries = null;
             // get the galleries in the /system/ folder
             systemGalleries = getCmsObject().readResources(
                 CmsWorkplace.VFS_PATH_SYSTEM,
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
-            if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
+            if (systemGalleries != null) {
                 // add the found system galleries to the result
                 galleries.addAll(systemGalleries);
             }
         }
-
+        if (!OpenCms.getSiteManager().isSharedFolder(siteRoot)) {
+            String shared = OpenCms.getSiteManager().getSharedFolder();
+            List<CmsResource> sharedGalleries = getCmsObject().readResources(
+                shared,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
+            if (sharedGalleries != null) {
+                galleries.addAll(sharedGalleries);
+            }
+        }
         return galleries;
     }
 

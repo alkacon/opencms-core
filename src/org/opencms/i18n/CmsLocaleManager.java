@@ -877,7 +877,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
             // check request for parameters
             if (localeParam != null) {
                 // "__locale" parameter found in request
-                locale = CmsLocaleManager.getLocale(localeParam);
+                Locale checkLocale = CmsLocaleManager.getLocale(localeParam);
+                if (getAvailableLocales().contains(checkLocale)) {
+                    // parameter generated locale is available
+                    locale = checkLocale;
+                } else {
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_CREATE_LOCALE_FAILED_1, checkLocale));
+                }
             }
             // check for "__encoding" parameter in request
             encoding = req.getParameter(CmsLocaleManager.PARAMETER_ENCODING);

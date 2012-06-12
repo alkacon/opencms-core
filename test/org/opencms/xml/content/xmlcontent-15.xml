@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Test2Links 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test14.xsd">
+  
+	<Test2Link language="en">
+		<Html>
+			<links>
+			</links>
+			<content><![CDATA[<img src="${TARGET}">]]></content>
+		</Html>
+		<VfsLink>
+			<link>
+				<target><![CDATA[${TARGET2}]]></target>
+			</link>
+		</VfsLink>
+	</Test2Link>
+</Test2Links>

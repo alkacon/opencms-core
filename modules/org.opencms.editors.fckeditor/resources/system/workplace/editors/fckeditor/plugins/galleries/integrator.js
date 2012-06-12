@@ -155,7 +155,7 @@ function _collectAttributes(element, attributes){
             value=GetAttribute(element, 'class', null_marker);
         }
         if (value!=null_marker){
-            if (attributeNames[i]=='style' && hasEnhancedImageOptions()){
+            if (attributeNames[i]=='style'){
                 value= value.replace(/margin-right:\s*\d+px;/, "");
                 value= value.replace(/margin-bottom:\s*\d+px;/, "");
                 value= value.replace(/margin-left:\s*\d+px;/, "");

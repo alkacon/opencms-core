@@ -85,10 +85,16 @@
         <any>
         	<when-property-is name="user.agent" value="ie6"/>
         	<when-property-is name="user.agent" value="ie8"/>
-        	<when-property-is name="user.agent" value="ie9"/>
         </any>
     </replace-with>
     
+    <replace-with class="org.opencms.gwt.client.util.impl.DOMImpl">
+        <when-type-assignable class="org.opencms.gwt.client.util.impl.DOMImpl"/>
+        <any>
+        	<when-property-is name="user.agent" value="ie9"/>
+        </any>
+    </replace-with>
+
     <replace-with class="org.opencms.gwt.client.CmsDefaultUserAgentInfo">
     	<when-type-is class="org.opencms.gwt.client.I_CmsUserAgentInfo" />
     </replace-with>

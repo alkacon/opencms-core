@@ -386,6 +386,7 @@ public class CmsLogin extends CmsJspLoginBean {
             Cookie wpDataCookie = getCookie(COOKIE_WP_DATA);
             String wpData = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_WPDATA);
             if (wpData != null) {
+                wpData = CmsEncoder.escapeXml(wpData);
                 wpDataCookie.setValue(wpData);
                 setCookie(wpDataCookie, false);
             }
