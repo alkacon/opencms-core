@@ -31,7 +31,6 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
-import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -67,8 +66,6 @@ public class CmsMultiCheckboxWidget extends Composite implements I_EditWidget {
 
         m_multicheckbox = new CmsMultiCheckBox(parseconfig(config));
         setValue(m_selected);
-        // Place the check above the text box using a vertical panel.
-        CmsPaddedPanel panel = new CmsPaddedPanel(10);
         // All composites must call initWidget() in their constructors.
         initWidget(m_multicheckbox);
         //panel.add(m_multicheckbox);

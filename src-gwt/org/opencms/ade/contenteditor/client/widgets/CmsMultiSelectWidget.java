@@ -253,6 +253,9 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
 
     }
 
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
     @Override
     protected void onAttach() {
 
