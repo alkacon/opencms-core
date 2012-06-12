@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
@@ -229,14 +230,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
-     * Call on content change to update the layout.<p>
-     */
-    protected void onContentChange() {
-
-        m_list.onResize();
-    }
-
-    /**
      * Will be triggered if the value in the select box changes.<p>
      * 
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
@@ -326,13 +319,17 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      */
     protected CmsUploadButton createUploadButtonForTarget(String target) {
 
-        CmsUploadButton uploadButton = new CmsUploadButton();
-        uploadButton.setTargetFolder(target);
+        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler();
+        buttonHandler.setTargetFolder(target);
+        buttonHandler.setCloseHandler(getTabHandler());
+        CmsUploadButton uploadButton = new CmsUploadButton(buttonHandler);
+
+        //uploadButton.setTargetFolder(target);
         uploadButton.setText(null);
         uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, target));
         uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadIcon());
-        uploadButton.setDialogCloseHandler(getTabHandler());
+        //uploadButton.setDialogCloseHandler(getTabHandler());
         return uploadButton;
     }
 
@@ -349,6 +346,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * @return <code>true</code> if this tab has quick filter enabled
      */
     protected abstract boolean hasQuickFilter();
+
+    /**
+     * Call on content change to update the layout.<p>
+     */
+    protected void onContentChange() {
+
+        m_list.onResize();
+    }
 
     /**
      * Schedules the quick filter action.<p>

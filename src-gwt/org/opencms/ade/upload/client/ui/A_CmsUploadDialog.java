@@ -1341,8 +1341,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         });
         addButton(m_okButton);
 
+        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler();
+        buttonHandler.setUploadDialog(this);
         // add a new upload button
-        m_uploadButton = new CmsUploadButton(this);
+        m_uploadButton = new CmsUploadButton(buttonHandler);
         m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogButton());
         m_uploadButton.setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_ADD_FILES_0));
         addButton(m_uploadButton);

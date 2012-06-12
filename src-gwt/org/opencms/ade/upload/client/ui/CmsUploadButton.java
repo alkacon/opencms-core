@@ -28,7 +28,6 @@
 package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
-import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
@@ -40,19 +39,16 @@ import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides a upload button.<p>
@@ -60,21 +56,6 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * @since 8.0.0
  */
 public class CmsUploadButton extends Composite implements HasHorizontalAlignment {
-
-    /**
-     * The handler implementation for this class.<p>
-     */
-    protected class CmsUploadButtonHandler implements ChangeHandler {
-
-        /**
-         * @see com.google.gwt.event.dom.client.ChangeHandler#onChange(com.google.gwt.event.dom.client.ChangeEvent)
-         */
-        public void onChange(ChangeEvent event) {
-
-            CmsDomUtil.ensureMouseOut(m_main.getElement());
-            onChangeAction();
-        }
-    }
 
     /** The ui-binder interface. */
     protected interface I_CmsUploadButtonUiBinder extends UiBinder<CmsFlowPanel, CmsUploadButton> {
@@ -92,26 +73,23 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     @UiField
     protected CmsFlowPanel m_main;
 
+    /** The handler for the upload button. */
+    I_CmsUploadButtonHandler m_buttonHandler;
+
+    /** The file input field. */
+    CmsFileInput m_fileInput;
+
     /** The horizontal alignment. */
     private HorizontalAlignmentConstant m_align;
 
     /** Stores the button style. */
     private ButtonStyle m_buttonStyle;
 
-    /** The dialog close handler. */
-    private CloseHandler<PopupPanel> m_closeHandler;
-
     /** Stores the button color. */
     private I_CmsButton.ButtonColor m_color;
 
     /** Flag if button is enabled. */
     private boolean m_enabled;
-
-    /** The file input field. */
-    private CmsFileInput m_fileInput;
-
-    /** The handler for this panel. */
-    private CmsUploadButtonHandler m_handler;
 
     /** The icon image css class. */
     private String m_imageClass;
@@ -122,17 +100,11 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     /** The current style dependent name. */
     private String m_styleDependent;
 
-    /** The target folder for the file upload. */
-    private String m_targetFolder;
-
     /** The button text. */
     private String m_text;
 
     /** The button title. */
     private String m_title;
-
-    /** The upload dialog. */
-    private A_CmsUploadDialog m_uploadDialog;
 
     /** Flag if a button minimum width should be used. */
     private boolean m_useMinWidth;
@@ -142,38 +114,26 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
      * 
      * Creates a new upload button. This upload button opens a new OS file selector on click.<p>
      * 
-     * On change (user has selected one or more file(s)) a new Upload Dialog is created.<p>
+     * On change the button handler passed into the constructor is notified.<p>
+     * 
+     * @param buttonHandler the buttonHandler 
      */
-    public CmsUploadButton() {
+    public CmsUploadButton(I_CmsUploadButtonHandler buttonHandler) {
 
         org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadCss().ensureInjected();
         initWidget(m_uiBinder.createAndBindUi(this));
+        m_buttonHandler = buttonHandler;
+        m_buttonHandler.setButton(this);
         m_align = HasHorizontalAlignment.ALIGN_RIGHT;
         updateState("up");
         m_enabled = true;
         // create a handler for this button
-        m_handler = new CmsUploadButtonHandler();
         setSize(I_CmsButton.Size.medium);
         // create the push button
         setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         setTitle(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
         createFileInput();
-    }
-
-    /**
-     * The constructor for an already opened Upload Dialog.<p>
-     * 
-     * Creates a new upload button. This upload button is part of the given Upload Dialog.<p>
-     * 
-     * In difference to the default constructor it will not create and show a new Upload Dialog on change.<p> 
-     * 
-     * @param dialog the upload dialog
-     */
-    public CmsUploadButton(A_CmsUploadDialog dialog) {
-
-        this();
-        m_uploadDialog = dialog;
     }
 
     /**
@@ -208,6 +168,16 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     }
 
     /**
+     * Gets the upload button handler instance for this button.<p>
+     * 
+     * @return the upload button handler 
+     */
+    public I_CmsUploadButtonHandler getButtonHandler() {
+
+        return m_buttonHandler;
+    }
+
+    /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
      * 
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
@@ -235,16 +205,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     public I_CmsButton.Size getSize() {
 
         return m_size;
-    }
-
-    /**
-     * Returns the targetFolder.<p>
-     *
-     * @return the targetFolder
-     */
-    public String getTargetFolder() {
-
-        return m_targetFolder;
     }
 
     /**
@@ -317,19 +277,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     }
 
     /**
-     * Sets the upload dialog close handler.<p>
-     * 
-     * @param closeHandler the close handler to set
-     */
-    public void setDialogCloseHandler(CloseHandler<PopupPanel> closeHandler) {
-
-        m_closeHandler = closeHandler;
-        if (m_uploadDialog != null) {
-            m_uploadDialog.addCloseHandler(m_closeHandler);
-        }
-    }
-
-    /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
      * 
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
@@ -367,19 +314,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
             addStyleName(size.getCssClassName());
         }
         m_size = size;
-    }
-
-    /**
-     * Sets the targetFolder.<p>
-     *
-     * @param targetFolder the targetFolder to set
-     */
-    public void setTargetFolder(String targetFolder) {
-
-        m_targetFolder = targetFolder;
-        if (m_uploadDialog != null) {
-            m_uploadDialog.setTargetFolder(m_targetFolder);
-        }
     }
 
     /**
@@ -443,12 +377,15 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
             m_fileInput.getElement().getStyle().setDisplay(Display.NONE);
         }
         m_fileInput = new CmsFileInput();
-        // important to set font-size as inline style, as IE7 and IE8 will not accept it otherwise
-        m_fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
-        m_fileInput.addChangeHandler(m_handler);
-        m_fileInput.setAllowMultipleFiles(true);
-        m_fileInput.setName("upload");
-        m_fileInput.addStyleName(org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadCss().uploadFileInput());
+        m_fileInput.addChangeHandler(new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+
+                CmsDomUtil.ensureMouseOut(m_main.getElement());
+                m_buttonHandler.onChange(m_fileInput);
+            }
+        });
+        m_buttonHandler.initializeFileInput(m_fileInput);
         m_main.add(m_fileInput);
     }
 
@@ -493,31 +430,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         if (isEnabled()) {
             updateState("up-hovering");
         }
-    }
-
-    /**
-     * Opens the dialog and creates a new input.<p>
-     * 
-     * On change the upload dialog is opened and a new file input field will be created.<p>
-     */
-    protected void onChangeAction() {
-
-        if (m_uploadDialog == null) {
-            try {
-                m_uploadDialog = GWT.create(CmsUploadDialogImpl.class);
-                m_uploadDialog.setTargetFolder(m_targetFolder);
-                if (m_closeHandler != null) {
-                    m_uploadDialog.addCloseHandler(m_closeHandler);
-                }
-            } catch (Exception e) {
-                CmsErrorDialog.handleException(new Exception(
-                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                    e));
-                return;
-            }
-        }
-        m_uploadDialog.addFileInput(m_fileInput);
-        createFileInput();
     }
 
     /**

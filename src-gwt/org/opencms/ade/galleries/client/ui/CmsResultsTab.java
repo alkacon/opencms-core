@@ -34,7 +34,9 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
+import org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
@@ -671,7 +673,10 @@ public class CmsResultsTab extends A_CmsListTab {
         String uploadTarget = null;
         if (targets.size() == 1) {
             uploadTarget = targets.iterator().next();
-            m_uploadButton.setTargetFolder(uploadTarget);
+            I_CmsUploadButtonHandler handler = m_uploadButton.getButtonHandler();
+            if (handler instanceof CmsDialogUploadButtonHandler) {
+                ((CmsDialogUploadButtonHandler)handler).setTargetFolder(uploadTarget);
+            }
             m_uploadButton.enable();
             m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, uploadTarget));
         } else {
