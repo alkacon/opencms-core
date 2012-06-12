@@ -14,13 +14,14 @@
 		<group>OpenCms ADE</group>
 		<class />
 		<description><![CDATA[Configuration for OpenCms websites]]></description>
-		<version>8.0.4</version>
+		<version>8.5.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated />
 		<userinstalled />
 		<dateinstalled />
 		<dependencies>
+			<dependency name="org.opencms.workplace" version="8.0.0"/>
 			<dependency name="org.opencms.workplace.categories" version="8.0.0"/>
 		</dependencies>
 		<exportpoints>
