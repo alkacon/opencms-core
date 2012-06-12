@@ -241,8 +241,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
      */
     public Object getFormValue() {
 
-        if (m_selectedValue.equals("")) {
-            return null;
+        if (m_selectedValue == null) {
+            return "";
         }
         return m_selectedValue;
     }

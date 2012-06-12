@@ -146,18 +146,18 @@ public class CmsFramePopup extends CmsPopup {
      * Exports a Javascript function 'cmsCloseDialog', which, when passed the id of a CmsFramePopup as a parameter, will close that dialog.<p>
      */
     protected native void exportCloseFunction() /*-{
-        var w = $wnd;
-        w.CmsFramePopup_instances = w.CmsFramePopup_instances || {};
-        // register the current instance under its id 
-        w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id] = this;
-        if (!w.cmsCloseDialog) {
-        w.cmsCloseDialog = function(arg) {
-        var instance = w.CmsFramePopup_instances[arg];
-        instance.@org.opencms.gwt.client.ui.input.CmsFramePopup::hideDelayed()();
-        // remove current instance 
-        delete w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id];
-        } // cmsCloseDialog 
-        } // if
-    }-*/;
+                                                var w = $wnd;
+                                                w.CmsFramePopup_instances = w.CmsFramePopup_instances || {};
+                                                // register the current instance under its id 
+                                                w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id] = this;
+                                                if (!w.cmsCloseDialog) {
+                                                w.cmsCloseDialog = function(arg) {
+                                                var instance = w.CmsFramePopup_instances[arg];
+                                                instance.@org.opencms.gwt.client.ui.input.CmsFramePopup::hideDelayed()();
+                                                // remove current instance 
+                                                delete w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id];
+                                                } // cmsCloseDialog 
+                                                } // if
+                                                }-*/;
 
 }

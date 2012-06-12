@@ -82,8 +82,8 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
         m_textAreaContainer.add(m_textArea);
         m_panel.add(m_error);
         m_textArea.addStyleName(CSS.textArea());
-        m_textAreaContainer.addStyleName(CSS.textAreaContainer());
         m_textAreaContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_textAreaContainer.addStyleName(CSS.textAreaContainer());
     }
 
     /**
@@ -125,6 +125,9 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
      */
     public Object getFormValue() {
 
+        if (m_textArea.getText() == null) {
+            return "";
+        }
         return m_textArea.getText();
     }
 
@@ -144,6 +147,26 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     public String getText() {
 
         return m_textArea.getText();
+    }
+
+    /**
+     * Returns the textarea of this widget.<p>
+     * 
+     * @return the textarea
+     * */
+    public TextArea getTextArea() {
+
+        return m_textArea;
+    }
+
+    /**
+     * Returns the text area container of this widget.<p>
+     * 
+     * @return the text area container
+     */
+    public CmsPaddedPanel getTextAreaContainer() {
+
+        return m_textAreaContainer;
     }
 
     /**

@@ -160,6 +160,16 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    @Override
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_openerWidget.addValueChangeHandler(handler);
+        return super.addValueChangeHandler(handler);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
     public String getApparentValue() {
@@ -173,6 +183,27 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
+     */
+    @Override
+    public Object getFormValue() {
+
+        if (m_openerWidget.getFormValue() == null) {
+            return "";
+        }
+        return m_openerWidget.getFormValue();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    @Override
+    public String getFormValueAsString() {
+
+        return (String)getFormValue();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#selectValue(java.lang.String)
      */
     @Override
@@ -183,12 +214,51 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
+     * @param active
+     */
+    public void setActive(boolean active) {
+
+        m_openerWidget.setEnabled(active);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
         // nothing to do
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#setFormValue(java.lang.Object)
+     */
+    @Override
+    public void setFormValue(Object value) {
+
+        if (value == null) {
+            value = "";
+        }
+
+        if (value instanceof String) {
+            String strValue = (String)value;
+            if (m_selectCells.containsKey(value)) {
+                selectValue(strValue);
+                onValueSelect(strValue);
+            } else {
+                m_openerWidget.setFormValueAsString(strValue);
+            }
+
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    @Override
+    public void setFormValueAsString(String formValue) {
+
+        setFormValue(formValue);
     }
 
     /**
@@ -235,6 +305,18 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
+     * Sets the title for a select option.<p>
+     * 
+     * Note: This will only affect select options added *after* calling this method! 
+     * 
+     * @param text the new title for the option 
+     */
+    public void setText(String text) {
+
+        m_openerWidget.getTextBox().setText(text);
+    }
+
+    /**
      * Sets the text that is used for the "not selected" option.<p>
      * 
      * @param text the text which should be used for the "not selected" option 
@@ -264,18 +346,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     public void setTitle(String option, String title) {
 
         m_titles.put(option, title);
-    }
-
-    /**
-     * Sets the title for a select option.<p>
-     * 
-     * Note: This will only affect select options added *after* calling this method! 
-     * 
-     * @param text the new title for the option 
-     */
-    public void setText(String text) {
-
-        m_openerWidget.getTextBox().setText(text);
     }
 
     /**
@@ -353,16 +423,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        m_openerWidget.addValueChangeHandler(handler);
-        return super.addValueChangeHandler(handler);
-    }
-
-    /**
      * @see com.google.gwt.user.client.ui.Widget#onLoad()
      */
     @Override
@@ -394,66 +454,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
         // do nothing 
 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
-     */
-    @Override
-    public String getFormValueAsString() {
-
-        return (String)getFormValue();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
-     */
-    @Override
-    public Object getFormValue() {
-
-        if (m_openerWidget.getFormValue() == null) {
-            return "";
-        }
-        return m_openerWidget.getFormValue();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#setFormValue(java.lang.Object)
-     */
-    @Override
-    public void setFormValue(Object value) {
-
-        if (value == null) {
-            value = "";
-        }
-
-        if (value instanceof String) {
-            String strValue = (String)value;
-            if (m_selectCells.containsKey(value)) {
-                selectValue(strValue);
-                onValueSelect(strValue);
-            } else {
-                m_openerWidget.setFormValueAsString(strValue);
-            }
-
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
-     */
-    @Override
-    public void setFormValueAsString(String formValue) {
-
-        setFormValue(formValue);
-    }
-
-    /**
-     * @param active
-     */
-    public void setActive(boolean active) {
-
-        m_openerWidget.setEnabled(active);
     }
 
 }

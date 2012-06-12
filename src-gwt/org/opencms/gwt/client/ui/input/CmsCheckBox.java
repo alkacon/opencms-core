@@ -231,6 +231,17 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     }
 
     /**
+     * Returns the text.<p>
+     * 
+     * @return the text as String
+     */
+    public String getText() {
+
+        return m_button.getText();
+
+    }
+
+    /**
      * Returns true if the checkbox is checked.<p>
      * 
      * @return true if the checkbox is checked
@@ -338,17 +349,6 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     public void setText(String text) {
 
         m_button.setText(text);
-    }
-
-    /**
-     * Returns the text.<p>
-     * 
-     * @return the text as String
-     */
-    public String getText() {
-
-        return m_button.getText();
-
     }
 
     /** 

@@ -393,11 +393,10 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public Object getFormValue() {
 
-        String result = m_textbox.getText();
-        if (result.equals("")) {
-            result = null;
+        if (m_textbox.getText().equals(null)) {
+            return "";
         }
-        return result;
+        return m_textbox.getText();
     }
 
     /**
@@ -406,7 +405,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public String getFormValueAsString() {
 
         if (m_ghostMode) {
-            return null;
+            return "";
         }
         return (String)getFormValue();
     }
@@ -429,6 +428,26 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public String getText() {
 
         return m_textbox.getText();
+    }
+
+    /**
+     * Returns the Textbox of this widget.<p>
+     * 
+     * @return the CmsTextBox
+     */
+    public TextBox getTextBox() {
+
+        return m_textbox;
+    }
+
+    /**
+     * Returns the Panel of this widget.<p>
+     * 
+     * @return the Panel
+     */
+    public CmsPaddedPanel getTextBoxContainer() {
+
+        return m_textboxContainer;
     }
 
     /**
