@@ -28,6 +28,7 @@
 package org.opencms.ade.contenteditor.shared.rpc;
 
 import com.alkacon.acacia.shared.Entity;
+import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.acacia.shared.rpc.I_ContentService;
 
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
@@ -79,12 +80,14 @@ public interface I_CmsContentService extends I_ContentService {
     CmsContentDefinition prefetch() throws CmsRpcException;
 
     /**
-     * Saves and deletes the given entities.<p>
+     * Saves and deletes the given entities. Returns a validation result in case of invalid entities.<p>
      * 
      * @param changedEntities the changed entities
      * @param deletedEntities the entity id's to delete
      * 
+     * @return the validation result in case of invalid entities
+     * 
      * @throws Exception if something goes wrong processing the request
      */
-    void saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities) throws Exception;
+    ValidationResult saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities) throws Exception;
 }

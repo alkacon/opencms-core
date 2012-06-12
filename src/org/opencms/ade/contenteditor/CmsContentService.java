@@ -32,6 +32,7 @@ import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
 import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.acacia.shared.Type;
+import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.vie.shared.I_Entity;
 import com.alkacon.vie.shared.I_EntityAttribute;
 import com.alkacon.vie.shared.I_Type;
@@ -474,7 +475,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(java.util.List, java.util.List)
      */
-    public void saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities)
+    public ValidationResult saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities)
     throws CmsRpcException {
 
         CmsUUID structureId = null;
@@ -506,38 +507,43 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         content.removeLocale(contentLocale);
                     }
                 }
+                ValidationResult validationResult = validateContent(cms, structureId, content);
+                if (validationResult.hasErrors()) {
+                    return validationResult;
+                }
                 writeContent(cms, file, content, getFileEncoding(cms, file));
                 tryUnlock(resource);
             } catch (Exception e) {
                 error(e);
             }
         }
+        return null;
     }
 
     /**
      * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntities(java.util.List)
      */
-    public void saveEntities(List<Entity> entities) throws CmsRpcException {
+    public ValidationResult saveEntities(List<Entity> entities) throws CmsRpcException {
 
-        saveAndDeleteEntities(entities, Collections.<String> emptyList());
+        return saveAndDeleteEntities(entities, Collections.<String> emptyList());
     }
 
     /**
      * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntity(com.alkacon.acacia.shared.Entity)
      */
-    public void saveEntity(Entity entity) throws CmsRpcException {
+    public ValidationResult saveEntity(Entity entity) throws CmsRpcException {
 
-        saveEntities(Collections.singletonList(entity));
+        return saveEntities(Collections.singletonList(entity));
     }
 
     /**
      * @see com.alkacon.acacia.shared.rpc.I_ContentService#validateEntities(java.util.List)
      */
-    public Map<String, Map<String, String>> validateEntities(List<Entity> changedEntities) throws CmsRpcException {
+    public ValidationResult validateEntities(List<Entity> changedEntities) throws CmsRpcException {
 
         CmsUUID structureId = null;
         if (changedEntities.isEmpty()) {
-            return Collections.emptyMap();
+            return new ValidationResult(null, null);
         }
         structureId = CmsContentDefinition.entityIdToUuid(changedEntities.get(0).getId());
         if (structureId != null) {
@@ -556,28 +562,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     content.addLocale(cms, contentLocale);
                     addEntityAttributes(cms, content, "", entity, contentLocale);
                 }
-                CmsXmlContentErrorHandler errorHandler = content.validate(cms);
-                if (errorHandler.hasErrors()) {
-                    Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
-                    for (Entry<Locale, Map<String, String>> localeEntry : errorHandler.getErrors().entrySet()) {
-                        Map<String, String> errors = new HashMap<String, String>();
-                        for (Entry<String, String> error : localeEntry.getValue().entrySet()) {
-                            I_CmsXmlContentValue value = content.getValue(error.getKey(), localeEntry.getKey());
-                            String typeUri = getTypeUri(value.getContentDefinition());
-                            String attributeName = getAttributeName(value.getName(), typeUri);
-                            errors.put(attributeName + "[" + value.getXmlIndex() + "]", error.getValue());
-                        }
-                        result.put(
-                            CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
-                            errors);
-                    }
-                    return result;
-                }
+                return validateContent(cms, structureId, content);
             } catch (Exception e) {
                 error(e);
             }
         }
-        return Collections.emptyMap();
+        return new ValidationResult(null, null);
     }
 
     /**
@@ -833,6 +823,52 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             title,
             cms.getSitePath(resource),
             typeName);
+    }
+
+    /**
+     * Validates the given XML content.<p>
+     *  
+     * @param cms the cms context
+     * @param structureId the structure id
+     * @param content the XML content
+     * 
+     * @return the validation result
+     */
+    private ValidationResult validateContent(CmsObject cms, CmsUUID structureId, CmsXmlContent content) {
+
+        CmsXmlContentErrorHandler errorHandler = content.validate(cms);
+        Map<String, Map<String, String>> errorsByEntity = new HashMap<String, Map<String, String>>();
+        if (errorHandler.hasErrors()) {
+
+            for (Entry<Locale, Map<String, String>> localeEntry : errorHandler.getErrors().entrySet()) {
+                Map<String, String> errors = new HashMap<String, String>();
+                for (Entry<String, String> error : localeEntry.getValue().entrySet()) {
+                    I_CmsXmlContentValue value = content.getValue(error.getKey(), localeEntry.getKey());
+                    String typeUri = getTypeUri(value.getContentDefinition());
+                    String attributeName = getAttributeName(value.getName(), typeUri);
+                    errors.put(attributeName + "[" + value.getXmlIndex() + "]", error.getValue());
+                }
+                errorsByEntity.put(
+                    CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
+                    errors);
+            }
+        }
+        Map<String, Map<String, String>> warningsByEntity = new HashMap<String, Map<String, String>>();
+        if (errorHandler.hasWarnings()) {
+            for (Entry<Locale, Map<String, String>> localeEntry : errorHandler.getWarnings().entrySet()) {
+                Map<String, String> warnings = new HashMap<String, String>();
+                for (Entry<String, String> warning : localeEntry.getValue().entrySet()) {
+                    I_CmsXmlContentValue value = content.getValue(warning.getKey(), localeEntry.getKey());
+                    String typeUri = getTypeUri(value.getContentDefinition());
+                    String attributeName = getAttributeName(value.getName(), typeUri);
+                    warnings.put(attributeName + "[" + value.getXmlIndex() + "]", warning.getValue());
+                }
+                warningsByEntity.put(
+                    CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
+                    warnings);
+            }
+        }
+        return new ValidationResult(errorsByEntity, warningsByEntity);
     }
 
     /**

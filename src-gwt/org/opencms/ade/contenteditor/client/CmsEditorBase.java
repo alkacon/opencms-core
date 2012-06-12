@@ -28,6 +28,7 @@
 package org.opencms.ade.contenteditor.client;
 
 import com.alkacon.acacia.client.EditorBase;
+import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.vie.client.Vie;
 import com.alkacon.vie.shared.I_Entity;
 
@@ -195,7 +196,7 @@ public class CmsEditorBase extends EditorBase {
         final boolean clearOnSuccess,
         final Command callback) {
 
-        CmsRpcAction<Void> asyncCallback = new CmsRpcAction<Void>() {
+        CmsRpcAction<ValidationResult> asyncCallback = new CmsRpcAction<ValidationResult>() {
 
             @Override
             public void execute() {
@@ -205,7 +206,7 @@ public class CmsEditorBase extends EditorBase {
             }
 
             @Override
-            protected void onResponse(Void result) {
+            protected void onResponse(ValidationResult result) {
 
                 stop(false);
                 callback.execute();
@@ -248,7 +249,7 @@ public class CmsEditorBase extends EditorBase {
     @Override
     public void saveEntity(final I_Entity entity, final boolean clearOnSuccess, final Command callback) {
 
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+        CmsRpcAction<ValidationResult> action = new CmsRpcAction<ValidationResult>() {
 
             @Override
             public void execute() {
@@ -259,7 +260,7 @@ public class CmsEditorBase extends EditorBase {
             }
 
             @Override
-            protected void onResponse(Void result) {
+            protected void onResponse(ValidationResult result) {
 
                 callback.execute();
                 if (clearOnSuccess) {
