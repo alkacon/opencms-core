@@ -574,7 +574,7 @@ span.combobutton {
 img.button {
 	height: 20px;
 	width: 20px;
-	border: 0px none;
+	border: none;
 	vertical-align: middle;
 }
 
