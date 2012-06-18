@@ -87,7 +87,7 @@ public abstract class A_NativeWidgetFactory implements I_WidgetFactory {
      */
     private NativeEditWidget createNativeWidget(String configuration) {
 
-        I_EditWidget widget = createWidget(configuration);
+        I_EditWidget widget = createFormWidget(configuration);
         return NativeEditWidget.wrapWidget(widget);
     }
 
@@ -101,7 +101,7 @@ public abstract class A_NativeWidgetFactory implements I_WidgetFactory {
      */
     private NativeEditWidget createNativeWrapedElement(String configuration, Element element) {
 
-        return NativeEditWidget.wrapWidget(wrapElement(configuration, element));
+        return NativeEditWidget.wrapWidget(createInlineWidget(configuration, element));
     }
 
 }

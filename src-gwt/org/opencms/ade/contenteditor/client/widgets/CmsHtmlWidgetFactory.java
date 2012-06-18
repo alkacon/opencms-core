@@ -28,8 +28,10 @@
 package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.I_WidgetFactory;
+import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.HalloWidget;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
+import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
@@ -54,18 +56,17 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createWidget(java.lang.String)
+     * @see com.alkacon.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
      */
-    public I_EditWidget createWidget(String configuration) {
+    public I_FormEditWidget createFormWidget(String configuration) {
 
-        I_EditWidget widget = new TinyMCEWidget();
-        return widget;
+        return new FormWidgetWrapper(new TinyMCEWidget());
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#wrapElement(java.lang.String, com.google.gwt.user.client.Element)
+     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.user.client.Element)
      */
-    public I_EditWidget wrapElement(String configuration, Element element) {
+    public I_EditWidget createInlineWidget(String configuration, Element element) {
 
         return new HalloWidget(element);
     }
