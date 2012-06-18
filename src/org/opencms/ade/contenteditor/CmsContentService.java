@@ -412,11 +412,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-            definition = readContentDefinition(
-                resource,
-                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
-                contentLocale,
-                false);
+            definition = readContentDefinition(resource, CmsContentDefinition.uuidToEntityId(
+                structureId,
+                contentLocale.toString()), contentLocale, false);
         } catch (Exception e) {
             error(e);
         }
@@ -433,11 +431,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-            definition = readContentDefinition(
-                resource,
-                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
-                contentLocale,
-                true);
+            definition = readContentDefinition(resource, CmsContentDefinition.uuidToEntityId(
+                structureId,
+                contentLocale.toString()), contentLocale, true);
         } catch (Exception e) {
             error(e);
         }
