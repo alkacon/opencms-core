@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  *
  * */
-public class CmsVfsFileWidget extends Composite implements I_EditWidget {
+public class CmsVfsImageWidget extends Composite implements I_EditWidget {
 
     private boolean m_active = true;
     private CmsLinkSelector m_LinkSelect = new CmsLinkSelector();
@@ -51,19 +51,30 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsVfsFileWidget(String config) {
+    public CmsVfsImageWidget(String config) {
 
+        // All composites must call initWidget() in their constructors.
         initWidget(m_LinkSelect);
-
-        // Place the check above the box using a vertical panel.
-        // VerticalPanel panel = new VerticalPanel();
-        // panel.add(m_LinkSelect.getTextBox());
+        m_LinkSelect.setBasePath("/system/modules/org.opencms.ade.galleries/gallery.jsp");
+        m_LinkSelect.setPathAttributes("&dialogmode=widget");
+        m_LinkSelect.setPopupHeight(490);
+        m_LinkSelect.setPopupWidth(500);
+        m_LinkSelect.setPopupActiveByFocus(true);
         m_LinkSelect.getTextBox().getTextBox().addStyleName(I_LayoutBundle.INSTANCE.form().input());
         m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
             I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
             I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
-        // All composites must call initWidget() in their constructors.
+
+        m_LinkSelect.getCheckBox().removeFromParent();
+        m_LinkSelect.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> arg0) {
+
+                fireChangeEvent();
+
+            }
+        });
 
     }
 
@@ -122,6 +133,7 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
+        m_LinkSelect.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }

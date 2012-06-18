@@ -38,17 +38,17 @@ import com.google.gwt.user.client.Element;
 /**
  * Factory to generate basic input widget.<p>
  */
-public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
+public class CmsVfsImageWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
     /** The widget name. */
-    private static final String WIDGET_NAME = "org.opencms.widgets.CmsVfsFileWidget";
+    private static final String WIDGET_NAME = "org.opencms.widgets.CmsVfsImageWidget";
 
     /**
      * Initializes this class.<p>
      */
     public static void initClass() {
 
-        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsVfsFileWidgetFactory());
+        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsVfsImageWidgetFactory());
     }
 
     /**
@@ -56,7 +56,7 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createWidget(String configuration) {
 
-        return new CmsVfsFileWidget(configuration);
+        return new CmsVfsImageWidget(configuration);
     }
 
     /**
@@ -64,7 +64,7 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget wrapElement(String configuration, Element element) {
 
-        return new CmsVfsFileWidget(configuration);
+        return new CmsVfsImageWidget(configuration);
     }
 
 }

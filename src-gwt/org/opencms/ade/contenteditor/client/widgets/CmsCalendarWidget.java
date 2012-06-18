@@ -157,7 +157,10 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        m_dateBox.setEnabled(active);
+        m_dateBox.getTextField().setEnabled(active);
+        if (active) {
+            fireChangeEvent();
+        }
     }
 
     /**
