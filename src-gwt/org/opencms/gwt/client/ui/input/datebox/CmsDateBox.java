@@ -344,7 +344,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         Date value = getValue();
         if (value == null) {
-            return null;
+            return "";
         }
         return String.valueOf(getValue().getTime());
     }
