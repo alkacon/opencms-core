@@ -40,6 +40,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style.Unit;
+
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
  * after the user clicks on the widget.<p>
@@ -112,6 +114,7 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
     public CmsMultiSelectBox(Map<String, String> items, boolean addNullOption) {
 
         super();
+        m_multiSelectCell.getElement().getStyle().setWidth(100, Unit.PCT);
         if (items.containsKey(NO_SELECTION_TEXT)) {
             m_noSelectionText = items.get(NO_SELECTION_TEXT);
             m_noSelectionOpenerText = items.get(NO_SELECTION_OPENER_TEXT);
