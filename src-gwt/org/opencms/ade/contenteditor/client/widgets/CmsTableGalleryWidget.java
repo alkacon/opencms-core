@@ -27,7 +27,11 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
+
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsLinkSelector;
 
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -38,26 +42,41 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  *
  * */
-public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
+public class CmsTableGalleryWidget extends Composite implements I_EditWidget {
 
     private boolean m_active = true;
-    private org.opencms.gwt.client.ui.input.CmsVfsLinkWidget m_LinkSelect = new org.opencms.gwt.client.ui.input.CmsVfsLinkWidget();
+    private CmsLinkSelector m_LinkSelect = new CmsLinkSelector();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsVfsLinkWidget(String config) {
+    public CmsTableGalleryWidget(String config) {
 
+        // All composites must call initWidget() in their constructors.
         initWidget(m_LinkSelect);
-        m_LinkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+        m_LinkSelect.setBasePath("/system/workplace/galleries/tablegallery/index.jsp");
+        m_LinkSelect.setPathAttributes("&dialogmode=widget"
+            + "&params={\"startupfolder\":\"/default/site/\",\"startuptype\":\"\",\"editresource\":\"/.content/article/a_00037.html\"}");
+        m_LinkSelect.setPopupTitle("Test TableGallery");
+        m_LinkSelect.setModal(true);
+        m_LinkSelect.setPopupHeight(640);
+        m_LinkSelect.setPopupWidth(500);
+        m_LinkSelect.setPopupActiveByFocus(true);
+        m_LinkSelect.getTextBox().getTextBox().addStyleName(I_LayoutBundle.INSTANCE.form().input());
+        m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
+            I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
+            I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
+
+        m_LinkSelect.getCheckBox().removeFromParent();
+        m_LinkSelect.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> arg0) {
 
                 fireChangeEvent();
-                
+
             }
-            
         });
 
     }
@@ -117,6 +136,7 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
+        m_LinkSelect.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }

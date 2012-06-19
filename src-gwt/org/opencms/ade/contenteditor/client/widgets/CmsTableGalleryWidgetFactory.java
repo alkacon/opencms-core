@@ -28,10 +28,7 @@
 package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.I_WidgetFactory;
-import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
-import com.alkacon.acacia.client.widgets.I_FormEditWidget;
-import com.alkacon.acacia.client.widgets.StringWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
@@ -41,45 +38,33 @@ import com.google.gwt.user.client.Element;
 /**
  * Factory to generate basic input widget.<p>
  */
-public class CmsStringWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
+public class CmsTableGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
     /** The widget name. */
-    private static final String WIDGET_NAME = "org.opencms.widgets.CmsInputWidget";
+    private static final String WIDGET_NAME = "org.opencms.widgets.CmsTableGalleryWidget";
 
     /**
      * Initializes this class.<p>
      */
     public static void initClass() {
 
-        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsStringWidgetFactory());
+        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsTableGalleryWidgetFactory());
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
+     * @see com.alkacon.acacia.client.I_WidgetFactory#createWidget(java.lang.String)
      */
-    public I_FormEditWidget createFormWidget(String configuration) {
-
-        return new FormWidgetWrapper(new StringWidget());
-    }
-
-    /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.user.client.Element)
-     */
-    public I_EditWidget createInlineWidget(String configuration, Element element) {
-
-        return new StringWidget(element);
-    }
-
     public I_EditWidget createWidget(String configuration) {
 
-        // TODO: Auto-generated method stub
-        return null;
+        return new CmsTableGalleryWidget(configuration);
     }
 
+    /**
+     * @see com.alkacon.acacia.client.I_WidgetFactory#wrapElement(java.lang.String, com.google.gwt.user.client.Element)
+     */
     public I_EditWidget wrapElement(String configuration, Element element) {
 
-        // TODO: Auto-generated method stub
-        return null;
+        return new CmsTableGalleryWidget(configuration);
     }
 
 }

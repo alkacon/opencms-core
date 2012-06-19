@@ -60,6 +60,9 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
         m_LinkSelect.setPopupHeight(490);
         m_LinkSelect.setPopupWidth(500);
         m_LinkSelect.setPopupActiveByFocus(true);
+
+        // m_LinkSelect.setPopupTitle(org.opencms.gwt.client.Messages.get().key(
+        //     org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0));
         m_LinkSelect.getTextBox().getTextBox().addStyleName(I_LayoutBundle.INSTANCE.form().input());
         m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
             I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());

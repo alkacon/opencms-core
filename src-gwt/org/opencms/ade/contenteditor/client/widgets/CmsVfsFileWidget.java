@@ -29,36 +29,37 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.gwt.client.ui.input.CmsLinkSelector;
+
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  *
  * */
-public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
+public class CmsVfsFileWidget extends Composite implements I_EditWidget {
 
     private boolean m_active = true;
-    private org.opencms.gwt.client.ui.input.CmsVfsLinkWidget m_LinkSelect = new org.opencms.gwt.client.ui.input.CmsVfsLinkWidget();
+    private CmsLinkSelector m_LinkSelect = new CmsLinkSelector();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsVfsLinkWidget(String config) {
+    public CmsVfsFileWidget(String config) {
 
-        initWidget(m_LinkSelect);
-        m_LinkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+        //parseconfig(config);
 
-            public void onValueChange(ValueChangeEvent<String> arg0) {
+        // Place the check above the box using a vertical panel.
+        VerticalPanel panel = new VerticalPanel();
+        panel.add(m_LinkSelect);
 
-                fireChangeEvent();
-                
-            }
-            
-        });
+        // All composites must call initWidget() in their constructors.
+        initWidget(panel);
 
     }
 

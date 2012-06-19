@@ -138,7 +138,7 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
         // Place the check above the box using a vertical panel.
         VerticalPanel panel = new VerticalPanel();
         panel.add(m_selectBox);
-        m_selectBox.getElement().getStyle().setWidth(910, Unit.PX);
+        m_selectBox.getElement().getStyle().setWidth(900, Unit.PX);
         m_selectBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {

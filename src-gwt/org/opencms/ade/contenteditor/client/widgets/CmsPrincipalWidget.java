@@ -29,6 +29,8 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.gwt.client.ui.input.CmsLinkSelector;
+
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -36,28 +38,45 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- *
+ * Provides an OpenCms Principal selection widget, for use on a widget dialog.<p>
+ * 
  * */
-public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
+public class CmsPrincipalWidget extends Composite implements I_EditWidget {
 
+    /** Configuration parameter to set the flags of the principals to display, optional. */
+    public static final String CONFIGURATION_FLAGS = "flags";
+
+    /** Value of the activation. */
     private boolean m_active = true;
-    private org.opencms.gwt.client.ui.input.CmsVfsLinkWidget m_LinkSelect = new org.opencms.gwt.client.ui.input.CmsVfsLinkWidget();
+
+    /** The global select box. */
+    private CmsLinkSelector m_principalPanel = new CmsLinkSelector();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsVfsLinkWidget(String config) {
+    public CmsPrincipalWidget(String config) {
 
-        initWidget(m_LinkSelect);
-        m_LinkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+        // All composites must call initWidget() in their constructors.
+        initWidget(m_principalPanel);
+        m_principalPanel.setBasePath("system/workplace/commons/principal_selection.jsp");
+        m_principalPanel.setPathAttributes("&type=principalwidget&flags=null");
+        m_principalPanel.setPopupHeight(305);
+        m_principalPanel.setPopupWidth(500);
+        m_principalPanel.setPopupActiveByFocus(true);
+        m_principalPanel.setAutoHide(false);
+        m_principalPanel.setModal(false);
+        m_principalPanel.getTextBox().setReadOnly(false);
+        m_principalPanel.getCheckBox().removeFromParent();
+        m_principalPanel.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> arg0) {
 
                 fireChangeEvent();
-                
+
             }
-            
+
         });
 
     }
@@ -84,7 +103,8 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        ValueChangeEvent.fire(this, m_LinkSelect.getFormValueAsString());
+        ValueChangeEvent.fire(this, m_principalPanel.getFormValueAsString());
+
     }
 
     /**
@@ -92,7 +112,7 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        return m_LinkSelect.getFormValueAsString();
+        return m_principalPanel.getFormValueAsString();
     }
 
     /**
@@ -117,6 +137,7 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
+        m_principalPanel.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }
@@ -137,11 +158,10 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_LinkSelect.setFormValueAsString(value);
+        m_principalPanel.setFormValueAsString(value);
         if (fireEvents) {
             fireChangeEvent();
         }
 
     }
-
 }
