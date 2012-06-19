@@ -27,6 +27,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -487,9 +488,11 @@ public class CmsExport {
                 m_exportCount++;
                 I_CmsReport report = getReport();
                 // output something to the report for the folder
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_1,
-                    String.valueOf(m_exportCount)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_1,
+                        String.valueOf(m_exportCount)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_EXPORT_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -588,9 +591,11 @@ public class CmsExport {
                 } catch (CmsVfsResourceNotFoundException crnfe) {
                     // skip this relation: 
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_IMPORTEXPORT_WARN_DELETED_RELATIONS_2,
-                            new String[] {relation.getTargetPath(), resource.getRootPath()}), crnfe);
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_IMPORTEXPORT_WARN_DELETED_RELATIONS_2,
+                                new String[] {relation.getTargetPath(), resource.getRootPath()}),
+                            crnfe);
                     }
                 }
             }
@@ -807,9 +812,11 @@ public class CmsExport {
         String source = trimResourceName(getCms().getSitePath(file));
         I_CmsReport report = getReport();
         m_exportCount++;
-        report.print(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_SUCCESSION_1,
-            String.valueOf(m_exportCount)), I_CmsReport.FORMAT_NOTE);
+        report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_1,
+                String.valueOf(m_exportCount)),
+            I_CmsReport.FORMAT_NOTE);
         report.print(Messages.get().container(Messages.RPT_EXPORT_0), I_CmsReport.FORMAT_NOTE);
         report.print(org.opencms.report.Messages.get().container(
             org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -894,10 +901,12 @@ public class CmsExport {
             List<CmsGroup> allGroups = OpenCms.getOrgUnitManager().getGroups(getCms(), orgunit.getName(), false);
             for (int i = 0, l = allGroups.size(); i < l; i++) {
                 CmsGroup group = allGroups.get(i);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(l)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i + 1),
+                        String.valueOf(l)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_EXPORT_GROUP_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -989,10 +998,12 @@ public class CmsExport {
             allOUs.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true));
             for (int i = 0; i < allOUs.size(); i++) {
                 CmsOrganizationalUnit ou = allOUs.get(i);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(allOUs.size())), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i + 1),
+                        String.valueOf(allOUs.size())),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_EXPORT_ORGUNIT_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -1023,6 +1034,9 @@ public class CmsExport {
      */
     protected void exportProject(Element parent, CmsProject project) throws CmsImportExportException, SAXException {
 
+        I_CmsReport report = getReport();
+        CmsDefaultUsers defaultUsers = OpenCms.getDefaultUsers();
+
         String users;
         try {
             users = getCms().readGroup(project.getGroupId()).getName();
@@ -1034,7 +1048,10 @@ public class CmsExport {
                 LOG.debug(message.key(), e);
             }
 
-            throw new CmsImportExportException(message, e);
+            users = defaultUsers.getGroupUsers();
+            report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            report.print(message, I_CmsReport.FORMAT_ERROR);
+
         }
         String managers;
         try {
@@ -1047,7 +1064,9 @@ public class CmsExport {
                 LOG.debug(message.key(), e);
             }
 
-            throw new CmsImportExportException(message, e);
+            managers = defaultUsers.getGroupProjectmanagers();
+            report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            report.print(message, I_CmsReport.FORMAT_ERROR);
         }
 
         Element e = parent.addElement(CmsImportVersion7.N_PROJECT);
@@ -1093,18 +1112,20 @@ public class CmsExport {
             List<CmsProject> allProjects = OpenCms.getOrgUnitManager().getAllManageableProjects(getCms(), "", true);
             for (int i = 0; i < allProjects.size(); i++) {
                 CmsProject project = allProjects.get(i);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(allProjects.size())), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i + 1),
+                        String.valueOf(allProjects.size())),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_EXPORT_PROJECT_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     project.getName()));
-                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 exportProject(parent, project);
 
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
@@ -1165,9 +1186,11 @@ public class CmsExport {
                 } catch (IOException ioe) {
                     getReport().println(ioe);
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_USER_1,
-                            user.getName()), ioe);
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_USER_1,
+                                user.getName()),
+                            ioe);
                     }
                 }
             }
@@ -1219,10 +1242,12 @@ public class CmsExport {
             List<CmsUser> allUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), orgunit.getName(), false);
             for (int i = 0, l = allUsers.size(); i < l; i++) {
                 CmsUser user = allUsers.get(i);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(l)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i + 1),
+                        String.valueOf(l)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_EXPORT_USER_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -1373,7 +1398,8 @@ public class CmsExport {
 
         // add the info element. it contains all infos for this export
         Element info = exportNode.addElement(CmsImportExportManager.N_INFO);
-        info.addElement(CmsImportExportManager.N_CREATOR).addText(getCms().getRequestContext().getCurrentUser().getName());
+        info.addElement(CmsImportExportManager.N_CREATOR).addText(
+            getCms().getRequestContext().getCurrentUser().getName());
         info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionNumber());
         info.addElement(CmsImportExportManager.N_DATE).addText(CmsDateUtil.getHeaderDate(System.currentTimeMillis()));
         info.addElement(CmsImportExportManager.N_INFO_PROJECT).addText(
