@@ -30,6 +30,10 @@ package org.opencms.ade.sitemap.shared.rpc;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
+import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
+import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
+import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -53,6 +57,13 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback  
      */
     void createSubSitemap(CmsUUID entryId, AsyncCallback<CmsSitemapChange> callback);
+
+    /**
+     * Gets the initial data for the bulk alias editor.<p>
+     * 
+     * @param callback the asynchronous callback  
+     */
+    void getAliasTable(AsyncCallback<CmsAliasInitialFetchResult> callback);
 
     /**
      * Returns the sitemap children for the given path.<p>
@@ -92,6 +103,14 @@ public interface I_CmsSitemapServiceAsync {
     void save(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
 
     /**
+     * Saves the aliases for the bulk alias editor.<p>
+     * 
+     * @param saveRequest the object containing the data to save
+     * @param callback the asynchronous callback  
+     */
+    void saveAliases(CmsAliasSaveValidationRequest saveRequest, AsyncCallback<CmsAliasEditValidationReply> callback);
+
+    /**
      * Save the change to the given sitemap.<p>
      * 
      * @param sitemapUri the sitemap URI 
@@ -100,5 +119,15 @@ public interface I_CmsSitemapServiceAsync {
      */
     @SynchronizedRpcRequest
     void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
+
+    /**
+     * Validates the aliases for the bulk alias editor.<p>
+     * 
+     * @param validationRequest an object indicating the type of validation to perform 
+     * @param callback the asynchronous callback 
+     */
+    void validateAliases(
+        CmsAliasEditValidationRequest validationRequest,
+        AsyncCallback<CmsAliasEditValidationReply> callback);
 
 }

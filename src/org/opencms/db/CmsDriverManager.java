@@ -525,6 +525,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         return driverManager;
     }
 
+    public void addAlias(CmsDbContext dbc, CmsProject project, CmsAlias alias) throws CmsException {
+
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
+        vfsDriver.insertAlias(dbc, project, alias);
+    }
+
     /**
      * Adds a new relation to the given resource.<p>
      *
@@ -2142,6 +2148,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_CREATE_USER);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
         return user;
+    }
+
+    public void deleteAliases(CmsDbContext dbc, CmsProject project, CmsAliasFilter filter) throws CmsException {
+
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
+        vfsDriver.deleteAliases(dbc, project, filter);
     }
 
     /**

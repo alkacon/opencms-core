@@ -38,8 +38,8 @@ import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
-import org.opencms.gwt.shared.CmsAliasBean;
-import org.opencms.gwt.shared.CmsAliasMode;
+import org.opencms.gwt.shared.alias.CmsAliasBean;
+import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;

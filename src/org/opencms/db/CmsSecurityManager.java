@@ -165,6 +165,18 @@ public final class CmsSecurityManager {
         return securityManager;
     }
 
+    public void addAlias(CmsRequestContext context, CmsAlias alias) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.addAlias(dbc, context.getCurrentProject(), alias);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
     /**
      * Adds a new relation to a given resource.<p>
      *
@@ -1196,6 +1208,19 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    public void deleteAliases(CmsRequestContext context, CmsAliasFilter filter) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.deleteAliases(dbc, context.getCurrentProject(), filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
+        } finally {
+            dbc.clear();
+        }
+
     }
 
     /**

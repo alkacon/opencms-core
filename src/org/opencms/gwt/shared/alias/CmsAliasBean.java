@@ -25,7 +25,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.shared;
+package org.opencms.gwt.shared.alias;
+
 
 
 import com.google.gwt.user.client.rpc.IsSerializable;

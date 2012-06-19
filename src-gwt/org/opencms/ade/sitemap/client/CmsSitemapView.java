@@ -245,6 +245,16 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
+     * Gets the sitemap toolbar.<p>
+     * 
+     * @return the sitemap toolbar
+     */
+    public CmsSitemapToolbar getToolbar() {
+
+        return m_toolbar;
+    }
+
+    /**
      * Returns the tree.<p>
      * 
      * @return the tree
@@ -501,6 +511,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
             openItemsOnPath(openPath);
         }
+
     }
 
     /**

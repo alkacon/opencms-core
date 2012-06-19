@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	
+	>
+	
+	<ui:style>
+		.standardInput {
+			border: 1px solid black; 
+		}
+		
+		.standardButton {
+			border: 1px solid black;
+		}
+		
+		.main {
+			height: 450px;
+		}
+		
+		.results {
+			border: 1px solid gray; 
+			height: 400px;
+			padding-left: 4px;
+			padding-top: 4px; 
+	    }
+	    
+	    .submit {
+			right: 0px; 
+
+
+	    } 
+	    
+	    .topRow {
+			width: 100%;
+	    }
+		
+		.invisible {
+			display: none; 
+		}
+		
+		.pathLabel {
+			width: 300px;
+			border: 1px dashed gray; 
+			min-height: 22px; 
+			padding: 2px; 
+		}
+	</ui:style>
+	<g:FlowPanel addStyleNames="{style.main}">
+		<g:HorizontalPanel addStyleNames="{style.topRow}">
+			<g:FormPanel ui:field="m_formPanel">
+				<g:FlowPanel ui:field="m_formPanelContents"></g:FlowPanel>
+			</g:FormPanel> 
+			<g:Label ui:field="m_pathLabel" addStyleNames="{style.pathLabel}"/>
+			<cms:CmsPushButton ui:field="m_submitButton" addStyleNames="{style.submit}"></cms:CmsPushButton>
+		</g:HorizontalPanel>
+		<g:FlowPanel ui:field="m_results" addStyleNames="{style.results}"></g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder>

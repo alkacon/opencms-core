@@ -30,8 +30,12 @@ package org.opencms.ade.sitemap.client.toolbar;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
+import org.opencms.gwt.client.ui.CmsToolbarContextButton;
+import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.util.CmsStringUtil;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -41,6 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsSitemapToolbar extends CmsToolbar {
 
+    private CmsToolbarContextButton m_contextMenuButton;
     /** The new menu button. */
     private CmsToolbarNewButton m_newMenuButton;
 
@@ -63,6 +68,32 @@ public class CmsSitemapToolbar extends CmsToolbar {
         }
         addRight(new CmsToolbarRefreshButton(this, controller));
         addRight(new CmsToolbarGoBackButton(this, controller));
+        ClickHandler clickHandler = new ClickHandler() {
+
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                I_CmsToolbarButton source = (I_CmsToolbarButton)event.getSource();
+                source.onToolbarClick();
+            }
+        };
+        m_contextMenuButton = new CmsToolbarContextButton(new CmsSitemapToolbarHandler());
+        m_contextMenuButton.addClickHandler(clickHandler);
+        addRight(m_contextMenuButton);
+        //        
+        //        
+        //        Button button = new Button("ALIAS");
+        //        button.addClickHandler(new ClickHandler() {
+        //
+        //            public void onClick(ClickEvent event) {
+        //
+        //                (new CmsAliasEditor()).show();
+        //            }
+        //        });
+        //        addRight(button);
+
     }
 
     /**
@@ -77,6 +108,11 @@ public class CmsSitemapToolbar extends CmsToolbar {
                 ((CmsToggleButton)button).setEnabled(false);
             }
         }
+    }
+
+    public CmsToolbarContextButton getContextMenuButton() {
+
+        return m_contextMenuButton;
     }
 
     /**

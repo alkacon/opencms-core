@@ -45,6 +45,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.db.CmsAlias;
+import org.opencms.db.CmsAliasManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -66,6 +67,11 @@ import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
+import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
+import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
+import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
+import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.i18n.CmsLocaleManager;
@@ -170,6 +176,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
     }
 
+    /** The path to the JSP used to upload aliases. */
+    public static final String ALIAS_IMPORT_PATH = "/system/modules/org.opencms.ade.sitemap/pages/import-aliases.jsp";
+
     /** The configuration key for the functionDetail attribute in the container.info property. */
     public static final String KEY_FUNCTION_DETAIL = "functionDetail";
 
@@ -188,11 +197,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /** The redirect target XPath. */
     private static final String REDIRECT_LINK_TARGET_XPATH = "Link";
 
-    /** The VFS path of the redirect copy page for navigation level entries. */
-    private static final String SUB_LEVEL_REDIRECT_COPY_PAGE = "/system/modules/org.opencms.ade.sitemap/pages/sub-level-redirect.html";
-
     /** Serialization uid. */
     private static final long serialVersionUID = -7236544324371767330L;
+
+    /** The VFS path of the redirect copy page for navigation level entries. */
+    private static final String SUB_LEVEL_REDIRECT_COPY_PAGE = "/system/modules/org.opencms.ade.sitemap/pages/sub-level-redirect.html";
 
     /** The navigation builder. */
     private CmsJspNavBuilder m_navBuilder;
@@ -260,6 +269,32 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getAliasTable()
+     */
+    public CmsAliasInitialFetchResult getAliasTable() throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsAliasManager aliasManager = OpenCms.getAliasManager();
+            List<CmsAlias> aliases = aliasManager.getAliasesForSite(cms, cms.getRequestContext().getSiteRoot());
+            List<CmsAliasTableRow> rows = new ArrayList<CmsAliasTableRow>();
+            CmsAliasInitialFetchResult result = new CmsAliasInitialFetchResult();
+            for (CmsAlias alias : aliases) {
+                CmsAliasTableRow row = createAliasTableEntry(cms, alias);
+                rows.add(row);
+            }
+            result.setRows(rows);
+            result.setDownloadUrl(OpenCms.getLinkManager().getServerLink(
+                cms,
+                "/system/modules/org.opencms.ade.sitemap/pages/download-aliases.jsp"));
+            return result;
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
@@ -426,6 +461,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<String> allPropNames = getPropertyNames(cms);
             String returnCode = getRequest().getParameter(CmsCoreData.PARAM_RETURNCODE);
             cms.getRequestContext().getSiteRoot();
+            String aliasImportUrl = OpenCms.getLinkManager().getServerLink(cms, ALIAS_IMPORT_PATH);
+
             result = new CmsSitemapData(
                 (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
@@ -448,7 +485,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 detailPages,
                 resourceTypeInfos,
                 returnCode,
-                canEditDetailPages);
+                canEditDetailPages,
+                aliasImportUrl);
         } catch (Throwable e) {
             error(e);
         }
@@ -470,11 +508,37 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveAliases(org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest)
+     */
+    public CmsAliasEditValidationReply saveAliases(CmsAliasSaveValidationRequest saveRequest) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsAliasBulkEditHelper helper = new CmsAliasBulkEditHelper(cms);
+        try {
+            return helper.saveAliases(saveRequest);
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#saveSync(java.lang.String, org.opencms.ade.sitemap.shared.CmsSitemapChange)
      */
     public CmsSitemapChange saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
 
         return save(entryPoint, change);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#validateAliases(org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest)
+     */
+    public CmsAliasEditValidationReply validateAliases(CmsAliasEditValidationRequest validationRequest)
+    throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsAliasBulkEditHelper helper = new CmsAliasBulkEditHelper(cms);
+        return helper.validateAliases(validationRequest);
     }
 
     /**
@@ -778,6 +842,30 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 }
             }
         }
+    }
+
+    /**
+     * Helper method to convert a server-side alias object to a client-side alias table row.<p>
+     * 
+     * @param cms the current CMS context
+     * @param alias the alias to convert 
+     * 
+     * @return the alias table row
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsAliasTableRow createAliasTableEntry(CmsObject cms, CmsAlias alias) throws CmsException {
+
+        CmsResource resource = cms.readResource(alias.getStructureId());
+        CmsAliasTableRow result = new CmsAliasTableRow();
+        result.setStructureId(alias.getStructureId());
+        result.setOriginalStructureId(alias.getStructureId());
+        result.setAliasPath(alias.getAliasPath());
+        result.setResourcePath(cms.getSitePath(resource));
+        result.setKey((new CmsUUID()).toString());
+        result.setMode(alias.getMode());
+        result.setChanged(false);
+        return result;
     }
 
     /**

@@ -46,6 +46,9 @@ public class CmsSitemapData implements IsSerializable {
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_ade_sitemap";
 
+    /** The URL of the JSP used to import aliases. */
+    private String m_aliasImportUrl;
+
     /** The list of property names. */
     private List<String> m_allPropertyNames;
 
@@ -148,6 +151,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param resourceTypeInfos the resource type information for the detail pages  
      * @param returnCode return page code
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
+     * @param aliasImportUrl the URL of the JSP used to import aliases 
      */
     public CmsSitemapData(
         Map<String, CmsClientTemplateBean> templates,
@@ -171,7 +175,8 @@ public class CmsSitemapData implements IsSerializable {
         CmsDetailPageTable detailPageTable,
         List<CmsNewResourceInfo> resourceTypeInfos,
         String returnCode,
-        boolean canEditDetailPages) {
+        boolean canEditDetailPages,
+        String aliasImportUrl) {
 
         m_templates = templates;
         m_properties = properties;
@@ -195,6 +200,7 @@ public class CmsSitemapData implements IsSerializable {
         m_newElementInfos = newElementInfos;
         m_newRedirectElementInfo = newRedirectElementInfo;
         m_newNavigatioLevelElementInfo = newNavigationLevelElementInfo;
+        m_aliasImportUrl = aliasImportUrl;
     }
 
     /**
@@ -205,6 +211,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean canEditDetailPages() {
 
         return m_canEditDetailPages && (m_resourceTypeInfos != null) && !m_resourceTypeInfos.isEmpty();
+    }
+
+    /**
+     * Gets the URL of the JSP used to import aliases.<p>
+     * 
+     * @return the alias import URL 
+     */
+    public String getAliasImportUrl() {
+
+        return m_aliasImportUrl;
     }
 
     /**

@@ -33,8 +33,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.gwt.shared.CmsAliasBean;
+import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -46,13 +47,36 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 /**
  * This class contains the real implementations of service methods related to aliases.<p>
  */
 public class CmsAliasHelper {
 
+    private static final Log LOG = CmsLog.getLog(CmsAliasHelper.class);
+
     /** The internal CMS object. */
     private CmsObject m_cms;
+
+    public String exportAliasesAsCsv(CmsObject cms) throws CmsException {
+
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForSite(cms, siteRoot);
+        StringBuffer resultBuffer = new StringBuffer();
+        for (CmsAlias alias : aliases) {
+            try {
+                CmsResource resource = cms.readResource(alias.getStructureId());
+                String line = alias.getAliasPath() + "," + cms.getSitePath(resource) + "," + alias.getMode().toString();
+                resultBuffer.append(line);
+                resultBuffer.append("\n");
+            } catch (CmsException e) {
+                LOG.warn("Could not read alias resource", e);
+                continue;
+            }
+        }
+        return resultBuffer.toString();
+    }
 
     /**
      * Saves aliases.<p>
@@ -210,5 +234,4 @@ public class CmsAliasHelper {
         }
         return errorMessagesById;
     }
-
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	
+	>
+	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	
+	<ui:style>
+		.standardInput {
+			border: 1px solid black; 
+		}
+		
+		.standardButton {
+			border: 1px solid black;
+		}
+		
+		
+		
+		.invisible {
+			display: none; 
+		}
+		
+		.topButtonBox {
+			margin-left: 50px; 
+		}
+		
+		.topTextBox {
+			width: 350px;
+		}
+		
+		.topModeSelector {	
+			min-width: 100px; 
+		 }
+		 
+		 .topNewButton {
+			margin-left: 10px; 
+			width: 100px
+	      }
+	      
+	      .tableContainer {
+				max-height: 700px; 
+			}
+		
+	</ui:style>
+	<g:VerticalPanel addStyleNames="{inputstyle.inputCss.highTextBoxes}">
+		<g:HorizontalPanel addStyleNames="{style.topButtonBox}">
+			<input:CmsTextBox addStyleNames="{style.topTextBox}" ui:field="m_newAliasPath"></input:CmsTextBox>
+			<input:CmsTextBox addStyleNames="{style.topTextBox}" ui:field="m_newResourcePath"></input:CmsTextBox>
+			<input:CmsSelectBox ui:field="m_newMode" addStyleNames="{style.topModeSelector}"/>
+			<cms:CmsPushButton ui:field="m_newButton" addStyleNames="{style.topNewButton}"></cms:CmsPushButton>
+		</g:HorizontalPanel>
+		<cms:CmsScrollPanel ui:field="m_tableContainer"  addStyleNames="{style.tableContainer}"> 
+		</cms:CmsScrollPanel>
+		<g:HorizontalPanel>
+		<cms:CmsPushButton  ui:field="m_deleteButton"></cms:CmsPushButton>
+		<cms:CmsPushButton  ui:field="m_downloadButton"></cms:CmsPushButton>
+		<cms:CmsPushButton ui:field="m_uploadButton"></cms:CmsPushButton>
+		</g:HorizontalPanel>
+		<g:FlowPanel addStyleNames="{style.invisible}">
+			<cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton>	
+			<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton>
+		</g:FlowPanel>
+	</g:VerticalPanel>
+</ui:UiBinder>

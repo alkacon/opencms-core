@@ -28,12 +28,22 @@
 package org.opencms.db;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
+import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * The alias manager provides access to the aliases stored in the database.<p>
@@ -115,6 +125,58 @@ public class CmsAliasManager {
     }
 
     /**
+     * Imports a single alias.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param siteRoot the site root 
+     * @param aliasPath the alias path  
+     * @param vfsPath the VFS path 
+     * @param mode the alias mode
+     *  
+     * @return the result of the import
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsAliasImportResult importAlias(
+        CmsObject cms,
+        String siteRoot,
+        String aliasPath,
+        String vfsPath,
+        CmsAliasMode mode) throws CmsException {
+
+        CmsResource resource;
+        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot(siteRoot);
+            resource = cms.readResource(vfsPath);
+        } catch (CmsException e) {
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, "Could not read resource: " + vfsPath);
+        } finally {
+            cms.getRequestContext().setSiteRoot(originalSiteRoot);
+        }
+        if (!CmsAlias.ALIAS_PATTERN.matcher(aliasPath).matches()) {
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, "Invalid alias path: " + aliasPath);
+        }
+        List<CmsAlias> maybeAlias = getAliasesForPath(cms, siteRoot, aliasPath);
+        if (maybeAlias.isEmpty()) {
+            CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
+            m_securityManager.addAlias(cms.getRequestContext(), newAlias);
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasNew, "OK");
+        } else {
+            CmsAlias existingAlias = maybeAlias.get(0);
+            CmsAliasFilter deleteFilter = new CmsAliasFilter(
+                siteRoot,
+                existingAlias.getAliasPath(),
+                existingAlias.getStructureId());
+            m_securityManager.deleteAliases(cms.getRequestContext(), deleteFilter);
+            CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
+            m_securityManager.addAlias(cms.getRequestContext(), newAlias);
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasChanged, "OK");
+        }
+
+    }
+
+    /**
      * Saves the aliases for a given structure id, <b>completely replacing</b> any existing aliases for the same structure id.<p>
      *
      * @param cms the current CMS context
@@ -126,6 +188,52 @@ public class CmsAliasManager {
     public void saveAliases(CmsObject cms, CmsUUID structureId, List<CmsAlias> aliases) throws CmsException {
 
         m_securityManager.saveAliases(cms.getRequestContext(), cms.readResource(structureId), aliases);
+    }
+
+    /**
+     * Updates the aliases in the database.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param toDelete the collection of aliases to delete 
+     * @param toAdd the collection of aliases to add
+     * @throws CmsException if something goes wrong 
+     */
+    public void updateAliases(CmsObject cms, Collection<CmsAlias> toDelete, Collection<CmsAlias> toAdd)
+    throws CmsException {
+
+        Set<CmsUUID> allKeys = new HashSet<CmsUUID>();
+        Multimap<CmsUUID, CmsAlias> toDeleteMap = ArrayListMultimap.create();
+
+        // first, group the aliases by structure id
+
+        for (CmsAlias alias : toDelete) {
+            toDeleteMap.put(alias.getStructureId(), alias);
+            allKeys.add(alias.getStructureId());
+        }
+
+        Multimap<CmsUUID, CmsAlias> toAddMap = ArrayListMultimap.create();
+        for (CmsAlias alias : toAdd) {
+            toAddMap.put(alias.getStructureId(), alias);
+            allKeys.add(alias.getStructureId());
+        }
+
+        // Now update the aliases for each structure id...
+
+        for (CmsUUID structureId : allKeys) {
+            // Instead of deleting/adding the aliases individually, we load the current list of aliases, delete/add the entries from 
+            // it, and then save the list again   
+
+            Set<CmsAlias> aliasesToSave = new HashSet<CmsAlias>(getAliasesForStructureId(cms, structureId));
+            Collection<CmsAlias> toDeleteForId = toDeleteMap.get(structureId);
+            if ((toDeleteForId != null) && !toDeleteForId.isEmpty()) {
+                aliasesToSave.removeAll(toDeleteForId);
+            }
+            Collection<CmsAlias> toAddForId = toAddMap.get(structureId);
+            if ((toAddForId != null) && !toAddForId.isEmpty()) {
+                aliasesToSave.addAll(toAddForId);
+            }
+            saveAliases(cms, structureId, new ArrayList<CmsAlias>(aliasesToSave));
+        }
     }
 
 }

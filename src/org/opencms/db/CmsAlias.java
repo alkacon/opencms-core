@@ -32,6 +32,8 @@ import org.opencms.util.CmsUUID;
 
 import java.util.regex.Pattern;
 
+import com.google.common.base.Objects;
+
 /**
  * This class represents an alias from a virtual path to a resource in the VFS.<p>
  */
@@ -69,6 +71,18 @@ public class CmsAlias {
         m_structureId = structureId;
         m_siteRoot = siteRoot;
         m_mode = mode;
+    }
+
+    public boolean equals(Object other) {
+
+        if (!(other instanceof CmsAlias)) {
+            return false;
+        }
+        CmsAlias otherAlias = (CmsAlias)other;
+        return Objects.equal(m_aliasPath, otherAlias.m_aliasPath)
+            && Objects.equal(m_siteRoot, otherAlias.m_siteRoot)
+            && Objects.equal(m_structureId, otherAlias.m_structureId)
+            && Objects.equal(m_mode, otherAlias.m_mode);
     }
 
     /**
@@ -109,6 +123,15 @@ public class CmsAlias {
     public CmsUUID getStructureId() {
 
         return m_structureId;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return Objects.hashCode(m_aliasPath, m_siteRoot, m_mode, m_structureId);
     }
 
     /**

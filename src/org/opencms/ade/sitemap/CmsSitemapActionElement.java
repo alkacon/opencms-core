@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 
@@ -90,6 +91,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
         sb.append(super.export(".vfsMode"));
         sb.append(export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
+        sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
     }
