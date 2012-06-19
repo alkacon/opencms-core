@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Grid;
 
 /**
@@ -72,22 +71,20 @@ public class CmsMultiSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
      * 
      * @param optins the values witch should be shown
      */
+    @SuppressWarnings("boxing")
     public CmsMultiSelectCell(Map<String, CmsPair<String, Boolean>> optins) {
 
         int count = optins.size();
         int i = 0, y = 0;
         Map<String, String> items = new LinkedHashMap<String, String>();
         m_checkboxWrapper = getGridLayout(count);
-        m_checkboxWrapper.getElement().getStyle().setWidth(900, Unit.PX);
         int modolo = m_checkboxWrapper.getColumnCount();
-        int widht = 100 / modolo;
         for (Map.Entry<String, CmsPair<String, Boolean>> entry : optins.entrySet()) {
             String value = entry.getKey();
             items.put(value, entry.getValue().getFirst());
             CmsCheckBox checkbox = new CmsCheckBox(value);
             // wrap the check boxes in FlowPanels to arrange them vertically 
             m_checkboxWrapper.setWidget(y, i % modolo, checkbox);
-            m_checkboxWrapper.getCellFormatter().setWidth(y, i % modolo, widht + "%");
             i++;
             if ((i % modolo) == 0) {
                 y++;
@@ -188,22 +185,16 @@ public class CmsMultiSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
     private Grid getGridLayout(int count) {
 
         Grid grid = new Grid();
-        int v, w, x, y, z, modolo = 0;
-        v = count % 1;
-        w = count % 2;
+        int x, y, z, modolo = 0;
         x = count % 3;
-        y = count % 4;
-        z = count % 5;
-        if ((z <= y) && (z <= x) && (z <= w) && (z <= v)) {
+        y = count % 5;
+        z = count % 7;
+        if ((z <= y) && (z <= x)) {
+            modolo = 7;
+        } else if ((y <= z) && (y <= x)) {
             modolo = 5;
-        } else if ((y <= z) && (y <= x) && (y <= w) && (y <= v)) {
-            modolo = 4;
-        } else if ((x <= z) && (x <= y) && (x <= w) && (x <= v)) {
+        } else if ((x <= z) && (x <= y)) {
             modolo = 3;
-        } else if ((w <= z) && (w <= y) && (w <= x) && (w <= v)) {
-            modolo = 2;
-        } else if ((v <= z) && (v <= y) && (v <= x) && (v <= w)) {
-            modolo = 1;
         }
 
         if (count < modolo) {
