@@ -27,7 +27,15 @@
 
 package org.opencms.gwt.shared.alias;
 
+/**
+ * The status for the result of an alias import operation.<p>
+ */
 public enum CmsAliasImportStatus {
-    aliasChanged, aliasError, aliasNew;
+    /** The alias target or mode has changed. */
+    aliasChanged,
+    /** The alias could not be imported. */
+    aliasError,
+    /** The alias was newly created. */
+    aliasNew;
 
 }

@@ -32,26 +32,50 @@ import org.opencms.util.CmsUUID;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The class used for transmitting alias data to the server for serving.<p>
+ */
 public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest {
 
-    private String m_siteRoot;
+    /** The set of structure ids of deleted aliases. */
     private Set<CmsUUID> m_deletedIds = new HashSet<CmsUUID>();
 
+    /** The site root. */
+    private String m_siteRoot;
+
+    /**
+     * Default constructor.<p>
+     */
     public CmsAliasSaveValidationRequest() {
 
         super();
     }
 
-    public String getSiteRoot() {
-
-        return m_siteRoot;
-    }
-
+    /**
+     * Gets the set of structure ids of deleted aliases.<p>
+     * 
+     * @return the set of structure ids of deleted aliases 
+     */
     public Set<CmsUUID> getDeletedIds() {
 
         return m_deletedIds;
     }
 
+    /**
+     * Gets the site root.<p>
+     * 
+     * @return the site root 
+     */
+    public String getSiteRoot() {
+
+        return m_siteRoot;
+    }
+
+    /**
+     * Sets the site root.<p>
+     * 
+     * @param siteRoot the site root 
+     */
     public void setSiteRoot(String siteRoot) {
 
         m_siteRoot = siteRoot;

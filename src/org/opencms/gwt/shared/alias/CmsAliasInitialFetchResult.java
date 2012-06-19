@@ -31,27 +31,53 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * The class used to transmit the original alias list when the alias editor dialog is first loaded.<p>
+ */
 public class CmsAliasInitialFetchResult implements IsSerializable {
 
+    /** The list of aliases. */
     private List<CmsAliasTableRow> m_aliasRows;
+
+    /** The alias download URL. */
     private String m_downloadUrl;
 
+    /**
+     * Gets the alias download URL.<p>
+     * 
+     * @return the alias download URL 
+     */
     public String getDownloadUrl() {
 
         return m_downloadUrl;
     }
 
+    /**
+     * Gets the alias table rows.<p>
+     * 
+     * @return the alias table rows 
+     */
     public List<CmsAliasTableRow> getRows() {
 
         return m_aliasRows;
     }
 
+    /**
+     * Sets the download URL for aliases.<p>
+     * 
+     * @param downloadUrl the download URL for aliases 
+     */
     public void setDownloadUrl(String downloadUrl) {
 
         m_downloadUrl = downloadUrl;
 
     }
 
+    /**
+     * Sets the alias table rows.<p>
+     * 
+     * @param rows the alias table rows 
+     */
     public void setRows(List<CmsAliasTableRow> rows) {
 
         m_aliasRows = rows;
