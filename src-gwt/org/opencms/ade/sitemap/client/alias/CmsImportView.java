@@ -32,6 +32,7 @@ import org.opencms.ade.sitemap.shared.I_CmsAliasConstants;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
@@ -141,6 +142,19 @@ public class CmsImportView extends Composite {
     }
 
     /**
+     * Shows a popup containing the import view.<p>
+     */
+    public static void showPopup() {
+
+        final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleImport());
+        CmsImportView importView = new CmsImportView();
+        popup.setMainContent(importView);
+        popup.setWidth(600);
+        popup.addDialogClose(null);
+        popup.center();
+    }
+
+    /**
      * The event handler for the submit button.<p>
      * 
      * @param event the click event 
@@ -151,6 +165,12 @@ public class CmsImportView extends Composite {
         m_formPanel.submit();
     }
 
+    /**
+     * Adds an import error to the display.<p>
+     * 
+     * @param line the CSV line 
+     * @param error the import error 
+     */
     protected void addImportError(String line, String error) {
 
         Label label = new Label(line + " " + error);
@@ -158,6 +178,11 @@ public class CmsImportView extends Composite {
         m_results.add(label);
     }
 
+    /**
+     * Adds a successful import message to the display.<p>
+     * 
+     * @param line the CSV line 
+     */
     protected void addImportOK(String line) {
 
         Label label = new Label(line + " OK");

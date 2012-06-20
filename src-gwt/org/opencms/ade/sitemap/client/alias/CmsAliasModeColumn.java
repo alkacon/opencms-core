@@ -49,7 +49,7 @@ public class CmsAliasModeColumn extends Column<CmsAliasTableRow, String> {
     private static BiMap<CmsAliasMode, String> nameLookup = HashBiMap.create();
 
     /** The table for which this column is used. */
-    private CmsAliasCellTable m_table;
+    CmsAliasCellTable m_table;
 
     /**
      * Creates a new column instance.<p>
@@ -114,7 +114,7 @@ public class CmsAliasModeColumn extends Column<CmsAliasTableRow, String> {
      * 
      * @return the internal mode value 
      */
-    private static CmsAliasMode getModeFromName(String name) {
+    static CmsAliasMode getModeFromName(String name) {
 
         return nameLookup.inverse().get(name);
     }

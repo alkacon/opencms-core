@@ -73,6 +73,7 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_TITLE_EDITOR_0 = "GUI_ALIASES_TITLE_EDITOR_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_TITLE_IMPORT_0 = "GUI_ALIASES_TITLE_IMPORT_0";
 
     /** Message constant for key in the resource bundle. */

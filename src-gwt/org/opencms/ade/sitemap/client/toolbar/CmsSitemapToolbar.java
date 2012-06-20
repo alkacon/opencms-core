@@ -45,7 +45,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsSitemapToolbar extends CmsToolbar {
 
+    /** The context menu button. */
     private CmsToolbarContextButton m_contextMenuButton;
+
     /** The new menu button. */
     private CmsToolbarNewButton m_newMenuButton;
 
@@ -110,6 +112,11 @@ public class CmsSitemapToolbar extends CmsToolbar {
         }
     }
 
+    /**
+     * Gets the context menu button.<p>
+     * 
+     * @return the context menu button 
+     */
     public CmsToolbarContextButton getContextMenuButton() {
 
         return m_contextMenuButton;

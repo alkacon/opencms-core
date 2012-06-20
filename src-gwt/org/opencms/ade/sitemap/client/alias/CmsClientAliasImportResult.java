@@ -27,6 +27,10 @@
 
 package org.opencms.ade.sitemap.client.alias;
 
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.JSON_LINE;
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.JSON_MESSAGE;
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.JSON_STATUS;
+
 import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
 
 import java.util.ArrayList;
@@ -36,17 +40,28 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
-import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.*;
 
 /**
- * A client-side bean for representing the results 
+ * A client-side bean for representing the results of an alias import.<p>
  */
 public class CmsClientAliasImportResult {
 
+    /** The alias import message. */
     private String m_error;
+
+    /** The file line from which the alias to import has been read. */
     private String m_line;
+
+    /** The alias import status. */
     private CmsAliasImportStatus m_status;
 
+    /**
+     * Creates a new instance.<p>
+     * 
+     * @param line the CSV line containing the alias 
+     * @param status the import status 
+     * @param error the import message 
+     */
     public CmsClientAliasImportResult(String line, CmsAliasImportStatus status, String error) {
 
         m_status = status;
@@ -54,6 +69,13 @@ public class CmsClientAliasImportResult {
         m_error = error;
     }
 
+    /**
+     * Parses an alias import result from a JSON object.<p>
+     * 
+     * @param json the JSON object containing the alias import result data 
+     * 
+     * @return the alias import result bean 
+     */
     public static CmsClientAliasImportResult parse(JSONObject json) {
 
         String line = getString(json, JSON_LINE);
@@ -63,6 +85,13 @@ public class CmsClientAliasImportResult {
         return new CmsClientAliasImportResult(line, status, error);
     }
 
+    /**
+     * Extracts alias import results from a JSON array.<p>
+     * 
+     * @param array the JSON array 
+     * 
+     * @return the alias import results from the array
+     */
     public static List<CmsClientAliasImportResult> parseArray(JSONArray array) {
 
         List<CmsClientAliasImportResult> result = new ArrayList<CmsClientAliasImportResult>();
@@ -75,6 +104,14 @@ public class CmsClientAliasImportResult {
         return result;
     }
 
+    /**
+     * Helper method to get a string value from a JSON object.<p>
+     * 
+     * @param json the JSON object 
+     * @param key the key whose value should be extracted as a string 
+     * 
+     * @return the string value for the given key 
+     */
     protected static String getString(JSONObject json, String key) {
 
         JSONValue value = json.get(key);
@@ -85,16 +122,31 @@ public class CmsClientAliasImportResult {
         return str.stringValue();
     }
 
+    /**
+     * Gets the import message.<p>
+     * 
+     * @return the import message 
+     */
     public String getError() {
 
         return m_error;
     }
 
+    /**
+     * Gets the CSV line containing the alias.<p>
+     * 
+     * @return the CSV line 
+     */
     public String getLine() {
 
         return m_line;
     }
 
+    /**
+     * Gets the import status.<p>
+     * 
+     * @return the import status 
+     */
     public CmsAliasImportStatus getStatus() {
 
         return m_status;

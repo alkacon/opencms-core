@@ -51,6 +51,9 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 
+/**
+ * The toolbar handler used for the sitemap toolbar context menu.<p>
+ */
 public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
 
     /** The currently active button. */
@@ -117,6 +120,7 @@ public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
      */
     public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans, CmsUUID structureId) {
 
+        // do nothing 
     }
 
     /**
@@ -127,6 +131,9 @@ public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
         Window.Location.replace(targetUri);
     }
 
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#loadContextMenu(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsCoreData.AdeContext)
+     */
     public void loadContextMenu(CmsUUID structureId, AdeContext context) {
 
         I_CmsContextMenuEntry aliasEntry = new I_CmsContextMenuEntry() {

@@ -27,6 +27,10 @@
 
 package org.opencms.ade.sitemap;
 
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.JSON_RESULT;
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.PARAM_IMPORTFILE;
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.PARAM_SITEROOT;
+
 import org.opencms.db.CmsAlias;
 import org.opencms.db.CmsAliasImportResult;
 import org.opencms.db.CmsAliasManager;
@@ -56,7 +60,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.*;
 
 import com.google.common.collect.Sets;
 

@@ -42,6 +42,7 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.SelectionChangeEvent;
 
 /**
  * The cell table which is the main widget used for the bulk alias editor.<p>
@@ -49,7 +50,7 @@ import com.google.gwt.view.client.ProvidesKey;
 public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
     /** The alias controller. */
-    private CmsAliasTableController m_controller;
+    CmsAliasTableController m_controller;
 
     /** The data provider. */
     private ListDataProvider<CmsAliasTableRow> m_dataProvider;
@@ -88,8 +89,15 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
         sortHandler.setComparator(errorCol, CmsAliasErrorColumn.getComparator());
         addColumnSortHandler(sortHandler);
 
-        MultiSelectionModel<CmsAliasTableRow> selectionModel = new MultiSelectionModel<CmsAliasTableRow>(
+        final MultiSelectionModel<CmsAliasTableRow> selectionModel = new MultiSelectionModel<CmsAliasTableRow>(
             getKeyProvider());
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+
+            public void onSelectionChange(SelectionChangeEvent event) {
+
+                m_controller.changeSelection(selectionModel.getSelectedSet());
+            }
+        });
         setSelectionModel(selectionModel, DefaultSelectionEventManager.<CmsAliasTableRow> createCheckboxManager());
         addColumn(selectCol, CmsAliasMessages.messageColumnSelect());
         setColumnWidth(selectCol, 50, Unit.PX);

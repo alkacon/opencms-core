@@ -30,28 +30,30 @@ package org.opencms.ade.sitemap.client.alias;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 
+/**
+ * The alias editor.<p>
+ */
 public class CmsAliasEditor {
 
-    private CmsAliasTableController m_model;
+    /** The controller. */
+    private CmsAliasTableController m_controller;
+
+    /** The view. */
     private CmsAliasView m_view;
 
+    /**
+     * Creates a new instance.<p>
+     */
     public CmsAliasEditor() {
 
-        m_model = new CmsAliasTableController();
-        m_view = new CmsAliasView(m_model);
-        m_model.setView(m_view);
+        m_controller = new CmsAliasTableController();
+        m_view = new CmsAliasView(m_controller);
+        m_controller.setView(m_view);
     }
 
-    public static void showImportDialog() {
-
-        final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleImport());
-        CmsImportView importView = new CmsImportView();
-        popup.setMainContent(importView);
-        popup.setWidth(600);
-        popup.addDialogClose(null);
-        popup.center();
-    }
-
+    /**
+     * Opens the alias editor.<p>
+     */
     public void show() {
 
         final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleAliasEditor());
@@ -62,7 +64,7 @@ public class CmsAliasEditor {
         m_view.setPopup(popup);
         popup.setWidth(1250);
         popup.addDialogClose(null);
-        m_model.load(new Runnable() {
+        m_controller.load(new Runnable() {
 
             public void run() {
 

@@ -31,34 +31,52 @@ import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * A bean representing a row of the alias table.<p>
+ */
 public class CmsAliasTableRow implements IsSerializable {
 
+    /** The alias path error. */
     private String m_aliasError;
 
+    /** The alias path. */
     private String m_aliasPath;
 
+    /** Flag which indicates whether this row is changed. */
     private boolean m_isChanged;
 
+    /** Flag which indicates whether this row is edited. */
     private boolean m_isEdited;
 
+    /** The internal key of the alias table row. */
     private String m_key;
 
+    /** The alias mode. */
     private CmsAliasMode m_mode;
 
+    /** The original structure id of the alias. */
     private CmsUUID m_originalStructureId;
 
+    /** The path error message. */
     private String m_pathError;
 
+    /** The resource path. */
     private String m_resourcePath;
 
-    private boolean m_selected;
-
+    /** The structure id of the alias target. */
     private CmsUUID m_structureId;
 
+    /**
+     * Default constructor.<p>
+     */
     public CmsAliasTableRow() {
 
+        // do nothing 
     }
 
+    /**
+     * Clears validation errors.<p>
+     */
     public void clearErrors() {
 
         if ((getAliasError() != null) || (getPathError() != null)) {
@@ -69,6 +87,11 @@ public class CmsAliasTableRow implements IsSerializable {
         m_aliasError = null;
     }
 
+    /**
+     * Copies this object.<p>
+     * 
+     * @return a copy of the alias row
+     */
     public CmsAliasTableRow copy() {
 
         CmsAliasTableRow result = new CmsAliasTableRow();
@@ -80,19 +103,28 @@ public class CmsAliasTableRow implements IsSerializable {
         result.setPathError(m_pathError);
         result.setAliasError(m_aliasError);
         result.setAliasPath(m_aliasPath);
-        result.setSelected(m_selected);
         result.setEdited(m_isEdited);
         result.setOriginalStructureId(m_originalStructureId);
 
         return result;
     }
 
+    /**
+     * Changes the alias path.<p>
+     * 
+     * @param newPath the new alias path 
+     */
     public void editAliasPath(String newPath) {
 
         m_aliasPath = newPath;
         m_isChanged = true;
     }
 
+    /**
+     * Changes the resource path.<p>
+     * 
+     * @param newPath the new resource path 
+     */
     public void editResourcePath(String newPath) {
 
         m_resourcePath = newPath;
@@ -100,6 +132,9 @@ public class CmsAliasTableRow implements IsSerializable {
         m_isChanged = true;
     }
 
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object other) {
 
@@ -108,41 +143,84 @@ public class CmsAliasTableRow implements IsSerializable {
             && ((CmsAliasTableRow)other).getKey().equals(getKey());
     }
 
+    /**
+     * Gets the alias path  error message.<p>
+     * 
+     * @return the alias path error message  
+     */
     public String getAliasError() {
 
         return m_aliasError;
     }
 
+    /**
+     * Gets the resource path error message.<p>
+     * 
+     * @return the resource path error message 
+     */
     public String getAliasPath() {
 
         return m_aliasPath;
     }
 
+    /**
+     * Gets the internal key for the row.<p>
+     * 
+     * This key is artificially generated, it has no significance for the alias itself but is only used 
+     * during editing to keep track of rows.<p>
+     * 
+     * @return the internal key  
+     */
     public String getKey() {
 
         return m_key;
     }
 
+    /**
+     * Gets the alias mode.<p>
+     * 
+     * @return the alias mode 
+     */
     public CmsAliasMode getMode() {
 
         return m_mode;
     }
 
+    /**
+     * Gets the original structure id.<p>
+     * 
+     * @return the original structure id 
+     */
     public CmsUUID getOriginalStructureId() {
 
         return m_originalStructureId;
     }
 
+    /**
+     * Gets the resource path error message.<p>
+     * 
+     * @return the resource path error message 
+     */
     public String getPathError() {
 
         return m_pathError;
     }
 
+    /**
+     * Gets the resource path.<p>
+     * 
+     * @return the resource path 
+     */
     public String getResourcePath() {
 
         return m_resourcePath;
     }
 
+    /**
+     * Gets the structure id.<p>
+     * 
+     * @return the structure id 
+     */
     public CmsUUID getStructureId() {
 
         return m_structureId;
@@ -150,91 +228,150 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Checks whether any validation errors have been set.<p>
-     * @return
+     * 
+     * @return true if any validation errors have been set 
      */
     public boolean hasErrors() {
 
         return (m_pathError != null) || (m_aliasError != null);
     }
 
+    /**
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
 
         return m_key.hashCode();
     }
 
+    /**
+     * Checks whether this row is changed.<p>
+     * 
+     * @return true if this row is changed 
+     */
     public boolean isChanged() {
 
         return m_isChanged;
     }
 
+    /**
+     * Checks whether this row is edited.<p>
+     * 
+     * @return true if this row is edited 
+     */
     public boolean isEdited() {
 
         return m_isEdited;
     }
 
-    public boolean isSelected() {
-
-        return m_selected;
-    }
-
+    /**
+     * Sets the alias error message.<p>
+     * 
+     * @param aliasError the alias error message 
+     */
     public void setAliasError(String aliasError) {
 
         m_isChanged = true;
         m_aliasError = aliasError;
     }
 
+    /**
+     * Sets the alias path.<p>
+     * 
+     * @param aliasPath the new alias path 
+     */
     public void setAliasPath(String aliasPath) {
 
         m_aliasPath = aliasPath;
     }
 
+    /**
+     * Sets the 'changed' flag.<p>
+     * 
+     * @param isChanged the new value of the 'changed' flag 
+     */
     public void setChanged(boolean isChanged) {
 
         m_isChanged = isChanged;
     }
 
+    /**
+     * Sets the 'edited' flag.<p>
+     * 
+     * @param isEdited the new value of the 'edited' flag 
+     */
     public void setEdited(boolean isEdited) {
 
         m_isEdited = isEdited;
     }
 
+    /**
+     * Sets the internal key.<p>
+     * 
+     * @param key the internal key 
+     */
     public void setKey(String key) {
 
         m_key = key;
     }
 
+    /**
+     * Sets the alias mode.<p>
+     * 
+     * @param mode the new alias mode 
+     */
     public void setMode(CmsAliasMode mode) {
 
         m_mode = mode;
     }
 
+    /**
+     * Sets the original structure id.<p>
+     * 
+     * @param originalStructureId the original structure id value 
+     */
     public void setOriginalStructureId(CmsUUID originalStructureId) {
 
         m_originalStructureId = originalStructureId;
     }
 
+    /**
+     * Sets the resource path error message.<p>
+     *  
+     * @param pathError the resource path error message 
+     */
     public void setPathError(String pathError) {
 
         m_isChanged = true;
         m_pathError = pathError;
     }
 
+    /**
+     * Sets the resource path.<p>
+     * 
+     * @param resourcePath the resource path 
+     */
     public void setResourcePath(String resourcePath) {
 
         m_resourcePath = resourcePath;
     }
 
-    public void setSelected(boolean selected) {
-
-        m_selected = selected;
-    }
-
+    /**
+     * Sets the structure id.<p>
+     * 
+     * @param structureId the structure id 
+     */
     public void setStructureId(CmsUUID structureId) {
 
         m_structureId = structureId;
     }
 
+    /**
+     * Updates this bean with data from another instance.<p>
+     * 
+     * @param updateRow the bean which the data should be updated from 
+     */
     public void update(CmsAliasTableRow updateRow) {
 
         m_aliasError = updateRow.m_aliasError;
@@ -243,7 +380,6 @@ public class CmsAliasTableRow implements IsSerializable {
         m_pathError = updateRow.m_pathError;
         m_resourcePath = updateRow.m_resourcePath;
         m_structureId = updateRow.m_structureId;
-        m_selected = updateRow.m_selected;
         m_isEdited = updateRow.m_isEdited;
         m_originalStructureId = updateRow.m_originalStructureId;
     }

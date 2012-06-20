@@ -27,8 +27,15 @@
 
 package org.opencms.ade.sitemap.client.alias;
 
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonCancel;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonDelete;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonDownload;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonNew;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonSave;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonUpload;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messagePage;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messagePermanentRedirect;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageRedirect;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.*;
 
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -116,6 +123,7 @@ public class CmsAliasView extends Composite {
      * 
      * @param controller the controller for the view 
      */
+    @SuppressWarnings("unchecked")
     public CmsAliasView(CmsAliasTableController controller) {
 
         initWidget(((UiBinder<Widget, CmsAliasView>)GWT.create(I_CmsAliasViewUiBinder.class)).createAndBindUi(this));
@@ -209,6 +217,16 @@ public class CmsAliasView extends Composite {
 
         m_table.getLiveDataList().clear();
         m_table.getLiveDataList().addAll(data);
+    }
+
+    /**
+     * Enables or disables the delete button.<p>
+     * 
+     * @param enabled if true, the delete button will be enabled, else disabled 
+     */
+    public void setDeleteButtonEnabled(boolean enabled) {
+
+        m_deleteButton.setEnabled(enabled);
     }
 
     /**
@@ -337,7 +355,8 @@ public class CmsAliasView extends Composite {
     void onClickUpload(ClickEvent e) {
 
         m_popup.hide();
-        CmsAliasEditor.showImportDialog();
+        CmsImportView.showPopup();
+
     }
 
 }

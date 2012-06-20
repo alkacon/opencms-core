@@ -67,6 +67,17 @@ public class CmsAliasTableController {
     String m_siteRoot;
 
     /**
+     * This method is called when the selection of the alias table changes.<p>
+     * 
+     * @param selectedSet the set of selected rows 
+     */
+    public void changeSelection(Set<CmsAliasTableRow> selectedSet) {
+
+        boolean selectionEmpty = selectedSet.isEmpty();
+        m_view.setDeleteButtonEnabled(!selectionEmpty);
+    }
+
+    /**
      * This method is called when the user deletes a set of rows.<p>
      * 
      * @param rowsToDelete the list of rows which should be deleted 
