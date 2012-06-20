@@ -36,6 +36,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.*;
 
 /**
  * A client-side bean for representing the results 
@@ -55,9 +56,9 @@ public class CmsClientAliasImportResult {
 
     public static CmsClientAliasImportResult parse(JSONObject json) {
 
-        String line = getString(json, "line");
-        String error = getString(json, "error");
-        String statusStr = getString(json, "status");
+        String line = getString(json, JSON_LINE);
+        String error = getString(json, JSON_MESSAGE);
+        String statusStr = getString(json, JSON_STATUS);
         CmsAliasImportStatus status = CmsAliasImportStatus.valueOf(statusStr);
         return new CmsClientAliasImportResult(line, status, error);
     }

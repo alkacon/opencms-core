@@ -55,10 +55,28 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ADD_RESOURCE_TO_ORGUNIT_2 = "ERR_ADD_RESOURCE_TO_ORGUNIT_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADD_URLNAME_MAPPING_2 = "ERR_ADD_URLNAME_MAPPING_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_GROUP_FAILED_2 = "ERR_ADD_USER_GROUP_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_WEB_1 = "ERR_ADD_USER_WEB_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_BAD_SEPARATOR_0 = "ERR_ALIAS_BAD_SEPARATOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_IMPORT_BAD_FORMAT_0 = "ERR_ALIAS_IMPORT_BAD_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_IMPORT_COULD_NOT_READ_RESOURCE_0 = "ERR_ALIAS_IMPORT_COULD_NOT_READ_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_IMPORT_INVALID_ALIAS_PATH_0 = "ERR_ALIAS_IMPORT_INVALID_ALIAS_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_IMPORT_OK_0 = "ERR_ALIAS_IMPORT_OK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_OU_DESCRIPTION_EMPTY_0 = "ERR_BAD_OU_DESCRIPTION_EMPTY_0";
@@ -125,6 +143,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COUNT_LOCKED_RESOURCES_PROJECT_2 = "ERR_COUNT_LOCKED_RESOURCES_PROJECT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COUNT_USERS_0 = "ERR_COUNT_USERS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_GROUP_1 = "ERR_CREATE_GROUP_1";
@@ -244,9 +265,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GET_LOCK_1 = "ERR_GET_LOCK_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_INCREMENT_COUNTER_1 = "ERR_INCREMENT_COUNTER_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_ORGUNITS_1 = "ERR_GET_ORGUNITS_1";
 
     /** Message constant for key in the resource bundle. */
@@ -272,6 +290,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_RESOURCES_IN_TIME_RANGE_3 = "ERR_GET_RESOURCES_IN_TIME_RANGE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_GET_ROLE_GROUPS_1 = "ERR_GET_ROLE_GROUPS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_ROLES_FOR_RESOURCE_2 = "ERR_GET_ROLES_FOR_RESOURCE_2";
@@ -302,6 +323,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORT_USER_7 = "ERR_IMPORT_USER_7";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INCREMENT_COUNTER_1 = "ERR_INCREMENT_COUNTER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INIT_CONN_POOL_1 = "ERR_INIT_CONN_POOL_1";
@@ -436,7 +460,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_HISTORY_PROJECT_2 = "ERR_READ_HISTORY_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_ID_FOR_URLNAME_1 = "ERR_READ_ID_FOR_URLNAME_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_LOG_ENTRIES_0 = "ERR_READ_LOG_ENTRIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_NEWEST_URLNAME_FOR_ID_1 = "ERR_READ_NEWEST_URLNAME_FOR_ID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_ORGUNIT_1 = "ERR_READ_ORGUNIT_1";
@@ -454,10 +484,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_OWNER_FOR_PROJECT_2 = "ERR_READ_OWNER_FOR_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_PATH_2 = "ERR_READ_PATH_2";
+    public static final String ERR_READ_PARENT_FOLDER_2 = "ERR_READ_PARENT_FOLDER_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_PARENT_FOLDER_2 = "ERR_READ_PARENT_FOLDER_2";
+    public static final String ERR_READ_PATH_2 = "ERR_READ_PATH_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PROJECT_FOR_ID_1 = "ERR_READ_PROJECT_FOR_ID_1";
@@ -532,6 +562,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_SUBSCRIBED_RESOURCES_ALL_USER_1 = "ERR_READ_SUBSCRIBED_RESOURCES_ALL_USER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_URLNAME_MAPPING_2 = "ERR_READ_URLNAME_MAPPING_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_USER_FOR_ID_1 = "ERR_READ_USER_FOR_ID_1";
 
     /** Message constant for key in the resource bundle. */
@@ -590,6 +623,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_RESOURCE_2 = "ERR_RESTORE_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SEARCH_USERS_0 = "ERR_SEARCH_USERS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_DATE_EXPIRED_2 = "ERR_SET_DATE_EXPIRED_2";
@@ -850,6 +886,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_CHECKING_0 = "RPT_CHECKING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1 = "RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETE_NOTHING_0 = "RPT_DELETE_NOTHING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -899,30 +938,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_ADD_URLNAME_MAPPING_2 = "ERR_ADD_URLNAME_MAPPING_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_ID_FOR_URLNAME_1 = "ERR_READ_ID_FOR_URLNAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_NEWEST_URLNAME_FOR_ID_1 = "ERR_READ_NEWEST_URLNAME_FOR_ID_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_URLNAME_MAPPING_2 = "ERR_READ_URLNAME_MAPPING_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_ROLE_GROUPS_1 = "ERR_GET_ROLE_GROUPS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_COUNT_USERS_0 = "ERR_COUNT_USERS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SEARCH_USERS_0 = "ERR_SEARCH_USERS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1 = "RPT_CHILDREN_OF_MOVED_FOLDER_NOT_PUBLISHED_1";
 
     /**
      * Hides the public constructor for this utility class.<p>

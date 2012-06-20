@@ -28,6 +28,7 @@
 package org.opencms.db;
 
 import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.*;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 
@@ -70,13 +71,13 @@ public class CmsAliasImportResult {
         try {
             JSONObject obj = new JSONObject();
             if (m_line != null) {
-                obj.put("line", m_line);
+                obj.put(JSON_LINE, m_line);
             }
             if (m_error != null) {
-                obj.put("error", m_error);
+                obj.put(JSON_MESSAGE, m_error);
             }
             if (m_status != null) {
-                obj.put("status", m_status.toString());
+                obj.put(JSON_STATUS, m_status.toString());
             }
 
             return obj;

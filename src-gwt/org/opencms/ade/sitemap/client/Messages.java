@@ -37,6 +37,45 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_BUTTON_CANCEL_0 = "GUI_ALIASES_BUTTON_CANCEL_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_BUTTON_DELETE_0 = "GUI_ALIASES_BUTTON_DELETE_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_BUTTON_DOWNLOAD_0 = "GUI_ALIASES_BUTTON_DOWNLOAD_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_BUTTON_IMPORT_0 = "GUI_ALIASES_BUTTON_IMPORT_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_BUTTON_NEW_0 = "GUI_ALIASES_BUTTON_NEW_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_BUTTON_SAVE_0 = "GUI_ALIASES_BUTTON_SAVE_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_BUTTON_SELECT_FILE_0 = "GUI_ALIASES_BUTTON_SELECT_FILE_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_BUTTON_UPLOAD_0 = "GUI_ALIASES_BUTTON_UPLOAD_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_COLUMN_ALIAS_0 = "GUI_ALIASES_COLUMN_ALIAS_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_COLUMN_ERROR_0 = "GUI_ALIASES_COLUMN_ERROR_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_COLUMN_MODE_0 = "GUI_ALIASES_COLUMN_MODE_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_COLUMN_PATH_0 = "GUI_ALIASES_COLUMN_PATH_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_COLUMN_SELECT_0 = "GUI_ALIASES_COLUMN_SELECT_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_MODE_PAGE_0 = "GUI_ALIASES_MODE_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_MODE_PERMANENT_0 = "GUI_ALIASES_MODE_PERMANENT_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_MODE_REDIRECT_0 = "GUI_ALIASES_MODE_REDIRECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_TITLE_EDITOR_0 = "GUI_ALIASES_TITLE_EDITOR_0";
+
+    public static final String GUI_ALIASES_TITLE_IMPORT_0 = "GUI_ALIASES_TITLE_IMPORT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BLOCKING_LOCKED_CHILDREN_0 = "GUI_BLOCKING_LOCKED_CHILDREN_0";
 
     /** Message constant for key in the resource bundle. */
@@ -344,7 +383,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     protected static final String GUI_ADDINFO_REDIRECT_0 = "GUI_ADDINFO_REDIRECT_0";
-
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
 

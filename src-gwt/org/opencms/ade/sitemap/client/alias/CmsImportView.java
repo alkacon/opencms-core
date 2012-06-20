@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.client.alias;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.shared.I_CmsAliasConstants;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -109,7 +110,7 @@ public class CmsImportView extends Composite {
 
                 fileInput.setAllowMultipleFiles(false);
                 fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
-                fileInput.setName("importfile");
+                fileInput.setName(I_CmsAliasConstants.PARAM_IMPORTFILE);
                 fileInput.addStyleName(org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadCss().uploadFileInput());
 
             }
@@ -133,8 +134,8 @@ public class CmsImportView extends Composite {
         };
         m_uploadButton = new CmsUploadButton(handler);
         m_formPanelContents.add(m_uploadButton);
-        m_submitButton.setText("submit");
-        m_uploadButton.setText("Select file");
+        m_submitButton.setText(CmsAliasMessages.messageButtonSubmit());
+        m_uploadButton.setText(CmsAliasMessages.messageButtonSelectFile());
         m_submitButton.setEnabled(false);
         initializeForm();
     }
@@ -201,9 +202,9 @@ public class CmsImportView extends Composite {
 
         String target = CmsSitemapView.getInstance().getController().getData().getAliasImportUrl();
         m_formPanel.setAction(target);
-        m_formPanel.setMethod("post");
+        m_formPanel.setMethod(FormPanel.METHOD_POST);
         m_formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
-        Hidden siteRootField = new Hidden("siteroot");
+        Hidden siteRootField = new Hidden(I_CmsAliasConstants.PARAM_SITEROOT);
         siteRootField.setValue(CmsCoreProvider.get().getSiteRoot());
         m_formPanelContents.add(siteRootField);
         m_formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {

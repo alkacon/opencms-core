@@ -44,7 +44,7 @@ public class CmsAliasEditor {
 
     public static void showImportDialog() {
 
-        final CmsPopup popup = new CmsPopup("Import");
+        final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleImport());
         CmsImportView importView = new CmsImportView();
         popup.setMainContent(importView);
         popup.setWidth(600);
@@ -54,7 +54,7 @@ public class CmsAliasEditor {
 
     public void show() {
 
-        final CmsPopup popup = new CmsPopup("Alias Editor");
+        final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleAliasEditor());
         popup.setMainContent(m_view);
         for (CmsPushButton button : m_view.getButtonBar()) {
             popup.addButton(button);

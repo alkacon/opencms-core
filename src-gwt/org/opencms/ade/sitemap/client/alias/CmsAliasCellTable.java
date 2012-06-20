@@ -91,15 +91,15 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
         MultiSelectionModel<CmsAliasTableRow> selectionModel = new MultiSelectionModel<CmsAliasTableRow>(
             getKeyProvider());
         setSelectionModel(selectionModel, DefaultSelectionEventManager.<CmsAliasTableRow> createCheckboxManager());
-        addColumn(selectCol, "Select");
+        addColumn(selectCol, CmsAliasMessages.messageColumnSelect());
         setColumnWidth(selectCol, 50, Unit.PX);
-        addColumn(aliasPathCol, "Alias");
+        addColumn(aliasPathCol, CmsAliasMessages.messageColumnAlias());
         setColumnWidth(aliasPathCol, 350, Unit.PX);
-        addColumn(resourcePathCol, "Path");
+        addColumn(resourcePathCol, CmsAliasMessages.messageColumnPath());
         setColumnWidth(resourcePathCol, 350, Unit.PX);
-        addColumn(modeCol, "Mode");
+        addColumn(modeCol, CmsAliasMessages.messageColumnMode());
         setColumnWidth(modeCol, 200, Unit.PX);
-        addColumn(errorCol, "Error");
+        addColumn(errorCol, CmsAliasMessages.messageColumnError());
         setColumnWidth(errorCol, 200, Unit.PX);
         setWidth("100%");
     }

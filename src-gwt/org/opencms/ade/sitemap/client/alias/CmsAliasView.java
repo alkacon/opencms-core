@@ -27,6 +27,9 @@
 
 package org.opencms.ade.sitemap.client.alias;
 
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageRedirect;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.*;
+
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
@@ -117,23 +120,23 @@ public class CmsAliasView extends Composite {
 
         initWidget(((UiBinder<Widget, CmsAliasView>)GWT.create(I_CmsAliasViewUiBinder.class)).createAndBindUi(this));
         Map<String, String> items = new HashMap<String, String>();
-        items.put(CmsAliasMode.permanentRedirect.toString(), "Permanent");
-        items.put(CmsAliasMode.page.toString(), "Page");
-        items.put(CmsAliasMode.redirect.toString(), "Redirect");
+        items.put(CmsAliasMode.permanentRedirect.toString(), messagePermanentRedirect());
+        items.put(CmsAliasMode.page.toString(), messagePage());
+        items.put(CmsAliasMode.redirect.toString(), messageRedirect());
         m_newMode.setItems(items);
         m_controller = controller;
-        m_newButton.setText("New");
-        m_saveButton.setText("Save");
+        m_newButton.setText(messageButtonNew());
+        m_saveButton.setText(messageButtonSave());
         m_saveButton.setUseMinWidth(true);
-        m_cancelButton.setText("Cancel");
+        m_cancelButton.setText(messageButtonCancel());
         m_cancelButton.setUseMinWidth(true);
-        m_deleteButton.setText("Delete");
-        m_downloadButton.setText("Download");
-        m_uploadButton.setText("Upload");
+        m_deleteButton.setText(messageButtonDelete());
+        m_downloadButton.setText(messageButtonDownload());
+        m_uploadButton.setText(messageButtonUpload());
         m_newButton.setSize(Size.big);
         m_table = new CmsAliasCellTable(controller);
         m_tableContainer.add(m_table);
-        setWidth("1150px");
+        setWidth("1150px"); //$NON-NLS-1$
     }
 
     /** 
@@ -141,9 +144,9 @@ public class CmsAliasView extends Composite {
      */
     public void clearNew() {
 
-        m_newAliasPath.setFormValueAsString("");
+        m_newAliasPath.setFormValueAsString(""); //$NON-NLS-1$
         m_newAliasPath.setErrorMessage(null);
-        m_newResourcePath.setFormValueAsString("");
+        m_newResourcePath.setFormValueAsString(""); //$NON-NLS-1$
         m_newResourcePath.setErrorMessage(null);
     }
 

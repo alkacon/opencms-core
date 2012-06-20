@@ -72,9 +72,9 @@ public class CmsAliasModeColumn extends Column<CmsAliasTableRow, String> {
     }
 
     static {
-        nameLookup.put(CmsAliasMode.permanentRedirect, "permanent redirect");
-        nameLookup.put(CmsAliasMode.redirect, "temporary redirect");
-        nameLookup.put(CmsAliasMode.page, "page");
+        nameLookup.put(CmsAliasMode.permanentRedirect, CmsAliasMessages.messagePermanentRedirect());
+        nameLookup.put(CmsAliasMode.redirect, CmsAliasMessages.messageRedirect());
+        nameLookup.put(CmsAliasMode.page, CmsAliasMessages.messagePage());
     }
 
     /**

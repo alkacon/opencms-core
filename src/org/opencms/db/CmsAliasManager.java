@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -152,23 +153,28 @@ public class CmsAliasManager {
         CmsAliasMode mode) throws CmsException {
 
         CmsResource resource;
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         String originalSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             cms.getRequestContext().setSiteRoot(siteRoot);
             resource = cms.readResource(vfsPath);
         } catch (CmsException e) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, "Could not read resource: " + vfsPath);
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, messageImportCantReadResource(
+                locale,
+                vfsPath));
         } finally {
             cms.getRequestContext().setSiteRoot(originalSiteRoot);
         }
         if (!CmsAlias.ALIAS_PATTERN.matcher(aliasPath).matches()) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, "Invalid alias path: " + aliasPath);
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, messageImportInvalidAliasPath(
+                locale,
+                aliasPath));
         }
         List<CmsAlias> maybeAlias = getAliasesForPath(cms, siteRoot, aliasPath);
         if (maybeAlias.isEmpty()) {
             CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
             m_securityManager.addAlias(cms.getRequestContext(), newAlias);
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasNew, "OK");
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasNew, messageImportOk(locale));
         } else {
             CmsAlias existingAlias = maybeAlias.get(0);
             CmsAliasFilter deleteFilter = new CmsAliasFilter(
@@ -178,7 +184,7 @@ public class CmsAliasManager {
             m_securityManager.deleteAliases(cms.getRequestContext(), deleteFilter);
             CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
             m_securityManager.addAlias(cms.getRequestContext(), newAlias);
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasChanged, "OK");
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasChanged, messageImportOk(locale));
         }
 
     }
@@ -295,6 +301,7 @@ public class CmsAliasManager {
 
     protected CmsAliasImportResult processAliasLine(CmsObject cms, String siteRoot, String line) {
 
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         line = line.trim();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(line) || line.startsWith("#")) {
             return null;
@@ -308,10 +315,7 @@ public class CmsAliasManager {
         } else if (semicolon && !comma) {
             separatorRegex = ";";
         } else {
-            return new CmsAliasImportResult(
-                line,
-                CmsAliasImportStatus.aliasError,
-                "No column separator or ambiguous column separator!");
+            return new CmsAliasImportResult(line, CmsAliasImportStatus.aliasError, messageImportBadSeparator(locale));
         }
         String[] tokens = line.split(separatorRegex);
         if ((tokens.length == 2) || (tokens.length == 3)) {
@@ -322,15 +326,83 @@ public class CmsAliasManager {
                 try {
                     mode = CmsAliasMode.valueOf(tokens[2].trim());
                 } catch (Exception e) {
-                    return new CmsAliasImportResult(line, CmsAliasImportStatus.aliasError, "Invalid format");
+                    return new CmsAliasImportResult(
+                        line,
+                        CmsAliasImportStatus.aliasError,
+                        messageImportInvalidFormat(locale));
                 }
             }
             CmsAliasImportResult returnValue = processAliasImport(cms, siteRoot, alias, vfsPath, mode);
             returnValue.setLine(line);
             return returnValue;
         } else {
-            return new CmsAliasImportResult(line, CmsAliasImportStatus.aliasError, "Invalid format");
+            return new CmsAliasImportResult(line, CmsAliasImportStatus.aliasError, messageImportInvalidFormat(locale));
         }
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @param locale the message locale 
+     * 
+     * @return the message string 
+     */
+    private String messageImportBadSeparator(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_BAD_SEPARATOR_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @param locale the message locale 
+     * @param path a path 
+     * 
+     * @return the message string 
+     */
+    private String messageImportCantReadResource(Locale locale, String path) {
+
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_COULD_NOT_READ_RESOURCE_0);
+
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @param locale the message locale 
+     * @param path a path 
+     * 
+     * @return the message string 
+     */
+    private String messageImportInvalidAliasPath(Locale locale, String path) {
+
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_INVALID_ALIAS_PATH_0);
+
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @param locale the message locale 
+     * 
+     * @return the message string 
+     */
+    private String messageImportInvalidFormat(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_BAD_FORMAT_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @param locale the message locale 
+     * 
+     * @return the message string 
+     */
+    private String messageImportOk(Locale locale) {
+
+        //return "OK";
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_OK_0);
     }
 
 }

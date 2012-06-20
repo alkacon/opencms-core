@@ -46,6 +46,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +56,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.*;
 
 import com.google.common.collect.Sets;
 
@@ -71,6 +73,13 @@ public class CmsAliasBulkEditHelper {
         m_cms = cms;
     }
 
+    /**
+     * Imports uploaded aliases from a request.<p>
+     * 
+     * @param request the request containing the uploaded aliases 
+     * @param response the response 
+     * @throws Exception if something goes wrong 
+     */
     public void importAliases(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         FileItemFactory factory = new DiskFileItemFactory();
@@ -81,9 +90,9 @@ public class CmsAliasBulkEditHelper {
         String siteRoot = null;
         for (FileItem fileItem : items) {
             String name = fileItem.getFieldName();
-            if ("importfile".equals(name)) {
+            if (PARAM_IMPORTFILE.equals(name)) {
                 data = fileItem.get();
-            } else if ("siteroot".equals(name)) {
+            } else if (PARAM_SITEROOT.equals(name)) {
                 siteRoot = new String(fileItem.get(), CmsEncoder.ENCODING_UTF_8);
             }
         }
@@ -96,7 +105,7 @@ public class CmsAliasBulkEditHelper {
         for (CmsAliasImportResult r : result) {
             array.put(r.toJson());
         }
-        obj.put("result", array);
+        obj.put(JSON_RESULT, array);
 
         response.getWriter().print(obj.toString());
     }
@@ -148,6 +157,7 @@ public class CmsAliasBulkEditHelper {
 
         }
         CmsObject cms = m_cms;
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         for (CmsAliasTableRow row : editedData) {
             row.clearErrors();
             validateSingleAliasRow(cms, row);
@@ -164,7 +174,7 @@ public class CmsAliasBulkEditHelper {
         for (CmsAliasTableRow row : editedData) {
             if (duplicateAliasPaths.contains(row.getAliasPath())) {
                 if (row.getPathError() == null) {
-                    row.setAliasError("Duplicate alias path!");
+                    row.setAliasError(messageDuplicateAliasPath(locale));
                     m_hasErrors = true;
                 }
             }
@@ -195,8 +205,46 @@ public class CmsAliasBulkEditHelper {
         return result;
     }
 
+    /**
+     * Message accessor.
+     *  
+     * @param locale the locale for messages
+     *  
+     * @return the message string 
+     */
+    private String messageDuplicateAliasPath(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_DUPLICATE_ALIAS_PATH_0);
+    }
+
+    /**
+     * Message accessor.
+     *  
+     * @param locale the locale for messages
+     *  
+     * @return the message string 
+     */
+    private String messageInvalidAliasPath(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_INVALID_ALIAS_PATH_0);
+    }
+
+    /**
+     * Message accessor.
+     *  
+     * @param locale the locale for messages
+     *  
+     * @return the message string 
+     */
+    private String messageResourceNotFound(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_RESOURCE_NOT_FOUND_0);
+
+    }
+
     private void validateSingleAliasRow(CmsObject cms, CmsAliasTableRow row) {
 
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         if (row.getStructureId() == null) {
             String path = row.getResourcePath();
             try {
@@ -205,12 +253,12 @@ public class CmsAliasBulkEditHelper {
                 row.setOriginalStructureId(resource.getStructureId());
                 m_freshStructureIds.add(resource.getStructureId());
             } catch (CmsException e) {
-                row.setPathError("Resource not found!");
+                row.setPathError(messageResourceNotFound(locale));
                 m_hasErrors = true;
             }
         }
         if (!CmsAlias.ALIAS_PATTERN.matcher(row.getAliasPath()).matches()) {
-            row.setAliasError("Invalid alias path!");
+            row.setAliasError(messageInvalidAliasPath(locale));
             m_hasErrors = true;
         }
     }
