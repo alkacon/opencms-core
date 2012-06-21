@@ -15,6 +15,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.5.0 - XXX xx, 2012
+! Added CodeMirror syntax-highlighting source code editor with code folding, visible tabs and better performance.
+
 OpenCms 8.0.4 - April xx, 2012
 ! Added configurable ADE context menu dialogs.
 ! Added Italian localization.

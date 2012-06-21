@@ -1,0 +1,86 @@
+/* The div that contains the editor */
+#edit1 {
+	position: fixed;
+	top: 24px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+/* Editor appearance modifications */
+.CodeMirror {
+	background-color: Window;
+}
+
+.CodeMirror span, .CodeMirror pre {
+	font-family: Monospace, sans-serif; 
+	font-size: 14px;
+	line-height: 1.2em;
+}
+
+.CodeMirror-scroll { 
+	height: 100%;
+	overflow: auto;
+	position: relative;
+}
+
+.CodeMirror-gutter {
+	min-width: 4.2em; 
+	cursor: pointer;
+}
+
+.activeline {
+	background: #ecf6ff !important;
+}
+
+.cm-tab:after {
+	content: "\2192";
+	display: -moz-inline-block;
+	display: -webkit-inline-block;
+	display: inline-block;
+	width: 0px;
+	position: relative;
+	overflow: visible;
+	left: -1.4em;
+	color: #999;
+	visibility: hidden;
+}
+
+/* Modification for search dialogs */
+.CodeMirror-dialog {
+	position: relative;
+}
+
+.CodeMirror-dialog > div {
+	position: fixed;
+	top: 35%; left: 50%;
+	width: 300px;
+	margin-left: -150px;
+	background: ButtonFace;
+	border: 1px solid ButtonShadow;
+	z-index: 15;
+	padding: 2em;
+	overflow: hidden;
+	color: WindowText;
+	font-family: Verdana Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+.CodeMirror-dialog span {
+	font-family: Verdana Arial, Helvetica, sans-serif !important;
+	font-size: 12px !important;
+}
+
+.CodeMirror-dialog input {
+	border: 1px solid ButtonShadow;
+	outline: none;
+	background: Window;
+	width: 18em;
+	float: right;
+	margin-left: 1em;
+	color: WindowText;
+}
+
+.CodeMirror-dialog button {
+	margin-left: 1em;
+}
