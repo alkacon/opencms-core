@@ -38,6 +38,9 @@ import org.opencms.util.CmsStringUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Panel;
+
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
  * after the user clicks on the widget.<p>
@@ -361,6 +364,26 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
      */
     protected void updateStyle() {
 
-        // do nothing 
+        // do nothing
+    }
+
+    /**
+     * Returns the opener of this widget.<p>
+     * 
+     * @return the opener of this widget
+     */
+    public FocusPanel getOpener() {
+
+        return m_opener;
+    }
+
+    /**
+     * Returns the selector of this widget.<p>
+     * 
+     * @return the selector of this widget
+     */
+    public Panel getSelector() {
+
+        return m_selector;
     }
 }

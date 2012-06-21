@@ -111,6 +111,16 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
     }
 
     /**
+     * Returns the radio button.<p>
+     * 
+     * @return the radio button
+     */
+    public CmsToggleButton getRadioButton() {
+
+        return m_button;
+    }
+
+    /**
      * Adds a click handler to the radio button.<p>
      * 
      * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)

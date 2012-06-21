@@ -29,17 +29,16 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 
 import java.util.HashMap;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
   * An option of a select type widget.<p>
@@ -136,9 +135,9 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
         parseconfig(config);
 
         // Place the check above the box using a vertical panel.
-        VerticalPanel panel = new VerticalPanel();
-        panel.add(m_selectBox);
-        m_selectBox.getElement().getStyle().setWidth(900, Unit.PX);
+        m_selectBox.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        m_selectBox.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
+        m_selectBox.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelector());
         m_selectBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -150,7 +149,7 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
         });
 
         // All composites must call initWidget() in their constructors.
-        initWidget(panel);
+        initWidget(m_selectBox);
 
     }
 
@@ -209,8 +208,18 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        if (m_active == active) {
+            return;
+        }
+
         m_active = active;
         m_selectBox.setEnabled(active);
+        /* if (active) {
+             m_selectBox.setBorderColor("#7788AA");
+         } else {
+             m_selectBox.setBorderColor("#B1B4B8");
+         }*/
+
         if (active) {
             fireChangeEvent();
         }

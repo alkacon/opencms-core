@@ -1,0 +1,75 @@
+@external transparentSelectBox, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+
+.radioButtonPanel {
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+    border-radius: value("constants.css.borderRadius");
+    border: 1px solid #7788AA /*value("constants.css.borderColor")*/;
+    display: block;
+    vertical-alignment: middle;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-top: 3px;
+}
+
+.selectBoxPanel{
+	display: block;
+	width: auto;
+}
+
+.selectBoxSelected {
+	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
+}
+
+.selectBoxSelector {
+	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
+}
+
+
+.radioButton {
+  	font-weight: normal !important;
+  	font-size: 14px !important;
+}
+
+.checkBox{
+	position: absolute;
+	top: 5px;
+}
+
+.checkBoxLable{
+	color: #7788AA;
+    cursor: default;
+	margin: 4px 3px 2px 21px;
+	font-size: 14px;
+    font-weight: bold;
+}
+/** The empty value parameters. */
+.emptyValue .checkBoxLable{
+	color: #B1B4B8;
+	font-style: italic;
+}
+
+.emptyValue .radioButtonPanel {
+	background-color: value("constants.css.backgroundColorDialog");
+	border: 1px solid #B1B4B8;
+}
+
+/** The has error parameters. */
+.hasError .selectBoxSelected {
+	color: value("constants.css.textColorDisabled");
+	border: 1px solid red;
+}
+
+
+	
+.emptyValue{}
+
+.hasError{}
+
+.hasWarning{}
+
+.label{}
+
+.inActive{}
+
+.widgetHolder{}
+ 

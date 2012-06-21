@@ -70,12 +70,21 @@ public class CmsStringWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
         return new StringWidget(element);
     }
 
+    /**
+     * @param configuration
+     * @return
+     */
     public I_EditWidget createWidget(String configuration) {
 
         // TODO: Auto-generated method stub
         return null;
     }
 
+    /**
+     * @param configuration
+     * @param element
+     * @return
+     */
     public I_EditWidget wrapElement(String configuration, Element element) {
 
         // TODO: Auto-generated method stub

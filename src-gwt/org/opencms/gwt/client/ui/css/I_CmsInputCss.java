@@ -230,6 +230,7 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+
     String radioButtonGroup();
 
     /**

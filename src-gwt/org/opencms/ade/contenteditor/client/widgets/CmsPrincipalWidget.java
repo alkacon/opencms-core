@@ -60,7 +60,7 @@ public class CmsPrincipalWidget extends Composite implements I_EditWidget {
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_principalPanel);
-        m_principalPanel.setBasePath("system/workplace/commons/principal_selection.jsp");
+        /*m_principalPanel.setBasePath("system/workplace/commons/principal_selection.jsp");
         m_principalPanel.setPathAttributes("&type=principalwidget&flags=null");
         m_principalPanel.setPopupHeight(305);
         m_principalPanel.setPopupWidth(500);
@@ -68,7 +68,7 @@ public class CmsPrincipalWidget extends Composite implements I_EditWidget {
         m_principalPanel.setAutoHide(false);
         m_principalPanel.setModal(false);
         m_principalPanel.getTextBox().setReadOnly(false);
-        m_principalPanel.getCheckBox().removeFromParent();
+        m_principalPanel.getCheckBox().removeFromParent();*/
         m_principalPanel.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> arg0) {

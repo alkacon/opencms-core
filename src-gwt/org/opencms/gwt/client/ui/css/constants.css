@@ -61,7 +61,7 @@
 /** The highlight border color. Use it for highlighting special UI components e.g. errors. */
 @def borderColorHighlight #B31B34;
 /** The default border radius. */
-@def borderRadius 5px;
+@def borderRadius 3px;
 /** The default border radius for buttons. */
 @def borderRadiusButton 8px;
 

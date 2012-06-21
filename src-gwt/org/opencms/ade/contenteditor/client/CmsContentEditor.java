@@ -164,6 +164,7 @@ public final class CmsContentEditor {
 
         I_LayoutBundle.INSTANCE.form().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.widgetCss().ensureInjected();
         I_CmsContentServiceAsync service = GWT.create(I_CmsContentService.class);
         String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt");
         ((ServiceDefTarget)service).setServiceEntryPoint(serviceUrl);

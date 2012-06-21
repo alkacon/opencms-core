@@ -57,11 +57,9 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
         VerticalPanel panel = new VerticalPanel();
 
         panel.add(m_checkbox);
-        //panel.add(m_checkbox);
 
         // Set the check box's caption, and check it by default.
         m_checkbox.setChecked(true);
-        // m_checkbox.addClickHandler(this);
         m_checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
             public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -129,6 +127,9 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        if (m_active == active) {
+            return;
+        }
         m_active = active;
         if (active) {
             fireChangeEvent();

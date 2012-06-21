@@ -55,12 +55,12 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_LinkSelect);
-        m_LinkSelect.setBasePath("/system/modules/org.opencms.ade.galleries/gallery.jsp");
-        m_LinkSelect.setPathAttributes("&dialogmode=widget");
-        m_LinkSelect.setPopupHeight(490);
-        m_LinkSelect.setPopupWidth(500);
-        m_LinkSelect.setPopupActiveByFocus(true);
-
+        /* m_LinkSelect.setBasePath("/system/modules/org.opencms.ade.galleries/gallery.jsp");
+         m_LinkSelect.setPathAttributes("&dialogmode=widget");
+         m_LinkSelect.setPopupHeight(490);
+         m_LinkSelect.setPopupWidth(500);
+         m_LinkSelect.setPopupActiveByFocus(true);
+        */
         // m_LinkSelect.setPopupTitle(org.opencms.gwt.client.Messages.get().key(
         //     org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0));
         m_LinkSelect.getTextBox().getTextBox().addStyleName(I_LayoutBundle.INSTANCE.form().input());
@@ -69,7 +69,7 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
         m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
             I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
 
-        m_LinkSelect.getCheckBox().removeFromParent();
+        // m_LinkSelect.getCheckBox().removeFromParent();
         m_LinkSelect.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> arg0) {

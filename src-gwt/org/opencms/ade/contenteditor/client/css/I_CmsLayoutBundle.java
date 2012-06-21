@@ -27,6 +27,8 @@
 
 package org.opencms.ade.contenteditor.client.css;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle.I_Widgets;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 
@@ -57,6 +59,60 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String standAloneEditor();
     }
 
+    /** The XML content widget CSS. */
+    public interface I_CmsWidgetCss extends I_Widgets {
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String radioButtonPanel();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String selectBoxPanel();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String radioButton();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String checkBox();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String checkBoxLable();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String selectBoxSelected();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String selectBoxSelector();
+
+    }
+
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
@@ -67,4 +123,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      */
     @Source("editor.css")
     I_CmsXmlEditorCss editorCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the XML content widget CSS
+     */
+    @Source("widget.css")
+    I_CmsWidgetCss widgetCss();
 }

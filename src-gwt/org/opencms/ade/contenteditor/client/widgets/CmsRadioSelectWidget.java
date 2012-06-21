@@ -29,11 +29,11 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -61,9 +61,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * */
 public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
+    /** Value of the activation. */
     private boolean m_active = true;
+
+    /** Value of the radio group. */
     private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
-    private List<CmsRadioButton> m_listRadioButtons;
+
+    /** Array of all radiobuttons. */
+    private CmsRadioButton[] m_arrayRadioButtons;
+
+    /** The main panel of this widget. */
+    VerticalPanel m_panel = new VerticalPanel();
 
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
@@ -71,17 +79,19 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public CmsRadioSelectWidget(String config) {
 
-        m_listRadioButtons = parseconfig(config);
+        List<CmsRadioButton> list = parseconfig(config);
+        m_arrayRadioButtons = new CmsRadioButton[list.size()];
+        list.toArray(m_arrayRadioButtons);
 
         // Place the check above the text box using a vertical panel.
-        VerticalPanel panel = new VerticalPanel();
-        Iterator<CmsRadioButton> i = m_listRadioButtons.iterator();
-        while (i.hasNext()) {
-            panel.add(i.next());
-        }
 
+        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
+        for (int i = 0; i < m_arrayRadioButtons.length; i++) {
+            m_arrayRadioButtons[i].addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButton());
+            m_panel.add(m_arrayRadioButtons[i]);
+        }
         // All composites must call initWidget() in their constructors.
-        initWidget(panel);
+        initWidget(m_panel);
 
     }
 
@@ -140,10 +150,15 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        if (m_active == active) {
+            return;
+        }
         m_active = active;
+        for (int i = 0; i < m_arrayRadioButtons.length; i++) {
+            m_arrayRadioButtons[i].setEnabled(active);
+        }
         if (active) {
             fireChangeEvent();
-
         }
 
     }
@@ -153,7 +168,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value) {
 
-        setValue(value, true);
+        setValue(value, false);
 
     }
 
@@ -162,9 +177,8 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        Iterator<CmsRadioButton> i = m_listRadioButtons.iterator();
-        while (i.hasNext()) {
-            CmsRadioButton rb = i.next();
+        for (int i = 0; i < m_arrayRadioButtons.length; i++) {
+            CmsRadioButton rb = m_arrayRadioButtons[i];
             if (rb.getName().equals(value)) {
                 m_group.selectButton(rb);
             }
@@ -182,7 +196,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      * */
     private List<CmsRadioButton> parseconfig(String config) {
 
-        List<CmsRadioButton> list = new ArrayList<CmsRadioButton>();
+        List<CmsRadioButton> result = new ArrayList<CmsRadioButton>();
 
         String[] labels = config.split("\\|");
         for (int i = 0; i < labels.length; i++) {
@@ -202,8 +216,8 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
                 radiobutton.setText(labels[i].replace("*", ""));
                 radiobutton.setChecked(true);
             }
-            list.add(radiobutton);
+            result.add(radiobutton);
         }
-        return list;
+        return result;
     }
 }
