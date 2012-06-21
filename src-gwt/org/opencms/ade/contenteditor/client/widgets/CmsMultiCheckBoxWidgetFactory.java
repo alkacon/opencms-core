@@ -28,7 +28,9 @@
 package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.I_WidgetFactory;
+import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
+import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
@@ -53,20 +55,16 @@ public class CmsMultiCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasI
         WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsMultiCheckBoxWidgetFactory());
     }
 
-    /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createWidget(java.lang.String)
-     */
-    public I_EditWidget createWidget(String configuration) {
+    public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new CmsMultiCheckboxWidget(configuration);
+        return new FormWidgetWrapper(new CmsMultiCheckboxWidget(configuration));
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#wrapElement(java.lang.String, com.google.gwt.user.client.Element)
+     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.user.client.Element)
      */
-    public I_EditWidget wrapElement(String configuration, Element element) {
+    public I_EditWidget createInlineWidget(String configuration, Element element) {
 
         return new CmsMultiCheckboxWidget(configuration);
     }
-
 }
