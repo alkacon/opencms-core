@@ -1795,12 +1795,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         CmsXmlContent xmlcontentDE = CmsXmlContentFactory.createDocument(cms, Locale.GERMAN, content, definition);
 
-        assertEquals(
-            "Dies ist etwas Text EINS √§√∂√º√Ñ√ñ√ú√ü‚Ç¨",
-            xmlcontentDE.getStringValue(cms, "StringOne", Locale.GERMAN));
-        assertEquals(
-            "Dies ist etwas Text ZWEI √§√∂√º√Ñ√ñ√ú√ü‚Ç¨",
-            xmlcontentDE.getStringValue(cms, "StringTwo", Locale.GERMAN));
+        assertEquals("Dies ist etwas Text EINS ‰ˆ¸ƒ÷‹ﬂÄ", xmlcontentDE.getStringValue(cms, "StringOne", Locale.GERMAN));
+        assertEquals("Dies ist etwas Text ZWEI ‰ˆ¸ƒ÷‹ﬂÄ", xmlcontentDE.getStringValue(cms, "StringTwo", Locale.GERMAN));
 
         CmsXmlContent xmlcontentEN = CmsXmlContentFactory.createDocument(cms, Locale.ENGLISH, content, definition);
 

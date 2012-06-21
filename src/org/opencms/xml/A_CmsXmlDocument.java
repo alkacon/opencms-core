@@ -231,72 +231,85 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
             if (isAutoCorrectionEnabled()) {
                 // full correction of XML
+                if (validValues.size() < 1) {
+                    // no valid element was in the content
+                    if (hasLocale(locale)) {
+                        // remove the old locale entirely, as there was no valid element
+                        removeLocale(locale);
+                    }
+                    // add a new default locale, this will also generate the default XML as required
+                    addLocale(cms, locale);
+                } else {
+                    // there is at least one valid element in the content
 
-                List<Element> roots = new ArrayList<Element>();
-                List<CmsXmlContentDefinition> rootCds = new ArrayList<CmsXmlContentDefinition>();
-                List<Element> validElements = new ArrayList<Element>();
+                    List<Element> roots = new ArrayList<Element>();
+                    List<CmsXmlContentDefinition> rootCds = new ArrayList<CmsXmlContentDefinition>();
+                    List<Element> validElements = new ArrayList<Element>();
 
-                // gather all XML content definitions and their parent nodes                                
-                Iterator<I_CmsXmlContentValue> it = validValues.iterator();
-                while (it.hasNext()) {
-                    // collect all root elements, also for the nested content definitions
-                    I_CmsXmlContentValue value = it.next();
-                    Element element = value.getElement();
-                    validElements.add(element);
-                    if (element.supportsParent()) {
-                        // get the parent XML node
-                        Element root = element.getParent();
-                        if ((root != null) && !roots.contains(root)) {
-                            // this is a parent node we do not have already in our storage
-                            CmsXmlContentDefinition rcd = value.getContentDefinition();
-                            if (rcd != null) {
-                                // this value has a valid XML content definition
-                                roots.add(root);
-                                rootCds.add(rcd);
-                            } else {
-                                // no valid content definition for the XML value
-                                throw new CmsXmlException(Messages.get().container(
-                                    Messages.ERR_CORRECT_NO_CONTENT_DEF_3,
-                                    value.getName(),
-                                    value.getTypeName(),
-                                    value.getPath()));
+                    // gather all XML content definitions and their parent nodes                                
+                    Iterator<I_CmsXmlContentValue> it = validValues.iterator();
+                    while (it.hasNext()) {
+                        // collect all root elements, also for the nested content definitions
+                        I_CmsXmlContentValue value = it.next();
+                        Element element = value.getElement();
+                        validElements.add(element);
+                        if (element.supportsParent()) {
+                            // get the parent XML node
+                            Element root = element.getParent();
+                            if ((root != null) && !roots.contains(root)) {
+                                // this is a parent node we do not have already in our storage
+                                CmsXmlContentDefinition rcd = value.getContentDefinition();
+                                if (rcd != null) {
+                                    // this value has a valid XML content definition
+                                    roots.add(root);
+                                    rootCds.add(rcd);
+                                } else {
+                                    // no valid content definition for the XML value
+                                    throw new CmsXmlException(Messages.get().container(
+                                        Messages.ERR_CORRECT_NO_CONTENT_DEF_3,
+                                        value.getName(),
+                                        value.getTypeName(),
+                                        value.getPath()));
+                                }
                             }
                         }
                     }
-                }
 
-                for (int le = 0; le < roots.size(); le++) {
-                    // iterate all XML content root nodes and correct each XML subtree
+                    for (int le = 0; le < roots.size(); le++) {
+                        // iterate all XML content root nodes and correct each XML subtree
 
-                    Element root = roots.get(le);
-                    CmsXmlContentDefinition cd = rootCds.get(le);
+                        Element root = roots.get(le);
+                        CmsXmlContentDefinition cd = rootCds.get(le);
 
-                    // step 1: first sort the nodes according to the schema, this takes care of re-ordered elements
-                    List<List<Element>> nodeLists = new ArrayList<List<Element>>();
-                    for (I_CmsXmlSchemaType type : cd.getTypeSequence()) {
-                        List<Element> elements = CmsXmlGenericWrapper.elements(root, type.getName());
-                        int maxOccures = cd.getChoiceMaxOccurs() > 0 ? cd.getChoiceMaxOccurs() : type.getMaxOccurs();
-                        if (elements.size() > maxOccures) {
-                            // to many nodes of this type appear according to the current schema definition
-                            for (int lo = (elements.size() - 1); lo >= type.getMaxOccurs(); lo--) {
-                                elements.remove(lo);
+                        // step 1: first sort the nodes according to the schema, this takes care of re-ordered elements
+                        List<List<Element>> nodeLists = new ArrayList<List<Element>>();
+                        for (I_CmsXmlSchemaType type : cd.getTypeSequence()) {
+                            List<Element> elements = CmsXmlGenericWrapper.elements(root, type.getName());
+                            int maxOccures = cd.getChoiceMaxOccurs() > 0
+                            ? cd.getChoiceMaxOccurs()
+                            : type.getMaxOccurs();
+                            if (elements.size() > maxOccures) {
+                                // to many nodes of this type appear according to the current schema definition
+                                for (int lo = (elements.size() - 1); lo >= type.getMaxOccurs(); lo--) {
+                                    elements.remove(lo);
+                                }
                             }
+                            nodeLists.add(elements);
                         }
-                        nodeLists.add(elements);
-                    }
 
-                    // step 2: clear the list of nodes (this will remove all invalid nodes)
-                    List<Element> nodeList = CmsXmlGenericWrapper.elements(root);
-                    nodeList.clear();
-                    Iterator<List<Element>> in = nodeLists.iterator();
-                    while (in.hasNext()) {
-                        // now add all valid nodes in the right order
-                        List<Element> elements = in.next();
-                        nodeList.addAll(elements);
-                    }
+                        // step 2: clear the list of nodes (this will remove all invalid nodes)
+                        List<Element> nodeList = CmsXmlGenericWrapper.elements(root);
+                        nodeList.clear();
+                        Iterator<List<Element>> in = nodeLists.iterator();
+                        while (in.hasNext()) {
+                            // now add all valid nodes in the right order
+                            List<Element> elements = in.next();
+                            nodeList.addAll(elements);
+                        }
 
-                    // step 3: now append the missing elements according to the XML content definition
-                    cd.addDefaultXml(cms, this, root, locale);
+                        // step 3: now append the missing elements according to the XML content definition
+                        cd.addDefaultXml(cms, this, root, locale);
+                    }
                 }
             }
         }

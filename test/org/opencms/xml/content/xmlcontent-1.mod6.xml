@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Multitests 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test1.xsd">
+  
+	<Multitest language="en">
+		<StringChanged />
+		<DateTimeChanged>0</DateTimeChanged>
+	</Multitest>
+</Multitests>
