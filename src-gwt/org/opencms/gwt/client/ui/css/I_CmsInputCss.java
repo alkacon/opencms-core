@@ -194,20 +194,6 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
-    String multiCheckBox();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String multiSelectBox();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
     String openerHover();
 
     /**
@@ -338,13 +324,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String textAreaContainer();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String passwordBox();
 
     /**
      * Css class reader. <p>

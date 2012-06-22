@@ -8,6 +8,7 @@ input.textBox {
 	width: 100%;
 	background: transparent;
 	padding: 0px;
+	border-radius: value("constants.css.borderRadius");
 }
 
 .highTextBoxes .textBox {
@@ -119,7 +120,7 @@ input.textBoxReadOnly {
 
 
 
-.radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
+.radioButtonGroup *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
 	font-size: inherit;
 	font-family: inherit;
 	color: value("constants.css.textColor");
