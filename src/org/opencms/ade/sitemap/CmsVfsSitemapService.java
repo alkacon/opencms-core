@@ -1934,11 +1934,23 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             clientEntry.setName(entryPage.getName());
             if (isRedirectType(entryPage.getTypeId())) {
                 clientEntry.setEntryType(EntryType.redirect);
-                CmsFile file = getCmsObject().readFile(entryPage);
-                I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
-                String link = content.getValue(
-                    REDIRECT_LINK_TARGET_XPATH,
-                    getCmsObject().getRequestContext().getLocale()).getStringValue(getCmsObject());
+                CmsFile file = cms.readFile(entryPage);
+                I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, file);
+                Locale contentLocale = OpenCms.getLocaleManager().getDefaultLocale(cms, entryPage);
+                // ensure the content contains the default locale
+                contentLocale = content.getBestMatchingLocale(contentLocale);
+                if (contentLocale == null) {
+                    // no best matching locale, use the first available
+                    List<Locale> locales = content.getLocales();
+                    if (!locales.isEmpty()) {
+                        contentLocale = locales.get(0);
+                    }
+                }
+                String link = "";
+                if (contentLocale != null) {
+                    link = content.getValue(REDIRECT_LINK_TARGET_XPATH, getCmsObject().getRequestContext().getLocale()).getStringValue(
+                        getCmsObject());
+                }
                 clientEntry.setRedirectTarget(link);
             } else {
                 clientEntry.setEntryType(EntryType.leaf);
