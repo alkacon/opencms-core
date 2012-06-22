@@ -62,7 +62,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
         // All composites must call initWidget() in their constructors.
         initWidget(m_passwordTextBox);
         addStyleName(I_LayoutBundle.INSTANCE.form().input());
-        m_passwordTextBox.addStyleName(CSS.passwordBox());
+        //m_passwordTextBox.addStyleName(CSS.passwordBox());
         m_passwordTextBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {

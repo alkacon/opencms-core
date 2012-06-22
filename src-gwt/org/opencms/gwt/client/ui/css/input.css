@@ -120,7 +120,7 @@ input.textBoxReadOnly {
 
 
 
-.radioButtonGroup *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
+.radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
 	font-size: inherit;
 	font-family: inherit;
 	color: value("constants.css.textColor");
