@@ -1,0 +1,15 @@
+.aliasImportOk {
+	color: green; 
+}
+		
+.aliasImportError {
+	color: red; 
+}
+		
+.aliasImportOverwrite {
+	color: orange; 
+}
+
+.rightLabel {
+	padding-left: 30px; 
+}

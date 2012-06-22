@@ -36,6 +36,7 @@ import org.opencms.gwt.client.util.CmsMessages;
  */
 public final class Messages {
 
+    public static final String GUI_ALIAS_EDITING_NOT_PERMITTED_0 = "GUI_ALIAS_EDITING_NOT_PERMITTED_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_BUTTON_CANCEL_0 = "GUI_ALIASES_BUTTON_CANCEL_0";
     /** Message constant for key in the resource bundle. */
@@ -52,21 +53,29 @@ public final class Messages {
     public static final String GUI_ALIASES_BUTTON_SELECT_FILE_0 = "GUI_ALIASES_BUTTON_SELECT_FILE_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_BUTTON_UPLOAD_0 = "GUI_ALIASES_BUTTON_UPLOAD_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_COLUMN_ALIAS_0 = "GUI_ALIASES_COLUMN_ALIAS_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_COLUMN_ERROR_0 = "GUI_ALIASES_COLUMN_ERROR_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_COLUMN_MODE_0 = "GUI_ALIASES_COLUMN_MODE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_COLUMN_PATH_0 = "GUI_ALIASES_COLUMN_PATH_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_COLUMN_SELECT_0 = "GUI_ALIASES_COLUMN_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_CONTEXT_MENU_EDIT_0 = "GUI_ALIASES_CONTEXT_MENU_EDIT_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_MODE_PAGE_0 = "GUI_ALIASES_MODE_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_MODE_PERMANENT_0 = "GUI_ALIASES_MODE_PERMANENT_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_MODE_REDIRECT_0 = "GUI_ALIASES_MODE_REDIRECT_0";
 
@@ -378,10 +387,8 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USE_FOR_SUBPAGES_0 = "GUI_USE_FOR_SUBPAGES_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VFS_PATH_0 = "GUI_VFS_PATH_0";
-
     /** Message constant for key in the resource bundle. */
     protected static final String GUI_ADDINFO_REDIRECT_0 = "GUI_ADDINFO_REDIRECT_0";
     /** Name of the used resource bundle. */

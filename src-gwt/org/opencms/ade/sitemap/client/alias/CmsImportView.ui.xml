@@ -4,8 +4,10 @@
 	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
 	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:local="urn:import:org.opencms.ade.sitemap.client.alias"
 	
 	>
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	
 	<ui:style>
 		.standardInput {
@@ -17,24 +19,17 @@
 		}
 		
 		.main {
-			height: 450px;
+			height: auto;
+			width: 786px;
 		}
-		
-		.results {
-			border: 1px solid gray; 
-			height: 400px;
-			padding-left: 4px;
-			padding-top: 4px; 
-	    }
 	    
 	    .submit {
-			right: 0px; 
-
-
+			float: right;  
 	    } 
 	    
 	    .topRow {
 			width: 100%;
+			margin-bottom: 5px; 
 	    }
 		
 		.invisible {
@@ -42,11 +37,23 @@
 		}
 		
 		.pathLabel {
-			width: 300px;
+			width: 500px;
 			border: 1px dashed gray; 
-			min-height: 22px; 
-			padding: 2px; 
+			height: 20px;
+			margin-top: 1px;
+			padding-left: 2px;
+			padding-top: 2px; 
 		}
+		
+		.resultBox {
+			min-height: 300px;
+			max-height: 600px; 
+			
+			border: 1px solid gray; 
+			padding-left: 4px;
+			padding-top: 4px; 
+		}
+		
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.main}">
 		<g:HorizontalPanel addStyleNames="{style.topRow}">
@@ -56,6 +63,9 @@
 			<g:Label ui:field="m_pathLabel" addStyleNames="{style.pathLabel}"/>
 			<cms:CmsPushButton ui:field="m_submitButton" addStyleNames="{style.submit}"></cms:CmsPushButton>
 		</g:HorizontalPanel>
-		<g:FlowPanel ui:field="m_results" addStyleNames="{style.results}"></g:FlowPanel>
+		<cms:CmsScrollPanel ui:field="m_scrollPanel" addStyleNames="{style.resultBox} {resources.generalCss.cornerAll}">
+					<local:CmsImportResultList ui:field="m_results"></local:CmsImportResultList>
+		</cms:CmsScrollPanel>
+
 	</g:FlowPanel>
 </ui:UiBinder>

@@ -29,7 +29,6 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.alias.CmsAliasEditor;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
@@ -41,7 +40,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -136,79 +135,10 @@ public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
      */
     public void loadContextMenu(CmsUUID structureId, AdeContext context) {
 
-        I_CmsContextMenuEntry aliasEntry = new I_CmsContextMenuEntry() {
-
-            public void execute() {
-
-                CmsAliasEditor editor = new CmsAliasEditor();
-                editor.show();
-            }
-
-            public String getImageClass() {
-
-                // TODO: Auto-generated method stub
-                return null;
-            }
-
-            public String getImagePath() {
-
-                // TODO: Auto-generated method stub
-                return null;
-            }
-
-            public String getJspPath() {
-
-                // TODO: Auto-generated method stub
-                return null;
-            }
-
-            public String getLabel() {
-
-                return "Edit aliases";
-            }
-
-            public String getName() {
-
-                return "ALIAS";
-            }
-
-            public String getReason() {
-
-                // TODO: Auto-generated method stub
-                return null;
-            }
-
-            public List<I_CmsContextMenuEntry> getSubMenu() {
-
-                // TODO: Auto-generated method stub
-                return null;
-            }
-
-            public boolean hasSubMenu() {
-
-                // TODO: Auto-generated method stub
-                return false;
-            }
-
-            public boolean isActive() {
-
-                return true;
-            }
-
-            public boolean isSeparator() {
-
-                // TODO: Auto-generated method stub
-                return false;
-            }
-
-            public boolean isVisible() {
-
-                // TODO: Auto-generated method stub
-                return true;
-            }
-
-        };
-        CmsSitemapView.getInstance().getToolbar().getContextMenuButton().showMenu(Collections.singletonList(aliasEntry));
+        I_CmsContextMenuEntry aliasEntry = new CmsAliasContextMenuEntry();
+        List<I_CmsContextMenuEntry> entries = new ArrayList<I_CmsContextMenuEntry>();
+        entries.add(aliasEntry);
+        CmsSitemapView.getInstance().getToolbar().getContextMenuButton().showMenu(entries);
     }
 
     /**

@@ -7,6 +7,7 @@
 	
 	>
 	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	
 	<ui:style>
 		.standardInput {
@@ -24,15 +25,24 @@
 		}
 		
 		.topButtonBox {
-			margin-left: 50px; 
+			margin-left: 75px; 
+			margin-bottom: 5px;
+			margin-top: 5px;
 		}
 		
-		.topTextBox {
-			width: 350px;
+		.topTextBox1 {
+			width: 344px;
+		}
+		
+		.topTextBox2 {
+			width: 325px;
+			margin-left: 5px;
+			margin-right: 15px;  
 		}
 		
 		.topModeSelector {	
-			min-width: 100px; 
+			min-width: 175px; 
+
 		 }
 		 
 		 .topNewButton {
@@ -41,24 +51,34 @@
 	      }
 	      
 	      .tableContainer {
-				max-height: 700px; 
+				max-height: 700px;
+				border: 1px solid gray; 
 			}
-		
+			
+			.bottomButtonBox > * {
+				margin-right: 5px; 
+			}
+			
+			.bottomButtonBox {
+				padding-top: 10px; 
+			}
+			
+			
 	</ui:style>
 	<g:VerticalPanel addStyleNames="{inputstyle.inputCss.highTextBoxes}">
 		<g:HorizontalPanel addStyleNames="{style.topButtonBox}">
-			<input:CmsTextBox addStyleNames="{style.topTextBox}" ui:field="m_newAliasPath"></input:CmsTextBox>
-			<input:CmsTextBox addStyleNames="{style.topTextBox}" ui:field="m_newResourcePath"></input:CmsTextBox>
+			<input:CmsTextBox addStyleNames="{style.topTextBox1}" ui:field="m_newAliasPath"></input:CmsTextBox>
+			<input:CmsTextBox addStyleNames="{style.topTextBox2}" ui:field="m_newResourcePath"></input:CmsTextBox>
 			<input:CmsSelectBox ui:field="m_newMode" addStyleNames="{style.topModeSelector}"/>
 			<cms:CmsPushButton ui:field="m_newButton" addStyleNames="{style.topNewButton}"></cms:CmsPushButton>
 		</g:HorizontalPanel>
-		<cms:CmsScrollPanel ui:field="m_tableContainer"  addStyleNames="{style.tableContainer}"> 
+		<cms:CmsScrollPanel ui:field="m_tableContainer"  addStyleNames="{style.tableContainer} {resources.generalCss.cornerAll} {style.tableContainer}"> 
 		</cms:CmsScrollPanel>
-		<g:HorizontalPanel>
-		<cms:CmsPushButton  ui:field="m_deleteButton"></cms:CmsPushButton>
-		<cms:CmsPushButton  ui:field="m_downloadButton"></cms:CmsPushButton>
-		<cms:CmsPushButton ui:field="m_uploadButton"></cms:CmsPushButton>
-		</g:HorizontalPanel>
+		<g:FlowPanel addStyleNames="{style.bottomButtonBox}">
+			<cms:CmsPushButton  ui:field="m_deleteButton"></cms:CmsPushButton>
+			<cms:CmsPushButton  ui:field="m_downloadButton"></cms:CmsPushButton>
+			<cms:CmsPushButton ui:field="m_uploadButton"></cms:CmsPushButton>
+		</g:FlowPanel>
 		<g:FlowPanel addStyleNames="{style.invisible}">
 			<cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton>	
 			<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton>

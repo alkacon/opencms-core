@@ -139,6 +139,7 @@ public class CmsAliasView extends Composite {
         m_cancelButton.setText(messageButtonCancel());
         m_cancelButton.setUseMinWidth(true);
         m_deleteButton.setText(messageButtonDelete());
+        m_deleteButton.setEnabled(false);
         m_downloadButton.setText(messageButtonDownload());
         m_uploadButton.setText(messageButtonUpload());
         m_newButton.setSize(Size.big);

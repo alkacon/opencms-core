@@ -174,6 +174,29 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageContextMenuEditAliases() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_CONTEXT_MENU_EDIT_0);
+
+        //return "Edit aliases";
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageEditAliasesNotPermitted() {
+
+        return Messages.get().key(Messages.GUI_ALIAS_EDITING_NOT_PERMITTED_0);
+
+    }
+
+    /**
+     * Message accessor.<p>
      *  
      * @return the message text 
      */

@@ -29,12 +29,13 @@ package org.opencms.db;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsRole;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -130,6 +131,19 @@ public class CmsAliasManager {
             }
         });
         return aliases;
+    }
+
+    public boolean hasPermissionsForMassEdit(CmsObject cms, String siteRoot) throws CmsException {
+
+        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot(siteRoot);
+            CmsResource siteRootRes = cms.readResource("/");
+            return cms.hasPermissions(siteRootRes, CmsPermissionSet.ACCESS_CONTROL, false, CmsResourceFilter.DEFAULT);
+        } finally {
+            cms.getRequestContext().setSiteRoot(originalSiteRoot);
+        }
+
     }
 
     /**
@@ -281,7 +295,14 @@ public class CmsAliasManager {
 
     protected void checkPermissionsForMassEdit(CmsObject cms) throws CmsException {
 
-        m_securityManager.checkRole(cms.getRequestContext(), CmsRole.VFS_MANAGER);
+        // read site root folder and check if we have control permissions on it  
+        CmsResource siteRootRes = cms.readResource("/");
+        m_securityManager.checkPermissions(
+            cms.getRequestContext(),
+            siteRootRes,
+            CmsPermissionSet.ACCESS_CONTROL,
+            false,
+            CmsResourceFilter.DEFAULT);
     }
 
     protected CmsAliasImportResult processAliasImport(

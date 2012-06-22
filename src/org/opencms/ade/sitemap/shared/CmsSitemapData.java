@@ -52,6 +52,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The list of property names. */
     private List<String> m_allPropertyNames;
 
+    /** Flag to indicate whether the user can open the alias editor. */
+    private boolean m_canEditAliases;
+
     /** Flag to indicate whether detail pages can be edited. */
     private boolean m_canEditDetailPages;
 
@@ -176,7 +179,8 @@ public class CmsSitemapData implements IsSerializable {
         List<CmsNewResourceInfo> resourceTypeInfos,
         String returnCode,
         boolean canEditDetailPages,
-        String aliasImportUrl) {
+        String aliasImportUrl,
+        boolean canEditAliases) {
 
         m_templates = templates;
         m_properties = properties;
@@ -201,6 +205,13 @@ public class CmsSitemapData implements IsSerializable {
         m_newRedirectElementInfo = newRedirectElementInfo;
         m_newNavigatioLevelElementInfo = newNavigationLevelElementInfo;
         m_aliasImportUrl = aliasImportUrl;
+        m_canEditAliases = canEditAliases;
+    }
+
+    public boolean canEditAliases() {
+
+        return m_canEditAliases;
+
     }
 
     /**

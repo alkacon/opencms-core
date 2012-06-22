@@ -34,6 +34,8 @@ import org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
@@ -50,6 +52,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -88,7 +91,11 @@ public class CmsImportView extends Composite {
 
     /** The panel containing the results of the server-side import operation. */
     @UiField
-    protected FlowPanel m_results;
+    protected CmsImportResultList m_results;
+
+    /** The scroll panel containing the import results. */
+    @UiField
+    protected CmsScrollPanel m_scrollPanel;
 
     /** The button used to submit the file which should be imported to the server. */
     @UiField
@@ -137,6 +144,9 @@ public class CmsImportView extends Composite {
         m_formPanelContents.add(m_uploadButton);
         m_submitButton.setText(CmsAliasMessages.messageButtonSubmit());
         m_uploadButton.setText(CmsAliasMessages.messageButtonSelectFile());
+        m_uploadButton.setSize(I_CmsButton.Size.big);
+        m_submitButton.setSize(I_CmsButton.Size.big);
+
         m_submitButton.setEnabled(false);
         initializeForm();
     }
@@ -149,7 +159,7 @@ public class CmsImportView extends Composite {
         final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleImport());
         CmsImportView importView = new CmsImportView();
         popup.setMainContent(importView);
-        popup.setWidth(600);
+        popup.setWidth(800);
         popup.addDialogClose(null);
         popup.center();
     }
@@ -173,9 +183,8 @@ public class CmsImportView extends Composite {
      */
     protected void addImportError(String line, String error) {
 
-        Label label = new Label(line + " " + error);
-        label.getElement().getStyle().setColor("red");
-        m_results.add(label);
+        m_results.addRow(line, error, CmsImportResultList.RESOURCES.css().aliasImportError());
+
     }
 
     /**
@@ -185,9 +194,7 @@ public class CmsImportView extends Composite {
      */
     protected void addImportOK(String line) {
 
-        Label label = new Label(line + " OK");
-        label.getElement().getStyle().setColor("green");
-        m_results.add(label);
+        m_results.addRow(line, "OK", CmsImportResultList.RESOURCES.css().aliasImportOk());
     }
 
     /**
@@ -238,6 +245,15 @@ public class CmsImportView extends Composite {
 
                 String results = event.getResults();
                 handleImportResults(results);
+                Timer resizeTimer = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        m_scrollPanel.onResize();
+                    }
+                };
+                resizeTimer.schedule(100);
             }
 
         });

@@ -463,6 +463,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             cms.getRequestContext().getSiteRoot();
             String aliasImportUrl = OpenCms.getLinkManager().getServerLink(cms, ALIAS_IMPORT_PATH);
 
+            boolean canEditAliases = OpenCms.getAliasManager().hasPermissionsForMassEdit(cms, siteRoot);
+
             result = new CmsSitemapData(
                 (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
@@ -486,7 +488,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 resourceTypeInfos,
                 returnCode,
                 canEditDetailPages,
-                aliasImportUrl);
+                aliasImportUrl,
+                canEditAliases);
         } catch (Throwable e) {
             error(e);
         }

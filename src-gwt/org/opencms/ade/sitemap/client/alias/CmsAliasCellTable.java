@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.client.alias;
 
 import org.opencms.gwt.client.ui.css.I_CmsCellTableResources;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -109,6 +112,27 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
         setColumnWidth(modeCol, 200, Unit.PX);
         addColumn(errorCol, CmsAliasMessages.messageColumnError());
         setColumnWidth(errorCol, 200, Unit.PX);
+
+        // we need to update the scroll panel when the table is redrawn, but the redraw() method of the table is asynchronous,
+        // i.e. it only schedules an actual redraw. However, the method which is responsible for the actual redrawing triggers a 
+        // loading state event before it does the redrawing. Using a timer at this point, we can execute code after the redrawing
+        // has happend.
+        addLoadingStateChangeHandler(new LoadingStateChangeEvent.Handler() {
+
+            public void onLoadingStateChanged(LoadingStateChangeEvent event) {
+
+                Timer resizeTimer = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        CmsDomUtil.resizeAncestor(CmsAliasCellTable.this);
+                    }
+                };
+                resizeTimer.schedule(10);
+            }
+        });
+
         setWidth("100%");
     }
 
@@ -154,5 +178,4 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
         return (MultiSelectionModel<CmsAliasTableRow>)(super.getSelectionModel());
     }
-
 }
