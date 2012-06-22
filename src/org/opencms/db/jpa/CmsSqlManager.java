@@ -159,7 +159,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     private static final Log LOG = CmsLog.getLog(CmsSqlManager.class);
 
     /** The hashtable with all factories. You may have additional factories for OpenCms modules. */
-    private static Hashtable<String, EntityManagerFactory> m_factoryTable;
+    private static Hashtable<String, EntityManagerFactory> m_factoryTable = new Hashtable<String, EntityManagerFactory>();
 
     /** Contains the state of initialization of the static part of the class. */
     private static boolean m_isInitialized;
@@ -201,7 +201,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Create EntityManager instance for given unit name. If factory
-     * for this unit is not already created it creates it.<p>
+     * for this unit is not already created it creates one.<p>
      * 
      * @param unitName - the unit name in the persistence.xml file
      * @return EntityManager instance for given unit name
@@ -324,7 +324,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
             m_persistenceFactory = Persistence.createEntityManagerFactory(JPA_PERSISTENCE_UNIT, systemProps);
 
-            m_factoryTable = new Hashtable<String, EntityManagerFactory>();
             m_factoryTable.put(JPA_PERSISTENCE_UNIT, m_persistenceFactory);
             CmsPoolEntityManagerFactory entityMan = new CmsPoolEntityManagerFactory(m_persistenceFactory);
             int entityManagerPoolSize = config.getInteger(CmsDbPool.KEY_DATABASE_POOL
