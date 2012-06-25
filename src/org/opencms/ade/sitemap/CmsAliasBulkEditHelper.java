@@ -63,14 +63,22 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.google.common.collect.Sets;
 
+/**
+ * Helper class used by a service to edit or import aliases for a whole site.<p>
+ */
 public class CmsAliasBulkEditHelper {
 
+    /** The current CMS context. */
     private CmsObject m_cms;
 
-    private Set<CmsUUID> m_freshStructureIds = new HashSet<CmsUUID>();
-
+    /** Flag to indicate whether the validation was successful. */
     private boolean m_hasErrors;
 
+    /**
+     * Creates a new helper object.<p>
+     * 
+     * @param cms the current CMS context 
+     */
     public CmsAliasBulkEditHelper(CmsObject cms) {
 
         m_cms = cms;
@@ -113,6 +121,15 @@ public class CmsAliasBulkEditHelper {
         response.getWriter().print(obj.toString());
     }
 
+    /**
+     * Saves alias changes to the database.<p>
+     * 
+     * @param saveRequest an object containing the alias changes to save
+     * 
+     * @return a validation error if the alias data is invalid, or null otherwise
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public CmsAliasEditValidationReply saveAliases(CmsAliasSaveValidationRequest saveRequest) throws CmsException {
 
         CmsAliasEditValidationReply reply = validateAliases(saveRequest);
@@ -150,6 +167,13 @@ public class CmsAliasBulkEditHelper {
         }
     }
 
+    /**
+     * Validates the alias data.<p>
+     * 
+     * @param validationRequest an object containing the alias data to validate 
+     * 
+     * @return the validation result 
+     */
     public CmsAliasEditValidationReply validateAliases(CmsAliasEditValidationRequest validationRequest) {
 
         List<CmsAliasTableRow> editedData = validationRequest.getEditedData();
@@ -197,6 +221,14 @@ public class CmsAliasBulkEditHelper {
         return result;
     }
 
+    /**
+     * Filters all aliases from a set whose structure id is in a given set of structure ids.<p>
+     * 
+     * @param aliases the aliases to filter 
+     * @param structureIds the structure ids for which we want the aliases 
+     * 
+     * @return the filtered structure ids 
+     */
     protected Set<CmsAlias> filterStructureId(Set<CmsAlias> aliases, Set<CmsUUID> structureIds) {
 
         Set<CmsAlias> result = new HashSet<CmsAlias>();
@@ -245,6 +277,12 @@ public class CmsAliasBulkEditHelper {
 
     }
 
+    /**
+     * Validates a single alias row.<p>
+     * 
+     * @param cms the current CMS context  
+     * @param row the row to validate 
+     */
     private void validateSingleAliasRow(CmsObject cms, CmsAliasTableRow row) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -254,7 +292,6 @@ public class CmsAliasBulkEditHelper {
                 CmsResource resource = cms.readResource(path);
                 row.setStructureId(resource.getStructureId());
                 row.setOriginalStructureId(resource.getStructureId());
-                m_freshStructureIds.add(resource.getStructureId());
             } catch (CmsException e) {
                 row.setPathError(messageResourceNotFound(locale));
                 m_hasErrors = true;
