@@ -161,7 +161,7 @@ public class CmsImportView extends Composite {
         popup.setMainContent(importView);
         popup.setWidth(800);
         popup.addDialogClose(null);
-        popup.center();
+        popup.centerHorizontally(100);
     }
 
     /**
@@ -215,7 +215,7 @@ public class CmsImportView extends Composite {
         clearResults();
         JSONValue json = JSONParser.parseLenient(importResults);
         JSONObject jsonObj = (JSONObject)json;
-        JSONValue resultVal = jsonObj.get("result");
+        JSONValue resultVal = jsonObj.get(I_CmsAliasConstants.JSON_RESULT);
         JSONArray resultArray = (JSONArray)resultVal;
         List<CmsClientAliasImportResult> results = CmsClientAliasImportResult.parseArray(resultArray);
         for (CmsClientAliasImportResult singleResult : results) {

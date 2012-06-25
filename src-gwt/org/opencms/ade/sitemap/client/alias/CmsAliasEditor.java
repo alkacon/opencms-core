@@ -112,13 +112,13 @@ public class CmsAliasEditor {
             popup.addButton(button);
         }
         m_view.setPopup(popup);
-        popup.setWidth(1250);
+        popup.setWidth(1160);
         popup.addDialogClose(null);
         m_controller.load(new Runnable() {
 
             public void run() {
 
-                popup.centerHorizontally(100);
+                popup.centerHorizontally(80);
                 Scheduler.get().scheduleFixedDelay(updateCommand, STATUS_UPDATE_INTERVAL);
             }
         });
