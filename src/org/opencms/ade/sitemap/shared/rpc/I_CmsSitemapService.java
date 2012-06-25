@@ -143,6 +143,17 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsSitemapChange saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
 
     /**
+     * Updates the alias editor status.<p>
+     * 
+     * This is used to keep two users from editing the alias table for a site root concurrently.<p>
+     * 
+     * @param editing true to indicate that the table is still being edited, false to indicate that the table isn't being edited anymore
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void updateAliasEditorStatus(boolean editing) throws CmsRpcException;
+
+    /**
      * Validates the aliases for the bulk alias editor.<p>
      * 
      * @param validationRequest an object indicating the type of validation to perform 

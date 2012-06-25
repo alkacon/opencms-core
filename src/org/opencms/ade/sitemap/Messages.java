@@ -37,10 +37,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_ALIAS_DUPLICATE_ALIAS_PATH_0 = "ERR_ALIAS_DUPLICATE_ALIAS_PATH_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_ALIAS_INVALID_ALIAS_PATH_0 = "ERR_ALIAS_INVALID_ALIAS_PATH_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_ALIAS_RESOURCE_NOT_FOUND_0 = "ERR_ALIAS_RESOURCE_NOT_FOUND_0";
 
     /** Message constant for key in the resource bundle. */

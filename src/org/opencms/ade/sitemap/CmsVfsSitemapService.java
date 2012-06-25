@@ -188,6 +188,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /** The additional user info key for modified list. */
     private static final String ADDINFO_ADE_MODIFIED_LIST = "ADE_MODIFIED_LIST";
 
+    /** The lock table to prevent multiple users from editing the alias table concurrently. */
+    private static CmsAliasEditorLockTable aliasEditorLockTable = new CmsAliasEditorLockTable();
+
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsSitemapService.class);
 
@@ -287,6 +290,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 rows.add(row);
             }
             result.setRows(rows);
+            CmsUser otherLockOwner = aliasEditorLockTable.update(cms, cms.getRequestContext().getSiteRoot());
+            if (otherLockOwner != null) {
+                result.setAliasLockOwner(otherLockOwner.getName());
+            }
             result.setDownloadUrl(OpenCms.getLinkManager().getServerLink(
                 cms,
                 "/system/modules/org.opencms.ade.sitemap/pages/download-aliases.jsp"));
@@ -534,10 +541,22 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#updateAliasEditorStatus(boolean)
+     */
+    public void updateAliasEditorStatus(boolean editing) {
+
+        CmsObject cms = getCmsObject();
+        if (editing) {
+            aliasEditorLockTable.update(cms, cms.getRequestContext().getSiteRoot());
+        } else {
+            aliasEditorLockTable.clear(cms, cms.getRequestContext().getSiteRoot());
+        }
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#validateAliases(org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest)
      */
-    public CmsAliasEditValidationReply validateAliases(CmsAliasEditValidationRequest validationRequest)
-    throws CmsRpcException {
+    public CmsAliasEditValidationReply validateAliases(CmsAliasEditValidationRequest validationRequest) {
 
         CmsObject cms = getCmsObject();
         CmsAliasBulkEditHelper helper = new CmsAliasBulkEditHelper(cms);

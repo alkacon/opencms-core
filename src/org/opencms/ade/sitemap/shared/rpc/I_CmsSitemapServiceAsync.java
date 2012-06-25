@@ -104,7 +104,7 @@ public interface I_CmsSitemapServiceAsync {
 
     /**
      * Saves the aliases for the bulk alias editor.<p>
-     * 
+     *  
      * @param saveRequest the object containing the data to save
      * @param callback the asynchronous callback  
      */
@@ -119,6 +119,16 @@ public interface I_CmsSitemapServiceAsync {
      */
     @SynchronizedRpcRequest
     void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
+
+    /**
+     * Updates the alias editor status.<p>
+     * 
+     * This is used to keep two users from editing the alias table for a site root concurrently.<p>
+     * 
+     * @param editing true to indicate that the table is still being edited, false to indicate that the table isn't being edited anymore
+     * @param callback the asynchronous callback 
+     */
+    void updateAliasEditorStatus(boolean editing, AsyncCallback<Void> callback);
 
     /**
      * Validates the aliases for the bulk alias editor.<p>

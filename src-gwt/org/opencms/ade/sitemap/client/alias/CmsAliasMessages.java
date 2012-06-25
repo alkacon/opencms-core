@@ -45,6 +45,28 @@ public final class CmsAliasMessages {
     /**
      * Message accessor.<p>
      * 
+     * @param lockOwner the lock owner
+     * 
+     * @return the message text 
+     */
+    public static String messageAliasTableLocked(String lockOwner) {
+
+        return Messages.get().key(Messages.GUI_ALIASES_TABLE_LOCKED_1, lockOwner);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageAliasTableLockedTitle() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_TABLE_LOCKED_TITLE_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
      * @return the message text 
      */
     public static String messageButtonCancel() {

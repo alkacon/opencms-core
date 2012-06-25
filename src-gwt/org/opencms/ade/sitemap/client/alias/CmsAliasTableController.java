@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.client.alias;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
@@ -186,13 +187,24 @@ public class CmsAliasTableController {
             public void onResponse(CmsAliasInitialFetchResult aliasTable) {
 
                 stop(false);
-                m_downloadUrl = aliasTable.getDownloadUrl();
-                m_initialData = aliasTable.getRows();
-                m_siteRoot = CmsCoreProvider.get().getSiteRoot();
-                List<CmsAliasTableRow> copiedData = copyData(m_initialData);
-                m_view.setData(copiedData);
-                if (afterLoad != null) {
-                    afterLoad.run();
+
+                String lockOwner = aliasTable.getAliasTableLockOwner();
+                if (lockOwner != null) {
+
+                    String errorMessage = CmsAliasMessages.messageAliasTableLocked(lockOwner);
+                    String title = CmsAliasMessages.messageAliasTableLockedTitle();
+                    CmsAlertDialog alert = new CmsAlertDialog(title, errorMessage);
+                    alert.center();
+                } else {
+
+                    m_downloadUrl = aliasTable.getDownloadUrl();
+                    m_initialData = aliasTable.getRows();
+                    m_siteRoot = CmsCoreProvider.get().getSiteRoot();
+                    List<CmsAliasTableRow> copiedData = copyData(m_initialData);
+                    m_view.setData(copiedData);
+                    if (afterLoad != null) {
+                        afterLoad.run();
+                    }
                 }
             }
         };
@@ -245,6 +257,18 @@ public class CmsAliasTableController {
     }
 
     /**
+     * Enables or disables the save button of the view depending on whether there are validation errors.<p>
+     */
+    protected void updateSaveButton() {
+
+        boolean hasErrors = false;
+        for (CmsAliasTableRow row : m_view.getLiveData()) {
+            hasErrors |= row.hasErrors();
+        }
+        m_view.setSaveButtonEnabled(!hasErrors);
+    }
+
+    /**
      * Triggers server-side validatiom of the alias table.<p>
      */
     protected void validate() {
@@ -268,7 +292,7 @@ public class CmsAliasTableController {
                 stop(false);
                 List<CmsAliasTableRow> changedRows = result.getChangedRows();
                 m_view.update(changedRows);
-
+                updateSaveButton();
             }
 
         };
@@ -310,6 +334,7 @@ public class CmsAliasTableController {
                     tableRows.add(validatedNewEntry);
                 }
                 m_view.update(tableRows);
+                updateSaveButton();
             }
         };
         action.execute();

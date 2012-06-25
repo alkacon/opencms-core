@@ -47,6 +47,7 @@ import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -127,10 +128,10 @@ public class CmsAliasView extends Composite {
     public CmsAliasView(CmsAliasTableController controller) {
 
         initWidget(((UiBinder<Widget, CmsAliasView>)GWT.create(I_CmsAliasViewUiBinder.class)).createAndBindUi(this));
-        Map<String, String> items = new HashMap<String, String>();
+        Map<String, String> items = new LinkedHashMap<String, String>();
         items.put(CmsAliasMode.permanentRedirect.toString(), messagePermanentRedirect());
-        items.put(CmsAliasMode.page.toString(), messagePage());
         items.put(CmsAliasMode.redirect.toString(), messageRedirect());
+        items.put(CmsAliasMode.page.toString(), messagePage());
         m_newMode.setItems(items);
         m_controller = controller;
         m_newButton.setText(messageButtonNew());
@@ -259,6 +260,16 @@ public class CmsAliasView extends Composite {
     public void setPopup(CmsPopup popup) {
 
         m_popup = popup;
+    }
+
+    /**
+     * Enables or disables the save button.<p>
+     * 
+     * @param enabled true if the save button should be enabled, false if it should be disabled 
+     */
+    public void setSaveButtonEnabled(boolean enabled) {
+
+        m_saveButton.setEnabled(enabled);
     }
 
     /**

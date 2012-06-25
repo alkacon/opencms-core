@@ -30,6 +30,7 @@ package org.opencms.gwt.client;
 import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.css.I_CmsCellTableResources;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -106,7 +107,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         I_CmsImageBundle.INSTANCE.contextMenuIcons().ensureInjected();
 
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
-
+        I_CmsCellTableResources.INSTANCE.cellTableStyle().ensureInjected();
         initClasses();
     }
 

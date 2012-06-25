@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.alias;
 
+import org.opencms.gwt.client.ui.css.I_CmsCellTableResources;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
 import java.util.Comparator;
@@ -100,7 +101,9 @@ public class CmsAliasErrorColumn extends Column<CmsAliasTableRow, String> {
     public String getCellStyleNames(com.google.gwt.cell.client.Cell.Context context, CmsAliasTableRow object) {
 
         if ((object.getAliasError() != null) || (object.getPathError() != null)) {
-            return super.getCellStyleNames(context, object) + " cmsCellError";
+            return super.getCellStyleNames(context, object)
+                + " "
+                + I_CmsCellTableResources.INSTANCE.cellTableStyle().cmsCellError();
         } else {
             return super.getCellStyleNames(context, object);
         }

@@ -85,9 +85,9 @@ public class CmsAliasModeColumn extends Column<CmsAliasTableRow, String> {
     public static List<String> createOptions() {
 
         List<String> result = new ArrayList<String>();
-        for (CmsAliasMode mode : CmsAliasMode.values()) {
-            result.add(nameLookup.get(mode));
-        }
+        result.add(nameLookup.get(CmsAliasMode.permanentRedirect));
+        result.add(nameLookup.get(CmsAliasMode.redirect));
+        result.add(nameLookup.get(CmsAliasMode.page));
         return result;
     }
 

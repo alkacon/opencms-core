@@ -155,6 +155,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param returnCode return page code
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
      * @param aliasImportUrl the URL of the JSP used to import aliases 
+     * @param canEditAliases flag to indicate whether the current user can edit the alias table 
      */
     public CmsSitemapData(
         Map<String, CmsClientTemplateBean> templates,
@@ -208,6 +209,11 @@ public class CmsSitemapData implements IsSerializable {
         m_canEditAliases = canEditAliases;
     }
 
+    /**
+     * Checks whether the current user can edit the aliases.<p>
+     * 
+     * @return true if the current user can edit the aliases 
+     */
     public boolean canEditAliases() {
 
         return m_canEditAliases;

@@ -35,31 +35,71 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
+/**
+ * A widget used for displaying the results of an alias import operation.<p>
+ */
 public class CmsImportResultList extends Composite {
 
+    /** The CSS classes used for this widget.<p> */
     public static interface I_Css extends CssResource {
 
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         */
         String aliasImportError();
 
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         */
         String aliasImportOk();
 
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         */
         String aliasImportOverwrite();
 
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         */
         String rightLabel();
     }
 
+    /**
+     * The resource bundle used for this widget.<p>
+     */
     public static interface I_Resources extends ClientBundle {
 
+        /**
+         * CSS bundle accessor.<p>
+         * 
+         * @return the CSS bundle for this widget 
+         */
         @Source("resultlabel.css")
-        public I_Css css();
+        I_Css css();
     }
 
+    /**
+     * Static instance of the resource bundle for this widget.<p>
+     */
     public static final I_Resources RESOURCES = GWT.create(I_Resources.class);
 
+    /** The main panel containing the other parts of this widget.<p> */
     private FlowPanel m_root = new FlowPanel();
 
+    /** The table containing the messages for each single import operation. */
     private FlexTable m_table = new FlexTable();
 
+    /**
+     * Default constructor.<p>
+     */
     public CmsImportResultList() {
 
         m_root.add(m_table);
@@ -70,6 +110,13 @@ public class CmsImportResultList extends Composite {
         RESOURCES.css().ensureInjected();
     }
 
+    /**
+     * Adds a single line of the import result to the widget.<p>
+     * 
+     * @param leftText the text to display on the left
+     * @param rightText the text to display on the right 
+     * @param styleName the style which should be applied to the right text 
+     */
     public void addRow(String leftText, String rightText, String styleName) {
 
         ensureTable();
@@ -81,12 +128,18 @@ public class CmsImportResultList extends Composite {
         m_table.setWidget(row, 1, rightLabel);
     }
 
+    /**
+     * Clears the result list.<p>
+     */
     public void clear() {
 
         m_root.clear();
         m_table = null;
     }
 
+    /**
+     * Ensures that the table is present in the widget.<p>
+     */
     private void ensureTable() {
 
         if (m_table == null) {

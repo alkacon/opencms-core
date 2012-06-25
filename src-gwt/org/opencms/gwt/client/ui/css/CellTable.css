@@ -6,15 +6,17 @@
   
 }
 
-@external .cmsRowErrors; 
-@external .cmsCellError; 
+.cmsRowErrors {
+	
+} 
 
 .cmsCellError, .cmsCellError * {
-	background-color: orange !important;
+	background-color: value("constants.css.backgroundColorInputError") !important; 
+	
 }
 
 td.cmsCellError {
-	border: 1px solid red !important; 
+		border: 1px solid value("constants.css.borderColorHighlight") !important;
 }
 
 .cellTableLastColumn {

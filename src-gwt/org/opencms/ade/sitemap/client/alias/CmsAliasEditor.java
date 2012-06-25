@@ -27,13 +27,27 @@
 
 package org.opencms.ade.sitemap.client.alias;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The alias editor.<p>
  */
 public class CmsAliasEditor {
+
+    /** The interval used for upating the editing status on the server. */
+    public static final int STATUS_UPDATE_INTERVAL = 10000;
+
+    /** Flag to indicate that the alias editor is not being used anymore. */
+    boolean m_finished;
 
     /** The controller. */
     private CmsAliasTableController m_controller;
@@ -52,12 +66,48 @@ public class CmsAliasEditor {
     }
 
     /**
+     * Checks whether the alias editor is finished.<p>
+     * 
+     * @return true if the alias editor is finished
+     */
+    public boolean isFinished() {
+
+        return m_finished;
+    }
+
+    /**
      * Opens the alias editor.<p>
+     * 
+     * In addition to displaying the alias editor, this also sets up a timer which regularly informs the server
+     * that the alias table for the current site is being edited by the current user. This timer is deactivated 
+     * when the dialog is closed.<p>
      */
     public void show() {
 
         final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleAliasEditor());
+
+        final RepeatingCommand updateCommand = new RepeatingCommand() {
+
+            public boolean execute() {
+
+                if (!isFinished() && popup.isVisible() && popup.isAttached()) {
+                    updateAliasEditorStatus(true);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+
         popup.setMainContent(m_view);
+        popup.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                setFinished(true);
+                updateAliasEditorStatus(false);
+            }
+        });
         for (CmsPushButton button : m_view.getButtonBar()) {
             popup.addButton(button);
         }
@@ -69,8 +119,43 @@ public class CmsAliasEditor {
             public void run() {
 
                 popup.centerHorizontally(100);
+                Scheduler.get().scheduleFixedDelay(updateCommand, STATUS_UPDATE_INTERVAL);
             }
         });
 
+    }
+
+    /**
+     * Sets the 'finished' flag.<p>
+     * 
+     * @param finished the new value of the 'finished' flag 
+     */
+    protected void setFinished(boolean finished) {
+
+        m_finished = finished;
+    }
+
+    /**
+     * Asynchronously updates the alias editor status.<p>
+     * 
+     * @param editing the status we want to set 
+     */
+    protected void updateAliasEditorStatus(boolean editing) {
+
+        CmsSitemapView.getInstance().getController().getService().updateAliasEditorStatus(
+            editing,
+            new AsyncCallback<Void>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // do nothing 
+                }
+
+                public void onSuccess(Void result) {
+
+                    // do nothing 
+                }
+
+            });
     }
 }

@@ -36,11 +36,26 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsAliasInitialFetchResult implements IsSerializable {
 
+    /** The alias lock owner name (null if the current user is lock owner). */
+    private String m_aliasLockOwner;
+
     /** The list of aliases. */
     private List<CmsAliasTableRow> m_aliasRows;
 
     /** The alias download URL. */
     private String m_downloadUrl;
+
+    /**
+     * Gets the alias lock owner.<p>
+     * 
+     * This will return null if the current user is the lock owner.<p>
+     * 
+     * @return the alias lock owner 
+     */
+    public String getAliasTableLockOwner() {
+
+        return m_aliasLockOwner;
+    }
 
     /**
      * Gets the alias download URL.<p>
@@ -60,6 +75,16 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
     public List<CmsAliasTableRow> getRows() {
 
         return m_aliasRows;
+    }
+
+    /**
+     * Sets the alias lock owner name.<p>
+     * 
+     * @param name the alias lock owner name 
+     */
+    public void setAliasLockOwner(String name) {
+
+        m_aliasLockOwner = name;
     }
 
     /**

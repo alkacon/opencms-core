@@ -27,15 +27,24 @@
 
 package org.opencms.gwt.client.ui.css;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
 
-public interface I_CmsCellTableResources extends CellTable.Resources {
+/**
+ * CSS bundle for GWT cell tables used from ADE.<p>
+ */
+public interface I_CmsCellTableCss extends CellTable.Style {
 
-    I_CmsCellTableResources INSTANCE = GWT.create(I_CmsCellTableResources.class);
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class 
+     */
+    String cmsCellError();
 
-    @Source("org/opencms/gwt/client/ui/css/CellTable.css")
-    I_CmsCellTableCss cellTableStyle();
-
-    I_CmsConstantsBundle constants();
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class 
+     */
+    String cmsRowErrors();
 }
