@@ -95,6 +95,7 @@ public class CmsAliasTableController {
         // prevent selection model from going out of synch 
         m_view.getTable().getSelectionModel().clear();
         liveData.removeAll(rowsToDelete);
+        updateValidationStatus();
     }
 
     /**
