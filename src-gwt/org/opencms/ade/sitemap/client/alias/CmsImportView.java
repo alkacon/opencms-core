@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.client.alias;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.client.alias.CmsImportResultList.I_Css;
 import org.opencms.ade.sitemap.shared.I_CmsAliasConstants;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler;
@@ -38,7 +39,6 @@ import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
-import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
 
 import java.util.List;
 
@@ -176,25 +176,27 @@ public class CmsImportView extends Composite {
     }
 
     /**
-     * Adds an import error to the display.<p>
+     * Adds an import result to the displayed list of import results.<p>
      * 
-     * @param line the CSV line 
-     * @param error the import error 
+     * @param result the result to add 
      */
-    protected void addImportError(String line, String error) {
+    protected void addImportResult(CmsClientAliasImportResult result) {
 
-        m_results.addRow(line, error, CmsImportResultList.RESOURCES.css().aliasImportError());
-
-    }
-
-    /**
-     * Adds a successful import message to the display.<p>
-     * 
-     * @param line the CSV line 
-     */
-    protected void addImportOK(String line) {
-
-        m_results.addRow(line, "OK", CmsImportResultList.RESOURCES.css().aliasImportOk());
+        String cssClass;
+        I_Css css = CmsImportResultList.RESOURCES.css();
+        switch (result.getStatus()) {
+            case aliasChanged:
+                cssClass = css.aliasImportOverwrite();
+                break;
+            case aliasError:
+                cssClass = css.aliasImportError();
+                break;
+            case aliasNew:
+            default:
+                cssClass = css.aliasImportOk();
+                break;
+        }
+        m_results.addRow(result.getLine(), result.getMessage(), cssClass);
     }
 
     /**
@@ -219,11 +221,7 @@ public class CmsImportView extends Composite {
         JSONArray resultArray = (JSONArray)resultVal;
         List<CmsClientAliasImportResult> results = CmsClientAliasImportResult.parseArray(resultArray);
         for (CmsClientAliasImportResult singleResult : results) {
-            if (singleResult.getStatus() == CmsAliasImportStatus.aliasError) {
-                addImportError(singleResult.getLine(), singleResult.getError());
-            } else {
-                addImportOK(singleResult.getLine());
-            }
+            addImportResult(singleResult);
         }
     }
 

@@ -79,6 +79,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ALIAS_IMPORT_OK_0 = "ERR_ALIAS_IMPORT_OK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ALIAS_IMPORT_UPDATED_0 = "ERR_ALIAS_IMPORT_UPDATED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_OU_DESCRIPTION_EMPTY_0 = "ERR_BAD_OU_DESCRIPTION_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */

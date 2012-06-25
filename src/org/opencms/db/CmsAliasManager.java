@@ -216,7 +216,7 @@ public class CmsAliasManager {
             CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
             m_securityManager.addAlias(cms.getRequestContext(), newAlias);
             touch(cms, resource);
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasChanged, messageImportOk(locale));
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasChanged, messageImportUpdate(locale));
         }
     }
 
@@ -470,8 +470,12 @@ public class CmsAliasManager {
      */
     private String messageImportOk(Locale locale) {
 
-        //return "OK";
         return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_OK_0);
+    }
+
+    private String messageImportUpdate(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_UPDATED_0);
     }
 
     /**

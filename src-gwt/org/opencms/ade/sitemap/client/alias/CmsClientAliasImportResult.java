@@ -46,11 +46,11 @@ import com.google.gwt.json.client.JSONValue;
  */
 public class CmsClientAliasImportResult {
 
-    /** The alias import message. */
-    private String m_error;
-
     /** The file line from which the alias to import has been read. */
     private String m_line;
+
+    /** The alias import message. */
+    private String m_message;
 
     /** The alias import status. */
     private CmsAliasImportStatus m_status;
@@ -60,13 +60,13 @@ public class CmsClientAliasImportResult {
      * 
      * @param line the CSV line containing the alias 
      * @param status the import status 
-     * @param error the import message 
+     * @param message the import message 
      */
-    public CmsClientAliasImportResult(String line, CmsAliasImportStatus status, String error) {
+    public CmsClientAliasImportResult(String line, CmsAliasImportStatus status, String message) {
 
         m_status = status;
         m_line = line;
-        m_error = error;
+        m_message = message;
     }
 
     /**
@@ -79,10 +79,10 @@ public class CmsClientAliasImportResult {
     public static CmsClientAliasImportResult parse(JSONObject json) {
 
         String line = getString(json, JSON_LINE);
-        String error = getString(json, JSON_MESSAGE);
+        String message = getString(json, JSON_MESSAGE);
         String statusStr = getString(json, JSON_STATUS);
         CmsAliasImportStatus status = CmsAliasImportStatus.valueOf(statusStr);
-        return new CmsClientAliasImportResult(line, status, error);
+        return new CmsClientAliasImportResult(line, status, message);
     }
 
     /**
@@ -123,16 +123,6 @@ public class CmsClientAliasImportResult {
     }
 
     /**
-     * Gets the import message.<p>
-     * 
-     * @return the import message 
-     */
-    public String getError() {
-
-        return m_error;
-    }
-
-    /**
      * Gets the CSV line containing the alias.<p>
      * 
      * @return the CSV line 
@@ -140,6 +130,16 @@ public class CmsClientAliasImportResult {
     public String getLine() {
 
         return m_line;
+    }
+
+    /**
+     * Gets the import message.<p>
+     * 
+     * @return the import message 
+     */
+    public String getMessage() {
+
+        return m_message;
     }
 
     /**
