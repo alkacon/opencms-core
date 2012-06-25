@@ -158,9 +158,9 @@ public class CmsAliasBulkEditHelper {
                 editedAliasSet.add(editedAlias);
             }
             Set<CmsAlias> toDelete = Sets.difference(aliasSet, editedAliasSet);
-            //toDelete = filterStructureId(toDelete, allTouchedIds);
+            toDelete = filterStructureId(toDelete, allTouchedIds);
             Set<CmsAlias> toAdd = Sets.difference(editedAliasSet, aliasSet);
-            //toAdd = filterStructureId(toAdd, allTouchedIds);
+            toAdd = filterStructureId(toAdd, allTouchedIds);
 
             aliasManager.updateAliases(m_cms, toDelete, toAdd);
             return null;
@@ -291,7 +291,9 @@ public class CmsAliasBulkEditHelper {
             try {
                 CmsResource resource = cms.readResource(path);
                 row.setStructureId(resource.getStructureId());
-                row.setOriginalStructureId(resource.getStructureId());
+                if (row.getOriginalStructureId() == null) {
+                    row.setOriginalStructureId(resource.getStructureId());
+                }
             } catch (CmsException e) {
                 row.setPathError(messageResourceNotFound(locale));
                 m_hasErrors = true;

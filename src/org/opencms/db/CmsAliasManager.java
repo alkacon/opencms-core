@@ -33,7 +33,9 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
@@ -51,6 +53,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -58,6 +62,9 @@ import com.google.common.collect.Multimap;
  * The alias manager provides access to the aliases stored in the database.<p>
  */
 public class CmsAliasManager {
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAliasManager.class);
 
     /** The security manager for accessing the database. */
     protected CmsSecurityManager m_securityManager;
@@ -197,6 +204,7 @@ public class CmsAliasManager {
         if (maybeAlias.isEmpty()) {
             CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
             m_securityManager.addAlias(cms.getRequestContext(), newAlias);
+            touch(cms, resource);
             return new CmsAliasImportResult(CmsAliasImportStatus.aliasNew, messageImportOk(locale));
         } else {
             CmsAlias existingAlias = maybeAlias.get(0);
@@ -207,9 +215,9 @@ public class CmsAliasManager {
             m_securityManager.deleteAliases(cms.getRequestContext(), deleteFilter);
             CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
             m_securityManager.addAlias(cms.getRequestContext(), newAlias);
+            touch(cms, resource);
             return new CmsAliasImportResult(CmsAliasImportStatus.aliasChanged, messageImportOk(locale));
         }
-
     }
 
     /**
@@ -255,6 +263,7 @@ public class CmsAliasManager {
     throws CmsException {
 
         m_securityManager.saveAliases(cms.getRequestContext(), cms.readResource(structureId), aliases);
+        touch(cms, cms.readResource(structureId));
     }
 
     /**
@@ -285,17 +294,17 @@ public class CmsAliasManager {
             allKeys.add(alias.getStructureId());
         }
 
-        // Now update the aliases for each structure id...
-
+        // Do all the deletions first, so we don't run into duplicate key errors for the alias paths 
         for (CmsUUID structureId : allKeys) {
-            // Instead of deleting/adding the aliases individually, we load the current list of aliases, delete/add the entries from 
-            // it, and then save the list again   
-
             Set<CmsAlias> aliasesToSave = new HashSet<CmsAlias>(getAliasesForStructureId(cms, structureId));
             Collection<CmsAlias> toDeleteForId = toDeleteMap.get(structureId);
             if ((toDeleteForId != null) && !toDeleteForId.isEmpty()) {
                 aliasesToSave.removeAll(toDeleteForId);
             }
+            saveAliases(cms, structureId, new ArrayList<CmsAlias>(aliasesToSave));
+        }
+        for (CmsUUID structureId : allKeys) {
+            Set<CmsAlias> aliasesToSave = new HashSet<CmsAlias>(getAliasesForStructureId(cms, structureId));
             Collection<CmsAlias> toAddForId = toAddMap.get(structureId);
             if ((toAddForId != null) && !toAddForId.isEmpty()) {
                 aliasesToSave.addAll(toAddForId);
@@ -342,9 +351,8 @@ public class CmsAliasManager {
         String vfsPath,
         CmsAliasMode mode) {
 
-        CmsAliasManager manager = OpenCms.getAliasManager();
         try {
-            return manager.importAlias(cms, siteRoot, aliasPath, vfsPath, mode);
+            return importAlias(cms, siteRoot, aliasPath, vfsPath, mode);
         } catch (CmsException e) {
             return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, e.getLocalizedMessage());
         }
@@ -464,6 +472,32 @@ public class CmsAliasManager {
 
         //return "OK";
         return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_OK_0);
+    }
+
+    /**
+     * Tries to to touch a resource by setting its last modification date, but only if its state is 'unchanged'.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the resource which should be 'touched'. 
+     */
+    private void touch(CmsObject cms, CmsResource resource) {
+
+        if (resource.getState().isUnchanged()) {
+            try {
+                CmsLock lock = cms.getLock(resource);
+                if (lock.isUnlocked() || !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+                    cms.lockResourceTemporary(resource);
+                    long now = System.currentTimeMillis();
+                    resource.setDateLastModified(now);
+                    cms.writeResource(resource);
+                    if (lock.isUnlocked()) {
+                        cms.unlockResource(resource);
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.warn("Could not touch resource after alias modification: " + resource.getRootPath(), e);
+            }
+        }
     }
 
 }
