@@ -59,7 +59,7 @@ public class CmsAliasEditorLockTable {
      */
     public CmsAliasEditorLockTable() {
 
-        MapMaker mm = new MapMaker().expiration(TIMEOUT_INTERVAL, TimeUnit.MILLISECONDS);
+        MapMaker mm = new MapMaker().expireAfterWrite(TIMEOUT_INTERVAL, TimeUnit.MILLISECONDS);
         m_map = mm.makeMap();
     }
 
