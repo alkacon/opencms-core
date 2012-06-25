@@ -56,6 +56,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -270,6 +272,18 @@ public class CmsAliasView extends Composite {
     public void setSaveButtonEnabled(boolean enabled) {
 
         m_saveButton.setEnabled(enabled);
+    }
+
+    /** 
+     * Ensures that rows with errors will be placed at the top of the table.<p>
+     */
+    public void sortByErrors() {
+
+        ColumnSortList columnSort = m_table.getColumnSortList();
+        columnSort.clear();
+        columnSort.push(m_table.getErrorColumn());
+        columnSort.push(m_table.getErrorColumn());
+        ColumnSortEvent.fire(m_table, columnSort);
     }
 
     /**

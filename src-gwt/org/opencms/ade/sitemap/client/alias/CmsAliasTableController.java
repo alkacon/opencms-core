@@ -259,13 +259,16 @@ public class CmsAliasTableController {
     /**
      * Enables or disables the save button of the view depending on whether there are validation errors.<p>
      */
-    protected void updateSaveButton() {
+    protected void updateValidationStatus() {
 
         boolean hasErrors = false;
         for (CmsAliasTableRow row : m_view.getLiveData()) {
             hasErrors |= row.hasErrors();
         }
         m_view.setSaveButtonEnabled(!hasErrors);
+        if (hasErrors) {
+            m_view.sortByErrors();
+        }
     }
 
     /**
@@ -292,7 +295,7 @@ public class CmsAliasTableController {
                 stop(false);
                 List<CmsAliasTableRow> changedRows = result.getChangedRows();
                 m_view.update(changedRows);
-                updateSaveButton();
+                updateValidationStatus();
             }
 
         };
@@ -334,7 +337,7 @@ public class CmsAliasTableController {
                     tableRows.add(validatedNewEntry);
                 }
                 m_view.update(tableRows);
-                updateSaveButton();
+                updateValidationStatus();
             }
         };
         action.execute();

@@ -58,6 +58,9 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
     /** The data provider. */
     private ListDataProvider<CmsAliasTableRow> m_dataProvider;
 
+    /** The error column. */
+    private CmsAliasErrorColumn m_errorColumn;
+
     /**
      * Creates a new cell table with the given controller.<p>
      * 
@@ -81,7 +84,8 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
         Column<CmsAliasTableRow, String> aliasPathCol = new CmsAliasPathColumn(this);
         Column<CmsAliasTableRow, String> resourcePathCol = new CmsResourcePathColumn(this);
         Column<CmsAliasTableRow, String> modeCol = new CmsAliasModeColumn(this);
-        Column<CmsAliasTableRow, String> errorCol = new CmsAliasErrorColumn();
+        m_errorColumn = new CmsAliasErrorColumn();
+
         m_dataProvider = new ListDataProvider<CmsAliasTableRow>();
         m_dataProvider.addDataDisplay(this);
         ColumnSortEvent.ListHandler<CmsAliasTableRow> sortHandler = new ColumnSortEvent.ListHandler<CmsAliasTableRow>(
@@ -89,7 +93,7 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
         sortHandler.setComparator(aliasPathCol, CmsAliasPathColumn.getComparator());
         sortHandler.setComparator(resourcePathCol, CmsResourcePathColumn.getComparator());
         sortHandler.setComparator(modeCol, CmsAliasModeColumn.getComparator());
-        sortHandler.setComparator(errorCol, CmsAliasErrorColumn.getComparator());
+        sortHandler.setComparator(m_errorColumn, CmsAliasErrorColumn.getComparator());
         addColumnSortHandler(sortHandler);
 
         final MultiSelectionModel<CmsAliasTableRow> selectionModel = new MultiSelectionModel<CmsAliasTableRow>(
@@ -110,8 +114,8 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
         setColumnWidth(resourcePathCol, 350, Unit.PX);
         addColumn(modeCol, CmsAliasMessages.messageColumnMode());
         setColumnWidth(modeCol, 200, Unit.PX);
-        addColumn(errorCol, CmsAliasMessages.messageColumnError());
-        setColumnWidth(errorCol, 200, Unit.PX);
+        addColumn(m_errorColumn, CmsAliasMessages.messageColumnError());
+        setColumnWidth(m_errorColumn, 200, Unit.PX);
 
         // we need to update the scroll panel when the table is redrawn, but the redraw() method of the table is asynchronous,
         // i.e. it only schedules an actual redraw. However, the method which is responsible for the actual redrawing triggers a 
@@ -144,6 +148,16 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
     public CmsAliasTableController getController() {
 
         return m_controller;
+    }
+
+    /**
+     * Gets the error column.<p>
+     * 
+     * @return the error column 
+     */
+    public CmsAliasErrorColumn getErrorColumn() {
+
+        return m_errorColumn;
     }
 
     /**
