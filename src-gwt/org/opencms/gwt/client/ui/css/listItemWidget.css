@@ -193,24 +193,8 @@ li.dragging, div.dragging{
 	margin: 0px !important;
 	z-index: value("constants.css.zIndexDND") !important;
 }
-@if user.agent gecko1_8 gecko{
-	.dragging .itemContainer {
-		-moz-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
-	}
-} @elif user.agent safari {
-	.dragging .itemContainer {
-		-webkit-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
-	}
-} @elif user.agent opera ie9 {
-	.dragging .itemContainer {
+.dragging .itemContainer {
 		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
-	}
-} @elif user.agent ie6, ie8 {
-	/* no drop shadow as it might conflict with other filters */
-} @else {
-	.dragging .itemContainer {
-		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
-	}
 } 
 
 /** following classes have to be implemented but are not used within this CSS **/
