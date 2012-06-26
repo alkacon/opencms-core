@@ -33,6 +33,7 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 import com.alkacon.acacia.client.widgets.StringWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
 
@@ -59,7 +60,10 @@ public class CmsStringWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new StringWidget());
+        StringWidget stringWidget = new StringWidget();
+        stringWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().inputField());
+
+        return new FormWidgetWrapper(stringWidget);
     }
 
     /**
@@ -69,26 +73,4 @@ public class CmsStringWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
         return new StringWidget(element);
     }
-
-    /**
-     * @param configuration
-     * @return
-     */
-    public I_EditWidget createWidget(String configuration) {
-
-        // TODO: Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @param configuration
-     * @param element
-     * @return
-     */
-    public I_EditWidget wrapElement(String configuration, Element element) {
-
-        // TODO: Auto-generated method stub
-        return null;
-    }
-
 }

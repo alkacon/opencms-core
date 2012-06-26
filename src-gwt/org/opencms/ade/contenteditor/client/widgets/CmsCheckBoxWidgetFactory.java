@@ -28,9 +28,11 @@
 package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.I_WidgetFactory;
+import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
 
@@ -57,7 +59,9 @@ public class CmsCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormCheckboxWidgetWrapper(new CmsCheckboxWidget());
+        FormWidgetWrapper test = new FormWidgetWrapper(new CmsCheckboxWidget());
+        test.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().checkBoxStyle());
+        return test;
 
     }
 

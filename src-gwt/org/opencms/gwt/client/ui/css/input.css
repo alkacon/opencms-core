@@ -1,6 +1,5 @@
 @external transparentSelectBox, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
-.passwordBox, .multiSelectBox{}
 
 /* inner text box of the text box widget */
 input.textBox {

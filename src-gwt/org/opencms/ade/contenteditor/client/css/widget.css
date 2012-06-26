@@ -1,4 +1,4 @@
-@external transparentSelectBox, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 .radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -16,50 +16,101 @@
 	width: auto;
 }
 
-.selectBoxSelected {
+.attributeValue .selectBoxSelected {
+	border: 1px solid #7788AA  /*value("constants.css.borderColor")*/;
+}
+
+.selectBoxPopup {
 	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
 }
 
-.selectBoxSelector {
-	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
-}
+.inputField{}
 
 
-.radioButton {
+.radioButtonlabel {
   	font-weight: normal !important;
-  	font-size: 14px !important;
+  	font-size: 12px !important;
+  	color: #7788AA;
 }
 
-.checkBox{
+.radioButtonlabel.cmsState-down , .radioButtonlabel.cmsState-down-hovering{
+  	color: #000000;
+}
+.radioButtonlabel.cmsState-up-hovering{
+	color: #445577;
+}
+
+/** Checkbox styles*/
+
+.checkBoxStyle .label{
+	margin: 4px 3px 2px 20px;
+}
+.checkBoxStyle .widget{
+	position: absolute;
+}
+
+
+/** The "empty value" parameters. */
+
+
+.emptyValue .radioButtonPanel {
+	border: 1px solid #B1B4B8;
+}
+
+/** The "has error" parameters. */
+
+.hasError .selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField {
+	border: 1px solid value("constants.css.borderColorHighlight");
+}
+
+/** The "has warning" parameters. */
+
+.hasWarning .selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField {
+	border: 1px solid #FFAA00;
+}
+
+
+
+/** The entity parameters. */
+
+
+.entity .checkBoxStyle .widget{
+	top: 5px;
+}
+.entity .entity .checkBoxStyle .widget{
+	top: 6px;
+}
+.entity .entity .label{
+	margin-bottom: 5px;
+}
+
+.entity .entity .entity .checkBoxStyle .widget{
+	top: 3px;
+}
+
+.entity .entity .entity .entity .checkBoxStyle .widget{
+	top: 4px;
+}
+
+/** The "drag helper" parameters. */
+.dragHelper .checkBoxStyle .label{
+	margin: 4px 3px 2px 20px;
+}
+.dragHelper .checkBoxStyle .widget{
 	position: absolute;
 	top: 5px;
 }
 
-.checkBoxLable{
-	color: #7788AA;
-    cursor: default;
-	margin: 4px 3px 2px 21px;
-	font-size: 14px;
-    font-weight: bold;
+.dragHelper .radioButtonPanel {
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+    border-radius: value("constants.css.borderRadius");
+    border: 1px solid #7788AA /*value("constants.css.borderColor")*/;
+    display: block;
+    vertical-alignment: middle;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-top: 3px;
 }
-/** The empty value parameters. */
-.emptyValue .checkBoxLable{
-	color: #B1B4B8;
-	font-style: italic;
-}
-
-.emptyValue .radioButtonPanel {
-	background-color: value("constants.css.backgroundColorDialog");
-	border: 1px solid #B1B4B8;
-}
-
-/** The has error parameters. */
-.hasError .selectBoxSelected {
-	color: value("constants.css.textColorDisabled");
-	border: 1px solid red;
-}
-
-
 	
 .emptyValue{}
 
@@ -72,4 +123,9 @@
 .inActive{}
 
 .widgetHolder{}
+
+.entity{}
+
+.attributeValue{}
+
  

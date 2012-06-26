@@ -61,17 +61,20 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * */
 public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
+    /** The main panel of this widget. */
+    VerticalPanel m_panel = new VerticalPanel();
+
     /** Value of the activation. */
     private boolean m_active = true;
 
-    /** Value of the radio group. */
-    private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
-
-    /** Array of all radiobuttons. */
+    /** Array of all radio button. */
     private CmsRadioButton[] m_arrayRadioButtons;
 
-    /** The main panel of this widget. */
-    VerticalPanel m_panel = new VerticalPanel();
+    /** The default radio button set in xsd. */
+    private CmsRadioButton m_defaultCheckBox;
+
+    /** Value of the radio group. */
+    private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
 
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
@@ -79,15 +82,18 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public CmsRadioSelectWidget(String config) {
 
+        // generate a list of all radio button.
         List<CmsRadioButton> list = parseconfig(config);
+        // move the list to the array of all radio button.
         m_arrayRadioButtons = new CmsRadioButton[list.size()];
         list.toArray(m_arrayRadioButtons);
-
-        // Place the check above the text box using a vertical panel.
-
+        // add separate style to the panel.
         m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
+        // iterate about all radio button.
         for (int i = 0; i < m_arrayRadioButtons.length; i++) {
-            m_arrayRadioButtons[i].addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButton());
+            // add a separate style each radio button.
+            m_arrayRadioButtons[i].addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonlabel());
+            // add the radio button to the panel.
             m_panel.add(m_arrayRadioButtons[i]);
         }
         // All composites must call initWidget() in their constructors.
@@ -118,7 +124,14 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        ValueChangeEvent.fire(this, m_group.getSelectedButton().getName());
+        String result = "";
+        // check if there is a radio button selected.
+        if (m_group.getSelectedButton() != null) {
+            // set the name of the selected radio button.
+            result = m_group.getSelectedButton().getName();
+        }
+
+        ValueChangeEvent.fire(this, result);
     }
 
     /**
@@ -150,13 +163,28 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        // check if the value has changed. If there is no change do nothing.
         if (m_active == active) {
             return;
         }
+        // set the new value.
         m_active = active;
+        // Iterate about all radio button.
         for (int i = 0; i < m_arrayRadioButtons.length; i++) {
+            // set the radio button active / inactive.
             m_arrayRadioButtons[i].setEnabled(active);
+            // if this widget is set inactive.
+            if (!active) {
+                // deselect all radio button.
+                m_arrayRadioButtons[i].setChecked(active);
+            } else {
+                // select the default value if set.
+                if (m_defaultCheckBox != null) {
+                    m_defaultCheckBox.setChecked(active);
+                }
+            }
         }
+        // fire value change event.
         if (active) {
             fireChangeEvent();
         }
@@ -177,11 +205,14 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
+        // iterate about all the radio button.
         for (int i = 0; i < m_arrayRadioButtons.length; i++) {
             CmsRadioButton rb = m_arrayRadioButtons[i];
+            // if the value is the name of a radio button active it.
             if (rb.getName().equals(value)) {
                 m_group.selectButton(rb);
             }
+            // fire change event.
             if (fireEvents) {
                 fireChangeEvent();
             }
@@ -196,12 +227,15 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      * */
     private List<CmsRadioButton> parseconfig(String config) {
 
+        // generate an empty list off radio button.
         List<CmsRadioButton> result = new ArrayList<CmsRadioButton>();
-
+        // split the configuration string by using the separator "|". 
         String[] labels = config.split("\\|");
+        // iterate about all parts of the splitted configuration.
         for (int i = 0; i < labels.length; i++) {
-
+            // create a new radio button with the given name and label.
             CmsRadioButton radiobutton = new CmsRadioButton(labels[i], labels[i]);
+            // add click handler.
             radiobutton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -210,14 +244,21 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
                 }
             });
+            // add this radio button to the group
             radiobutton.setGroup(m_group);
+            // check if this value is default set.
             if (labels[i].indexOf("*") >= 0) {
+                // rename the radio button.
                 radiobutton.setName(labels[i].replace("*", ""));
                 radiobutton.setText(labels[i].replace("*", ""));
+                // set this radio button checked. 
                 radiobutton.setChecked(true);
+                m_defaultCheckBox = radiobutton;
             }
+            // add this radio button to the list.
             result.add(radiobutton);
         }
+        // return the list of radio button. 
         return result;
     }
 }

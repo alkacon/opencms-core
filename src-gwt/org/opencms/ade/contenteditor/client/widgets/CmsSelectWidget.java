@@ -136,8 +136,9 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
 
         // Place the check above the box using a vertical panel.
         m_selectBox.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        // add some styles to parts of the selectbox.
         m_selectBox.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_selectBox.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelector());
+        m_selectBox.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPopup());
         m_selectBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -208,18 +209,15 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        // check if value change. If not do nothing.
         if (m_active == active) {
             return;
         }
-
+        // set new value.
         m_active = active;
+        // set the new value to the selectbox.
         m_selectBox.setEnabled(active);
-        /* if (active) {
-             m_selectBox.setBorderColor("#7788AA");
-         } else {
-             m_selectBox.setBorderColor("#B1B4B8");
-         }*/
-
+        // fire change event if necessary.
         if (active) {
             fireChangeEvent();
         }
@@ -249,6 +247,8 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
 
     /**
      * Helper class for parsing the configuration in to a list for the combobox. <p>
+     * 
+     * @param config the configuration string
      * */
     private void parseconfig(String config) {
 

@@ -44,7 +44,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * */
 public class CmsCheckboxWidget extends Composite implements I_EditWidget {
 
+    /** The token to control activation. */
     private boolean m_active = true;
+
+    /** The checkbox of this widget. */
     private CmsCheckBox m_checkbox = new CmsCheckBox();
 
     /**
@@ -55,7 +58,7 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
 
         // Place the check above the text box using a vertical panel.
         VerticalPanel panel = new VerticalPanel();
-
+        // adds the checkbot to the panel. 
         panel.add(m_checkbox);
 
         // Set the check box's caption, and check it by default.
@@ -127,27 +130,19 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        // control if the value has not change do nothing.        
         if (m_active == active) {
             return;
         }
+        // set the new value.
         m_active = active;
+        // fire change event.
         if (active) {
             fireChangeEvent();
         }
+        // activate the checkbox.
         m_checkbox.setEnabled(active);
 
-    }
-
-    /**
-     * Sets the caption associated with the check box.<p>
-     * 
-     * @param caption the check box's caption
-     */
-    public void setCaption(String caption) {
-
-        // Note how we use the use composition of the contained widgets to provide
-        // only the methods that we want to.
-        m_checkbox.setText(caption);
     }
 
     /**

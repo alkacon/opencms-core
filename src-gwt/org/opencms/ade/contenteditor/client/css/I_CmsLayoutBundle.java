@@ -81,21 +81,14 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
-        String radioButton();
+        String radioButtonlabel();
 
         /**
          * Css class reader.<p>
          * 
          * @return the css class
          */
-        String checkBox();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String checkBoxLable();
+        String checkBoxStyle();
 
         /**
          * Css class reader.<p>
@@ -109,7 +102,14 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
-        String selectBoxSelector();
+        String selectBoxPopup();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String inputField();
 
     }
 
