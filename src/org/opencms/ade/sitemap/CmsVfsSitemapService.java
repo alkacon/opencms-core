@@ -176,6 +176,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
     }
 
+    /** The path of the JSP used to download aliases. */
+    public static final String ALIAS_DOWNLOAD_PATH = "/system/modules/org.opencms.ade.sitemap/pages/download-aliases.jsp";
+
     /** The path to the JSP used to upload aliases. */
     public static final String ALIAS_IMPORT_PATH = "/system/modules/org.opencms.ade.sitemap/pages/import-aliases.jsp";
 
@@ -294,9 +297,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             if (otherLockOwner != null) {
                 result.setAliasLockOwner(otherLockOwner.getName());
             }
-            result.setDownloadUrl(OpenCms.getLinkManager().getServerLink(
-                cms,
-                "/system/modules/org.opencms.ade.sitemap/pages/download-aliases.jsp"));
+            result.setDownloadUrl(OpenCms.getLinkManager().substituteLinkForRootPath(cms, ALIAS_DOWNLOAD_PATH));
             return result;
         } catch (Throwable e) {
             error(e);
@@ -468,8 +469,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<String> allPropNames = getPropertyNames(cms);
             String returnCode = getRequest().getParameter(CmsCoreData.PARAM_RETURNCODE);
             cms.getRequestContext().getSiteRoot();
-            String aliasImportUrl = OpenCms.getLinkManager().getServerLink(cms, ALIAS_IMPORT_PATH);
-
+            String aliasImportUrl = OpenCms.getLinkManager().substituteLinkForRootPath(cms, ALIAS_IMPORT_PATH);
             boolean canEditAliases = OpenCms.getAliasManager().hasPermissionsForMassEdit(cms, siteRoot);
 
             result = new CmsSitemapData(

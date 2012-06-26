@@ -33,6 +33,7 @@ import org.opencms.ade.sitemap.shared.I_CmsAliasConstants;
 import org.opencms.ade.upload.client.ui.CmsUploadButton;
 import org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
@@ -215,7 +216,13 @@ public class CmsImportView extends Composite {
     protected void handleImportResults(String importResults) {
 
         clearResults();
-        JSONValue json = JSONParser.parseLenient(importResults);
+        JSONValue json = null;
+        try {
+            json = JSONParser.parseLenient(importResults);
+        } catch (RuntimeException t) {
+            CmsLog.log("Could not parse alias import results: '" + importResults + "'");
+            throw t;
+        }
         JSONObject jsonObj = (JSONObject)json;
         JSONValue resultVal = jsonObj.get(I_CmsAliasConstants.JSON_RESULT);
         JSONArray resultArray = (JSONArray)resultVal;
