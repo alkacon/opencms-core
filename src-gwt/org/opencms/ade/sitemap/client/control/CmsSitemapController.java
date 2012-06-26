@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class CmsSitemapController implements I_CmsSitemapController {
 
     /** The name to use for new entries. */
-    public static final String NEW_ENTRY_NAME = "page";
+    public static final String NEW_ENTRY_NAME = Messages.get().key(Messages.GUI_NEW_ENTRY_NAME_0);
 
     /** A map of *all* detail page info beans, indexed by page id. */
     protected Map<CmsUUID, CmsDetailPageInfo> m_allDetailPageInfos = new HashMap<CmsUUID, CmsDetailPageInfo>();
@@ -366,6 +366,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 newEntry.setNew(true);
                 newEntry.setInNavigation(true);
                 newEntry.setResourceTypeName("folder");
+                newEntry.getOwnProperties().put(
+                    CmsClientProperty.PROPERTY_TITLE,
+                    new CmsClientProperty(CmsClientProperty.PROPERTY_TITLE, NEW_ENTRY_NAME, NEW_ENTRY_NAME));
                 create(newEntry, parent.getId(), structureId);
             }
         };

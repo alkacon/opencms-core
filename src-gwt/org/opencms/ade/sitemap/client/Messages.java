@@ -217,6 +217,9 @@ public final class Messages {
     public static final String GUI_NAVIGATION_LEVEL_UNKOWN_TARGET_0 = "GUI_NAVIGATION_LEVEL_UNKOWN_TARGET_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_ENTRY_NAME_0 = "GUI_NEW_ENTRY_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_ENTRY_TITLE_0 = "GUI_NEW_ENTRY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
