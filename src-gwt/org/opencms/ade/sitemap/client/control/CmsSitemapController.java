@@ -1274,12 +1274,17 @@ public class CmsSitemapController implements I_CmsSitemapController {
                         // inserting as last entry of the parent list
                         destParent.addSubEntry(moved, this);
                     }
+                    if (change.hasNewParent()) {
+                        cleanupOldPaths(oldSitepath, destParent.getSitePath());
+                    }
                 }
                 if (change.hasChangedName()) {
                     CmsClientSitemapEntry changed = getEntryById(change.getEntryId());
                     String oldSitepath = changed.getSitePath();
                     CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(oldSitepath));
-                    changed.updateSitePath(CmsStringUtil.joinPaths(parent.getSitePath(), change.getName()), this);
+                    String newSitepath = CmsStringUtil.joinPaths(parent.getSitePath(), change.getName());
+                    changed.updateSitePath(newSitepath, this);
+                    cleanupOldPaths(oldSitepath, newSitepath);
                 }
                 if (change.hasChangedProperties()) {
                     for (CmsPropertyModification modification : change.getPropertyChanges()) {
@@ -1301,6 +1306,27 @@ public class CmsSitemapController implements I_CmsSitemapController {
             recomputeProperties();
         }
         m_eventBus.fireEventFromSource(new CmsSitemapChangeEvent(change), this);
+    }
+
+    /**
+     * Cleans up wrong path references.<p>
+     * 
+     * @param oldSitepath the old sitepath
+     * @param newSitepath the new sitepath
+     */
+    private void cleanupOldPaths(String oldSitepath, String newSitepath) {
+
+        // use a separate list to avoid concurrent changes
+        List<CmsClientSitemapEntry> entries = new ArrayList<CmsClientSitemapEntry>(m_entriesById.values());
+        for (CmsClientSitemapEntry entry : entries) {
+            if (entry.getSitePath().startsWith(oldSitepath)) {
+                String currentPath = entry.getSitePath();
+                String updatedSitePath = CmsStringUtil.joinPaths(
+                    newSitepath,
+                    currentPath.substring(oldSitepath.length()));
+                entry.updateSitePath(updatedSitePath, this);
+            }
+        }
     }
 
     /**

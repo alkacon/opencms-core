@@ -36,6 +36,7 @@ import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -50,7 +51,7 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
     protected HandlerRegistration m_mouseDownHandlerReg;
 
     /** The current site path. */
-    protected String m_sitePath;
+    protected CmsUUID m_entryId;
 
     /**
      * Constructor.<p>
@@ -70,14 +71,14 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
              */
             public void onShow(CmsHoverbarShowEvent event) {
 
-                m_sitePath = hoverbar.getEntry().getSitePath();
+                m_entryId = hoverbar.getEntry().getId();
                 final CmsSitemapController controller = hoverbar.getController();
                 CmsClientSitemapEntry entry = hoverbar.getEntry();
                 if (CmsSitemapView.getInstance().isNavigationMode() && (entry != null)) {
 
                     if (!entry.isInNavigation()) {
                         CmsHoverbarMoveButton.this.setVisible(false);
-                    } else if (controller.isRoot(m_sitePath)) {
+                    } else if (controller.isRoot(hoverbar.getEntry().getSitePath())) {
                         disable(Messages.get().key(Messages.GUI_DISABLED_ROOT_ITEM_0));
                         CmsHoverbarMoveButton.this.setVisible(true);
                     } else if (entry.hasForeignFolderLock()) {
@@ -116,6 +117,6 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
      */
     public I_CmsDraggable getDraggable() {
 
-        return CmsSitemapView.getInstance().getTreeItem(m_sitePath);
+        return CmsSitemapView.getInstance().getTreeItem(m_entryId);
     }
 }
