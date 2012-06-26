@@ -88,30 +88,9 @@ div.optionBar div, div.optionBar span {
 	background-color: value("constants.css.backgroundColorSoft");
 }
 
-/** browser specific styles **/
-@if user.agent gecko1_8 gecko{
-	/** firefox **/
-	.toolbarSelection .optionBar.cmsHovering{
-		-moz-border-radius: 2px;
-	}
-
-} @elif user.agent safari {
-	/** chrome, safari etc. **/
-	.toolbarSelection .optionBar.cmsHovering{
-		-webkit-border-radius: 2px;
-	}
-} @elif user.agent opera ie9 {
-	/** opera, ie9 */
-	.toolbarSelection .optionBar.cmsHovering{
-		border-radius: 2px;
-	}
+.toolbarSelection .optionBar.cmsHovering{
+	border-radius: 2px;
 }
-
-
-
-
-
-
 
 .optionBar div.cmsState {
 	display: none;
@@ -123,8 +102,6 @@ div.optionBar div, div.optionBar span {
 
 .showButtons {
 } 
-
-
 
 @if user.agent ie6 {
 	.toolbarRemove .optionBar .toolbarRemove, 

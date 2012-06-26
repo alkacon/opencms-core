@@ -55,66 +55,21 @@
 	font-family: value("constants.css.fontFamily");
 }
 
-/** browser specific styles **/
-@if user.agent gecko1_8 gecko{
-	/** firefox **/
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-		-moz-border-radius-topright: value("constants.css.borderRadiusButton");
-		-moz-border-radius-bottomright: value("constants.css.borderRadiusButton");
-	}
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
-		-moz-border-radius-topleft: value("constants.css.borderRadiusButton");
-		-moz-border-radius-bottomleft: value("constants.css.borderRadiusButton");
-	}
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
-		-moz-border-radius: 8px;
-	}
-} @elif user.agent safari {
-	/** chrome, safari etc. **/
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-		-webkit-border-top-right-radius: value("constants.css.borderRadiusButton");
-		-webkit-border-bottom-right-radius: value("constants.css.borderRadiusButton");
-	}
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
-		-webkit-border-top-left-radius: value("constants.css.borderRadiusButton");
-		-webkit-border-bottom-left-radius: value("constants.css.borderRadiusButton");
-	}
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
-		-webkit-border-radius: 8px;
-	}
-} @elif user.agent opera ie9 {
-	/** opera, ie9 */
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-		border-top-right-radius: value("constants.css.borderRadiusButton");
-		border-bottom-right-radius: value("constants.css.borderRadiusButton");
-	}
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
-		border-top-left-radius: value("constants.css.borderRadiusButton");
-		border-bottom-left-radius: value("constants.css.borderRadiusButton");
-	}
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
-		border-radius: 8px;
-	}
-} @elif user.agent ie8 {
-	/** ie7, ie8 and the rest, add new @elif block if necessary **/
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-		border-top-right-radius: value("constants.css.borderRadiusButton");
-		border-bottom-right-radius: value("constants.css.borderRadiusButton");
-	}
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
-		border-top-left-radius: value("constants.css.borderRadiusButton");
-		border-bottom-left-radius: value("constants.css.borderRadiusButton");
-	}
-	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
-		border-radius: 8px;
-	}
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft{
+	border-top-left-radius: value("constants.css.borderRadiusButton");
+	border-bottom-left-radius: value("constants.css.borderRadiusButton");
 }
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
+	border-radius: 8px;
 }
+
 
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
 	border-color: value("constants.css.borderColor");
 	border-width: 1px 1px 1px 0px;
 	border-style: solid;
+	border-top-right-radius: value("constants.css.borderRadiusButton");
+	border-bottom-right-radius: value("constants.css.borderRadiusButton");
 }
 
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.borderAll, .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft {
@@ -237,27 +192,8 @@
 	position:relative;
 	cursor:pointer;
 	background-color: value("constants.css.backgroundColorStateStandard");
-}
-
-/** browser specific styles **/
-@if user.agent gecko1_8 gecko{
-	/** firefox **/
-	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
-		-moz-border-radius-topleft: value("constants.css.borderRadius");
-		-moz-border-radius-topright: value("constants.css.borderRadius");
-	}
-} @elif user.agent safari {
-	/** chrome, safari etc. **/
-	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
-		-webkit-border-top-left-radius: value("constants.css.borderRadius");
-		-webkit-border-top-right-radius: value("constants.css.borderRadius");
-	}
-} @else {
-	/** ie7, ie8, opera and the rest, add new @elif block if necessary **/
-	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab{
-		border-top-left-radius: value("constants.css.borderRadius");
-		border-top-right-radius: value("constants.css.borderRadius");
-	}
+	border-top-left-radius: value("constants.css.borderRadius");
+	border-top-right-radius: value("constants.css.borderRadius");
 }
 
 @sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	

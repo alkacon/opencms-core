@@ -1,28 +1,14 @@
 @external html-face;
 
 div.editorGallery {}
-@if user.agent gecko1_8 gecko{
+@if user.agent ie8 {
 	div.editorGallery{
-		-moz-box-shadow: none;
-		-moz-border-radius: 0;
+		-ms-filter: none;
 	}
-} @elif user.agent safari {
-	div.editorGallery{
-		-webkit-box-shadow: none;
-		-webkit-border-radius: 0;
-	}
-} @elif user.agent opera ie9 {
+} @else  {
 	div.editorGallery{
 		box-shadow: none;
 		border-radius: 0;
-	}
-} @elif user.agent ie8 {
-	div.editorGallery{
-		-ms-filter: none;
-		border-radius: 0; 
-	}
-} @elif user.agent ie6 {
-	div.editorGallery{
 	}
 }
 body.galleryBody, div.galleryBody {

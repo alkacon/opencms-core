@@ -51,23 +51,5 @@
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
 	background-color: value("constants.css.backgroundColorSoft");
-}
-
-/** browser specific styles **/
-@if user.agent gecko1_8 gecko{
-	/** firefox **/
-	.tilingList .tilingItem .cmsHovering .buttonPanel{
-		-moz-border-radius: 2px;
-	}
-
-} @elif user.agent safari {
-	/** chrome, safari etc. **/
-	.tilingList .tilingItem .cmsHovering .buttonPanel{
-		-webkit-border-radius: 2px;
-	}
-} @elif user.agent opera ie9 {
-	/** opera, ie9 */
-	.tilingList .tilingItem .cmsHovering .buttonPanel{
-		border-radius: 2px;
-	}
+	border-radius:2px;
 }

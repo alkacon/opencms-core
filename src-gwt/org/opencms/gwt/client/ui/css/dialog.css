@@ -76,36 +76,20 @@
 }
 
 /** browser specific styles **/
-@if user.agent gecko1_8 gecko{
-	.popupContent{
-		-moz-box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
-		-moz-border-radius: 12px;
+@if user.agent ie8 {
+	div.popupContent{
+		/** No shadow for IE7 and IE8. The necessary filter would prevent the use of other filters like opacity. */
+		
+		/** Ensure the proper background-color. */
+		background-color: value("constants.css.backgroundColorDialogBorder");
 	}
-	.popupMainContent, .caption{
-		-moz-border-radius: 8px;
-	}
-} @elif user.agent safari {
-	.popupContent{
-		-webkit-box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
-		-webkit-border-radius: 12px;
-	}
-	.popupMainContent, .caption{
-		-webkit-border-radius: 8px;
-	}
-} @elif user.agent opera ie9 {
+} @else {
 	.popupContent{
 		box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
 		border-radius: 12px;
 	}
 	.popupMainContent, .caption{
 		border-radius: 8px;
-	}
-} @elif user.agent ie6 ie8 {
-	div.popupContent{
-		/** No shadow for IE7 and IE8. The necessary filter would prevent the use of other filters like opacity. */
-		
-		/** Ensure the proper background-color. */
-		background-color: value("constants.css.backgroundColorDialogBorder");
 	}
 }
 

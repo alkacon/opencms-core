@@ -7,36 +7,11 @@
     height: 20px;
 }
 
-
-/** browser specific styles **/
-@if user.agent gecko1_8 gecko {
-	/** firefox **/
-	.meterWrap, .meterValue {
-		-moz-border-radius: 5px;
-	}
-} @elif user.agent safari {
-	/** chrome, safari etc. **/
-	.meterWrap, .meterValue {
-		-webkit-border-radius: 5px;
-	}
-} @elif user.agent opera ie9{
-	/** opera, ie9 */
-	.meterWrap, .meterValue {
-		border-radius: 5px;
-	}
-} @elif user.agent ie8 {
-	/** ie7, ie8 and the rest, add new @elif block if necessary **/
-	.meterWrap, .meterValue {
-		border-radius: 5px;
-	}
-} @else {
-	.meterWrap, .meterValue {}
-}
-
 @sprite .meterWrap, .meterValue {
 	gwt-image: "backgrounds.softBackground";
 	background-position: 50% 50%;
     background-repeat: repeat-x;
+    border-radius: 5px;
     height: 20px;
 }
 

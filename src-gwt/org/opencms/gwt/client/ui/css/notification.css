@@ -93,31 +93,14 @@ div.notificationMessage, span.notificationMessage {
 	border: none;
 }
 /** browser specific styles **/
-@if user.agent gecko1_8 gecko{
-	/** firefox **/
-	.blocking .notificationContainer .notificationMessage{
-		-moz-box-shadow: none;
-	}
-} @elif user.agent safari {
-	/** chrome, safari etc. **/
-	.blocking .notificationContainer .notificationMessage{
-		-webkit-box-shadow: none;
-	}
-} @elif user.agent opera ie9 {
-	/** opera, ie9 */
-	.blocking .notificationContainer .notificationMessage{
-		box-shadow: none;
-	}
-} @elif user.agent ie6 {
-	.blocking .notificationContainer .notificationMessage{
-		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		filter: none;
-	}
-} @elif user.agent ie8 {
+@if user.agent ie8 {
 	/** ie7, ie8 **/
 	.blocking .notificationContainer .notificationMessage{
-		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
 		-ms-filter: none; 
+	}
+} @else {
+	.blocking .notificationContainer .notificationMessage{
+		box-shadow: none;
 	}
 }
 

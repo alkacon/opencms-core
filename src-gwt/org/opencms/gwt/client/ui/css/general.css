@@ -108,51 +108,17 @@ div.toolTip.cornerAll, div.toolTip{
 .hideOverlay div.disablingOverlay{
 	background: transparent;
 }
-	
+.cornerAll, .buttonCornerAll, .cornerBottom, .cornerTop{}
 /** browser specific styles **/
-@if user.agent gecko1_8 gecko{
-	/** firefox **/
-	.cornerAll{
-		-moz-border-radius: value("constants.css.borderRadius");
-	}
-	.buttonCornerAll{
-		-moz-border-radius: value("constants.css.borderRadiusButton");
-	}
-	.cornerBottom{
-		-moz-border-radius-bottomleft: value("constants.css.borderRadius");
-		-moz-border-radius-bottomright: value("constants.css.borderRadius");
-	}
-	.cornerTop{
-		-moz-border-radius-topleft: value("constants.css.borderRadius");
-		-moz-border-radius-topright: value("constants.css.borderRadius");
+@if user.agent ie8 {
+	/** ie7, ie8 **/
+	.shadow{
+		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
+		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"; 
 	}
 	
-	.shadow{
-		-moz-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
-	}
-
-} @elif user.agent safari {
-	/** chrome, safari etc. **/
-	.cornerAll{
-		-webkit-border-radius: value("constants.css.borderRadius");
-	}
-	.buttonCornerAll{
-		-webkit-border-radius: value("constants.css.borderRadiusButton");
-	}
-	.cornerBottom{
-		-webkit-border-bottom-left-radius: value("constants.css.borderRadius");
-		-webkit-border-bottom-right-radius: value("constants.css.borderRadius");
-	}
-	.cornerTop{
-		-webkit-border-top-left-radius: value("constants.css.borderRadius");
-		-webkit-border-top-right-radius: value("constants.css.borderRadius");
-	}
-	
-	.shadow{
-		-webkit-box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
-	}
-} @elif user.agent opera ie9 {
-	/** opera, ie9 */
+} @else {
+	/** opera, ie9, firefox, chrome */
 	.cornerAll{
 		border-radius: value("constants.css.borderRadius");
 	}
@@ -171,39 +137,6 @@ div.toolTip.cornerAll, div.toolTip{
 	.shadow{
 		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 	}
-} @elif user.agent ie6 {
-
-	.shadow{
-		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		filter: literal("progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)");
-	}
-	.cornerAll, .buttonCornerAll, .cornerBottom, .cornerTop{} 
-
-} @elif user.agent ie8 {
-	/** ie7, ie8 **/
-	
-	.cornerAll{
-		border-radius: value("constants.css.borderRadius");
-	}
-	.buttonCornerAll{
-		border-radius: value("constants.css.borderRadiusButton");
-	}
-	.cornerBottom{
-		border-bottom-left-radius: value("constants.css.borderRadius");
-		border-bottom-right-radius: value("constants.css.borderRadius");
-	}
-	.cornerTop{
-		border-top-left-radius: value("constants.css.borderRadius");
-		border-top-right-radius: value("constants.css.borderRadius");
-	}
-	
-	.shadow{
-		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"; 
-	}
-	
-} @else {
-	 .cornerAll, .cornerBottom, .buttonCornerAll, .cornerTop, .shadow{}
 }
 
 .clearStyles, .clearStyles *{
