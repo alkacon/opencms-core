@@ -4,21 +4,7 @@
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: default;
-}
-/** browser specific styles **/
-@if user.agent gecko1_8 gecko{
-	.truncatingLabel{
-	
-	}
-} @elif user.agent opera {
-	.truncatingLabel{
-		-o-text-overflow: ellipsis;
-		text-overflow: ellipsis;
-	}
-} @else {
-	.truncatingLabel{
-		text-overflow: ellipsis;
-	}
+	text-overflow: ellipsis;
 }
 
 @if user.agent ie6 {

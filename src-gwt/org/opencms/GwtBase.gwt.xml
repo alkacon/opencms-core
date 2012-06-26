@@ -27,13 +27,14 @@
 
 	<set-property name="fileapi.support" value="no" />
 
-	<set-property name="fileapi.support" value="formdata,no" >
+	<set-property name="fileapi.support" value="formdata" >
 		<any>
 			<when-property-is name="user.agent" value="safari" />
+			<when-property-is name="user.agent" value="opera" />
 		</any>
 	</set-property>
 
-	<set-property name="fileapi.support" value="formdata,fileapi,no" >
+	<set-property name="fileapi.support" value="formdata,fileapi" >
 		<any>
 			<when-property-is name="user.agent" value="gecko1_8" />
 		</any>
@@ -70,14 +71,6 @@
         <any>
         	<when-property-is name="user.agent" value="ie9"/>
         </any>
-    </replace-with>
-    
-    <replace-with class="org.opencms.gwt.client.ui.input.impl.CmsLabelNonTextOverflowImpl">
-    	<when-type-assignable class="org.opencms.gwt.client.ui.input.CmsLabel" />
-    	<any>
-    		<when-property-is name="user.agent" value="gecko1_8" />
-    		<when-property-is name="user.agent" value="gecko" />
-    	</any>
     </replace-with>
     
     <replace-with class="org.opencms.gwt.client.util.impl.DOMImplIE">
