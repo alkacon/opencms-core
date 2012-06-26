@@ -45,13 +45,21 @@
 
 		 }
 		 
+		 
+@if user.agent ie6 { 
 		 .topNewButton {
-			margin-left: 10px; 
+			margin-left: 50px; 
 			width: 100px
 	      }
+} @else {
+		 .topNewButton {
+			margin-left: 10px; 
+			width: 100px;
+		 }
+}
 	      
 	      .tableContainer {
-				max-height: 700px;
+				max-height: 600px;
 				border: 1px solid gray; 
 			}
 			
