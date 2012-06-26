@@ -61,7 +61,7 @@ public class CmsToolbarRefreshButton extends CmsPushButton {
             public void onClick(ClickEvent event) {
 
                 toolbar.onButtonActivation(CmsToolbarRefreshButton.this);
-                controller.updateEntry(controller.getRootId());
+                controller.updateEntry(controller.getData().getRoot().getId());
             }
         });
     }

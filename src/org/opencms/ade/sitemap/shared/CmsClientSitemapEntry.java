@@ -187,11 +187,12 @@ public class CmsClientSitemapEntry implements IsSerializable {
     * Adds the given entry to the children.<p>
     * 
     * @param entry the entry to add
+    * @param controller a sitemap controller instance 
     */
-    public void addSubEntry(CmsClientSitemapEntry entry) {
+    public void addSubEntry(CmsClientSitemapEntry entry, I_CmsSitemapController controller) {
 
         entry.setPosition(m_subEntries.size());
-        entry.updateSitePath(CmsStringUtil.joinPaths(m_sitePath, entry.getName()));
+        entry.updateSitePath(CmsStringUtil.joinPaths(m_sitePath, entry.getName()), controller);
         entry.setFolderDefaultPage(entry.isLeafType() && getVfsPath().equals(entry.getVfsPath()));
         m_subEntries.add(entry);
     }
@@ -488,10 +489,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * 
      * @param entry the entry to insert
      * @param position the position
+     * @param controller a sitemap controller instance 
      */
-    public void insertSubEntry(CmsClientSitemapEntry entry, int position) {
+    public void insertSubEntry(CmsClientSitemapEntry entry, int position, I_CmsSitemapController controller) {
 
-        entry.updateSitePath(CmsStringUtil.joinPaths(m_sitePath, entry.getName()));
+        entry.updateSitePath(CmsStringUtil.joinPaths(m_sitePath, entry.getName()), controller);
         m_subEntries.add(position, entry);
         updatePositions(position);
     }
@@ -918,8 +920,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * Sets the children.<p>
      *
      * @param children the children to set
+     * @param controller a sitemap controller instance 
      */
-    public void setSubEntries(List<CmsClientSitemapEntry> children) {
+    public void setSubEntries(List<CmsClientSitemapEntry> children, I_CmsSitemapController controller) {
 
         m_childrenLoadedInitially = true;
 
@@ -927,7 +930,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         if (children != null) {
             m_subEntries.addAll(children);
             for (CmsClientSitemapEntry child : children) {
-                child.updateSitePath(CmsStringUtil.joinPaths(m_sitePath, child.getName()));
+                child.updateSitePath(CmsStringUtil.joinPaths(m_sitePath, child.getName()), controller);
             }
         }
     }
@@ -977,8 +980,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * Updates the entry's site path and the name accordingly.<p>
      * 
      * @param sitepath the new site path to set
+     * @param controller a sitemap controller instance 
      */
-    public void updateSitePath(String sitepath) {
+    public void updateSitePath(String sitepath, I_CmsSitemapController controller) {
 
         if (!isLeafType() && !sitepath.endsWith("/")) {
             sitepath = sitepath + "/";
@@ -991,6 +995,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
             if (isLeafType() && m_vfsPath.endsWith("/")) {
                 m_vfsPath = m_vfsPath.substring(0, m_vfsPath.length() - 1);
             }
+            String oldPath = m_sitePath;
             m_sitePath = sitepath;
             String name = CmsResource.getName(sitepath);
             if (name.endsWith("/")) {
@@ -998,7 +1003,10 @@ public class CmsClientSitemapEntry implements IsSerializable {
             }
             m_name = name;
             for (CmsClientSitemapEntry child : m_subEntries) {
-                child.updateSitePath(CmsStringUtil.joinPaths(sitepath, child.getName()));
+                child.updateSitePath(CmsStringUtil.joinPaths(sitepath, child.getName()), controller);
+            }
+            if (controller != null) {
+                controller.registerPathChange(this, oldPath);
             }
         }
     }

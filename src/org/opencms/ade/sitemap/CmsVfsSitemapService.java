@@ -322,7 +322,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             boolean isRoot = root.equals(entryPointUri);
             entry = toClientEntry(navElement, isRoot);
             if ((levels > 0) && (isRoot || (rootRes.isFolder() && (!isSubSitemap(navElement))))) {
-                entry.setSubEntries(getChildren(root, levels, null));
+                entry.setSubEntries(getChildren(root, levels, null), null);
             }
         } catch (Throwable e) {
             error(e);
@@ -1069,7 +1069,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 newEntry = toClientEntry(
                     getNavBuilder().getNavigationForResource(sitePath, CmsResourceFilter.ONLY_VISIBLE),
                     false);
-                newEntry.setSubEntries(getChildren(sitePath, 1, null));
+                newEntry.setSubEntries(getChildren(sitePath, 1, null), null);
                 newEntry.setChildrenLoadedInitially(true);
             }
             if (newRes != null) {
@@ -1355,7 +1355,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 }
                 if (child.isFolderType() && ((nextLevels > 1) || (nextLevels == -1)) && !isSubSitemap(navElement)) {
 
-                    child.setSubEntries(getChildren(child.getSitePath(), nextLevels - 1, targetPath));
+                    child.setSubEntries(getChildren(child.getSitePath(), nextLevels - 1, targetPath), null);
                     child.setChildrenLoadedInitially(true);
                 }
                 i++;
@@ -1662,7 +1662,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         if (result != null) {
             result.setPosition(0);
             result.setChildrenLoadedInitially(true);
-            result.setSubEntries(getChildren(sitePath, 2, targetPath));
+            result.setSubEntries(getChildren(sitePath, 2, targetPath), null);
         }
         return result;
     }
@@ -2169,7 +2169,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             parentPath,
             CmsResourceFilter.ONLY_VISIBLE);
         CmsClientSitemapEntry entry = toClientEntry(navElement, navElement.isInNavigation());
-        entry.setSubEntries(getChildren(parentPath, 2, null));
+        entry.setSubEntries(getChildren(parentPath, 2, null), null);
         change.setUpdatedEntry(entry);
         return change;
     }
