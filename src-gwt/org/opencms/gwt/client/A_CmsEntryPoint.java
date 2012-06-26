@@ -115,9 +115,11 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
      * Checks whether the build id of the server-side module is greater than the client-build id, and displays 
      * an error message if this is the case.<p>
      * 
-     * @param moduleName the name of the module for which the check should be performed 
+     * @param moduleName the name of the module for which the check should be performed
+     *  
+     * @return returns <code>true</code> if the check was successful 
      */
-    protected void checkBuildId(String moduleName) {
+    protected boolean checkBuildId(String moduleName) {
 
         Map<String, String> buildIds = CmsCoreProvider.get().getGwtBuildIds();
         String serverBuildId = buildIds.get(moduleName);
@@ -131,8 +133,10 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
                 String content = Messages.get().key(Messages.GUI_BUILD_ID_MESSAGE_CONTENT_0);
                 CmsAlertDialog alert = new CmsAlertDialog(title, content);
                 alert.center();
+                return false;
             }
         }
+        return true;
     }
 
     /**

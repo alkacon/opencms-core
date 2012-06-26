@@ -47,7 +47,9 @@ public class CmsGallery extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        checkBuildId("org.opencms.ade.galleries");
+        if (!checkBuildId("org.opencms.ade.galleries")) {
+            return;
+        }
         RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().galleryBody());
         // add the gallery dialog to dom
         RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID).add(CmsGalleryFactory.createDialog());

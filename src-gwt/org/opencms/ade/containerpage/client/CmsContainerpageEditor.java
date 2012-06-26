@@ -285,7 +285,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
-        checkBuildId("org.opencms.ade.containerpage");
+        if (!checkBuildId("org.opencms.ade.containerpage")) {
+            return;
+        }
         CmsPingTimer.start();
         JavaScriptObject window = CmsDomUtil.getWindow();
         CmsDomUtil.setAttribute(window, "__hideEditorCloseButton", "true");
@@ -466,18 +468,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     private native void exportStacktraceDialogMethod() /*-{
-      $wnd.__openStacktraceDialog = function(event) {
-         event = (event) ? event : ((window.event) ? window.event : "");
-         var elem = (event.target) ? event.target : event.srcElement;
-         if (elem != null) {
-            var children = elem.getElementsByTagName("span");
-            if (children.length > 0) {
-               var title = children[0].getAttribute("title");
-               var content = children[0].innerHTML;
-               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+        $wnd.__openStacktraceDialog = function(event) {
+            event = (event) ? event : ((window.event) ? window.event : "");
+            var elem = (event.target) ? event.target : event.srcElement;
+            if (elem != null) {
+                var children = elem.getElementsByTagName("span");
+                if (children.length > 0) {
+                    var title = children[0].getAttribute("title");
+                    var content = children[0].innerHTML;
+                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                }
             }
-         }
-      }
+        }
     }-*/;
 
 }
