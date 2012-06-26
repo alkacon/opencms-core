@@ -7,6 +7,3 @@ cms.getRequestContext().setSiteRoot(site);
 String csv = helper.exportAliasesAsCsv(cms);
 out.println(csv);
 %>
-
-
-
