@@ -319,7 +319,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         Set<String> cssIncludes = new LinkedHashSet<String>();
         // add defaults
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
-            String[] defaults = m_defaults.split("|");
+            String[] defaults = m_defaults.split("\\|");
             for (int i = 0; i < defaults.length; i++) {
                 cssIncludes.add(defaults[i]);
             }
@@ -377,7 +377,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         Set<String> jsIncludes = new LinkedHashSet<String>();
         // add defaults
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
-            String[] defaults = m_defaults.split("|");
+            String[] defaults = m_defaults.split("\\|");
             for (int i = 0; i < defaults.length; i++) {
                 jsIncludes.add(defaults[i]);
             }
