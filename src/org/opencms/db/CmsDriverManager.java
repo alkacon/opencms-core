@@ -9034,7 +9034,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
         m_log.clear();
+
         m_projectDriver.log(dbc, log);
+        CmsLogToPublishListChangeConverter converter = new CmsLogToPublishListChangeConverter();
+        for (CmsLogEntry entry : log) {
+            converter.add(entry);
+        }
+        m_projectDriver.deleteUserPublishListEntries(dbc, converter.getPublishListDeletions());
+        m_projectDriver.writeUserPublishListEntries(dbc, converter.getPublishListAdditions());
     }
 
     /**

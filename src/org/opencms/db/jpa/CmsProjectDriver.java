@@ -62,6 +62,7 @@ import org.opencms.db.jpa.utils.I_CmsQueryParameter;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogEntryType;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.userpublishlist.CmsUserPublishListEntry;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -3420,5 +3421,19 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         internalWriteHistory(dbc, offlineFile, resourceState, offlineProperties, publishHistoryId, publishTag);
 
         m_driverManager.getVfsDriver(dbc).updateRelations(dbc, onlineProject, offlineResource);
+    }
+
+    public void deleteUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListDeletions)
+    throws CmsDbSqlException {
+
+        // TODO: Auto-generated method stub
+
+    }
+
+    public void writeUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListAdditions)
+    throws CmsDbSqlException {
+
+        // TODO: Auto-generated method stub
+
     }
 }

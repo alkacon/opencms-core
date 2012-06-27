@@ -29,6 +29,7 @@ package org.opencms.db;
 
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.userpublishlist.CmsUserPublishListEntry;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -706,4 +707,24 @@ public interface I_CmsProjectDriver {
         int linkType,
         String linkParameter,
         long timestamp) throws CmsDataAccessException;
+
+    /**
+     * Deletes multiple publish list entries from the database.<p>
+     * 
+     * @param dbc the current database context 
+     * @param publishListDeletions the publish list entries to remove from the database  
+     * @throws CmsDbSqlException if something goes wrong 
+     */
+    void deleteUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListDeletions)
+    throws CmsDbSqlException;
+
+    /**
+     * Writes multiple user publish list entries to the database.<p>
+     *  
+     * @param dbc the current database context 
+     * @param publishListAdditions the user publish list entries to write 
+     * @throws CmsDbSqlException if something goes wrong 
+     */
+    void writeUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListAdditions)
+    throws CmsDbSqlException;
 }
