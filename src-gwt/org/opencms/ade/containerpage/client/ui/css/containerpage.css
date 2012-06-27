@@ -3,6 +3,10 @@
 .toolbarAdd, .toolbarSitemap, .toolbarRefresh,
 .toolbarReset, .toolbarPublish, .toolbarClipboard,  .toolbarSave, .toolbarContext{}
 
+body.forceScrollbar{
+	overflow-y: scroll !important;
+}
+
 .menuTabContainer{
 	height: 486px;
 }

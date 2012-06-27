@@ -523,6 +523,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void showToolbar(boolean show) {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
+        if (show) {
+            RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().forceScrollbar());
+        } else {
+            RootPanel.getBodyElement().removeClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().forceScrollbar());
+        }
     }
 
     /**
