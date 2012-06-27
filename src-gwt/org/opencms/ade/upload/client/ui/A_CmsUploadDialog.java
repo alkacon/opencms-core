@@ -330,7 +330,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     private CmsUploadProgressInfo m_progressInfo;
 
     /** The scroll panel. */
-    private CmsScrollPanel m_scrollPanel;
+    protected CmsScrollPanel m_scrollPanel;
 
     /** Signals whether the selection is done or not. */
     private boolean m_selectionDone;

@@ -66,7 +66,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
     throws SerializationException {
 
         super();
-        addUploadZone(getContentWrapper().getElement(), this);
+        addUploadZone(m_scrollPanel.getElement(), this);
     }
 
     /**
@@ -187,7 +187,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
             m_dragAndDropMessage.removeFromParent();
             m_dragAndDropMessage = null;
             m_normalColor = I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog();
-            getContentWrapper().getElement().getStyle().setBackgroundColor(m_normalColor);
+            m_scrollPanel.getElement().getStyle().setBackgroundColor(m_normalColor);
             onResize();
         }
     }
@@ -205,7 +205,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         }
         getContentWrapper().add(m_dragAndDropMessage);
         m_normalColor = I_CmsConstantsBundle.INSTANCE.css().notificationNormalBg();
-        getContentWrapper().getElement().getStyle().setBackgroundColor(m_normalColor);
+        m_scrollPanel.getElement().getStyle().setBackgroundColor(m_normalColor);
         onResize();
     }
 
