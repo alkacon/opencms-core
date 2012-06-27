@@ -267,6 +267,13 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String comboBoxOpener();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String selectBoxRoot();
 
     /**

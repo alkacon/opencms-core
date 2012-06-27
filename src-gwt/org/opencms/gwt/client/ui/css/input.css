@@ -170,6 +170,7 @@ input.textBoxReadOnly {
 .selectBoxRoot.selectBoxDisabled .selectBoxSelected{
 	background-color: value("constants.css.backgroundColorStateDisabled");
 	color: value("constants.css.textColorDisabled");
+	border-color: value("constants.css.textColorDisabled");
 }
 .selectBoxRoot.selectBoxDisabled .selectBoxSelected *{
 	color: value("constants.css.textColorDisabled");
@@ -257,7 +258,7 @@ div.selectHover, div.selectorPopup div.selectBoxSelector div.selectBoxCell.selec
 .selectIcon { 
 	position: absolute;
 	right: 0;
-	top: 3px;
+	top: 2px;
 }
 
 .selectBoxRoot {
@@ -268,7 +269,25 @@ div.selectHover, div.selectorPopup div.selectBoxSelector div.selectBoxCell.selec
 }
 
 div.selectBoxOpener {
-	margin: 3px 12px 3px 5px;
+	margin: 2px 12px 2px 5px;
+}
+
+.selectBoxSelected .comboBoxOpener{
+	border: medium none;
+    color: value("constants.css.textColor");
+    cursor: pointer;
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+    height: 16px;
+    padding: 0px 5px 2px;
+    width: 100%;
+    box-shadow: none;
+}
+
+input.comboBoxOpener:disabled{
+	background-color: #FFFFFF;
+	color: value("constants.css.textColorDisabled");
+	border: value("constants.css.textColorDisabled");
 }
 
 .openerNoHover {}
