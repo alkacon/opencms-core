@@ -555,6 +555,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             openItemsOnPath(openPath);
             m_openHandler.setInitializing(false);
         }
+        page.remove(loadingLabel);
     }
 
     /**
