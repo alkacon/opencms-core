@@ -37,7 +37,6 @@
 	<set-property name="fileapi.support" value="formdata,fileapi" >
 		<any>
 			<when-property-is name="user.agent" value="gecko1_8" />
-			<when-property-is name="user.agent" value="opera" />
 		</any>
 	</set-property>
 
