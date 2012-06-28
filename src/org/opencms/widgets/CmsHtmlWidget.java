@@ -27,15 +27,26 @@
 
 package org.opencms.widgets;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.CmsEditorDisplayOptions;
+import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -80,6 +91,14 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     public CmsHtmlWidget(String configuration) {
 
         super(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(CmsObject cms, CmsResource resource) {
+
+        return getJSONConfiguration(cms, resource).toString();
     }
 
     /**
@@ -175,6 +194,84 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             String val = CmsEncoder.decode(values[0], CmsEncoder.ENCODING_UTF_8);
             param.setStringValue(cms, val);
         }
+    }
+
+    /**
+     * Returns the WYSIWYG editor configuration as a JSON object.<p>
+     * 
+     * @param cms the OpenCms context
+     * @param resource the edited resource
+     * 
+     * @return the configuration
+     */
+    protected JSONObject getJSONConfiguration(CmsObject cms, CmsResource resource) {
+
+        JSONObject result = new JSONObject();
+
+        CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
+        Properties displayOptions = options.getDisplayOptions(cms);
+        try {
+            if (options.showElement("gallery.enhancedoptions", displayOptions)) {
+                result.put("cmsGalleryEnhancedOptions", true);
+            }
+            if (options.showElement("gallery.usethickbox", displayOptions)) {
+                result.put("cmsGalleryUseThickbox", true);
+            }
+            result.put("fullpage", getHtmlWidgetOption().isFullPage());
+            List<String> toolbarItems = getHtmlWidgetOption().getButtonBarShownItems();
+            result.put("toolbar_items", toolbarItems);
+            result.put("language", OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage());
+            // set CSS style sheet for current editor widget if configured
+            boolean cssConfigured = false;
+            String cssPath = "";
+            if (getHtmlWidgetOption().useCss()) {
+                cssPath = getHtmlWidgetOption().getCssPath();
+                // set the CSS path to null (the created configuration String passed to JS will not include this path then)
+                getHtmlWidgetOption().setCssPath(null);
+                cssConfigured = true;
+            } else if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
+                Iterator<I_CmsEditorCssHandler> i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
+                try {
+                    String editedResourceSitePath = resource == null ? null : cms.getSitePath(resource);
+                    while (i.hasNext()) {
+                        I_CmsEditorCssHandler handler = i.next();
+                        if (handler.matches(cms, editedResourceSitePath)) {
+                            cssPath = handler.getUriStyleSheet(cms, editedResourceSitePath);
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cssPath)) {
+                                cssConfigured = true;
+                            }
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    // ignore, CSS could not be set
+                }
+            }
+            if (cssConfigured) {
+                result.put("content_css", OpenCms.getLinkManager().substituteLink(cms, cssPath));
+            }
+
+            if (getHtmlWidgetOption().showStylesFormat()) {
+                try {
+                    CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath());
+                    String characterEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                    result.put("style_formats", new String(file.getContents(), characterEncoding));
+                } catch (CmsException cmsException) {
+                    LOG.error("Can not open file:" + getHtmlWidgetOption().getStylesFormatPath(), cmsException);
+                } catch (UnsupportedEncodingException ex) {
+                    LOG.error(ex);
+                }
+            }
+            String formatSelectOptions = getHtmlWidgetOption().getFormatSelectOptions();
+            if (!CmsStringUtil.isEmpty(formatSelectOptions)
+                && !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
+                formatSelectOptions = StringUtils.replace(formatSelectOptions, ";", ",");
+                result.put("block_formats", formatSelectOptions);
+            }
+        } catch (JSONException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result;
     }
 
     /**

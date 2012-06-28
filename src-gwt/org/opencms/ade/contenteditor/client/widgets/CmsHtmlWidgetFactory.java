@@ -36,7 +36,9 @@ import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.util.CmsStringUtil;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -60,7 +62,11 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new TinyMCEWidget());
+        JavaScriptObject options = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
+            options = generateOptionsForTiny(configuration);
+        }
+        return new FormWidgetWrapper(new TinyMCEWidget(options));
     }
 
     /**
@@ -70,4 +76,116 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
         return new HalloWidget(element);
     }
+
+    /**
+     * Generates the tinyMCE editor options according to the configuration.<p>
+     * 
+     * @param configuration the widget configuration
+     * 
+     * @return the tinyMCE options
+     */
+    private native JavaScriptObject generateOptionsForTiny(String configuration)/*-{
+
+        var options = null;
+        try {
+            var config = $wnd.JSON && $wnd.JSON.parse(configuration)
+                    || eval('(' + configuration + ')');
+            options = {};
+            if (config.language) {
+                options.language = config.language;
+            }
+            if (config.content_css) {
+                options.content_css = config.content_css;
+            }
+            if (config.block_formats) {
+                options.theme_advanced_blockformats = config.block_format;
+            }
+            if (config.style_formats) {
+                options.style_formats = config.styleFormats;
+            }
+            if (config.cmsGalleryEnhancedOptions) {
+                options.cmsGalleryEnhancedOptions = config.cmsGalleryEnhancedOptions;
+            }
+            if (config.cmsGalleryUseThickbox) {
+                options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
+            }
+            options.plugins = "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,-opencms";
+            if (config.fullpage) {
+                options.plugins += ",fullpage";
+            }
+
+            if (config.toolbar_items) {
+                // assemble the toolbar
+
+                // translation map
+                var BUTTON_TRANSLATION = {
+                    alignleft : "justifyleft",
+                    aligncenter : "justifycenter",
+                    alignright : "justifyright",
+                    justify : "justifyfull",
+                    style : "styleselect",
+                    paste : "paste,pastetext,pasteword",
+                    find : "search",
+                    unorderedlist : "bullist",
+                    orderedlist : "numlist",
+                    editorlink : "link",
+                    source : "code",
+                    subscript : "sub",
+                    superscript : "sup",
+                    specialchar : "charmap",
+                    spellcheck : "iespell",
+                    fitwindow : "fullscreen",
+                    imagegallery : "OcmsImageGallery",
+                    downloadgallery : "OcmsDownloadGallery",
+                    linkgallery : "OcmsLinkGallery",
+                    htmlgallery : "OcmsHtmlGallery",
+                    tablegallery : "OcmsTableGallery",
+                    link : "oc-link"
+                };
+
+                var toolbarGroup = "";
+                var groupCount = 1;
+
+                // iterate over all toolbar items and generate toobar groups
+                for ( var i = 0; i < config.toolbar_items.length; i++) {
+                    var item = config.toolbar_items[i];
+                    // ignore duplicate items
+                    if (item != config.toolbar_items[i - 1]) {
+                        // check for an item translation
+                        if (BUTTON_TRANSLATION[item]) {
+                            item = BUTTON_TRANSLATION[item];
+                        }
+                        // |,[,],- are group separators indicating to add the group and start a new one
+                        if (item == "|" || item == "[" || item == "]"
+                                || item == "-"
+                                || i == config.toolbar_items.length - 1) {
+                            // don't add empty groups
+                            if (toolbarGroup != "") {
+                                options["theme_advanced_buttons" + groupCount] = toolbarGroup;
+                                groupCount++;
+                                toolbarGroup = "";
+                            }
+                        } else {
+                            // add item to the group 
+                            if (toolbarGroup != "") {
+                                toolbarGroup += ",";
+                            }
+                            toolbarGroup += item;
+                        }
+                    }
+                }
+
+                // in case there are less than 4 groups, override the default ones
+                for ( var i = groupCount; i < 5; i++) {
+                    options["theme_advanced_buttons" + i] = "";
+                }
+
+            }
+
+        } catch (e) {
+            // nothing to do
+        }
+
+        return options;
+    }-*/;
 }

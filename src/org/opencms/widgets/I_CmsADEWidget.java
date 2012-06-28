@@ -28,6 +28,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 import java.util.List;
 
@@ -35,6 +36,16 @@ import java.util.List;
  * Widgets to be used with the new XML content editor are required to implement this interface.<p>
  */
 public interface I_CmsADEWidget extends I_CmsWidget {
+
+    /**
+     * Returns the configuration string for the ADE content editor widget.<p>
+     * 
+     * @param cms the OpenCms context
+     * @param resource the edited resource
+     * 
+     * @return the configuration string
+     */
+    String getConfiguration(CmsObject cms, CmsResource resource);
 
     /**
      * Returns a list of CSS resources required by the widget.<p>
