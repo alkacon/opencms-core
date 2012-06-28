@@ -115,7 +115,7 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
         addColumn(modeCol, CmsAliasMessages.messageColumnMode());
         setColumnWidth(modeCol, 200, Unit.PX);
         addColumn(m_errorColumn, CmsAliasMessages.messageColumnError());
-        setColumnWidth(m_errorColumn, 200, Unit.PX);
+        setColumnWidth(m_errorColumn, 50, Unit.PX);
 
         // we need to update the scroll panel when the table is redrawn, but the redraw() method of the table is asynchronous,
         // i.e. it only schedules an actual redraw. However, the method which is responsible for the actual redrawing triggers a 

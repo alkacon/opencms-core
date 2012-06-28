@@ -28,24 +28,30 @@
 package org.opencms.ade.sitemap.client.alias;
 
 import org.opencms.gwt.client.ui.css.I_CmsCellTableResources;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
 import java.util.Comparator;
 
-import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 
 /**
  * The class for the column of the alias editor table which is used to display validation errors.<p>
  */
-public class CmsAliasErrorColumn extends Column<CmsAliasTableRow, String> {
+public class CmsAliasErrorColumn extends Column<CmsAliasTableRow, SafeHtml> {
+
+    /** The CSS class used for the validation error icon. */
+    public static final String WARNING_CLASS = I_CmsImageBundle.INSTANCE.style().warningIcon();
 
     /**
      * Creates a new instance.<p>
      */
     public CmsAliasErrorColumn() {
 
-        super(new TextCell());
+        super(new SafeHtmlCell());
         setSortable(true);
     }
 
@@ -113,9 +119,15 @@ public class CmsAliasErrorColumn extends Column<CmsAliasTableRow, String> {
      * @see com.google.gwt.user.cellview.client.Column#getValue(java.lang.Object)
      */
     @Override
-    public String getValue(CmsAliasTableRow row) {
+    public SafeHtml getValue(CmsAliasTableRow row) {
 
-        return getValueInternal(row);
+        String internalValue = getValueInternal(row);
+        String v = internalValue;
+        if (v == null) {
+            v = "";
+        }
+        String html = "<div class='" + (internalValue == null ? "" : WARNING_CLASS) + "' title='" + v + "'></div>";
+        return SafeHtmlUtils.fromSafeConstant(html);
     }
 
 }
