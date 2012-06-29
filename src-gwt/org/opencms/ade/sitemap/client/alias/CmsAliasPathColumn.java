@@ -34,12 +34,13 @@ import java.util.Comparator;
 
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 
 /**
  * The table column for editing/displaying the alias path.<p>
  */
-public class CmsAliasPathColumn extends Column<CmsAliasTableRow, String> {
+public class CmsAliasPathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, String> {
 
     /** The cell in which this column is used. */
     CmsAliasCellTable m_table;
@@ -81,6 +82,16 @@ public class CmsAliasPathColumn extends Column<CmsAliasTableRow, String> {
     }
 
     /**
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(org.opencms.ade.sitemap.client.alias.CmsAliasCellTable)
+     */
+    @Override
+    public void addToTable(CmsAliasCellTable table) {
+
+        table.addColumn(this, CmsAliasMessages.messageColumnAlias());
+        table.setColumnWidth(this, 300, Unit.PX);
+    }
+
+    /**
      * @see com.google.gwt.user.cellview.client.Column#getCellStyleNames(com.google.gwt.cell.client.Cell.Context, java.lang.Object)
      */
     @Override
@@ -102,5 +113,14 @@ public class CmsAliasPathColumn extends Column<CmsAliasTableRow, String> {
     public String getValue(CmsAliasTableRow row) {
 
         return row.getAliasPath();
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#initSortHandler(com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler)
+     */
+    @Override
+    public void initSortHandler(ListHandler<CmsAliasTableRow> sortHandler) {
+
+        sortHandler.setComparator(this, getComparator());
     }
 }

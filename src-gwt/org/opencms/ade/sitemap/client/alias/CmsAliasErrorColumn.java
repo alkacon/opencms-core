@@ -34,14 +34,15 @@ import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 import java.util.Comparator;
 
 import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 
 /**
  * The class for the column of the alias editor table which is used to display validation errors.<p>
  */
-public class CmsAliasErrorColumn extends Column<CmsAliasTableRow, SafeHtml> {
+public class CmsAliasErrorColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, SafeHtml> {
 
     /** The CSS class used for the validation error icon. */
     public static final String WARNING_CLASS = I_CmsImageBundle.INSTANCE.style().warningIcon();
@@ -101,6 +102,16 @@ public class CmsAliasErrorColumn extends Column<CmsAliasTableRow, SafeHtml> {
     }
 
     /**
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(org.opencms.ade.sitemap.client.alias.CmsAliasCellTable)
+     */
+    @Override
+    public void addToTable(CmsAliasCellTable table) {
+
+        table.addColumn(this, CmsAliasMessages.messageColumnError());
+        table.setColumnWidth(this, 50, Unit.PX);
+    }
+
+    /**
      * @see com.google.gwt.user.cellview.client.Column#getCellStyleNames(com.google.gwt.cell.client.Cell.Context, java.lang.Object)
      */
     @Override
@@ -125,9 +136,20 @@ public class CmsAliasErrorColumn extends Column<CmsAliasTableRow, SafeHtml> {
         String v = internalValue;
         if (v == null) {
             v = "";
+        } else {
+            v = SafeHtmlUtils.htmlEscape(v);
         }
         String html = "<div class='" + (internalValue == null ? "" : WARNING_CLASS) + "' title='" + v + "'></div>";
         return SafeHtmlUtils.fromSafeConstant(html);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#initSortHandler(com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler)
+     */
+    @Override
+    public void initSortHandler(ListHandler<CmsAliasTableRow> sortHandler) {
+
+        sortHandler.setComparator(this, getComparator());
     }
 
 }
