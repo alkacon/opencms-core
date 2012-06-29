@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.client.alias;
 
 import org.opencms.ade.sitemap.client.Messages;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 
 /**
  * Message accessor collection for the alias editor.<p>
@@ -40,6 +41,22 @@ public final class CmsAliasMessages {
     private CmsAliasMessages() {
 
         // do nothing 
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @param result an alias import result 
+     * 
+     * @return the message text 
+     */
+    public static String messageAliasImportLine(CmsAliasImportResult result) {
+
+        if ((result.getAliasPath() == null) || (result.getTargetPath() == null)) {
+            return result.getLine();
+        } else {
+            return Messages.get().key(Messages.GUI_ALIASES_IMPORT_LINE_2, result.getAliasPath(), result.getTargetPath());
+        }
     }
 
     /**

@@ -88,6 +88,9 @@ public final class Messages {
     public static final String GUI_ALIASES_IMPORT_EMPTY_0 = "GUI_ALIASES_IMPORT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_IMPORT_LINE_2 = "GUI_ALIASES_IMPORT_LINE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_MODE_PAGE_0 = "GUI_ALIASES_MODE_PAGE_0";
 
     /** Message constant for key in the resource bundle. */

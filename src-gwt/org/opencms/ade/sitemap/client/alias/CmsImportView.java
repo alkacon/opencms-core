@@ -187,7 +187,8 @@ public class CmsImportView extends Composite {
             case aliasChanged:
                 cssClass = css.aliasImportOverwrite();
                 break;
-            case aliasError:
+            case aliasImportError:
+            case aliasParseError:
                 cssClass = css.aliasImportError();
                 break;
             case aliasNew:
@@ -195,7 +196,7 @@ public class CmsImportView extends Composite {
                 cssClass = css.aliasImportOk();
                 break;
         }
-        m_results.addRow(result.getLine(), result.getMessage(), cssClass);
+        m_results.addRow(CmsAliasMessages.messageAliasImportLine(result), result.getMessage(), cssClass);
     }
 
     /**

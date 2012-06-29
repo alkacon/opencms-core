@@ -34,25 +34,45 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsAliasImportResult implements IsSerializable {
 
+    /** The alias path. */
+    private String m_aliasPath;
+
     /** The line containing the data for the alias. */
     private String m_line;
 
     /** The message from importing the alias. */
     private String m_message;
 
+    /** The alias mode. */
+    private CmsAliasMode m_mode;
+
     /** The import status. */
     private CmsAliasImportStatus m_status;
+
+    /** The alias target path. */
+    private String m_targetPath;
 
     /**
      * Creates a new instance.<p>
      * 
      * @param status the import status 
      * @param message the import message
+     * @param aliasPath the alias path 
+     * @param targetPath the target path
+     * @param mode the alias mode 
      */
-    public CmsAliasImportResult(CmsAliasImportStatus status, String message) {
+    public CmsAliasImportResult(
+        CmsAliasImportStatus status,
+        String message,
+        String aliasPath,
+        String targetPath,
+        CmsAliasMode mode) {
 
         m_message = message;
         m_status = status;
+        m_aliasPath = aliasPath;
+        m_targetPath = targetPath;
+        m_mode = mode;
     }
 
     /**
@@ -77,6 +97,16 @@ public class CmsAliasImportResult implements IsSerializable {
         // do nothing 
     }
 
+    /**
+     * Gets the alias path.<p>
+     * 
+     * @return the alias path 
+     */
+    public String getAliasPath() {
+
+        return m_aliasPath;
+    }
+
     /** 
      * Gets the line containing the alias data.<p>
      * 
@@ -98,6 +128,16 @@ public class CmsAliasImportResult implements IsSerializable {
     }
 
     /**
+     * Gets the alias mode.<p>
+     * 
+     * @return the alias mode 
+     */
+    public CmsAliasMode getMode() {
+
+        return m_mode;
+    }
+
+    /**
      * Gets the status.<p>
      * 
      * @return the status 
@@ -105,6 +145,16 @@ public class CmsAliasImportResult implements IsSerializable {
     public CmsAliasImportStatus getStatus() {
 
         return m_status;
+    }
+
+    /**
+     * Gets the alias target path.<p>
+     * 
+     * @return the alias target path 
+     */
+    public String getTargetPath() {
+
+        return m_targetPath;
     }
 
     /**
