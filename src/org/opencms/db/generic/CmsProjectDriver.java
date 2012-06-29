@@ -100,7 +100,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Sets;
@@ -111,11 +110,6 @@ import com.google.common.collect.Sets;
  * @since 6.0.0
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
-
-    protected boolean shouldUseLogForUserPublishLists() {
-
-        return false;
-    }
 
     /**
      * This private class is a temporary storage for the method {@link CmsProjectDriver#readLocks(CmsDbContext)}.<p>
@@ -203,6 +197,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /** The SQL manager. */
     protected CmsSqlManager m_sqlManager;
+
+    /** The lock object used when writing to the user publish list. */
+    private Object m_userPublishListLock = new Object();
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, CmsProject.CmsProjectType)
@@ -630,6 +627,40 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#deleteUserPublishListEntries(org.opencms.db.CmsDbContext, java.util.List)
+     */
+    public void deleteUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListDeletions)
+    throws CmsDbSqlException {
+
+        if (publishListDeletions.isEmpty()) {
+            return;
+        }
+        synchronized (m_userPublishListLock) {
+
+            Connection conn = null;
+            PreparedStatement stmt = null;
+
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+                String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_DELETE_2");
+                stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
+                for (CmsUserPublishListEntry entry : publishListDeletions) {
+                    stmt.setString(1, entry.getUserId().toString());
+                    stmt.setString(2, entry.getStructureId().toString());
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#destroy()
      */
     public void destroy() throws Throwable {
@@ -795,49 +826,40 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         return m_sqlManager;
     }
 
-    public List<CmsResource> getUsersPubList(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
-
-        if (shouldUseLogForUserPublishLists()) {
-            return getUsersPubListLog(dbc, userId);
-        } else {
-            return readUserPublishListEntries(dbc, userId);
-        }
-    }
-
     /**
      * @see org.opencms.db.I_CmsProjectDriver#getUsersPubList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
-    protected List<CmsResource> getUsersPubListLog(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
+    public List<CmsResource> getUsersPubList(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
 
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-
-        List<CmsResource> result = null;
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject().getUuid(), "C_LOG_READ_PUBLISH_LIST_2");
-            stmt.setString(1, userId.toString());
-            stmt.setString(2, userId.toString());
-            res = stmt.executeQuery();
-
-            result = new ArrayList<CmsResource>();
-            while (res.next()) {
-                CmsResource resource = m_driverManager.getVfsDriver(dbc).createResource(
-                    res,
-                    dbc.currentProject().getUuid());
-                long date = res.getLong(m_sqlManager.readQuery("C_LOG_DATE"));
-                resource.setDateLastModified(date);
-                result.add(resource);
+        List<CmsResource> result = new ArrayList<CmsResource>();
+        synchronized (m_userPublishListLock) {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet res = null;
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+                String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_READ_1");
+                sql = sql.replace("${PROJECT}", "OFFLINE");
+                stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
+                stmt.setString(1, userId.toString());
+                res = stmt.executeQuery();
+                while (res.next()) {
+                    CmsResource resource = m_driverManager.getVfsDriver(dbc).createResource(
+                        res,
+                        dbc.currentProject().getUuid());
+                    long date = res.getLong("DATE_CHANGED");
+                    resource.setDateLastModified(date);
+                    result.add(resource);
+                }
+                return result;
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, res);
             }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-        return result;
     }
 
     /**
@@ -919,38 +941,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
     }
 
-    public void writeUserPublishListEntry(CmsDbContext dbc, CmsUserPublishListEntry entry) throws CmsDbSqlException {
-
-    }
-
-    public void deleteUserPublishListEntry(CmsDbContext dbc, CmsUUID userId, CmsUUID structureId)
-    throws CmsDbSqlException {
-
-    }
-
-    protected CmsPair<String, List<Object>> prepareUserPublishListConditions(CmsUserPublishListFilter filter) {
-
-        List<String> conditions = new ArrayList<String>();
-        List<Object> queryParams = new ArrayList<Object>();
-
-        conditions.add("1 = 1");
-
-        CmsUUID userId = filter.getUserId();
-        if (userId != null) {
-            conditions.add("USER_ID = ?");
-            queryParams.add(userId.toString());
-        }
-
-        CmsUUID structureId = filter.getStructureId();
-        if (structureId != null) {
-            conditions.add("STRUCTURE_ID = ?");
-            queryParams.add(structureId.toString());
-        }
-
-        String conditionString = CmsStringUtil.listAsString(conditions, " AND ");
-        return CmsPair.create(conditionString, queryParams);
-    }
-
     /**
      * @see org.opencms.db.I_CmsProjectDriver#publishDeletedFolder(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, org.opencms.util.CmsUUID, int)
      */
@@ -1005,8 +995,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READMODE_ONLY_FILES);
 
-            for (Iterator<CmsResource> it = movedFiles.iterator(); it.hasNext();) {
-                CmsResource delFile = it.next();
+            for (CmsResource delFile : movedFiles) {
                 try {
                     CmsResource offlineResource = vfsDriver.readResource(
                         dbc,
@@ -2856,6 +2845,42 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#writeUserPublishListEntries(org.opencms.db.CmsDbContext, java.util.List)
+     */
+    public void writeUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListAdditions)
+    throws CmsDbSqlException {
+
+        if (publishListAdditions.isEmpty()) {
+            return;
+        }
+        synchronized (m_userPublishListLock) {
+            // first remove all entries with the same keys
+            deleteUserPublishListEntries(dbc, publishListAdditions);
+
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            try {
+                conn = m_sqlManager.getConnection(dbc);
+                String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_INSERT_3");
+                stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
+                for (CmsUserPublishListEntry entry : publishListAdditions) {
+                    stmt.setString(1, entry.getUserId().toString());
+                    stmt.setString(2, entry.getStructureId().toString());
+                    stmt.setLong(3, entry.getDateChanged());
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
+        }
+    }
+
+    /**
      * Creates a <code>CmsPublishJobInfoBean</code> from a result set.<p>
      *
      * @param res the result set
@@ -2965,6 +2990,51 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
         conditions.append(END_CONDITION);
         return conditions.toString();
+    }
+
+    /**
+     * Implementation of reading the user publish list which uses the log table.<p>
+     * 
+     * This is the old implementation of the user publish list and can get pretty slow.<p>
+     * 
+     * @param dbc the current database context 
+     * @param userId the id of the user for which we want the user publish list 
+     * 
+     * @return the publish list for the given user
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    protected List<CmsResource> getUsersPubListFromLog(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+
+        List<CmsResource> result = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject().getUuid(), "C_LOG_READ_PUBLISH_LIST_2");
+            stmt.setString(1, userId.toString());
+            stmt.setString(2, userId.toString());
+            res = stmt.executeQuery();
+
+            result = new ArrayList<CmsResource>();
+            while (res.next()) {
+                CmsResource resource = m_driverManager.getVfsDriver(dbc).createResource(
+                    res,
+                    dbc.currentProject().getUuid());
+                long date = res.getLong(m_sqlManager.readQuery("C_LOG_DATE"));
+                resource.setDateLastModified(date);
+                result.add(resource);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return result;
     }
 
     /**
@@ -3226,6 +3296,36 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             conditions.append(END_CONDITION);
         }
         return CmsPair.create(conditions.toString(), params);
+    }
+
+    /**
+     * Prepares SQL conditions from a user publish list entry filter.<p>
+     * 
+     * @param filter the filter from which to create the conditions 
+     * 
+     * @return a pair consisting of an SQL fragment string and a list of query parameters 
+     */
+    protected CmsPair<String, List<Object>> prepareUserPublishListConditions(CmsUserPublishListFilter filter) {
+
+        List<String> conditions = new ArrayList<String>();
+        List<Object> queryParams = new ArrayList<Object>();
+
+        conditions.add("1 = 1");
+
+        CmsUUID userId = filter.getUserId();
+        if (userId != null) {
+            conditions.add("USER_ID = ?");
+            queryParams.add(userId.toString());
+        }
+
+        CmsUUID structureId = filter.getStructureId();
+        if (structureId != null) {
+            conditions.add("STRUCTURE_ID = ?");
+            queryParams.add(structureId.toString());
+        }
+
+        String conditionString = CmsStringUtil.listAsString(conditions, " AND ");
+        return CmsPair.create(conditionString, queryParams);
     }
 
     /**
@@ -3701,128 +3801,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         internalWriteHistory(dbc, offlineFile, resourceState, offlineProperties, publishHistoryId, publishTag);
 
         m_driverManager.getVfsDriver(dbc).updateRelations(dbc, onlineProject, offlineResource);
-    }
-
-    public List<CmsUserPublishListEntry> readUserPublishListEntries(CmsDbContext dbc, CmsUserPublishListFilter filter)
-    throws CmsDbSqlException {
-
-        throw new NotImplementedException();
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#deleteUserPublishListEntries(org.opencms.db.CmsDbContext, java.util.List)
-     */
-    public void deleteUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListDeletions)
-    throws CmsDbSqlException {
-
-        if (publishListDeletions.isEmpty()) {
-            return;
-        }
-        synchronized (m_userPublishListLock) {
-
-            Connection conn = null;
-            PreparedStatement stmt = null;
-
-            try {
-                conn = m_sqlManager.getConnection(dbc);
-                String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_DELETE_2");
-                stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
-                for (CmsUserPublishListEntry entry : publishListDeletions) {
-                    stmt.setString(1, entry.getUserId().toString());
-                    stmt.setString(2, entry.getStructureId().toString());
-                    stmt.addBatch();
-                }
-                stmt.executeBatch();
-            } catch (SQLException e) {
-                throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1,
-                    CmsDbSqlException.getErrorQuery(stmt)), e);
-            } finally {
-                m_sqlManager.closeAll(dbc, conn, stmt, null);
-            }
-        }
-    }
-
-    /** The lock object used when writing to the user publish list. */
-    private Object m_userPublishListLock = new Object();
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#writeUserPublishListEntries(org.opencms.db.CmsDbContext, java.util.List)
-     */
-    public void writeUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListAdditions)
-    throws CmsDbSqlException {
-
-        if (publishListAdditions.isEmpty()) {
-            return;
-        }
-        synchronized (m_userPublishListLock) {
-            // first remove all entries with the same keys
-            deleteUserPublishListEntries(dbc, publishListAdditions);
-
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            try {
-                conn = m_sqlManager.getConnection(dbc);
-                String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_INSERT_3");
-                stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
-                for (CmsUserPublishListEntry entry : publishListAdditions) {
-                    stmt.setString(1, entry.getUserId().toString());
-                    stmt.setString(2, entry.getStructureId().toString());
-                    stmt.setLong(3, entry.getDateChanged());
-                    stmt.addBatch();
-                }
-                stmt.executeBatch();
-            } catch (SQLException e) {
-                throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1,
-                    CmsDbSqlException.getErrorQuery(stmt)), e);
-            } finally {
-                m_sqlManager.closeAll(dbc, conn, stmt, null);
-            }
-        }
-    }
-
-    public List<CmsResource> readUserPublishListEntries(CmsDbContext dbc, CmsUUID userId) throws CmsDbSqlException {
-
-        List<CmsResource> result = new ArrayList<CmsResource>();
-        synchronized (m_userPublishListLock) {
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet res = null;
-            try {
-                conn = m_sqlManager.getConnection(dbc);
-                String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_READ_1");
-                //                
-                //                StringBuffer sql = new StringBuffer();
-                //                sql.append("SELECT ")
-                //                sql.append(m_sqlManager.readQuery("C_RESOURCES_SELECT_ATTRIBS").replace("${PROJECT}", "OFFLINE"));
-                //                sql.append(", CMS_OFFLINE_RESOURCES.PROJECT_LASTMODIFIED, p.DATE_CHANGED ");
-                //                sql.append(" FROM CMS_USER_PUBLISH_LIST p, CMS_OFFLINE_RESOURCES, CMS_OFFLINE_STRUCTURE ");
-                //                sql.append(" WHERE p.USER_ID = ? ");
-                //                sql.append(" AND CMS_OFFLINE_RESOURCES.RESOURCE_ID = CMS_OFFLINE_STRUCTURE.RESOURCE_ID ");
-                //                sql.append(" AND CMS_OFFLINE_STRUCTURE.STRUCTURE_ID = p.STRUCTURE_ID ");
-                sql = sql.replace("${PROJECT}", "OFFLINE");
-                stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
-                stmt.setString(1, userId.toString());
-                res = stmt.executeQuery();
-                while (res.next()) {
-                    CmsResource resource = m_driverManager.getVfsDriver(dbc).createResource(
-                        res,
-                        dbc.currentProject().getUuid());
-                    long date = res.getLong("DATE_CHANGED");
-                    resource.setDateLastModified(date);
-                    result.add(resource);
-                }
-                return result;
-            } catch (SQLException e) {
-                throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1,
-                    CmsDbSqlException.getErrorQuery(stmt)), e);
-            } finally {
-                m_sqlManager.closeAll(dbc, conn, stmt, res);
-            }
-        }
-
     }
 
 }

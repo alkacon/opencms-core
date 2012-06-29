@@ -219,6 +219,16 @@ public interface I_CmsProjectDriver {
     throws CmsDataAccessException;
 
     /**
+     * Deletes multiple publish list entries from the database.<p>
+     * 
+     * @param dbc the current database context 
+     * @param publishListDeletions the publish list entries to remove from the database  
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    void deleteUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListDeletions)
+    throws CmsDataAccessException;
+
+    /**
      * Destroys this driver.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -709,22 +719,12 @@ public interface I_CmsProjectDriver {
         long timestamp) throws CmsDataAccessException;
 
     /**
-     * Deletes multiple publish list entries from the database.<p>
-     * 
-     * @param dbc the current database context 
-     * @param publishListDeletions the publish list entries to remove from the database  
-     * @throws CmsDbSqlException if something goes wrong 
-     */
-    void deleteUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListDeletions)
-    throws CmsDbSqlException;
-
-    /**
      * Writes multiple user publish list entries to the database.<p>
      *  
      * @param dbc the current database context 
      * @param publishListAdditions the user publish list entries to write 
-     * @throws CmsDbSqlException if something goes wrong 
+     * @throws CmsDataAccessException if something goes wrong 
      */
     void writeUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListAdditions)
-    throws CmsDbSqlException;
+    throws CmsDataAccessException;
 }

@@ -45,8 +45,6 @@ import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.db.jpa.persistence.CmsDAOLog;
 import org.opencms.db.jpa.persistence.CmsDAOOfflineResources;
 import org.opencms.db.jpa.persistence.CmsDAOOfflineStructure;
-import org.opencms.db.jpa.persistence.CmsDAOOnlineResources;
-import org.opencms.db.jpa.persistence.CmsDAOOnlineStructure;
 import org.opencms.db.jpa.persistence.CmsDAOProjectResources;
 import org.opencms.db.jpa.persistence.CmsDAOProjectResources.CmsDAOProjectResourcesPK;
 import org.opencms.db.jpa.persistence.CmsDAOProjects;
@@ -54,7 +52,7 @@ import org.opencms.db.jpa.persistence.CmsDAOPublishHistory;
 import org.opencms.db.jpa.persistence.CmsDAOPublishJobs;
 import org.opencms.db.jpa.persistence.CmsDAOResourceLocks;
 import org.opencms.db.jpa.persistence.CmsDAOStaticExportLinks;
-import org.opencms.db.jpa.persistence.I_CmsDAOResources;
+import org.opencms.db.jpa.persistence.CmsDAOUserPublishListEntry;
 import org.opencms.db.jpa.utils.CmsQueryIntParameter;
 import org.opencms.db.jpa.utils.CmsQueryLongParameter;
 import org.opencms.db.jpa.utils.CmsQueryStringParameter;
@@ -153,9 +151,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /** Query key. */
     private static final String C_LOG_READ_ENTRIES = "C_LOG_READ_ENTRIES";
-
-    /** Query key. */
-    private static final String C_LOG_READ_PUBLISH_LIST_2 = "C_LOG_READ_PUBLISH_LIST_2";
 
     /** Query key. */
     private static final String C_PROJECTRESOURCES_DELETEALL_1 = "C_PROJECTRESOURCES_DELETEALL_1";
@@ -589,6 +584,25 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#deleteUserPublishListEntries(org.opencms.db.CmsDbContext, java.util.List)
+     */
+    public void deleteUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListDeletions)
+    throws CmsDataAccessException {
+
+        try {
+
+            for (CmsUserPublishListEntry entry : publishListDeletions) {
+                Query q = m_sqlManager.createQuery(dbc, "C_USER_PUBLISH_LIST_DELETE_2");
+                q.setParameter(1, entry.getUserId().toString());
+                q.setParameter(2, entry.getStructureId().toString());
+                q.executeUpdate();
+            }
+        } catch (PersistenceException e) {
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#destroy()
      */
     public void destroy() throws Throwable {
@@ -759,42 +773,24 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      */
     public List<CmsResource> getUsersPubList(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
 
-        List<CmsResource> result = null;
+        List<CmsResource> result = new ArrayList<CmsResource>();
         try {
-            Query q = m_sqlManager.createNativeQuery(dbc, dbc.currentProject().getUuid(), C_LOG_READ_PUBLISH_LIST_2);
+            Query q = m_sqlManager.createQuery(dbc, "C_USER_PUBLISH_LIST_READ_1");
             q.setParameter(1, userId.toString());
-            q.setParameter(2, userId.toString());
             @SuppressWarnings("unchecked")
-            List<Object[]> res = q.getResultList();
-
-            result = new ArrayList<CmsResource>();
-
-            Class<?> structureClass;
-            Class<?> resourcesClass;
-            Object[] obj = new Object[3];
-
-            if (CmsProject.ONLINE_PROJECT_ID.equals(dbc.currentProject().getUuid())) {
-                structureClass = CmsDAOOnlineStructure.class;
-                resourcesClass = CmsDAOOnlineResources.class;
-            } else {
-                structureClass = CmsDAOOfflineStructure.class;
-                resourcesClass = CmsDAOOfflineResources.class;
-            }
-
-            for (Object[] objArray : res) {
-                // there are building obj array which should normally 
-                // returned by JPQL query
-                obj[0] = m_sqlManager.find(dbc, resourcesClass, objArray[0]);
-                obj[1] = m_sqlManager.find(dbc, structureClass, objArray[1]);
-                obj[2] = ((I_CmsDAOResources)obj[0]).getProjectLastModified();
-
-                CmsResource resource = ((CmsVfsDriver)m_driverManager.getVfsDriver(dbc)).createResource(
-                    obj,
+            List<Object[]> queryResults = q.getResultList();
+            for (Object[] queryResult : queryResults) {
+                CmsDAOOfflineStructure structure = (CmsDAOOfflineStructure)queryResult[1];
+                CmsDAOOfflineResources resource = (CmsDAOOfflineResources)queryResult[2];
+                CmsDAOUserPublishListEntry entry = (CmsDAOUserPublishListEntry)queryResult[0];
+                Object[] resourceEntry = new Object[] {resource, structure, resource.getProjectLastModified()};
+                CmsResource resourceObj = ((CmsVfsDriver)m_driverManager.getVfsDriver(dbc)).createResource(
+                    resourceEntry,
                     dbc.currentProject().getUuid());
-                long date = ((Number)objArray[2]).longValue();
-                resource.setDateLastModified(date);
-                result.add(resource);
+                resourceObj.setDateLastModified(entry.getDateChanged());
+                result.add(resourceObj);
             }
+            return result;
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
         } catch (Exception e) {
@@ -937,8 +933,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READMODE_ONLY_FILES);
 
-            for (Iterator<CmsResource> it = movedFiles.iterator(); it.hasNext();) {
-                CmsResource delFile = it.next();
+            for (CmsResource delFile : movedFiles) {
                 try {
                     CmsResource offlineResource = vfsDriver.readResource(
                         dbc,
@@ -2581,6 +2576,32 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#writeUserPublishListEntries(org.opencms.db.CmsDbContext, java.util.List)
+     */
+    public void writeUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListAdditions)
+    throws CmsDataAccessException {
+
+        try {
+            for (CmsUserPublishListEntry entry : publishListAdditions) {
+                Query delete = m_sqlManager.createQuery(dbc, "C_USER_PUBLISH_LIST_DELETE_2");
+                delete.setParameter(1, entry.getUserId().toString());
+                delete.setParameter(2, entry.getStructureId().toString());
+                delete.executeUpdate();
+
+                CmsDAOUserPublishListEntry newEntry = new CmsDAOUserPublishListEntry(
+                    entry.getUserId(),
+                    entry.getStructureId(),
+                    entry.getDateChanged());
+                m_sqlManager.getEntityManager(dbc).persist(newEntry);
+            }
+            m_sqlManager.getEntityManager(dbc).flush();
+
+        } catch (PersistenceException e) {
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE, e), e);
+        }
+    }
+
+    /**
      * Creates a <code>CmsPublishJobInfoBean</code> from a result set.<p>
      * 
      * @param pj the result set 
@@ -3421,19 +3442,5 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         internalWriteHistory(dbc, offlineFile, resourceState, offlineProperties, publishHistoryId, publishTag);
 
         m_driverManager.getVfsDriver(dbc).updateRelations(dbc, onlineProject, offlineResource);
-    }
-
-    public void deleteUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListDeletions)
-    throws CmsDbSqlException {
-
-        // TODO: Auto-generated method stub
-
-    }
-
-    public void writeUserPublishListEntries(CmsDbContext dbc, List<CmsUserPublishListEntry> publishListAdditions)
-    throws CmsDbSqlException {
-
-        // TODO: Auto-generated method stub
-
     }
 }
