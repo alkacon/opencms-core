@@ -82,6 +82,12 @@ public final class Messages {
     public static final String GUI_ALIASES_CONTEXT_MENU_EDIT_0 = "GUI_ALIASES_CONTEXT_MENU_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_COUNT_1 = "GUI_ALIASES_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_IMPORT_EMPTY_0 = "GUI_ALIASES_IMPORT_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_MODE_PAGE_0 = "GUI_ALIASES_MODE_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -89,6 +95,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_MODE_REDIRECT_0 = "GUI_ALIASES_MODE_REDIRECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_NEW_BOX_LEGEND_0 = "GUI_ALIASES_NEW_BOX_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_TABLE_BOX_LEGEND_0 = "GUI_ALIASES_TABLE_BOX_LEGEND_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_TABLE_LOCKED_1 = "GUI_ALIASES_TABLE_LOCKED_1";

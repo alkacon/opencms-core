@@ -106,14 +106,14 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
             }
         });
         setSelectionModel(selectionModel, DefaultSelectionEventManager.<CmsAliasTableRow> createCheckboxManager());
-        addColumn(selectCol, CmsAliasMessages.messageColumnSelect());
-        setColumnWidth(selectCol, 50, Unit.PX);
+        addColumn(selectCol, "X");
+        setColumnWidth(selectCol, 25, Unit.PX);
         addColumn(aliasPathCol, CmsAliasMessages.messageColumnAlias());
-        setColumnWidth(aliasPathCol, 350, Unit.PX);
+        setColumnWidth(aliasPathCol, 300, Unit.PX);
         addColumn(resourcePathCol, CmsAliasMessages.messageColumnPath());
-        setColumnWidth(resourcePathCol, 350, Unit.PX);
+        setColumnWidth(resourcePathCol, 300, Unit.PX);
         addColumn(modeCol, CmsAliasMessages.messageColumnMode());
-        setColumnWidth(modeCol, 200, Unit.PX);
+        setColumnWidth(modeCol, 220, Unit.PX);
         addColumn(m_errorColumn, CmsAliasMessages.messageColumnError());
         setColumnWidth(m_errorColumn, 50, Unit.PX);
 
@@ -136,8 +136,6 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
                 resizeTimer.schedule(10);
             }
         });
-
-        setWidth("100%");
     }
 
     /**

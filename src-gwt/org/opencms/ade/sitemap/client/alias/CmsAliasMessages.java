@@ -71,7 +71,7 @@ public final class CmsAliasMessages {
      */
     public static String messageButtonCancel() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_CANCEL_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_CANCEL_0);
     }
 
     /**
@@ -81,7 +81,7 @@ public final class CmsAliasMessages {
      */
     public static String messageButtonDelete() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_DELETE_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_DELETE_0);
     }
 
     /**
@@ -91,7 +91,7 @@ public final class CmsAliasMessages {
      */
     public static String messageButtonDownload() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_DOWNLOAD_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_DOWNLOAD_0);
     }
 
     /**
@@ -101,7 +101,9 @@ public final class CmsAliasMessages {
      */
     public static String messageButtonNew() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_NEW_0); //$NON-NLS-1$
+        return "+";
+
+        //        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_NEW_0);
     }
 
     /**
@@ -111,7 +113,7 @@ public final class CmsAliasMessages {
      */
     public static String messageButtonSave() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_SAVE_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_SAVE_0);
     }
 
     /**
@@ -121,7 +123,7 @@ public final class CmsAliasMessages {
      */
     public static String messageButtonSelectFile() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_SELECT_FILE_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_SELECT_FILE_0);
     }
 
     /**
@@ -131,7 +133,7 @@ public final class CmsAliasMessages {
      */
     public static String messageButtonSubmit() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_IMPORT_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_IMPORT_0);
     }
 
     /**
@@ -141,7 +143,7 @@ public final class CmsAliasMessages {
      */
     public static String messageButtonUpload() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_UPLOAD_0); //$NON-NLS-1$ 
+        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_UPLOAD_0);
     }
 
     /**
@@ -151,7 +153,7 @@ public final class CmsAliasMessages {
      */
     public static String messageColumnAlias() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_ALIAS_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_ALIAS_0);
     }
 
     /**
@@ -161,7 +163,7 @@ public final class CmsAliasMessages {
      */
     public static String messageColumnError() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_ERROR_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_ERROR_0);
     }
 
     /**
@@ -171,7 +173,7 @@ public final class CmsAliasMessages {
      */
     public static String messageColumnMode() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_MODE_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_MODE_0);
     }
 
     /**
@@ -181,7 +183,7 @@ public final class CmsAliasMessages {
      */
     public static String messageColumnPath() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_PATH_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_PATH_0);
     }
 
     /**
@@ -191,7 +193,7 @@ public final class CmsAliasMessages {
      */
     public static String messageColumnSelect() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_SELECT_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_SELECT_0);
     }
 
     /**
@@ -219,12 +221,52 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageNewAliasActionLabel() {
+
+        return messageColumnMode() + ":";
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageNewAliasLabel() {
+
+        return messageColumnAlias() + ":";
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageNewAliasTargetLabel() {
+
+        return messageColumnPath() + ":";
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageNewFieldsetLegend() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_NEW_BOX_LEGEND_0);
+    }
+
+    /**
+     * Message accessor.<p>
      *  
      * @return the message text 
      */
     public static String messagePage() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_MODE_PAGE_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_MODE_PAGE_0);
     }
 
     /**
@@ -234,7 +276,7 @@ public final class CmsAliasMessages {
      */
     public static String messagePermanentRedirect() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_MODE_PERMANENT_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_MODE_PERMANENT_0);
     }
 
     /**
@@ -244,7 +286,39 @@ public final class CmsAliasMessages {
      */
     public static String messageRedirect() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_MODE_REDIRECT_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_MODE_REDIRECT_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @param newRowCount the alias row count 
+     * 
+     * @return the message text 
+     */
+    public static String messageRowCount(int newRowCount) {
+
+        return Messages.get().key(Messages.GUI_ALIASES_COUNT_1, "" + newRowCount);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messagesEmptyImportResult() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_IMPORT_EMPTY_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageTableFieldsetLegend() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_TABLE_BOX_LEGEND_0);
     }
 
     /**
@@ -254,7 +328,7 @@ public final class CmsAliasMessages {
      */
     public static String messageTitleAliasEditor() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_TITLE_EDITOR_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_TITLE_EDITOR_0);
     }
 
     /**
@@ -264,6 +338,7 @@ public final class CmsAliasMessages {
      */
     public static String messageTitleImport() {
 
-        return Messages.get().key(Messages.GUI_ALIASES_TITLE_IMPORT_0); //$NON-NLS-1$
+        return Messages.get().key(Messages.GUI_ALIASES_TITLE_IMPORT_0);
     }
+
 }

@@ -30,16 +30,25 @@ package org.opencms.ade.sitemap.client.alias;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonCancel;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonDelete;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonDownload;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonNew;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonSave;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonUpload;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageNewAliasActionLabel;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageNewAliasLabel;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageNewAliasTargetLabel;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageNewFieldsetLegend;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messagePage;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messagePermanentRedirect;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageRedirect;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageRowCount;
+import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageTableFieldsetLegend;
 
+import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle.I_CmsImageStyle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
@@ -52,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -59,8 +69,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.RowCountChangeEvent;
 
 /**
  * The widget containing the table and the buttons used for editing aliases.<p>
@@ -79,6 +91,10 @@ public class CmsAliasView extends Composite {
     /** The alias table controller. */
     protected CmsAliasTableController m_controller;
 
+    /** Text container for the row count. */
+    @UiField
+    protected HasText m_countLabel;
+
     /** The 'Delete' button. */
     @UiField
     protected CmsPushButton m_deleteButton;
@@ -87,13 +103,29 @@ public class CmsAliasView extends Composite {
     @UiField
     protected CmsPushButton m_downloadButton;
 
+    /** Text container for the label for the new alias action selector. */
+    @UiField
+    protected HasText m_newAliasActionLabel;
+
+    /** Text container for the label for the new alias text box. */
+    @UiField
+    protected HasText m_newAliasLabel;
+
     /** The text box for entering the path for a new alias. */
     @UiField
     protected CmsTextBox m_newAliasPath;
 
+    /** Text container for the label for the new alias target text box. */
+    @UiField
+    protected HasText m_newAliasTargetLabel;
+
     /** The button for adding a new alias. */
     @UiField
     protected CmsPushButton m_newButton;
+
+    /** Field set containing the controls for adding new aliases. */
+    @UiField
+    protected CmsFieldSet m_newFieldSet;
 
     /** The select box for selecting the mode of a new alias. */
     @UiField
@@ -110,6 +142,10 @@ public class CmsAliasView extends Composite {
     /** The panel containing the alias cell table. */
     @UiField
     protected Panel m_tableContainer;
+
+    /** Field set containing the alias table and buttons. */
+    @UiField
+    protected CmsFieldSet m_tableFieldSet;
 
     /** The button for importing alias CSV files. */
     @UiField
@@ -136,7 +172,7 @@ public class CmsAliasView extends Composite {
         items.put(CmsAliasMode.page.toString(), messagePage());
         m_newMode.setItems(items);
         m_controller = controller;
-        m_newButton.setText(messageButtonNew());
+        //m_newButton.setText(messageButtonNew());
         m_saveButton.setText(messageButtonSave());
         m_saveButton.setUseMinWidth(true);
         m_cancelButton.setText(messageButtonCancel());
@@ -145,9 +181,31 @@ public class CmsAliasView extends Composite {
         m_deleteButton.setEnabled(false);
         m_downloadButton.setText(messageButtonDownload());
         m_uploadButton.setText(messageButtonUpload());
-        m_newButton.setSize(Size.big);
+        //m_newButton.setSize(Size.big);
         m_table = new CmsAliasCellTable(controller);
         m_tableContainer.add(m_table);
+
+        m_newAliasLabel.setText(messageNewAliasLabel());
+        m_newAliasTargetLabel.setText(messageNewAliasTargetLabel());
+        m_newAliasActionLabel.setText(messageNewAliasActionLabel());
+
+        m_tableFieldSet.setLegend(messageTableFieldsetLegend());
+        m_newFieldSet.setLegend(messageNewFieldsetLegend());
+
+        I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
+        m_newButton.setImageClass(imagestyle.addIcon());
+        m_newButton.setSize(Size.small);
+        m_newButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_newButton.getElement().getStyle().setMarginTop(1, Unit.PX);
+        m_table.addRowCountChangeHandler(new RowCountChangeEvent.Handler() {
+
+            public void onRowCountChange(RowCountChangeEvent event) {
+
+                String message = messageRowCount(event.getNewRowCount());
+                m_countLabel.setText(message);
+            }
+        });
+
         setWidth("1150px"); //$NON-NLS-1$
     }
 

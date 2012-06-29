@@ -30,6 +30,7 @@ package org.opencms.db;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.i18n.CmsEncoder;
@@ -473,6 +474,13 @@ public class CmsAliasManager {
         return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_OK_0);
     }
 
+    /**
+     * Message accessor.<p>
+     * 
+     * @param locale the message locale 
+     * 
+     * @return the message string 
+     */
     private String messageImportUpdate(Locale locale) {
 
         return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_UPDATED_0);

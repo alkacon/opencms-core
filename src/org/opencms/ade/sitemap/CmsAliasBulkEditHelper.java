@@ -27,22 +27,19 @@
 
 package org.opencms.ade.sitemap;
 
-import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.JSON_RESULT;
 import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.PARAM_IMPORTFILE;
 import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.PARAM_SITEROOT;
 
 import org.opencms.db.CmsAlias;
-import org.opencms.db.CmsAliasImportResult;
 import org.opencms.db.CmsAliasManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.json.JSONArray;
-import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
@@ -111,14 +108,9 @@ public class CmsAliasBulkEditHelper {
         if ((siteRoot != null) && (data != null)) {
             result = OpenCms.getAliasManager().importAliases(m_cms, data, siteRoot);
         }
-        JSONObject obj = new JSONObject();
-        JSONArray array = new JSONArray();
-        for (CmsAliasImportResult r : result) {
-            array.put(r.toJson());
-        }
-        obj.put(JSON_RESULT, array);
-
-        response.getWriter().print(obj.toString());
+        String key = CmsVfsSitemapService.addAliasImportResult(result);
+        // only respond with a key, then the client can get the data for the key via GWT-RPC
+        response.getWriter().print(key);
     }
 
     /**

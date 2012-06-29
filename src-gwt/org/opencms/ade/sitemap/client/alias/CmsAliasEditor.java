@@ -112,7 +112,7 @@ public class CmsAliasEditor {
             popup.addButton(button);
         }
         m_view.setPopup(popup);
-        popup.setWidth(1160);
+        popup.setWidth(946);
         popup.addDialogClose(null);
         m_controller.load(new Runnable() {
 

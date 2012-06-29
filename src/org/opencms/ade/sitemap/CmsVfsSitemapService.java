@@ -71,6 +71,7 @@ import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
@@ -196,6 +197,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /** The lock table to prevent multiple users from editing the alias table concurrently. */
     private static CmsAliasEditorLockTable aliasEditorLockTable = new CmsAliasEditorLockTable();
 
+    /** The table containing the alias import results. */
+    private static CmsAliasImportResponseTable aliasImportResponseTable = new CmsAliasImportResponseTable();
+
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsSitemapService.class);
 
@@ -213,6 +217,18 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /** The navigation builder. */
     private CmsJspNavBuilder m_navBuilder;
+
+    /**
+     * Adds an alias import result.<p>
+     * 
+     * @param results the list of alias import results to add
+     *  
+     * @return the key to retrieve the alias import results 
+     */
+    public static String addAliasImportResult(List<CmsAliasImportResult> results) {
+
+        return aliasImportResponseTable.addImportResult(results);
+    }
 
     /**
      * Returns a new configured service instance.<p>
@@ -277,6 +293,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getAliasImportResult(java.lang.String)
+     */
+    public List<CmsAliasImportResult> getAliasImportResult(String resultKey) {
+
+        return aliasImportResponseTable.getAndRemove(resultKey);
     }
 
     /**
@@ -1750,7 +1774,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private boolean hasOwnChanges(CmsSitemapChange change) {
 
         return !change.isNew();
-        //TODO: optimize this!
     }
 
     /**
