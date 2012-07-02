@@ -73,6 +73,10 @@ public class CmsAlias {
         m_mode = mode;
     }
 
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
     public boolean equals(Object other) {
 
         if (!(other instanceof CmsAlias)) {

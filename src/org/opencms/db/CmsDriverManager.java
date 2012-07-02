@@ -528,6 +528,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         return driverManager;
     }
 
+    /**
+     * Adds an alias entry.<p>
+     * 
+     * @param dbc the database context 
+     * @param project the current project 
+     * @param alias the alias to add 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public void addAlias(CmsDbContext dbc, CmsProject project, CmsAlias alias) throws CmsException {
 
         I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
@@ -2153,6 +2162,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         return user;
     }
 
+    /**
+     * Deletes aliases indicated by a filter.<p>
+     * 
+     * @param dbc the current database context 
+     * @param project the current project 
+     * @param filter the filter which describes which aliases to delete 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public void deleteAliases(CmsDbContext dbc, CmsProject project, CmsAliasFilter filter) throws CmsException {
 
         I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
