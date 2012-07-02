@@ -212,14 +212,15 @@ public final class CmsContentEditor {
 
     /**
      * Renders the in-line editor for the given element.<p>
-     *  
+     * 
+     * @param elementId the element id
      * @param locale the content locale
      * @param panel the element panel
      * @param onClose the command to execute on close
      */
-    public void openInlineEditor(String locale, final I_InlineFormParent panel, Command onClose) {
+    public void openInlineEditor(CmsUUID elementId, String locale, final I_InlineFormParent panel, Command onClose) {
 
-        String entityId = panel.getElement().getAttribute("about");
+        String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
         m_locale = locale;
         m_onClose = onClose;
         m_editor.loadDefinition(entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {

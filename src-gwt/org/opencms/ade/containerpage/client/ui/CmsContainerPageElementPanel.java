@@ -40,7 +40,6 @@ import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -369,8 +368,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      */
     public void initContentEditor(final CmsContainerpageController controller) {
 
-        String elementId = getElement().getAttribute("about");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(elementId) && elementId.startsWith("http://opencms.org/")) {
+        if (CmsEditorBase.hasEditable(getElement())) {
             CmsEditorBase.setEditable(getElement());
             m_editorClickHandlerRegistration = addClickHandler(new ClickHandler() {
 

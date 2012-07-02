@@ -382,6 +382,49 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     private Locale m_workplaceLocale;
 
     /**
+     * Returns the entity attribute name representing the given content value.<p>
+     * 
+     * @param contentValue the content value
+     * 
+     * @return the attribute name
+     */
+    public static String getAttributeName(I_CmsXmlContentValue contentValue) {
+
+        return getTypeUri(contentValue.getContentDefinition()) + "/" + contentValue.getName();
+    }
+
+    /**
+     * Returns the entity id to the given content value.<p>
+     * 
+     * @param contentValue the content value
+     * 
+     * @return the entity id
+     */
+    public static String getEntityId(I_CmsXmlContentValue contentValue) {
+
+        String result = CmsContentDefinition.uuidToEntityId(
+            contentValue.getDocument().getFile().getStructureId(),
+            contentValue.getLocale().toString());
+        String valuePath = contentValue.getPath();
+        if (valuePath.contains("/")) {
+            result += "/" + valuePath.substring(0, valuePath.lastIndexOf("/"));
+        }
+        return result;
+    }
+
+    /**
+     * Returns the type URI.<p>
+     * 
+     * @param xmlContentDefinition the type content definition
+     * 
+     * @return the type URI
+     */
+    public static String getTypeUri(CmsXmlContentDefinition xmlContentDefinition) {
+
+        return xmlContentDefinition.getSchemaLocation() + "/" + xmlContentDefinition.getTypeName();
+    }
+
+    /**
      * Returns a new configured service instance.<p>
      * 
      * @param request the current request
@@ -618,18 +661,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             result = OpenCms.getSystemInfo().getDefaultEncoding();
         }
         return CmsEncoder.lookupEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding());
-    }
-
-    /**
-     * Returns the type URI.<p>
-     * 
-     * @param xmlContentDefinition the type content definition
-     * 
-     * @return the type URI
-     */
-    protected String getTypeUri(CmsXmlContentDefinition xmlContentDefinition) {
-
-        return xmlContentDefinition.getSchemaLocation() + "/" + xmlContentDefinition.getTypeName();
     }
 
     /**

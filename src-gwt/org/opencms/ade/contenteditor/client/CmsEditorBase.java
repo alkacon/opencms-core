@@ -66,6 +66,19 @@ public class CmsEditorBase extends EditorBase {
     }
 
     /**
+     * Returns if the given element or it's descendants are inline editable.<p>
+     * 
+     * @param element the element
+     * 
+     * @return <code>true</code> if the element has editable descendants
+     */
+    public static boolean hasEditable(Element element) {
+
+        List<Element> children = Vie.getInstance().find("[property^=\"opencms://\"]", element);
+        return (children != null) && !children.isEmpty();
+    }
+
+    /**
      * Sets all annotated child elements editable.<p>
      * 
      * @param element the element
@@ -159,27 +172,14 @@ public class CmsEditorBase extends EditorBase {
     }
 
     /**
-     * Saves the given entities.<p>
+     * Registers a deep copy of the source entity with the given target entity id.<p>
      * 
-     * @param entities the entities to save
-     * @param deletedEntites the deleted entity id's
-     * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
-     * @param callback the call back command
+     * @param sourceEntityId the source entity id
+     * @param targetEntityId the target entity id
      */
-    public void saveAndDeleteEntities(
-        final Set<String> entities,
-        final Set<String> deletedEntites,
-        final boolean clearOnSuccess,
-        final Command callback) {
+    public void registerClonedEntity(String sourceEntityId, String targetEntityId) {
 
-        List<com.alkacon.acacia.shared.Entity> changedEntites = new ArrayList<com.alkacon.acacia.shared.Entity>();
-        for (String entityId : entities) {
-            I_Entity entity = m_vie.getEntity(entityId);
-            if (entity != null) {
-                changedEntites.add(com.alkacon.acacia.shared.Entity.serializeEntity(entity));
-            }
-        }
-        saveAndDeleteEntities(changedEntites, new ArrayList<String>(deletedEntites), clearOnSuccess, callback);
+        Vie.getInstance().getEntity(sourceEntityId).createDeepCopy(targetEntityId);
     }
 
     /**
@@ -219,24 +219,27 @@ public class CmsEditorBase extends EditorBase {
     }
 
     /**
-     * Registers a deep copy of the source entity with the given target entity id.<p>
+     * Saves the given entities.<p>
      * 
-     * @param sourceEntityId the source entity id
-     * @param targetEntityId the target entity id
+     * @param entities the entities to save
+     * @param deletedEntites the deleted entity id's
+     * @param clearOnSuccess <code>true</code> to clear the VIE instance on success
+     * @param callback the call back command
      */
-    public void registerClonedEntity(String sourceEntityId, String targetEntityId) {
+    public void saveAndDeleteEntities(
+        final Set<String> entities,
+        final Set<String> deletedEntites,
+        final boolean clearOnSuccess,
+        final Command callback) {
 
-        Vie.getInstance().getEntity(sourceEntityId).createDeepCopy(targetEntityId);
-    }
-
-    /**
-     * Removes the given entity from the entity VIE store.<p>
-     * 
-     * @param entityId the entity id
-     */
-    public void unregistereEntity(String entityId) {
-
-        Vie.getInstance().removeEntity(entityId);
+        List<com.alkacon.acacia.shared.Entity> changedEntites = new ArrayList<com.alkacon.acacia.shared.Entity>();
+        for (String entityId : entities) {
+            I_Entity entity = m_vie.getEntity(entityId);
+            if (entity != null) {
+                changedEntites.add(com.alkacon.acacia.shared.Entity.serializeEntity(entity));
+            }
+        }
+        saveAndDeleteEntities(changedEntites, new ArrayList<String>(deletedEntites), clearOnSuccess, callback);
     }
 
     /**
@@ -270,5 +273,15 @@ public class CmsEditorBase extends EditorBase {
             }
         };
         action.execute();
+    }
+
+    /**
+     * Removes the given entity from the entity VIE store.<p>
+     * 
+     * @param entityId the entity id
+     */
+    public void unregistereEntity(String entityId) {
+
+        Vie.getInstance().removeEntity(entityId);
     }
 }

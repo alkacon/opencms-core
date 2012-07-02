@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.contenteditor.CmsContentService;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
@@ -520,6 +521,30 @@ public final class CmsJspContentAccessValueWrapper {
             return "";
         }
         return m_contentValue.getPath();
+    }
+
+    /**
+     * Returns the RDF annotation to this content value.<p>
+     * 
+     * Use to insert the annotation attributes into a HTML tag.<p>
+     * Example using EL: &lt;h1 ${value.Title.rdfa}&gt;${value.Title}&lt;/h1&gt; will result in 
+     * &lt;h1 about="..." property="..."&gt;My title&lt;/h1&gt;<p>
+     *  
+     * @return the RDFA
+     */
+    public String getRdfa() {
+
+        String result = "";
+        if ((obtainCmsObject() != null) && (m_contentValue != null)) {
+            if (!obtainCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+                // within the offline project return the OpenCms specific entity id's and property names
+                result = "about=\"" + CmsContentService.getEntityId(m_contentValue) + "\" ";
+                result += "property=\"" + CmsContentService.getAttributeName(m_contentValue) + "\"";
+            } else {
+                // TODO: return mapped property names etc. when online
+            }
+        }
+        return result;
     }
 
     /**
