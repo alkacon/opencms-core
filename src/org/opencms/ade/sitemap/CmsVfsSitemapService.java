@@ -61,12 +61,14 @@ import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
@@ -476,6 +478,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
                 getClipboardData(),
+                CmsCoreService.newInstance(getRequest()).getContextMenuEntries(
+                    configData.getResource().getStructureId(),
+                    AdeContext.sitemap),
                 parentProperties,
                 allPropNames,
                 exportRfsPrefix,

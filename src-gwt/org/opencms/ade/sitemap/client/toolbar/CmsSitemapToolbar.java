@@ -81,21 +81,10 @@ public class CmsSitemapToolbar extends CmsToolbar {
                 source.onToolbarClick();
             }
         };
-        m_contextMenuButton = new CmsToolbarContextButton(new CmsSitemapToolbarHandler());
+        m_contextMenuButton = new CmsToolbarContextButton(new CmsSitemapToolbarHandler(
+            controller.getData().getContextMenuEntries()));
         m_contextMenuButton.addClickHandler(clickHandler);
         addRight(m_contextMenuButton);
-        //        
-        //        
-        //        Button button = new Button("ALIAS");
-        //        button.addClickHandler(new ClickHandler() {
-        //
-        //            public void onClick(ClickEvent event) {
-        //
-        //                (new CmsAliasEditor()).show();
-        //            }
-        //        });
-        //        addRight(button);
-
     }
 
     /**

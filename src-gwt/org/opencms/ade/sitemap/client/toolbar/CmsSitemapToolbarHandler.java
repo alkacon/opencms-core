@@ -27,12 +27,10 @@
 
 package org.opencms.ade.sitemap.client.toolbar;
 
-import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsToolbarContextButton;
+import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
-import org.opencms.gwt.client.ui.I_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
@@ -40,29 +38,36 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The toolbar handler used for the sitemap toolbar context menu.<p>
  */
-public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
+public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
 
     /** The currently active button. */
     private I_CmsToolbarButton m_activeButton;
 
-    /** The context menu button. */
-    private CmsToolbarContextButton m_contextButton;
-
-    /** The context menu commands. */
+    /** The available context menu commands. */
     private Map<String, I_CmsContextMenuCommand> m_contextMenuCommands;
+
+    /** The context menu entries. */
+    private List<I_CmsContextMenuEntry> m_contextMenuEntries;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param menuBeans the context menu entry beans
+     */
+    public CmsSitemapToolbarHandler(List<CmsContextMenuEntryBean> menuBeans) {
+
+        m_contextMenuEntries = transformEntries(menuBeans, null);
+    }
 
     /**
      * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#activateSelection()
@@ -73,7 +78,7 @@ public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
     }
 
     /**
-     * De-activates the current button.<p> 
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#deactivateCurrentButton()
      */
     public void deactivateCurrentButton() {
 
@@ -112,17 +117,6 @@ public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
     }
 
     /**
-     * Inserts the context menu.<p>
-     *  
-     * @param menuBeans the menu beans from the server
-     * @param structureId the structure id of the resource at which the workplace should be opened 
-     */
-    public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans, CmsUUID structureId) {
-
-        // do nothing 
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#leavePage(java.lang.String)
      */
     public void leavePage(String targetUri) {
@@ -135,10 +129,7 @@ public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
      */
     public void loadContextMenu(CmsUUID structureId, AdeContext context) {
 
-        I_CmsContextMenuEntry aliasEntry = new CmsAliasContextMenuEntry();
-        List<I_CmsContextMenuEntry> entries = new ArrayList<I_CmsContextMenuEntry>();
-        entries.add(aliasEntry);
-        CmsSitemapView.getInstance().getToolbar().getContextMenuButton().showMenu(entries);
+        CmsSitemapView.getInstance().getToolbar().getContextMenuButton().showMenu(m_contextMenuEntries);
     }
 
     /**
@@ -159,32 +150,24 @@ public class CmsSitemapToolbarHandler implements I_CmsToolbarHandler {
         m_activeButton = button;
     }
 
-    /** 
-     * Sets the context menu button.<p>
-     * 
-     * @param button the context menu button
-     */
-    public void setContextMenuButton(CmsToolbarContextButton button) {
-
-        m_contextButton = button;
-    }
-
     /**
-     * Opens the publish dialog.<p>
+     * @see org.opencms.gwt.client.ui.A_CmsToolbarHandler#transformEntries(java.util.List, org.opencms.util.CmsUUID)
      */
-    public void showPublishDialog() {
+    @Override
+    public List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, CmsUUID structureId) {
 
-        CmsPublishDialog.showPublishDialog(new CloseHandler<PopupPanel>() {
-
-            /**
-             * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
-             */
-            public void onClose(CloseEvent<PopupPanel> event) {
-
-                deactivateCurrentButton();
-
+        // TODO: do this with server side rules!!
+        List<I_CmsContextMenuEntry> result = super.transformEntries(menuBeans, structureId);
+        if (!CmsSitemapView.getInstance().getController().getData().canEditAliases()) {
+            Iterator<I_CmsContextMenuEntry> it = result.iterator();
+            while (it.hasNext()) {
+                I_CmsContextMenuEntry entry = it.next();
+                if (entry.getName().equals(CmsAliasDialog.class.getName())) {
+                    it.remove();
+                }
             }
-        });
+        }
+        return result;
     }
 
     /**

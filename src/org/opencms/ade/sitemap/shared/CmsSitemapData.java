@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.shared;
 
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -60,6 +61,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The clipboard data. */
     private CmsSitemapClipboardData m_clipboardData;
+
+    /** The sitemap context menu entries. */
+    private List<CmsContextMenuEntryBean> m_contextMenuEntries;
 
     /** The default info bean for new elements. **/
     private CmsNewResourceInfo m_defaultNewElementInfo;
@@ -135,6 +139,7 @@ public class CmsSitemapData implements IsSerializable {
      * @param templates the available templates
      * @param properties the properties
      * @param clipboardData the clipboard data
+     * @param contextMenuEntries the sitemap context menu entries
      * @param parentProperties the root entry's parent's inherited properties 
      * @param allPropNames the names of all properties 
      * @param exportRfsPrefix the export RFS prefix 
@@ -161,6 +166,7 @@ public class CmsSitemapData implements IsSerializable {
         Map<String, CmsClientTemplateBean> templates,
         Map<String, CmsXmlContentProperty> properties,
         CmsSitemapClipboardData clipboardData,
+        List<CmsContextMenuEntryBean> contextMenuEntries,
         Map<String, CmsClientProperty> parentProperties,
         List<String> allPropNames,
         String exportRfsPrefix,
@@ -186,6 +192,7 @@ public class CmsSitemapData implements IsSerializable {
         m_templates = templates;
         m_properties = properties;
         m_clipboardData = clipboardData;
+        m_contextMenuEntries = contextMenuEntries;
         m_noEditReason = noEditReason;
         m_displayToolbar = displayToolbar;
         m_defaultNewElementInfo = defaultNewElementInfo;
@@ -258,6 +265,16 @@ public class CmsSitemapData implements IsSerializable {
     public CmsSitemapClipboardData getClipboardData() {
 
         return m_clipboardData;
+    }
+
+    /**
+     * Returns the sitemap context menu entries.<p>
+     *
+     * @return the sitemap context menu entries
+     */
+    public List<CmsContextMenuEntryBean> getContextMenuEntries() {
+
+        return m_contextMenuEntries;
     }
 
     /**

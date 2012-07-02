@@ -274,12 +274,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             case containerpage:
                 cms.getRequestContext().setAttribute(
                     I_CmsMenuItemRule.ATTR_CONTEXT_INFO,
-                    I_CmsCoreService.CONTEXT_CONTAINERPAGE);
+                    I_CmsMenuItemRule.CONTEXT_CONTAINERPAGE);
                 break;
             case sitemap:
                 cms.getRequestContext().setAttribute(
                     I_CmsMenuItemRule.ATTR_CONTEXT_INFO,
-                    I_CmsCoreService.CONTEXT_SITEMAP);
+                    I_CmsMenuItemRule.CONTEXT_SITEMAP);
                 break;
             default:
                 // nothing to do here
@@ -370,7 +370,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         String result = null;
         try {
-            String resourceRootFolder = CmsResource.getFolderPath(getCmsObject().readResource(structureId).getRootPath());
+            String resourceRootFolder = structureId != null ? CmsResource.getFolderPath(getCmsObject().readResource(
+                structureId).getRootPath()) : getCmsObject().getRequestContext().getSiteRoot();
             result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
         } catch (Throwable e) {
             error(e);

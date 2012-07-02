@@ -32,7 +32,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
-import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
@@ -145,7 +145,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());
         m_menuPanel.setWidget(0, 0, menu);
         // add the close handler for the menu
-        getPopup().addCloseHandler(new CmsContextMenuHandler(menu));
+        getPopup().addCloseHandler(new CmsContextMenuCloseHandler(menu));
         getPopup().addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> closeEvent) {

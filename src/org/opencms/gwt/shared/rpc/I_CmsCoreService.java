@@ -56,12 +56,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
  */
 public interface I_CmsCoreService extends RemoteService {
 
-    /** A constant that signals that we are in the container page context. */
-    String CONTEXT_CONTAINERPAGE = "containerpage";
-
-    /** A constant that signals that we are in the sitemap context. */
-    String CONTEXT_SITEMAP = "sitemap";
-
     /**
     * Creates a new UUID.<p>
     * 

@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @since version 8.0.0
  */
-public class CmsContextMenuHandler implements CloseHandler<PopupPanel> {
+public class CmsContextMenuCloseHandler implements CloseHandler<PopupPanel> {
 
     /** The menu. */
     private CmsContextMenu m_menu;
@@ -46,7 +46,7 @@ public class CmsContextMenuHandler implements CloseHandler<PopupPanel> {
      * 
      * @param menu the menu
      */
-    public CmsContextMenuHandler(CmsContextMenu menu) {
+    public CmsContextMenuCloseHandler(CmsContextMenu menu) {
 
         m_menu = menu;
     }

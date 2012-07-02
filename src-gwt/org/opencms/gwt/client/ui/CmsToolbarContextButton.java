@@ -29,7 +29,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
-import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
@@ -133,7 +133,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
                 m_popupCloseHandler.removeHandler();
             }
             // add the close handler for the menu
-            m_menuCloseHandler = getPopup().addCloseHandler(new CmsContextMenuHandler(m_menu));
+            m_menuCloseHandler = getPopup().addCloseHandler(new CmsContextMenuCloseHandler(m_menu));
             m_popupCloseHandler = getPopup().addCloseHandler(new CloseHandler<PopupPanel>() {
 
                 public void onClose(CloseEvent<PopupPanel> event) {
