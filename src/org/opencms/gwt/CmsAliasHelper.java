@@ -54,11 +54,21 @@ import org.apache.commons.logging.Log;
  */
 public class CmsAliasHelper {
 
+    /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAliasHelper.class);
 
     /** The internal CMS object. */
     private CmsObject m_cms;
 
+    /**
+     * Returns the comma separated alias data.<p>
+     * 
+     * @param cms the OpenCms context
+     * 
+     * @return the comma separated alias data
+     * 
+     * @throws CmsException if something goes wrong reading the alias data
+     */
     public String exportAliasesAsCsv(CmsObject cms) throws CmsException {
 
         String siteRoot = cms.getRequestContext().getSiteRoot();
