@@ -343,6 +343,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** the publish engine. */
     private CmsPublishEngine m_publishEngine;
 
+    /** Object used for synchronizing updates to the user publish list. */
+    private Object m_publishListUpdateLock = new Object();
+
     /** The security manager (for access checks). */
     private CmsSecurityManager m_securityManager;
 
@@ -3198,16 +3201,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 for (int i = 0; i < m_connectionPools.size(); i++) {
                     PoolingDriver driver = m_connectionPools.get(i);
                     String[] pools = driver.getPoolNames();
-                    for (int j = 0; j < pools.length; j++) {
+                    for (String pool : pools) {
                         try {
-                            driver.closePool(pools[j]);
+                            driver.closePool(pool);
                             if (CmsLog.INIT.isDebugEnabled()) {
-                                CmsLog.INIT.debug(Messages.get().getBundle().key(
-                                    Messages.INIT_CLOSE_CONN_POOL_1,
-                                    pools[j]));
+                                CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_CLOSE_CONN_POOL_1, pool));
                             }
                         } catch (Throwable t) {
-                            LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pools[j]), t);
+                            LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pool), t);
                         }
                     }
                 }
@@ -3416,8 +3417,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // sort and check if we got the 'overwrite all' ace to stop looking up
             overwriteAll = sortAceList(entries);
 
-            for (Iterator<CmsAccessControlEntry> i = entries.iterator(); i.hasNext();) {
-                CmsAccessControlEntry e = i.next();
+            for (CmsAccessControlEntry e : entries) {
                 e.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_INHERITED);
             }
 
@@ -3477,8 +3477,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public int getActiveConnections(String dbPoolUrl) throws CmsDbException {
 
         try {
-            for (Iterator<PoolingDriver> i = m_connectionPools.iterator(); i.hasNext();) {
-                PoolingDriver d = i.next();
+            for (PoolingDriver d : m_connectionPools) {
                 ObjectPool p = d.getConnectionPool(dbPoolUrl);
                 return p.getNumActive();
             }
@@ -3997,8 +3996,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public int getIdleConnections(String dbPoolUrl) throws CmsDbException {
 
         try {
-            for (Iterator<PoolingDriver> i = m_connectionPools.iterator(); i.hasNext();) {
-                PoolingDriver d = i.next();
+            for (PoolingDriver d : m_connectionPools) {
                 ObjectPool p = d.getConnectionPool(dbPoolUrl);
                 return p.getNumIdle();
             }
@@ -4833,8 +4831,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List<CmsResource> getUsersPubList(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
 
-        updateLog(dbc);
-        return m_projectDriver.getUsersPubList(dbc, userId);
+        synchronized (m_publishListUpdateLock) {
+            updateLog(dbc);
+            return m_projectDriver.getUsersPubList(dbc, userId);
+        }
     }
 
     /**
@@ -9029,19 +9029,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void updateLog(CmsDbContext dbc) throws CmsDataAccessException {
 
-        if (m_log.isEmpty()) {
-            return;
-        }
-        List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
-        m_log.clear();
+        synchronized (m_publishListUpdateLock) {
 
-        m_projectDriver.log(dbc, log);
-        CmsLogToPublishListChangeConverter converter = new CmsLogToPublishListChangeConverter();
-        for (CmsLogEntry entry : log) {
-            converter.add(entry);
+            if (m_log.isEmpty()) {
+                return;
+            }
+
+            List<CmsLogEntry> log = new ArrayList<CmsLogEntry>(m_log);
+            m_log.clear();
+
+            m_projectDriver.log(dbc, log);
+            CmsLogToPublishListChangeConverter converter = new CmsLogToPublishListChangeConverter();
+            for (CmsLogEntry entry : log) {
+                converter.add(entry);
+            }
+            m_projectDriver.deleteUserPublishListEntries(dbc, converter.getPublishListDeletions());
+            m_projectDriver.writeUserPublishListEntries(dbc, converter.getPublishListAdditions());
         }
-        m_projectDriver.deleteUserPublishListEntries(dbc, converter.getPublishListDeletions());
-        m_projectDriver.writeUserPublishListEntries(dbc, converter.getPublishListAdditions());
     }
 
     /**
@@ -10411,8 +10415,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // removed internal extendible folder list, since iterated (sibling) resources are files in any case, never folders
 
-        for (Iterator<CmsResource> i = resourceList.iterator(); i.hasNext();) {
-            CmsResource res = i.next();
+        for (CmsResource res : resourceList) {
             try {
                 CmsLock lock = getLock(dbc, res);
                 if (lock.isPublish()) {
