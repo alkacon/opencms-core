@@ -103,7 +103,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     public void fillContent(CmsImageInfoBean infoBean) {
 
         // properties tab
-        m_propertiesTab.fillProperties(infoBean.getProperties());
+        m_propertiesTab.fillProperties(infoBean.getProperties(), infoBean.getNoEditReason());
         m_imageInfosTab.fillContent(infoBean);
         if (m_initialFill) {
             if (getGalleryMode() == GalleryMode.widget) {

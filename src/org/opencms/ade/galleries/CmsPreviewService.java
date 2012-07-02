@@ -50,6 +50,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -227,17 +228,15 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
     throws CmsException {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         resInfo.setTitle(resource.getName());
         resInfo.setStructureId(resource.getStructureId());
-        resInfo.setDescription(CmsWorkplaceMessages.getResourceTypeName(
-            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms),
-            type.getTypeName()));
+        resInfo.setDescription(CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
         resInfo.setResourcePath(cms.getSitePath(resource));
         resInfo.setResourceType(type.getTypeName());
         resInfo.setSize((resource.getLength() / 1024) + " kb");
         resInfo.setLastModified(new Date(resource.getDateLastModified()));
-
+        resInfo.setNoEditReason(new CmsResourceUtil(cms, resource).getNoEditReason(wpLocale, true));
         // reading default explorer-type properties
         CmsExplorerTypeSettings setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         List<String> properties = setting.getProperties();

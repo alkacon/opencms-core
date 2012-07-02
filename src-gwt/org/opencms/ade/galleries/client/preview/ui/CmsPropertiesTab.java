@@ -80,8 +80,9 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
      * The generic function to display the resource properties.<p>
      * 
      * @param properties the properties values
+     * @param noEditReason the reason why the properties are not editable
      */
-    public void fillProperties(Map<String, String> properties) {
+    public void fillProperties(Map<String, String> properties, String noEditReason) {
 
         // width of a property form
         int pannelWidth = calculateWidth(m_tabWidth);
@@ -96,6 +97,7 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
                     entry.getKey(),
                     pannelWidth,
                     entry.getValue(),
+                    noEditReason,
                     TM_PREVIEW_TAB_PROPERTIES);
                 if (isLeft) {
                     property.setFormStyle(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyLeft());

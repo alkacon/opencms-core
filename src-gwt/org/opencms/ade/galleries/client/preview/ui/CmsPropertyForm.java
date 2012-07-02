@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.client.preview.ui;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -80,9 +81,10 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
      * @param id the id of the property from
      * @param width the property from width
      * @param value the property value
+     * @param noEditReason the reason why the properties are not editable
      * @param textMetricsKey the key identifying the text metrics to use 
      */
-    public CmsPropertyForm(String id, int width, String value, String textMetricsKey) {
+    public CmsPropertyForm(String id, int width, String value, String noEditReason, String textMetricsKey) {
 
         m_id = id;
         m_originalValue = value;
@@ -102,6 +104,10 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
         m_inputPanel.getElement().getStyle().setWidth(getInputWidth(), Unit.PX);
         m_inputPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().inputField());
         m_textBox = new CmsTextBox();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noEditReason)) {
+            m_textBox.setTitle(noEditReason);
+            m_textBox.setReadOnly(true);
+        }
         m_textBox.setFormValueAsString(m_originalValue);
         m_textBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
