@@ -44,6 +44,12 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
  */
 public class CmsAliasErrorColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, SafeHtml> {
 
+    /** CSS class for the error text. */
+    public static final String STATUS_ERROR = I_CmsCellTableResources.INSTANCE.cellTableStyle().statusError();
+
+    /** CSS class for the 'Status OK' text. */
+    public static final String STATUS_OK = I_CmsCellTableResources.INSTANCE.cellTableStyle().statusOk();
+
     /** The CSS class used for the validation error icon. */
     public static final String WARNING_CLASS = I_CmsImageBundle.INSTANCE.style().warningIcon();
 
@@ -133,13 +139,19 @@ public class CmsAliasErrorColumn extends A_CmsAliasTableColumn<CmsAliasTableRow,
     public SafeHtml getValue(CmsAliasTableRow row) {
 
         String internalValue = getValueInternal(row);
-        String v = internalValue;
-        if (v == null) {
-            v = "";
+        String text;
+        String cssClass;
+        String title = "";
+
+        if (internalValue == null) {
+            text = CmsAliasMessages.messageStatusOk();
+            cssClass = STATUS_OK;
         } else {
-            v = SafeHtmlUtils.htmlEscape(v);
+            text = CmsAliasMessages.messageStatusError();
+            title = SafeHtmlUtils.htmlEscape(internalValue);
+            cssClass = STATUS_ERROR;
         }
-        String html = "<div class='" + (internalValue == null ? "" : WARNING_CLASS) + "' title='" + v + "'></div>";
+        String html = "<div class='" + cssClass + "' title='" + title + "'>" + text + "</div>";
         return SafeHtmlUtils.fromSafeConstant(html);
     }
 

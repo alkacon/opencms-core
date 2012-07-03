@@ -103,6 +103,12 @@ public final class Messages {
     public static final String GUI_ALIASES_NEW_BOX_LEGEND_0 = "GUI_ALIASES_NEW_BOX_LEGEND_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_STATUS_ERROR_0 = "GUI_ALIASES_STATUS_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_STATUS_OK_0 = "GUI_ALIASES_STATUS_OK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_TABLE_BOX_LEGEND_0 = "GUI_ALIASES_TABLE_BOX_LEGEND_0";
 
     /** Message constant for key in the resource bundle. */

@@ -31,6 +31,7 @@ import org.opencms.ade.sitemap.client.alias.CmsAliasEditor;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
@@ -71,8 +72,7 @@ public final class CmsAliasDialog implements I_CmsHasContextMenuCommand, I_CmsCo
      */
     public String getCommandIconClass() {
 
-        // TODO: Add icon
-        return null;
+        return I_CmsImageBundle.INSTANCE.contextMenuIcons().seo();
     }
 
 }

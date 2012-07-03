@@ -34,6 +34,7 @@ import org.opencms.db.CmsAlias;
 import org.opencms.db.CmsAliasManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
@@ -281,7 +282,7 @@ public class CmsAliasBulkEditHelper {
         if (row.getStructureId() == null) {
             String path = row.getResourcePath();
             try {
-                CmsResource resource = cms.readResource(path);
+                CmsResource resource = cms.readResource(path, CmsResourceFilter.ALL);
                 row.setStructureId(resource.getStructureId());
                 if (row.getOriginalStructureId() == null) {
                     row.setOriginalStructureId(resource.getStructureId());

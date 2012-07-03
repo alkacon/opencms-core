@@ -907,7 +907,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      */
     private CmsAliasTableRow createAliasTableEntry(CmsObject cms, CmsAlias alias) throws CmsException {
 
-        CmsResource resource = cms.readResource(alias.getStructureId());
+        CmsResource resource = cms.readResource(alias.getStructureId(), CmsResourceFilter.ALL);
         CmsAliasTableRow result = new CmsAliasTableRow();
         result.setStructureId(alias.getStructureId());
         result.setOriginalStructureId(alias.getStructureId());

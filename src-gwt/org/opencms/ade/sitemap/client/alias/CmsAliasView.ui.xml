@@ -79,6 +79,7 @@
 			
 			.actionButton {
 				float: right; 
+				margin-right: 5px;
 			} 
 			
 			.outerTableBox {

@@ -30,12 +30,23 @@ package org.opencms.gwt.client.ui.css;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
 
+/**
+ * Resources for the custom cell table style.<p>
+ */
 public interface I_CmsCellTableResources extends CellTable.Resources {
 
     I_CmsCellTableResources INSTANCE = GWT.create(I_CmsCellTableResources.class);
 
+    /**
+     * @see com.google.gwt.user.cellview.client.CellTable.Resources#cellTableStyle()
+     */
     @Source("org/opencms/gwt/client/ui/css/CellTable.css")
     I_CmsCellTableCss cellTableStyle();
 
+    /**
+     * Common CSS constants accessor.<p>
+     *  
+     * @return the bundle of constants 
+     */
     I_CmsConstantsBundle constants();
 }

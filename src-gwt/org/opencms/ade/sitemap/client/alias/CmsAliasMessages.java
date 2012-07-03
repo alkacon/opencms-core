@@ -116,18 +116,6 @@ public final class CmsAliasMessages {
      * 
      * @return the message text 
      */
-    public static String messageButtonNew() {
-
-        return "+";
-
-        //        return Messages.get().key(Messages.GUI_ALIASES_BUTTON_NEW_0);
-    }
-
-    /**
-     * Message accessor.<p>
-     * 
-     * @return the message text 
-     */
     public static String messageButtonSave() {
 
         return Messages.get().key(Messages.GUI_ALIASES_BUTTON_SAVE_0);
@@ -326,6 +314,26 @@ public final class CmsAliasMessages {
     public static String messagesEmptyImportResult() {
 
         return Messages.get().key(Messages.GUI_ALIASES_IMPORT_EMPTY_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageStatusError() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_STATUS_ERROR_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageStatusOk() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_STATUS_OK_0);
     }
 
     /**
