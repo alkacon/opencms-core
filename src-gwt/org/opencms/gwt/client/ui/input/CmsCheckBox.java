@@ -234,6 +234,16 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     }
 
     /**
+     * Returns the internal value of this Checkbox.<p>
+     * 
+     * @return the internal value of this Checkbox
+     */
+    public String getInternalValue() {
+
+        return m_value;
+    }
+
+    /**
      * Returns the text.<p>
      * 
      * @return the text as String
@@ -330,26 +340,6 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     }
 
     /**
-     * Sets the internal value of this Checkbox.<p>
-     * 
-     *  @param value the new internal value
-     */
-    public void setInternalValue(String value) {
-
-        m_value = value;
-    }
-
-    /**
-     * Returns the internal value of this Checkbox.<p>
-     * 
-     * @return the internal value of this Checkbox
-     */
-    public String getInternalValue() {
-
-        return m_value;
-    }
-
-    /**
      * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
      * 
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
@@ -362,6 +352,16 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
         }
         m_button.setHorizontalAlignment(align);
         m_align = align;
+    }
+
+    /**
+     * Sets the internal value of this Checkbox.<p>
+     * 
+     *  @param value the new internal value
+     */
+    public void setInternalValue(String value) {
+
+        m_value = value;
     }
 
     /**
