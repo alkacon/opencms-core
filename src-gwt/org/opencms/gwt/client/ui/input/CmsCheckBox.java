@@ -81,6 +81,9 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     /** Internal root widget to which all other components of this widget are attached. */
     private final FlowPanel m_root;
 
+    /** The internal value of this checkbox. */
+    private String m_value;
+
     /**
      * Default constructor which creates a checkbox without a label.<p>
      */
@@ -324,6 +327,26 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     public void setFormValueAsString(String value) {
 
         setChecked(Boolean.parseBoolean(value) || "checked".equalsIgnoreCase(value));
+    }
+
+    /**
+     * Sets the internal value of this Checkbox.<p>
+     * 
+     *  @param value the new internal value
+     */
+    public void setInternalValue(String value) {
+
+        m_value = value;
+    }
+
+    /**
+     * Returns the internal value of this Checkbox.<p>
+     * 
+     * @return the internal value of this Checkbox
+     */
+    public String getInternalValue() {
+
+        return m_value;
     }
 
     /**
