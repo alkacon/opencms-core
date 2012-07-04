@@ -58,7 +58,7 @@ public class CmsTextareaWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new CmsTextareaWidget());
+        return new FormWidgetWrapper(new CmsTextareaWidget(configuration));
     }
 
     /**
@@ -66,7 +66,7 @@ public class CmsTextareaWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsTextareaWidget();
+        return new CmsTextareaWidget(configuration);
     }
 
 }
