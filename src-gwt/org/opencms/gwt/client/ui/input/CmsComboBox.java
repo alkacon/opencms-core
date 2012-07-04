@@ -38,9 +38,18 @@ import org.opencms.util.CmsStringUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
@@ -64,10 +73,16 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     protected String m_ghostValue;
 
     /** The widget displayed in the opener. */
-    protected CmsTextBox m_openerWidget;
+    protected TextBox m_openerWidget;
+
+    /** The faidpanel of this input box. */
+    Panel m_faidpanel;
 
     /** A map from select options to their label texts. */
     private Map<String, String> m_items;
+
+    /** The inner main panel for the input box. */
+    private Panel m_mainPanel;
 
     /** The text which should be displayed in the opener if there is no selection. */
     private String m_noSelectionOpenerText;
@@ -160,6 +175,24 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    @Override
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_openerWidget.addValueChangeHandler(handler);
+        return super.addValueChangeHandler(handler);
+    }
+
+    /**
+     * 
+     */
+    public void closeSelector() {
+
+        close();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
     public String getApparentValue() {
@@ -170,6 +203,73 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
         }
         return val;
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
+     */
+    @Override
+    public Object getFormValue() {
+
+        if (m_openerWidget.getText() == null) {
+            return "";
+        }
+        return m_openerWidget.getText();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
+     */
+    @Override
+    public String getFormValueAsString() {
+
+        return (String)getFormValue();
+    }
+
+    /**
+     * Returns the mainpanel of this widget.<p>
+     * 
+     * @return the mainpanel of this widget
+     */
+    public Panel getMainPanel() {
+
+        return m_mainPanel;
+    }
+
+    /**
+     * Returns the opener of this widget.<p>
+     * 
+     * @return the opener of this widget
+     */
+    public FocusPanel getOpener() {
+
+        return m_opener;
+    }
+
+    /**
+     * Returns the selector of this widget.<p>
+     * 
+     * @return the selector of this widget
+     */
+    public Panel getSelector() {
+
+        return m_selector;
+    }
+
+    /**
+     * Returns the text box of this widget.<p>
+     * 
+     *  @return the text box of this widget
+     */
+    public TextBox getTextBox() {
+
+        return m_openerWidget;
+    }
+
+    /***/
+    public void openSelector() {
+
+        open();
     }
 
     /**
@@ -189,6 +289,37 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
         // nothing to do
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#setFormValue(java.lang.Object)
+     */
+    @Override
+    public void setFormValue(Object value) {
+
+        if (value == null) {
+            value = "";
+        }
+
+        if (value instanceof String) {
+            String strValue = (String)value;
+            if (m_selectCells.containsKey(value)) {
+                selectValue(strValue);
+                onValueSelect(strValue);
+            } else {
+                m_openerWidget.setText(strValue);
+            }
+
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    @Override
+    public void setFormValueAsString(String formValue) {
+
+        setFormValue(formValue);
     }
 
     /**
@@ -212,7 +343,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
         String message = m_noSelectionText != null ? m_noSelectionText : Messages.get().key(
             Messages.GUI_SELECTBOX_EMPTY_SELECTION_1);
         message = CmsMessages.formatMessage(message, otherOptionText);
-        //setTextForNullSelection(message);
         m_ghostValue = value;
         updateCells();
         if (ghostMode) {
@@ -232,6 +362,18 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
         for (Map.Entry<String, String> entry : items.entrySet()) {
             addOption(entry.getKey(), entry.getValue());
         }
+    }
+
+    /**
+     * Sets the title for a select option.<p>
+     * 
+     * Note: This will only affect select options added *after* calling this method! 
+     * 
+     * @param text the new title for the option 
+     */
+    public void setText(String text) {
+
+        m_openerWidget.setText(text);
     }
 
     /**
@@ -264,18 +406,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     public void setTitle(String option, String title) {
 
         m_titles.put(option, title);
-    }
-
-    /**
-     * Sets the title for a select option.<p>
-     * 
-     * Note: This will only affect select options added *after* calling this method! 
-     * 
-     * @param text the new title for the option 
-     */
-    public void setText(String text) {
-
-        m_openerWidget.getTextBox().setText(text);
     }
 
     /**
@@ -340,26 +470,50 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     @Override
     protected void initOpener() {
 
-        m_openerWidget = new CmsTextBox();
-        m_openerWidget.getTextBoxContainer().getElement().getStyle().setPaddingTop(2, Unit.PX);
-        m_openerWidget.getTextBoxContainer().getElement().getStyle().setPaddingBottom(2, Unit.PX);
-        m_openerWidget.getTextBoxContainer().getElement().getStyle().setPaddingLeft(5, Unit.PX);
-        m_openerWidget.getTextBoxContainer().getElement().getStyle().setPaddingRight(5, Unit.PX);
-        m_openerWidget.getTextBoxContainer().getElement().getStyle().setWidth(900, Unit.PX);
-        m_openerWidget.getTextBoxContainer().getElement().getStyle().setBorderWidth(0, Unit.PX);
-        m_openerWidget.getTextBox().getElement().getStyle().setPaddingRight(7, Unit.PX);
-        //m_openerWidget.addStyleName(CSS.selectBoxOpener());
-        m_opener.add(m_openerWidget);
-    }
+        m_mainPanel = new SimplePanel();
+        m_faidpanel = new SimplePanel();
+        m_openerWidget = new TextBox();
+        m_panel.add(m_faidpanel);
+        m_openerWidget.addBlurHandler(new BlurHandler() {
 
-    /**
-     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
-     */
-    @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+            public void onBlur(BlurEvent event) {
 
-        m_openerWidget.addValueChangeHandler(handler);
-        return super.addValueChangeHandler(handler);
+                // on focus lost add the fader to the textbox and set cursor to the text beginning.
+                m_openerWidget.setCursorPos(0);
+                m_panel.add(m_faidpanel);
+
+            }
+        });
+        m_openerWidget.addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                // on focus remove the fader.
+                m_panel.remove(m_faidpanel);
+
+            }
+        });
+
+        m_mainPanel.setStyleName(CSS.comboBoxOpener());
+        m_faidpanel.addDomHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                m_openerWidget.setFocus(true);
+                m_openerWidget.setCursorPos(m_openerWidget.getText().length());
+
+                if (m_popup.isShowing()) {
+                    close();
+                } else {
+                    open();
+                }
+
+            }
+        }, ClickEvent.getType());
+        m_faidpanel.setStyleName(CSS.inputBoxFaider());
+        m_mainPanel.add(m_openerWidget);
+        m_opener.add(m_mainPanel);
+
     }
 
     /**
@@ -378,13 +532,12 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     @Override
     protected void updateOpener(String newValue) {
 
-        CmsTextBox label = m_openerWidget;
+        TextBox label = m_openerWidget;
 
         CmsLabelSelectCell cell = m_selectCells.get(newValue);
         String openerText = cell.getOpenerText();
         label.setTitle(openerText);
-        label.setFormValueAsString(newValue);
-        //label.setTitle(getTitle(cell.getValue(), openerText));
+        label.setText(newValue);
     }
 
     /**
@@ -394,66 +547,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
         // do nothing 
 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
-     */
-    @Override
-    public String getFormValueAsString() {
-
-        return (String)getFormValue();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
-     */
-    @Override
-    public Object getFormValue() {
-
-        if (m_openerWidget.getFormValue() == null) {
-            return "";
-        }
-        return m_openerWidget.getFormValue();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#setFormValue(java.lang.Object)
-     */
-    @Override
-    public void setFormValue(Object value) {
-
-        if (value == null) {
-            value = "";
-        }
-
-        if (value instanceof String) {
-            String strValue = (String)value;
-            if (m_selectCells.containsKey(value)) {
-                selectValue(strValue);
-                onValueSelect(strValue);
-            } else {
-                m_openerWidget.setFormValueAsString(strValue);
-            }
-
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
-     */
-    @Override
-    public void setFormValueAsString(String formValue) {
-
-        setFormValue(formValue);
-    }
-
-    /**
-     * @param active
-     */
-    public void setActive(boolean active) {
-
-        m_openerWidget.setEnabled(active);
     }
 
 }
