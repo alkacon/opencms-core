@@ -82,6 +82,13 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String comboBoxOpener();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String error();
 
     /**
@@ -166,6 +173,27 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String inputBoxFaider();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String inputTextAreaFaider();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String inputTextBoxFaider();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String label();
 
     /**
@@ -195,6 +223,13 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String multiCheckBox();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    // String textAreaWidget();
 
     /**
      * Css class reader.<p>
@@ -231,13 +266,6 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
-    // String textAreaWidget();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
 
     String radioButtonImage();
 
@@ -261,13 +289,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String selectBoxOpener();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String comboBoxOpener();
 
     /**
      * Css class reader.<p>
