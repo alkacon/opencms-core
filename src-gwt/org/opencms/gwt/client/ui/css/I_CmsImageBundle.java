@@ -553,6 +553,14 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource triangleRightImage();
 
     /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/triangleRightImageDisabled.png")
+    ImageResource triangleRightImageDisabled();
+
+    /**
      * Image resource accessor.<p>
      *
      * @return an image resource
