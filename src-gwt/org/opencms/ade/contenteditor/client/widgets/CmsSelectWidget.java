@@ -99,7 +99,7 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
     /** Key prefix for the 'default'. */
     private static final String KEY_DEFAULT = "default='true'";
 
-    /** Empty String to replaces unnecessary keys */
+    /** Empty String to replaces unnecessary keys. */
     private static final String KEY_EMPTY = "";
 
     /** Key prefix for the 'help' text. */
