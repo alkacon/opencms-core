@@ -249,7 +249,7 @@ public class CmsElementUtil {
         elementBean.setResourceType(OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getTypeName());
         Set<String> cssResources = new LinkedHashSet<String>();
         for (String cssSitePath : CmsJspTagHeadIncludes.getCSSHeadIncludes(m_cms, element.getResource())) {
-            cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
+            cssResources.add(OpenCms.getLinkManager().substituteLinkForUnknownTarget(m_cms, cssSitePath));
         }
         elementBean.setCssResources(cssResources);
         Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
