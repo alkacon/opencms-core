@@ -55,9 +55,12 @@ public class CmsMultiCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasI
         WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsMultiCheckBoxWidgetFactory());
     }
 
+    /**
+     * @see com.alkacon.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
+     */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new CmsMultiCheckboxWidget(configuration));
+        return new FormWidgetWrapper(new CmsMultiSelectWidget(configuration));
     }
 
     /**
@@ -65,6 +68,6 @@ public class CmsMultiCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasI
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsMultiCheckboxWidget(configuration);
+        return new CmsMultiSelectWidget(configuration);
     }
 }

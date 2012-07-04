@@ -30,9 +30,6 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.css.I_CmsInputCss;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-
 import java.text.ParseException;
 
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -47,9 +44,6 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
  * 
  * */
 public class CmsPasswordWidget extends Composite implements I_EditWidget {
-
-    /** The CSS bundle for this widget. */
-    private static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
     private boolean m_active = true;
     private PasswordTextBox m_passwordTextBox = new PasswordTextBox();

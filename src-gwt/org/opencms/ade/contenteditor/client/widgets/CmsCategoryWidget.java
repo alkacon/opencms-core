@@ -68,7 +68,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     Map<Integer, String> m_selectedValue = new HashMap<Integer, String>();
 
     /** List off all categories. */
-    List<CmsCategoryTreeEntry> results = new ArrayList<CmsCategoryTreeEntry>();
+    List<CmsCategoryTreeEntry> m_results = new ArrayList<CmsCategoryTreeEntry>();
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -267,7 +267,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             protected void onResponse(List<CmsCategoryTreeEntry> result) {
 
                 // copy the result to the global variable. 
-                results = result;
+                m_results = result;
                 // start to build the widget.
                 getSelections();
             }
@@ -286,7 +286,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         // split the path into the all parts. Eg.: color/red/ => color;red;
         String[] levels = path.split("/");
         // copy the complete category tree. 
-        List<CmsCategoryTreeEntry> result = results;
+        List<CmsCategoryTreeEntry> result = m_results;
         // do for all the parts of the path.
         for (int i = 0; i < levels.length; i++) {
             // create iterator of the first level of category tree.
@@ -361,7 +361,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             }
 
         });
-        List<CmsCategoryTreeEntry> childs = results;
+        List<CmsCategoryTreeEntry> childs = m_results;
         Map<String, String> items = new LinkedHashMap<String, String>();
         // add default value to the results.
         items.put("Select value", "Select value");
