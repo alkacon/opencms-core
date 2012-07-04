@@ -29,16 +29,18 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsComboBox;
 
 import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
   * An option of a select type widget.<p>
@@ -99,7 +101,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     /** Key prefix for the 'default'. */
     private static final String KEY_DEFAULT = "default='true'";
 
-    /** Empty String to replaces unnecessary keys */
+    /** Empty String to replaces unnecessary keys. */
     private static final String KEY_EMPTY = "";
 
     /** Key prefix for the 'help' text. */
@@ -126,6 +128,9 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     /** The global select box. */
     private CmsComboBox m_comboBox = new CmsComboBox();
 
+    /** String to control new key press. */
+    private String m_oldtext = "";
+
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD.
@@ -134,9 +139,19 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
 
         parseconfig(config);
 
-        // Place the check above the box using a vertical panel.
-        VerticalPanel panel = new VerticalPanel();
-        panel.add(m_comboBox);
+        m_comboBox.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        // add some styles to parts of the combobox.
+        m_comboBox.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
+        m_comboBox.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPopup());
+        m_comboBox.getTextBox().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().comboBoxInput());
+
+        m_comboBox.getTextBox().addKeyUpHandler(new KeyUpHandler() {
+
+            public void onKeyUp(KeyUpEvent arg0) {
+
+                onkeyupevent();
+            }
+        });
 
         m_comboBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -149,7 +164,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
         });
 
         // All composites must call initWidget() in their constructors.
-        initWidget(panel);
+        initWidget(m_comboBox);
 
     }
 
@@ -209,7 +224,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        m_comboBox.setActive(active);
+        m_comboBox.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }
@@ -239,7 +254,26 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * Helper class for parsing the configuration in to a list for the combobox. <p>
+     *  Helper function to handle the popup of the combobox. <p> 
+     */
+    protected void onkeyupevent() {
+
+        String newText = m_comboBox.getFormValueAsString();
+
+        if (!newText.equals(m_oldtext)) {
+            fireChangeEvent();
+            if (!newText.equals("")) {
+                m_comboBox.closeSelector();
+            } else {
+                m_comboBox.openSelector();
+            }
+        }
+
+        m_oldtext = newText;
+    }
+
+    /**
+     * Helper function for parsing the configuration in to a list for the combobox. <p>
      * */
     private void parseconfig(String config) {
 
