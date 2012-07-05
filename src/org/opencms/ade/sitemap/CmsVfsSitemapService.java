@@ -1948,8 +1948,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 }
                 String link = "";
                 if (contentLocale != null) {
-                    link = content.getValue(REDIRECT_LINK_TARGET_XPATH, getCmsObject().getRequestContext().getLocale()).getStringValue(
-                        getCmsObject());
+                    link = content.getValue(REDIRECT_LINK_TARGET_XPATH, contentLocale).getStringValue(getCmsObject());
                 }
                 clientEntry.setRedirectTarget(link);
             } else {
