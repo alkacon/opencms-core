@@ -25,22 +25,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace;
+package org.opencms.ade.postupload.client.ui;
 
-import org.opencms.file.CmsObject;
+import org.opencms.gwt.client.property.CmsSimplePropertyEditor;
+import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
+import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
+import org.opencms.xml.content.CmsXmlContentProperty;
+
+import java.util.Map;
 
 /**
- * An interface which provides a hook which can be called after uploading files. 
+ * A property editor for the upload property dialog.<p>
  */
-public interface I_CmsPostUploadDialogHandler {
+public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
 
     /**
-     * Gets the upload hook URI.<p>
+     * Creates a new instance.<p>
      * 
-     * @param cms the current CMS context 
-     * @param uploadFolderSitePath  the upload target folder
-     *  
-     * @return the upload hook URI for the given path, or null 
+     * @param propConfig the property configuration 
+     * @param handler the property editor handler to use 
      */
-    String getUploadHook(CmsObject cms, String uploadFolderSitePath);
+    public CmsUploadPropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
+
+        super(propConfig, handler);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.CmsSimplePropertyEditor#setupFieldContainer()
+     */
+    @Override
+    protected void setupFieldContainer() {
+
+        CmsInfoBoxFormFieldPanel panel = new CmsInfoBoxFormFieldPanel(m_handler.getPageInfo());
+        m_form.setWidget(panel);
+    }
+
 }

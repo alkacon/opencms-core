@@ -25,22 +25,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace;
-
-import org.opencms.file.CmsObject;
+package org.opencms.ade.postupload.shared;
 
 /**
- * An interface which provides a hook which can be called after uploading files. 
+ * Constants used for the upload property dialog.<p> 
  */
-public interface I_CmsPostUploadDialogHandler {
+public interface I_CmsDialogConstants {
 
-    /**
-     * Gets the upload hook URI.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param uploadFolderSitePath  the upload target folder
-     *  
-     * @return the upload hook URI for the given path, or null 
-     */
-    String getUploadHook(CmsObject cms, String uploadFolderSitePath);
+    /** The request attribute name for the close link. */
+    String ATTR_CLOSE_LINK = "closeLink";
+
+    /** Dialog JSP URI. */
+    String DIALOG_JSP_URI = "/system/modules/org.opencms.ade.postupload/pages/postupload.jsp";
+
+    /** Key for the resources. */
+    String PARAM_RESOURCES = "resources";
 }

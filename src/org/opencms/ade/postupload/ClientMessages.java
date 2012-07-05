@@ -25,22 +25,38 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace;
+package org.opencms.ade.postupload;
 
-import org.opencms.file.CmsObject;
+import org.opencms.gwt.A_CmsClientMessageBundle;
+import org.opencms.gwt.I_CmsClientMessageBundle;
 
 /**
- * An interface which provides a hook which can be called after uploading files. 
+ * Client message class for the org.opencms.ade.postupload module.<p>
  */
-public interface I_CmsPostUploadDialogHandler {
+public final class ClientMessages extends A_CmsClientMessageBundle {
+
+    /** Internal instance. */
+    private static ClientMessages INSTANCE;
 
     /**
-     * Gets the upload hook URI.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param uploadFolderSitePath  the upload target folder
-     *  
-     * @return the upload hook URI for the given path, or null 
+     * Hides the public constructor for this utility class.<p>
      */
-    String getUploadHook(CmsObject cms, String uploadFolderSitePath);
+    private ClientMessages() {
+
+        // empty
+    }
+
+    /**
+     * Returns the client message instance.<p>
+     * 
+     * @return the client message instance
+     */
+    public static I_CmsClientMessageBundle get() {
+
+        if (INSTANCE == null) {
+            INSTANCE = new ClientMessages();
+        }
+        return INSTANCE;
+    }
+
 }

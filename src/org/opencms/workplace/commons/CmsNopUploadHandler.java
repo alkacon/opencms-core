@@ -25,22 +25,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace;
+package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsObject;
+import org.opencms.workplace.I_CmsPostUploadDialogHandler;
 
 /**
- * An interface which provides a hook which can be called after uploading files. 
+ * Dummy upload handler which always returns null, which means no special actions are performed after an upload.<p>
  */
-public interface I_CmsPostUploadDialogHandler {
+public class CmsNopUploadHandler implements I_CmsPostUploadDialogHandler {
 
     /**
-     * Gets the upload hook URI.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param uploadFolderSitePath  the upload target folder
-     *  
-     * @return the upload hook URI for the given path, or null 
+     * @see org.opencms.workplace.I_CmsPostUploadDialogHandler#getUploadHook(org.opencms.file.CmsObject, java.lang.String)
      */
-    String getUploadHook(CmsObject cms, String uploadFolderSitePath);
+    public String getUploadHook(CmsObject cms, String uploadFolderSitePath) {
+
+        return null;
+    }
+
 }

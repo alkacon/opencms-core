@@ -473,6 +473,36 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/ade/postupload</destination>
+			<type>folder</type>
+			<uuidstructure>f1ea9b12-7ddf-4d87-b881-57168b22df8e</uuidstructure>
+			<datelastmodified>Wed, 04 May 2011 10:14:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 10:14:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/ade/postupload/clientmessages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/ade/postupload/clientmessages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1895bac6-64ab-43de-87a6-ed05212b2c7e</uuidstructure>
+			<uuidresource>8bf357c8-9328-4d1f-a2c4-c9fdbb63c1ef</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:39:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 10:14:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
 		<file>
 			<source>system/workplace/locales/de/messages/org/opencms/ade/upload/messages_de.properties</source>
 			<destination>system/workplace/locales/de/messages/org/opencms/ade/upload/messages_de.properties</destination>

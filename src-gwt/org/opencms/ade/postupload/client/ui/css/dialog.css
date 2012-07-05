@@ -1,0 +1,43 @@
+.popup, .popupContent {}
+
+.propertyDialog {
+    overflow: auto;
+    position: relative;
+	/** Set this value to restrict the height of the dialog popup:
+		max-height: 395px;
+		padding-right: 5px;
+	*/
+}
+
+.popupOverlay {
+	background: value("constants.css.backgroundColorDialog");
+    z-index: value("constants.css.zIndexPopup");
+}
+
+.propertyDialog .fieldsetSpacer {
+	margin: 15px 0px 0px 0px;
+}
+
+.propertyDialog .labelColumn {
+	width: 100px;
+	float: left;
+	line-height: 22px;
+}
+
+.propertyDialog .block {
+	display: block;
+}
+
+.propertyDialog .inlineBlock {
+	display: inline-block;
+}
+
+.propertyDialog .inputCombination {
+	width: /*403px;*/ 500px; 
+	display: inline-block;
+	margin-bottom: 2px;
+}
+
+.propertyDialog .inputLineHeight div {
+	line-height: 20px;
+}

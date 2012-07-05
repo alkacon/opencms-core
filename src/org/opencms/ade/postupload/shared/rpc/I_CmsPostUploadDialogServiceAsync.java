@@ -25,22 +25,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace;
+package org.opencms.ade.postupload.shared.rpc;
 
-import org.opencms.file.CmsObject;
+import org.opencms.ade.postupload.shared.CmsPostUploadDialogBean;
+import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
+import org.opencms.util.CmsUUID;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * An interface which provides a hook which can be called after uploading files. 
+ * Asynchronous service interface for the upload property dialog.<p>
  */
-public interface I_CmsPostUploadDialogHandler {
+public interface I_CmsPostUploadDialogServiceAsync {
 
     /**
-     * Gets the upload hook URI.<p>
+     * Loads the dialog bean info for the given resource.<p>
      * 
-     * @param cms the current CMS context 
-     * @param uploadFolderSitePath  the upload target folder
-     *  
-     * @return the upload hook URI for the given path, or null 
+     * @param uuid the structure id of the resource to load
+     * @param asyncCallback the asynchronous callback for the result
      */
-    String getUploadHook(CmsObject cms, String uploadFolderSitePath);
+    void load(CmsUUID uuid, AsyncCallback<CmsPostUploadDialogPanelBean> asyncCallback);
+
+    /**
+     * Generates dialog data for prefetching in the host page.<p>
+     * 
+     * @param asyncCallback the asynchronous callback for the result 
+     */
+    void prefetch(AsyncCallback<CmsPostUploadDialogBean> asyncCallback);
+
 }
