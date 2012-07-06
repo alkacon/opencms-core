@@ -292,6 +292,18 @@ public final class Messages {
     public static final String GUI_REASON_0 = "GUI_REASON_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RENAME_DIALOG_MENU_TEXT_0 = "GUI_RENAME_DIALOG_MENU_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RENAME_DIALOG_NEW_NAME_LABEL_0 = "GUI_RENAME_DIALOG_NEW_NAME_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RENAME_DIALOG_OLD_NAME_LABEL_0 = "GUI_RENAME_DIALOG_OLD_NAME_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RENAME_DIALOG_TITLE_0 = "GUI_RENAME_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESET_0 = "GUI_RESET_0";
 
     /** Message constant for key in the resource bundle. */

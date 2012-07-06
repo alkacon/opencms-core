@@ -1,0 +1,48 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+		
+		.invisible {
+			display: none;
+		}
+		
+		.tablePanel {
+			margin-left: 5px;
+			margin-top: 5px;
+			margin-right: 5px; 
+			width: 500px; 
+		} 
+		
+		.inputbox {
+			width: 395px;
+		}
+	</ui:style>
+	<g:FlowPanel addStyleNames="{inputstyle.inputCss.highTextBoxes}">
+		<g:FlowPanel ui:field="m_infoBoxContainer"></g:FlowPanel>
+		<g:FlowPanel>
+			<g:HTMLPanel addStyleNames="{style.tablePanel}">
+				<table style="width: 100%" cellspacing="7">
+					<tr>
+						<td><g:InlineLabel ui:field="m_oldNameLabel" /></td>
+						<td><g:InlineLabel ui:field="m_oldNameValue" /></td>
+					</tr>
+					<tr>
+						<td><g:InlineLabel ui:field="m_newNameLabel" /></td>
+						<td><input:CmsTextBox addStyleNames="{style.inputbox}" ui:field="m_newNameInput" /></td>
+					</tr>
+				</table>
+			</g:HTMLPanel>
+		</g:FlowPanel>
+		<g:FlowPanel addStyleNames="{style.invisible}">
+			<cms:CmsPushButton ui:field="m_okButton" />
+			<cms:CmsPushButton ui:field="m_cancelButton"/>
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 
