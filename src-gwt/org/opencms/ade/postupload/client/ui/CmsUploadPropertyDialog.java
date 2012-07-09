@@ -116,7 +116,7 @@ public class CmsUploadPropertyDialog {
                 CmsPostUploadDialogBean.DICT_NAME);
             m_resources = new ArrayList<CmsUUID>(m_dialogData.getResources().keySet());
         } catch (Exception e) {
-            CmsErrorDialog.handleException(new Exception("Deserialization of lgt upload hook data failed."
+            CmsErrorDialog.handleException(new Exception("Deserialization of upload hook data failed."
                 + "This may be caused by expired java-script resources, "
                 + " please clear your browser cache and try again.", e));
 
