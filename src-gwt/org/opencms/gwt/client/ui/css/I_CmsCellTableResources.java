@@ -35,6 +35,7 @@ import com.google.gwt.user.cellview.client.CellTable;
  */
 public interface I_CmsCellTableResources extends CellTable.Resources {
 
+    /** The cell table resource instance. */
     I_CmsCellTableResources INSTANCE = GWT.create(I_CmsCellTableResources.class);
 
     /**
