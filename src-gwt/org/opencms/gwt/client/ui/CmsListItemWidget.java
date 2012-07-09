@@ -881,6 +881,14 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
+     * Makes the content of the list info box unselectable.<p>
+     */
+    public void setUnselectable() {
+
+        m_contentPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().unselectable());
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
      */
     public void truncate(String textMetricsPrefix, int widgetWidth) {

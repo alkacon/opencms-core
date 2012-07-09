@@ -1060,6 +1060,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String titleRow();
 
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String unselectable();
+
     }
 
     /** ListTree CSS. */
