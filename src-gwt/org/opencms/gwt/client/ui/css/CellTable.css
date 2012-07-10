@@ -15,9 +15,13 @@
 	
 }
 
-td.cmsCellError {
-		border: 1px solid value("constants.css.borderColorHighlight") !important;
+.statusOk {
+	color: green;
 }
+
+.statusError {
+	color: red; 
+} 
 
 .cellTableLastColumn {
   
@@ -141,7 +145,7 @@ td.cmsCellError {
 }
 
 .cellTableSelectedRowCell {
-  background: #628cd5 !important ;
+  background: #2361de !important ;
 }
 
 .cellTableKeyboardSelectedCell {

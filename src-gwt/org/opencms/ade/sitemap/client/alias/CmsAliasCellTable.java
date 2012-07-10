@@ -35,9 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
 import com.google.gwt.user.client.Timer;
@@ -80,20 +78,20 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
             });
         m_controller = controller;
-        Column<CmsAliasTableRow, Boolean> selectCol = new CmsAliasSelectionColumn(this);
-        Column<CmsAliasTableRow, String> aliasPathCol = new CmsAliasPathColumn(this);
-        Column<CmsAliasTableRow, String> resourcePathCol = new CmsResourcePathColumn(this);
-        Column<CmsAliasTableRow, String> modeCol = new CmsAliasModeColumn(this);
         m_errorColumn = new CmsAliasErrorColumn();
-
+        A_CmsAliasTableColumn<?, ?>[] columns = new A_CmsAliasTableColumn[] {
+            new CmsAliasSelectionColumn(this),
+            new CmsAliasPathColumn(this),
+            new CmsResourcePathColumn(this),
+            new CmsAliasModeColumn(this),
+            m_errorColumn};
         m_dataProvider = new ListDataProvider<CmsAliasTableRow>();
         m_dataProvider.addDataDisplay(this);
         ColumnSortEvent.ListHandler<CmsAliasTableRow> sortHandler = new ColumnSortEvent.ListHandler<CmsAliasTableRow>(
             m_dataProvider.getList());
-        sortHandler.setComparator(aliasPathCol, CmsAliasPathColumn.getComparator());
-        sortHandler.setComparator(resourcePathCol, CmsResourcePathColumn.getComparator());
-        sortHandler.setComparator(modeCol, CmsAliasModeColumn.getComparator());
-        sortHandler.setComparator(m_errorColumn, CmsAliasErrorColumn.getComparator());
+        for (A_CmsAliasTableColumn<?, ?> column : columns) {
+            column.initSortHandler(sortHandler);
+        }
         addColumnSortHandler(sortHandler);
 
         final MultiSelectionModel<CmsAliasTableRow> selectionModel = new MultiSelectionModel<CmsAliasTableRow>(
@@ -106,17 +104,9 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
             }
         });
         setSelectionModel(selectionModel, DefaultSelectionEventManager.<CmsAliasTableRow> createCheckboxManager());
-        addColumn(selectCol, CmsAliasMessages.messageColumnSelect());
-        setColumnWidth(selectCol, 50, Unit.PX);
-        addColumn(aliasPathCol, CmsAliasMessages.messageColumnAlias());
-        setColumnWidth(aliasPathCol, 350, Unit.PX);
-        addColumn(resourcePathCol, CmsAliasMessages.messageColumnPath());
-        setColumnWidth(resourcePathCol, 350, Unit.PX);
-        addColumn(modeCol, CmsAliasMessages.messageColumnMode());
-        setColumnWidth(modeCol, 200, Unit.PX);
-        addColumn(m_errorColumn, CmsAliasMessages.messageColumnError());
-        setColumnWidth(m_errorColumn, 200, Unit.PX);
-
+        for (A_CmsAliasTableColumn<?, ?> column : columns) {
+            column.addToTable(this);
+        }
         // we need to update the scroll panel when the table is redrawn, but the redraw() method of the table is asynchronous,
         // i.e. it only schedules an actual redraw. However, the method which is responsible for the actual redrawing triggers a 
         // loading state event before it does the redrawing. Using a timer at this point, we can execute code after the redrawing
@@ -136,8 +126,6 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
                 resizeTimer.schedule(10);
             }
         });
-
-        setWidth("100%");
     }
 
     /**

@@ -58,7 +58,7 @@ public class CmsDisplayWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new CmsDisplayWidget());
+        return new FormWidgetWrapper(new CmsDisplayWidget(configuration));
     }
 
     /**
@@ -66,7 +66,7 @@ public class CmsDisplayWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsDisplayWidget();
+        return new CmsDisplayWidget(configuration);
     }
 
 }

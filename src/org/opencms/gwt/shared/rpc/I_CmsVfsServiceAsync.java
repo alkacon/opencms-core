@@ -33,6 +33,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
+import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -161,6 +162,14 @@ public interface I_CmsVfsServiceAsync {
     void getPreviewInfo(String sitePath, String locale, AsyncCallback<CmsPreviewInfo> callback);
 
     /**
+     * Gets the information needed for the Rename dialog.<p>
+     * 
+     * @param structureId the structure id of the resource to rename 
+     * @param callback the callback for the result 
+     */
+    void getRenameInfo(CmsUUID structureId, AsyncCallback<CmsRenameInfoBean> callback);
+
+    /**
      * Returns the root entries of the VFS.<p>
      * 
      * @param callback the asynchronous callback
@@ -192,6 +201,16 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback 
      */
     void prepareEdit(CmsUUID currentPage, String fileNameWithMacros, AsyncCallback<CmsPrepareEditResponse> callback);
+
+    /**
+     * Renames a resource.<p>
+     * 
+     * @param structureId the structure id of the resource to rename 
+     * @param newName the new resource name 
+     * 
+     * @param callback the asynchronous callback for the result 
+     */
+    void renameResource(CmsUUID structureId, String newName, AsyncCallback<String> callback);
 
     /**
      * Saves aliases for a page.<p>

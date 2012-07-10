@@ -37,30 +37,57 @@ import com.google.gwt.resources.client.CssResource;
  */
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
 
-    /** The XML content editor CSS. */
-    public interface I_CmsXmlEditorCss extends CssResource {
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String basePanel();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String contentPanel();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String standAloneEditor();
-    }
-
     /** The XML content widget CSS. */
     public interface I_CmsWidgetCss extends I_Widgets {
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String checkboxlabel();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String checkBoxStyle();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String comboBoxInput();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String displayTextBox();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String displayTextBoxPanel();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String inputField();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String radioButtonlabel();
 
         /**
          * Css class reader.<p>
@@ -81,14 +108,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
-        String radioButtonlabel();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String checkBoxStyle();
+        String selectBoxPopup();
 
         /**
          * Css class reader.<p>
@@ -102,15 +122,43 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
-        String selectBoxPopup();
+        String textAreaBox();
 
         /**
          * Css class reader.<p>
          * 
          * @return the css class
          */
-        String inputField();
+        String textAreaBoxPanel();
 
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String textBox();
+    }
+
+    /** The XML content editor CSS. */
+    public interface I_CmsXmlEditorCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String basePanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String contentPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String standAloneEditor();
     }
 
     /** The bundle instance. */

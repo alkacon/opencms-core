@@ -1,4 +1,4 @@
-@external transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 .radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -21,24 +21,104 @@
 }
 
 
+
 .selectBoxPopup {
 	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
 }
 
 .inputField{}
 
+textarea.textAreaBox {
+	background: none repeat scroll 0 0 transparent;
+	display: block;
+	color: value("constants.css.textColor");
+	box-shadow: none;
+	width: 99%;
+	border: none;
+	resize: none;
+	overflow: hidden;
+	font-family: value("constants.css.fontFamily");
+}
 
-.radioButtonlabel {
+
+div.textAreaBoxPanel{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+}
+
+input.textBox{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	font-family: value("constants.css.fontFamily");
+	display: block;
+	color: value("constants.css.textColor");
+	box-shadow: none;
+	width: 100%;
+	padding: 0px 4px;
+	height: 19px;
+	font-size: 12px;
+	}
+
+
+input.displayTextBox{
+	background: none repeat scroll 0 0 transparent;
+	height: 18px;
+	display: block;
+	color: #7788AA;
+	box-shadow: none;
+	width: 100%;
+	border: medium none;
+}
+
+input.displayTextBox:disabled{
+	background: none repeat scroll 0 0 transparent;
+	height: 18px;
+	display: block;
+	color: value("constants.css.textColorDisabled");
+	box-shadow: none;
+	width: 100%;
+}
+
+div.displayTextBoxPanel{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 transparent;
+}
+
+input.comboBoxInput {
+    border: medium none;
+    box-shadow: none;
+    color: value("constants.css.textColor");
+    display: block;
+    height: 16px;
+    width: 97.6%;
+    font-size: 12px;
+    padding-top: 1px;
+}
+
+.radioButtonlabel,
+.checkboxlabel .cmsState-up {
   	font-weight: normal !important;
   	font-size: 12px !important;
   	color: #7788AA;
 }
-
-.radioButtonlabel.cmsState-down , .radioButtonlabel.cmsState-down-hovering{
-  	color: #000000;
+.checkboxlabel .cmsState-up-disabled, .checkboxlabel .cmsState-down-disabled{
+	font-weight: normal !important;
+  	font-size: 12px !important;
 }
-.radioButtonlabel.cmsState-up-hovering{
+
+.radioButtonlabel.cmsState-down , .radioButtonlabel.cmsState-down-hovering, 
+.checkboxlabel .cmsState-down, .checkboxlabel .cmsState-down-hovering{
+  	color: #000000;
+  	font-weight: normal !important;
+  	font-size: 12px !important;
+}
+.radioButtonlabel.cmsState-up-hovering, 
+.checkboxlabel .cmsState-up-hovering{
 	color: #445577;
+	font-weight: normal !important;
+  	font-size: 12px !important;
 }
 
 /** Checkbox styles*/
@@ -58,15 +138,24 @@
 	border: 1px solid #B1B4B8;
 }
 
+.emptyValue div.displayTextBoxPanel{
+	border: 1px solid value("constants.css.borderColor");
+	background: none repeat scroll 0 0 transparent;
+}
+.emptyValue div.textAreaBoxPanel{
+	border: 1px solid value("constants.css.borderColor");
+}
+
+
 /** The "has error" parameters. */
 
-.hasError .selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField {
+.hasError .selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel{
 	border: 1px solid value("constants.css.borderColorHighlight");
 }
 
 /** The "has warning" parameters. */
 
-.hasWarning .selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField {
+.hasWarning .selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel {
 	border: 1px solid #FFAA00;
 }
 
@@ -128,5 +217,3 @@
 .entity{}
 
 .attributeValue{}
-
- 

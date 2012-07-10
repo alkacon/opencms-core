@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Composite;
 public class CmsTableGalleryWidget extends Composite implements I_EditWidget {
 
     private boolean m_active = true;
-    private CmsLinkSelector m_LinkSelect = new CmsLinkSelector();
+    private CmsLinkSelector m_linkSelect = new CmsLinkSelector();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -52,7 +52,7 @@ public class CmsTableGalleryWidget extends Composite implements I_EditWidget {
     public CmsTableGalleryWidget(String config) {
 
         // All composites must call initWidget() in their constructors.
-        initWidget(m_LinkSelect);
+        initWidget(m_linkSelect);
         /*  m_LinkSelect.setBasePath("/system/workplace/galleries/tablegallery/index.jsp");
           m_LinkSelect.setPathAttributes("&dialogmode=widget"
               + "&params={\"startupfolder\":\"/default/site/\",\"startuptype\":\"\",\"editresource\":\"/.content/article/a_00037.html\"}");
@@ -68,7 +68,7 @@ public class CmsTableGalleryWidget extends Composite implements I_EditWidget {
               I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
 
           m_LinkSelect.getCheckBox().removeFromParent();*/
-        m_LinkSelect.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+        m_linkSelect.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> arg0) {
 
@@ -101,7 +101,7 @@ public class CmsTableGalleryWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        ValueChangeEvent.fire(this, m_LinkSelect.getFormValueAsString());
+        ValueChangeEvent.fire(this, m_linkSelect.getFormValueAsString());
     }
 
     /**
@@ -109,7 +109,7 @@ public class CmsTableGalleryWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        return m_LinkSelect.getFormValueAsString();
+        return m_linkSelect.getFormValueAsString();
     }
 
     /**
@@ -134,7 +134,7 @@ public class CmsTableGalleryWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        m_LinkSelect.setEnabled(active);
+        m_linkSelect.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }
@@ -155,7 +155,7 @@ public class CmsTableGalleryWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_LinkSelect.setFormValueAsString(value);
+        m_linkSelect.setFormValueAsString(value);
         if (fireEvents) {
             fireChangeEvent();
         }

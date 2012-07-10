@@ -27,36 +27,48 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * Provides a display only widget, for use on a widget dialog.<p>
+ * Provides a display only widget, for use on a widget dialog.<br>
+ * If there is no value in the content xml, the value<br>
+ * set in the configuration string of the xsd is shown.<p>
  *  
  * */
 public class CmsDisplayWidget extends Composite implements I_EditWidget {
 
+    /** Value of the activation. */
     private boolean m_active = true;
+
+    /** Default value set in XSD. */
+    private String m_default = "";
+
+    /** The disabled textbox to show the value. */
     private CmsTextBox m_textbox = new CmsTextBox();
 
     /**
      * Creates a new display widget.<p>
+     * 
+     * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsDisplayWidget() {
+    public CmsDisplayWidget(String config) {
 
+        m_default = config;
         // All composites must call initWidget() in their constructors.
-        initWidget(m_textbox.getTextBox());
-        // Set the textbox enabled for only show.
-        addStyleName(I_LayoutBundle.INSTANCE.form().input());
-        m_textbox.getTextBox().getElement().getStyle().setWidth(900, Unit.PX);
+        initWidget(m_textbox);
+
+        m_textbox.getTextBoxContainer().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().displayTextBoxPanel());
+        m_textbox.getTextBox().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().displayTextBox());
+        m_textbox.setReadOnly(true);
     }
 
     /**
@@ -76,11 +88,28 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * Represents a value change event.<p>
+     * 
+     */
+    public void fireChangeEvent() {
+
+        String result = "";
+        if (m_textbox.getText() != null) {
+            if (!m_textbox.getText().equals(m_default)) {
+                result = m_textbox.getText();
+            }
+        }
+
+        ValueChangeEvent.fire(this, result);
+
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     public String getValue() {
 
-        return m_textbox.getFormValueAsString();
+        return m_textbox.getText();
     }
 
     /**
@@ -104,8 +133,18 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        // check if the value has changed. If there is no change do nothing.
+        if (m_active == active) {
+            return;
+        }
+        m_textbox.setEnabled(active);
+        if (!active) {
+            m_textbox.setFormValueAsString("");
+        }
         m_active = active;
-
+        if (active) {
+            fireChangeEvent();
+        }
     }
 
     /**
@@ -114,7 +153,6 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     public void setValue(String value) {
 
         setValue(value, true);
-
     }
 
     /**
@@ -123,9 +161,14 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     public void setValue(String value, boolean fireEvents) {
 
         // add the saved value to the display field
-        m_textbox.setFormValueAsString(value);
-        m_textbox.setReadOnly(true);
-
+        if (value.equals("")) {
+            m_textbox.setFormValueAsString(m_default);
+        } else {
+            m_textbox.setFormValueAsString(value);
+        }
+        if (fireEvents) {
+            fireChangeEvent();
+        }
     }
 
 }

@@ -25,40 +25,54 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.db;
+package org.opencms.gwt.shared.alias;
 
-import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.JSON_LINE;
-import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.JSON_MESSAGE;
-import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.JSON_STATUS;
-
-import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
-import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean representing the result of trying to import a single alias.<p>
  */
-public class CmsAliasImportResult {
+public class CmsAliasImportResult implements IsSerializable {
 
-    /** The message from importing the alias. */
-    private String m_message;
+    /** The alias path. */
+    private String m_aliasPath;
 
     /** The line containing the data for the alias. */
     private String m_line;
 
+    /** The message from importing the alias. */
+    private String m_message;
+
+    /** The alias mode. */
+    private CmsAliasMode m_mode;
+
     /** The import status. */
     private CmsAliasImportStatus m_status;
+
+    /** The alias target path. */
+    private String m_targetPath;
 
     /**
      * Creates a new instance.<p>
      * 
      * @param status the import status 
      * @param message the import message
+     * @param aliasPath the alias path 
+     * @param targetPath the target path
+     * @param mode the alias mode 
      */
-    public CmsAliasImportResult(CmsAliasImportStatus status, String message) {
+    public CmsAliasImportResult(
+        CmsAliasImportStatus status,
+        String message,
+        String aliasPath,
+        String targetPath,
+        CmsAliasMode mode) {
 
         m_message = message;
         m_status = status;
+        m_aliasPath = aliasPath;
+        m_targetPath = targetPath;
+        m_mode = mode;
     }
 
     /**
@@ -76,13 +90,21 @@ public class CmsAliasImportResult {
     }
 
     /**
-     * Gets the import message.<p>
-     *  
-     * @return the import message 
+     * Default constructor used for serialization.<p>
      */
-    public String getMessage() {
+    protected CmsAliasImportResult() {
 
-        return m_message;
+        // do nothing 
+    }
+
+    /**
+     * Gets the alias path.<p>
+     * 
+     * @return the alias path 
+     */
+    public String getAliasPath() {
+
+        return m_aliasPath;
     }
 
     /** 
@@ -96,6 +118,46 @@ public class CmsAliasImportResult {
     }
 
     /**
+     * Gets the import message.<p>
+     *  
+     * @return the import message 
+     */
+    public String getMessage() {
+
+        return m_message;
+    }
+
+    /**
+     * Gets the alias mode.<p>
+     * 
+     * @return the alias mode 
+     */
+    public CmsAliasMode getMode() {
+
+        return m_mode;
+    }
+
+    /**
+     * Gets the status.<p>
+     * 
+     * @return the status 
+     */
+    public CmsAliasImportStatus getStatus() {
+
+        return m_status;
+    }
+
+    /**
+     * Gets the alias target path.<p>
+     * 
+     * @return the alias target path 
+     */
+    public String getTargetPath() {
+
+        return m_targetPath;
+    }
+
+    /**
      * Sets the line containing the alias data.<p>
      * 
      * @param line the line containing the alias data 
@@ -103,43 +165,6 @@ public class CmsAliasImportResult {
     public void setLine(String line) {
 
         m_line = line;
-    }
-
-    /**
-     * Converts the bean to a JSON object.<p>
-     * 
-     * @return a JSON object containing the data from the bean 
-     */
-    public JSONObject toJson() {
-
-        try {
-            JSONObject obj = new JSONObject();
-            if (m_line != null) {
-                obj.put(JSON_LINE, m_line);
-            }
-            if (m_message != null) {
-                obj.put(JSON_MESSAGE, m_message);
-            }
-            if (m_status != null) {
-                obj.put(JSON_STATUS, m_status.toString());
-            }
-
-            return obj;
-        } catch (JSONException e) {
-            // should never happen
-            return null;
-
-        }
-    }
-
-    /**
-     * Converts the bean to a JSON string.<p>
-     * 
-     * @return a JSON string containing the data from the bean 
-     */
-    public String toJsonString() {
-
-        return toJson().toString();
     }
 
 }

@@ -28,8 +28,8 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
@@ -37,9 +37,23 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 
 /**
@@ -50,12 +64,6 @@ import com.google.gwt.user.client.ui.TextArea;
  */
 public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
-    /** The CSS bundle for this widget. */
-    private static I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
-
-    /** Default padding for text areas. */
-    private static final int DEFAULT_PADDING = 4;
-
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
 
@@ -63,13 +71,19 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
     /** The root panel containing the other components of this widget. */
-    private Panel m_panel = new FlowPanel();
+    Panel m_panel = new FlowPanel();
 
-    /** The internal text area widet used by this widget. */
-    private TextArea m_textArea = new TextArea();
+    /** The internal text area widget used by this widget. */
+    TextArea m_textArea = new TextArea();
 
     /** The container for the text area. */
-    private CmsPaddedPanel m_textAreaContainer = new CmsPaddedPanel(DEFAULT_PADDING);
+    CmsScrollPanel m_textAreaContainer = GWT.create(CmsScrollPanel.class);
+
+    /** The default rows set. */
+    int m_defaultRows;
+
+    /** The faid panel. */
+    Panel m_faidpanel = new SimplePanel();
 
     /**
      * Text area widgets for ADE forms.<p>
@@ -79,11 +93,121 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
         super();
         initWidget(m_panel);
         m_panel.add(m_textAreaContainer);
+
+        m_textAreaContainer.getElement().getStyle().setHeight(m_textArea.getOffsetHeight(), Unit.PX);
+        m_faidpanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inputTextAreaFaider());
         m_textAreaContainer.add(m_textArea);
+        m_faidpanel.addDomHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                m_textArea.setFocus(true);
+            }
+        }, ClickEvent.getType());
+
+        m_textArea.addKeyUpHandler(new KeyUpHandler() {
+
+            public void onKeyUp(KeyUpEvent event) {
+
+                String string = m_textArea.getText();
+                String searchString = "\n";
+                int occurences = 0;
+                if (0 != searchString.length()) {
+                    for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
+                        searchString,
+                        index + 1)) {
+                        occurences++;
+                    }
+                }
+                String[] splittext = m_textArea.getText().split("\\n");
+                for (int i = 0; i < splittext.length; i++) {
+                    occurences += (splittext[i].length() * 6.88) / m_textArea.getOffsetWidth();
+                }
+                int height = occurences + 1;
+                if (m_defaultRows > height) {
+                    height = m_defaultRows;
+                }
+
+                m_textArea.setVisibleLines(height);
+                m_textAreaContainer.onResize();
+            }
+
+        });
+
         m_panel.add(m_error);
-        m_textArea.addStyleName(CSS.textArea());
         m_textAreaContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_textAreaContainer.addStyleName(CSS.textAreaContainer());
+
+        m_textArea.addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                m_panel.remove(m_faidpanel);
+
+            }
+        });
+        m_textArea.addBlurHandler(new BlurHandler() {
+
+            public void onBlur(BlurEvent event) {
+
+                String string = m_textArea.getText();
+                String searchString = "\n";
+                int occurences = 0;
+                if (0 != searchString.length()) {
+                    for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
+                        searchString,
+                        index + 1)) {
+                        occurences++;
+                    }
+                }
+                String[] splittext = m_textArea.getText().split("\\n");
+                for (int i = 0; i < splittext.length; i++) {
+                    occurences += (splittext[i].length() * 6.88) / m_textArea.getOffsetWidth();
+                }
+                int height = occurences + 1;
+                if (m_defaultRows < height) {
+                    m_panel.add(m_faidpanel);
+                }
+                m_textAreaContainer.scrollToTop();
+
+            }
+        });
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                String string = m_textArea.getText();
+                String searchString = "\n";
+                int occurences = 0;
+                if (0 != searchString.length()) {
+                    for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
+                        searchString,
+                        index + 1)) {
+                        occurences++;
+                    }
+                }
+                String[] splittext = m_textArea.getText().split("\\n");
+                for (int i = 0; i < splittext.length; i++) {
+                    occurences += (splittext[i].length() * 6.88) / m_textArea.getOffsetWidth();
+                }
+                int height = occurences + 1;
+                if (m_defaultRows > height) {
+                    height = m_defaultRows;
+                    m_panel.remove(m_faidpanel);
+                }
+                m_panel.add(m_faidpanel);
+                m_textArea.setVisibleLines(height);
+                m_textAreaContainer.onResize();
+            }
+        });
     }
 
     /**
@@ -153,10 +277,24 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
      * Returns the textarea of this widget.<p>
      * 
      * @return the textarea
-     * */
+     */
     public TextArea getTextArea() {
 
         return m_textArea;
+    }
+
+    /**
+     * Sets the height of this textarea.<p>
+     * 
+     * @param rows the value of rows should be shown
+     */
+    public void setRows(int rows) {
+
+        m_defaultRows = rows;
+        int height_scroll = (rows * 18) + 10;
+        m_textArea.setVisibleLines(rows);
+        m_textAreaContainer.setHeight(height_scroll + "px");
+        m_textAreaContainer.onResize();
     }
 
     /**
@@ -164,7 +302,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
      * 
      * @return the text area container
      */
-    public CmsPaddedPanel getTextAreaContainer() {
+    public CmsScrollPanel getTextAreaContainer() {
 
         return m_textAreaContainer;
     }
@@ -223,6 +361,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
             String strValue = (String)value;
             m_textArea.setText(strValue);
         }
+
     }
 
     /**
@@ -241,5 +380,13 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     public void setText(String text) {
 
         m_textArea.setText(text);
+    }
+
+    /**
+     * @param handler
+     */
+    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_textArea.addValueChangeHandler(handler);
     }
 }

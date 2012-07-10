@@ -60,7 +60,7 @@ public class CmsStringWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        StringWidget stringWidget = new StringWidget();
+        CmsTextboxWidget stringWidget = new CmsTextboxWidget(configuration);
         stringWidget.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().inputField());
 
         return new FormWidgetWrapper(stringWidget);

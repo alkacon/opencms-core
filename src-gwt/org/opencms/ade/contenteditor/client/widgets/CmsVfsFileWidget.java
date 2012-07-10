@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class CmsVfsFileWidget extends Composite implements I_EditWidget {
 
     private boolean m_active = true;
-    private CmsLinkSelector m_LinkSelect = new CmsLinkSelector();
+    private CmsLinkSelector m_linkSelect = new CmsLinkSelector();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -56,7 +56,7 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
 
         // Place the check above the box using a vertical panel.
         VerticalPanel panel = new VerticalPanel();
-        panel.add(m_LinkSelect);
+        panel.add(m_linkSelect);
 
         // All composites must call initWidget() in their constructors.
         initWidget(panel);
@@ -85,7 +85,7 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        ValueChangeEvent.fire(this, m_LinkSelect.getFormValueAsString());
+        ValueChangeEvent.fire(this, m_linkSelect.getFormValueAsString());
     }
 
     /**
@@ -93,7 +93,7 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        return m_LinkSelect.getFormValueAsString();
+        return m_linkSelect.getFormValueAsString();
     }
 
     /**
@@ -138,7 +138,7 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_LinkSelect.setFormValueAsString(value);
+        m_linkSelect.setFormValueAsString(value);
         if (fireEvents) {
             fireChangeEvent();
         }

@@ -154,10 +154,16 @@
 	cursor: pointer;
 }
 @sprite div.triangleRight, span.triangleRight{
+	gwt-image: "triangleRightImageDisabled";
+	display: inline-block;
+	cursor: pointer;
+}
+@sprite .cmsState-up-hovering div.triangleRight,.cmsState-up-hovering span.triangleRight{
 	gwt-image: "triangleRightImage";
 	display: inline-block;
 	cursor: pointer;
 }
+
 @sprite div.closeIcon, span.closeIcon{
 	gwt-image: "closeImage";
 	display: inline-block;

@@ -32,9 +32,12 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.util.CmsUUID;
+
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -57,6 +60,14 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback  
      */
     void createSubSitemap(CmsUUID entryId, AsyncCallback<CmsSitemapChange> callback);
+
+    /**
+     * Gets the alias import results from the server.<p>
+     * 
+     * @param resultKey the key which identifies the alias import results to get 
+     * @param asyncCallback the asynchronous callback  
+     */
+    void getAliasImportResult(String resultKey, AsyncCallback<List<CmsAliasImportResult>> asyncCallback);
 
     /**
      * Gets the initial data for the bulk alias editor.<p>

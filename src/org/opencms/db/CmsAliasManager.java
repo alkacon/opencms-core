@@ -30,6 +30,7 @@ package org.opencms.db;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.i18n.CmsEncoder;
@@ -189,23 +190,28 @@ public class CmsAliasManager {
             cms.getRequestContext().setSiteRoot(siteRoot);
             resource = cms.readResource(vfsPath);
         } catch (CmsException e) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, messageImportCantReadResource(
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasImportError, messageImportCantReadResource(
                 locale,
-                vfsPath));
+                vfsPath), aliasPath, vfsPath, mode);
         } finally {
             cms.getRequestContext().setSiteRoot(originalSiteRoot);
         }
         if (!CmsAlias.ALIAS_PATTERN.matcher(aliasPath).matches()) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, messageImportInvalidAliasPath(
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasImportError, messageImportInvalidAliasPath(
                 locale,
-                aliasPath));
+                aliasPath), aliasPath, vfsPath, mode);
         }
         List<CmsAlias> maybeAlias = getAliasesForPath(cms, siteRoot, aliasPath);
         if (maybeAlias.isEmpty()) {
             CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
             m_securityManager.addAlias(cms.getRequestContext(), newAlias);
             touch(cms, resource);
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasNew, messageImportOk(locale));
+            return new CmsAliasImportResult(
+                CmsAliasImportStatus.aliasNew,
+                messageImportOk(locale),
+                aliasPath,
+                vfsPath,
+                mode);
         } else {
             CmsAlias existingAlias = maybeAlias.get(0);
             CmsAliasFilter deleteFilter = new CmsAliasFilter(
@@ -216,7 +222,12 @@ public class CmsAliasManager {
             CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
             m_securityManager.addAlias(cms.getRequestContext(), newAlias);
             touch(cms, resource);
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasChanged, messageImportUpdate(locale));
+            return new CmsAliasImportResult(
+                CmsAliasImportStatus.aliasChanged,
+                messageImportUpdate(locale),
+                aliasPath,
+                vfsPath,
+                mode);
         }
     }
 
@@ -354,7 +365,12 @@ public class CmsAliasManager {
         try {
             return importAlias(cms, siteRoot, aliasPath, vfsPath, mode);
         } catch (CmsException e) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasError, e.getLocalizedMessage());
+            return new CmsAliasImportResult(
+                CmsAliasImportStatus.aliasImportError,
+                e.getLocalizedMessage(),
+                aliasPath,
+                vfsPath,
+                mode);
         }
     }
 
@@ -384,7 +400,10 @@ public class CmsAliasManager {
         } else if (semicolon && !comma) {
             separatorRegex = ";";
         } else {
-            return new CmsAliasImportResult(line, CmsAliasImportStatus.aliasError, messageImportBadSeparator(locale));
+            return new CmsAliasImportResult(
+                line,
+                CmsAliasImportStatus.aliasParseError,
+                messageImportBadSeparator(locale));
         }
         String[] tokens = line.split(separatorRegex);
         if ((tokens.length == 2) || (tokens.length == 3)) {
@@ -397,7 +416,7 @@ public class CmsAliasManager {
                 } catch (Exception e) {
                     return new CmsAliasImportResult(
                         line,
-                        CmsAliasImportStatus.aliasError,
+                        CmsAliasImportStatus.aliasParseError,
                         messageImportInvalidFormat(locale));
                 }
             }
@@ -405,7 +424,10 @@ public class CmsAliasManager {
             returnValue.setLine(line);
             return returnValue;
         } else {
-            return new CmsAliasImportResult(line, CmsAliasImportStatus.aliasError, messageImportInvalidFormat(locale));
+            return new CmsAliasImportResult(
+                line,
+                CmsAliasImportStatus.aliasParseError,
+                messageImportInvalidFormat(locale));
         }
     }
 
@@ -473,6 +495,13 @@ public class CmsAliasManager {
         return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_OK_0);
     }
 
+    /**
+     * Message accessor.<p>
+     * 
+     * @param locale the message locale 
+     * 
+     * @return the message string 
+     */
     private String messageImportUpdate(Locale locale) {
 
         return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_UPDATED_0);

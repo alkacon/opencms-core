@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
 public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
 
     private boolean m_active = true;
-    private org.opencms.gwt.client.ui.input.CmsVfsLinkWidget m_LinkSelect = new org.opencms.gwt.client.ui.input.CmsVfsLinkWidget();
+    private org.opencms.gwt.client.ui.input.CmsVfsLinkWidget m_linkSelect = new org.opencms.gwt.client.ui.input.CmsVfsLinkWidget();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -49,8 +49,8 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
      */
     public CmsVfsLinkWidget(String config) {
 
-        initWidget(m_LinkSelect);
-        m_LinkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+        initWidget(m_linkSelect);
+        m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> arg0) {
 
@@ -84,7 +84,7 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        ValueChangeEvent.fire(this, m_LinkSelect.getFormValueAsString());
+        ValueChangeEvent.fire(this, m_linkSelect.getFormValueAsString());
     }
 
     /**
@@ -92,7 +92,7 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        return m_LinkSelect.getFormValueAsString();
+        return m_linkSelect.getFormValueAsString();
     }
 
     /**
@@ -137,7 +137,7 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_LinkSelect.setFormValueAsString(value);
+        m_linkSelect.setFormValueAsString(value);
         if (fireEvents) {
             fireChangeEvent();
         }

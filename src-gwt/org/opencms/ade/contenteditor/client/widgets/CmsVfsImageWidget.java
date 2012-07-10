@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Composite;
 public class CmsVfsImageWidget extends Composite implements I_EditWidget {
 
     private boolean m_active = true;
-    private CmsLinkSelector m_LinkSelect = new CmsLinkSelector();
+    private CmsLinkSelector m_linkSelect = new CmsLinkSelector();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -54,7 +54,7 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
     public CmsVfsImageWidget(String config) {
 
         // All composites must call initWidget() in their constructors.
-        initWidget(m_LinkSelect);
+        initWidget(m_linkSelect);
         /* m_LinkSelect.setBasePath("/system/modules/org.opencms.ade.galleries/gallery.jsp");
          m_LinkSelect.setPathAttributes("&dialogmode=widget");
          m_LinkSelect.setPopupHeight(490);
@@ -63,14 +63,14 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
         */
         // m_LinkSelect.setPopupTitle(org.opencms.gwt.client.Messages.get().key(
         //     org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0));
-        m_LinkSelect.getTextBox().getTextBox().addStyleName(I_LayoutBundle.INSTANCE.form().input());
-        m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
+        m_linkSelect.getTextBox().getTextBox().addStyleName(I_LayoutBundle.INSTANCE.form().input());
+        m_linkSelect.getTextBox().getTextBoxContainer().removeStyleName(
             I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_LinkSelect.getTextBox().getTextBoxContainer().removeStyleName(
+        m_linkSelect.getTextBox().getTextBoxContainer().removeStyleName(
             I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
 
         // m_LinkSelect.getCheckBox().removeFromParent();
-        m_LinkSelect.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+        m_linkSelect.getTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> arg0) {
 
@@ -103,7 +103,7 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        ValueChangeEvent.fire(this, m_LinkSelect.getFormValueAsString());
+        ValueChangeEvent.fire(this, m_linkSelect.getFormValueAsString());
     }
 
     /**
@@ -111,7 +111,7 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        return m_LinkSelect.getFormValueAsString();
+        return m_linkSelect.getFormValueAsString();
     }
 
     /**
@@ -136,7 +136,7 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        m_LinkSelect.setEnabled(active);
+        m_linkSelect.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }
@@ -157,7 +157,7 @@ public class CmsVfsImageWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_LinkSelect.setFormValueAsString(value);
+        m_linkSelect.setFormValueAsString(value);
         if (fireEvents) {
             fireChangeEvent();
         }

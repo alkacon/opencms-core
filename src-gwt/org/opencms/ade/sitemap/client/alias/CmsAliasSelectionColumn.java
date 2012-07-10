@@ -30,12 +30,12 @@ package org.opencms.ade.sitemap.client.alias;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
 import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.dom.client.Style.Unit;
 
 /**
  * The column used to select rows in the alias table.<p>
  */
-public class CmsAliasSelectionColumn extends Column<CmsAliasTableRow, Boolean> {
+public class CmsAliasSelectionColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, Boolean> {
 
     /** The table in which this column is used. */
     private CmsAliasCellTable m_table;
@@ -52,6 +52,16 @@ public class CmsAliasSelectionColumn extends Column<CmsAliasTableRow, Boolean> {
     }
 
     /**
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(org.opencms.ade.sitemap.client.alias.CmsAliasCellTable)
+     */
+    @Override
+    public void addToTable(CmsAliasCellTable table) {
+
+        table.addColumn(this, "X");
+        table.setColumnWidth(this, 25, Unit.PX);
+    }
+
+    /**
      * @see com.google.gwt.user.cellview.client.Column#getValue(java.lang.Object)
      */
     @Override
@@ -59,4 +69,5 @@ public class CmsAliasSelectionColumn extends Column<CmsAliasTableRow, Boolean> {
 
         return Boolean.valueOf(m_table.getSelectionModel().isSelected(row));
     }
+
 }

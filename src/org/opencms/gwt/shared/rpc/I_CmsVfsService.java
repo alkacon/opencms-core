@@ -34,6 +34,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
+import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -194,6 +195,17 @@ public interface I_CmsVfsService extends RemoteService {
      */
     CmsPreviewInfo getPreviewInfo(String sitePath, String locale) throws CmsRpcException;
 
+    /***
+     * Gets the information necessary for the rename dialog.<p>
+     *  
+     * @param structureId the structure id of the resource to rename
+     *  
+     * @return the information needed for the rename dialog
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsRenameInfoBean getRenameInfo(CmsUUID structureId) throws CmsRpcException;
+
     /**
      * Returns the root entries of the VFS.<p>
      * 
@@ -233,6 +245,18 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException  
      */
     CmsPrepareEditResponse prepareEdit(CmsUUID currentPage, String fileNameWithMacros) throws CmsRpcException;
+
+    /**
+     * Renames a resource.<p>
+     *  
+     * @param structureId the structure id of the resource to rename 
+     * @param newName the new resource name
+     *  
+     * @return null or an error message
+     *  
+     * @throws CmsRpcException if something goes wrong  
+     */
+    String renameResource(CmsUUID structureId, String newName) throws CmsRpcException;
 
     /**
      * Saves aliases for a page.<p>
@@ -276,4 +300,5 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     Map<String, String> validateAliases(CmsUUID uuid, Map<String, String> aliasPaths) throws CmsRpcException;
+
 }

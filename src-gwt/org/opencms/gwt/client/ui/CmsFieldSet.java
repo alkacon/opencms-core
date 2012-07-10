@@ -34,6 +34,8 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsSlideAnimation;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
+import java.util.Iterator;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,6 +52,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -58,7 +61,8 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.0
  */
-public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet> {
+public class CmsFieldSet extends Composite
+implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidgets {
 
     /** The ui-binder interface for this composite. */
     protected interface I_CmsFieldSetUiBinder extends UiBinder<Widget, CmsFieldSet> {
@@ -119,6 +123,14 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
+     */
+    public void add(Widget widget) {
+
+        m_content.add(widget);
+    }
+
+    /**
      * @see com.google.gwt.event.logical.shared.HasCloseHandlers#addCloseHandler(com.google.gwt.event.logical.shared.CloseHandler)
      */
     public HandlerRegistration addCloseHandler(CloseHandler<CmsFieldSet> handler) {
@@ -142,6 +154,14 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
     public HandlerRegistration addOpenHandler(OpenHandler<CmsFieldSet> handler) {
 
         return addHandler(handler, OpenEvent.getType());
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasWidgets#clear()
+     */
+    public void clear() {
+
+        m_content.clear();
     }
 
     /**
@@ -182,6 +202,22 @@ public class CmsFieldSet extends Composite implements HasOpenHandlers<CmsFieldSe
     public boolean isOpen() {
 
         return m_opened;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasWidgets#iterator()
+     */
+    public Iterator<Widget> iterator() {
+
+        return m_content.iterator();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasWidgets#remove(com.google.gwt.user.client.ui.Widget)
+     */
+    public boolean remove(Widget widget) {
+
+        return m_content.remove(widget);
     }
 
     /** 

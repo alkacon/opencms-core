@@ -30,10 +30,9 @@ package org.opencms.workplace;
 import org.opencms.file.CmsObject;
 
 /**
- * An interface which extends the normal dialog handler by also providing a hook which can be called  
- * after uploading files. 
+ * An interface which provides a hook which can be called after uploading files. 
  */
-public interface I_CmsPostUploadDialogHandler extends I_CmsDialogHandler {
+public interface I_CmsPostUploadDialogHandler {
 
     /**
      * Gets the upload hook URI.<p>

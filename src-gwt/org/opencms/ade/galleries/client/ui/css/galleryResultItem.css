@@ -53,3 +53,5 @@
 	background-color: value("constants.css.backgroundColorSoft");
 	border-radius:2px;
 }
+
+.unselectable {} 

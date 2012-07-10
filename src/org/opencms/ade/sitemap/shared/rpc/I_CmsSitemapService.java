@@ -33,9 +33,12 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.util.CmsUUID;
+
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -61,6 +64,16 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsSitemapChange createSubSitemap(CmsUUID entryId) throws CmsRpcException;
+
+    /**
+     * Gets the alias import results from the server.<p>
+     * 
+     * @param resultKey the key which identifies the alias import results to get 
+     * @return the list of alias import results 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    List<CmsAliasImportResult> getAliasImportResult(String resultKey) throws CmsRpcException;
 
     /**
      * Gets the initial data for the bulk alias editor.<p>

@@ -91,6 +91,9 @@ public class CmsImportResultList extends Composite {
      */
     public static final I_Resources RESOURCES = GWT.create(I_Resources.class);
 
+    /** A label which is displayed before any alias files are imported. */
+    protected Label m_emptyLabel;
+
     /** The main panel containing the other parts of this widget.<p> */
     private FlowPanel m_root = new FlowPanel();
 
@@ -104,6 +107,7 @@ public class CmsImportResultList extends Composite {
 
         m_root.add(m_table);
         initWidget(m_root);
+        ensureEmptyLabel();
     }
 
     static {
@@ -120,6 +124,7 @@ public class CmsImportResultList extends Composite {
     public void addRow(String leftText, String rightText, String styleName) {
 
         ensureTable();
+        ensureNoEmptyLabel();
         int row = m_table.getRowCount();
         m_table.setWidget(row, 0, new Label(leftText));
         Label rightLabel = new Label(rightText);
@@ -134,7 +139,30 @@ public class CmsImportResultList extends Composite {
     public void clear() {
 
         m_root.clear();
+        ensureEmptyLabel();
         m_table = null;
+    }
+
+    /** 
+     * Ensures the existence of the 'empty' label.<p>
+     */
+    protected void ensureEmptyLabel() {
+
+        if (m_emptyLabel == null) {
+            m_emptyLabel = new Label(CmsAliasMessages.messagesEmptyImportResult());
+        }
+        m_root.add(m_emptyLabel);
+    }
+
+    /**
+     * Ensure that the 'empty' label does not exist.<p>
+     */
+    protected void ensureNoEmptyLabel() {
+
+        if (m_emptyLabel != null) {
+            m_emptyLabel.removeFromParent();
+            m_emptyLabel = null;
+        }
     }
 
     /**
@@ -146,6 +174,7 @@ public class CmsImportResultList extends Composite {
             m_table = new FlexTable();
             m_root.add(m_table);
         }
+
     }
 
 }

@@ -142,6 +142,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         m_entryId = entry.getId();
         m_decoratedPanel.addDecorationBoxStyle(CSS.sitemapEntryDecoration());
         m_detailPageLabelTitleGenerator = new DetailPageLabelTitleGenerator();
+        getListItemWidget().setUnselectable();
         getListItemWidget().getSubTitleSuffix().setTitleGenerator(m_detailPageLabelTitleGenerator);
         getListItemWidget().addOpenHandler(new OpenHandler<CmsListItemWidget>() {
 

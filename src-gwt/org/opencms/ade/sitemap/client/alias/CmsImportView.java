@@ -30,8 +30,9 @@ package org.opencms.ade.sitemap.client.alias;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.alias.CmsImportResultList.I_Css;
 import org.opencms.ade.sitemap.shared.I_CmsAliasConstants;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.rpc.CmsLog;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
@@ -40,16 +41,13 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -181,7 +179,7 @@ public class CmsImportView extends Composite {
      * 
      * @param result the result to add 
      */
-    protected void addImportResult(CmsClientAliasImportResult result) {
+    protected void addImportResult(CmsAliasImportResult result) {
 
         String cssClass;
         I_Css css = CmsImportResultList.RESOURCES.css();
@@ -189,7 +187,8 @@ public class CmsImportView extends Composite {
             case aliasChanged:
                 cssClass = css.aliasImportOverwrite();
                 break;
-            case aliasError:
+            case aliasImportError:
+            case aliasParseError:
                 cssClass = css.aliasImportError();
                 break;
             case aliasNew:
@@ -197,7 +196,7 @@ public class CmsImportView extends Composite {
                 cssClass = css.aliasImportOk();
                 break;
         }
-        m_results.addRow(result.getLine(), result.getMessage(), cssClass);
+        m_results.addRow(CmsAliasMessages.messageAliasImportLine(result), result.getMessage(), cssClass);
     }
 
     /**
@@ -211,23 +210,12 @@ public class CmsImportView extends Composite {
     /** 
      * Processes the result of the import operation from the server.<p>
      * 
-     * @param importResults the string containing the results of the import sent by the server
+     * @param results the string containing the results of the import sent by the server
      */
-    protected void handleImportResults(String importResults) {
+    protected void handleImportResults(List<CmsAliasImportResult> results) {
 
         clearResults();
-        JSONValue json = null;
-        try {
-            json = JSONParser.parseLenient(importResults);
-        } catch (RuntimeException t) {
-            CmsLog.log("Could not parse alias import results: '" + importResults + "'");
-            throw t;
-        }
-        JSONObject jsonObj = (JSONObject)json;
-        JSONValue resultVal = jsonObj.get(I_CmsAliasConstants.JSON_RESULT);
-        JSONArray resultArray = (JSONArray)resultVal;
-        List<CmsClientAliasImportResult> results = CmsClientAliasImportResult.parseArray(resultArray);
-        for (CmsClientAliasImportResult singleResult : results) {
+        for (CmsAliasImportResult singleResult : results) {
             addImportResult(singleResult);
         }
     }
@@ -248,19 +236,35 @@ public class CmsImportView extends Composite {
 
             public void onSubmitComplete(SubmitCompleteEvent event) {
 
-                String results = event.getResults();
-                handleImportResults(results);
-                Timer resizeTimer = new Timer() {
+                final String formPostResults = event.getResults();
+                final I_CmsSitemapServiceAsync service = CmsSitemapView.getInstance().getController().getService();
+                CmsRpcAction<List<CmsAliasImportResult>> action = new CmsRpcAction<List<CmsAliasImportResult>>() {
 
                     @Override
-                    public void run() {
+                    public void execute() {
 
-                        m_scrollPanel.onResize();
+                        start(200, false);
+                        service.getAliasImportResult(formPostResults.trim(), this);
+                    }
+
+                    @Override
+                    public void onResponse(List<CmsAliasImportResult> result) {
+
+                        stop(false);
+                        handleImportResults(result);
+                        Timer resizeTimer = new Timer() {
+
+                            @Override
+                            public void run() {
+
+                                m_scrollPanel.onResize();
+                            }
+                        };
+                        resizeTimer.schedule(100);
                     }
                 };
-                resizeTimer.schedule(100);
+                action.execute();
             }
-
         });
     }
 

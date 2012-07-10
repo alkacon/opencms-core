@@ -29,14 +29,13 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsMultiSelectBox;
-import org.opencms.gwt.client.ui.input.CmsMultiSelectCell;
-import org.opencms.gwt.client.ui.input.CmsPaddedPanel;
 import org.opencms.util.CmsPair;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,54 +44,21 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
-  * An option of a select type widget.<p>
+ * Provides a widget for a standard HTML form for a group of radio buttons.<p>
  * 
- * If options are passed from XML content schema definitions as widget configuration options,
- * the following syntax is used for defining the option values:<p>
+ * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description 
+ * about the configuration String syntax for the select options.<p>
+ *
+ * The multi select widget does use the following select options:<ul>
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getValue()}</code> for the value of the option
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> for pre-selecting a specific value 
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getOption()}</code> for the display name of the option
+ * </ul>
+ * <p>
  * 
- * <code>value='{text}' default='{true|false}' option='{text}' help='{text}|{more option definitions}</code><p>
- * 
- * For example:<p>  
- * 
- * <code>value='value1' default='true' option='option1' help='help1'|value='value2' option='option2' help='help2'</code><p>
- * 
- * The elements <code>default</code>, <code>option</code> and <code>help</code> are all optional, only a 
- * <code>value</code> must be present in the input. 
- * There should be only one <code>default</code> set to <code>true</code>
- * in the input, if more than one is detected, only the first <code>default</code> found is actually used. 
- * If no <code>option</code> is given, the value of <code>option</code> defaults to the value of the given <code>value</code>. 
- * If no <code>help</code> is given, the default is <code>null</code>.<p> 
- * 
- * Shortcut syntax options:<p>
- * 
- * If you don't specify the <code>value</code> key, the value is assumed to start at the first position of an
- * option definition. In this case the value must not be surrounded by the <code>'</code> chars. 
- * Example: <code>value='some value' default='true'</code> can also be written as <code>some value default='true'</code>.<p>
- * 
- * Only if you use the short value definition as described above, a default value can be marked with a <code>*</code>
- * at the end of the value definition.
- * Example: <code>value='some value' default='true'</code> can also be written as <code>some value*</code>.<p>
- * 
- * Only if you use the short value definition as described above, you can also append the <code>option</code>
- * to the <code>value</code> using a <code>:</code>. In this case no <code>'</code> must surround the <code>option</code>.
- * Please keep in mind that in this case the value 
- * itself can not longer contain a <code>:</code> char, since it would then be interpreted as a delimiter.
- * Example: <code>value='some value' option='some option'</code> can also be written as <code>some value:some option</code>.<p>
- * 
- * Any combinations of the above described shortcuts are allowed in the configuration option String.
- * Here are some more examples of valid configuration option Strings:<p>
- * 
- * <code>1*|2|3|4|5|6|7</code><br>
- * <code>1 default='true'|2|3|4|5|6|7</code><br>
- * <code>value='1' default='true'|value='2'|value='3'</code><br>
- * <code>value='1'|2*|value='3'</code><br>
- * <code>1*:option text|2|3|4</code><br>
- * <code>1* option='option text' help='some'|2|3|4</code><p>
- * 
- * Please note: If an entry in the configuration String is malformed, this error is silently ignored (but written 
- * to the log channel of this class at <code>INFO</code>level.<p>
  * */
 public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
 
@@ -105,7 +71,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     /** Key prefix for the 'default'. */
     private static final String KEY_DEFAULT = "default='true'";
 
-    /** Empty String to replaces unnecessary keys */
+    /** Empty String to replaces unnecessary keys. */
     private static final String KEY_EMPTY = "";
 
     /** Key prefix for the 'help' text. */
@@ -126,43 +92,57 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
 
+    /** The main panel of this widget. */
+    VerticalPanel m_panel = new VerticalPanel();
+
     /** Value of the activation. */
     private boolean m_active = true;
 
-    /** The global select box. */
-    private CmsMultiSelectBox m_selectBox = new CmsMultiSelectBox();
+    /** Array of all radio button. */
+    private CmsCheckBox[] m_arrayCheckbox;
+
+    /** The default radio button set in xsd. */
+    private List<CmsCheckBox> m_defaultCheckBox = new LinkedList<CmsCheckBox>();
 
     /**
-     * Constructs an CmsMultiSelectWidget with the in XSD schema declared configuration.<p>
-     * @param config The configuration string given from OpenCms XSD.
+     * Constructs an OptionalTextBox with the given caption on the check.<p>
+     * @param config the configuration string.
      */
+    @SuppressWarnings("boxing")
     public CmsMultiSelectWidget(String config) {
 
-        // parse configuration and create a new CmsMultiSelectCell
-        CmsMultiSelectCell cell = new CmsMultiSelectCell(parse(config));
-        cell.setOpenerText("Select value");
-        // Place the check above the box using a vertical panel.
-        CmsPaddedPanel panel = new CmsPaddedPanel(0);
-        // All composites must call initWidget() in their constructors.
-        initWidget(panel);
-        panel.add(m_selectBox);
+        // generate a list of all radio button.
+        Map<String, CmsPair<String, Boolean>> list = parse(config);
+        m_arrayCheckbox = new CmsCheckBox[list.size()];
+        int j = 0;
+        for (Map.Entry<String, CmsPair<String, Boolean>> entry : list.entrySet()) {
+            m_arrayCheckbox[j] = new CmsCheckBox(entry.getKey());
+            m_arrayCheckbox[j].setInternalValue(entry.getValue().getFirst());
+            if (entry.getValue().getSecond()) {
+                m_defaultCheckBox.add(m_arrayCheckbox[j]);
+            }
+            m_arrayCheckbox[j].addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
-        m_selectBox.addOption(cell);
-
-        // add change handler to the multi select box
-        List<CmsCheckBox> checkboxes = m_selectBox.getCheckboxes();
-        Iterator<CmsCheckBox> it = checkboxes.iterator();
-        while (it.hasNext()) {
-            it.next().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
-                public void onValueChange(ValueChangeEvent<Boolean> arg0) {
+                public void onValueChange(ValueChangeEvent<Boolean> event) {
 
                     fireChangeEvent();
 
                 }
 
             });
+            j++;
         }
+        // add separate style to the panel.
+        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
+        // iterate about all chechboxes.
+        for (int i = 0; i < m_arrayCheckbox.length; i++) {
+            // add a separate style each checkbox .
+            m_arrayCheckbox[i].addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().checkboxlabel());
+            // add the checkbox to the panel.
+            m_panel.add(m_arrayCheckbox[i]);
+        }
+        // All composites must call initWidget() in their constructors.
+        initWidget(m_panel);
 
     }
 
@@ -171,6 +151,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
+        // TODO: Auto-generated method stub
         return null;
     }
 
@@ -188,11 +169,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        // generate save string
-        String values = m_selectBox.getFormValueAsString();
-        // save string
-        ValueChangeEvent.fire(this, values);
-
+        ValueChangeEvent.fire(this, generateValue());
     }
 
     /**
@@ -200,7 +177,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        return m_selectBox.getFormValueAsString();
+        return generateValue();
     }
 
     /**
@@ -216,7 +193,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public void onAttachWidget() {
 
-        onAttach();
+        super.onAttach();
     }
 
     /**
@@ -224,7 +201,31 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        // check if the value has changed. If there is no change do nothing.
+        if (m_active == active) {
+            return;
+        }
+        // set the new value.
         m_active = active;
+        // Iterate about all checkboxes.
+        for (int i = 0; i < m_arrayCheckbox.length; i++) {
+            // set the checkbox active / inactive.
+            m_arrayCheckbox[i].setEnabled(active);
+            // if this widget is set inactive.
+            if (!active) {
+                // deselect all checkboxes.
+                m_arrayCheckbox[i].setChecked(active);
+            } else {
+                // select the default value if set.
+                if (m_defaultCheckBox != null) {
+                    Iterator<CmsCheckBox> it = m_defaultCheckBox.iterator();
+                    while (it.hasNext()) {
+                        it.next().setChecked(active);
+                    }
+                }
+            }
+        }
+        // fire value change event.
         if (active) {
             fireChangeEvent();
         }
@@ -236,7 +237,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value) {
 
-        setValue(value, true);
+        setValue(value, false);
 
     }
 
@@ -245,22 +246,29 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_selectBox.setFormValueAsString(value);
+        String[] values;
+        if ((value != null) && (value != "")) {
+            if (value.contains(",")) {
+                values = value.split(",");
+            } else {
+                values = new String[] {value};
+            }
+            for (int i = 0; i < m_arrayCheckbox.length; i++) {
+                m_arrayCheckbox[i].setChecked(false);
+                for (int j = 0; j < values.length; j++) {
+                    if (m_arrayCheckbox[i].getInternalValue().equals(values[j])) {
+                        m_arrayCheckbox[i].setChecked(true);
+                    }
+                }
+            }
 
+        }
+
+        // fire change event.
         if (fireEvents) {
             fireChangeEvent();
         }
 
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Composite#onAttach()
-     */
-    @Override
-    protected void onAttach() {
-
-        super.onAttach();
-        getElement().getParentElement().getOffsetWidth();
     }
 
     /**
@@ -387,9 +395,26 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
                 e.printStackTrace();
             }
         }
-        // TODO: implement
-        // CmsPair<String, Boolean> entry;
 
+        return result;
+    }
+
+    /**
+     * Generate a string with all selected checkboxes separated with ','.
+     * 
+     * @return a string with all selected checkboxes
+     * */
+    private String generateValue() {
+
+        String result = "";
+        for (int i = 0; i < m_arrayCheckbox.length; i++) {
+            if (m_arrayCheckbox[i].isChecked()) {
+                result += m_arrayCheckbox[i].getInternalValue() + ",";
+            }
+        }
+        if (result.contains(",")) {
+            result = result.substring(0, result.lastIndexOf(","));
+        }
         return result;
     }
 }

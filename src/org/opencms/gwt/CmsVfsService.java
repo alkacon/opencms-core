@@ -51,6 +51,7 @@ import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsPrincipalBean;
+import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -67,6 +68,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
@@ -455,6 +457,23 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getRenameInfo(org.opencms.util.CmsUUID)
+     */
+    public CmsRenameInfoBean getRenameInfo(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource resource = cms.readResource(structureId);
+            CmsListInfoBean listInfo = getPageInfo(resource);
+            String sitePath = cms.getSitePath(resource);
+            return new CmsRenameInfoBean(sitePath, structureId, listInfo);
+        } catch (CmsException e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getRootEntries()
      */
     public List<CmsVfsEntryBean> getRootEntries() throws CmsRpcException {
@@ -581,6 +600,52 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (CmsException e) {
             error(e);
         }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#renameResource(org.opencms.util.CmsUUID, java.lang.String)
+     */
+    public String renameResource(CmsUUID structureId, String newName) throws CmsRpcException {
+
+        try {
+            return renameResourceInternal(structureId, newName);
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
+     * Internal implementation for renaming a resource.<p>
+     * 
+     * @param structureId the structure id of the resource to rename 
+     * @param newName the new resource name 
+     * @return either null if the rename was successful, or an error message 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public String renameResourceInternal(CmsUUID structureId, String newName) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        try {
+            CmsResource.checkResourceName(newName);
+        } catch (CmsIllegalArgumentException e) {
+            return e.getLocalizedMessage(locale);
+        }
+        CmsResource resource = cms.readResource(structureId);
+        String oldSitePath = cms.getSitePath(resource);
+        String parentPath = CmsResource.getParentFolder(oldSitePath);
+        String newSitePath = CmsStringUtil.joinPaths(parentPath, newName);
+        try {
+            ensureLock(resource);
+            cms.moveResource(oldSitePath, newSitePath);
+            resource = cms.readResource(structureId);
+        } catch (CmsException e) {
+            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        }
+        cms.unlockResource(resource);
         return null;
     }
 

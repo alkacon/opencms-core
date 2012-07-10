@@ -47,4 +47,18 @@ public interface I_CmsCellTableCss extends CellTable.Style {
      * @return a CSS class 
      */
     String cmsRowErrors();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class 
+     */
+    String statusError();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class 
+     */
+    String statusOk();
 }

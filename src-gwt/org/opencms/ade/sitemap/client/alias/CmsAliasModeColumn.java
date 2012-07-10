@@ -38,12 +38,13 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
-import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 
 /**
  * The table column for displaying/editing the alias mode.<p>
  */
-public class CmsAliasModeColumn extends Column<CmsAliasTableRow, String> {
+public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, String> {
 
     /** A map used to translate between the internal names and the user readable names of the selectable values. */
     private static BiMap<CmsAliasMode, String> nameLookup = HashBiMap.create();
@@ -120,12 +121,31 @@ public class CmsAliasModeColumn extends Column<CmsAliasTableRow, String> {
     }
 
     /**
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(org.opencms.ade.sitemap.client.alias.CmsAliasCellTable)
+     */
+    @Override
+    public void addToTable(CmsAliasCellTable table) {
+
+        table.addColumn(this, CmsAliasMessages.messageColumnMode());
+        table.setColumnWidth(this, 220, Unit.PX);
+    }
+
+    /**
      * @see com.google.gwt.user.cellview.client.Column#getValue(java.lang.Object)
      */
     @Override
     public String getValue(CmsAliasTableRow object) {
 
         return nameLookup.get(object.getMode());
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#initSortHandler(com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler)
+     */
+    @Override
+    public void initSortHandler(ListHandler<CmsAliasTableRow> sortHandler) {
+
+        sortHandler.setComparator(this, getComparator());
     }
 
 }
