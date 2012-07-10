@@ -334,7 +334,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          * 
          * @param xmlContentDefinition the XML content definition
          * @param path the element path
-         * @param attributeName the attribute name
          */
         private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 

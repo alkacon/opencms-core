@@ -356,7 +356,6 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
      * Parses a byte array containing HTML code with different parsing modes.<p>
      * 
      * @param htmlInput a byte array containing raw HTML code
-     * @param encoding the  encoding
      * 
      * @return parsed and cleared HTML code
      * 
