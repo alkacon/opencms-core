@@ -94,7 +94,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
         StringBuffer result = new StringBuffer(256);
 
         // get the select box options
-        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog.getMessages(), param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
 
         if (options.size() > 0) {
             // create combo div
@@ -199,7 +199,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
         result.append("\" id=\"");
         result.append(id);
         result.append("\"");
-        parseSelectOptions(cms, widgetDialog.getMessages(), param);
+        parseSelectOptions(cms, widgetDialog, param);
         String selected = getSelectedValue(cms, param);
         if (selected != null) {
             // append the selection 

@@ -159,13 +159,6 @@ public interface I_CmsWidget {
     void setConfiguration(String configuration);
 
     /**
-     * Returns the client informations of some widgets.<p>
-     * 
-     * @return the information string
-     */
-    String getClientInformation();
-
-    /**
      * Sets the value of in the given widget parameter by reading the "right" 
      * value from the offered map of parameters.<p>
      * 

@@ -93,7 +93,7 @@ public class CmsRadioSelectWidget extends A_CmsSelectWidget {
         result.append("<td class=\"xmlTd\">");
 
         // get select box options from default value String
-        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog.getMessages(), param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
         String selected = getSelectedValue(cms, param);
         Iterator<CmsSelectWidgetOption> i = options.iterator();
         while (i.hasNext()) {

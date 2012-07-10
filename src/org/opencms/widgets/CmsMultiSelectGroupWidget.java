@@ -303,9 +303,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
-     * Returns the select options for the widget, generated from the configured input fields of the XML content.<p>
-     * 
-     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.CmsSelectGroupWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override
     protected List<CmsSelectWidgetOption> parseSelectOptions(
@@ -459,7 +457,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsWidget#getClientInformation()
+     * @see org.opencms.widgets.CmsSelectGroupWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     @Override
     public String getConfiguration(CmsObject cms, CmsResource resource) {

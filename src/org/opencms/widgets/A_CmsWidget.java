@@ -333,12 +333,4 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         result.append("\"></script>");
         return result.toString();
     }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getClientInformation()
-     */
-    public String getClientInformation() {
-
-        return getConfiguration();
-    }
 }

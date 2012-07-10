@@ -159,7 +159,7 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
 
-        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog.getMessages(), param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
         result.append("<td class=\"xmlTd\">");
         // the configured select widget height start element
         if (!m_asCheckBoxes) {

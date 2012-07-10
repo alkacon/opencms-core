@@ -125,20 +125,28 @@ public class CmsSelectGroupWidget extends CmsSelectWidget implements I_CmsADEWid
     }
 
     /**
-     * Returns the select options for the widget, generated from the configured input fields of the XML content.<p>
+     * Returns the list of configured select options, parsing the configuration String if required.<p>
      * 
-     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     * The list elements are of type <code>{@link CmsSelectWidgetOption}</code>.
+     * The configuration String is parsed only once and then stored internally.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param messages the messages of this dialog
+     * @param param the widget parameter of this dialog
+     * 
+     * @return the list of select options
+     * 
+     * @see CmsSelectWidgetOption
      */
-    @Override
     protected List<CmsSelectWidgetOption> parseSelectOptions(
         CmsObject cms,
-        CmsMessages widgetDialog,
+        CmsMessages messages,
         I_CmsWidgetParameter param) {
 
         // only create options if not already done
         if (getSelectOptions() == null) {
             // parse widget configuration
-            parseConfiguration(cms, widgetDialog);
+            parseConfiguration(cms, messages);
             List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
 
             if (isUseGroupNames()) {
@@ -277,7 +285,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget implements I_CmsADEWid
     }
 
     /**
-
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public String getConfiguration(CmsObject cms, CmsResource resource) {
 
@@ -289,27 +297,35 @@ public class CmsSelectGroupWidget extends CmsSelectWidget implements I_CmsADEWid
         return results;
     }
 
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
     public List<String> getCssResourceLinks(CmsObject cms) {
 
-        // TODO: Auto-generated method stub
         return null;
     }
 
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
     public String getInitCall() {
 
-        // TODO: Auto-generated method stub
         return null;
     }
 
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
     public List<String> getJavaScriptResourceLinks(CmsObject cms) {
 
-        // TODO: Auto-generated method stub
         return null;
     }
 
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
     public boolean isInternal() {
 
-        // TODO: Auto-generated method stub
         return true;
     }
 }
