@@ -322,7 +322,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         I_CmsWidgetParameter param) {
 
         if (m_widgetConfiguration == null) {
-            m_widgetConfiguration = new CmsGalleryWidgetConfiguration(cms, widgetDialog, param, getConfiguration());
+            m_widgetConfiguration = new CmsGalleryWidgetConfiguration(cms, widgetDialog.getMessages(), param, getConfiguration());
         }
         return m_widgetConfiguration;
     }

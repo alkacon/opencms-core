@@ -79,4 +79,5 @@ public interface I_CmsADEWidget extends I_CmsWidget {
      * @return <code>true</code> if this is an internal widget
      */
     boolean isInternal();
+
 }

@@ -28,6 +28,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 
 /**
  * Enables a dynamic configuration of values for the {@link A_CmsGalleryWidget}.<p>
@@ -54,7 +55,7 @@ public interface I_CmsGalleryWidgetDynamicConfiguration {
      * @param param the widget parameter to generate the widget for
      * @return the required information for the initial item list to load
      */
-    String getStartup(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
+    String getStartup(CmsObject cms, CmsMessages widgetDialog, I_CmsWidgetParameter param);
 
     /**
      * Returns the type of the initial item list to load, either gallery or category.<p>
@@ -64,5 +65,5 @@ public interface I_CmsGalleryWidgetDynamicConfiguration {
      * @param param the widget parameter to generate the widget for
      * @return the type of the initial image list to load, either gallery or category
      */
-    String getType(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
+    String getType(CmsObject cms, CmsMessages widgetDialog, I_CmsWidgetParameter param);
 }

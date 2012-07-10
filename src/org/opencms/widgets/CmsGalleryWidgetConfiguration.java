@@ -28,6 +28,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.util.CmsMacroResolver;
@@ -95,7 +96,7 @@ public class CmsGalleryWidgetConfiguration {
      */
     public CmsGalleryWidgetConfiguration(
         CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
+        CmsMessages widgetDialog,
         I_CmsWidgetParameter param,
         String configuration) {
 
@@ -143,13 +144,13 @@ public class CmsGalleryWidgetConfiguration {
      * @param param the widget parameter to generate the widget for
      * @param configuration the widget configuration string
      */
-    protected void init(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param, String configuration) {
+    protected void init(CmsObject cms, CmsMessages widgetDialog, I_CmsWidgetParameter param, String configuration) {
 
         if (configuration == null) {
             // no configuration String found, return
             return;
         }
-        configuration = CmsMacroResolver.resolveMacros(configuration, cms, widgetDialog.getMessages());
+        configuration = CmsMacroResolver.resolveMacros(configuration, cms, widgetDialog);
         JSONObject jsonObj = new JSONObject();
         try {
             jsonObj = new JSONObject(configuration);

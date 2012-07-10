@@ -33,6 +33,8 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -150,7 +152,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
         String height = getHeight();
-        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog.getMessages(), param);
         result.append("<td class=\"xmlTd\">");
         // the configured select widget height start element
         if (m_asCheckBoxes && CmsStringUtil.isNotEmptyOrWhitespaceOnly(height)) {
@@ -308,7 +310,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     @Override
     protected List<CmsSelectWidgetOption> parseSelectOptions(
         CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
+        CmsMessages widgetDialog,
         I_CmsWidgetParameter param) {
 
         // only create options if not already done
@@ -425,9 +427,9 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
      * @param cms the current users OpenCms context
      * @param widgetDialog the dialog of this widget
      */
-    private void parseConfiguration(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    private void parseConfiguration(CmsObject cms, CmsMessages widgetDialog) {
 
-        String configString = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog.getMessages());
+        String configString = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog);
         Map<String, String> config = CmsStringUtil.splitAsMap(configString, "|", "=");
         // get the list of group names to show
         String groups = config.get(CONFIGURATION_GROUPS);
@@ -454,5 +456,18 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
         // set the flag to include sub OUs
         m_includeSubOus = Boolean.parseBoolean(config.get(CONFIGURATION_INCLUDESUBOUS));
         m_defaultAllAvailable = Boolean.parseBoolean(config.get(CONFIGURATION_DEFAULT_ALL));
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getClientInformation()
+     */
+    @Override
+    public String getConfiguration(CmsObject cms, CmsResource resource) {
+
+        CmsMessages messages = new CmsMessages(resource.getName(), "en");
+        parseSelectOptions(cms, messages, null);
+        String results = getConfiguration();
+
+        return results;
     }
 }

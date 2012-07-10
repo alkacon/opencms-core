@@ -28,6 +28,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
@@ -229,7 +230,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
      */
     protected List<CmsSelectWidgetOption> parseSelectOptions(
         CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
+        CmsMessages widgetDialog,
         I_CmsWidgetParameter param) {
 
         if (m_selectOptions == null) {
@@ -238,7 +239,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
                 // workaround: use the default value to parse the options
                 configuration = param.getDefault(cms);
             }
-            configuration = CmsMacroResolver.resolveMacros(configuration, cms, widgetDialog.getMessages());
+            configuration = CmsMacroResolver.resolveMacros(configuration, cms, widgetDialog);
             m_selectOptions = CmsSelectWidgetOption.parseOptions(configuration);
             if (m_selectOptions == Collections.EMPTY_LIST) {
                 m_selectOptions = new ArrayList<CmsSelectWidgetOption>();

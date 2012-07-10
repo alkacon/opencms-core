@@ -102,7 +102,7 @@ public class CmsSelectWidget extends A_CmsSelectWidget {
         result.append("\">");
 
         // get select box options from default value String
-        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, param);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog.getMessages(), param);
         String selected = getSelectedValue(cms, param);
         Iterator<CmsSelectWidgetOption> i = options.iterator();
         while (i.hasNext()) {

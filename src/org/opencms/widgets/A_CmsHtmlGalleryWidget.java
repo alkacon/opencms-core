@@ -128,7 +128,7 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
         // reads the configuration String for this widget
         CmsGalleryWidgetConfiguration configuration = new CmsGalleryWidgetConfiguration(
             cms,
-            widgetDialog,
+            widgetDialog.getMessages(),
             param,
             getConfiguration());
 

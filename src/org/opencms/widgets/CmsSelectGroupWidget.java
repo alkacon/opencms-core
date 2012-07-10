@@ -29,6 +29,8 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -65,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 8.0.0 
  */
-public class CmsSelectGroupWidget extends CmsSelectWidget {
+public class CmsSelectGroupWidget extends CmsSelectWidget implements I_CmsADEWidget {
 
     /** Configuration option key: group filter. */
     protected static final String CONFIGURATION_GROUPFILTER = "groupfilter";
@@ -130,7 +132,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
     @Override
     protected List<CmsSelectWidgetOption> parseSelectOptions(
         CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
+        CmsMessages widgetDialog,
         I_CmsWidgetParameter param) {
 
         // only create options if not already done
@@ -241,33 +243,73 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
      * @param cms the current users OpenCms context
      * @param widgetDialog the dialog of this widget
      */
-    private void parseConfiguration(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    private void parseConfiguration(CmsObject cms, CmsMessages widgetDialog) {
 
-        String configString = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog.getMessages());
-        Map<String, String> config = CmsStringUtil.splitAsMap(configString, "|", "=");
-        // get the list of group names to show
-        String groups = config.get(CONFIGURATION_GROUPS);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(groups)) {
-            m_groupNames = CmsStringUtil.splitAsList(groups, ',', true);
-        }
-        // get the regular expression to filter the groups
-        String filter = config.get(CONFIGURATION_GROUPFILTER);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
-            try {
-                m_groupFilter = Pattern.compile(filter);
-            } catch (PatternSyntaxException e) {
-                // log pattern syntax errors
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_WIDGET_SELECTGROUP_PATTERN_1, filter));
+        String configString = "";
+        if (widgetDialog != null) {
+            configString = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog);
+            Map<String, String> config = CmsStringUtil.splitAsMap(configString, "|", "=");
+            // get the list of group names to show
+            String groups = config.get(CONFIGURATION_GROUPS);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(groups)) {
+                m_groupNames = CmsStringUtil.splitAsList(groups, ',', true);
             }
+            // get the regular expression to filter the groups
+            String filter = config.get(CONFIGURATION_GROUPFILTER);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
+                try {
+                    m_groupFilter = Pattern.compile(filter);
+                } catch (PatternSyntaxException e) {
+                    // log pattern syntax errors
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_WIDGET_SELECTGROUP_PATTERN_1, filter));
+                }
+            }
+            // get the OU to read the groups from
+            m_ouFqn = config.get(CONFIGURATION_OUFQN);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_ouFqn)) {
+                m_ouFqn = "";
+            } else if (!m_ouFqn.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
+                m_ouFqn += CmsOrganizationalUnit.SEPARATOR;
+            }
+            // set the flag to include sub OUs
+            m_includeSubOus = Boolean.valueOf(config.get(CONFIGURATION_INCLUDESUBOUS)).booleanValue();
         }
-        // get the OU to read the groups from
-        m_ouFqn = config.get(CONFIGURATION_OUFQN);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_ouFqn)) {
-            m_ouFqn = "";
-        } else if (!m_ouFqn.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
-            m_ouFqn += CmsOrganizationalUnit.SEPARATOR;
-        }
-        // set the flag to include sub OUs
-        m_includeSubOus = Boolean.valueOf(config.get(CONFIGURATION_INCLUDESUBOUS)).booleanValue();
+    }
+
+    /**
+
+     */
+    public String getConfiguration(CmsObject cms, CmsResource resource) {
+
+        CmsMessages messages = new CmsMessages(resource.getName(), "en");
+
+        parseSelectOptions(cms, messages, null);
+        String results = getConfiguration();
+
+        return results;
+    }
+
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    public String getInitCall() {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    public boolean isInternal() {
+
+        // TODO: Auto-generated method stub
+        return true;
     }
 }

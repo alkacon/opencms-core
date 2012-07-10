@@ -184,7 +184,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
             // reads the configuration String for this widget
             CmsVfsImageWidgetConfiguration configuration = new CmsVfsImageWidgetConfiguration(
                 cms,
-                widgetDialog,
+                widgetDialog.getMessages(),
                 param,
                 getConfiguration());
 
@@ -223,7 +223,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
             // reads the configuration String for this widget
             CmsGalleryWidgetConfiguration configuration = new CmsGalleryWidgetConfiguration(
                 cms,
-                widgetDialog,
+                widgetDialog.getMessages(),
                 param,
                 getConfiguration());
 
