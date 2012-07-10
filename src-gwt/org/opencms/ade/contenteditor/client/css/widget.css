@@ -1,4 +1,4 @@
-@external textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external html-face, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 .radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -6,7 +6,7 @@
     border: 1px solid #7788AA /*value("constants.css.borderColor")*/;
     display: block;
     vertical-alignment: middle;
-    padding-bottom: 3px;
+    padding-bottom: 1px;
     padding-left: 3px;
     padding-top: 3px;
 }
@@ -59,7 +59,7 @@ input.textBox{
 	padding: 0px 4px;
 	height: 19px;
 	font-size: 12px;
-	}
+}
 
 
 input.displayTextBox{
@@ -98,27 +98,42 @@ input.comboBoxInput {
 }
 
 .radioButtonlabel,
-.checkboxlabel .cmsState-up {
-  	font-weight: normal !important;
-  	font-size: 12px !important;
-  	color: #7788AA;
+.checkboxlabel {
+	display: block;
 }
-.checkboxlabel .cmsState-up-disabled, .checkboxlabel .cmsState-down-disabled{
-	font-weight: normal !important;
-  	font-size: 12px !important;
+
+.radioButtonlabel.cmsState-up,
+.checkboxlabel .cmsState-up {
+  	color: #7788AA;
+  	display: block;
+}
+div.checkboxlabel .cmsState-up-disabled,
+div.checkboxlabel .cmsState-down-disabled,
+div.radioButtonlabel.cmsState-up-disabled,
+div.radioButtonlabel.cmsState-down-disabled{
+  	display: block;
 }
 
 .radioButtonlabel.cmsState-down , .radioButtonlabel.cmsState-down-hovering, 
 .checkboxlabel .cmsState-down, .checkboxlabel .cmsState-down-hovering{
   	color: #000000;
-  	font-weight: normal !important;
-  	font-size: 12px !important;
+  	display: block;
 }
 .radioButtonlabel.cmsState-up-hovering, 
 .checkboxlabel .cmsState-up-hovering{
 	color: #445577;
-	font-weight: normal !important;
-  	font-size: 12px !important;
+  	display: block;
+}
+
+.radioButtonlabel div.html-face,
+.checkboxlabel div.html-face{
+	text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    font-weight: normal;
+  	font-size: 12px ;
 }
 
 /** Checkbox styles*/
@@ -135,7 +150,7 @@ input.comboBoxInput {
 
 
 .emptyValue .radioButtonPanel {
-	border: 1px solid #B1B4B8;
+	border: 1px solid value("constants.css.borderColor");
 }
 
 .emptyValue div.displayTextBoxPanel{
@@ -146,16 +161,20 @@ input.comboBoxInput {
 	border: 1px solid value("constants.css.borderColor");
 }
 
+.emptyValue input.textBox{
+	border: 1px solid value("constants.css.borderColor");
+}
+
 
 /** The "has error" parameters. */
 
-.hasError .selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel{
+.hasError .selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError input.textBox{
 	border: 1px solid value("constants.css.borderColorHighlight");
 }
 
 /** The "has warning" parameters. */
 
-.hasWarning .selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel {
+.hasWarning .selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning input.textBox {
 	border: 1px solid #FFAA00;
 }
 
@@ -200,6 +219,14 @@ input.comboBoxInput {
     padding-bottom: 3px;
     padding-left: 3px;
     padding-top: 3px;
+}
+
+.scrollContainer table{
+	width: 100%
+}
+.scrollContainer td{
+	border:1px solid #000;
+	overflow:hidden; 
 }
 	
 .emptyValue{}
