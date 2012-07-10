@@ -4,6 +4,7 @@ div.scrollBar{
 	right: 0px;
 	width: 8px;
 	bottom: 0px;
+	margin-bottom: 7px;
 }
 div.scrollBar:focus{
 	border:none;
@@ -47,7 +48,6 @@ div.scrollbarLayer{
     bottom:0px;
     right:-50px;
 }
-
 
 div.hiddenSize{
 	height:0px;

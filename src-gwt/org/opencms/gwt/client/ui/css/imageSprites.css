@@ -1,4 +1,4 @@
-@external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+@external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, openerHover;
 
 @sprite .cmsState-down .addIcon, .cmsState-up-hovering .addIcon, .cmsState-down-hovering .addIcon{
     gwt-image: "icons.addIconActive";
@@ -158,7 +158,7 @@
 	display: inline-block;
 	cursor: pointer;
 }
-@sprite .cmsState-up-hovering div.triangleRight,.cmsState-up-hovering span.triangleRight{
+@sprite .cmsState-up-hovering div.triangleRight,.cmsState-up-hovering span.triangleRight, .openerHover span.triangleRight{
 	gwt-image: "triangleRightImage";
 	display: inline-block;
 	cursor: pointer;

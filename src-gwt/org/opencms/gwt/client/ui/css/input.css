@@ -191,6 +191,7 @@ input.textBoxReadOnly {
 	width: auto;
 	height: auto;
 	min-height: 0px;
+	cursor: pointer;
 	border: 1px solid value("constants.css.borderColor");
 	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
@@ -270,6 +271,7 @@ div.selectHover, div.selectorPopup div.selectBoxSelector div.selectBoxCell.selec
 
 div.selectBoxOpener {
 	margin: 2px 12px 2px 5px;
+	cursor: pointer;
 }
 
 .selectBoxSelected .comboBoxOpener{
@@ -296,7 +298,7 @@ div.selectBoxOpener {
 	}
 } @elif user.agent gecko gecko1_8 {
 	.inputTextAreaFaider{
-		background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 90%, rgba(255,255,255,1) 100%);
+		background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%);
 	}
 	
 	.inputBoxFaider, .inputTextBoxFaider  {
@@ -304,7 +306,7 @@ div.selectBoxOpener {
 	}
 } @elif user.agent safari {
 	.inputTextAreaFaider{
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(90%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1)));
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.6)), color-stop(100%,rgba(255,255,255,1)));
 	}
 	
 	.inputBoxFaider, .inputTextBoxFaider  {
@@ -312,7 +314,7 @@ div.selectBoxOpener {
 	}
 } @elif user.agent opera {
 	.inputTextAreaFaider{
-		background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 90%,rgba(255,255,255,1) 100%);
+		background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,1) 100%);
 	}
 	
 	.inputBoxFaider, .inputTextBoxFaider  {
@@ -328,7 +330,7 @@ div.selectBoxOpener {
 	}
 } @else {
 	.inputTextAreaFaider{
-		background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 90%,rgba(255,255,255,1) 100%);
+		background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,1) 100%);
 	}
 	
 	.inputBoxFaider, .inputTextBoxFaider  {
@@ -346,17 +348,17 @@ div.selectBoxOpener {
     right: 15px;
 }
 .inputTextAreaFaider{
-	border-radius: 0px 0px 0px 3px;
+	border-radius: 0 0 0 3px;
     cursor: pointer;
     display: block;
-    height: 30px;
-    margin-left: 0;
-    overflow: hidden;
-	margin-left: 1px;
+    height: 18px;
+    margin-bottom: -18px;
+    margin-left: 1px;
     margin-right: 9px;
+    overflow: hidden;
     position: relative;
-    margin-bottom: -30px;
-    top: -31px;
+    top: -19px;
+    width: 98%;
 }
 
 .inputTextBoxFaider{   	
