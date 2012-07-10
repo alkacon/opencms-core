@@ -27,12 +27,23 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsFocusedScrollingHandler;
 
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
 /**
@@ -40,11 +51,51 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public class CmsScrollPanel extends ScrollPanel {
 
+    /***/
+    protected class ResizeButton extends CmsPushButton {
+
+        /**
+         * Default constructor.<p>
+         */
+        public ResizeButton() {
+
+            super();
+            //setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton());
+            setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().resizeButton());
+
+        }
+
+        /**
+         * @see com.google.gwt.user.client.ui.CustomButton#onAttach()
+         */
+        @Override
+        protected void onAttach() {
+
+            super.onAttach();
+        }
+    }
+
     /** The prevent outer scrolling handler. */
     private CmsFocusedScrollingHandler m_focusedScrollingHandler;
 
     /** The scroll handler registration. */
     private HandlerRegistration m_handlerRegistration;
+
+    /** The preview handler registration. */
+    HandlerRegistration m_previewHandlerRegistration;
+
+    /** The button to resize the scrolling panel. */
+    ResizeButton m_resize;
+
+    /** The start X coordination. */
+    int m_clientX;
+    /** The start Y coordination. */
+    int m_clientY;
+    /** The start height. */
+    double m_oldheight;
+
+    /** The default height. */
+    double m_defaultHeight = -1;
 
     /**
      * Constructor.<p>
@@ -65,6 +116,19 @@ public class CmsScrollPanel extends ScrollPanel {
     protected CmsScrollPanel(Element root, Element scrollabel, Element container) {
 
         super(root, scrollabel, container);
+        m_resize = new ResizeButton();
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.ScrollPanel#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        m_resize.onAttach();
+
     }
 
     /**
@@ -101,6 +165,103 @@ public class CmsScrollPanel extends ScrollPanel {
         } else if (!m_focusedScrollingHandler.isRegistered()) {
             m_focusedScrollingHandler.register();
         }
+    }
+
+    /**
+     * @param resize
+     */
+    public void setResizable(boolean resize) {
+
+        if (m_resize != null) {
+            if (resize) {
+                getElement().appendChild(m_resize.getElement());
+                adopt(m_resize);
+                m_resize.addMouseDownHandler(new MouseDownHandler() {
+
+                    public void onMouseDown(MouseDownEvent event) {
+
+                        m_oldheight = Double.parseDouble(getElement().getStyle().getHeight().replace("px", ""));
+                        m_clientX = event.getClientX();
+                        m_clientY = event.getClientY();
+                        CmsDebugLog.getInstance().printLine("Registering preview handler");
+                        m_previewHandlerRegistration = Event.addNativePreviewHandler(new ResizeEventPreviewHandler());
+
+                    }
+                });
+                m_resize.addMouseUpHandler(new MouseUpHandler() {
+
+                    public void onMouseUp(MouseUpEvent event) {
+
+                        m_previewHandlerRegistration.removeHandler();
+
+                    }
+                });
+            } else {
+                m_resize.removeFromParent();
+            }
+        }
+    }
+
+    /**
+     * Drag and drop event preview handler.<p>
+     * 
+     * To be used while dragging.<p>
+     */
+    protected class ResizeEventPreviewHandler implements NativePreviewHandler {
+
+        /**
+         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+         */
+        public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+            Event nativeEvent = Event.as(event.getNativeEvent());
+            switch (DOM.eventGetType(nativeEvent)) {
+                case Event.ONMOUSEMOVE:
+                    // dragging
+                    setNewHeight(nativeEvent);
+                    break;
+                case Event.ONMOUSEUP:
+                    break;
+                case Event.ONKEYDOWN:
+                    break;
+                case Event.ONMOUSEWHEEL:
+                    //onMouseWheelScroll(nativeEvent);
+                    break;
+                default:
+                    // do nothing
+            }
+            event.cancel();
+            nativeEvent.preventDefault();
+            nativeEvent.stopPropagation();
+            onResize();
+        }
+
+    }
+
+    /**
+     * Sets the default height of the scrolling panel.
+     * 
+     * @param height 
+     */
+    public void setDefaultHeight(double height) {
+
+        m_defaultHeight = height;
+    }
+
+    /**
+     * Executed on mouse move while dragging.<p>
+     * 
+     * @param event the event
+     */
+    protected void setNewHeight(Event event) {
+
+        double newheight = m_oldheight + (event.getClientY() - m_clientY);
+        if (m_defaultHeight != -1) {
+            if (newheight < m_defaultHeight) {
+                newheight = m_defaultHeight;
+            }
+        }
+        getElement().getStyle().setHeight(newheight, Unit.PX);
     }
 
 }
