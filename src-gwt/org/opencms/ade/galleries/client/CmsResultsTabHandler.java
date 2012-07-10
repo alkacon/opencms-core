@@ -51,6 +51,14 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Updates the result tab.<p>
+     */
+    public void updateResult() {
+
+        m_controller.updateResultsTab(false);
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.A_CmsTabHandler#clearParams()
      */
     @Override

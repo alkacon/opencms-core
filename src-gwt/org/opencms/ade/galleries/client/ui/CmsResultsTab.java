@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.ade.galleries.client.CmsContextMenuHandler;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
@@ -35,13 +36,14 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
-import org.opencms.ade.upload.client.ui.CmsUploadButton;
-import org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -252,6 +254,9 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The reference to the handler of this tab. */
     private CmsResultsTabHandler m_tabHandler;
 
+    /** The context menu handler. */
+    private CmsContextMenuHandler m_contextMenuHandler;
+
     /** Set of resource types currently displayed in the result list. */
     private Set<String> m_types;
 
@@ -267,6 +272,7 @@ public class CmsResultsTab extends A_CmsListTab {
     public CmsResultsTab(CmsResultsTabHandler tabHandler, CmsDNDHandler dndHandler) {
 
         super(GalleryTabId.cms_tab_results);
+        m_contextMenuHandler = new CmsContextMenuHandler(tabHandler);
         m_types = new HashSet<String>();
         m_hasMoreResults = false;
         m_dndHandler = dndHandler;
@@ -460,6 +466,8 @@ public class CmsResultsTab extends A_CmsListTab {
         }
         listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
         listItem.addDeleteClickHandler(new DeleteHandler(resultItem.getPath()));
+        listItem.getListItemWidget().addButton(
+            new CmsContextMenuButton(new CmsUUID(resultItem.getClientId()), m_contextMenuHandler));
         if (m_tabHandler.hasSelectResource()) {
             SelectHandler selectHandler = new SelectHandler(
                 resultItem.getPath(),

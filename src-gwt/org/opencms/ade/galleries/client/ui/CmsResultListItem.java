@@ -100,17 +100,14 @@ public class CmsResultListItem extends CmsListItem {
         resultItemWidget.addButton(m_deleteButton);
 
         // add  preview button
-        m_previewButton = new CmsPushButton();
-        m_previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-        m_previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_previewButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
+        m_previewButton = createButton(
+            I_CmsImageBundle.INSTANCE.style().searchIcon(),
+            Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
         resultItemWidget.addButton(m_previewButton);
 
-        m_selectButton = new CmsPushButton();
-        // TODO: use different icon
-        m_selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().addIcon());
-        m_selectButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_selectButton.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
+        m_selectButton = createButton(
+            I_CmsImageBundle.INSTANCE.style().addIcon(),
+            Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
 
@@ -122,17 +119,32 @@ public class CmsResultListItem extends CmsListItem {
     }
 
     /**
+     * Creates a button for the list item.<p>
+     * 
+     * @param imageClass the icon image class
+     * @param title the button title
+     * 
+     * @return the button
+     */
+    private static CmsPushButton createButton(String imageClass, String title) {
+
+        CmsPushButton result = new CmsPushButton();
+        result.setImageClass(imageClass);
+        result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        result.setTitle(title);
+        return result;
+    }
+
+    /**
      * Creates the delete button for this item.<p>
      * 
      * @return the delete button
      */
     public static CmsPushButton createDeleteButton() {
 
-        CmsPushButton result = new CmsPushButton();
-        result.setImageClass(I_CmsImageBundle.INSTANCE.style().deleteIcon());
-        result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        result.setTitle(Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
-        return result;
+        return createButton(
+            I_CmsImageBundle.INSTANCE.style().deleteIcon(),
+            Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
     }
 
     /**
