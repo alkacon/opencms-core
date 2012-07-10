@@ -30,12 +30,14 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -43,7 +45,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Provides a widget for a standard HTML form for a group of radio buttons.<p>
@@ -61,8 +63,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * */
 public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
+    /** Default value of rows to be shown. */
+    private static final int DEFAULT_ROWS_SHOWN = 10;
+
     /** The main panel of this widget. */
-    VerticalPanel m_panel = new VerticalPanel();
+    FlowPanel m_panel = new FlowPanel();
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -76,6 +81,12 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     /** Value of the radio group. */
     private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
 
+    /** The scroll panel around the multiselections. */
+    CmsScrollPanel m_scrollPanel = GWT.create(CmsScrollPanel.class);
+
+    /** The parameter set from configuration.*/
+    private int m_rowsToShow = DEFAULT_ROWS_SHOWN;
+
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
      * @param config the configuration string.
@@ -88,7 +99,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
         m_arrayRadioButtons = new CmsRadioButton[list.size()];
         list.toArray(m_arrayRadioButtons);
         // add separate style to the panel.
-        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
+        m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
         // iterate about all radio button.
         for (int i = 0; i < m_arrayRadioButtons.length; i++) {
             // add a separate style each radio button.
@@ -96,8 +107,16 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
             // add the radio button to the panel.
             m_panel.add(m_arrayRadioButtons[i]);
         }
+        m_scrollPanel.add(m_panel);
+        m_scrollPanel.setResizable(true);
+        int height = (m_rowsToShow * 17);
+        if (m_arrayRadioButtons.length < m_rowsToShow) {
+            height = (m_arrayRadioButtons.length * 17);
+        }
+        m_scrollPanel.setDefaultHeight(height);
+        m_scrollPanel.setHeight(height + "px");
+        initWidget(m_scrollPanel);
         // All composites must call initWidget() in their constructors.
-        initWidget(m_panel);
 
     }
 

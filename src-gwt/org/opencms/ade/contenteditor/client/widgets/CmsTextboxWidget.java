@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
@@ -38,6 +39,7 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -63,6 +65,12 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     /** The token to control activation. */
     private boolean m_active = true;
 
+    /** The fader of this widget. */
+    Panel m_fadePanel = new SimplePanel();
+
+    /**The main panel of this widget. */
+    Panel m_mainPanel = new FlowPanel();
+
     /**
      * Creates a new display widget.<p>
      * @param config 
@@ -70,9 +78,8 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     public CmsTextboxWidget(String config) {
 
         // All composites must call initWidget() in their constructors.
-        Panel mainPanel = new FlowPanel();
-        Panel faidPanel = new SimplePanel();
-        faidPanel.addDomHandler(new ClickHandler() {
+
+        m_fadePanel.addDomHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
@@ -80,11 +87,18 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
                 m_textbox.setCursorPos(m_textbox.getText().length());
             }
         }, ClickEvent.getType());
-        faidPanel.setStyleName(CSS.inputTextBoxFaider());
-        mainPanel.getElement().getStyle().setMarginRight(12, Unit.PX);
-        mainPanel.add(m_textbox);
-        mainPanel.add(faidPanel);
-        initWidget(mainPanel);
+        m_fadePanel.setStyleName(CSS.inputTextBoxFaider());
+        m_textbox.addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                m_mainPanel.remove(m_fadePanel);
+
+            }
+        });
+        m_mainPanel.getElement().getStyle().setMarginRight(12, Unit.PX);
+        m_mainPanel.add(m_textbox);
+        m_mainPanel.add(m_fadePanel);
 
         m_textbox.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBox());
         /* m_textarea.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel()); */
@@ -100,11 +114,12 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
             public void onBlur(BlurEvent event) {
 
+                m_mainPanel.add(m_fadePanel);
                 m_textbox.setCursorPos(0);
 
             }
         });
-
+        initWidget(m_mainPanel);
     }
 
     /**
@@ -171,7 +186,14 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
         }
 
         m_active = active;
-        m_textbox.setEnabled(active);
+        if (m_active) {
+            getElement().setAttribute("contentEditable", "true");
+            getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
+            getElement().focus();
+        } else {
+            getElement().setAttribute("contentEditable", "false");
+            getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+        }
         if (!active) {
             m_textbox.setText("");
         }

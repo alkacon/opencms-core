@@ -136,6 +136,7 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
 
         // Place the check above the box using a vertical panel.
         m_selectBox.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        m_selectBox.setPopupResize(false);
         // add some styles to parts of the selectbox.
         m_selectBox.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
         m_selectBox.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPopup());
@@ -323,7 +324,9 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
                     //if there are no more parameters set.
                     else {
                         //create substring e.g.:"option='XvalueX".
-                        sub = labels[i].substring(labels[i].indexOf(KEY_OPTION), labels[i].indexOf(KEY_SUFFIX_SHORT));
+                        sub = labels[i].substring(
+                            labels[i].indexOf(KEY_OPTION),
+                            labels[i].lastIndexOf(KEY_SUFFIX_SHORT));
                     }
                     //transfer the extracted value to the option array.
                     options[i] = sub.replace(KEY_OPTION, KEY_EMPTY);

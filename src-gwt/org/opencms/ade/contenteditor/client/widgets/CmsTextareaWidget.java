@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.ui.Composite;
 public class CmsTextareaWidget extends Composite implements I_EditWidget {
 
     /** Default number of rows to display. */
-    private static final int DEFAULT_ROWS_NUMBER = 4;
+    private static final int DEFAULT_ROWS_NUMBER = 5;
 
     /** The token to control activation. */
     private boolean m_active = true;
@@ -145,7 +146,14 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
         }
 
         m_active = active;
-        m_textarea.setEnabled(active);
+        if (m_active) {
+            getElement().setAttribute("contentEditable", "true");
+            getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
+            getElement().focus();
+        } else {
+            getElement().setAttribute("contentEditable", "false");
+            getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+        }
         if (!active) {
             m_textarea.setFormValueAsString("");
         }

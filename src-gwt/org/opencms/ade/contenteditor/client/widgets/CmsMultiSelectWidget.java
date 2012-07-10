@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.util.CmsPair;
 
@@ -39,12 +40,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Provides a widget for a standard HTML form for a group of radio buttons.<p>
@@ -92,8 +94,17 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
 
+    /** Default value of rows to be shown. */
+    private static final int DEFAULT_ROWS_SHOWN = 10;
+
+    /** Key prefix for the 'rows' text. */
+    private static final String KEY_LENGTH = "rows=";
+
     /** The main panel of this widget. */
-    VerticalPanel m_panel = new VerticalPanel();
+    FlowPanel m_panel = new FlowPanel();
+
+    /** The scroll panel around the multiselections. */
+    CmsScrollPanel m_scrollPanel = GWT.create(CmsScrollPanel.class);
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -103,6 +114,9 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
 
     /** The default radio button set in xsd. */
     private List<CmsCheckBox> m_defaultCheckBox = new LinkedList<CmsCheckBox>();
+
+    /** The parameter set from configuration.*/
+    private int m_rowsToShow = DEFAULT_ROWS_SHOWN;
 
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
@@ -133,7 +147,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
             j++;
         }
         // add separate style to the panel.
-        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
+        m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
         // iterate about all chechboxes.
         for (int i = 0; i < m_arrayCheckbox.length; i++) {
             // add a separate style each checkbox .
@@ -142,7 +156,15 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
             m_panel.add(m_arrayCheckbox[i]);
         }
         // All composites must call initWidget() in their constructors.
-        initWidget(m_panel);
+        m_scrollPanel.add(m_panel);
+        m_scrollPanel.setResizable(true);
+        int height = (m_rowsToShow * 17);
+        if (m_arrayCheckbox.length < m_rowsToShow) {
+            height = (m_arrayCheckbox.length * 17);
+        }
+        m_scrollPanel.setDefaultHeight(height);
+        m_scrollPanel.setHeight(height + "px");
+        initWidget(m_scrollPanel);
 
     }
 
@@ -296,12 +318,26 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
 
         for (int i = 0; i < labels.length; i++) {
             //check if there are one or more parameters set in this substring.
+            boolean parameter = false;
             boolean test_default = (labels[i].indexOf(KEY_DEFAULT) >= 0);
             boolean test_value = labels[i].indexOf(KEY_VALUE) >= 0;
             boolean test_option = labels[i].indexOf(KEY_OPTION) >= 0;
             boolean test_short_option = labels[i].indexOf(KEY_SHORT_OPTION) >= 0;
             boolean test_help = labels[i].indexOf(KEY_HELP) >= 0;
+            boolean test_length = labels[i].indexOf(KEY_LENGTH) >= 0;
             try {
+
+                if (test_length) {
+                    String sub = KEY_EMPTY;
+                    sub = labels[i].substring(labels[i].indexOf(KEY_LENGTH), labels[i].length());
+                    try {
+                        m_rowsToShow = Integer.parseInt(sub.replace(KEY_LENGTH, KEY_EMPTY));
+                    } catch (Exception e) {
+                        //TODO: do something;
+                    }
+                    labels[i] = labels[i].replace(KEY_LENGTH + m_rowsToShow, KEY_EMPTY);
+                    parameter = true;
+                }
                 selected = false;
                 //check if there is a default value set.
                 if ((labels[i].indexOf(DEFAULT_MARKER) >= 0) || test_default) {
@@ -353,7 +389,9 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
                     //if there are no more parameters set.
                     else {
                         //create substring e.g.:"option='XvalueX".
-                        sub = labels[i].substring(labels[i].indexOf(KEY_OPTION), labels[i].indexOf(KEY_SUFFIX_SHORT));
+                        sub = labels[i].substring(
+                            labels[i].indexOf(KEY_OPTION),
+                            labels[i].lastIndexOf(KEY_SUFFIX_SHORT));
                     }
                     //transfer the extracted value to the option array.
                     options[i] = sub.replace(KEY_OPTION, KEY_EMPTY);
@@ -387,9 +425,12 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
                     labels[i] = labels[i].replace(KEY_HELP + help[i] + KEY_SUFFIX_SHORT, KEY_EMPTY);
 
                 }
+
                 //copy value and option to the Map.
-                pair = new CmsPair<String, Boolean>(value[i], Boolean.valueOf(selected));
-                result.put(options[i], pair);
+                if (!parameter) {
+                    pair = new CmsPair<String, Boolean>(value[i], Boolean.valueOf(selected));
+                    result.put(options[i], pair);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
