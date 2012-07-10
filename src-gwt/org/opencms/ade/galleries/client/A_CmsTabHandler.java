@@ -67,6 +67,14 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
     public abstract void removeParam(String paramKey);
 
     /**
+     * Updates the gallery index and triggers a new search afterwards.<p>
+     */
+    public void updateIndex() {
+
+        m_controller.updateIndex();
+    }
+
+    /**
      * Execute when the upload dialog is closed.<p> 
      * 
      * @param event the close event 

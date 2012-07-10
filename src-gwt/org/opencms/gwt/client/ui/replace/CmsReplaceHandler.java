@@ -34,6 +34,8 @@ import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The replace dialog handler.<p>
@@ -51,6 +53,9 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
 
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
+
+    /** The dialog close handler. */
+    private CloseHandler<PopupPanel> m_closeHandler;
 
     /**
      * Constructor.<p>
@@ -83,6 +88,9 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
             m_dialog = new CmsReplaceDialog(this);
             m_dialog.center();
             m_dialog.initContent(m_structureId);
+            if (m_closeHandler != null) {
+                m_dialog.addCloseHandler(m_closeHandler);
+            }
         } else if (m_uploadButton != null) {
             m_uploadButton.createFileInput();
         }
@@ -91,6 +99,19 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
         }
         if (m_menuItem != null) {
             m_menuItem.getParentMenu().hide();
+        }
+    }
+
+    /**
+     * Sets the dialog close handler.<p>
+     * 
+     * @param closeHandler the close handler
+     */
+    public void setCloseHandler(CloseHandler<PopupPanel> closeHandler) {
+
+        m_closeHandler = closeHandler;
+        if (m_dialog != null) {
+            m_dialog.addCloseHandler(closeHandler);
         }
     }
 

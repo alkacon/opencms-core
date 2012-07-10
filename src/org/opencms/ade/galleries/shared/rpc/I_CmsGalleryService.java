@@ -108,4 +108,11 @@ public interface I_CmsGalleryService extends RemoteService {
      */
     List<CmsVfsEntryBean> getSubFolders(String path) throws CmsRpcException;
 
+    /**
+     * Updates the offline indices.<p>
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    void updateIndex() throws CmsRpcException;
+
 }

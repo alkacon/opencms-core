@@ -93,4 +93,11 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the asynchronous callback 
      */
     void getSubFolders(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
+
+    /**
+     * Updates the offline indices.<p>
+     * 
+     * @param callback  the callback
+     */
+    void updateIndex(AsyncCallback<Void> callback);
 }

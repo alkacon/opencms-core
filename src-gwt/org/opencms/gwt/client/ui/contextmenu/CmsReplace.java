@@ -34,6 +34,9 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The replace resource context menu entry.<p>
@@ -41,7 +44,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextMenuCommand {
 
     /** The replace handler. */
-    private CmsReplaceHandler m_handler;
+    private CmsReplaceHandler m_replaceHandler;
 
     /**
      * Constructor.<p>
@@ -50,11 +53,18 @@ public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextM
      * @param handler the context menu handler
      * @param bean the menu entry bean
      */
-    protected CmsReplace(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+    protected CmsReplace(final CmsUUID structureId, final I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
         super(bean.getLabel());
-        m_handler = new CmsReplaceHandler(structureId);
-        CmsUploadButton button = new CmsUploadButton(m_handler);
+        m_replaceHandler = new CmsReplaceHandler(structureId);
+        m_replaceHandler.setCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> arg0) {
+
+                handler.refreshResource(structureId);
+            }
+        });
+        CmsUploadButton button = new CmsUploadButton(m_replaceHandler);
         button.setText(getText());
         initWidget(button);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuItem());
@@ -102,7 +112,7 @@ public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextM
     @Override
     public void onClick(ClickEvent event) {
 
-        m_handler.setMenuItem(this);
+        m_replaceHandler.setMenuItem(this);
     }
 
 }

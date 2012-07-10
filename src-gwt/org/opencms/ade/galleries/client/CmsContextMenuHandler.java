@@ -159,7 +159,7 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
      */
     public void refreshResource(CmsUUID structureId) {
 
-        m_resultTabHandler.updateResult();
+        m_resultTabHandler.updateIndex();
     }
 
     /**

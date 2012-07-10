@@ -209,6 +209,28 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Updates the gallery index and triggers a new search afterwards.<p>
+     */
+    public void updateIndex() {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                getGalleryService().updateIndex(this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                updateResultsTab(false);
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Sets the modified until date to the search object.<p>
      * 
      * @param end the modified until date as long

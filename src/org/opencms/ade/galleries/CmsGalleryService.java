@@ -399,6 +399,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#updateIndex()
+     */
+    public void updateIndex() throws CmsRpcException {
+
+        try {
+            OpenCms.getSearchManager().updateOfflineIndexes(0);
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * Adds galleries for a given type.<p>
      * 
      * @param galleryTypeInfos the gallery type infos 
