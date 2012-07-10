@@ -93,7 +93,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
         super();
         initWidget(m_panel);
         m_panel.add(m_textAreaContainer);
-
+        m_textAreaContainer.setResizable(true);
         m_textAreaContainer.getElement().getStyle().setHeight(m_textArea.getOffsetHeight(), Unit.PX);
         m_faidpanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().inputTextAreaFaider());
         m_textAreaContainer.add(m_textArea);
@@ -104,6 +104,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
                 m_textArea.setFocus(true);
             }
         }, ClickEvent.getType());
+        // TODO: add pastehandler!
 
         m_textArea.addKeyUpHandler(new KeyUpHandler() {
 
@@ -291,9 +292,10 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     public void setRows(int rows) {
 
         m_defaultRows = rows;
-        int height_scroll = (rows * 18) + 10;
+        double height_scroll = (rows * 17.95) + 8;
         m_textArea.setVisibleLines(rows);
         m_textAreaContainer.setHeight(height_scroll + "px");
+        m_textAreaContainer.setDefaultHeight(height_scroll);
         m_textAreaContainer.onResize();
     }
 

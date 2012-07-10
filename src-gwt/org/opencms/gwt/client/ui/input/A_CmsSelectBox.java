@@ -143,6 +143,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /** The widget width for truncation. */
     private int m_widgetWidth;
 
+    /** The value to test the popup resize behaviour.*/
+    private boolean m_resizePopup = true;
+
     /**
      * Creates a new select box.<p>
      */
@@ -159,7 +162,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
 
         m_opener.addStyleName(CSS.selectBoxSelected());
         addHoverHandlers(m_opener);
-
+        addMainPanelHoverHandlers(m_panel);
         m_openClose = new CmsPushButton(
             I_CmsImageBundle.INSTANCE.style().triangleRight(),
             I_CmsImageBundle.INSTANCE.style().triangleDown());
@@ -470,7 +473,13 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         if (m_maxCellWidth > windowWidth) {
             selectorWidth = windowWidth - 10;
         }
+        // if the resize option is deactivated the popup should not be wider than the selectbox.
+        // Default its true.
+        if (!m_resizePopup) {
+            selectorWidth = m_opener.getOffsetWidth() - 2;
+        }
         m_popup.setWidth(selectorWidth + "px");
+
         m_popup.show();
         int panelTop = m_panel.getElement().getAbsoluteTop();
         int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
@@ -527,7 +536,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
             public void onMouseOver(MouseOverEvent event) {
 
                 hoverVar.setValue(CSS.openerHover());
-
             }
         });
 
@@ -542,6 +550,33 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
             }
         });
 
+    }
+
+    /**
+     * Helper method for adding event handlers for a 'hover' effect to the main panel.<p>
+     * 
+     * @param panel the main panel
+     */
+    private void addMainPanelHoverHandlers(Panel panel) {
+
+        final CmsStyleVariable hoverPanel = new CmsStyleVariable(panel);
+        hoverPanel.setValue(CSS.openerNoHover());
+        panel.addDomHandler(new MouseOverHandler() {
+
+            public void onMouseOver(MouseOverEvent event) {
+
+                hoverPanel.setValue(CSS.openerHover());
+
+            }
+        }, MouseOverEvent.getType());
+        panel.addDomHandler(new MouseOutHandler() {
+
+            public void onMouseOut(MouseOutEvent event) {
+
+                hoverPanel.setValue(CSS.openerNoHover());
+
+            }
+        }, MouseOutEvent.getType());
     }
 
     /**
@@ -585,6 +620,15 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
                 cell.removeStyleName(CSS.selectHover());
             }
         }, MouseOutEvent.getType());
+    }
+
+    /**
+     * Sets the behavior of the popup if the input is bigger than the selectbox itself. 
+     * @param resize 
+     */
+    public void setPopupResize(boolean resize) {
+
+        m_resizePopup = resize;
     }
 
     /**
