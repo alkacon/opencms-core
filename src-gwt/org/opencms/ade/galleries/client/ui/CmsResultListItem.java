@@ -93,11 +93,11 @@ public class CmsResultListItem extends CmsListItem {
             }
         }
         // add delete button
-        m_deleteButton = createDeleteButton();
-        if (!resultItem.isEditable()) {
-            m_deleteButton.disable(resultItem.getNoEditReson());
-        }
-        resultItemWidget.addButton(m_deleteButton);
+        //        m_deleteButton = createDeleteButton();
+        //        if (!resultItem.isEditable()) {
+        //            m_deleteButton.disable(resultItem.getNoEditReson());
+        //        }
+        //        resultItemWidget.addButton(m_deleteButton);
 
         // add  preview button
         m_previewButton = createButton(
@@ -147,15 +147,15 @@ public class CmsResultListItem extends CmsListItem {
             Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
     }
 
-    /**
-     * Adds the delete button click handler.<p>
-     * 
-     * @param handler the click handler
-     */
-    public void addDeleteClickHandler(ClickHandler handler) {
-
-        m_deleteButton.addClickHandler(handler);
-    }
+    //    /**
+    //     * Adds the delete button click handler.<p>
+    //     * 
+    //     * @param handler the click handler
+    //     */
+    //    public void addDeleteClickHandler(ClickHandler handler) {
+    //
+    //        m_deleteButton.addClickHandler(handler);
+    //    }
 
     /**
      * Adds a double click event handler.<p>

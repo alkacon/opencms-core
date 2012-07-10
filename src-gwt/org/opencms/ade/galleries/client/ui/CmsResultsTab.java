@@ -465,7 +465,6 @@ public class CmsResultsTab extends A_CmsListTab {
             m_preset = listItem;
         }
         listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
-        listItem.addDeleteClickHandler(new DeleteHandler(resultItem.getPath()));
         listItem.getListItemWidget().addButton(
             new CmsContextMenuButton(new CmsUUID(resultItem.getClientId()), m_contextMenuHandler));
         if (m_tabHandler.hasSelectResource()) {
