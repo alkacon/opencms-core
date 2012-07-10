@@ -165,6 +165,13 @@ public final class CmsSecurityManager {
         return securityManager;
     }
 
+    /**
+     * Adds an alias.<p>
+     * 
+     * @param context the current request context 
+     * @param alias the alias to add 
+     * @throws CmsException if something goes wrong 
+     */
     public void addAlias(CmsRequestContext context, CmsAlias alias) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -1210,6 +1217,14 @@ public final class CmsSecurityManager {
         return result;
     }
 
+    /**
+     * Deletes alias entries matching a filter.<p>
+     * 
+     * @param context the request context 
+     * @param filter the alias filter 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
     public void deleteAliases(CmsRequestContext context, CmsAliasFilter filter) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);

@@ -51,7 +51,6 @@ import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogEntryType;
 import org.opencms.db.log.CmsLogFilter;
 import org.opencms.db.userpublishlist.CmsUserPublishListEntry;
-import org.opencms.db.userpublishlist.CmsUserPublishListFilter;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -3289,36 +3288,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             conditions.append(END_CONDITION);
         }
         return CmsPair.create(conditions.toString(), params);
-    }
-
-    /**
-     * Prepares SQL conditions from a user publish list entry filter.<p>
-     * 
-     * @param filter the filter from which to create the conditions 
-     * 
-     * @return a pair consisting of an SQL fragment string and a list of query parameters 
-     */
-    protected CmsPair<String, List<Object>> prepareUserPublishListConditions(CmsUserPublishListFilter filter) {
-
-        List<String> conditions = new ArrayList<String>();
-        List<Object> queryParams = new ArrayList<Object>();
-
-        conditions.add("1 = 1");
-
-        CmsUUID userId = filter.getUserId();
-        if (userId != null) {
-            conditions.add("USER_ID = ?");
-            queryParams.add(userId.toString());
-        }
-
-        CmsUUID structureId = filter.getStructureId();
-        if (structureId != null) {
-            conditions.add("STRUCTURE_ID = ?");
-            queryParams.add(structureId.toString());
-        }
-
-        String conditionString = CmsStringUtil.listAsString(conditions, " AND ");
-        return CmsPair.create(conditionString, queryParams);
     }
 
     /**

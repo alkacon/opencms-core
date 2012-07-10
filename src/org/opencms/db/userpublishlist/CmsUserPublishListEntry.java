@@ -27,24 +27,29 @@
 
 package org.opencms.db.userpublishlist;
 
-import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
+/**
+ * User publish list entry.<p>
+ */
 public class CmsUserPublishListEntry {
 
+    /** The change date. */
     private long m_dateChanged;
 
-    private CmsResource m_resource;
-
+    /** The structure id of the publish list entry resource. */
     private CmsUUID m_structureId;
 
+    /**The id of the user who the publish list entry belongs to. */
     private CmsUUID m_userId;
 
-    public long getDateChanged() {
-
-        return m_dateChanged;
-    }
-
+    /**
+     * Creates a new user publish list entry.<p>
+     * 
+     * @param userId the user id of the owner of the entry  
+     * @param structureId  the structure id of the publish list entry resource 
+     * @param dateChanged the date at which the publish list entry was updated
+     */
     public CmsUserPublishListEntry(CmsUUID userId, CmsUUID structureId, long dateChanged) {
 
         m_userId = userId;
@@ -52,18 +57,34 @@ public class CmsUserPublishListEntry {
         m_dateChanged = dateChanged;
     }
 
-    public CmsUUID getUserId() {
+    /**
+     * Gets the modification date of the user publish list entry.<p>
+     *  
+     * @return the date changed 
+     */
+    public long getDateChanged() {
 
-        return m_userId;
+        return m_dateChanged;
     }
 
+    /**
+     * Gets the structure id of the resource in the publish list.<p>
+     *  
+     * @return the structure id of the resource in the publish list 
+     */
     public CmsUUID getStructureId() {
 
         return m_structureId;
     }
 
-    public void setResource(CmsResource resource) {
+    /**
+     * Gets the id of the user to whom the publish list entry belongs.<p>
+     * 
+     * @return the user id of the publish list entry 
+     */
+    public CmsUUID getUserId() {
 
-        m_resource = resource;
+        return m_userId;
     }
+
 }
