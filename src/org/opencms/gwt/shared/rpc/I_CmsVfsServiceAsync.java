@@ -57,6 +57,14 @@ public interface I_CmsVfsServiceAsync {
     /**
      * Deletes a resource from the VFS.<p>
      * 
+     * @param structureId the structure id of the resource to delete
+     * @param callback the callback
+     */
+    void deleteResource(CmsUUID structureId, AsyncCallback<Void> callback);
+
+    /**
+     * Deletes a resource from the VFS.<p>
+     * 
      * @param sitePath the site path of the resource to delete
      * @param callback the callback
      */
@@ -94,6 +102,14 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback
      */
     void getAvailabilityInfo(String vfsPath, AsyncCallback<CmsAvailabilityInfoBean> callback);
+
+    /**
+     * Returns a list of potentially broken links, if the given resource was deleted.<p>
+     * 
+     * @param structureId the resource structure id
+     * @param callback the callback
+     */
+    void getBrokenLinks(CmsUUID structureId, AsyncCallback<CmsDeleteResourceBean> callback);
 
     /**
      * Returns a list of potentially broken links, if the given resource was deleted.<p>

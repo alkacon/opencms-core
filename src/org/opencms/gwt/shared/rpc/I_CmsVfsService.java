@@ -57,6 +57,15 @@ public interface I_CmsVfsService extends RemoteService {
     /**
      * Deletes a resource from the VFS.<p>
      * 
+     * @param structureId the structure id of the resource to delete
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void deleteResource(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Deletes a resource from the VFS.<p>
+     * 
      * @param sitePath the site path of the resource to delete
      * 
      * @throws CmsRpcException if something goes wrong 
@@ -104,6 +113,17 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if the RPC call goes wrong
      */
     CmsAvailabilityInfoBean getAvailabilityInfo(String vfsPath) throws CmsRpcException;
+
+    /**
+     * Returns a list of potentially broken links, if the given resource was deleted.<p>
+     * 
+     * @param structureId the resource structure id
+     * 
+     * @return a list of potentially broken links
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsDeleteResourceBean getBrokenLinks(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Returns a list of potentially broken links, if the given resource was deleted.<p>

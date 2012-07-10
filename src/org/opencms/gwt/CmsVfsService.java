@@ -196,31 +196,27 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#deleteResource(org.opencms.util.CmsUUID)
+     */
+    public void deleteResource(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            deleteResource(res);
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#deleteResource(java.lang.String)
      */
     public void deleteResource(String sitePath) throws CmsRpcException {
 
         try {
             CmsResource res = getCmsObject().readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
-            String path = null;
-            try {
-                path = getCmsObject().getSitePath(res);
-                getCmsObject().lockResource(path);
-                getCmsObject().deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
-            } catch (Exception e) {
-                // should never happen
-                error(e);
-            } finally {
-                try {
-                    if (path != null) {
-                        getCmsObject().unlockResource(path);
-                    }
-                } catch (Exception e) {
-                    // should really never happen
-                    LOG.debug(e.getLocalizedMessage(), e);
-                }
-            }
-        } catch (CmsException e) {
+            deleteResource(res);
+        } catch (Throwable e) {
             error(e);
         }
     }
@@ -288,54 +284,30 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getBrokenLinks(org.opencms.util.CmsUUID)
+     */
+    public CmsDeleteResourceBean getBrokenLinks(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsResource entryResource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+
+            return getBrokenLinks(entryResource);
+        } catch (Throwable e) {
+            error(e);
+            return null; // will never be reached 
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getBrokenLinks(java.lang.String)
      */
     public CmsDeleteResourceBean getBrokenLinks(String sitePath) throws CmsRpcException {
 
         try {
             CmsResource entryResource = getCmsObject().readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsDeleteResourceBean result = null;
 
-            CmsListInfoBean info = null;
-            List<CmsBrokenLinkBean> brokenLinks = null;
-
-            CmsObject cms = getCmsObject();
-            String resourceSitePath = cms.getSitePath(entryResource);
-
-            try {
-                ensureSession();
-
-                List<CmsResource> descendants = new ArrayList<CmsResource>();
-                HashSet<CmsUUID> deleteIds = new HashSet<CmsUUID>();
-
-                descendants.add(entryResource);
-                if (entryResource.isFolder()) {
-                    descendants.addAll(cms.readResources(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
-                }
-
-                for (CmsResource deleteRes : descendants) {
-                    deleteIds.add(deleteRes.getStructureId());
-                }
-                MultiValueMap linkMap = MultiValueMap.decorate(
-                    new HashMap<Object, Object>(),
-                    FactoryUtils.instantiateFactory(HashSet.class));
-                for (CmsResource resource : descendants) {
-                    List<CmsResource> linkSources = getLinkSources(cms, resource, deleteIds);
-                    for (CmsResource source : linkSources) {
-                        linkMap.put(resource, source);
-                    }
-                }
-
-                brokenLinks = getBrokenLinkBeans(linkMap);
-                info = getPageInfo(entryResource);
-
-                result = new CmsDeleteResourceBean(resourceSitePath, info, brokenLinks);
-
-            } catch (Throwable e) {
-                error(e);
-            }
-            return result;
-        } catch (CmsException e) {
+            return getBrokenLinks(entryResource);
+        } catch (Throwable e) {
             error(e);
             return null; // will never be reached 
         }
@@ -821,6 +793,32 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Internal method to delete the given resource.<p>
+     * 
+     * @param resource the resource to delete
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void deleteResource(CmsResource resource) throws CmsException {
+
+        String path = null;
+        try {
+            path = getCmsObject().getSitePath(resource);
+            getCmsObject().lockResource(path);
+            getCmsObject().deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        } finally {
+            try {
+                if (path != null) {
+                    getCmsObject().unlockResource(path);
+                }
+            } catch (Exception e) {
+                // should really never happen
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+
+    /**
      * Returns a bean that contains the infos for the {@link org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog}.<p>
      * 
      * @param res the resource to get the availability infos for
@@ -933,6 +931,56 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 }
             }
         }
+        return result;
+    }
+
+    /**
+     * Internal method to get the broken links information for the given resource.<p>
+     * 
+     * @param entryResource the resource
+     * 
+     * @return the broken links information
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsDeleteResourceBean getBrokenLinks(CmsResource entryResource) throws CmsException {
+
+        CmsDeleteResourceBean result = null;
+
+        CmsListInfoBean info = null;
+        List<CmsBrokenLinkBean> brokenLinks = null;
+
+        CmsObject cms = getCmsObject();
+        String resourceSitePath = cms.getSitePath(entryResource);
+
+        ensureSession();
+
+        List<CmsResource> descendants = new ArrayList<CmsResource>();
+        HashSet<CmsUUID> deleteIds = new HashSet<CmsUUID>();
+
+        descendants.add(entryResource);
+        if (entryResource.isFolder()) {
+            descendants.addAll(cms.readResources(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION));
+        }
+
+        for (CmsResource deleteRes : descendants) {
+            deleteIds.add(deleteRes.getStructureId());
+        }
+        MultiValueMap linkMap = MultiValueMap.decorate(
+            new HashMap<Object, Object>(),
+            FactoryUtils.instantiateFactory(HashSet.class));
+        for (CmsResource resource : descendants) {
+            List<CmsResource> linkSources = getLinkSources(cms, resource, deleteIds);
+            for (CmsResource source : linkSources) {
+                linkMap.put(resource, source);
+            }
+        }
+
+        brokenLinks = getBrokenLinkBeans(linkMap);
+        info = getPageInfo(entryResource);
+
+        result = new CmsDeleteResourceBean(resourceSitePath, info, brokenLinks);
+
         return result;
     }
 
