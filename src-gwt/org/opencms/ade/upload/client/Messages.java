@@ -64,9 +64,6 @@ public final class Messages {
     public static final String GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0 = "GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_CLIENT_LOADING_0 = "GUI_UPLOAD_CLIENT_LOADING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -89,18 +86,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_FILE_TOO_LARGE_2 = "GUI_UPLOAD_FILE_TOO_LARGE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_FILES_PLURAL_0 = "GUI_UPLOAD_FILES_PLURAL_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_FILES_SINGULAR_0 = "GUI_UPLOAD_FILES_SINGULAR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_FINISH_UPLOADED_0 = "GUI_UPLOAD_FINISH_UPLOADED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_FINISH_UPLOADED_VALUE_4 = "GUI_UPLOAD_FINISH_UPLOADED_VALUE_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_FOLDER_0 = "GUI_UPLOAD_FOLDER_0";
@@ -131,18 +116,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_NOTIFICATION_RUNNING_0 = "GUI_UPLOAD_NOTIFICATION_RUNNING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_PROGRESS_CURRENT_FILE_0 = "GUI_UPLOAD_PROGRESS_CURRENT_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3 = "GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_PROGRESS_UPLOADING_0 = "GUI_UPLOAD_PROGRESS_UPLOADING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2 = "GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_SUMMARY_FILES_0 = "GUI_UPLOAD_SUMMARY_FILES_0";

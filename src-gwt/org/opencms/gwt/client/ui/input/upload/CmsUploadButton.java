@@ -25,15 +25,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.upload.client.ui;
+package org.opencms.gwt.client.ui.input.upload;
 
-import org.opencms.ade.upload.client.Messages;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFlowPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -43,6 +42,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -61,6 +61,9 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     protected interface I_CmsUploadButtonUiBinder extends UiBinder<CmsFlowPanel, CmsUploadButton> {
         // GWT interface, nothing to do
     }
+
+    /** The size for kilobytes in bytes. */
+    private static final float KILOBYTE = 1024L;
 
     /** The ui-binder for this widget. */
     private static I_CmsUploadButtonUiBinder m_uiBinder = GWT.create(I_CmsUploadButtonUiBinder.class);
@@ -120,7 +123,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
      */
     public CmsUploadButton(I_CmsUploadButtonHandler buttonHandler) {
 
-        org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadCss().ensureInjected();
+        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().ensureInjected();
         initWidget(m_uiBinder.createAndBindUi(this));
         m_buttonHandler = buttonHandler;
         m_buttonHandler.setButton(this);
@@ -369,10 +372,13 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Creates and adds a file input.<p>
+     * 
+     * @return returns the previous file input widget 
      */
-    protected void createFileInput() {
+    public CmsFileInput createFileInput() {
 
         // remove the current file input field and add a new one
+        CmsFileInput previous = m_fileInput;
         if (m_fileInput != null) {
             m_fileInput.getElement().getStyle().setDisplay(Display.NONE);
         }
@@ -387,6 +393,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         });
         m_buttonHandler.initializeFileInput(m_fileInput);
         m_main.add(m_fileInput);
+        return previous;
     }
 
     /**
@@ -448,5 +455,19 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
             m_main.setStyleDependentName(styleDependent, true);
             m_styleDependent = styleDependent;
         }
+    }
+
+    /**
+     * Formats a given bytes value (file size).<p>
+     *  
+     * @param filesize the file size to format
+     * 
+     * @return the formated file size in KB
+     */
+    public static String formatBytes(long filesize) {
+
+        double kByte = Math.ceil(filesize / KILOBYTE);
+        String formated = NumberFormat.getDecimalFormat().format(new Double(kByte));
+        return formated + " KB";
     }
 }

@@ -2,5 +2,4 @@
 <module>
 	<inherits name="org.opencms.GwtBase" />
 	<source path="client" />
-	<source path="shared" />
 </module>

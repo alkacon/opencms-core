@@ -77,13 +77,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String fileInfoTable();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String fileInputPanel();
 
         /** 
@@ -119,13 +112,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String progressInfo();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String summary();
 
         /** 
@@ -133,21 +119,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String uploadButton();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String uploadDialogButton();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String uploadFileInput();
 
         /** 
          * Access method.<p>

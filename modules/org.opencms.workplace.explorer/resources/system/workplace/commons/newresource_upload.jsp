@@ -1,4 +1,4 @@
-<%@ page import="java.util.*,org.opencms.workplace.explorer.*,org.opencms.ade.upload.shared.I_CmsUploadConstants" %><%	
+<%@ page import="java.util.*,org.opencms.workplace.explorer.*,org.opencms.gwt.shared.I_CmsUploadConstants" %><%	
 
 	// initialize the workplace class
 	CmsNewResourceUpload wp = new CmsNewResourceUpload(pageContext, request, response);

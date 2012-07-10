@@ -30,6 +30,7 @@ package org.opencms.ade.upload.client.ui;
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
+import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 import java.util.ArrayList;
@@ -70,8 +71,8 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
         if ((file.getFileSize() > MAX_UPLOAD_SIZE)) {
             return Messages.get().key(
                 Messages.GUI_UPLOAD_FILE_MAX_SIZE_REACHED_2,
-                formatBytes(file.getFileSize()),
-                formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
+                CmsUploadButton.formatBytes(file.getFileSize()),
+                CmsUploadButton.formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
         }
         return super.getFileSizeTooLargeMessage(file);
     }
@@ -120,8 +121,8 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
         if (!getFilesToUpload().isEmpty() && (getContentLength() > MAX_UPLOAD_SIZE)) {
             String message = Messages.get().key(
                 Messages.GUI_UPLOAD_MAX_SIZE_REACHED_2,
-                formatBytes(new Long(getContentLength()).intValue()),
-                formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
+                CmsUploadButton.formatBytes(new Long(getContentLength()).intValue()),
+                CmsUploadButton.formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
             disableOKButton(message);
             StringBuffer buffer = new StringBuffer(64);
             buffer.append("<p class=\"");
@@ -212,7 +213,7 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
             addPlainField(
                     body,
                     fileInputName
-                            + @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
+                            + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
                     encodeURI(fileName));
             body += "Content-Disposition: form-data; name=\"" + fileInputName
                     + "\"; filename=\"" + encodeURI(fileName) + "\"\r\n";
@@ -253,13 +254,13 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
                 var filename = filesToUnzip[i];
                 addPlainField(
                         body,
-                        @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
+                        @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
                         encodeURI(filename));
             }
 
             addPlainField(
                     body,
-                    @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
+                    @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
                     targetFolder);
         }
 

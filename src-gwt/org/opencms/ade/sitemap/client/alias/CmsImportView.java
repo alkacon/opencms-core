@@ -30,8 +30,6 @@ package org.opencms.ade.sitemap.client.alias;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.alias.CmsImportResultList.I_Css;
 import org.opencms.ade.sitemap.shared.I_CmsAliasConstants;
-import org.opencms.ade.upload.client.ui.CmsUploadButton;
-import org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.CmsPopup;
@@ -40,6 +38,8 @@ import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
+import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 
 import java.util.List;
 
@@ -120,7 +120,7 @@ public class CmsImportView extends Composite {
                 fileInput.setAllowMultipleFiles(false);
                 fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
                 fileInput.setName(I_CmsAliasConstants.PARAM_IMPORTFILE);
-                fileInput.addStyleName(org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadCss().uploadFileInput());
+                fileInput.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());
 
             }
 

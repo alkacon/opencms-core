@@ -27,7 +27,6 @@
 
 package org.opencms.ade.upload;
 
-import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsImportFolder;
 import org.opencms.file.CmsFile;
@@ -37,6 +36,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.gwt.shared.I_CmsUploadConstants;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;

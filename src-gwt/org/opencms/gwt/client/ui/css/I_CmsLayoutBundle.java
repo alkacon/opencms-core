@@ -1760,13 +1760,45 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String toolbarToggle();
     }
 
+    /** The upload button CSS classes. */
+    public interface I_CmsUploadButtonCss extends CssResource {
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fileInfoTable();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String progressInfo();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String uploadButton();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String uploadFileInput();
+    }
+
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
     /**
      * Access method.<p>
      * 
-     * @return the constants CSS
+     * @return the availability dialog CSS
      */
     @Source("availability.css")
     I_CmsAvailabilityCss availabilityCss();
@@ -2031,4 +2063,12 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("toolbar.css")
     I_CmsToolbarCss toolbarCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the upload button CSS
+     */
+    @Source("uploadButton.css")
+    I_CmsUploadButtonCss uploadButton();
 }

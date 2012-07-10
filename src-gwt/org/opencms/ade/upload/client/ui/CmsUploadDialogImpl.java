@@ -29,10 +29,10 @@ package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.I_CmsUploadConstants;
 
 import java.util.HashMap;
 import java.util.Map;

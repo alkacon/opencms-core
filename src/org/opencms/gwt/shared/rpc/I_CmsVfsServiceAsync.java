@@ -33,6 +33,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
+import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
@@ -108,6 +109,14 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback 
      */
     void getChildren(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
+
+    /**
+     * Returns the file replace info.<p>
+     * 
+     * @param structureId the structure id of the file to replace
+     * @param callback the asynchronous callback
+     */
+    void getFileReplaceInfo(CmsUUID structureId, AsyncCallback<CmsReplaceInfo> callback);
 
     /**
      * Returns the lock report info.<p>

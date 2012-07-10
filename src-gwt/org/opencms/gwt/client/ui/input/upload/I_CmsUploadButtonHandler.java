@@ -25,9 +25,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.upload.client.ui;
+package org.opencms.gwt.client.ui.input.upload;
 
-import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 
 /**
  * Handler interface for upload buttons which is mainly used to perform actions when the selected file

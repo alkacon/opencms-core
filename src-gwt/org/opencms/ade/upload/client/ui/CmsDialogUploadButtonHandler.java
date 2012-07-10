@@ -29,6 +29,8 @@ package org.opencms.ade.upload.client.ui;
 
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
+import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -57,7 +59,7 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     private A_CmsUploadDialog m_uploadDialog;
 
     /**
-     * @see org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler#initializeFileInput(org.opencms.gwt.client.ui.input.upload.CmsFileInput)
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler#initializeFileInput(org.opencms.gwt.client.ui.input.upload.CmsFileInput)
      */
     public void initializeFileInput(CmsFileInput fileInput) {
 
@@ -65,11 +67,11 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
         fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
         fileInput.setAllowMultipleFiles(true);
         fileInput.setName("upload");
-        fileInput.addStyleName(org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadCss().uploadFileInput());
+        fileInput.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());
     }
 
     /**
-     * @see org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler#onChange(org.opencms.gwt.client.ui.input.upload.CmsFileInput)
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler#onChange(org.opencms.gwt.client.ui.input.upload.CmsFileInput)
      */
     public void onChange(CmsFileInput fileInput) {
 
@@ -89,7 +91,7 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     }
 
     /**
-     * @see org.opencms.ade.upload.client.ui.I_CmsUploadButtonHandler#setButton(org.opencms.ade.upload.client.ui.CmsUploadButton)
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler#setButton(org.opencms.gwt.client.ui.input.upload.CmsUploadButton)
      */
     public void setButton(CmsUploadButton button) {
 

@@ -27,14 +27,14 @@
 
 package org.opencms.ade.upload;
 
-import org.opencms.ade.upload.shared.CmsUploadData;
-import org.opencms.ade.upload.shared.CmsUploadFileBean;
-import org.opencms.ade.upload.shared.CmsUploadProgessInfo;
-import org.opencms.ade.upload.shared.CmsUploadProgessInfo.UPLOAD_STATE;
-import org.opencms.ade.upload.shared.rpc.I_CmsUploadService;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
+import org.opencms.gwt.shared.CmsUploadData;
+import org.opencms.gwt.shared.CmsUploadFileBean;
+import org.opencms.gwt.shared.CmsUploadProgessInfo;
+import org.opencms.gwt.shared.CmsUploadProgessInfo.UPLOAD_STATE;
+import org.opencms.gwt.shared.rpc.I_CmsUploadService;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -52,8 +52,8 @@ import org.apache.commons.fileupload.util.Streams;
  * @since 8.0.0
  * 
  * @see org.opencms.ade.upload.CmsUploadService
- * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadService
- * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadServiceAsync
+ * @see org.opencms.gwt.shared.rpc.I_CmsUploadService
+ * @see org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync
  */
 public class CmsUploadService extends CmsGwtService implements I_CmsUploadService {
 
@@ -76,7 +76,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
     }
 
     /**
-     * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadService#cancelUpload()
+     * @see org.opencms.gwt.shared.rpc.I_CmsUploadService#cancelUpload()
      */
     public Boolean cancelUpload() {
 
@@ -94,7 +94,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
     }
 
     /**
-     * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadService#checkUploadFiles(java.util.List, java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsUploadService#checkUploadFiles(java.util.List, java.lang.String)
      */
     public CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder) {
 
@@ -125,7 +125,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
     }
 
     /**
-     * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadService#getUploadProgressInfo()
+     * @see org.opencms.gwt.shared.rpc.I_CmsUploadService#getUploadProgressInfo()
      */
     public CmsUploadProgessInfo getUploadProgressInfo() {
 
@@ -142,7 +142,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
     }
 
     /**
-     * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadService#prefetch()
+     * @see org.opencms.gwt.shared.rpc.I_CmsUploadService#prefetch()
      */
     public CmsUploadData prefetch() {
 

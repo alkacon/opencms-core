@@ -10,6 +10,16 @@
     display: inline-block;
     vertical-align: middle;
 }
+@sprite .cmsState-down .menuIcon, .cmsState-up-hovering .menuIcon, .cmsState-down-hovering .menuIcon{
+    gwt-image: "bigIcons.menuBigIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .menuIcon, .cmsState-up-disabled .menuIcon, .cmsState-down-disabled .menuIcon{
+    gwt-image: "bigIcons.menuBigIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
 @sprite .cmsState-down .deleteIcon, .cmsState-up-hovering .deleteIcon, .cmsState-down-hovering .deleteIcon{
     gwt-image: "icons.deleteIconActive";
     display: inline-block;

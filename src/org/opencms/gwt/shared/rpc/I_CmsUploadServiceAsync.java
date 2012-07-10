@@ -25,16 +25,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.upload.shared.rpc;
+package org.opencms.gwt.shared.rpc;
 
-import org.opencms.ade.upload.shared.CmsUploadData;
-import org.opencms.ade.upload.shared.CmsUploadFileBean;
-import org.opencms.ade.upload.shared.CmsUploadProgessInfo;
-import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsUploadData;
+import org.opencms.gwt.shared.CmsUploadFileBean;
+import org.opencms.gwt.shared.CmsUploadProgessInfo;
 
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Handles all RPC services related to the upload dialog.<p>
@@ -42,26 +41,24 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @since 8.0.0
  * 
  * @see org.opencms.ade.upload.CmsUploadService
- * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadService
- * @see org.opencms.ade.upload.shared.rpc.I_CmsUploadServiceAsync
+ * @see org.opencms.gwt.shared.rpc.I_CmsUploadService
+ * @see org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync
  */
-public interface I_CmsUploadService extends RemoteService {
+public interface I_CmsUploadServiceAsync {
 
     /**
      * Generates upload data for prefetching in the host page.<p>
      * 
-     * @return the upload data
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     * @param callback the async callback
      */
-    CmsUploadData prefetch() throws CmsRpcException;
+    void prefetch(AsyncCallback<CmsUploadData> callback);
 
     /**
      * Cancels the upload.<p>
      * 
-     * @return <code>true</code> if the listener was canceled <code>false</code> otherwise
+     * @param callback the asynchronous callback
      */
-    Boolean cancelUpload();
+    void cancelUpload(AsyncCallback<Boolean> callback);
 
     /**
      * Checks the availability of a resource in the VFS, using the 
@@ -71,18 +68,14 @@ public interface I_CmsUploadService extends RemoteService {
      * 
      * @param fileNames the filenames to check
      * @param targetFolder the folder to check
-     * 
-     * @return a {@link CmsUploadFileBean} that holds the list of resource names (without the path) 
-     * that already exist in the VFS and a list of filenames that are invalid
+     * @param callback the async callback
      */
-    CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder);
+    void checkUploadFiles(List<String> fileNames, String targetFolder, AsyncCallback<CmsUploadFileBean> callback);
 
     /**
      * Returns the upload progress information.<p>
      * 
-     * @return the upload progress information
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     * @param callback the asynchronous callback
      */
-    CmsUploadProgessInfo getUploadProgressInfo() throws CmsRpcException;
+    void getUploadProgressInfo(AsyncCallback<CmsUploadProgessInfo> callback);
 }

@@ -27,10 +27,10 @@
 
 package org.opencms.ade.upload;
 
-import org.opencms.ade.upload.shared.CmsUploadData;
-import org.opencms.ade.upload.shared.I_CmsUploadConstants;
-import org.opencms.ade.upload.shared.rpc.I_CmsUploadService;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.gwt.shared.CmsUploadData;
+import org.opencms.gwt.shared.I_CmsUploadConstants;
+import org.opencms.gwt.shared.rpc.I_CmsUploadService;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;

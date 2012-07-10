@@ -409,6 +409,33 @@ public final class Messages {
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FILES_PLURAL_0 = "GUI_UPLOAD_FILES_PLURAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FILES_SINGULAR_0 = "GUI_UPLOAD_FILES_SINGULAR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FINISH_UPLOADED_0 = "GUI_UPLOAD_FINISH_UPLOADED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FINISH_UPLOADED_VALUE_4 = "GUI_UPLOAD_FINISH_UPLOADED_VALUE_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_PROGRESS_CURRENT_FILE_0 = "GUI_UPLOAD_PROGRESS_CURRENT_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3 = "GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_PROGRESS_UPLOADING_0 = "GUI_UPLOAD_PROGRESS_UPLOADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2 = "GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_URLNAME_CANT_BE_EMPTY_0 = "GUI_URLNAME_CANT_BE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */

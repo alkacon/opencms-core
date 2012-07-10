@@ -29,12 +29,6 @@ package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.upload.shared.CmsUploadData;
-import org.opencms.ade.upload.shared.CmsUploadFileBean;
-import org.opencms.ade.upload.shared.CmsUploadProgessInfo;
-import org.opencms.ade.upload.shared.I_CmsUploadConstants;
-import org.opencms.ade.upload.shared.rpc.I_CmsUploadService;
-import org.opencms.ade.upload.shared.rpc.I_CmsUploadServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
@@ -46,7 +40,6 @@ import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.CmsProgressBar;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -55,10 +48,18 @@ import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
+import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
+import org.opencms.gwt.client.ui.input.upload.CmsUploadProgressInfo;
 import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsUploadData;
+import org.opencms.gwt.shared.CmsUploadFileBean;
+import org.opencms.gwt.shared.CmsUploadProgessInfo;
+import org.opencms.gwt.shared.I_CmsUploadConstants;
+import org.opencms.gwt.shared.rpc.I_CmsUploadService;
+import org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -78,7 +79,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -88,7 +88,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -101,152 +100,8 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public abstract class A_CmsUploadDialog extends CmsPopup {
 
-    /**
-     * Provides the upload progress information.<p>
-     * 
-     * Has a progressbar and a table for showing details.<p>
-     */
-    private class CmsUploadProgressInfo extends FlowPanel {
-
-        /** The progress bar. */
-        private CmsProgressBar m_bar;
-
-        /** The table for showing upload details. */
-        private FlexTable m_fileinfo;
-
-        /** A sorted list of the filenames to upload. */
-        private List<String> m_orderedFilenamesToUpload;
-
-        /** Signals if the progress was set at least one time. */
-        private boolean m_started;
-
-        /**
-         * Default constructor.<p>
-         */
-        public CmsUploadProgressInfo() {
-
-            // get a ordered list of filenames
-            m_orderedFilenamesToUpload = new ArrayList<String>(getFilesToUpload().keySet());
-            Collections.sort(m_orderedFilenamesToUpload, String.CASE_INSENSITIVE_ORDER);
-
-            // create the progress bar
-            m_bar = new CmsProgressBar();
-
-            // create the file info table
-            m_fileinfo = new FlexTable();
-            m_fileinfo.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().fileInfoTable());
-
-            // arrange the progress info
-            addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().progressInfo());
-            add(m_bar);
-            add(m_fileinfo);
-        }
-
-        /**
-         * Finishes the state of the progress bar.<p>
-         */
-        public void finish() {
-
-            String length = formatBytes(getContentLength());
-            int fileCount = m_orderedFilenamesToUpload.size();
-            m_bar.setValue(100);
-            m_fileinfo.removeAllRows();
-            m_fileinfo.setHTML(0, 0, "<b>" + Messages.get().key(Messages.GUI_UPLOAD_FINISH_UPLOADED_0) + "</b>");
-            m_fileinfo.setText(
-                0,
-                1,
-                Messages.get().key(
-                    Messages.GUI_UPLOAD_FINISH_UPLOADED_VALUE_4,
-                    new Integer(fileCount),
-                    new Integer(fileCount),
-                    getFileText(),
-                    length));
-        }
-
-        /**
-         * Sets the progress information.<p>
-         * 
-         * @param info the progress info bean
-         */
-        public void setProgress(CmsUploadProgessInfo info) {
-
-            int currFile = info.getCurrentFile();
-
-            int currFileIndex = 0;
-            if (currFile == 0) {
-                // no files read so far 
-            } else {
-                currFileIndex = currFile - 1;
-                if (currFileIndex >= m_orderedFilenamesToUpload.size()) {
-                    currFileIndex = m_orderedFilenamesToUpload.size() - 1;
-                }
-            }
-
-            if (getContentLength() == 0) {
-                setContentLength(info.getContentLength());
-            }
-
-            String currFilename = m_orderedFilenamesToUpload.get(currFileIndex);
-            String contentLength = formatBytes(getContentLength());
-            int fileCount = m_orderedFilenamesToUpload.size();
-            String readBytes = formatBytes(getBytesRead(info.getPercent()));
-
-            m_bar.setValue(info.getPercent());
-
-            if (!m_started) {
-                m_started = true;
-                m_fileinfo.setHTML(0, 0, "<b>"
-                    + Messages.get().key(Messages.GUI_UPLOAD_PROGRESS_CURRENT_FILE_0)
-                    + "</b>");
-                m_fileinfo.setHTML(1, 0, "<b>" + Messages.get().key(Messages.GUI_UPLOAD_PROGRESS_UPLOADING_0) + "</b>");
-                m_fileinfo.setHTML(2, 0, "");
-
-                m_fileinfo.setText(0, 1, "");
-                m_fileinfo.setText(1, 1, "");
-                m_fileinfo.setText(2, 1, "");
-
-                m_fileinfo.getColumnFormatter().setWidth(0, "100px");
-            }
-
-            m_fileinfo.setText(0, 1, currFilename);
-            m_fileinfo.setText(
-                1,
-                1,
-                Messages.get().key(
-                    Messages.GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3,
-                    new Integer(currFileIndex + 1),
-                    new Integer(fileCount),
-                    getFileText()));
-            m_fileinfo.setText(
-                2,
-                1,
-                Messages.get().key(Messages.GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2, readBytes, contentLength));
-        }
-
-        /**
-         * Returns the bytes that are read so far.<p>
-         * 
-         * The total request size is larger than the sum of all file sizes that are uploaded.
-         * Because boundaries and the target folder or even some other information than only
-         * the plain file contents are submited to the server.<p>
-         * 
-         * This method calculates the bytes that are read with the help of the file sizes.<p>
-         *  
-         * @param percent the server side determined percentage
-         * 
-         * @return the bytes that are read so far
-         */
-        private long getBytesRead(long percent) {
-
-            return percent != 0 ? (getContentLength() * percent) / 100 : 0;
-        }
-    }
-
     /** Maximum width for the file item widget list. */
     private static final int DIALOG_WIDTH = 600;
-
-    /** The size for kilobytes in bytes. */
-    private static final float KILOBYTE = 1024L;
 
     /** The minimal height of the content wrapper. */
     private static final int MIN_CONTENT_HEIGHT = 110;
@@ -687,20 +542,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     }
 
     /**
-     * Formats a given bytes value (file size).<p>
-     *  
-     * @param filesize the file size to format
-     * 
-     * @return the formated file size in KB
-     */
-    protected String formatBytes(long filesize) {
-
-        double kByte = Math.ceil(filesize / KILOBYTE);
-        String formated = NumberFormat.getDecimalFormat().format(new Double(kByte));
-        return formated + " KB";
-    }
-
-    /**
      * Returns the contentLength.<p>
      *
      * @return the contentLength
@@ -771,9 +612,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     protected String getFileText() {
 
         if (m_filesToUpload.size() == 1) {
-            return Messages.get().key(Messages.GUI_UPLOAD_FILES_SINGULAR_0);
+            return org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_UPLOAD_FILES_SINGULAR_0);
         }
-        return Messages.get().key(Messages.GUI_UPLOAD_FILES_PLURAL_0);
+        return org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_UPLOAD_FILES_PLURAL_0);
     }
 
     /**
@@ -785,12 +627,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
      */
     protected String getResourceType(CmsFileInfo file) {
 
-        String typeName = null;
-        typeName = CmsCoreProvider.get().getExtensionMapping().get(file.getFileSuffix().toLowerCase());
-        if (typeName == null) {
-            typeName = "plain";
-        }
-        return typeName;
+        return CmsCoreProvider.get().getResourceType(file);
     }
 
     /**
@@ -1187,7 +1024,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             String message = Messages.get().key(
                 Messages.GUI_UPLOAD_FILE_INVALID_NAME_2,
                 file.getFileName(),
-                formatBytes(file.getFileSize()));
+                CmsUploadButton.formatBytes(file.getFileSize()));
             check.disable(message);
             listItemWidget.setBackground(Background.RED);
             listItemWidget.setSubtitleLabel(message);
@@ -1479,7 +1316,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         removeContent();
         displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_UPLOADING_0), false);
         m_selectionSummary.removeFromParent();
-        m_progressInfo = new CmsUploadProgressInfo();
+        List<String> files = new ArrayList<String>(getFilesToUpload().keySet());
+        Collections.sort(files, String.CASE_INSENSITIVE_ORDER);
+        m_progressInfo = new CmsUploadProgressInfo(files);
+        m_progressInfo.setContentLength(m_contentLength);
         m_contentWrapper.add(m_progressInfo);
         m_updateProgressTimer.scheduleRepeating(UPDATE_PROGRESS_INTERVALL);
         startLoadingAnimation(Messages.get().key(Messages.GUI_UPLOAD_CLIENT_LOADING_0), 0);

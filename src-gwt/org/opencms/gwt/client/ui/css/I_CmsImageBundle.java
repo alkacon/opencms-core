@@ -220,6 +220,12 @@ public interface I_CmsImageBundle extends ClientBundle {
         String lockIcon();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String menuIcon();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */

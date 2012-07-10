@@ -31,6 +31,7 @@ import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
+import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
@@ -75,7 +76,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
     @Override
     public CmsListInfoBean createInfoBean(CmsFileInfo file) {
 
-        return new CmsListInfoBean(file.getFileName(), formatBytes(file.getFileSize())
+        return new CmsListInfoBean(file.getFileName(), CmsUploadButton.formatBytes(file.getFileSize())
             + " ("
             + getResourceType(file)
             + ")", null);
@@ -89,8 +90,8 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 
         return Messages.get().key(
             Messages.GUI_UPLOAD_FILE_TOO_LARGE_2,
-            formatBytes(file.getFileSize()),
-            formatBytes(new Long(getData().getUploadFileSizeLimit()).intValue()));
+            CmsUploadButton.formatBytes(file.getFileSize()),
+            CmsUploadButton.formatBytes(new Long(getData().getUploadFileSizeLimit()).intValue()));
     }
 
     /**
@@ -142,7 +143,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
             Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_3,
             new Integer(getFilesToUpload().size()),
             getFileText(),
-            formatBytes(new Long(getContentLength()).intValue())));
+            CmsUploadButton.formatBytes(new Long(getContentLength()).intValue())));
         buffer.append("</p>");
         setSummaryHTML(buffer.toString());
     }
@@ -280,18 +281,18 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
             data
                     .append(
                             fieldName
-                                    + @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
+                                    + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
                             encodeURI(filesToUpload[i].name));
         }
         data
                 .append(
-                        @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
+                        @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
                         targetFolder);
 
         for ( var i = 0; i < filesToUnzip.length; ++i) {
             data
                     .append(
-                            @org.opencms.ade.upload.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
+                            @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
                             encodeURI(filesToUnzip[i]));
         }
 

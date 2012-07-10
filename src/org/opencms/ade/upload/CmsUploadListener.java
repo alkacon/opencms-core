@@ -27,8 +27,8 @@
 
 package org.opencms.ade.upload;
 
-import org.opencms.ade.upload.shared.CmsUploadProgessInfo;
-import org.opencms.ade.upload.shared.CmsUploadProgessInfo.UPLOAD_STATE;
+import org.opencms.gwt.shared.CmsUploadProgessInfo;
+import org.opencms.gwt.shared.CmsUploadProgessInfo.UPLOAD_STATE;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 

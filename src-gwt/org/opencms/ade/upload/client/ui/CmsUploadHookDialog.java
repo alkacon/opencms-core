@@ -27,10 +27,10 @@
 
 package org.opencms.ade.upload.client.ui;
 
-import org.opencms.ade.upload.shared.I_CmsUploadConstants;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsFrameDialog;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.shared.I_CmsUploadConstants;
 
 import java.util.HashMap;
 import java.util.List;

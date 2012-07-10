@@ -51,6 +51,7 @@ import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsPrincipalBean;
+import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -353,6 +354,25 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getFileReplaceInfo(org.opencms.util.CmsUUID)
+     */
+    public CmsReplaceInfo getFileReplaceInfo(CmsUUID structureId) throws CmsRpcException {
+
+        CmsReplaceInfo result = null;
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource res = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsListInfoBean fileInfo = getPageInfo(res);
+            boolean isLockable = cms.getLock(res).isLockableBy(cms.getRequestContext().getCurrentUser());
+            long maxFileSize = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(cms);
+            result = new CmsReplaceInfo(fileInfo, cms.getSitePath(res), isLockable, maxFileSize);
+        } catch (CmsException e) {
+            error(e);
+        }
+        return result;
     }
 
     /**

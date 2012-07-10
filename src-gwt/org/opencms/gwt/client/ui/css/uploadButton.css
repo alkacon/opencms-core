@@ -1,0 +1,41 @@
+div.uploadButton input.uploadFileInput {
+	position: absolute;
+	right: -1px;
+	top: -10px;
+}
+
+.uploadButton {
+	overflow: hidden;
+	position: relative;
+}
+
+@if user.agent ie6 {
+    .uploadFileInput{
+        filter: literal("alpha(opacity = 0)");
+    }
+    .uploadButton {
+    	display: inline;
+    	height: literal("expression( (function(elem){elem.style.height = elem.firstChild.offsetHeight + 'px';})(this) )");
+    } 
+} @elif user.agent ie8 {
+	.uploadFileInput{
+		-ms-filter: "alpha(opacity = 0)";
+	}
+    .uploadButton {
+    	display: inline;
+    }
+} @else {
+    .uploadFileInput{
+        opacity: 0;
+    }
+    .uploadButton {
+    	display: inline-block;
+    } 
+}
+.fileInfoTable {
+	width: 100%;
+}
+.progressInfo {
+	padding-top: 20px;
+	width: 100%;
+}

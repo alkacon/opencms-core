@@ -32,6 +32,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
@@ -256,6 +257,23 @@ public final class CmsCoreProvider extends CmsCoreData {
             }
         };
         action.execute();
+    }
+
+    /**
+     * Returns the resource type name for a given filename.<p>
+     * 
+     * @param file the file info
+     * 
+     * @return the resource type name
+     */
+    public String getResourceType(CmsFileInfo file) {
+
+        String typeName = null;
+        typeName = getExtensionMapping().get(file.getFileSuffix().toLowerCase());
+        if (typeName == null) {
+            typeName = "plain";
+        }
+        return typeName;
     }
 
     /**

@@ -34,6 +34,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
+import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
@@ -124,6 +125,17 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     List<CmsVfsEntryBean> getChildren(String path) throws CmsRpcException;
+
+    /**
+     * Returns the file replace info.<p>
+     * 
+     * @param structureId the structure id of the file to replace
+     * 
+     * @return the file replace info
+     * 
+     * @throws CmsRpcException if the RPC call goes wrong
+     */
+    CmsReplaceInfo getFileReplaceInfo(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Returns the lock report info.<p>
