@@ -95,9 +95,12 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem#getMenuItemHtml(boolean)
+     * Generates the HTML for a menu item.<p>
+     * 
+     * @param hasSubMenu signals if this menu has a sub menu
+     * 
+     * @return the HTML for the menu item
      */
-    @Override
     protected String getMenuItemHtml(boolean hasSubMenu) {
 
         StringBuffer html = new StringBuffer();

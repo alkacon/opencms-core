@@ -84,6 +84,25 @@ public class CmsLockReport implements I_CmsHasContextMenuCommand, I_CmsContextMe
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getItemWidget(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    public A_CmsContextMenuItem getItemWidget(
+        CmsUUID structureId,
+        I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#hasItemWidget()
+     */
+    public boolean hasItemWidget() {
+
+        return false;
+    }
+
+    /**
      * Executed on unlock of the current resource to reload the page.<p>
      */
     protected void onUnlock() {

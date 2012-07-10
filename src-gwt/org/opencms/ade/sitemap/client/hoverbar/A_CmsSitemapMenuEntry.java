@@ -27,6 +27,8 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuItem;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 
 import java.util.List;
@@ -68,6 +70,14 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#generateMenuItem()
+     */
+    public A_CmsContextMenuItem generateMenuItem() {
+
+        return new CmsContextMenuItem(this);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getImageClass()
      */
     public String getImageClass() {
@@ -92,19 +102,19 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getName()
-     */
-    public String getName() {
-
-        return null;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getLabel()
      */
     public String getLabel() {
 
         return m_label;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getName()
+     */
+    public String getName() {
+
+        return null;
     }
 
     /**

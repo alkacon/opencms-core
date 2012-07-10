@@ -134,4 +134,23 @@ public class CmsOpenSeoDialog implements I_CmsHasContextMenuCommand, I_CmsContex
         return I_CmsImageBundle.INSTANCE.contextMenuIcons().seo();
     }
 
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getItemWidget(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    public A_CmsContextMenuItem getItemWidget(
+        CmsUUID structureId,
+        I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#hasItemWidget()
+     */
+    public boolean hasItemWidget() {
+
+        return false;
+    }
+
 }

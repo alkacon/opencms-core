@@ -68,6 +68,19 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
 
                 return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().workplace();
             }
+
+            public A_CmsContextMenuItem getItemWidget(
+                CmsUUID structureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
+
+                return null;
+            }
+
+            public boolean hasItemWidget() {
+
+                return false;
+            }
         };
     }
 
@@ -117,23 +130,23 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
      */
     protected static native void openWorkplace(String path, int winWidth, int winHeight, int winLeft, int winTop) /*-{
 
-      if ($wnd.opener && $wnd.opener != self) {
-         $wnd.opener.location.href = path;
-         $wnd.opener.focus();
-      } else {
-         var openerStr = 'width='
-               + winWidth
-               + ',height='
-               + winHeight
-               + ',left='
-               + winLeft
-               + ',top='
-               + winTop
-               + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
-         var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-         if (deWindow) {
-            deWindow.focus();
-         }
-      }
+        if ($wnd.opener && $wnd.opener != self) {
+            $wnd.opener.location.href = path;
+            $wnd.opener.focus();
+        } else {
+            var openerStr = 'width='
+                    + winWidth
+                    + ',height='
+                    + winHeight
+                    + ',left='
+                    + winLeft
+                    + ',top='
+                    + winTop
+                    + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
+            var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
+            if (deWindow) {
+                deWindow.focus();
+            }
+        }
     }-*/;
 }

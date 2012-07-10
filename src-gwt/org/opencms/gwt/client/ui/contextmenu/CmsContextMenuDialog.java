@@ -120,6 +120,25 @@ public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getItemWidget(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    public A_CmsContextMenuItem getItemWidget(
+        CmsUUID structureId,
+        I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#hasItemWidget()
+     */
+    public boolean hasItemWidget() {
+
+        return false;
+    }
+
+    /**
      * Executed on dialog close.<p>
      * @param reload <code>true</code> if the page should be reloaded
      */

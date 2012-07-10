@@ -125,9 +125,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     /** Flag if the menu opens to the right hand side. */
     private boolean m_isOpenRight;
 
-    /** Flag if the button is in toolbar mode. */
-    private boolean m_isToolbarMode;
-
     /**
      * Constructor.<p>
      * 
@@ -246,16 +243,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public boolean isOpenRight() {
 
         return m_isOpenRight;
-    }
-
-    /**
-     * Returns the isToolbarMode.<p>
-     *
-     * @return the isToolbarMode
-     */
-    public boolean isToolbarMode() {
-
-        return m_isToolbarMode;
     }
 
     /**

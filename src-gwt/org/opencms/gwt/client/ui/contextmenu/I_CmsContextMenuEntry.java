@@ -37,6 +37,13 @@ import java.util.List;
 public interface I_CmsContextMenuEntry {
 
     /**
+     * Generates the context menu item.<p>
+     * 
+     * @return the context menu item
+     */
+    A_CmsContextMenuItem generateMenuItem();
+
+    /**
      * Executes the context menu action.<p>
      */
     void execute();

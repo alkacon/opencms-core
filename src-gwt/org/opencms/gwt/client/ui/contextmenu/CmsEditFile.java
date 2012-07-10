@@ -90,25 +90,21 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
             public String getElementLanguage() {
 
-                // TODO: Auto-generated method stub
                 return null;
             }
 
             public String getElementName() {
 
-                // TODO: Auto-generated method stub
                 return null;
             }
 
             public String getNewLink() {
 
-                // TODO: Auto-generated method stub
                 return null;
             }
 
             public String getNewTitle() {
 
-                // TODO: Auto-generated method stub
                 return null;
             }
 
@@ -124,8 +120,7 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
             public void setSitePath(String sitePath) {
 
-                // TODO: Auto-generated method stub
-
+                // nothing to do
             }
         };
 
@@ -195,5 +190,24 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
     public String getCommandIconClass() {
 
         return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().edit();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getItemWidget(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    public A_CmsContextMenuItem getItemWidget(
+        CmsUUID structureId,
+        I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#hasItemWidget()
+     */
+    public boolean hasItemWidget() {
+
+        return false;
     }
 }

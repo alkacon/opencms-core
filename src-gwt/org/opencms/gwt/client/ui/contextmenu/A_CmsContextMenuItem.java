@@ -240,15 +240,6 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
     }
 
     /**
-     * Generates the HTML for a menu item.<p>
-     * 
-     * @param hasSubMenu signals if this menu has a sub menu
-     * 
-     * @return the HTML for the menu item
-     */
-    protected abstract String getMenuItemHtml(boolean hasSubMenu);
-
-    /**
      * @see com.google.gwt.user.client.ui.Composite#initWidget(com.google.gwt.user.client.ui.Widget)
      */
     @Override

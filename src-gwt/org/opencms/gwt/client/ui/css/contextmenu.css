@@ -1,4 +1,8 @@
+@external html-face;
+
 .popup, .popupContent{}
+
+
 
 .menuPanel{ /* the panel (table) the context menu is set as widget. */
 	background: value("constants.css.backgroundColorDialog");
@@ -16,6 +20,7 @@ div.cmsMenuBar { /* the outer menu bar */
 	border-style: solid;
 	border-width: 1px 0px 0px 0px;
 	border-color: value("constants.css.borderColor");
+	display: block;
 }
 .cmsMenuBar .cmsMenuItem:first-child {
 	border: 0;
@@ -37,10 +42,11 @@ div.cmsMenuBar { /* the outer menu bar */
 	width: 16px;
 	overflow: hidden;
 }
-.cmsMenuBar .cmsMenuItem .label { /* menu item label */
+.cmsMenuBar .cmsMenuItem .label, .cmsMenuBar .cmsMenuItem .html-face { /* menu item label */
 	padding: 4px 4px 4px 0px;
 	margin: 0px 0px 0px 26px;
 	font-size: value("constants.css.fontSizeBig");
+	text-align: left;
 }
 .cmsMenuBar .cmsMenuItem .arrow { /* symbol for sub menus */
 	float: right;

@@ -164,13 +164,26 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
                 if (handler.ensureLockOnResource(structureId)) {
-                    new CmsAvailabilityDialog(CmsCoreProvider.get().getStructureId()).loadAndShow();
+                    new CmsAvailabilityDialog(structureId).loadAndShow();
                 }
             }
 
             public String getCommandIconClass() {
 
                 return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availability();
+            }
+
+            public A_CmsContextMenuItem getItemWidget(
+                CmsUUID structureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
+
+                return null;
+            }
+
+            public boolean hasItemWidget() {
+
+                return false;
             }
         };
     }

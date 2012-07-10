@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.alias.CmsAliasEditor;
+import org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
@@ -73,6 +74,25 @@ public final class CmsAliasDialog implements I_CmsHasContextMenuCommand, I_CmsCo
 
         // TODO: Add icon
         return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getItemWidget(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    public A_CmsContextMenuItem getItemWidget(
+        CmsUUID structureId,
+        I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#hasItemWidget()
+     */
+    public boolean hasItemWidget() {
+
+        return false;
     }
 
 }
