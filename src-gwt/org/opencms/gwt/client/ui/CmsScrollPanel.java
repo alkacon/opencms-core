@@ -34,8 +34,6 @@ import org.opencms.gwt.client.util.CmsFocusedScrollingHandler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -188,14 +186,6 @@ public class CmsScrollPanel extends ScrollPanel {
 
                     }
                 });
-                m_resize.addMouseUpHandler(new MouseUpHandler() {
-
-                    public void onMouseUp(MouseUpEvent event) {
-
-                        m_previewHandlerRegistration.removeHandler();
-
-                    }
-                });
             } else {
                 m_resize.removeFromParent();
             }
@@ -221,6 +211,10 @@ public class CmsScrollPanel extends ScrollPanel {
                     setNewHeight(nativeEvent);
                     break;
                 case Event.ONMOUSEUP:
+                    m_previewHandlerRegistration.removeHandler();
+                    event.cancel();
+                    nativeEvent.preventDefault();
+                    nativeEvent.stopPropagation();
                     break;
                 case Event.ONKEYDOWN:
                     break;
