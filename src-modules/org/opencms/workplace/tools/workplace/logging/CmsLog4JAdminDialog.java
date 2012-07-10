@@ -817,7 +817,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     }
 
     /**
-     * Help function to get all loggers from LogManager
+     * Help function to get all loggers from LogManager.<p>
      * 
      * @return List of Logger
      * 
@@ -946,7 +946,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                     // build different suffixes based on the pieces separated above  
                     prefix_temp[count] = prefix_temp[count - 1] + subprefix;
                 } else {
-                    // if it´s the first piece of the name only it will be set
+                    // if it's the first piece of the name only it will be set
                     prefix_temp[count] = subprefix;
 
                 }
@@ -967,7 +967,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         // if the logger name has only one or less piece
         else {
             // return the full logger name
-            String nullreturn[] = new String[1];
+            String[] nullreturn = new String[1];
             nullreturn[0] = logname;
             return nullreturn;
         }

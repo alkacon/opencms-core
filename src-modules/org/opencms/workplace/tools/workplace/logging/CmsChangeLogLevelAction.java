@@ -42,20 +42,22 @@ import org.apache.log4j.Logger;
  * */
 public class CmsChangeLogLevelAction extends CmsListDirectAction {
 
-    /** The actual log level of this row */
-    protected Level logLevel;
+    /** The actual log level of this row. */
+    protected Level m_logLevel;
 
-    /** Constructor so generate an instance
+    /** Constructor so generate an instance.<p>
+     * 
      * @param id The id of the Log-channel
      * @param level The level of the Log-channel
      */
     public CmsChangeLogLevelAction(String id, Level level) {
 
         super(id);
-        logLevel = level;
+        m_logLevel = level;
     }
 
-    /** Constructor so generate an instance
+    /** Constructor so generate an instance.<p>
+     * 
      * @param id Id of the Log-channel
      * @param level Level of the Log-channel
      * @param helpText Helptext of the Log-Channel
@@ -63,12 +65,13 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
     public CmsChangeLogLevelAction(String id, Level level, CmsMessageContainer helpText) {
 
         super(id);
-        logLevel = level;
+        m_logLevel = level;
         setName(null);
         setHelpText(helpText);
     }
 
-    /** Constructor so generate an instance
+    /** Constructor so generate an instance.<p>
+     * 
      * @param id Id of the Log-channel
      * @param level Level of the Log-channel
      * @param name Name of the Log-channel
@@ -77,7 +80,7 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
     public CmsChangeLogLevelAction(String id, Level level, CmsMessageContainer name, CmsMessageContainer helpText) {
 
         super(id);
-        logLevel = level;
+        m_logLevel = level;
         setName(name);
         setHelpText(helpText);
     }
@@ -110,7 +113,7 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
             }
         }
         if (logger != null) {
-            isVisible = !logger.getEffectiveLevel().equals(logLevel);
+            isVisible = !logger.getEffectiveLevel().equals(m_logLevel);
         }
         return isVisible;
     }

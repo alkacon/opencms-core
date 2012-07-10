@@ -167,10 +167,15 @@ public final class Messages extends A_CmsMessageBundle {
     /** Name of inactive buttons. */
     public static final String INACTIV = "INACTIV";
 
-    private static final I_CmsMessageBundle instance = new Messages();
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
     private Messages() {
 
+        // hide the constructor
     }
 
     /**
@@ -180,7 +185,7 @@ public final class Messages extends A_CmsMessageBundle {
      */
     public static I_CmsMessageBundle get() {
 
-        return instance;
+        return INSTANCE;
     }
 
     /**
