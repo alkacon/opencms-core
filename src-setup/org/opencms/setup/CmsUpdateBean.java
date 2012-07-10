@@ -123,7 +123,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     private CmsUpdateDBThread m_dbUpdateThread;
 
     /** The detected mayor version, based on DB structure. */
-    private int m_detectedVersion;
+    private double m_detectedVersion;
 
     /** Parameter for keeping the history. */
     private boolean m_keepHistory;
@@ -288,7 +288,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @return the detected mayor version
      */
-    public int getDetectedVersion() {
+    public double getDetectedVersion() {
 
         return m_detectedVersion;
     }
@@ -773,7 +773,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      *
      * @param detectedVersion the value to set
      */
-    public void setDetectedVersion(int detectedVersion) {
+    public void setDetectedVersion(double detectedVersion) {
 
         m_detectedVersion = detectedVersion;
     }

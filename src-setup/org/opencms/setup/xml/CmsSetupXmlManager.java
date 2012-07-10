@@ -132,7 +132,7 @@ public class CmsSetupXmlManager {
      * 
      * @param detectedVersion detected mayor version
      */
-    public void initialize(int detectedVersion) {
+    public void initialize(double detectedVersion) {
 
         m_selectedPlugins = new ArrayList<String>();
         m_plugins = new ArrayList<I_CmsSetupXmlUpdate>();
@@ -161,6 +161,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveImportHandlers());
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImportVersions());
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddImmutables());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddRepositories());
 
         // search
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemovePageSearchIndexSource1());

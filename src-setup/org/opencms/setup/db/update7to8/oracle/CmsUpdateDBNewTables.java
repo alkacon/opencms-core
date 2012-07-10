@@ -113,6 +113,11 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
         elements.put("CMS_ALIASES", indexes);
         indexes.add("CMS_ALIASES_IDX_1");
 
+        indexes = new ArrayList<String>();
+        elements.put("CMS_USER_PUBLISH_LIST", indexes);
+        indexes.add("CMS_USERPUBLIST_IDX_01");
+        indexes.add("CMS_USERPUBLIST_IDX_02");
+
         Map<String, String> replacer = Collections.singletonMap("${indexTablespace}", indexTablespace);
         for (Map.Entry<String, List<String>> entry : elements.entrySet()) {
             String table = entry.getKey();

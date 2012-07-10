@@ -11,12 +11,12 @@
 	dbBean.initialize(Bean);
 		
     boolean isFormSubmitted = (request.getParameter("submit") != null);
-	if (isFormSubmitted)	{
+	if (isFormSubmitted)  {
 		response.sendRedirect(nextPage);
 		return;
 	}
     Bean.setDetectedVersion(dbBean.getDetectedVersion());
-	if (!Bean.isNeedDbUpdate()) {
+	if (!dbBean.needUpdate()) {
 		response.sendRedirect("step_2_settings.jsp");
 		return;
 	}

@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +66,7 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
     protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        Map<String, List<String>> elements = new HashMap<String, List<String>>();
+        Map<String, List<String>> elements = new LinkedHashMap<String, List<String>>();
         List<String> indexes = new ArrayList<String>();
         elements.put("CMS_LOG", indexes);
         indexes.add("CREATE_INDEX_CMS_LOG_01_IDX");
@@ -110,6 +110,11 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
         indexes = new ArrayList<String>();
         elements.put("CMS_ALIASES", indexes);
         indexes.add("CMS_ALIASES_IDX_1");
+
+        indexes = new ArrayList<String>();
+        elements.put("CMS_USER_PUBLISH_LIST", indexes);
+        indexes.add("CMS_USERPUBLIST_IDX_01");
+        indexes.add("CMS_USERPUBLIST_IDX_02");
 
         Map<String, String> replacer = Collections.emptyMap();
         for (Map.Entry<String, List<String>> entry : elements.entrySet()) {

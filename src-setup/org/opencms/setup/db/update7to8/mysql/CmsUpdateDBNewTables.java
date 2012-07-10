@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -79,11 +78,11 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
             "CMS_ONLINE_URLNAME_MAPPINGS",
             "CMS_SUBSCRIPTION",
             "CMS_SUBSCRIPTION_VISIT",
-            "CMS_ALIASES"});
+            "CMS_ALIASES",
+            "CMS_USER_PUBLISH_LIST"});
 
         Map<String, String> replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
-        for (Iterator<String> it = elements.iterator(); it.hasNext();) {
-            String table = it.next();
+        for (String table : elements) {
             if (!dbCon.hasTableOrColumn(table, null)) {
                 String query = readQuery(table + "_MYSQL");
                 dbCon.updateSqlStatement(query, replacer, null);

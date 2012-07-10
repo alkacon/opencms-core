@@ -55,7 +55,7 @@ public class CmsUpdateDBManager {
     private Map<String, Map<String, String>> m_dbPools = new HashMap<String, Map<String, String>>();
 
     /** The detected mayor version, based on DB structure. */
-    private int m_detectedVersion;
+    private double m_detectedVersion;
 
     /** List of xml update plugins. */
     private List<I_CmsUpdateDBPart> m_plugins;
@@ -131,7 +131,7 @@ public class CmsUpdateDBManager {
      * 
      * @return the detected mayor version
      */
-    public int getDetectedVersion() {
+    public double getDetectedVersion() {
 
         if (m_detectedVersion == 0) {
             needUpdate();
@@ -194,8 +194,7 @@ public class CmsUpdateDBManager {
             m_dbName = props.get("db.name");
 
             List<String> pools = CmsStringUtil.splitAsList(props.get("db.pools"), ',');
-            for (Iterator<String> it = pools.iterator(); it.hasNext();) {
-                String pool = it.next();
+            for (String pool : pools) {
                 Map<String, String> data = new HashMap<String, String>();
                 data.put("driver", props.get("db.pool." + pool + ".jdbcDriver"));
                 data.put("url", props.get("db.pool." + pool + ".jdbcUrl"));
@@ -219,8 +218,8 @@ public class CmsUpdateDBManager {
 
         String pool = "default";
 
-        int currentVersion = 8;
-        m_detectedVersion = 8;
+        double currentVersion = 8.5;
+        m_detectedVersion = 8.5;
 
         CmsSetupDb setupDb = new CmsSetupDb(null);
 
@@ -234,9 +233,10 @@ public class CmsUpdateDBManager {
 
             if (!setupDb.hasTableOrColumn("CMS_USERS", "USER_OU")) {
                 m_detectedVersion = 6;
-            } else {
-                // change this later for V 8.5
+            } else if (!setupDb.hasTableOrColumn("CMS_ONLINE_URLNAME_MAPPINGS", null)) {
                 m_detectedVersion = 7;
+            } else if (!setupDb.hasTableOrColumn("CMS_USER_PUBLISH_LIST", null)) {
+                m_detectedVersion = 8;
             }
         } finally {
             setupDb.closeConnection();

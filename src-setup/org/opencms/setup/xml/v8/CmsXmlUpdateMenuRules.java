@@ -35,7 +35,9 @@ import org.opencms.setup.xml.A_CmsXmlWorkplace;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.setup.xml.CmsXmlUpdateAction;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible;
 import org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible;
+import org.opencms.workplace.explorer.menu.CmsMirSitemapActive;
 import org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible;
 
 import java.util.ArrayList;
@@ -213,6 +215,28 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                                 "adecheckfile",
                                 "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"),
                             "");
+                        return true;
+                    }
+                    return false;
+                }
+
+            });
+
+            m_updateActions.put(xpathForMenuRule("sitemap"), new CmsXmlUpdateAction() {
+
+                @Override
+                public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                    Element elem = (Element)doc.selectSingleNode(xpath);
+                    String[] classNames = new String[] {
+                        CmsMirSitemapActive.class.getName(),
+                        CmsMirAlwaysInvisible.class.getName()};
+
+                    if (elem == null) {
+                        for (String classname : classNames) {
+                            CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("sitemap", classname), "");
+                        }
+                        return true;
                     }
                     return false;
                 }

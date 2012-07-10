@@ -31,6 +31,7 @@ import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.main.CmsAliasResourceHandler;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 
@@ -74,11 +75,8 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
-            if (xpath.equals(getXPathsToUpdate().get(0))) {
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsDetailPageResourceHandler.class.getName());
+            if (getXPathsToUpdate().contains(xpath)) {
+                CmsSetupXmlHelper.setValue(document, xpath, "");
             } else {
                 return false;
             }
@@ -108,16 +106,21 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
     protected List<String> getXPathsToUpdate() {
 
         if (m_xpaths == null) {
-            // "/opencms/system/resourceinit/resourceinithandler[@class='...']";
-            StringBuffer xp = new StringBuffer(256);
-            xp.append("/").append(CmsConfigurationManager.N_ROOT);
-            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-            xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINIT);
-            xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINITHANDLER);
-            xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
-            xp.append("='");
+            String[] handlers = new String[] {
+                CmsDetailPageResourceHandler.class.getName(),
+                CmsAliasResourceHandler.class.getName()};
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add(xp.toString() + CmsDetailPageResourceHandler.class.getName() + "']");
+            for (String handler : handlers) {
+                // "/opencms/system/resourceinit/resourceinithandler[@class='...']";
+                StringBuffer xp = new StringBuffer(256);
+                xp.append("/").append(CmsConfigurationManager.N_ROOT);
+                xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
+                xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINIT);
+                xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINITHANDLER);
+                xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
+                xp.append("='");
+                m_xpaths.add(xp.toString() + handler + "']");
+            }
         }
         return m_xpaths;
     }
