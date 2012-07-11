@@ -834,22 +834,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         Map<String, I_CmsPreviewProvider> previewProviderMap = new HashMap<String, I_CmsPreviewProvider>();
         Map<I_CmsResourceType, I_CmsPreviewProvider> typeProviderMapping = new HashMap<I_CmsResourceType, I_CmsPreviewProvider>();
         for (I_CmsResourceType type : types) {
-            String providerClass = type.getGalleryPreviewProvider().trim();
-            try {
-                if (previewProviderMap.containsKey(providerClass)) {
-                    typeProviderMapping.put(type, previewProviderMap.get(providerClass));
-                } else {
-                    I_CmsPreviewProvider previewProvider = (I_CmsPreviewProvider)Class.forName(providerClass).newInstance();
-                    previewProviderMap.put(providerClass, previewProvider);
-                    typeProviderMapping.put(type, previewProvider);
+            String providerClass = type.getGalleryPreviewProvider();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(providerClass)) {
+                providerClass = providerClass.trim();
+                try {
+                    if (previewProviderMap.containsKey(providerClass)) {
+                        typeProviderMapping.put(type, previewProviderMap.get(providerClass));
+                    } else {
+                        I_CmsPreviewProvider previewProvider = (I_CmsPreviewProvider)Class.forName(providerClass).newInstance();
+                        previewProviderMap.put(providerClass, previewProvider);
+                        typeProviderMapping.put(type, previewProvider);
+                    }
+                } catch (Exception e) {
+                    logError(new CmsException(Messages.get().container(
+                        Messages.ERR_INSTANCING_PREVIEW_PROVIDER_2,
+                        providerClass,
+                        type.getTypeName()), e));
                 }
-            } catch (Exception e) {
-                logError(new CmsException(Messages.get().container(
-                    Messages.ERR_INSTANCING_PREVIEW_PROVIDER_2,
-                    providerClass,
-                    type.getTypeName()), e));
             }
-
         }
         return typeProviderMapping;
     }

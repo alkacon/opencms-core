@@ -140,7 +140,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     private String m_adjustLinksFolder;
 
     /** The gallery preview provider. */
-    private String m_galleryPreviewProvider;
+    protected String m_galleryPreviewProvider;
 
     /** The gallery type name for this resource type. */
     private String m_galleryTypeNames;
@@ -500,9 +500,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public String getGalleryPreviewProvider() {
 
         if (m_galleryPreviewProvider == null) {
-            m_galleryPreviewProvider = getConfiguration().getString(
-                CONFIGURATION_GALLERY_PREVIEW_PROVIDER,
-                DEFAULT_GALLERY_PREVIEW_PROVIDER);
+            m_galleryPreviewProvider = getConfiguration().getString(CONFIGURATION_GALLERY_PREVIEW_PROVIDER, null);
         }
         return m_galleryPreviewProvider;
     }

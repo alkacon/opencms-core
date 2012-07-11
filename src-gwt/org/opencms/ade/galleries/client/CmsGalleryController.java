@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
+import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
@@ -206,28 +207,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_searchObject.setDateCreatedStart(start);
         m_searchObjectChanged = true;
         ValueChangeEvent.fire(this, m_searchObject);
-    }
-
-    /**
-     * Updates the gallery index and triggers a new search afterwards.<p>
-     */
-    public void updateIndex() {
-
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            @Override
-            public void execute() {
-
-                getGalleryService().updateIndex(this);
-            }
-
-            @Override
-            protected void onResponse(Void result) {
-
-                updateResultsTab(false);
-            }
-        };
-        action.execute();
     }
 
     /**
@@ -501,6 +480,18 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns if a preview is available for the given resource type.<p>
+     * 
+     * @param resourceType the requested resource type
+     * 
+     * @return <code>true</code> if a preview is available for the given resource type
+     */
+    public boolean hasPreview(String resourceType) {
+
+        return getProviderName(resourceType) != null;
+    }
+
+    /**
      * Returns if resource entries in the search result are selectable.<p>
      * 
      * @return if resource entries in the search result are selectable
@@ -733,6 +724,10 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public void selectResource(String resourcePath, String title, String resourceType) {
 
         String provider = getProviderName(resourceType);
+        if (provider == null) {
+            // use {@link org.opencms.ade.galleries.client.preview.CmsBinaryPreviewProvider} as default to select a resource
+            provider = I_CmsBinaryPreviewProvider.PREVIEW_NAME;
+        }
         if (m_previewFactoryRegistration.containsKey(provider)) {
             m_previewFactoryRegistration.get(provider).getPreview(m_handler.m_galleryDialog).selectResource(
                 resourcePath,
@@ -934,6 +929,28 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         } else {
             m_handler.onGalleriesTabSelection();
         }
+    }
+
+    /**
+     * Updates the gallery index and triggers a new search afterwards.<p>
+     */
+    public void updateIndex() {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                getGalleryService().updateIndex(this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                updateResultsTab(false);
+            }
+        };
+        action.execute();
     }
 
     /**

@@ -242,6 +242,9 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The result list item which corresponds to a preset value in the editor. */
     protected CmsResultListItem m_preset;
 
+    /** The context menu handler. */
+    private CmsContextMenuHandler m_contextMenuHandler;
+
     /** The optional dnd manager. */
     private CmsDNDHandler m_dndHandler;
 
@@ -253,9 +256,6 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /** The reference to the handler of this tab. */
     private CmsResultsTabHandler m_tabHandler;
-
-    /** The context menu handler. */
-    private CmsContextMenuHandler m_contextMenuHandler;
 
     /** Set of resource types currently displayed in the result list. */
     private Set<String> m_types;
@@ -460,11 +460,14 @@ public class CmsResultsTab extends A_CmsListTab {
     protected void addSingleResult(CmsResultItemBean resultItem, boolean front) {
 
         m_types.add(resultItem.getType());
-        CmsResultListItem listItem = new CmsResultListItem(resultItem, m_dndHandler);
+        boolean hasPreview = m_tabHandler.hasPreview(resultItem.getType());
+        CmsResultListItem listItem = new CmsResultListItem(resultItem, hasPreview, m_dndHandler);
         if (resultItem.isPreset()) {
             m_preset = listItem;
         }
-        listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
+        if (hasPreview) {
+            listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
+        }
         listItem.getListItemWidget().addButton(
             new CmsContextMenuButton(new CmsUUID(resultItem.getClientId()), m_contextMenuHandler));
         if (m_tabHandler.hasSelectResource()) {

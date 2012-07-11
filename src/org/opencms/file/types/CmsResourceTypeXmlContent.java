@@ -122,6 +122,20 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
+     * @see org.opencms.file.types.A_CmsResourceType#getGalleryPreviewProvider()
+     */
+    @Override
+    public String getGalleryPreviewProvider() {
+
+        if (m_galleryPreviewProvider == null) {
+            m_galleryPreviewProvider = getConfiguration().getString(
+                CONFIGURATION_GALLERY_PREVIEW_PROVIDER,
+                DEFAULT_GALLERY_PREVIEW_PROVIDER);
+        }
+        return m_galleryPreviewProvider;
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
      */
     @Override

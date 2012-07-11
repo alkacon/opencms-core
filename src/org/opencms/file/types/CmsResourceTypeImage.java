@@ -162,9 +162,6 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         }
     }
 
-    /** The gallery preview provider. */
-    private String m_galleryPreviewProvider;
-
     /** The default image preview provider. */
     private static final String GALLERY_PREVIEW_PROVIDER = "org.opencms.ade.galleries.preview.CmsImagePreviewProvider";
 

@@ -51,14 +51,6 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Updates the result tab.<p>
-     */
-    public void updateResult() {
-
-        m_controller.updateResultsTab(false);
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.A_CmsTabHandler#clearParams()
      */
     @Override
@@ -75,6 +67,18 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public void deleteResource(String resourcePath) {
 
         m_controller.deleteResource(resourcePath);
+    }
+
+    /**
+     * Returns if a preview is available for the given resource type.<p>
+     * 
+     * @param resourceType the requested resource type
+     * 
+     * @return <code>true</code> if a preview is available for the given resource type
+     */
+    public boolean hasPreview(String resourceType) {
+
+        return m_controller.hasPreview(resourceType);
     }
 
     /**
@@ -149,6 +153,15 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
+     */
+    @Override
+    public void removeParam(String paramKey) {
+
+        // nothing to do
+    }
+
+    /**
      * Selects the given resource and sets its path into the xml-content field or editor link.<p>
      * 
      * @param resourcePath the item resource path 
@@ -161,11 +174,10 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
+     * Updates the result tab.<p>
      */
-    @Override
-    public void removeParam(String paramKey) {
+    public void updateResult() {
 
-        // nothing to do
+        m_controller.updateResultsTab(false);
     }
 }

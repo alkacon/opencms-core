@@ -49,9 +49,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
  */
 public class CmsResultListItem extends CmsListItem {
 
-    /** The delete button. */
-    private CmsPushButton m_deleteButton;
-
     /** The name. */
     private String m_name;
 
@@ -71,9 +68,10 @@ public class CmsResultListItem extends CmsListItem {
      * Creates a new result list item with a main widget.<p>
      * 
      * @param resultItem the result item
+     * @param hasPreview if the item has a preview option
      * @param dndHandler the drag and drop handler
      */
-    public CmsResultListItem(CmsResultItemBean resultItem, CmsDNDHandler dndHandler) {
+    public CmsResultListItem(CmsResultItemBean resultItem, boolean hasPreview, CmsDNDHandler dndHandler) {
 
         resultItem.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_PATH_0), resultItem.getPath());
         CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(resultItem);
@@ -83,7 +81,6 @@ public class CmsResultListItem extends CmsListItem {
             if (resultItem.getTitle() != null) {
                 setName(resultItem.getTitle().toLowerCase().replace("/", "-").replace(" ", "_"));
             } else {
-                // TODO: check if another name makes more sense
                 setName(resultItem.getClientId());
             }
             initMoveHandle(dndHandler);
@@ -92,19 +89,13 @@ public class CmsResultListItem extends CmsListItem {
                 addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingItem());
             }
         }
-        // add delete button
-        //        m_deleteButton = createDeleteButton();
-        //        if (!resultItem.isEditable()) {
-        //            m_deleteButton.disable(resultItem.getNoEditReson());
-        //        }
-        //        resultItemWidget.addButton(m_deleteButton);
-
         // add  preview button
-        m_previewButton = createButton(
-            I_CmsImageBundle.INSTANCE.style().searchIcon(),
-            Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
-        resultItemWidget.addButton(m_previewButton);
-
+        if (hasPreview) {
+            m_previewButton = createButton(
+                I_CmsImageBundle.INSTANCE.style().searchIcon(),
+                Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
+            resultItemWidget.addButton(m_previewButton);
+        }
         m_selectButton = createButton(
             I_CmsImageBundle.INSTANCE.style().addIcon(),
             Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
@@ -176,7 +167,9 @@ public class CmsResultListItem extends CmsListItem {
      */
     public void addPreviewClickHandler(ClickHandler handler) {
 
-        m_previewButton.addClickHandler(handler);
+        if (m_previewButton != null) {
+            m_previewButton.addClickHandler(handler);
+        }
     }
 
     /**
