@@ -56,20 +56,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String dialogMessage();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String dialogMessageImportant();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String dragAndDropMessage();
 
         /** 
@@ -78,27 +64,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String fileInputPanel();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String loadingAnimation();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String loadingPanel();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String loadingText();
 
         /** 
          * Access method.<p>
@@ -120,20 +85,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String uploadDialogButton();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String warningIcon();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String warningMessage();
     }
 
     /** The bundle instance. */

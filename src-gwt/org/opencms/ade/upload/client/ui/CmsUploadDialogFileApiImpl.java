@@ -28,7 +28,6 @@
 package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
-import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
@@ -126,7 +125,7 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
             disableOKButton(message);
             StringBuffer buffer = new StringBuffer(64);
             buffer.append("<p class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessageImportant());
+            buffer.append(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().dialogMessageImportant());
             buffer.append("\">");
             buffer.append(message);
             buffer.append("</p>");
@@ -148,23 +147,28 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
     private void onBrowserError(String errorCode) {
 
         int code = new Integer(errorCode).intValue();
-        String errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_0);
+        String errMsg = org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_0);
 
         switch (code) {
             case 1: // NOT_FOUND_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_NOT_FOUND_0);
+                errMsg = org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_NOT_FOUND_0);
                 break;
             case 2: // SECURITY_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_SECURITY_0);
+                errMsg = org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_SECURITY_0);
                 break;
             case 3: // ABORT_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_ABORT_ERR_0);
+                errMsg = org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_ABORT_ERR_0);
                 break;
             case 4: // NOT_READABLE_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_NOT_READABLE_0);
+                errMsg = org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_NOT_READABLE_0);
                 break;
             case 5: // ENCODING_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_ENCODING_0);
+                errMsg = org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_ENCODING_0);
                 break;
             default:
                 break;

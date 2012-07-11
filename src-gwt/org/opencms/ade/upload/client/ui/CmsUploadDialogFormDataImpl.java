@@ -137,7 +137,8 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
 
         setContentLength(calculateContentLength());
         StringBuffer buffer = new StringBuffer(64);
-        buffer.append("<p class=\"").append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessage()).append("\">");
+        buffer.append("<p class=\"").append(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().dialogMessage()).append("\">");
         buffer.append("<b>" + Messages.get().key(Messages.GUI_UPLOAD_SUMMARY_FILES_0) + "</b> ");
         buffer.append(Messages.get().key(
             Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_3,

@@ -28,7 +28,6 @@
 package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.Messages;
-import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -135,7 +134,8 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
     public void updateSummary() {
 
         StringBuffer buffer = new StringBuffer(64);
-        buffer.append("<p class=\"").append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessage()).append("\">");
+        buffer.append("<p class=\"").append(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().dialogMessage()).append("\">");
         buffer.append("<b>" + Messages.get().key(Messages.GUI_UPLOAD_SUMMARY_FILES_0) + "</b> ");
         buffer.append(Messages.get().key(
             Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_2,

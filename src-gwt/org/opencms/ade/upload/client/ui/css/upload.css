@@ -1,6 +1,6 @@
 @external html-face;
 
-.popup, .popupContent {}
+.popup {}
 
 .mainContentWidget {
     background-color: value("constants.css.backgroundColorDialog");
@@ -33,51 +33,4 @@
 .fileInputPanel {
 	overflow: hidden;
 	position: relative;
-}
-
-.dialogMessage {
-	line-height: 16px;
-	margin: 0px;
-}
-
-.dialogMessageImportant {
-	line-height: 16px;
-	margin: 0px;
-	color: value("constants.css.textColorImportant");
-}
-
-
-@sprite .warningIcon{
-	gwt-image: "gwtImages.warningBigImage";
-	margin: 0px 0px 0px 3px;
-	display: block;
-	float: left;
-}
-.warningMessage{
-	line-height: 16px;
-	margin: 0px 0px 0px 45px;
-}
-
-.loadingPanel {
-    left: 0;
-    top: 0;
-	display: inline-block;
-    height: 100%;
-    position: absolute;
-    width: 100%;
-    z-index: value("constants.css.zIndexPopup");
-    background-color: value("constants.css.backgroundColorDialog");
-    text-align: center;
-}
-.loadingText {
-	text-align: center;
-}
-.loadingAnimation {
-	margin-top: 20px;
-}
-@sprite .loadingAnimation {
-	gwt-image: "gwtImages.loadingBigImage";
-	background-position: 50% 50%;
-    background-repeat: no-repeat;
-	display: inline-block;
 }

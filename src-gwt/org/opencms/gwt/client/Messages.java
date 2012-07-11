@@ -52,6 +52,24 @@ public final class Messages {
     public static final String ERR_TITLE_ERROR_0 = "ERR_TITLE_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_0 = "ERR_UPLOAD_BROWSER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_ABORT_ERR_0 = "ERR_UPLOAD_BROWSER_ABORT_ERR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_ENCODING_0 = "ERR_UPLOAD_BROWSER_ENCODING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_NOT_FOUND_0 = "ERR_UPLOAD_BROWSER_NOT_FOUND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_NOT_READABLE_0 = "ERR_UPLOAD_BROWSER_NOT_READABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPLOAD_BROWSER_SECURITY_0 = "ERR_UPLOAD_BROWSER_SECURITY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -434,6 +452,15 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_FINISH_UPLOADED_VALUE_4 = "GUI_UPLOAD_FINISH_UPLOADED_VALUE_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_INFO_CREATING_RESOURCES_0 = "GUI_UPLOAD_INFO_CREATING_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_INFO_FINISHING_0 = "GUI_UPLOAD_INFO_FINISHING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_INFO_UPLOADING_0 = "GUI_UPLOAD_INFO_UPLOADING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_PROGRESS_CURRENT_FILE_0 = "GUI_UPLOAD_PROGRESS_CURRENT_FILE_0";

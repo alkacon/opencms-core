@@ -27,11 +27,9 @@
 
 package org.opencms.gwt.client.ui.replace;
 
-import org.opencms.ade.upload.client.Messages;
-import org.opencms.ade.upload.client.ui.CmsUploadHookDialog;
-import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -39,6 +37,7 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
@@ -53,21 +52,15 @@ import org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -355,44 +348,9 @@ public class CmsReplaceDialog extends CmsPopup {
                 m_contentLength = requestSize;
             }
             if (success) {
-                List<String> uploadedFilesList = new ArrayList<String>();
                 m_mainPanel.displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
-                JSONValue uploadedFilesVal = jsonObject.get(I_CmsUploadConstants.KEY_UPLOADED_FILES);
-                JSONValue uploadHook = jsonObject.get(I_CmsUploadConstants.KEY_UPLOAD_HOOK);
-                String hookUri = null;
-                if ((uploadHook != null) && (uploadHook.isString() != null)) {
-                    hookUri = uploadHook.isString().stringValue();
-                    JSONArray uploadedFilesArray = uploadedFilesVal.isArray();
-                    if (uploadedFilesArray != null) {
-                        for (int i = 0; i < uploadedFilesArray.size(); i++) {
-                            JSONString entry = uploadedFilesArray.get(i).isString();
-                            if (entry != null) {
-                                uploadedFilesList.add(entry.stringValue());
-                            }
-                        }
-                    }
-                }
                 m_progressInfo.finish();
-                final Runnable finishAction = getFinishAction();
-                if (hookUri != null) {
-                    // clear finish action; we want to show another dialog, assign it our finish action instead 
-                    setFinishAction(null);
-                }
                 closeOnSuccess();
-                if (hookUri != null) {
-                    CloseHandler<PopupPanel> closeHandler = null;
-                    if (finishAction != null) {
-                        closeHandler = new CloseHandler<PopupPanel>() {
-
-                            public void onClose(CloseEvent<PopupPanel> event) {
-
-                                finishAction.run();
-                            }
-                        };
-                    }
-                    String title = Messages.get().key(Messages.GUI_UPLOAD_HOOK_DIALOG_TITLE_0);
-                    CmsUploadHookDialog.openDialog(title, hookUri, uploadedFilesList, closeHandler);
-                }
             } else {
                 String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
                 String stacktrace = jsonObject.get(I_CmsUploadConstants.KEY_STACKTRACE).isString().stringValue();
@@ -593,7 +551,7 @@ public class CmsReplaceDialog extends CmsPopup {
 
         // add a new upload button
         m_uploadButton = new CmsUploadButton(m_handler);
-        m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogButton());
+        m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().uploadDialogButton());
         m_uploadButton.setText("Change file");
         addButton(m_uploadButton);
         m_handler.setButton(m_uploadButton);

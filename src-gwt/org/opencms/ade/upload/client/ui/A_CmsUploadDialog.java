@@ -507,15 +507,15 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
 
         m_clientLoading = true;
         m_loadingPanel = new FlowPanel();
-        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingPanel());
+        m_loadingPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingPanel());
         m_loadingPanel.addStyleName(m_gwtCss.generalCss().cornerAll());
 
         HTML animationDiv = new HTML();
-        animationDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingAnimation());
+        animationDiv.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingAnimation());
         m_loadingPanel.add(animationDiv);
 
         HTML messageDiv = new HTML();
-        messageDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingText());
+        messageDiv.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingText());
         messageDiv.setHTML(msg);
         m_loadingPanel.add(messageDiv);
 
@@ -722,7 +722,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
             }
             if (success) {
                 List<String> uploadedFilesList = new ArrayList<String>();
-                displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
+                displayDialogInfo(
+                    org.opencms.gwt.client.Messages.get().key(
+                        org.opencms.gwt.client.Messages.GUI_UPLOAD_INFO_FINISHING_0),
+                    false);
                 JSONValue uploadedFilesVal = jsonObject.get(I_CmsUploadConstants.KEY_UPLOADED_FILES);
                 JSONValue uploadHook = jsonObject.get(I_CmsUploadConstants.KEY_UPLOAD_HOOK);
                 String hookUri = null;
@@ -934,8 +937,14 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
                 break;
             case finished:
                 m_progressInfo.finish();
-                displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
-                startLoadingAnimation(Messages.get().key(Messages.GUI_UPLOAD_INFO_CREATING_RESOURCES_0), 1500);
+                displayDialogInfo(
+                    org.opencms.gwt.client.Messages.get().key(
+                        org.opencms.gwt.client.Messages.GUI_UPLOAD_INFO_FINISHING_0),
+                    false);
+                startLoadingAnimation(
+                    org.opencms.gwt.client.Messages.get().key(
+                        org.opencms.gwt.client.Messages.GUI_UPLOAD_INFO_CREATING_RESOURCES_0),
+                    1500);
                 break;
             default:
                 break;
@@ -1232,16 +1241,16 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
         StringBuffer buffer = new StringBuffer(64);
         if (!warning) {
             buffer.append("<p class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessage());
+            buffer.append(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().dialogMessage());
             buffer.append("\">");
             buffer.append(msg);
             buffer.append("</p>");
         } else {
             buffer.append("<div class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().warningIcon());
+            buffer.append(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().warningIcon());
             buffer.append("\"></div>");
             buffer.append("<p class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().warningMessage());
+            buffer.append(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().warningMessage());
             buffer.append("\">");
             buffer.append(msg);
             buffer.append("</p>");
@@ -1314,7 +1323,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     private void showProgress() {
 
         removeContent();
-        displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_UPLOADING_0), false);
+        displayDialogInfo(
+            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_UPLOAD_INFO_UPLOADING_0),
+            false);
         m_selectionSummary.removeFromParent();
         List<String> files = new ArrayList<String>(getFilesToUpload().keySet());
         Collections.sort(files, String.CASE_INSENSITIVE_ORDER);

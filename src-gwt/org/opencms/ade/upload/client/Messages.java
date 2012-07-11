@@ -37,24 +37,6 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UPLOAD_BROWSER_0 = "ERR_UPLOAD_BROWSER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UPLOAD_BROWSER_ABORT_ERR_0 = "ERR_UPLOAD_BROWSER_ABORT_ERR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UPLOAD_BROWSER_ENCODING_0 = "ERR_UPLOAD_BROWSER_ENCODING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UPLOAD_BROWSER_NOT_FOUND_0 = "ERR_UPLOAD_BROWSER_NOT_FOUND_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UPLOAD_BROWSER_NOT_READABLE_0 = "ERR_UPLOAD_BROWSER_NOT_READABLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UPLOAD_BROWSER_SECURITY_0 = "ERR_UPLOAD_BROWSER_SECURITY_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_BUTTON_ADD_FILES_0 = "GUI_UPLOAD_BUTTON_ADD_FILES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -94,19 +76,10 @@ public final class Messages {
     public static final String GUI_UPLOAD_HOOK_DIALOG_TITLE_0 = "GUI_UPLOAD_HOOK_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_INFO_CREATING_RESOURCES_0 = "GUI_UPLOAD_INFO_CREATING_RESOURCES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_INFO_FINISHING_0 = "GUI_UPLOAD_INFO_FINISHING_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_INFO_OVERWRITE_0 = "GUI_UPLOAD_INFO_OVERWRITE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_INFO_SELECTION_0 = "GUI_UPLOAD_INFO_SELECTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_INFO_UPLOADING_0 = "GUI_UPLOAD_INFO_UPLOADING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_MAX_SIZE_REACHED_2 = "GUI_UPLOAD_MAX_SIZE_REACHED_2";

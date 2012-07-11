@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui.replace;
 
-import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -87,16 +87,16 @@ public class CmsReplaceContentWidget extends Composite {
         StringBuffer buffer = new StringBuffer(64);
         if (!warning) {
             buffer.append("<p class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogMessage());
+            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadButton().dialogMessage());
             buffer.append("\">");
             buffer.append(msg);
             buffer.append("</p>");
         } else {
             buffer.append("<div class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().warningIcon());
+            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadButton().warningIcon());
             buffer.append("\"></div>");
             buffer.append("<p class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadCss().warningMessage());
+            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadButton().warningMessage());
             buffer.append("\">");
             buffer.append(msg);
             buffer.append("</p>");
@@ -149,15 +149,15 @@ public class CmsReplaceContentWidget extends Composite {
 
         removeLoadingAnimation();
         m_loadingPanel = new FlowPanel();
-        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingPanel());
+        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().loadingPanel());
         m_loadingPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
         HTML animationDiv = new HTML();
-        animationDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingAnimation());
+        animationDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().loadingAnimation());
         m_loadingPanel.add(animationDiv);
 
         HTML messageDiv = new HTML();
-        messageDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().loadingText());
+        messageDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().loadingText());
         messageDiv.setHTML(msg);
         m_loadingPanel.add(messageDiv);
 
