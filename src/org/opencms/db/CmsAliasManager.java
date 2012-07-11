@@ -142,6 +142,21 @@ public class CmsAliasManager {
     }
 
     /**
+     * Gets the rewrite alias matcher for the given site.<p>
+     * 
+     * @param siteRoot the site root 
+     * 
+     * @return the alias matcher for the site with the given site root 
+     */
+    public CmsRewriteAliasMatcher getRewriteAliasMatcher(String siteRoot) {
+
+        List<CmsRewriteAlias> aliases = new ArrayList<CmsRewriteAlias>();
+        CmsRewriteAlias alias1 = new CmsRewriteAlias(new CmsUUID(), "/sites/default", "(.+?)foo.jsp", "$1bar.jsp", true);
+        aliases.add(alias1);
+        return new CmsRewriteAliasMatcher(aliases);
+    }
+
+    /**
      * Checks whether the current user has permissions for mass editing the alias table.<p> 
      * 
      * @param cms the current CMS context  

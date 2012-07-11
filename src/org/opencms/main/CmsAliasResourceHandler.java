@@ -29,6 +29,7 @@ package org.opencms.main;
 
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.db.CmsAlias;
+import org.opencms.db.CmsRewriteAliasMatcher;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
@@ -37,6 +38,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,31 +100,24 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
             } finally {
                 cms.getRequestContext().setSiteRoot(oldSiteRoot);
             }
+            CmsRewriteAliasMatcher rewriteAliases = OpenCms.getAliasManager().getRewriteAliasMatcher(siteRoot);
+            CmsRewriteAliasMatcher.RewriteResult rewriteResult = rewriteAliases.match(sitePath);
+            if ((rewriteResult != null) && (res != null)) {
+                String link = OpenCms.getLinkManager().substituteLink(cms, rewriteResult.getNewPath());
+                redirectToTarget(req, res, link, rewriteResult.isPermanent());
+                return null; // will never be reached 
+            }
             List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(cms, siteRoot, sitePath);
             assert aliases.size() < 2;
             if (aliases.size() == 1) {
                 CmsAlias alias = aliases.get(0);
                 CmsResource aliasTarget = cms.readResource(alias.getStructureId());
+
                 if (alias.isRedirect()) {
+                    String link = OpenCms.getLinkManager().substituteLink(cms, aliasTarget);
+                    boolean isPermanent = alias.isPermanentRedirect();
                     // response may be null if we're coming from the locale manager
-                    CmsResourceInitException resInitException = new CmsResourceInitException(getClass());
-                    if (res != null) {
-                        // preserve request parameters for the redirect
-                        String query = req.getQueryString();
-                        String link = OpenCms.getLinkManager().substituteLink(cms, aliasTarget);
-                        if (query != null) {
-                            link += "?" + query;
-                        }
-                        // disable 404 handler
-                        resInitException.setClearErrors(true);
-                        if (alias.isPermanentRedirect()) {
-                            res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                            res.setHeader("Location", link);
-                        } else {
-                            res.sendRedirect(link);
-                        }
-                    }
-                    throw resInitException;
+                    redirectToTarget(req, res, link, isPermanent);
                 } else {
                     // not a redirect, just proceed with the aliased resource
                     cms.getRequestContext().setUri(cms.getSitePath(aliasTarget));
@@ -145,6 +140,39 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
         }
 
         return null;
+    }
+
+    /**
+     * Helper method for sending a redirect to a new URI.<p>
+     * 
+     * @param req the current request 
+     * @param res the current response 
+     * @param link the redirect target 
+     * @param isPermanent if true, sends a 'moved permanently' redirect
+     * 
+     * @throws IOException 
+     * @throws CmsResourceInitException
+     */
+    private void redirectToTarget(HttpServletRequest req, HttpServletResponse res, String link, boolean isPermanent)
+    throws IOException, CmsResourceInitException {
+
+        CmsResourceInitException resInitException = new CmsResourceInitException(getClass());
+        if (res != null) {
+            // preserve request parameters for the redirect
+            String query = req.getQueryString();
+            if (query != null) {
+                link += "?" + query;
+            }
+            // disable 404 handler
+            resInitException.setClearErrors(true);
+            if (isPermanent) {
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                res.setHeader("Location", link);
+            } else {
+                res.sendRedirect(link);
+            }
+        }
+        throw resInitException;
     }
 
 }
