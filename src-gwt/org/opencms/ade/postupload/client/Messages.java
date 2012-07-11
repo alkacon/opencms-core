@@ -49,49 +49,10 @@ public final class Messages {
     public static final String GUI_DIALOG_BUTTON_NEXT_0 = "GUI_DIALOG_BUTTON_NEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_DOMICILES_ALL_0 = "GUI_DIALOG_DOMICILES_ALL_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_INFO_FIRST_RESOURCE_0 = "GUI_DIALOG_INFO_FIRST_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_INFO_LAST_RESOURCE_0 = "GUI_DIALOG_INFO_LAST_RESOURCE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_INPUT_DESCRIPTION_0 = "GUI_DIALOG_INPUT_DESCRIPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_INPUT_TITLE_0 = "GUI_DIALOG_INPUT_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_LEGEND_DOMICILES_0 = "GUI_DIALOG_LEGEND_DOMICILES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_LEGEND_META_INFO_0 = "GUI_DIALOG_LEGEND_META_INFO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_LEGEND_PROPERTIES_0 = "GUI_DIALOG_LEGEND_PROPERTIES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_SELECT_CATEGORY_0 = "GUI_DIALOG_SELECT_CATEGORY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_SELECT_DISCLAIMER_0 = "GUI_DIALOG_SELECT_DISCLAIMER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_SELECT_EREADER_0 = "GUI_DIALOG_SELECT_EREADER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_SELECT_GROUP_0 = "GUI_DIALOG_SELECT_GROUP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_SELECT_NEWSLETTER_0 = "GUI_DIALOG_SELECT_NEWSLETTER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_SELECT_PLEASE_0 = "GUI_DIALOG_SELECT_PLEASE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_SELECT_PRINT_ABO_0 = "GUI_DIALOG_SELECT_PRINT_ABO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_TITLE_0 = "GUI_DIALOG_TITLE_0";
