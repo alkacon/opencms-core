@@ -3,10 +3,8 @@
 .propertyDialog {
     overflow: auto;
     position: relative;
-	/** Set this value to restrict the height of the dialog popup:
-		max-height: 395px;
-		padding-right: 5px;
-	*/
+	max-height: 370px;
+	padding-right: 5px;
 }
 
 .popupOverlay {

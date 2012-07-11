@@ -43,6 +43,8 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -50,11 +52,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandler {
 
+    /** The upload property dialog containing this panel. */
+    CmsUploadPropertyDialog m_dialog;
+
     /** The property editor handler instance. */
     I_CmsPropertyEditorHandler m_propertyEditorHandler;
-
-    /** The upload property dialog containing this panel. */
-    private CmsUploadPropertyDialog m_dialog;
 
     /** The property editor instance. */
     private CmsSimplePropertyEditor m_propertyEditor;
@@ -81,6 +83,14 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         m_dialog = dialog;
         m_resourcePath = values.getInfoBean().getSubTitle();
         initializePropertyEditor();
+        // height may change on click
+        addDomHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                m_dialog.updateHeight();
+            }
+        }, ClickEvent.getType());
     }
 
     /**
@@ -151,6 +161,18 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         m_propertyEditor.initializeWidgets(null);
         A_CmsFormFieldPanel propertiesPanel = m_propertyEditor.getForm().getWidget();
         add(propertiesPanel);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        super.onLoad();
+        if (m_dialog != null) {
+            m_dialog.updateHeight();
+        }
     }
 
 }

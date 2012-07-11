@@ -1018,6 +1018,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
                 public void onClick(ClickEvent event) {
 
                     setAdditionalInfoVisible(!getElement().getClassName().contains(CmsListItemWidget.OPENCLASS));
+                    CmsDomUtil.resizeAncestor(CmsListItemWidget.this);
                 }
             });
         }

@@ -37,6 +37,7 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsFrameDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.util.CmsUUID;
@@ -50,7 +51,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Provides a dialog.<p>
@@ -58,6 +58,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @since 8.0.0
  */
 public class CmsUploadPropertyDialog {
+
+    /** The panel for the content. */
+    CmsScrollPanel m_dialogContent = GWT.create(CmsScrollPanel.class);
 
     /** The index of the currently displayed resource. */
     int m_dialogIndex;
@@ -79,9 +82,6 @@ public class CmsUploadPropertyDialog {
 
     /** The command that is executed on close action. */
     private Command m_closeCommand;
-
-    /** The panel for the content. */
-    private SimplePanel m_dialogContent = new SimplePanel();
 
     /** The pre fetched date. */
     private CmsPostUploadDialogBean m_dialogData;
@@ -106,9 +106,7 @@ public class CmsUploadPropertyDialog {
      */
     public CmsUploadPropertyDialog() {
 
-        m_frameDialog.enableDialogClose();
         m_frameDialog.setContent(m_dialogContent);
-
         m_dialogContent.addStyleName(org.opencms.ade.postupload.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().propertyDialog());
         try {
             m_dialogData = (CmsPostUploadDialogBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
@@ -224,6 +222,15 @@ public class CmsUploadPropertyDialog {
     public void setWidth(int width) {
 
         m_frameDialog.setWidth(width);
+    }
+
+    /**
+     * Updates the height of the dialog to fit the content.<p>
+     */
+    public void updateHeight() {
+
+        int height = m_dialogContent.getOffsetHeight() + 70;
+        CmsUploadPropertyDialog.this.setHeight(height);
     }
 
     /**
@@ -374,6 +381,7 @@ public class CmsUploadPropertyDialog {
 
         if (!m_frameDialog.isShowing()) {
             m_frameDialog.show();
+            m_dialogContent.onResize();
         }
     }
 

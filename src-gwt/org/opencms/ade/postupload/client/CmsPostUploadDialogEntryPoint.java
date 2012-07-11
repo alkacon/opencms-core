@@ -75,9 +75,9 @@ public class CmsPostUploadDialogEntryPoint extends A_CmsEntryPoint {
         dialog.setCloseCmd(onFinish);
         dialog.setTitle(Messages.get().key(Messages.GUI_DIALOG_TITLE_0));
         dialog.setWidth(600); //545
-        if (dialog.isIFrameMode()) {
-            dialog.setHeight(547);
-        }
+        //        if (dialog.isIFrameMode()) {
+        //            dialog.setHeight(547);
+        //        }
         dialog.loadAndShow();
     }
 
