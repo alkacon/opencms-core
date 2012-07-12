@@ -125,6 +125,18 @@ public class CmsSelectGroupWidget extends CmsSelectWidget implements I_CmsADEWid
     }
 
     /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
+    protected List<CmsSelectWidgetOption> parseSelectOptions(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        return parseSelectOptions(cms, widgetDialog.getMessages(), param);
+    }
+
+    /**
      * Returns the list of configured select options, parsing the configuration String if required.<p>
      * 
      * The list elements are of type <code>{@link CmsSelectWidgetOption}</code>.

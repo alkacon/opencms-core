@@ -303,18 +303,30 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
+    protected List<CmsSelectWidgetOption> parseSelectOptions(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        return parseSelectOptions(cms, widgetDialog.getMessages(), param);
+    }
+
+    /**
      * @see org.opencms.widgets.CmsSelectGroupWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override
     protected List<CmsSelectWidgetOption> parseSelectOptions(
         CmsObject cms,
-        CmsMessages widgetDialog,
+        CmsMessages messages,
         I_CmsWidgetParameter param) {
 
         // only create options if not already done
         if (getSelectOptions() == null) {
             // parse widget configuration
-            parseConfiguration(cms, widgetDialog);
+            parseConfiguration(cms, messages);
             List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
 
             if (isUseGroupNames()) {
