@@ -243,6 +243,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
      * Helper class for parsing the configuration in to a list of Radiobuttons. <p>
      * 
      * @param config the configuration string.
+     * @return List of CmsRadioButtons
      * */
     private List<CmsRadioButton> parseconfig(String config) {
 

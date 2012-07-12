@@ -72,6 +72,7 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
     /** A map from select options to their label texts. */
     private Map<String, String> m_items;
 
+    /***/
     private CmsMultiSelectCell m_multiSelectCell;
 
     /** The text which should be displayed in the opener if there is no selection. */

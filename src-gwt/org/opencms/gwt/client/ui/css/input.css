@@ -16,7 +16,7 @@ input.textBox {
 
 .textboxGhostMode {
 	font-style: oblique;
-	color: value("constants.css.textColorDisabled") !important;
+	color: value("constants.css.textColorDisabled") /*!important*/;
 }
 
 .textBoxWidget, .checkBox {}

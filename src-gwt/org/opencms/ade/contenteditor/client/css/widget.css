@@ -1,4 +1,4 @@
-@external html-face, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external html-face,textboxGhostMode, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 .radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -57,10 +57,52 @@ input.textBox{
 	box-shadow: none;
 	width: 100%;
 	padding: 0px 4px;
-	height: 19px;
+	height: 18px;
 	font-size: 12px;
 }
 
+input.passwordTextBox{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	font-family: value("constants.css.fontFamily");
+	display: block;
+	color: value("constants.css.textColor");
+	box-shadow: none;
+	width: 99%;
+	padding: 0px 4px;
+	height: 18px;
+	font-size: 12px;
+}
+
+.calendarStyle input {
+	box-shadow: none;
+	color: value("constants.css.textColor");
+	font-size: 12px;
+	padding-top:2px;
+	font-style:normal;
+}
+div.calendarStyle input.textboxGhostMode{
+	color: #7788AA;
+	font-style:normal;
+}
+
+
+div.calendarStyle {
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	font-family: value("constants.css.fontFamily");
+	display: block;
+	width: auto;
+	padding: 0px 4px;
+	height: 18px;
+}
+
+.inActive div.calendarStyle, .inActive input.passwordTextBox {
+	border: 1px solid value("constants.css.borderColor");
+
+	}
 
 input.displayTextBox{
 	background: none repeat scroll 0 0 transparent;
@@ -168,13 +210,13 @@ div.radioButtonlabel.cmsState-down-disabled{
 
 /** The "has error" parameters. */
 
-.hasError .selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError input.textBox{
+.hasError .selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError input.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox {
 	border: 1px solid value("constants.css.borderColorHighlight");
 }
 
 /** The "has warning" parameters. */
 
-.hasWarning .selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning input.textBox {
+.hasWarning .selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning input.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox{
 	border: 1px solid #FFAA00;
 }
 

@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public class CmsScrollPanel extends ScrollPanel {
 
-    /***/
+    /**Inner class for the resize button. */
     protected class ResizeButton extends CmsPushButton {
 
         /**
@@ -58,7 +58,6 @@ public class CmsScrollPanel extends ScrollPanel {
         public ResizeButton() {
 
             super();
-            //setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsTransparentButton());
             setStyleName(I_CmsLayoutBundle.INSTANCE.buttonCss().resizeButton());
 
         }
@@ -80,20 +79,18 @@ public class CmsScrollPanel extends ScrollPanel {
     private HandlerRegistration m_handlerRegistration;
 
     /** The preview handler registration. */
-    HandlerRegistration m_previewHandlerRegistration;
+    protected HandlerRegistration m_previewHandlerRegistration;
 
     /** The button to resize the scrolling panel. */
-    ResizeButton m_resize;
+    private ResizeButton m_resize;
 
-    /** The start X coordination. */
-    int m_clientX;
     /** The start Y coordination. */
-    int m_clientY;
+    private int m_clientY;
     /** The start height. */
-    double m_oldheight;
+    private double m_oldheight;
 
     /** The default height. */
-    double m_defaultHeight = -1;
+    private double m_defaultHeight = -1;
 
     /**
      * Constructor.<p>
@@ -166,7 +163,9 @@ public class CmsScrollPanel extends ScrollPanel {
     }
 
     /**
-     * @param resize
+     * Sets the scrollpanel resizeable.<p> 
+     * 
+     * @param resize true if the scrollpanel should be resizeable.
      */
     public void setResizable(boolean resize) {
 
@@ -178,18 +177,29 @@ public class CmsScrollPanel extends ScrollPanel {
 
                     public void onMouseDown(MouseDownEvent event) {
 
-                        m_oldheight = Double.parseDouble(getElement().getStyle().getHeight().replace("px", ""));
-                        m_clientX = event.getClientX();
-                        m_clientY = event.getClientY();
+                        setStartParameters(event);
                         CmsDebugLog.getInstance().printLine("Registering preview handler");
+                        if (m_previewHandlerRegistration != null) {
+                            m_previewHandlerRegistration.removeHandler();
+                        }
                         m_previewHandlerRegistration = Event.addNativePreviewHandler(new ResizeEventPreviewHandler());
-
                     }
                 });
             } else {
                 m_resize.removeFromParent();
             }
         }
+    }
+
+    /**
+     * Sets the start parameters of the resize event.<p>
+     * 
+     * @param event
+     */
+    protected void setStartParameters(MouseDownEvent event) {
+
+        m_oldheight = Double.parseDouble(getElement().getStyle().getHeight().replace("px", ""));
+        m_clientY = event.getClientY();
     }
 
     /**
@@ -209,12 +219,12 @@ public class CmsScrollPanel extends ScrollPanel {
                 case Event.ONMOUSEMOVE:
                     // dragging
                     setNewHeight(nativeEvent);
+                    onResize();
+                    event.cancel();
                     break;
                 case Event.ONMOUSEUP:
                     m_previewHandlerRegistration.removeHandler();
-                    event.cancel();
-                    nativeEvent.preventDefault();
-                    nativeEvent.stopPropagation();
+                    m_previewHandlerRegistration = null;
                     break;
                 case Event.ONKEYDOWN:
                     break;
@@ -224,10 +234,10 @@ public class CmsScrollPanel extends ScrollPanel {
                 default:
                     // do nothing
             }
-            event.cancel();
+
             nativeEvent.preventDefault();
             nativeEvent.stopPropagation();
-            onResize();
+
         }
 
     }

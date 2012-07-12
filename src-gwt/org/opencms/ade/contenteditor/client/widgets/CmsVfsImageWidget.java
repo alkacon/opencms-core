@@ -44,7 +44,10 @@ import com.google.gwt.user.client.ui.Composite;
  * */
 public class CmsVfsImageWidget extends Composite implements I_EditWidget {
 
+    /** Value of the activation. */
     private boolean m_active = true;
+
+    /** THe link selector. */
     private CmsLinkSelector m_linkSelect = new CmsLinkSelector();
 
     /**

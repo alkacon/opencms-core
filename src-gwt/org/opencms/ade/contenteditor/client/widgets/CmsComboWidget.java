@@ -274,6 +274,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
 
     /**
      * Helper function for parsing the configuration in to a list for the combobox. <p>
+     * @param config the Configuration String.
      * */
     private void parseconfig(String config) {
 

@@ -280,6 +280,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      * Help function to get a List of all sub categories for given path.<p>
      * 
      * @param path Path of the category.
+     * @return List of CategoryTreeEntries.
      * */
     private List<CmsCategoryTreeEntry> getCategoryTree(String path) {
 
@@ -310,6 +311,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      * 
      * @param parent the parent select box.
      * @param level the level this select box stands.
+     * @return a CmsSelectBox
      * */
     private CmsSelectBox getNextSelectbox(CmsSelectBox parent, int level) {
 
@@ -348,6 +350,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
     /**
      * Helper function to get the root select box.<p>
+     * @return CmsSelectBox
      * */
     private CmsSelectBox getRootSelectBox() {
 
@@ -387,6 +390,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      * Helper function to check if the select box has children.<p>
      * 
      * @param parent the select box to be checked.
+     * @return true if has next.
      * */
     private boolean hasNext(CmsSelectBox parent) {
 
@@ -402,8 +406,8 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
     /**
      * Help function to parse the configuration.<p>
-     * 
-     * @param configuraton the value to be parsed.
+     * @param configuration the value to be parsed.
+     *  
      * */
     private void parseConfiguration(String configuration) {
 

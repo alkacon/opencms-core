@@ -137,6 +137,20 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the css class
          */
         String textBox();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String calendarStyle();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String passwordTextBox();
     }
 
     /** The XML content editor CSS. */

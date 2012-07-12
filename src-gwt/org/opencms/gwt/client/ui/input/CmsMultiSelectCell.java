@@ -179,6 +179,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
 
     /**
      * Helper function to generate the grid layout.<p>
+     * @param count 
      * 
      *@return the new grid
      * */

@@ -40,7 +40,10 @@ import com.google.gwt.user.client.ui.Composite;
  * */
 public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
 
+    /** Value of the activation. */
     private boolean m_active = true;
+
+    /** The link selector. */
     private org.opencms.gwt.client.ui.input.CmsVfsLinkWidget m_linkSelect = new org.opencms.gwt.client.ui.input.CmsVfsLinkWidget();
 
     /**
@@ -55,9 +58,9 @@ public class CmsVfsLinkWidget extends Composite implements I_EditWidget {
             public void onValueChange(ValueChangeEvent<String> arg0) {
 
                 fireChangeEvent();
-                
+
             }
-            
+
         });
 
     }

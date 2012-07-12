@@ -30,6 +30,8 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+
 import java.text.ParseException;
 
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -37,6 +39,8 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 
 /**
@@ -45,8 +49,14 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
  * */
 public class CmsPasswordWidget extends Composite implements I_EditWidget {
 
+    /** Value of the activation. */
     private boolean m_active = true;
+
+    /** The Password input field. */
     private PasswordTextBox m_passwordTextBox = new PasswordTextBox();
+
+    /**The main panel of this widget. */
+    Panel m_mainPanel = new FlowPanel();
 
     /**
      * Constructs an CmsComboWidget.<p>
@@ -54,9 +64,9 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     public CmsPasswordWidget() {
 
         // All composites must call initWidget() in their constructors.
-        initWidget(m_passwordTextBox);
-        addStyleName(I_LayoutBundle.INSTANCE.form().input());
-        //m_passwordTextBox.addStyleName(CSS.passwordBox());
+        m_mainPanel.add(m_passwordTextBox);
+        initWidget(m_mainPanel);
+        m_passwordTextBox.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().passwordTextBox());
         m_passwordTextBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -131,8 +141,22 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        if (m_active == active) {
+            return;
+        }
+
         m_active = active;
-        m_passwordTextBox.setEnabled(active);
+        if (m_active) {
+            getElement().setAttribute("contentEditable", "true");
+            getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
+            getElement().focus();
+        } else {
+            getElement().setAttribute("contentEditable", "false");
+            getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+        }
+        if (!active) {
+            m_passwordTextBox.setText("");
+        }
         if (active) {
             fireChangeEvent();
         }

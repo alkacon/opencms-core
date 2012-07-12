@@ -30,7 +30,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 
 import java.util.Date;
@@ -65,11 +65,8 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
         // All composites must call initWidget() in their constructors.
         initWidget(m_dateBox);
 
-        m_dateBox.getTextField().getTextBoxContainer().addStyleName(I_LayoutBundle.INSTANCE.form().input());
-        m_dateBox.getTextField().getTextBoxContainer().removeStyleName(
-            I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_dateBox.getTextField().getTextBoxContainer().removeStyleName(
-            I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
+        m_dateBox.getTextField().getTextBoxContainer().addStyleName(
+            I_CmsLayoutBundle.INSTANCE.widgetCss().calendarStyle());
         ValueChangeHandler<Date> test = new ValueChangeHandler<Date>() {
 
             public void onValueChange(ValueChangeEvent<Date> arg0) {
@@ -157,7 +154,14 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        m_dateBox.getTextField().setEnabled(active);
+        if (m_active) {
+            getElement().setAttribute("contentEditable", "true");
+            getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
+            getElement().focus();
+        } else {
+            getElement().setAttribute("contentEditable", "false");
+            getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+        }
         if (active) {
             fireChangeEvent();
         }

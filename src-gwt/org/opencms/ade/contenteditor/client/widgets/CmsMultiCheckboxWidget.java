@@ -52,8 +52,11 @@ import com.google.gwt.user.client.ui.Composite;
  * */
 public class CmsMultiCheckboxWidget extends Composite implements I_EditWidget {
 
+    /** Value of the activation. */
     private boolean m_active = true;
+    /** The multi check box panel. */
     private CmsMultiCheckBox m_multicheckbox;
+    /** The selected checkboxes. */
     private String m_selected;
 
     /**
@@ -175,7 +178,8 @@ public class CmsMultiCheckboxWidget extends Composite implements I_EditWidget {
     /**
      * Helper class for parsing the configuration in to a list of Radiobuttons. <p>
      * 
-     * @param config the configuration string.
+     * @param config the configuration string
+     * @return Map of option and value of the checkbox
      * */
     private Map<String, String> parseconfig(String config) {
 
