@@ -278,7 +278,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 data.setReferenceSitePath(referencePath);
                 types = getResourceTypeBeans(data.getReferenceSitePath());
                 data.setTypes(types);
-                data.setGalleries(buildGalleriesList(readGalleryInfosByTypeBeans(types)));
+                Map<String, CmsGalleryTypeInfo> galleryTypeInfos = readGalleryInfosByTypeBeans(types);
+                String galleryTypes = getRequest().getParameter(ReqParam.gallerytypes.name());
+                // in case the 'gallerytypes' parameter is set, allow only the given galleries
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {
+                    Map<String, CmsGalleryTypeInfo> infos = new HashMap<String, CmsGalleryTypeInfo>();
+                    String[] galleries = galleryTypes.split(",");
+                    for (int i = 0; i < galleries.length; i++) {
+                        CmsGalleryTypeInfo typeInfo = galleryTypeInfos.get(galleries[i]);
+                        if (typeInfo != null) {
+                            infos.put(galleries[i], typeInfo);
+                        }
+                    }
+                    galleryTypeInfos = infos;
+                }
+                data.setGalleries(buildGalleriesList(galleryTypeInfos));
                 data.setStartTab(GalleryTabId.cms_tab_results);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !types.isEmpty()) {
                     String lastGallery = getWorkplaceSettings().getLastUsedGallery(types.get(0).getTypeId());

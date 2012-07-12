@@ -60,6 +60,9 @@ public class CmsGalleryWidgetConfiguration {
     /** Configuration key name for the class configuration. */
     public static final String CONFIG_KEY_CLASS = "class";
 
+    /** Configuration key name for the gallery types configuration. */
+    public static final String CONFIG_KEY_GALLERYTYPES = "gallerytypes";
+
     /** Configuration key name for the startup configuration. */
     public static final String CONFIG_KEY_STARTUP = "startup";
 
@@ -78,13 +81,8 @@ public class CmsGalleryWidgetConfiguration {
     /** The type of the initial item list to load, either gallery or category. */
     protected String m_type;
 
-    /**
-     * Default constructor.<p>
-     */
-    protected CmsGalleryWidgetConfiguration() {
-
-        // empty constructor is required for class registration
-    }
+    /** The configured gallery types. */
+    private String m_galleryTypes;
 
     /**
      * Generates an initialized configuration for the gallery item widget using the given configuration string.<p>
@@ -104,6 +102,14 @@ public class CmsGalleryWidgetConfiguration {
     }
 
     /**
+     * Default constructor.<p>
+     */
+    protected CmsGalleryWidgetConfiguration() {
+
+        // empty constructor is required for class registration
+    }
+
+    /**
      * Returns the optional class name for generating dynamic configurations, must implement {@link I_CmsGalleryWidgetDynamicConfiguration}.<p>
      * 
      * @return the optional class name for generating dynamic configurations
@@ -111,6 +117,16 @@ public class CmsGalleryWidgetConfiguration {
     public String getClassName() {
 
         return m_className;
+    }
+
+    /**
+     * Returns the configured gallery types.<p>
+     *
+     * @return the configured gallery types
+     */
+    public String getGalleryTypes() {
+
+        return m_galleryTypes;
     }
 
     /**
@@ -173,6 +189,7 @@ public class CmsGalleryWidgetConfiguration {
         if ((CONFIG_VALUE_DYNAMIC.equals(getType()) || CmsStringUtil.isEmpty(getType())) && (dynConf != null)) {
             setType(dynConf.getType(cms, widgetDialog, param));
         }
+        setGalleryTypes(jsonObj.optString(CONFIG_KEY_GALLERYTYPES, null));
         setStartup(jsonObj.optString(CONFIG_KEY_STARTUP));
         if ((CONFIG_VALUE_DYNAMIC.equals(getStartup()) || CmsStringUtil.isEmpty(getStartup())) && (dynConf != null)) {
             setStartup(dynConf.getStartup(cms, widgetDialog, param));
@@ -187,6 +204,16 @@ public class CmsGalleryWidgetConfiguration {
     protected void setClassName(String className) {
 
         m_className = className;
+    }
+
+    /**
+     * Sets the configured gallery types.<p>
+     * 
+     * @param galleryTypes the configured gallery types
+     */
+    protected void setGalleryTypes(String galleryTypes) {
+
+        m_galleryTypes = galleryTypes;
     }
 
     /**

@@ -27,6 +27,7 @@
 
 package org.opencms.widgets;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
@@ -423,7 +424,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
                 param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(param.getId()).append(
                 "').selectedIndex].value)+'");
         }
-        result.put(GALLERY_PARAM.currentelement.name(), currentElement.toString());
+        result.put(I_CmsGalleryProviderConstants.ReqParam.currentelement.name(), currentElement.toString());
         return result;
     }
 

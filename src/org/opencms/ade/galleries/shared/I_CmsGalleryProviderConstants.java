@@ -153,6 +153,9 @@ public interface I_CmsGalleryProviderConstants {
         /** The gallery tab id. */
         gallerytabid,
 
+        /** The allowed gallery types. */
+        gallerytypes,
+
         /** The widget field id hash. */
         hashid,
 

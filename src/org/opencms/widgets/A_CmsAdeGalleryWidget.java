@@ -27,6 +27,7 @@
 
 package org.opencms.widgets;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsObject;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -50,24 +51,6 @@ import org.apache.commons.logging.Log;
  * @since 8.0.0 
  */
 public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
-
-    /** Enumeration of the gallery open parameters. */
-    public enum GALLERY_PARAM {
-        /** The current element path. */
-        currentelement,
-        /** The dialog mode. */
-        dialogmode,
-        /** The field id. */
-        fieldid,
-        /** The gallery start folder path. */
-        gallerypath,
-        /** The hash id. */
-        hashid,
-        /** The resource being edited. */
-        resource,
-        /** The gallery resource type names. */
-        types
-    }
 
     /** The widget configuration. */
     private CmsGalleryWidgetConfiguration m_widgetConfiguration;
@@ -215,26 +198,29 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         long hashId) {
 
         Map<String, String> result = new HashMap<String, String>();
-        result.put(GALLERY_PARAM.dialogmode.name(), A_CmsAjaxGallery.MODE_WIDGET);
-        result.put(GALLERY_PARAM.types.name(), getGalleryTypes());
-        result.put(GALLERY_PARAM.fieldid.name(), param.getId());
-        result.put(GALLERY_PARAM.hashid.name(), "" + hashId);
+        result.put(I_CmsGalleryProviderConstants.ReqParam.dialogmode.name(), A_CmsAjaxGallery.MODE_WIDGET);
+        result.put(I_CmsGalleryProviderConstants.ReqParam.types.name(), getGalleryTypes());
+        result.put(I_CmsGalleryProviderConstants.ReqParam.fieldid.name(), param.getId());
+        result.put(I_CmsGalleryProviderConstants.ReqParam.hashid.name(), "" + hashId);
         // use javascript to read the current field value
-        result.put(GALLERY_PARAM.currentelement.name(), "'+document.getElementById('"
-            + param.getId()
-            + "').getAttribute('value')+'");
+        result.put(
+            I_CmsGalleryProviderConstants.ReqParam.currentelement.name(),
+            "'+document.getElementById('" + param.getId() + "').getAttribute('value')+'");
         // the edited resource
         if (widgetDialog instanceof CmsDialog) {
             String paramResource = ((CmsDialog)widgetDialog).getParamResource();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
-                result.put(GALLERY_PARAM.resource.name(), paramResource);
+                result.put(I_CmsGalleryProviderConstants.ReqParam.resource.name(), paramResource);
             }
         }
-
         // the start up gallery path
         CmsGalleryWidgetConfiguration configuration = getWidgetConfiguration(cms, widgetDialog, param);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
-            result.put(GALLERY_PARAM.gallerypath.name(), configuration.getStartup());
+            result.put(I_CmsGalleryProviderConstants.ReqParam.gallerypath.name(), configuration.getStartup());
+        }
+        // set gallery types if available
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getGalleryTypes())) {
+            result.put(I_CmsGalleryProviderConstants.ReqParam.gallerytypes.name(), configuration.getGalleryTypes());
         }
         return result;
     }
@@ -322,7 +308,11 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         I_CmsWidgetParameter param) {
 
         if (m_widgetConfiguration == null) {
-            m_widgetConfiguration = new CmsGalleryWidgetConfiguration(cms, widgetDialog.getMessages(), param, getConfiguration());
+            m_widgetConfiguration = new CmsGalleryWidgetConfiguration(
+                cms,
+                widgetDialog.getMessages(),
+                param,
+                getConfiguration());
         }
         return m_widgetConfiguration;
     }
