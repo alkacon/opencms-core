@@ -136,7 +136,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
      */
     public CmsReplaceDialog(CmsReplaceHandler handler) {
 
-        super("Replace dialog");
+        super(Messages.get().key(Messages.GUI_REPLACE_TITLE_0));
         m_handler = handler;
         setModal(true);
         setGlassEnabled(true);
@@ -358,11 +358,9 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
         CmsListItemWidget fileInfoItem = new CmsListItemWidget(m_replaceInfo.getFileInfo());
         m_mainPanel.setReplaceInfo(fileInfoItem);
         if (!m_replaceInfo.isLockable()) {
-            m_mainPanel.displayDialogInfo(
-                "Can not replace the given resource. It is currently locked by another user.",
-                true);
+            m_mainPanel.displayDialogInfo(Messages.get().key(Messages.GUI_REPLACE_LOCKED_RESOURCE_0), true);
         } else {
-            m_mainPanel.displayDialogInfo("Replace above resource with the selected file.", false);
+            m_mainPanel.displayDialogInfo(Messages.get().key(Messages.GUI_REPLACE_INFO_0), false);
             checkFileType();
             createButtons();
         }
@@ -503,7 +501,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
             CmsFileInfo file = m_fileInput.getFiles()[0];
             if (!m_replaceInfo.getSitepath().endsWith(file.getFileSuffix())) {
                 Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
-                warningImage.setTitle("Wrong file extension");
+                warningImage.setTitle(Messages.get().key(Messages.GUI_REPLACE_WRONG_FILE_EXTENSION_0));
                 warningImage.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
                 m_fileWidget.addButton(warningImage);
             }
@@ -563,14 +561,14 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
             }
         });
         if (m_fileInput == null) {
-            m_okButton.disable("No file selected");
+            m_okButton.disable(Messages.get().key(Messages.GUI_REPLACE_NO_FILE_SELECTED_0));
         }
         addButton(m_okButton);
 
         // add a new upload button
         m_uploadButton = new CmsUploadButton(m_handler);
         m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().uploadDialogButton());
-        m_uploadButton.setText("Change file");
+        m_uploadButton.setText(Messages.get().key(Messages.GUI_REPLACE_CHANGE_FILE_0));
         addButton(m_uploadButton);
         m_handler.setButton(m_uploadButton);
     }

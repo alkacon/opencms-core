@@ -322,6 +322,24 @@ public final class Messages {
     public static final String GUI_RENAME_DIALOG_TITLE_0 = "GUI_RENAME_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_REPLACE_CHANGE_FILE_0 = "GUI_REPLACE_CHANGE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REPLACE_INFO_0 = "GUI_REPLACE_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REPLACE_LOCKED_RESOURCE_0 = "GUI_REPLACE_LOCKED_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REPLACE_NO_FILE_SELECTED_0 = "GUI_REPLACE_NO_FILE_SELECTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REPLACE_TITLE_0 = "GUI_REPLACE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REPLACE_WRONG_FILE_EXTENSION_0 = "GUI_REPLACE_WRONG_FILE_EXTENSION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESET_0 = "GUI_RESET_0";
 
     /** Message constant for key in the resource bundle. */
