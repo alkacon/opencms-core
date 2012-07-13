@@ -42,6 +42,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -469,12 +470,12 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
-     * @see org.opencms.widgets.CmsSelectGroupWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.file.CmsResource)
      */
     @Override
-    public String getConfiguration(CmsObject cms, CmsResource resource) {
+    public String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsResource resource) {
 
-        CmsMessages messages = new CmsMessages(resource.getName(), "en");
+        CmsMessages messages = new CmsMessages(resource.getName(), cms.getRequestContext().getLocale());
         parseSelectOptions(cms, messages, null);
         String results = getConfiguration();
 
