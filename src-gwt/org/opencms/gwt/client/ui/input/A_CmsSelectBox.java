@@ -520,7 +520,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         m_popup.setWidth(selectorWidth + "px");
 
         m_popup.show();
-        int panelTop = m_panel.getElement().getAbsoluteTop();
+
         int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
         int popupHeight = m_popup.getOffsetHeight();
         int dx = 0;
@@ -532,7 +532,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
             dx = spaceOnTheRight < 0 ? spaceOnTheRight : 0;
         }
         // Calculate top position for the popup
-
         int top = m_opener.getAbsoluteTop();
 
         // Make sure scrolling is taken into account, since
