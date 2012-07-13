@@ -47,6 +47,8 @@ import org.opencms.util.CmsStringUtil;
 import java.util.LinkedHashMap;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -230,6 +232,20 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * Call on content change to update the layout.<p>
+     */
+    public void onContentChange() {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                m_list.onResize();
+            }
+        });
+    }
+
+    /**
      * Will be triggered if the value in the select box changes.<p>
      * 
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
@@ -346,14 +362,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * @return <code>true</code> if this tab has quick filter enabled
      */
     protected abstract boolean hasQuickFilter();
-
-    /**
-     * Call on content change to update the layout.<p>
-     */
-    protected void onContentChange() {
-
-        m_list.onResize();
-    }
 
     /**
      * Schedules the quick filter action.<p>

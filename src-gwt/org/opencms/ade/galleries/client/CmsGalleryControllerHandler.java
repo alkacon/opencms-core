@@ -108,6 +108,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     public void onCategoriesTabSelection() {
 
         if (!m_galleryDialog.getCategoriesTab().isInitOpen()) {
+            m_galleryDialog.getCategoriesTab().onContentChange();
             return;
         }
         m_galleryDialog.getCategoriesTab().openFirstLevel();
@@ -184,7 +185,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     public void onGalleriesTabSelection() {
 
-        // do nothing
+        m_galleryDialog.getGalleriesTab().onContentChange();
     }
 
     /**
@@ -287,7 +288,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     public void onTypesTabSelection() {
 
-        // do nothing
+        m_galleryDialog.getTypesTab().onContentChange();
     }
 
     /**

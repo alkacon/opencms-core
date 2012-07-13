@@ -94,7 +94,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSelection() {
 
-        // do nothing
+        m_controller.m_handler.m_galleryDialog.getVfsTab().onContentChange();
     }
 
     /**
