@@ -41,15 +41,6 @@ public class CmsFileInputFileApiImpl implements I_CmsFileInputService {
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsFileInputService#getFiles(com.google.gwt.dom.client.InputElement)
      */
     public native JsArray<CmsFileInfo> getFiles(InputElement inputElement) /*-{
-        //        var debug = "";
-        //        for ( var i = 0; i < inputElement.files.length; i++) {
-        //            debug += "## file: " + i;
-        //            var file = inputElement.files[i];
-        //            for ( var key in file) {
-        //                debug += "  # " + key + ": " + file[key] + "  ";
-        //            }
-        //        }
-        //        $wnd.alert(debug);
         return inputElement.files;
     }-*/;
 

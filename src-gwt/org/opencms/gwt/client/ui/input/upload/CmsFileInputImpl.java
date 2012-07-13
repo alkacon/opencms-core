@@ -44,7 +44,8 @@ public class CmsFileInputImpl implements I_CmsFileInputService {
         var name = inputElement.value.replace(/^.*\\/, '')
         return inputElement.value && inputElement.value != "" ? [ {
             name : name,
-            size : -1
+            size : -1,
+            input : inputElement
         } ] : [];
     }-*/;
 

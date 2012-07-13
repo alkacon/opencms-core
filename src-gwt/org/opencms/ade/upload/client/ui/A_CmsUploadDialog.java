@@ -50,6 +50,8 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadProgressInfo;
+import org.opencms.gwt.client.ui.input.upload.CmsUploader;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog;
 import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
@@ -98,7 +100,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsUploadDialog extends CmsPopup {
+public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /** Maximum width for the file item widget list. */
     private static final int DIALOG_WIDTH = 600;
@@ -114,6 +116,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
 
     /** The drag and drop message. */
     protected HTML m_dragAndDropMessage;
+
+    /** The scroll panel. */
+    protected CmsScrollPanel m_scrollPanel;
 
     /** Stores all files that were added. */
     private Map<String, CmsFileInfo> m_allFiles;
@@ -183,9 +188,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
 
     /** The progress bar for the upload process. */
     private CmsUploadProgressInfo m_progressInfo;
-
-    /** The scroll panel. */
-    protected CmsScrollPanel m_scrollPanel;
 
     /** Signals whether the selection is done or not. */
     private boolean m_selectionDone;
@@ -376,6 +378,77 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     }
 
     /**
+     * Parses the upload response of the server and decides what to do.<p>
+     * 
+     * @param results a JSON Object
+     */
+    public void parseResponse(String results) {
+
+        cancelUpdateProgress();
+        stopLoadingAnimation();
+
+        if ((!m_canceled) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(results)) {
+            JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
+            boolean success = jsonObject.get(I_CmsUploadConstants.KEY_SUCCESS).isBoolean().booleanValue();
+            // If the upload is done so fast that we did not receive any progress information, then
+            // the content length is unknown. For that reason take the request size to show how 
+            // much bytes were uploaded.
+            double size = jsonObject.get(I_CmsUploadConstants.KEY_REQUEST_SIZE).isNumber().doubleValue();
+            long requestSize = new Double(size).longValue();
+            if (m_contentLength == 0) {
+                m_contentLength = requestSize;
+            }
+            if (success) {
+                List<String> uploadedFilesList = new ArrayList<String>();
+                displayDialogInfo(
+                    org.opencms.gwt.client.Messages.get().key(
+                        org.opencms.gwt.client.Messages.GUI_UPLOAD_INFO_FINISHING_0),
+                    false);
+                JSONValue uploadedFilesVal = jsonObject.get(I_CmsUploadConstants.KEY_UPLOADED_FILES);
+                JSONValue uploadHook = jsonObject.get(I_CmsUploadConstants.KEY_UPLOAD_HOOK);
+                String hookUri = null;
+                if ((uploadHook != null) && (uploadHook.isString() != null)) {
+                    hookUri = uploadHook.isString().stringValue();
+                    JSONArray uploadedFilesArray = uploadedFilesVal.isArray();
+                    if (uploadedFilesArray != null) {
+                        for (int i = 0; i < uploadedFilesArray.size(); i++) {
+                            JSONString entry = uploadedFilesArray.get(i).isString();
+                            if (entry != null) {
+                                uploadedFilesList.add(entry.stringValue());
+                            }
+                        }
+                    }
+                }
+                m_progressInfo.finish();
+                final Runnable finishAction = getFinishAction();
+                if (hookUri != null) {
+                    // clear finish action; we want to show another dialog, assign it our finish action instead 
+                    setFinishAction(null);
+                }
+                closeOnSuccess();
+                if (hookUri != null) {
+                    CloseHandler<PopupPanel> closeHandler = null;
+                    if (finishAction != null) {
+                        closeHandler = new CloseHandler<PopupPanel>() {
+
+                            public void onClose(CloseEvent<PopupPanel> event) {
+
+                                finishAction.run();
+                            }
+                        };
+                    }
+                    String title = Messages.get().key(Messages.GUI_UPLOAD_HOOK_DIALOG_TITLE_0);
+                    CmsUploadHookDialog.openDialog(title, hookUri, uploadedFilesList, closeHandler);
+                }
+            } else {
+                String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
+                String stacktrace = jsonObject.get(I_CmsUploadConstants.KEY_STACKTRACE).isString().stringValue();
+                showErrorReport(message, stacktrace);
+            }
+        }
+    }
+
+    /**
      * Sets an action that should be executed if the upload dialog is finished.<p>
      * 
      * @param action the action to execute when finished 
@@ -396,9 +469,38 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     }
 
     /**
+     * Shows the error report.<p>
+     * 
+     * @param message the message to show
+     * @param stacktrace the stacktrace to show
+     */
+    public void showErrorReport(final String message, final String stacktrace) {
+
+        if (!m_canceled) {
+            CmsErrorDialog errDialog = new CmsErrorDialog(message, stacktrace);
+            if (m_handlerReg != null) {
+                m_handlerReg.removeHandler();
+            }
+            if (m_closeHandler != null) {
+                errDialog.addCloseHandler(m_closeHandler);
+            }
+            hide();
+            errDialog.center();
+        }
+    }
+
+    /**
      * Executes the submit action.<p>
      */
-    public abstract void submit();
+    public void submit() {
+
+        // create a JsArray containing the files to upload
+        List<CmsFileInfo> filesToUpload = new ArrayList<CmsFileInfo>(getFilesToUpload().values());
+        Collections.sort(filesToUpload, CmsFileInfo.INFO_COMPARATOR);
+
+        CmsUploader uploader = new CmsUploader();
+        uploader.uploadFiles(getUploadUri(), getTargetFolder(), filesToUpload, getFilesToUnzip(false), this);
+    }
 
     /**
      * Updates the file summary.<p>
@@ -700,77 +802,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     }
 
     /**
-     * Parses the upload response of the server and decides what to do.<p>
-     * 
-     * @param results a JSON Object
-     */
-    protected void parseResponse(String results) {
-
-        cancelUpdateProgress();
-        stopLoadingAnimation();
-
-        if ((!m_canceled) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(results)) {
-            JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
-            boolean success = jsonObject.get(I_CmsUploadConstants.KEY_SUCCESS).isBoolean().booleanValue();
-            // If the upload is done so fast that we did not receive any progress information, then
-            // the content length is unknown. For that reason take the request size to show how 
-            // much bytes were uploaded.
-            double size = jsonObject.get(I_CmsUploadConstants.KEY_REQUEST_SIZE).isNumber().doubleValue();
-            long requestSize = new Double(size).longValue();
-            if (m_contentLength == 0) {
-                m_contentLength = requestSize;
-            }
-            if (success) {
-                List<String> uploadedFilesList = new ArrayList<String>();
-                displayDialogInfo(
-                    org.opencms.gwt.client.Messages.get().key(
-                        org.opencms.gwt.client.Messages.GUI_UPLOAD_INFO_FINISHING_0),
-                    false);
-                JSONValue uploadedFilesVal = jsonObject.get(I_CmsUploadConstants.KEY_UPLOADED_FILES);
-                JSONValue uploadHook = jsonObject.get(I_CmsUploadConstants.KEY_UPLOAD_HOOK);
-                String hookUri = null;
-                if ((uploadHook != null) && (uploadHook.isString() != null)) {
-                    hookUri = uploadHook.isString().stringValue();
-                    JSONArray uploadedFilesArray = uploadedFilesVal.isArray();
-                    if (uploadedFilesArray != null) {
-                        for (int i = 0; i < uploadedFilesArray.size(); i++) {
-                            JSONString entry = uploadedFilesArray.get(i).isString();
-                            if (entry != null) {
-                                uploadedFilesList.add(entry.stringValue());
-                            }
-                        }
-                    }
-                }
-                m_progressInfo.finish();
-                final Runnable finishAction = getFinishAction();
-                if (hookUri != null) {
-                    // clear finish action; we want to show another dialog, assign it our finish action instead 
-                    setFinishAction(null);
-                }
-                closeOnSuccess();
-                if (hookUri != null) {
-                    CloseHandler<PopupPanel> closeHandler = null;
-                    if (finishAction != null) {
-                        closeHandler = new CloseHandler<PopupPanel>() {
-
-                            public void onClose(CloseEvent<PopupPanel> event) {
-
-                                finishAction.run();
-                            }
-                        };
-                    }
-                    String title = Messages.get().key(Messages.GUI_UPLOAD_HOOK_DIALOG_TITLE_0);
-                    CmsUploadHookDialog.openDialog(title, hookUri, uploadedFilesList, closeHandler);
-                }
-            } else {
-                String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
-                String stacktrace = jsonObject.get(I_CmsUploadConstants.KEY_STACKTRACE).isString().stringValue();
-                showErrorReport(message, stacktrace);
-            }
-        }
-    }
-
-    /**
      * Decides how to go on depending on the information of the server response.<p>
      * 
      * Shows a warning if there is another upload process active (inside the same session).<p>
@@ -860,27 +891,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup {
     protected void setSummaryHTML(String html) {
 
         m_selectionSummary.setHTML(html);
-    }
-
-    /**
-     * Shows the error report.<p>
-     * 
-     * @param message the message to show
-     * @param stacktrace the stacktrace to show
-     */
-    protected void showErrorReport(final String message, final String stacktrace) {
-
-        if (!m_canceled) {
-            CmsErrorDialog errDialog = new CmsErrorDialog(message, stacktrace);
-            if (m_handlerReg != null) {
-                m_handlerReg.removeHandler();
-            }
-            if (m_closeHandler != null) {
-                errDialog.addCloseHandler(m_closeHandler);
-            }
-            hide();
-            errDialog.center();
-        }
     }
 
     /**

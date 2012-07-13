@@ -42,6 +42,8 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadProgressInfo;
+import org.opencms.gwt.client.ui.input.upload.CmsUploader;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
@@ -71,7 +73,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * The replace resource dialog.<p>
  */
-public class CmsReplaceDialog extends CmsPopup {
+public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /** Maximum width for the file item widget list. */
     private static final int DIALOG_WIDTH = 600;
@@ -189,6 +191,51 @@ public class CmsReplaceDialog extends CmsPopup {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsPopup#hide()
+     */
+    @Override
+    public void hide() {
+
+        if (m_fileInput != null) {
+            m_fileInput.removeFromParent();
+        }
+        super.hide();
+    }
+
+    /**
+     * Parses the upload response of the server and decides what to do.<p>
+     * 
+     * @param results a JSON Object
+     */
+    public void parseResponse(String results) {
+
+        cancelUpdateProgress();
+        stopLoadingAnimation();
+
+        if ((!m_canceled) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(results)) {
+            JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
+            boolean success = jsonObject.get(I_CmsUploadConstants.KEY_SUCCESS).isBoolean().booleanValue();
+            // If the upload is done so fast that we did not receive any progress information, then
+            // the content length is unknown. For that reason take the request size to show how 
+            // much bytes were uploaded.
+            double size = jsonObject.get(I_CmsUploadConstants.KEY_REQUEST_SIZE).isNumber().doubleValue();
+            long requestSize = new Double(size).longValue();
+            if (m_contentLength == 0) {
+                m_contentLength = requestSize;
+            }
+            if (success) {
+                m_mainPanel.displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
+                m_progressInfo.finish();
+                closeOnSuccess();
+            } else {
+                String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
+                String stacktrace = jsonObject.get(I_CmsUploadConstants.KEY_STACKTRACE).isString().stringValue();
+                showErrorReport(message, stacktrace);
+            }
+        }
+    }
+
+    /**
      * Sets an action that should be executed if the upload dialog is finished.<p>
      * 
      * @param action the action to execute when finished 
@@ -196,6 +243,27 @@ public class CmsReplaceDialog extends CmsPopup {
     public void setFinishAction(Runnable action) {
 
         m_finishAction = action;
+    }
+
+    /**
+     * Shows the error report.<p>
+     * 
+     * @param message the message to show
+     * @param stacktrace the stacktrace to show
+     */
+    public void showErrorReport(final String message, final String stacktrace) {
+
+        if (!m_canceled) {
+            CmsErrorDialog errDialog = new CmsErrorDialog(message, stacktrace);
+            if (m_handlerReg != null) {
+                m_handlerReg.removeHandler();
+            }
+            if (m_closeHandler != null) {
+                errDialog.addCloseHandler(m_closeHandler);
+            }
+            hide();
+            errDialog.center();
+        }
     }
 
     /**
@@ -327,39 +395,6 @@ public class CmsReplaceDialog extends CmsPopup {
     }
 
     /**
-     * Parses the upload response of the server and decides what to do.<p>
-     * 
-     * @param results a JSON Object
-     */
-    protected void parseResponse(String results) {
-
-        cancelUpdateProgress();
-        stopLoadingAnimation();
-
-        if ((!m_canceled) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(results)) {
-            JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
-            boolean success = jsonObject.get(I_CmsUploadConstants.KEY_SUCCESS).isBoolean().booleanValue();
-            // If the upload is done so fast that we did not receive any progress information, then
-            // the content length is unknown. For that reason take the request size to show how 
-            // much bytes were uploaded.
-            double size = jsonObject.get(I_CmsUploadConstants.KEY_REQUEST_SIZE).isNumber().doubleValue();
-            long requestSize = new Double(size).longValue();
-            if (m_contentLength == 0) {
-                m_contentLength = requestSize;
-            }
-            if (success) {
-                m_mainPanel.displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
-                m_progressInfo.finish();
-                closeOnSuccess();
-            } else {
-                String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
-                String stacktrace = jsonObject.get(I_CmsUploadConstants.KEY_STACKTRACE).isString().stringValue();
-                showErrorReport(message, stacktrace);
-            }
-        }
-    }
-
-    /**
      * Sets the file input.<p>
      * 
      * @param fileInput the file input
@@ -377,27 +412,6 @@ public class CmsReplaceDialog extends CmsPopup {
             m_fileInput = fileInput;
             RootPanel.get().add(m_fileInput);
             m_mainPanel.setContainerWidget(createFileWidget(m_fileInput.getFiles()[0]));
-        }
-    }
-
-    /**
-     * Shows the error report.<p>
-     * 
-     * @param message the message to show
-     * @param stacktrace the stacktrace to show
-     */
-    protected void showErrorReport(final String message, final String stacktrace) {
-
-        if (!m_canceled) {
-            CmsErrorDialog errDialog = new CmsErrorDialog(message, stacktrace);
-            if (m_handlerReg != null) {
-                m_handlerReg.removeHandler();
-            }
-            if (m_closeHandler != null) {
-                errDialog.addCloseHandler(m_closeHandler);
-            }
-            hide();
-            errDialog.center();
         }
     }
 
@@ -468,11 +482,15 @@ public class CmsReplaceDialog extends CmsPopup {
      */
     protected void uploadFile() {
 
-        upload(
+        CmsUploader uploader = new CmsUploader();
+        CmsFileInfo info = m_fileInput.getFiles()[0];
+        info.setOverrideFileName(CmsResource.getName(m_replaceInfo.getSitepath()));
+        uploader.uploadFiles(
             CmsCoreProvider.get().link(I_CmsUploadConstants.UPLOAD_ACTION_JSP_URI),
             CmsResource.getFolderPath(m_replaceInfo.getSitepath()),
-            CmsResource.getName(m_replaceInfo.getSitepath()),
-            m_fileInput.getFiles()[0]);
+            Collections.singletonList(info),
+            Collections.<String> emptyList(),
+            this);
         showProgress();
     }
 
@@ -582,42 +600,6 @@ public class CmsReplaceDialog extends CmsPopup {
     }
 
     /**
-     * Switches the error message depending on the given error code.<p>
-     * 
-     * The error codes are defined in the W3C file API.<p>
-     * 
-     * <a href="http://www.w3.org/TR/FileAPI/#dfn-fileerror">http://www.w3.org/TR/FileAPI/#dfn-fileerror</a>
-     * 
-     * @param errorCode the error code as String
-     */
-    private void onBrowserError(String errorCode) {
-
-        int code = new Integer(errorCode).intValue();
-        String errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_0);
-
-        switch (code) {
-            case 1: // NOT_FOUND_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_NOT_FOUND_0);
-                break;
-            case 2: // SECURITY_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_SECURITY_0);
-                break;
-            case 3: // ABORT_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_ABORT_ERR_0);
-                break;
-            case 4: // NOT_READABLE_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_NOT_READABLE_0);
-                break;
-            case 5: // ENCODING_ERR
-                errMsg = Messages.get().key(Messages.ERR_UPLOAD_BROWSER_ENCODING_0);
-                break;
-            default:
-                break;
-        }
-        showErrorReport(errMsg, null);
-    }
-
-    /**
      * Starts the upload progress bar.<p>
      */
     private void showProgress() {
@@ -664,18 +646,6 @@ public class CmsReplaceDialog extends CmsPopup {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.CmsPopup#hide()
-     */
-    @Override
-    public void hide() {
-
-        if (m_fileInput != null) {
-            m_fileInput.removeFromParent();
-        }
-        super.hide();
-    }
-
-    /**
      * Stops the client loading animation.<p>
      */
     private void stopLoadingAnimation() {
@@ -688,43 +658,4 @@ public class CmsReplaceDialog extends CmsPopup {
             m_clientLoading = false;
         }
     }
-
-    /**
-     * Sends a post request to the upload JSP.<p>
-     * 
-     * @param uploadUri the upload URI
-     * @param targetFolder the target folder
-     * @param fileName the target file name
-     * @param fileToUpload the file info
-     */
-    private native void upload(String uploadUri, String targetFolder, String fileName, CmsFileInfo fileToUpload) /*-{
-
-        var dialog = this;
-        var data = new FormData();
-        var fieldName = "file_0";
-        data.append(fieldName, fileToUpload);
-        data
-                .append(
-                        fieldName
-                                + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
-                        encodeURI(fileName));
-
-        data
-                .append(
-                        @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
-                        targetFolder);
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", uploadUri, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    dialog.@org.opencms.gwt.client.ui.replace.CmsReplaceDialog::parseResponse(Ljava/lang/String;)(xhr.responseText);
-                } else {
-                    dialog.@org.opencms.gwt.client.ui.replace.CmsReplaceDialog::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
-                }
-            }
-        }
-        xhr.send(data);
-    }-*/;
-
 }

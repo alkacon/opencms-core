@@ -31,19 +31,11 @@ import org.opencms.ade.upload.client.Messages;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.shared.CmsListInfoBean;
-import org.opencms.gwt.shared.I_CmsUploadConstants;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import com.google.gwt.user.client.ui.Hidden;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Provides the default upload dialog without multiple file selection.<p>
@@ -51,28 +43,6 @@ import com.google.gwt.user.client.ui.Panel;
  * @since 8.0.0
  */
 public class CmsUploadDialogImpl extends A_CmsUploadDialog {
-
-    /**
-     * Implements the submit handler (Used for browsers that don't support file api).<p>
-     */
-    private class CmsUploadHandler implements SubmitCompleteHandler {
-
-        /**
-         * The default constructor.<p>
-         */
-        public CmsUploadHandler() {
-
-            // noop
-        }
-
-        /**
-         * @see com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler#onSubmitComplete(com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent)
-         */
-        public void onSubmitComplete(SubmitCompleteEvent event) {
-
-            parseResponse(event.getResults());
-        }
-    }
 
     /** The input file input fields. */
     private Map<String, CmsFileInput> m_inputsToUpload = new HashMap<String, CmsFileInput>();
@@ -116,18 +86,6 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
     }
 
     /**
-     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#submit()
-     */
-    @Override
-    public void submit() {
-
-        FormPanel form = createForm();
-        form.addSubmitCompleteHandler(new CmsUploadHandler());
-        insertUploadForm(form);
-        form.submit();
-    }
-
-    /**
      * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#updateSummary()
      */
     @Override
@@ -158,55 +116,5 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
             m_inputsToUpload.put(fileInput.getFiles()[0].getFileName(), fileInput);
         }
         super.addFileInput(fileInput);
-    }
-
-    /**
-     * Creates a hidden input field with the given name and value and adds it to the form panel.<p>
-     * 
-     * @param form the form panel
-     * @param fieldName the field name
-     * @param fieldValue the field value
-     */
-    private void addHiddenField(Panel form, String fieldName, String fieldValue) {
-
-        Hidden inputField = new Hidden();
-        inputField.setName(fieldName);
-        inputField.setValue(fieldValue);
-        form.add(inputField);
-    }
-
-    /**
-     * Creates a form that contains the file input fields and the target folder.<p>
-     * 
-     * @return the form
-     */
-    private FormPanel createForm() {
-
-        // create a form using the POST method and multipart MIME encoding
-        FormPanel form = new FormPanel();
-        form.setAction(getUploadUri());
-        form.setEncoding(FormPanel.ENCODING_MULTIPART);
-        form.setMethod(FormPanel.METHOD_POST);
-        // create a panel that contains the file input fields and the target folder
-        FlowPanel inputFieldsPanel = new FlowPanel();
-        int count = 0;
-        for (CmsFileInput input : m_inputsToUpload.values()) {
-            String filename = input.getFiles()[0].getFileName();
-            String fieldName = "file_" + count++;
-            input.setName(fieldName);
-            if (getFilesToUpload().containsKey(filename)) {
-                inputFieldsPanel.add(input);
-            }
-            addHiddenField(
-                inputFieldsPanel,
-                fieldName + I_CmsUploadConstants.UPLOAD_FILENAME_ENCODED_SUFFIX,
-                URL.encode(filename));
-        }
-        for (String filename : getFilesToUnzip(false)) {
-            addHiddenField(inputFieldsPanel, I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME, URL.encode(filename));
-        }
-        addHiddenField(inputFieldsPanel, I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME, getTargetFolder());
-        form.setWidget(inputFieldsPanel);
-        return form;
     }
 }

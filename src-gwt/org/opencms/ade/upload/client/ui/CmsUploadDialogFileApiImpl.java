@@ -30,14 +30,7 @@ package org.opencms.ade.upload.client.ui;
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
-import org.opencms.gwt.client.util.CmsClientStringUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
@@ -46,6 +39,9 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * @since 8.0.0
  */
 public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
+
+    /** The maximum upload size in bytes. (50 MB) */
+    private static final long MAX_UPLOAD_SIZE = 51200000;
 
     /**
      * Constructor.<p>
@@ -57,9 +53,6 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
 
         super();
     }
-
-    /** The maximum upload size in bytes. (50 MB) */
-    private static final long MAX_UPLOAD_SIZE = 51200000;
 
     /**
      * @see org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl#getFileSizeTooLargeMessage(org.opencms.gwt.client.ui.input.upload.CmsFileInfo)
@@ -89,28 +82,6 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
     }
 
     /**
-     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#submit()
-     */
-    @Override
-    public void submit() {
-
-        // create a JsArray containing the files to upload
-        List<String> orderedFilenamesToUpload = new ArrayList<String>(getFilesToUpload().keySet());
-        Collections.sort(orderedFilenamesToUpload, String.CASE_INSENSITIVE_ORDER);
-        JsArray<CmsFileInfo> filesToUpload = JavaScriptObject.createArray().cast();
-        for (String filename : orderedFilenamesToUpload) {
-            filesToUpload.push(getFilesToUpload().get(filename));
-        }
-
-        // create a array that contains the names of the files that should be unziped
-        JavaScriptObject filesToUnzip = JavaScriptObject.createArray();
-        for (String filename : getFilesToUnzip(false)) {
-            CmsClientStringUtil.pushArray(filesToUnzip, filename);
-        }
-        upload(getUploadUri(), getTargetFolder(), filesToUpload, filesToUnzip, this);
-    }
-
-    /**
      * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#updateSummary()
      */
     @Override
@@ -134,158 +105,4 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
             enableOKButton();
         }
     }
-
-    /**
-     * Switches the error message depending on the given error code.<p>
-     * 
-     * The error codes are defined in the W3C file API.<p>
-     * 
-     * <a href="http://www.w3.org/TR/FileAPI/#dfn-fileerror">http://www.w3.org/TR/FileAPI/#dfn-fileerror</a>
-     * 
-     * @param errorCode the error code as String
-     */
-    private void onBrowserError(String errorCode) {
-
-        int code = new Integer(errorCode).intValue();
-        String errMsg = org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_0);
-
-        switch (code) {
-            case 1: // NOT_FOUND_ERR
-                errMsg = org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_NOT_FOUND_0);
-                break;
-            case 2: // SECURITY_ERR
-                errMsg = org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_SECURITY_0);
-                break;
-            case 3: // ABORT_ERR
-                errMsg = org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_ABORT_ERR_0);
-                break;
-            case 4: // NOT_READABLE_ERR
-                errMsg = org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_NOT_READABLE_0);
-                break;
-            case 5: // ENCODING_ERR
-                errMsg = org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_ENCODING_0);
-                break;
-            default:
-                break;
-        }
-        showErrorReport(errMsg, null);
-    }
-
-    /**
-     * Sends a post request to the upload JSP.<p>
-     * 
-     * @param uploadUri the URI of the JSP that performs the upload
-     * @param targetFolder the target folder to upload
-     * @param filesToUpload the file names to upload
-     * @param filesToUnzip the file names that should be unziped
-     * @param dialog this dialog
-     */
-    private native void upload(
-        String uploadUri,
-        String targetFolder,
-        JsArray<CmsFileInfo> filesToUpload,
-        JavaScriptObject filesToUnzip,
-        CmsUploadDialogFileApiImpl dialog) /*-{
-
-        function addPlainField(requestBody, fieldName, fieldValue) {
-            requestBody += "Content-Disposition: form-data; name=" + fieldName
-                    + "\r\n";
-            requestBody += "Content-Type: text/plain\r\n\r\n";
-            requestBody += fieldValue + "\r\n";
-            requestBody += "--" + boundary + "--";
-        }
-
-        // is executed when there was an error during reading the file
-        function errorHandler(evt) {
-            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::onBrowserError(Ljava/lang/String;)(evt.target.error.code);
-        }
-
-        // is executed when the current file is read completely
-        function loaded(evt) {
-            // get the current file name and obtain the read file data
-            var fileName = file.name;
-            var fileData = evt.target.result;
-            if (fileData == null) {
-                fileData = "";
-            }
-            var fileInputName = "file_" + curIndex;
-            addPlainField(
-                    body,
-                    fileInputName
-                            + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
-                    encodeURI(fileName));
-            body += "Content-Disposition: form-data; name=\"" + fileInputName
-                    + "\"; filename=\"" + encodeURI(fileName) + "\"\r\n";
-            body += "Content-Type: application/octet-stream\r\n\r\n";
-            body += fileData + "\r\n";
-            body += "--" + boundary + "\r\n";
-            // are there any more files?, continue reading the next file
-            if (filesToUpload.length > ++curIndex) {
-                file = filesToUpload[curIndex];
-                this.readAsBinaryString(file);
-            } else {
-                // there are no more files left append the infos to the request body
-                appendInfos();
-                // create the request and post it
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", uri, true);
-                // simulate a file MIME POST request.
-                xhr.setRequestHeader("Content-Type",
-                        "multipart/form-data; boundary=" + boundary);
-                xhr.overrideMimeType('text/plain; charset=x-user-defined');
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4) {
-                        if (xhr.status == 200) {
-                            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::parseResponse(Ljava/lang/String;)(xhr.responseText);
-                        } else if (xhr.status != 200) {
-                            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFileApiImpl::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
-                        }
-                    }
-                }
-                xhr.sendAsBinary(body);
-            }
-        }
-
-        // appends the infos to the request body 
-        // should be called at end of creating the body because the boundary is closed here
-        function appendInfos() {
-            for ( var i = 0; i < filesToUnzip.length; ++i) {
-                var filename = filesToUnzip[i];
-                addPlainField(
-                        body,
-                        @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
-                        encodeURI(filename));
-            }
-
-            addPlainField(
-                    body,
-                    @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
-                    targetFolder);
-        }
-
-        // the uri to call
-        var uri = uploadUri;
-        // the boundary
-        var boundary = "26924190726270";
-        // the request body with the starting boundary
-        var body = "--" + boundary + "\r\n";
-
-        // the main procedure
-        if (filesToUpload) {
-
-            var curIndex = 0;
-            var file = filesToUpload[curIndex];
-
-            var reader = new FileReader();
-            reader.onloadend = loaded;
-            reader.onerror = errorHandler;
-            // Read file into memory
-            reader.readAsBinaryString(file);
-        }
-    }-*/;
 }

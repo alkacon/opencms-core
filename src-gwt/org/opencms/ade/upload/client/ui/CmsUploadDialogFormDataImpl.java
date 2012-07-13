@@ -32,12 +32,9 @@ import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
-import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -105,28 +102,6 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
             return false;
         }
         return cmsFileInfo.getFileSize() > maxFileSize;
-    }
-
-    /**
-     * @see org.opencms.ade.upload.client.ui.A_CmsUploadDialog#submit()
-     */
-    @Override
-    public void submit() {
-
-        // create a JsArray containing the files to upload
-        List<String> orderedFilenamesToUpload = new ArrayList<String>(getFilesToUpload().keySet());
-        Collections.sort(orderedFilenamesToUpload, String.CASE_INSENSITIVE_ORDER);
-        JsArray<CmsFileInfo> filesToUpload = JavaScriptObject.createArray().cast();
-        for (String filename : orderedFilenamesToUpload) {
-            filesToUpload.push(getFilesToUpload().get(filename));
-        }
-
-        // create a array that contains the names of the files that should be unziped
-        JavaScriptObject filesToUnzip = JavaScriptObject.createArray();
-        for (String filename : getFilesToUnzip(false)) {
-            CmsClientStringUtil.pushArray(filesToUnzip, filename);
-        }
-        upload(getUploadUri(), getTargetFolder(), filesToUpload, filesToUnzip, this);
     }
 
     /**
@@ -257,59 +232,4 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
     private native JsArray<CmsFileInfo> getFiles(JavaScriptObject files) /*-{
         return files;
     }-*/;
-
-    /**
-     * Sends a post request to the upload JSP.<p>
-     * 
-     * @param uploadUri the URI of the JSP that performs the upload
-     * @param targetFolder the target folder to upload
-     * @param filesToUpload the files to upload
-     * @param filesToUnzip the file names to unzip
-     * @param dialog this dialog
-     */
-    private native void upload(
-        String uploadUri,
-        String targetFolder,
-        JsArray<CmsFileInfo> filesToUpload,
-        JavaScriptObject filesToUnzip,
-        CmsUploadDialogFormDataImpl dialog) /*-{
-
-        var data = new FormData();
-
-        for (i = 0; i < filesToUpload.length; i++) {
-            var fieldName = "file_" + i;
-            data.append(fieldName, filesToUpload[i]);
-            data
-                    .append(
-                            fieldName
-                                    + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
-                            encodeURI(filesToUpload[i].name));
-        }
-        data
-                .append(
-                        @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
-                        targetFolder);
-
-        for ( var i = 0; i < filesToUnzip.length; ++i) {
-            data
-                    .append(
-                            @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
-                            encodeURI(filesToUnzip[i]));
-        }
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", uploadUri, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::parseResponse(Ljava/lang/String;)(xhr.responseText);
-                } else {
-                    dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
-                }
-            }
-        }
-        xhr.send(data);
-
-    }-*/;
-
 }

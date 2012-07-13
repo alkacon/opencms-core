@@ -58,6 +58,16 @@
 		<when-property-is name="fileapi.support" value="formdata" />
 	</replace-with>
 	
+	<replace-with class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFileApi">
+		<when-type-is class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderDefault" />
+		<when-property-is name="fileapi.support" value="fileapi" />
+	</replace-with>
+	
+	<replace-with class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFormData">
+		<when-type-is class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderDefault" />
+		<when-property-is name="fileapi.support" value="formdata" />
+	</replace-with>
+	
     <replace-with class="org.opencms.gwt.client.util.impl.DocumentStyleImplIE6">
         <when-type-assignable class="org.opencms.gwt.client.util.impl.DocumentStyleImpl"/>
         <any>
