@@ -79,6 +79,8 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
             try {
                 m_uploadDialog = GWT.create(CmsUploadDialogImpl.class);
                 updateDialog();
+                // the current upload button is located outside the dialog, reinitialize it with a new button handler instance
+                m_button.reinitButton(new CmsDialogUploadButtonHandler());
             } catch (Exception e) {
                 CmsErrorDialog.handleException(new Exception(
                     "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",

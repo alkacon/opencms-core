@@ -130,12 +130,25 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         m_align = HasHorizontalAlignment.ALIGN_RIGHT;
         updateState("up");
         m_enabled = true;
-        // create a handler for this button
+        // set the button properties
         setSize(I_CmsButton.Size.medium);
-        // create the push button
         setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         setTitle(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
+        createFileInput();
+    }
+
+    /**
+     * Reinitializes the button with a new button handler.<p>
+     * 
+     * @param buttonHandler the button handler
+     */
+    public void reinitButton(I_CmsUploadButtonHandler buttonHandler) {
+
+        m_buttonHandler = buttonHandler;
+        m_buttonHandler.setButton(this);
+        updateState("up");
+        m_enabled = true;
         createFileInput();
     }
 
