@@ -59,6 +59,9 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     /** The layout bundle. */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
+    /** Default value. */
+    private String m_defaultValue = "";
+
     /** The input test area.*/
     TextBox m_textbox = new TextBox();
 
@@ -78,7 +81,9 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     public CmsTextboxWidget(String config) {
 
         // All composites must call initWidget() in their constructors.
-
+        if ((config != "") || (config != null)) {
+            parseConfig(config);
+        }
         m_fadePanel.addDomHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -120,6 +125,15 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
             }
         });
         initWidget(m_mainPanel);
+    }
+
+    /**
+     * Parse the configuration String.<p>
+     * @param config the configuration String
+     */
+    private void parseConfig(String config) {
+
+        setValue(config);
     }
 
     /**
@@ -190,6 +204,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
             getElement().setAttribute("contentEditable", "true");
             getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
             getElement().focus();
+            m_textbox.setText(m_defaultValue);
         } else {
             getElement().setAttribute("contentEditable", "false");
             getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
@@ -209,8 +224,8 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     public void setValue(String value) {
 
         // set the value and start changeEvent
-        setValue(value, true);
-
+        m_textbox.setText(value);
+        m_defaultValue = value;
     }
 
     /**

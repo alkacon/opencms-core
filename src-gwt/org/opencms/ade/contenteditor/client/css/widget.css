@@ -69,7 +69,7 @@ input.passwordTextBox{
 	display: block;
 	color: value("constants.css.textColor");
 	box-shadow: none;
-	width: 99%;
+	width: 98.9%;
 	padding: 0px 4px;
 	height: 18px;
 	font-size: 12px;
@@ -101,8 +101,7 @@ div.calendarStyle {
 
 .inActive div.calendarStyle, .inActive input.passwordTextBox {
 	border: 1px solid value("constants.css.borderColor");
-
-	}
+}
 
 input.displayTextBox{
 	background: none repeat scroll 0 0 transparent;

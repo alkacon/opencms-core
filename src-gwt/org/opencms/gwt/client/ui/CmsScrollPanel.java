@@ -99,6 +99,8 @@ public class CmsScrollPanel extends ScrollPanel {
      */
     public CmsScrollPanel() {
 
+        m_resize = new ResizeButton();
+
     }
 
     /**

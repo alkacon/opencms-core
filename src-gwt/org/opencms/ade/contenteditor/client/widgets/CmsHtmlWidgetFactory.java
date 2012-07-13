@@ -90,7 +90,9 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
         try {
             var config = $wnd.JSON && $wnd.JSON.parse(configuration)
                     || eval('(' + configuration + ')');
-            options = {};
+            options = {
+                skin_variant : 'contenteditor'
+            };
             if (config.language) {
                 options.language = config.language;
             }
