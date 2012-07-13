@@ -347,6 +347,7 @@
 					<field name="meta" store="false" index="true">
 						<mapping type="property">Title</mapping>
 						<mapping type="property">Description</mapping>
+						<mapping type="attribute">name</mapping>
 					</field>	
 					<field name="res_dateExpired" store="true" index="untokenized">
 						<mapping type="attribute">dateExpired</mapping>
