@@ -133,7 +133,8 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
      */
     private void parseConfig(String config) {
 
-        setValue(config);
+        m_defaultValue = config;
+        setValue(m_defaultValue);
     }
 
     /**
@@ -225,7 +226,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
         // set the value and start changeEvent
         m_textbox.setText(value);
-        m_defaultValue = value;
+
     }
 
     /**
