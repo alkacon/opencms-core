@@ -343,6 +343,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
         CmsListInfoBean infoBean = getInfoBean(entry, true);
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
+        itemWidget.setUnselectable();
         itemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
         itemWidget.setIconTitle(entry.isSubSitemapType()
         ? Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0)

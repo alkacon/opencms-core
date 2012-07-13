@@ -222,6 +222,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
                     CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryBean.getDescription())
                     ? categoryBean.getDescription()
                     : categoryBean.getPath(), null));
+                listItemWidget.setUnselectable();
                 listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
                 // the checkbox
                 CmsCheckBox checkBox = new CmsCheckBox();
@@ -341,6 +342,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         m_categories.put(category.getPath(), category);
         // set the list item widget
         CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
+        listItemWidget.setUnselectable();
         listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
         // the checkbox
         CmsCheckBox checkBox = new CmsCheckBox();

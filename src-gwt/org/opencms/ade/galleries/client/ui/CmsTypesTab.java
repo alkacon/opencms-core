@@ -134,6 +134,7 @@ public class CmsTypesTab extends A_CmsListTab {
             CmsListInfoBean infoBean = new CmsListInfoBean(typeBean.getTitle(), typeBean.getDescription(), null);
             listItemWidget = new CmsListItemWidget(infoBean);
             listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
+            listItemWidget.setUnselectable();
             CmsCheckBox checkBox = new CmsCheckBox();
             SelectionHandler selectionHendler = new SelectionHandler(typeBean.getType(), checkBox);
             checkBox.addClickHandler(selectionHendler);

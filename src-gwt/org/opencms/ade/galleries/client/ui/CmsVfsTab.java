@@ -183,6 +183,7 @@ public class CmsVfsTab extends A_CmsListTab {
         info.setSubTitle(vfsEntry.getSitePath());
         // info.setSubTitle("...");
         CmsListItemWidget liWidget = new CmsListItemWidget(info);
+        liWidget.setUnselectable();
         liWidget.setIcon(CmsIconUtil.getResourceIconClasses("folder", false));
         if (vfsEntry.isEditable()) {
             liWidget.addButton(createUploadButtonForTarget(vfsEntry.getSitePath()));

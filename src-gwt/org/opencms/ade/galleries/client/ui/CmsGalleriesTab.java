@@ -435,6 +435,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
             galleryInfo.getPath(),
             null));
         listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(galleryInfo.getType(), false));
+        listItemWidget.setUnselectable();
         CmsCheckBox checkBox = new CmsCheckBox();
         SelectionHandler selectionHandler = new SelectionHandler(galleryInfo.getPath(), checkBox);
         checkBox.addClickHandler(selectionHandler);
