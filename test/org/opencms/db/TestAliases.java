@@ -130,6 +130,11 @@ public class TestAliases extends OpenCmsTestCase {
         assertTrue("At least 3 aliases", aliasManager.getAliasesForSite(cms, "").size() >= 3);
     }
 
+    /**
+     * Tests reading/writing rewrite aliases.<p>
+     * 
+     * @throws Exception
+     */
     public void testRewrites() throws Exception {
 
         CmsUUID id = new CmsUUID();
@@ -140,14 +145,44 @@ public class TestAliases extends OpenCmsTestCase {
         CmsRewriteAlias alias = new CmsRewriteAlias(id, siteRoot, patternString, replacementString, mode);
         CmsAliasManager aliasManager = OpenCms.getAliasManager();
         aliasManager.saveRewriteAliases(getCmsObject(), siteRoot, Collections.singletonList(alias));
-        List<CmsRewriteAlias> aliases = aliasManager.getRewriteAliases("/sites/default");
+        List<CmsRewriteAlias> aliases = aliasManager.getRewriteAliases(getCmsObject(), "/sites/default");
+        checkRewriteAlias(alias, aliases);
+        assertEquals(1, aliases.size());
+        aliasManager.saveRewriteAliases(getCmsObject(), siteRoot, Collections.<CmsRewriteAlias> emptyList());
+        aliases = aliasManager.getRewriteAliases(getCmsObject(), "/sites/default");
+        assertEquals(0, aliases.size());
+
+        CmsRewriteAlias alias2 = new CmsRewriteAlias(
+            new CmsUUID(),
+            siteRoot,
+            patternString,
+            replacementString,
+            CmsAliasMode.redirect);
+        List<CmsRewriteAlias> aliasesToSave = new ArrayList<CmsRewriteAlias>();
+        aliasesToSave.add(alias);
+        aliasesToSave.add(alias2);
+        aliasManager.saveRewriteAliases(getCmsObject(), siteRoot, aliasesToSave);
+        aliases = aliasManager.getRewriteAliases(getCmsObject(), "/sites/default");
+        assertEquals(2, aliases.size());
+        checkRewriteAlias(alias, aliases);
+        checkRewriteAlias(alias2, aliases);
+    }
+
+    /**
+     * Checks if a rewrite alias is contained in a list of rewrite aliases.<p>
+     * 
+     * @param alias the alias to search 
+     * @param aliasesToSearch the list of  aliases in which to search the alias 
+     */
+    private void checkRewriteAlias(CmsRewriteAlias alias, List<CmsRewriteAlias> aliasesToSearch) {
+
         boolean found = false;
-        for (CmsRewriteAlias currentAlias : aliases) {
-            if (currentAlias.getId().equals(id)) {
-                assertEquals(siteRoot, currentAlias.getSiteRoot());
-                assertEquals(patternString, currentAlias.getPatternString());
-                assertEquals(replacementString, currentAlias.getReplacementString());
-                assertEquals(mode, currentAlias.getMode());
+        for (CmsRewriteAlias currentAlias : aliasesToSearch) {
+            if (currentAlias.getId().equals(alias.getId())) {
+                assertEquals(alias.getSiteRoot(), currentAlias.getSiteRoot());
+                assertEquals(alias.getPatternString(), currentAlias.getPatternString());
+                assertEquals(alias.getReplacementString(), currentAlias.getReplacementString());
+                assertEquals(alias.getMode(), currentAlias.getMode());
                 found = true;
             }
         }

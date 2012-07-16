@@ -101,7 +101,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
             } finally {
                 cms.getRequestContext().setSiteRoot(oldSiteRoot);
             }
-            CmsRewriteAliasMatcher rewriteAliases = OpenCms.getAliasManager().getRewriteAliasMatcher(siteRoot);
+            CmsRewriteAliasMatcher rewriteAliases = OpenCms.getAliasManager().getRewriteAliasMatcher(cms, siteRoot);
             CmsRewriteAliasMatcher.RewriteResult rewriteResult = rewriteAliases.match(sitePath);
             if ((rewriteResult != null) && (res != null)) {
                 String link = OpenCms.getLinkManager().substituteLink(cms, rewriteResult.getNewPath());

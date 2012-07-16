@@ -2610,6 +2610,30 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Gets the rewrite aliases matching a given filter.<p>
+     *  
+     * @param requestContext the current request context 
+     * @param filter the filter used for selecting the rewrite aliases 
+     * @return the rewrite aliases matching the given filter 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsRewriteAlias> getRewriteAliases(CmsRequestContext requestContext, CmsRewriteAliasFilter filter)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
+        try {
+            return m_driverManager.getRewriteAliases(dbc, filter);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
+            return null; // will never be executed
+        } finally {
+            dbc.clear();
+        }
+
+    }
+
+    /**
      * Gets the groups which constitute a given role.<p>
      *
      * @param context the request context
@@ -5580,6 +5604,30 @@ public final class CmsSecurityManager {
             eventData.put(I_CmsEventListener.KEY_RESOURCE, resource);
             eventData.put(I_CmsEventListener.KEY_CHANGE, new Integer(CmsDriverManager.CHANGED_RESOURCE));
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, eventData));
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Replaces the rewrite aliases for a given site root.<p>
+     * 
+     * @param requestContext the current request context 
+     * @param siteRoot the site root for which the rewrite aliases should be replaced 
+     * @param newAliases the new list of aliases for the given site root 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void saveRewriteAliases(CmsRequestContext requestContext, String siteRoot, List<CmsRewriteAlias> newAliases)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
+        try {
+            //            checkOfflineProject(dbc);
+            //            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            m_driverManager.saveRewriteAliases(dbc, siteRoot, newAliases);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
         } finally {

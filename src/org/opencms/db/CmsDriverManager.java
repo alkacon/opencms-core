@@ -4538,6 +4538,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Gets the rewrite aliases matching a given filter.<p>
+     * 
+     * @param dbc the current database context 
+     * @param filter the filter used for filtering rewrite aliases
+     *  
+     * @return the rewrite aliases matching the given filter 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsRewriteAlias> getRewriteAliases(CmsDbContext dbc, CmsRewriteAliasFilter filter) throws CmsException {
+
+        return getVfsDriver(dbc).readRewriteAliases(dbc, filter);
+    }
+
+    /**
      * Collects the groups which constitute a given role.<p>
      *
      * @param dbc the database context
@@ -8468,6 +8483,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 LOG.error("Invalid alias path: " + aliasPath);
             }
         }
+    }
+
+    /**
+     * Replaces the complete list of rewrite aliases for a given site root.<p>
+     * 
+     * @param dbc the current database context 
+     * @param siteRoot the site root for which the rewrite aliases should be replaced 
+     * @param newAliases the new aliases for the given site root 
+     * @throws CmsException if something goes wrong 
+     */
+    public void saveRewriteAliases(CmsDbContext dbc, String siteRoot, List<CmsRewriteAlias> newAliases)
+    throws CmsException {
+
+        CmsRewriteAliasFilter filter = new CmsRewriteAliasFilter(siteRoot);
+        getVfsDriver(dbc).deleteRewriteAliases(dbc, filter);
+        getVfsDriver(dbc).insertRewriteAliases(dbc, newAliases);
     }
 
     /**

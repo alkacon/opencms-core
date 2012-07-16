@@ -49,11 +49,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -72,8 +70,6 @@ public class CmsAliasManager {
     /** The security manager for accessing the database. */
     protected CmsSecurityManager m_securityManager;
 
-    private Map<String, List<CmsRewriteAlias>> m_rewriteAliases = new HashMap<String, List<CmsRewriteAlias>>();
-
     /**
      * Creates a new alias manager instance.<p>
      *
@@ -82,7 +78,6 @@ public class CmsAliasManager {
     public CmsAliasManager(CmsSecurityManager securityManager) {
 
         m_securityManager = securityManager;
-        _initRewrite();
     }
 
     /**
@@ -146,22 +141,35 @@ public class CmsAliasManager {
         return aliases;
     }
 
-    public List<CmsRewriteAlias> getRewriteAliases(String siteRoot) {
+    /**
+     * Reads the rewrite aliases for a given site root.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param siteRoot the site root for which the rewrite aliases should be retrieved 
+     * @return the list of rewrite aliases for the given site root 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List<CmsRewriteAlias> getRewriteAliases(CmsObject cms, String siteRoot) throws CmsException {
 
-        List<CmsRewriteAlias> result = ensureRewriteSiteRoot(siteRoot);
+        CmsRewriteAliasFilter filter = new CmsRewriteAliasFilter(siteRoot);
+        List<CmsRewriteAlias> result = m_securityManager.getRewriteAliases(cms.getRequestContext(), filter);
         return result;
     }
 
     /**
      * Gets the rewrite alias matcher for the given site.<p>
+     *
+     * @param cms the CMS context to use 
+     * @param siteRoot the site root
      * 
-     * @param siteRoot the site root 
+     * @return the alias matcher for the site with the given site root
      * 
-     * @return the alias matcher for the site with the given site root 
+     * @throws CmsException if something goes wrong 
      */
-    public CmsRewriteAliasMatcher getRewriteAliasMatcher(String siteRoot) {
+    public CmsRewriteAliasMatcher getRewriteAliasMatcher(CmsObject cms, String siteRoot) throws CmsException {
 
-        List<CmsRewriteAlias> aliases = getRewriteAliases(siteRoot);
+        List<CmsRewriteAlias> aliases = getRewriteAliases(cms, siteRoot);
         return new CmsRewriteAliasMatcher(aliases);
     }
 
@@ -301,11 +309,19 @@ public class CmsAliasManager {
         touch(cms, cms.readResource(structureId));
     }
 
-    public void saveRewriteAliases(CmsObject cms, String siteRoot, List<CmsRewriteAlias> newAliases) {
+    /**
+     * Saves the rewrite alias for a given site root.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param siteRoot the site root for which the rewrite aliases should be saved 
+     * @param newAliases the list of aliases to save 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void saveRewriteAliases(CmsObject cms, String siteRoot, List<CmsRewriteAlias> newAliases)
+    throws CmsException {
 
-        List<CmsRewriteAlias> aliases = ensureRewriteSiteRoot(siteRoot);
-        aliases.clear();
-        aliases.addAll(newAliases);
+        m_securityManager.saveRewriteAliases(cms.getRequestContext(), siteRoot, newAliases);
     }
 
     /**
@@ -460,39 +476,6 @@ public class CmsAliasManager {
                 CmsAliasImportStatus.aliasParseError,
                 messageImportInvalidFormat(locale));
         }
-    }
-
-    private void _initRewrite() {
-
-        if (m_rewriteAliases.isEmpty()) {
-
-            List<CmsRewriteAlias> aliases = new ArrayList<CmsRewriteAlias>();
-            CmsRewriteAlias alias1 = new CmsRewriteAlias(
-                new CmsUUID(),
-                "/sites/default",
-                "(.+?)foo.jsp",
-                "$1bar.jsp",
-                CmsAliasMode.permanentRedirect);
-            CmsRewriteAlias alias2 = new CmsRewriteAlias(
-                new CmsUUID(),
-                "/sites/default",
-                "(.+?)qux.jsp",
-                "$1baz.jsp",
-                CmsAliasMode.permanentRedirect);
-            aliases.add(alias1);
-            aliases.add(alias2);
-            saveRewriteAliases(null, "/sites/default", aliases);
-        }
-    }
-
-    private List<CmsRewriteAlias> ensureRewriteSiteRoot(String siteRoot) {
-
-        List<CmsRewriteAlias> result = m_rewriteAliases.get(siteRoot);
-        if (result == null) {
-            result = new ArrayList<CmsRewriteAlias>();
-            m_rewriteAliases.put(siteRoot, result);
-        }
-        return result;
     }
 
     /**

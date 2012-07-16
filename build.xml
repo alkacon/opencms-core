@@ -20,7 +20,7 @@
 	<property name="opencms.output.warfiles" location="${opencms.output}/build/${app.name}" />
 	<property name="opencms.output.distfiles" location="${opencms.output}/zip" />
 	
-	<property name="databases" value="as400,db2,derby,empress,firebird,h2,hsqldb,informix,ingres,interbase,intersystemscache,jdatastore,mssql,mysql,oracle,postgresql,sybase" /> 
+	<property name="databases" value="as400,db2,derby,empress,firebird,hsqldb,informix,ingres,interbase,intersystemscache,jdatastore,mssql,mysql,oracle,postgresql,sybase" /> 
 <!--	<property name="databases" value="mysql" /> -->
 
 	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
@@ -144,7 +144,7 @@
 					<then>
 						<property file="${basedir}/webapp/setup/database/@{db}/database.properties" />
 						<echo message="DRIVER: ${@{db}.driver}" />
-		     			<mappingtool schemaAction="build" readSchema="false" sqlFile="${basedir}/webapp/setup/database/@{db}/create_tables_gen.sql" schemaFile="${basedir}/webapp/setup/database/@{db}/jpa_schema.xml">
+		     			<mappingtool schemaAction="build" readSchema="false" sqlFile="${basedir}/webapp/setup/database/@{db}/create_tables_gen.sql" >
 							<config ConnectionDriverName="${@{db}.driver}" propertiesFile="${basedir}/persistence.xml" />
 						</mappingtool>
 					</then>

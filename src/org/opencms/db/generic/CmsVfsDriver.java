@@ -35,10 +35,13 @@ import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPreparedStatementIntParameter;
 import org.opencms.db.CmsPreparedStatementStringParameter;
 import org.opencms.db.CmsResourceState;
+import org.opencms.db.CmsRewriteAlias;
+import org.opencms.db.CmsRewriteAliasFilter;
 import org.opencms.db.CmsVfsOnlineResourceAlreadyExistsException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsPreparedStatementParameter;
@@ -82,6 +85,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1151,6 +1155,29 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsVfsDriver#deleteRewriteAliases(org.opencms.db.CmsDbContext, org.opencms.db.CmsRewriteAliasFilter)
+     */
+    public void deleteRewriteAliases(CmsDbContext dbc, CmsRewriteAliasFilter filter) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            CmsPair<String, List<Object>> conditionAndParams = prepareRewriteAliasConditions(filter);
+            String condition = conditionAndParams.getFirst();
+            List<Object> params = conditionAndParams.getSecond();
+            String query = "DELETE FROM CMS_REWRITES WHERE " + condition;
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+            CmsDbUtil.fillParameters(stmt, params);
+            stmt.execute();
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsVfsDriver#deleteUrlNameMappingEntries(org.opencms.db.CmsDbContext, boolean, org.opencms.db.urlname.CmsUrlNameMappingFilter)
      */
     public void deleteUrlNameMappingEntries(CmsDbContext dbc, boolean online, CmsUrlNameMappingFilter filter)
@@ -1323,6 +1350,36 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(4, alias.getStructureId().toString());
             stmt.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#insertRewriteAliases(org.opencms.db.CmsDbContext, java.util.Collection)
+     */
+    public void insertRewriteAliases(CmsDbContext dbc, Collection<CmsRewriteAlias> rewriteAliases)
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_REWRITE_ALIAS_INSERT_5");
+            for (CmsRewriteAlias alias : rewriteAliases) {
+                stmt.setString(1, alias.getId().toString());
+                stmt.setString(2, alias.getSiteRoot());
+                stmt.setString(3, alias.getPatternString());
+                stmt.setString(4, alias.getReplacementString());
+                stmt.setInt(5, alias.getMode().toInt());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -2528,6 +2585,49 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         return result;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readRewriteAliases(org.opencms.db.CmsDbContext, org.opencms.db.CmsRewriteAliasFilter)
+     */
+    public List<CmsRewriteAlias> readRewriteAliases(CmsDbContext dbc, CmsRewriteAliasFilter filter)
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        List<CmsRewriteAlias> result = new ArrayList<CmsRewriteAlias>();
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            CmsPair<String, List<Object>> conditionAndParams = prepareRewriteAliasConditions(filter);
+            String condition = conditionAndParams.getFirst();
+            List<Object> params = conditionAndParams.getSecond();
+            String query = m_sqlManager.readQuery("C_REWRITE_ALIAS_READ") + condition;
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+            CmsDbUtil.fillParameters(stmt, params);
+            res = stmt.executeQuery();
+            while (res.next()) {
+                int col = 1;
+                String id = res.getString(col++);
+                String siteRoot = res.getString(col++);
+                String patternString = res.getString(col++);
+                String replacementString = res.getString(col++);
+                int mode = res.getInt(col++);
+                CmsRewriteAlias alias = new CmsRewriteAlias(
+                    new CmsUUID(id),
+                    siteRoot,
+                    patternString,
+                    replacementString,
+                    CmsAliasMode.fromInt(mode));
+                result.add(alias);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw wrapException(stmt, e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
     }
 
     /**
@@ -4586,6 +4686,25 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
         String conditionString = CmsStringUtil.listAsString(conditions, " AND ");
         return CmsPair.create(conditionString, conditionParams);
+    }
+
+    /**
+     * Helper method to prepare the SQL conditions for accessing rewrite aliases using a given filter.<p>
+     * 
+     * @param filter the filter to use for rewrite aliases
+     *  
+     * @return a pair consisting of an SQL condition string and a list of query parameters 
+     */
+    private CmsPair<String, List<Object>> prepareRewriteAliasConditions(CmsRewriteAliasFilter filter) {
+
+        List<String> conditions = new ArrayList<String>();
+        conditions.add("1 = 1");
+        List<Object> parameters = new ArrayList<Object>();
+        if (filter.getSiteRoot() != null) {
+            parameters.add(filter.getSiteRoot());
+            conditions.add("SITE_ROOT = ?");
+        }
+        return CmsPair.create(CmsStringUtil.listAsString(conditions, " AND "), parameters);
     }
 
     /**

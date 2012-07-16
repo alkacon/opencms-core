@@ -326,7 +326,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             result.setRows(rows);
 
-            List<CmsRewriteAlias> rewriteAliases = aliasManager.getRewriteAliases(cms.getRequestContext().getSiteRoot());
+            List<CmsRewriteAlias> rewriteAliases = aliasManager.getRewriteAliases(
+                cms,
+                cms.getRequestContext().getSiteRoot());
 
             List<CmsRewriteAliasTableRow> rewriteRows = new ArrayList<CmsRewriteAliasTableRow>();
             for (CmsRewriteAlias rewriteAlias : rewriteAliases) {
