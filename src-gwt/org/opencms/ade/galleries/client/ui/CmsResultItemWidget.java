@@ -79,6 +79,9 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             HTML imageTile = new HTML("<img src=\""
                 + CmsCoreProvider.get().link(infoBean.getPath())
                 + IMAGE_SCALE_PARAM
+                // add time stamp to override image caching
+                + "&time="
+                + System.currentTimeMillis()
                 + "\" />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
             m_tooltipHandler = new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));

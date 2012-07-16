@@ -948,6 +948,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             protected void onResponse(Void result) {
 
                 updateResultsTab(false);
+                m_handler.hideShowPreviewButton(true);
             }
         };
         action.execute();

@@ -132,6 +132,8 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         StringBuffer urlScaled = new StringBuffer(128);
         urlScaled.append(CmsCoreProvider.get().link(infoBean.getResourcePath())).append("?").append(
             m_handler.getPreviewScaleParam(infoBean.getHeight(), infoBean.getWidth()));
+        // add time stamp to override image caching
+        urlScaled.append("&time=").append(System.currentTimeMillis());
         m_previewImage.setUrl(urlScaled.toString());
         panel.add(m_previewImage);
         m_previewPanel.setWidget(panel);
