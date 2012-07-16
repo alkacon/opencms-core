@@ -34,72 +34,132 @@ import javax.persistence.Table;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 
+/**
+ * JPA access bean for rewrite aliases.<p>
+ */
 @Entity
 @Table(name = "CMS_REWRITES")
 public class CmsDAORewriteAlias {
 
+    /**
+     * The id.<p>
+     */
     @Id
     @Column(name = "ID", nullable = false, length = 36)
     protected String m_id;
 
+    /** The alias mode. */
     @Column(name = "ALIAS_MODE", nullable = false)
     protected int m_mode;
 
+    /** The alias pattern. */
     @Column(name = "PATTERN", nullable = false, length = 255)
     protected String m_pattern;
 
+    /** The alias replacement. */
     @Column(name = "REPLACEMENT", nullable = false, length = 255)
     protected String m_replacement;
 
+    /** The alias site root. */
     @Index(name = "CMS_REWRITES_IDX_01")
     @Column(name = "SITE_ROOT", nullable = false, length = 64)
     protected String m_siteRoot;
 
+    /**
+     * Gets the alias id.<p>
+     * 
+     * @return the alias id 
+     */
     public String getId() {
 
         return m_id;
     }
 
+    /**
+     * Gets the alias mode.<p>
+     * 
+     * @return the alias mode
+     */
     public int getMode() {
 
         return m_mode;
     }
 
+    /**
+     * Gets the alias pattern.<p>
+     * 
+     * @return the alias pattern 
+     */
     public String getPattern() {
 
         return m_pattern;
     }
 
+    /**
+     * Gets the replacement string.<p> 
+     * 
+     * @return the replacement string 
+     */
     public String getReplacement() {
 
         return m_replacement;
     }
 
+    /**
+     * Gets the site root.<p> 
+     * 
+     * @return the site root 
+     */
     public String getSiteRoot() {
 
         return m_siteRoot;
     }
 
+    /**
+     * Sets the alias id.<p>
+     * 
+     * @param id the alias id 
+     */
     public void setId(String id) {
 
         m_id = id;
     }
 
+    /**
+     * Sets the alias mode.<p>
+     * 
+     * @param mode the alias mode 
+     */
     public void setMode(int mode) {
 
         m_mode = mode;
     }
 
+    /**
+     * Sets the alias pattern.<p>
+     * 
+     * @param pattern the alias pattern
+     */
     public void setPattern(String pattern) {
 
         m_pattern = pattern;
     }
 
+    /**
+     * Sets the replacement string.<p>
+     * 
+     * @param replacement the replacement string 
+     */
     public void setReplacement(String replacement) {
 
         m_replacement = replacement;
     }
 
+    /**
+     * Sets the site root.<p>
+     * 
+     * @param siteRoot the site root 
+     */
     public void setSiteRoot(String siteRoot) {
 
         m_siteRoot = siteRoot;
