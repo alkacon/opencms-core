@@ -49,9 +49,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -70,6 +72,8 @@ public class CmsAliasManager {
     /** The security manager for accessing the database. */
     protected CmsSecurityManager m_securityManager;
 
+    private Map<String, List<CmsRewriteAlias>> m_rewriteAliases = new HashMap<String, List<CmsRewriteAlias>>();
+
     /**
      * Creates a new alias manager instance.<p>
      *
@@ -78,6 +82,7 @@ public class CmsAliasManager {
     public CmsAliasManager(CmsSecurityManager securityManager) {
 
         m_securityManager = securityManager;
+        _initRewrite();
     }
 
     /**
@@ -141,6 +146,12 @@ public class CmsAliasManager {
         return aliases;
     }
 
+    public List<CmsRewriteAlias> getRewriteAliases(String siteRoot) {
+
+        List<CmsRewriteAlias> result = ensureRewriteSiteRoot(siteRoot);
+        return result;
+    }
+
     /**
      * Gets the rewrite alias matcher for the given site.<p>
      * 
@@ -150,9 +161,7 @@ public class CmsAliasManager {
      */
     public CmsRewriteAliasMatcher getRewriteAliasMatcher(String siteRoot) {
 
-        List<CmsRewriteAlias> aliases = new ArrayList<CmsRewriteAlias>();
-        CmsRewriteAlias alias1 = new CmsRewriteAlias(new CmsUUID(), "/sites/default", "(.+?)foo.jsp", "$1bar.jsp", true);
-        aliases.add(alias1);
+        List<CmsRewriteAlias> aliases = getRewriteAliases(siteRoot);
         return new CmsRewriteAliasMatcher(aliases);
     }
 
@@ -290,6 +299,13 @@ public class CmsAliasManager {
 
         m_securityManager.saveAliases(cms.getRequestContext(), cms.readResource(structureId), aliases);
         touch(cms, cms.readResource(structureId));
+    }
+
+    public void saveRewriteAliases(CmsObject cms, String siteRoot, List<CmsRewriteAlias> newAliases) {
+
+        List<CmsRewriteAlias> aliases = ensureRewriteSiteRoot(siteRoot);
+        aliases.clear();
+        aliases.addAll(newAliases);
     }
 
     /**
@@ -444,6 +460,39 @@ public class CmsAliasManager {
                 CmsAliasImportStatus.aliasParseError,
                 messageImportInvalidFormat(locale));
         }
+    }
+
+    private void _initRewrite() {
+
+        if (m_rewriteAliases.isEmpty()) {
+
+            List<CmsRewriteAlias> aliases = new ArrayList<CmsRewriteAlias>();
+            CmsRewriteAlias alias1 = new CmsRewriteAlias(
+                new CmsUUID(),
+                "/sites/default",
+                "(.+?)foo.jsp",
+                "$1bar.jsp",
+                CmsAliasMode.permanentRedirect);
+            CmsRewriteAlias alias2 = new CmsRewriteAlias(
+                new CmsUUID(),
+                "/sites/default",
+                "(.+?)qux.jsp",
+                "$1baz.jsp",
+                CmsAliasMode.permanentRedirect);
+            aliases.add(alias1);
+            aliases.add(alias2);
+            saveRewriteAliases(null, "/sites/default", aliases);
+        }
+    }
+
+    private List<CmsRewriteAlias> ensureRewriteSiteRoot(String siteRoot) {
+
+        List<CmsRewriteAlias> result = m_rewriteAliases.get(siteRoot);
+        if (result == null) {
+            result = new ArrayList<CmsRewriteAlias>();
+            m_rewriteAliases.put(siteRoot, result);
+        }
+        return result;
     }
 
     /**

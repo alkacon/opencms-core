@@ -25,8 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.ade.sitemap.client.alias.simple;
 
+import org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn;
+import org.opencms.ade.sitemap.client.alias.CmsAliasMessages;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
@@ -44,7 +46,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 /**
  * The table column for displaying/editing the alias mode.<p>
  */
-public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, String> {
+public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, String, CmsAliasCellTable> {
 
     /** A map used to translate between the internal names and the user readable names of the selectable values. */
     private static BiMap<CmsAliasMode, String> nameLookup = HashBiMap.create();
@@ -121,7 +123,7 @@ public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(org.opencms.ade.sitemap.client.alias.CmsAliasCellTable)
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(com.google.gwt.user.cellview.client.CellTable)
      */
     @Override
     public void addToTable(CmsAliasCellTable table) {

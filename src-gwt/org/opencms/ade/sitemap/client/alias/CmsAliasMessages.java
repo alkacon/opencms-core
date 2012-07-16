@@ -196,6 +196,26 @@ public final class CmsAliasMessages {
      * 
      * @return the message text 
      */
+    public static String messageColumnPattern() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_PATTERN_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageColumnReplacement() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_COLUMN_REPLACEMENT_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
     public static String messageColumnSelect() {
 
         return Messages.get().key(Messages.GUI_ALIASES_COLUMN_SELECT_0);
@@ -222,6 +242,46 @@ public final class CmsAliasMessages {
 
         return Messages.get().key(Messages.GUI_ALIAS_EDITING_NOT_PERMITTED_0);
 
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageLabelRegex() {
+
+        return messageColumnPattern() + ":";
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageLabelReplacement() {
+
+        return messageColumnReplacement() + ":";
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageLegendNewRewrite() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_LEGEND_NEW_REWRITE_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messageLegendRewriteTable() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_LEGEND_REWRITE_TABLE_0);
     }
 
     /**
@@ -272,6 +332,16 @@ public final class CmsAliasMessages {
     public static String messagePage() {
 
         return Messages.get().key(Messages.GUI_ALIASES_MODE_PAGE_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
+    public static String messagePassthrough() {
+
+        return Messages.get().key(Messages.GUI_ALIASES_PASSTHROUGH_0);
     }
 
     /**

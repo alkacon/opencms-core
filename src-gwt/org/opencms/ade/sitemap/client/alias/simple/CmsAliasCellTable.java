@@ -25,10 +25,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.ade.sitemap.client.alias.simple;
 
+import org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn;
+import org.opencms.ade.sitemap.client.alias.CmsAliasTableController;
+import org.opencms.ade.sitemap.client.alias.CmsCellTableUtil;
 import org.opencms.gwt.client.ui.css.I_CmsCellTableResources;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
 import java.util.ArrayList;
@@ -37,8 +39,6 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
-import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -79,7 +79,8 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
             });
         m_controller = controller;
         m_errorColumn = new CmsAliasErrorColumn();
-        A_CmsAliasTableColumn<?, ?>[] columns = new A_CmsAliasTableColumn[] {
+        @SuppressWarnings("unchecked")
+        A_CmsAliasTableColumn<CmsAliasTableRow, ?, CmsAliasCellTable>[] columns = new A_CmsAliasTableColumn[] {
             new CmsAliasSelectionColumn(this),
             new CmsAliasPathColumn(this),
             new CmsResourcePathColumn(this),
@@ -89,7 +90,7 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
         m_dataProvider.addDataDisplay(this);
         ColumnSortEvent.ListHandler<CmsAliasTableRow> sortHandler = new ColumnSortEvent.ListHandler<CmsAliasTableRow>(
             m_dataProvider.getList());
-        for (A_CmsAliasTableColumn<?, ?> column : columns) {
+        for (A_CmsAliasTableColumn<CmsAliasTableRow, ?, CmsAliasCellTable> column : columns) {
             column.initSortHandler(sortHandler);
         }
         addColumnSortHandler(sortHandler);
@@ -104,28 +105,10 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
             }
         });
         setSelectionModel(selectionModel, DefaultSelectionEventManager.<CmsAliasTableRow> createCheckboxManager());
-        for (A_CmsAliasTableColumn<?, ?> column : columns) {
+        for (A_CmsAliasTableColumn<?, ?, CmsAliasCellTable> column : columns) {
             column.addToTable(this);
         }
-        // we need to update the scroll panel when the table is redrawn, but the redraw() method of the table is asynchronous,
-        // i.e. it only schedules an actual redraw. However, the method which is responsible for the actual redrawing triggers a 
-        // loading state event before it does the redrawing. Using a timer at this point, we can execute code after the redrawing
-        // has happend.
-        addLoadingStateChangeHandler(new LoadingStateChangeEvent.Handler() {
-
-            public void onLoadingStateChanged(LoadingStateChangeEvent event) {
-
-                Timer resizeTimer = new Timer() {
-
-                    @Override
-                    public void run() {
-
-                        CmsDomUtil.resizeAncestor(CmsAliasCellTable.this);
-                    }
-                };
-                resizeTimer.schedule(10);
-            }
-        });
+        CmsCellTableUtil.ensureCellTableParentResize(this);
     }
 
     /**

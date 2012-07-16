@@ -25,47 +25,49 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.gwt.shared.alias;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import org.opencms.util.CmsUUID;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Abstract column class for the alias cell table columns.<p> 
- * 
- * @param <R> the row type 
- * @param <V> the cell value type 
- * @param <T> the celll table type 
+ * This class represents the result of a validation of rewrite aliases.<p>
  */
-public abstract class A_CmsAliasTableColumn<R, V, T extends CellTable<R>> extends Column<R, V> {
+public class CmsRewriteAliasValidationReply implements IsSerializable {
+
+    /** A map from the rewrite alias IDs to the corresponding error messages. */
+    private Map<CmsUUID, String> m_errors = new HashMap<CmsUUID, String>();
 
     /**
-     * Delegates to the superclass constructor.<p>
-     *  
-     * @param cell the cell for this column 
+     * Default constructor.<p>
      */
-    public A_CmsAliasTableColumn(Cell<V> cell) {
+    public CmsRewriteAliasValidationReply() {
 
-        super(cell);
+        // do nothing 
     }
 
     /**
-     * Adds the column to the table.<p>
+     * Adds a validation error to this object.<p>
      * 
-     * Subclasses can override this to also set e.g. the column width
-     * @param table
+     * @param id the id of a rewrite alias for which the validation failed 
+     * @param error the validation error message 
      */
-    public abstract void addToTable(T table);
+    public void addError(CmsUUID id, String error) {
+
+        m_errors.put(id, error);
+    }
 
     /**
-     * Initializes the sort handler to use this column.<p>
+     * Gets the map of error messages by rewrite alias id.<p>
      * 
-     * @param sortHandler the sort handler 
+     * @return the map of error messages 
      */
-    public void initSortHandler(ListHandler<R> sortHandler) {
+    public Map<CmsUUID, String> getErrors() {
 
-        // do nothing by default 
+        return m_errors;
     }
 }

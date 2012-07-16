@@ -48,22 +48,33 @@ public class CmsRewriteAliasMatcher {
      */
     public static class RewriteResult {
 
+        /** The rewrite alias which matched the given path. */
+        private CmsRewriteAlias m_alias;
+
         /** The path resulting from the rewrite. */
         private String m_newPath;
-
-        /** A flag indicating whether a permanent redirect should be used. */
-        private boolean m_permanent;
 
         /**
          * Creates a new instance.<p>
          * 
          * @param newPath the path resulting from the rewrite 
-         * @param permanent true if a permanent redirect should be used 
+         * @param alias the alias that matched the path  
          */
-        public RewriteResult(String newPath, boolean permanent) {
+        public RewriteResult(String newPath, CmsRewriteAlias alias) {
 
             m_newPath = newPath;
-            m_permanent = permanent;
+            m_alias = alias;
+
+        }
+
+        /**
+         * Gets the alias which matched the given path.<p>
+         * 
+         * @return the matching alias 
+         */
+        public CmsRewriteAlias getAlias() {
+
+            return m_alias;
         }
 
         /**
@@ -76,15 +87,6 @@ public class CmsRewriteAliasMatcher {
             return m_newPath;
         }
 
-        /**
-         * Returns true if a permanent redirect should be used.<p>
-         * 
-         * @return true if a permanent redirect should be used 
-         */
-        public boolean isPermanent() {
-
-            return m_permanent;
-        }
     }
 
     /** The logger instance for this class. */
@@ -118,7 +120,7 @@ public class CmsRewriteAliasMatcher {
                 Matcher matcher = pattern.matcher(path);
                 if (matcher.matches()) {
                     String newPath = matcher.replaceFirst(alias.getReplacementString());
-                    return new RewriteResult(newPath, alias.isPermanent());
+                    return new RewriteResult(newPath, alias);
                 }
             } catch (PatternSyntaxException e) {
                 LOG.warn(e.getLocalizedMessage(), e);

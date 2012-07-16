@@ -32,6 +32,7 @@ import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.PARAM_SITEROOT;
 
 import org.opencms.db.CmsAlias;
 import org.opencms.db.CmsAliasManager;
+import org.opencms.db.CmsRewriteAlias;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -40,6 +41,7 @@ import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasTableRow;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -129,6 +131,11 @@ public class CmsAliasBulkEditHelper {
         if (m_hasErrors) {
             return reply;
         } else {
+            List<CmsRewriteAliasTableRow> rewriteData = saveRequest.getRewriteData();
+            OpenCms.getAliasManager().saveRewriteAliases(
+                m_cms,
+                m_cms.getRequestContext().getSiteRoot(),
+                convertRewriteData(rewriteData));
             Set<CmsUUID> allTouchedIds = new HashSet<CmsUUID>();
             List<CmsAliasTableRow> rows = saveRequest.getEditedData();
             for (CmsAliasTableRow row : rows) {
@@ -229,6 +236,29 @@ public class CmsAliasBulkEditHelper {
             if (structureIds.contains(alias.getStructureId())) {
                 result.add(alias);
             }
+        }
+        return result;
+    }
+
+    /**
+     * Converts rewrite alias table rows to rewrite alias objects.<p>
+     * 
+     * @param rewriteData the rewrite data 
+     * 
+     * @return the converted rewrite aliases 
+     */
+    private List<CmsRewriteAlias> convertRewriteData(List<CmsRewriteAliasTableRow> rewriteData) {
+
+        String siteRoot = m_cms.getRequestContext().getSiteRoot();
+        List<CmsRewriteAlias> result = new ArrayList<CmsRewriteAlias>();
+        for (CmsRewriteAliasTableRow row : rewriteData) {
+            CmsRewriteAlias alias = new CmsRewriteAlias(
+                row.getId(),
+                siteRoot,
+                row.getPatternString(),
+                row.getReplacementString(),
+                row.getMode());
+            result.add(alias);
         }
         return result;
     }

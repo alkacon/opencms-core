@@ -29,7 +29,9 @@ package org.opencms.gwt.shared.alias;
 
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -39,6 +41,9 @@ public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest
 
     /** The set of structure ids of deleted aliases. */
     private Set<CmsUUID> m_deletedIds = new HashSet<CmsUUID>();
+
+    /** The list of rewrite aliases to save. */
+    private List<CmsRewriteAliasTableRow> m_rewriteData;
 
     /** The site root. */
     private String m_siteRoot;
@@ -62,6 +67,16 @@ public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest
     }
 
     /**
+     * Gets the list of rewrite aliases to save.<p>
+     * 
+     * @return the rewrite aliases to save 
+     */
+    public List<CmsRewriteAliasTableRow> getRewriteData() {
+
+        return m_rewriteData;
+    }
+
+    /**
      * Gets the site root.<p>
      * 
      * @return the site root 
@@ -69,6 +84,16 @@ public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest
     public String getSiteRoot() {
 
         return m_siteRoot;
+    }
+
+    /**
+     * Sets the list of rewrite aliases to save.<p>
+     * 
+     * @param rewriteData the list of rewrite aliases to save 
+     */
+    public void setRewriteData(List<CmsRewriteAliasTableRow> rewriteData) {
+
+        m_rewriteData = new ArrayList<CmsRewriteAliasTableRow>(rewriteData);
     }
 
     /**

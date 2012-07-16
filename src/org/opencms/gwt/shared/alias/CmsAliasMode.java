@@ -37,6 +37,8 @@ public enum CmsAliasMode implements IsSerializable {
 
     /** The request will be forwarded internally to the given resource. */
     page(0),
+    /** Pass the new path along to the next resource handler. */
+    passthrough(3),
     /** A 'moved permanently' status with a link to the aliased resource will be sent to the browser. */
     permanentRedirect(2),
     /** A 'moved temporarily' status with a link to the aliased resource will be sent to the browser. */
@@ -68,10 +70,22 @@ public enum CmsAliasMode implements IsSerializable {
                 return redirect;
             case 2:
                 return permanentRedirect;
+            case 3:
+                return passthrough;
             case 0:
             default:
                 return page;
         }
+    }
+
+    /**
+     * Checks whether this is a mode that requires a redirect.<p>
+     * 
+     * @return true if this mode requires a redirect 
+     */
+    public boolean isRedirect() {
+
+        return (this == redirect) || (this == permanentRedirect);
     }
 
     /**

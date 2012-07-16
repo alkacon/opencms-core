@@ -25,49 +25,46 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.gwt.shared.alias;
 
-import org.opencms.gwt.shared.alias.CmsAliasTableRow;
+import java.util.List;
 
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The column used to select rows in the alias table.<p>
+ * This method represents a query to validate a set of rewrite aliases on the  server.<p>
  */
-public class CmsAliasSelectionColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, Boolean> {
+public class CmsRewriteAliasValidationRequest implements IsSerializable {
 
-    /** The table in which this column is used. */
-    private CmsAliasCellTable m_table;
+    /** The rewrite aliases to validate. */
+    private List<CmsRewriteAliasTableRow> m_editedRewrites;
 
     /**
-     * Creates a new column instance.<p>
+     * Creates a new instance.<p>
      * 
-     * @param table
+     * @param editedRewrites the list of rewrite aliases to validate 
      */
-    public CmsAliasSelectionColumn(CmsAliasCellTable table) {
+    public CmsRewriteAliasValidationRequest(List<CmsRewriteAliasTableRow> editedRewrites) {
 
-        super(new CheckboxCell());
-        m_table = table;
+        m_editedRewrites = editedRewrites;
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(org.opencms.ade.sitemap.client.alias.CmsAliasCellTable)
+     * Default constructor for serialization.<p>
      */
-    @Override
-    public void addToTable(CmsAliasCellTable table) {
+    protected CmsRewriteAliasValidationRequest() {
 
-        table.addColumn(this, "X");
-        table.setColumnWidth(this, 25, Unit.PX);
+        // empty
     }
 
     /**
-     * @see com.google.gwt.user.cellview.client.Column#getValue(java.lang.Object)
+     * Gets the rewrite aliases which should be validated.<p>
+     * 
+     * @return the list of rewrite aliases to validate 
      */
-    @Override
-    public Boolean getValue(CmsAliasTableRow row) {
+    public List<CmsRewriteAliasTableRow> getEditedRewriteAliases() {
 
-        return Boolean.valueOf(m_table.getSelectionModel().isSelected(row));
+        return m_editedRewrites;
     }
 
 }

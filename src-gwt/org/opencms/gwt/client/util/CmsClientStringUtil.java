@@ -28,8 +28,10 @@
 package org.opencms.gwt.client.util;
 
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Random;
 
 /**
  * Additional string related helper methods.<p>
@@ -108,11 +110,11 @@ public final class CmsClientStringUtil {
      * @return the parsed number
      */
     public static native double parseFloat(String str) /*-{
-        var ret = parseFloat(str, 10);
-        if (isNaN(ret)) {
-            return 0;
-        }
-        return ret;
+      var ret = parseFloat(str, 10);
+      if (isNaN(ret)) {
+         return 0;
+      }
+      return ret;
     }-*/;
 
     /**
@@ -126,11 +128,11 @@ public final class CmsClientStringUtil {
      * @return the parsed number
      */
     public static native int parseInt(String str) /*-{
-        var ret = parseInt(str, 10);
-        if (isNaN(ret)) {
-            return 0;
-        }
-        return ret;
+      var ret = parseInt(str, 10);
+      if (isNaN(ret)) {
+         return 0;
+      }
+      return ret;
     }-*/;
 
     /**
@@ -140,8 +142,29 @@ public final class CmsClientStringUtil {
      * @param s the String to push into the array
      */
     public static native void pushArray(JavaScriptObject array, String s) /*-{
-        array.push(s);
+      array.push(s);
     }-*/;
+
+    /**
+     * Generates a purely random uuid.<p>
+     * 
+     * @return the generated uuid 
+     */
+    public static String randomUUID() {
+
+        String base = CmsUUID.getNullUUID().toString();
+        String hexDigits = "0123456789abcdef";
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < base.length(); i++) {
+            char ch = base.charAt(i);
+            if (ch == '-') {
+                result.append(ch);
+            } else if (ch == '0') {
+                result.append(hexDigits.charAt(Random.nextInt(16)));
+            }
+        }
+        return result.toString();
+    }
 
     /**
      * Shortens the string to the given maximum length.<p>
@@ -172,4 +195,5 @@ public final class CmsClientStringUtil {
         }
         return newText;
     }
+
 }

@@ -46,6 +46,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.db.CmsAlias;
 import org.opencms.db.CmsAliasManager;
+import org.opencms.db.CmsRewriteAlias;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -75,6 +76,9 @@ import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasTableRow;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationReply;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.i18n.CmsLocaleManager;
@@ -119,6 +123,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -319,6 +325,19 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 rows.add(row);
             }
             result.setRows(rows);
+
+            List<CmsRewriteAlias> rewriteAliases = aliasManager.getRewriteAliases(cms.getRequestContext().getSiteRoot());
+
+            List<CmsRewriteAliasTableRow> rewriteRows = new ArrayList<CmsRewriteAliasTableRow>();
+            for (CmsRewriteAlias rewriteAlias : rewriteAliases) {
+                CmsRewriteAliasTableRow rewriteRow = new CmsRewriteAliasTableRow(
+                    rewriteAlias.getId(),
+                    rewriteAlias.getPatternString(),
+                    rewriteAlias.getReplacementString(),
+                    rewriteAlias.getMode());
+                rewriteRows.add(rewriteRow);
+            }
+            result.setRewriteRows(rewriteRows);
             CmsUser otherLockOwner = aliasEditorLockTable.update(cms, cms.getRequestContext().getSiteRoot());
             if (otherLockOwner != null) {
                 result.setAliasLockOwner(otherLockOwner.getName());
@@ -590,6 +609,23 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms = getCmsObject();
         CmsAliasBulkEditHelper helper = new CmsAliasBulkEditHelper(cms);
         return helper.validateAliases(validationRequest);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#validateRewriteAliases(org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest)
+     */
+    public CmsRewriteAliasValidationReply validateRewriteAliases(CmsRewriteAliasValidationRequest validationRequest) {
+
+        CmsRewriteAliasValidationReply result = new CmsRewriteAliasValidationReply();
+        for (CmsRewriteAliasTableRow editedRow : validationRequest.getEditedRewriteAliases()) {
+            try {
+                String patternString = editedRow.getPatternString();
+                Pattern.compile(patternString);
+            } catch (PatternSyntaxException e) {
+                result.addError(editedRow.getId(), "Syntax error in regular expression: " + e.getMessage());
+            }
+        }
+        return result;
     }
 
     /**

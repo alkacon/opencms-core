@@ -28,15 +28,20 @@
 package org.opencms.ade.sitemap.client.alias;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasTableRow;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationReply;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -68,6 +73,28 @@ public class CmsAliasTableController {
     String m_siteRoot;
 
     /**
+     * Gets the service to use for validating/saving aliases.<p>
+     * 
+     * @return the service used for validating/saving aliases 
+     */
+    protected static I_CmsSitemapServiceAsync getService() {
+
+        return CmsSitemapView.getInstance().getController().getService();
+    }
+
+    /**
+     * Method which should be called when the selection of the rewrite table has been changed.<p>
+     * 
+     * @param selectedSet the set of selected rewrite table entries 
+     */
+    public void changeRewriteSelection(Set<CmsRewriteAliasTableRow> selectedSet) {
+
+        boolean selectionEmpty = selectedSet.isEmpty();
+        m_view.setRewriteDeleteButtonEnabled(!selectionEmpty);
+
+    }
+
+    /**
      * This method is called when the selection of the alias table changes.<p>
      * 
      * @param selectedSet the set of selected rows 
@@ -76,6 +103,19 @@ public class CmsAliasTableController {
 
         boolean selectionEmpty = selectedSet.isEmpty();
         m_view.setDeleteButtonEnabled(!selectionEmpty);
+    }
+
+    /**
+     * This method is called when the user wants to delete rewrites aliases.<p>
+     * 
+     * @param rowsToDelete the rows the user wants to delete 
+     */
+    public void deleteRewrites(List<CmsRewriteAliasTableRow> rowsToDelete) {
+
+        List<CmsRewriteAliasTableRow> liveData = m_view.getRewriteData();
+        liveData.removeAll(rowsToDelete);
+        m_view.getRewriteTable().getSelectionModel().clear();
+        updateValidationStatus();
     }
 
     /**
@@ -150,6 +190,26 @@ public class CmsAliasTableController {
     }
 
     /**
+     * This method is called when the user adds a new rewrite alias.<p>
+     * 
+     * @param rewriteRegex the rewrite pattern 
+     * @param rewriteReplacement the rewrite replacement string 
+     * 
+     * @param mode the rewrite mode 
+     */
+    public void editNewRewrite(String rewriteRegex, String rewriteReplacement, CmsAliasMode mode) {
+
+        CmsRewriteAliasTableRow row = new CmsRewriteAliasTableRow(
+            new CmsUUID(CmsClientStringUtil.randomUUID()),
+            rewriteRegex,
+            rewriteReplacement,
+            mode);
+        m_view.clearRewriteNew();
+        m_view.getRewriteData().add(0, row);
+        validateRewrite();
+    }
+
+    /**
      * This method is called when the user has edited the resource path of an alias.<p>
      * 
      * @param row the alias the table row 
@@ -160,6 +220,16 @@ public class CmsAliasTableController {
         row.setEdited(true);
         row.editResourcePath(path);
         validate();
+    }
+
+    /**
+     * This method is called when the user has edited a rewrite alias.<p>
+     * 
+     * @param object the edited rewrite alias
+     */
+    public void editRewriteAlias(CmsRewriteAliasTableRow object) {
+
+        validateRewrite();
     }
 
     /**
@@ -177,7 +247,7 @@ public class CmsAliasTableController {
             @Override
             public void execute() {
 
-                CmsSitemapView.getInstance().getController().getService().getAliasTable(this);
+                getService().getAliasTable(this);
                 start(200, false);
             }
 
@@ -202,7 +272,8 @@ public class CmsAliasTableController {
                     m_initialData = aliasTable.getRows();
                     m_siteRoot = CmsCoreProvider.get().getSiteRoot();
                     List<CmsAliasTableRow> copiedData = copyData(m_initialData);
-                    m_view.setData(copiedData);
+                    List<CmsRewriteAliasTableRow> rewriteData = aliasTable.getRewriteAliases();
+                    m_view.setData(copiedData, rewriteData);
                     if (afterLoad != null) {
                         afterLoad.run();
                     }
@@ -228,9 +299,10 @@ public class CmsAliasTableController {
                 saveRequest.setSiteRoot(m_siteRoot);
                 List<CmsAliasTableRow> rows = m_view.getLiveData();
                 saveRequest.setEditedData(rows);
+                saveRequest.setRewriteData(m_view.getRewriteData());
                 saveRequest.getDeletedIds().addAll(m_deletedIds);
                 saveRequest.setOriginalData(m_initialData);
-                CmsSitemapView.getInstance().getController().getService().saveAliases(saveRequest, this);
+                getService().saveAliases(saveRequest, this);
             }
 
             @Override
@@ -266,6 +338,10 @@ public class CmsAliasTableController {
         for (CmsAliasTableRow row : m_view.getLiveData()) {
             hasErrors |= row.hasErrors();
         }
+        for (CmsRewriteAliasTableRow row : m_view.getRewriteData()) {
+            hasErrors |= (row.getError() != null);
+        }
+
         m_view.setSaveButtonEnabled(!hasErrors);
         if (hasErrors) {
             m_view.sortByErrors();
@@ -287,7 +363,7 @@ public class CmsAliasTableController {
                 List<CmsAliasTableRow> rows = m_view.getLiveData();
                 validationRequest.setEditedData(rows);
                 validationRequest.setOriginalData(m_initialData);
-                CmsSitemapView.getInstance().getController().getService().validateAliases(validationRequest, this);
+                getService().validateAliases(validationRequest, this);
             }
 
             @Override
@@ -315,13 +391,13 @@ public class CmsAliasTableController {
             @Override
             public void execute() {
 
-                start(200, false);
+                start(200, true);
                 CmsAliasEditValidationRequest validationRequest = new CmsAliasEditValidationRequest();
                 List<CmsAliasTableRow> rows = m_view.getLiveData();
                 validationRequest.setEditedData(rows);
                 validationRequest.setNewEntry(newEntry);
                 validationRequest.setOriginalData(m_initialData);
-                CmsSitemapView.getInstance().getController().getService().validateAliases(validationRequest, this);
+                getService().validateAliases(validationRequest, this);
             }
 
             @Override
@@ -340,6 +416,36 @@ public class CmsAliasTableController {
                 m_view.update(tableRows);
                 updateValidationStatus();
             }
+        };
+        action.execute();
+    }
+
+    /**
+     * Triggers server-side validation for the rewrite aliases.<p>
+     */
+    protected void validateRewrite() {
+
+        CmsRpcAction<CmsRewriteAliasValidationReply> action = new CmsRpcAction<CmsRewriteAliasValidationReply>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                List<CmsRewriteAliasTableRow> rowsToValidate = new ArrayList<CmsRewriteAliasTableRow>();
+                rowsToValidate.addAll(m_view.getRewriteData());
+
+                CmsRewriteAliasValidationRequest request = new CmsRewriteAliasValidationRequest(rowsToValidate);
+                getService().validateRewriteAliases(request, this);
+            }
+
+            @Override
+            public void onResponse(CmsRewriteAliasValidationReply result) {
+
+                stop(false);
+                m_view.update(result);
+                updateValidationStatus();
+            }
+
         };
         action.execute();
     }

@@ -32,6 +32,7 @@ import org.opencms.db.CmsAlias;
 import org.opencms.db.CmsRewriteAliasMatcher;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
@@ -104,8 +105,16 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
             CmsRewriteAliasMatcher.RewriteResult rewriteResult = rewriteAliases.match(sitePath);
             if ((rewriteResult != null) && (res != null)) {
                 String link = OpenCms.getLinkManager().substituteLink(cms, rewriteResult.getNewPath());
-                redirectToTarget(req, res, link, rewriteResult.isPermanent());
-                return null; // will never be reached 
+                if (rewriteResult.getAlias().getMode().isRedirect()) {
+                    redirectToTarget(
+                        req,
+                        res,
+                        link,
+                        rewriteResult.getAlias().getMode() == CmsAliasMode.permanentRedirect);
+                } else {
+                    cms.getRequestContext().setUri(rewriteResult.getNewPath());
+                }
+                return null;
             }
             List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(cms, siteRoot, sitePath);
             assert aliases.size() < 2;

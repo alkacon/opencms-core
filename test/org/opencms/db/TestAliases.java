@@ -34,6 +34,7 @@ import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -128,4 +129,29 @@ public class TestAliases extends OpenCmsTestCase {
         checkAliases(bar1, "/xyzzy2");
         assertTrue("At least 3 aliases", aliasManager.getAliasesForSite(cms, "").size() >= 3);
     }
+
+    public void testRewrites() throws Exception {
+
+        CmsUUID id = new CmsUUID();
+        String siteRoot = "/sites/default";
+        String patternString = "/foo/(.*)";
+        String replacementString = "/bar/(.*)";
+        CmsAliasMode mode = CmsAliasMode.permanentRedirect;
+        CmsRewriteAlias alias = new CmsRewriteAlias(id, siteRoot, patternString, replacementString, mode);
+        CmsAliasManager aliasManager = OpenCms.getAliasManager();
+        aliasManager.saveRewriteAliases(getCmsObject(), siteRoot, Collections.singletonList(alias));
+        List<CmsRewriteAlias> aliases = aliasManager.getRewriteAliases("/sites/default");
+        boolean found = false;
+        for (CmsRewriteAlias currentAlias : aliases) {
+            if (currentAlias.getId().equals(id)) {
+                assertEquals(siteRoot, currentAlias.getSiteRoot());
+                assertEquals(patternString, currentAlias.getPatternString());
+                assertEquals(replacementString, currentAlias.getReplacementString());
+                assertEquals(mode, currentAlias.getMode());
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
 }

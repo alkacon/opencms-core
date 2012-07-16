@@ -25,16 +25,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.db;
+package org.opencms.gwt.shared.alias;
 
-import org.opencms.gwt.shared.alias.CmsAliasMode;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsUUID;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
- * This class represents an alias which does not just map a fixed path to a fixed resource, but instead uses 
- * a regular expression substitution to determine the target path.<p>
+ * A class containing the data for a row of the rewrite alias table.<p>
  */
-public class CmsRewriteAlias {
+public class CmsRewriteAliasTableRow implements IsSerializable {
+
+    /** The error message for this rewrite alias. */
+    private String m_error;
 
     /** The id of the alias. */
     private CmsUUID m_id;
@@ -48,30 +52,38 @@ public class CmsRewriteAlias {
     /** The replacement string used when the regular expression matches. */
     private String m_replacementString;
 
-    /** The site root inside which this alias should be valid. */
-    private String m_siteRoot;
+    /**
+     * Default constructor, used for serialization.<p>
+     */
+    public CmsRewriteAliasTableRow() {
+
+        // nothing 
+    }
 
     /**
      * Creates a new instance.<p>
      * 
      * @param id the id of the alias 
-     * @param siteRoot the site root inside which the alias is valid  
      * @param patternString the regular expression used for matching the URI 
      * @param replacementString the replacement string used when the URI is matched
-     * @param mode the alias mode   
+     * @param mode the alias mode for this row   
      */
-    public CmsRewriteAlias(
-        CmsUUID id,
-        String siteRoot,
-        String patternString,
-        String replacementString,
-        CmsAliasMode mode) {
+    public CmsRewriteAliasTableRow(CmsUUID id, String patternString, String replacementString, CmsAliasMode mode) {
 
         m_id = id;
         m_patternString = patternString;
         m_replacementString = replacementString;
-        m_siteRoot = siteRoot;
         m_mode = mode;
+    }
+
+    /**
+     * Gets the error message for this row.<p>
+     * 
+     * @return the error message for this row 
+     */
+    public String getError() {
+
+        return m_error;
     }
 
     /**
@@ -85,9 +97,9 @@ public class CmsRewriteAlias {
     }
 
     /**
-     * Gets the alias mode.<p>
+     * Gets the alias mode for this row.<p>
      * 
-     * @return the alias mode 
+     * @return the alias mode for this row 
      */
     public CmsAliasMode getMode() {
 
@@ -115,13 +127,54 @@ public class CmsRewriteAlias {
     }
 
     /**
-     * Gets the root of the site in which this alias is valid.<p>
+     * Sets the error message for this row.<p>
      * 
-     * @return the site root
+     * @param error the new error message 
      */
-    public String getSiteRoot() {
+    public void setError(String error) {
 
-        return m_siteRoot;
+        m_error = error;
+        CmsDebugLog.getInstance().printLine(error);
+    }
+
+    /**
+     * Sets the id of this row.<p>
+     * 
+     * @param id the new id 
+     */
+    public void setId(CmsUUID id) {
+
+        m_id = id;
+    }
+
+    /**
+     * Sets the mode of this row.<p>
+     * 
+     * @param mode the new mode 
+     */
+    public void setMode(CmsAliasMode mode) {
+
+        m_mode = mode;
+    }
+
+    /**
+     * Sets the pattern of this row.<p>
+     * 
+     * @param patternString the new pattern 
+     */
+    public void setPatternString(String patternString) {
+
+        m_patternString = patternString;
+    }
+
+    /**
+     * Sets the replacement string for this row.<p>
+     * 
+     * @param replacementString the new replacement string 
+     */
+    public void setReplacementString(String replacementString) {
+
+        m_replacementString = replacementString;
     }
 
 }

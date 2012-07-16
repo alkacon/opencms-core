@@ -76,6 +76,12 @@ public final class Messages {
     public static final String GUI_ALIASES_COLUMN_PATH_0 = "GUI_ALIASES_COLUMN_PATH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_COLUMN_PATTERN_0 = "GUI_ALIASES_COLUMN_PATTERN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_COLUMN_REPLACEMENT_0 = "GUI_ALIASES_COLUMN_REPLACEMENT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_COLUMN_SELECT_0 = "GUI_ALIASES_COLUMN_SELECT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -91,6 +97,12 @@ public final class Messages {
     public static final String GUI_ALIASES_IMPORT_LINE_2 = "GUI_ALIASES_IMPORT_LINE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_LEGEND_NEW_REWRITE_0 = "GUI_ALIASES_LEGEND_NEW_REWRITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_LEGEND_REWRITE_TABLE_0 = "GUI_ALIASES_LEGEND_REWRITE_TABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_MODE_PAGE_0 = "GUI_ALIASES_MODE_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -101,6 +113,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_NEW_BOX_LEGEND_0 = "GUI_ALIASES_NEW_BOX_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIASES_PASSTHROUGH_0 = "GUI_ALIASES_PASSTHROUGH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_STATUS_ERROR_0 = "GUI_ALIASES_STATUS_ERROR_0";

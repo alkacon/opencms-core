@@ -25,8 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.ade.sitemap.client.alias.simple;
 
+import org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn;
+import org.opencms.ade.sitemap.client.alias.CmsAliasMessages;
 import org.opencms.gwt.client.ui.css.I_CmsCellTableResources;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
@@ -40,7 +42,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 /**
  * The table column for editing/displaying the alias resource path.<p>
  */
-public class CmsResourcePathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, String> {
+public class CmsResourcePathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, String, CmsAliasCellTable> {
 
     /** The table for which this column is used. */
     CmsAliasCellTable m_table;
@@ -82,7 +84,7 @@ public class CmsResourcePathColumn extends A_CmsAliasTableColumn<CmsAliasTableRo
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(org.opencms.ade.sitemap.client.alias.CmsAliasCellTable)
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(com.google.gwt.user.cellview.client.CellTable)
      */
     @Override
     public void addToTable(CmsAliasCellTable table) {

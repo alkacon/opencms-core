@@ -27,22 +27,13 @@
 
 package org.opencms.ade.sitemap.client.alias;
 
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonCancel;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonDelete;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonDownload;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonSave;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageButtonUpload;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageNewAliasActionLabel;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageNewAliasLabel;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageNewAliasTargetLabel;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageNewFieldsetLegend;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messagePage;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messagePermanentRedirect;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageRedirect;
 import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageRowCount;
-import static org.opencms.ade.sitemap.client.alias.CmsAliasMessages.messageTableFieldsetLegend;
 
-import org.opencms.gwt.client.ui.CmsFieldSet;
+import org.opencms.ade.sitemap.client.alias.rewrite.CmsRewriteAliasTable;
+import org.opencms.ade.sitemap.client.alias.simple.CmsAliasCellTable;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -53,6 +44,9 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasTableRow;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationReply;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,29 +97,13 @@ public class CmsAliasView extends Composite {
     @UiField
     protected CmsPushButton m_downloadButton;
 
-    /** Text container for the label for the new alias action selector. */
-    @UiField
-    protected HasText m_newAliasActionLabel;
-
-    /** Text container for the label for the new alias text box. */
-    @UiField
-    protected HasText m_newAliasLabel;
-
     /** The text box for entering the path for a new alias. */
     @UiField
     protected CmsTextBox m_newAliasPath;
 
-    /** Text container for the label for the new alias target text box. */
-    @UiField
-    protected HasText m_newAliasTargetLabel;
-
     /** The button for adding a new alias. */
     @UiField
     protected CmsPushButton m_newButton;
-
-    /** Field set containing the controls for adding new aliases. */
-    @UiField
-    protected CmsFieldSet m_newFieldSet;
 
     /** The select box for selecting the mode of a new alias. */
     @UiField
@@ -135,6 +113,32 @@ public class CmsAliasView extends Composite {
     @UiField
     protected CmsTextBox m_newResourcePath;
 
+    /** The button for adding a new rewrite alias. */
+    @UiField
+    protected CmsPushButton m_newRewriteButton;
+
+    /** The select box for selecting a mode for new rewrite aliases. */
+    @UiField
+    protected CmsSelectBox m_newRewriteMode;
+
+    /** The text box for entering a new rewrite pattern. */
+    @UiField
+    protected CmsTextBox m_newRewriteRegex;
+
+    /** The text box for entering a new rewrite replacement string. */
+    @UiField
+    protected CmsTextBox m_newRewriteReplacement;
+
+    /** The button for deleting rewrite aliases. */
+    @UiField
+    protected CmsPushButton m_rewriteDeleteButton;
+
+    /**
+     * The container for the rewrite table.<p>
+     */
+    @UiField
+    protected Panel m_rewriteTableContainer;
+
     /** The button for saving the alias table. */
     @UiField
     protected CmsPushButton m_saveButton;
@@ -143,16 +147,15 @@ public class CmsAliasView extends Composite {
     @UiField
     protected Panel m_tableContainer;
 
-    /** Field set containing the alias table and buttons. */
-    @UiField
-    protected CmsFieldSet m_tableFieldSet;
-
     /** The button for importing alias CSV files. */
     @UiField
     protected CmsPushButton m_uploadButton;
 
     /** The popup in which this view is displayed. */
     private CmsPopup m_popup;
+
+    /** The cell table for editing rewrite aliases. */
+    private CmsRewriteAliasTable m_rewriteTable;
 
     /** The table containing the alias data. */
     private CmsAliasCellTable m_table;
@@ -171,32 +174,22 @@ public class CmsAliasView extends Composite {
         items.put(CmsAliasMode.redirect.toString(), messageRedirect());
         items.put(CmsAliasMode.page.toString(), messagePage());
         m_newMode.setItems(items);
+
+        Map<String, String> rewriteItems = new LinkedHashMap<String, String>();
+        rewriteItems.put(CmsAliasMode.permanentRedirect.toString(), messagePermanentRedirect());
+        rewriteItems.put(CmsAliasMode.redirect.toString(), messageRedirect());
+        rewriteItems.put(CmsAliasMode.passthrough.toString(), CmsAliasMessages.messagePassthrough());
+        m_newRewriteMode.setItems(rewriteItems);
+
         m_controller = controller;
-        //m_newButton.setText(messageButtonNew());
-        m_saveButton.setText(messageButtonSave());
-        m_saveButton.setUseMinWidth(true);
-        m_cancelButton.setText(messageButtonCancel());
-        m_cancelButton.setUseMinWidth(true);
-        m_deleteButton.setText(messageButtonDelete());
         m_deleteButton.setEnabled(false);
-        m_downloadButton.setText(messageButtonDownload());
-        m_uploadButton.setText(messageButtonUpload());
-        //m_newButton.setSize(Size.big);
+        m_rewriteDeleteButton.setEnabled(false);
         m_table = new CmsAliasCellTable(controller);
         m_tableContainer.add(m_table);
-
-        m_newAliasLabel.setText(messageNewAliasLabel());
-        m_newAliasTargetLabel.setText(messageNewAliasTargetLabel());
-        m_newAliasActionLabel.setText(messageNewAliasActionLabel());
-
-        m_tableFieldSet.setLegend(messageTableFieldsetLegend());
-        m_newFieldSet.setLegend(messageNewFieldsetLegend());
-
-        I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
-        m_newButton.setImageClass(imagestyle.addIcon());
-        m_newButton.setSize(Size.small);
-        m_newButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_newButton.getElement().getStyle().setMarginTop(1, Unit.PX);
+        m_rewriteTable = new CmsRewriteAliasTable(controller);
+        m_rewriteTableContainer.add(m_rewriteTable);
+        setNewButtonStyle(m_newButton);
+        setNewButtonStyle(m_newRewriteButton);
         m_table.addRowCountChangeHandler(new RowCountChangeEvent.Handler() {
 
             public void onRowCountChange(RowCountChangeEvent event) {
@@ -205,7 +198,6 @@ public class CmsAliasView extends Composite {
                 m_countLabel.setText(message);
             }
         });
-
         setWidth("1150px"); //$NON-NLS-1$
     }
 
@@ -218,6 +210,15 @@ public class CmsAliasView extends Composite {
         m_newAliasPath.setErrorMessage(null);
         m_newResourcePath.setFormValueAsString(""); //$NON-NLS-1$
         m_newResourcePath.setErrorMessage(null);
+    }
+
+    /**
+     * Clears the text boxes for adding new rewrites.<p>
+     */
+    public void clearRewriteNew() {
+
+        m_newRewriteRegex.setFormValueAsString("");
+        m_newRewriteReplacement.setFormValueAsString("");
     }
 
     /**
@@ -260,6 +261,26 @@ public class CmsAliasView extends Composite {
         return m_table.getLiveDataList();
     }
 
+    /**
+     * Gets the rewrite alias data.<p>
+     * 
+     * @return the rewrite alias list 
+     */
+    public List<CmsRewriteAliasTableRow> getRewriteData() {
+
+        return m_rewriteTable.getLiveDataList();
+    }
+
+    /**
+     * Gets the rewrite alias cell table.<p>
+     * 
+     * @return the rewrite alias cell table 
+     */
+    public CmsRewriteAliasTable getRewriteTable() {
+
+        return m_rewriteTable;
+    }
+
     /** 
      * Gets the cell table used to edit the alias data.<p>
      * 
@@ -273,12 +294,15 @@ public class CmsAliasView extends Composite {
     /**
      * Replaces the contents of the live data row list with another list of rows.<p>
      * 
-     * @param data the new list of rows to be placed into the live data list 
+     * @param data the new list of rows to be placed into the live data list
+     * @param rewriteData the list of rewrite alias data  
      */
-    public void setData(List<CmsAliasTableRow> data) {
+    public void setData(List<CmsAliasTableRow> data, List<CmsRewriteAliasTableRow> rewriteData) {
 
         m_table.getLiveDataList().clear();
         m_table.getLiveDataList().addAll(data);
+        m_rewriteTable.getLiveDataList().clear();
+        m_rewriteTable.getLiveDataList().addAll(rewriteData);
     }
 
     /**
@@ -323,6 +347,16 @@ public class CmsAliasView extends Composite {
     }
 
     /**
+     * Enables or disables the delete button for rewrite aliases.<p>
+     * 
+     * @param enabled true if the delete button should be enabled 
+     */
+    public void setRewriteDeleteButtonEnabled(boolean enabled) {
+
+        m_rewriteDeleteButton.setEnabled(enabled);
+    }
+
+    /**
      * Enables or disables the save button.<p>
      * 
      * @param enabled true if the save button should be enabled, false if it should be disabled 
@@ -342,6 +376,21 @@ public class CmsAliasView extends Composite {
         columnSort.push(m_table.getErrorColumn());
         columnSort.push(m_table.getErrorColumn());
         ColumnSortEvent.fire(m_table, columnSort);
+    }
+
+    /**
+     * Updates the view after the rewrite aliases have been validated.<p>
+     * 
+     * @param result the result of the rewrite alias validation 
+     */
+    public void update(CmsRewriteAliasValidationReply result) {
+
+        Map<CmsUUID, String> errors = result.getErrors();
+        for (CmsRewriteAliasTableRow row : getRewriteData()) {
+            String error = errors.get(row.getId());
+            row.setError(error);
+        }
+        m_rewriteTable.redraw();
     }
 
     /**
@@ -370,6 +419,18 @@ public class CmsAliasView extends Composite {
         }
         m_table.getLiveDataList().addAll(rowsToAdd);
         m_table.redraw();
+    }
+
+    /**
+     * The event handler for the button to delete rewrite aliases.<p>
+     * 
+     * @param e the click event 
+     */
+    @UiHandler("m_rewriteDeleteButton")
+    protected void onClickDeleteRewrite(ClickEvent e) {
+
+        List<CmsRewriteAliasTableRow> rowsToDelete = m_rewriteTable.getSelectedRows();
+        m_controller.deleteRewrites(rowsToDelete);
     }
 
     /**
@@ -420,6 +481,20 @@ public class CmsAliasView extends Composite {
     }
 
     /**
+     * The event handler for the button for adding new rewrite aliases.<p>
+     * 
+     * @param e the click event 
+     */
+    @UiHandler("m_newRewriteButton")
+    void onClickNewRewrite(ClickEvent e) {
+
+        String rewriteRegex = m_newRewriteRegex.getText();
+        String rewriteReplacement = m_newRewriteReplacement.getText();
+        String mode = m_newRewriteMode.getFormValueAsString();
+        m_controller.editNewRewrite(rewriteRegex, rewriteReplacement, CmsAliasMode.valueOf(mode));
+    }
+
+    /**
      * The click handler for the 'Save' button.<p>
      * 
      * @param e the click event 
@@ -441,6 +516,20 @@ public class CmsAliasView extends Composite {
         m_popup.hide();
         CmsImportView.showPopup();
 
+    }
+
+    /**
+     * Styles a button for adding new aliases.<p>
+     * 
+     * @param newButton the button to style 
+     */
+    private void setNewButtonStyle(CmsPushButton newButton) {
+
+        I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
+        newButton.setImageClass(imagestyle.addIcon());
+        newButton.setSize(Size.small);
+        newButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        newButton.getElement().getStyle().setMarginTop(1, Unit.PX);
     }
 
 }

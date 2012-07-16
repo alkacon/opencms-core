@@ -8,6 +8,7 @@
 	>
 	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="msg" type="org.opencms.ade.sitemap.client.alias.CmsAliasMessages" />
 	
 	<ui:style>
 	
@@ -20,8 +21,6 @@
 		.standardButton {
 			border: 1px solid black;
 		}
-		
-		
 		
 		.invisible {
 			display: none; 
@@ -65,7 +64,7 @@
 	      
 	      .tableContainer {
 				width: 910px;
-				max-height: 600px;
+				max-height: 300px;
 				border: 1px solid gray; 
 			}
 			
@@ -104,33 +103,61 @@
 			
 	</ui:style>
 	<g:VerticalPanel addStyleNames="{inputstyle.inputCss.highTextBoxes}">
-		<cms:CmsFieldSet ui:field="m_newFieldSet" addStyleNames="{style.topButtonBox} ">
+		<cms:CmsFieldSet addStyleNames="{style.topButtonBox}" legend="{msg.messageNewFieldsetLegend}">
 			<g:HorizontalPanel addStyleNames="{style.topButtonInnerBox}">
-				<g:Label ui:field="m_newAliasLabel" addStyleNames="{style.topButtonBoxLabel}"/>
+				<g:Label addStyleNames="{style.topButtonBoxLabel}">
+					<ui:text from="{msg.messageNewAliasLabel}"/>
+				</g:Label>
 				<input:CmsTextBox addStyleNames="{style.topTextBox1}" ui:field="m_newAliasPath"></input:CmsTextBox>
-				<g:Label ui:field="m_newAliasTargetLabel" addStyleNames="{style.topButtonBoxLabel}" />
+				<g:Label addStyleNames="{style.topButtonBoxLabel}" >
+					<ui:text from="{msg.messageNewAliasTargetLabel}"/>
+				</g:Label>
 				<input:CmsTextBox addStyleNames="{style.topTextBox2}" ui:field="m_newResourcePath"></input:CmsTextBox>
-				<g:Label ui:field="m_newAliasActionLabel"  addStyleNames="{style.topButtonBoxLabel}"/>			
+				<g:Label addStyleNames="{style.topButtonBoxLabel}">
+					<ui:text from="{msg.messageNewAliasActionLabel}" />
+				</g:Label>			
 				<input:CmsSelectBox ui:field="m_newMode" addStyleNames="{style.topModeSelector}"/>
 				<cms:CmsPushButton ui:field="m_newButton" addStyleNames="{style.topNewButton}"></cms:CmsPushButton>
 			</g:HorizontalPanel>
 		</cms:CmsFieldSet>
-		<cms:CmsFieldSet ui:field="m_tableFieldSet" addStyleNames="{style.outerTableBox}">
+		<cms:CmsFieldSet addStyleNames="{style.outerTableBox}" legend="{msg.messageTableFieldsetLegend}">
 			<g:FlowPanel addStyleNames="{style.innerTableBox}" >
 				<g:FlowPanel addStyleNames="{style.actionButtonBox}">
 					<g:InlineLabel ui:field="m_countLabel" />
-					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_deleteButton"></cms:CmsPushButton>
-					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_downloadButton"></cms:CmsPushButton>
-					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_uploadButton"></cms:CmsPushButton>
+					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_deleteButton" text="{msg.messageButtonDelete}"/>
+					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_downloadButton" text="{msg.messageButtonDownload}" />
+					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_uploadButton" text="{msg.messageButtonSubmit}" />
 					<g:Label addStyleNames="{style.clearbox}" />
 				</g:FlowPanel>
 				<cms:CmsScrollPanel ui:field="m_tableContainer"  addStyleNames="{style.tableContainer} {resources.generalCss.cornerAll} {style.tableContainer}"> 
 				</cms:CmsScrollPanel>
 			</g:FlowPanel>
 		</cms:CmsFieldSet>
+		
+		<cms:CmsFieldSet addStyleNames="{style.topButtonBox}" legend="{msg.messageLegendNewRewrite}">
+			<g:HorizontalPanel addStyleNames="{style.topButtonInnerBox}">
+				<g:Label addStyleNames="{style.topButtonBoxLabel}" text="{msg.messageLabelRegex}" />
+				<input:CmsTextBox addStyleNames="{style.topTextBox1}" ui:field="m_newRewriteRegex"></input:CmsTextBox>
+				<g:Label addStyleNames="{style.topButtonBoxLabel}"  text="{msg.messageLabelReplacement}" />
+				<input:CmsTextBox addStyleNames="{style.topTextBox2}" ui:field="m_newRewriteReplacement"></input:CmsTextBox>
+				<g:Label addStyleNames="{style.topButtonBoxLabel}" text="{msg.messageNewAliasActionLabel}" />
+				<input:CmsSelectBox ui:field="m_newRewriteMode"  addStyleNames="{style.topModeSelector}"/>
+				<cms:CmsPushButton ui:field="m_newRewriteButton" addStyleNames="{style.topNewButton}"></cms:CmsPushButton>
+			</g:HorizontalPanel>
+		</cms:CmsFieldSet>
+		
+		<cms:CmsFieldSet addStyleNames="{style.outerTableBox}" legend="{msg.messageLegendRewriteTable}">
+			<g:FlowPanel addStyleNames="{style.innerTableBox}" >
+				<g:FlowPanel addStyleNames="{style.actionButtonBox}">
+					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_rewriteDeleteButton" text="{msg.messageButtonDelete}"/>
+					<g:Label addStyleNames="{style.clearbox}" />
+				</g:FlowPanel>
+				<cms:CmsScrollPanel ui:field="m_rewriteTableContainer"  addStyleNames="{style.tableContainer} {resources.generalCss.cornerAll} {style.tableContainer}" /> 
+			</g:FlowPanel>
+		</cms:CmsFieldSet>
 		<g:FlowPanel addStyleNames="{style.invisible}">
-			<cms:CmsPushButton ui:field="m_saveButton"></cms:CmsPushButton>	
-			<cms:CmsPushButton ui:field="m_cancelButton"></cms:CmsPushButton>
+			<cms:CmsPushButton ui:field="m_saveButton"  text="{msg.messageButtonSave}"  useMinWidth="true" />	
+			<cms:CmsPushButton ui:field="m_cancelButton" text="{msg.messageButtonCancel}"  useMinWidth="true" />
 		</g:FlowPanel>
 	</g:VerticalPanel>
 </ui:UiBinder>

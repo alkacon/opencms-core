@@ -36,6 +36,8 @@ import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationReply;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -175,5 +177,16 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsAliasEditValidationReply validateAliases(CmsAliasEditValidationRequest validationRequest) throws CmsRpcException;
+
+    /**
+     * Validates rewrite aliases.<p>
+     * 
+     * @param validationRequest the rewrite alias data to validate 
+     * @return the validation result
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsRewriteAliasValidationReply validateRewriteAliases(CmsRewriteAliasValidationRequest validationRequest)
+    throws CmsRpcException;
 
 }

@@ -35,6 +35,8 @@ import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationReply;
+import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -150,5 +152,16 @@ public interface I_CmsSitemapServiceAsync {
     void validateAliases(
         CmsAliasEditValidationRequest validationRequest,
         AsyncCallback<CmsAliasEditValidationReply> callback);
+
+    /**
+     * Validates rewrite aliases.<p>
+     * 
+     * @param validationRequest the rewrite alias data to validate
+     *  
+     * @param callback the callback for the result 
+     */
+    void validateRewriteAliases(
+        CmsRewriteAliasValidationRequest validationRequest,
+        AsyncCallback<CmsRewriteAliasValidationReply> callback);
 
 }

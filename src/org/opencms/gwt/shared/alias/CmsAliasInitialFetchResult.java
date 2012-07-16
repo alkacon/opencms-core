@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.shared.alias;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -44,6 +45,9 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /** The alias download URL. */
     private String m_downloadUrl;
+
+    /** The initial list of rewrite aliases. */
+    private List<CmsRewriteAliasTableRow> m_rewriteAliases = new ArrayList<CmsRewriteAliasTableRow>();
 
     /**
      * Gets the alias lock owner.<p>
@@ -65,6 +69,16 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
     public String getDownloadUrl() {
 
         return m_downloadUrl;
+    }
+
+    /**
+     * Gets the list of rewrite aliases.<p>
+     * 
+     * @return the list of rewrite aliases 
+     */
+    public List<CmsRewriteAliasTableRow> getRewriteAliases() {
+
+        return m_rewriteAliases;
     }
 
     /**
@@ -96,6 +110,16 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
         m_downloadUrl = downloadUrl;
 
+    }
+
+    /**
+     * Sets the initial list of rewrite aliases.<p>
+     * 
+     * @param rows the list of rewrite aliases 
+     */
+    public void setRewriteRows(List<CmsRewriteAliasTableRow> rows) {
+
+        m_rewriteAliases = rows;
     }
 
     /**

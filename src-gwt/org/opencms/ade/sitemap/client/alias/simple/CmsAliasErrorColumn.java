@@ -25,50 +25,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client.alias;
+package org.opencms.ade.sitemap.client.alias.simple;
 
+import org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn;
+import org.opencms.ade.sitemap.client.alias.CmsAliasMessages;
+import org.opencms.ade.sitemap.client.alias.CmsCellTableUtil;
 import org.opencms.gwt.client.ui.css.I_CmsCellTableResources;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 
 import java.util.Comparator;
 
-import com.google.gwt.cell.client.EditTextCell;
-import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 
 /**
- * The table column for editing/displaying the alias path.<p>
+ * The class for the column of the alias editor table which is used to display validation errors.<p>
  */
-public class CmsAliasPathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, String> {
-
-    /** The cell in which this column is used. */
-    CmsAliasCellTable m_table;
+public class CmsAliasErrorColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, SafeHtml, CmsAliasCellTable> {
 
     /**
-     * Creates a new column instance.<p>
-     * 
-     * @param table the table in which this column is used 
+     * Creates a new instance.<p>
      */
-    public CmsAliasPathColumn(CmsAliasCellTable table) {
+    public CmsAliasErrorColumn() {
 
-        super(new EditTextCell());
-        m_table = table;
-        FieldUpdater<CmsAliasTableRow, String> updater = new FieldUpdater<CmsAliasTableRow, String>() {
-
-            public void update(int index, CmsAliasTableRow object, String value) {
-
-                m_table.getController().editAliasPath(object, value);
-            }
-        };
-        setFieldUpdater(updater);
+        super(new SafeHtmlCell());
         setSortable(true);
     }
 
     /**
-     * Gets the comparator used for this column.<p>
+     * Gets the comparator which should be used for this column.<p>
      * 
-     * @return the comparator to use for this row 
+     * @return the comparator used for this column 
      */
     public static Comparator<CmsAliasTableRow> getComparator() {
 
@@ -76,19 +65,48 @@ public class CmsAliasPathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
 
             public int compare(CmsAliasTableRow o1, CmsAliasTableRow o2) {
 
-                return o1.getAliasPath().toString().compareTo(o2.getAliasPath().toString());
+                String err1 = getValueInternal(o1);
+                String err2 = getValueInternal(o2);
+                if ((err1 == null) && (err2 == null)) {
+                    return 0;
+                }
+                if (err1 == null) {
+                    return -1;
+                }
+                if (err2 == null) {
+                    return 1;
+                }
+                return 0;
             }
         };
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(org.opencms.ade.sitemap.client.alias.CmsAliasCellTable)
+     * Static helper method to get the value to display in the column from a row.<p>
+     * 
+     * @param row the row
+     * 
+     * @return the value to display
+     */
+    protected static String getValueInternal(CmsAliasTableRow row) {
+
+        if (row.getAliasError() != null) {
+            return row.getAliasError();
+        }
+        if (row.getPathError() != null) {
+            return row.getPathError();
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.alias.A_CmsAliasTableColumn#addToTable(com.google.gwt.user.cellview.client.CellTable)
      */
     @Override
     public void addToTable(CmsAliasCellTable table) {
 
-        table.addColumn(this, CmsAliasMessages.messageColumnAlias());
-        table.setColumnWidth(this, 300, Unit.PX);
+        table.addColumn(this, CmsAliasMessages.messageColumnError());
+        table.setColumnWidth(this, 50, Unit.PX);
     }
 
     /**
@@ -97,7 +115,7 @@ public class CmsAliasPathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
     @Override
     public String getCellStyleNames(com.google.gwt.cell.client.Cell.Context context, CmsAliasTableRow object) {
 
-        if (object.getAliasError() != null) {
+        if ((object.getAliasError() != null) || (object.getPathError() != null)) {
             return super.getCellStyleNames(context, object)
                 + " "
                 + I_CmsCellTableResources.INSTANCE.cellTableStyle().cmsCellError();
@@ -110,9 +128,10 @@ public class CmsAliasPathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
      * @see com.google.gwt.user.cellview.client.Column#getValue(java.lang.Object)
      */
     @Override
-    public String getValue(CmsAliasTableRow row) {
+    public SafeHtml getValue(CmsAliasTableRow row) {
 
-        return row.getAliasPath();
+        String internalValue = getValueInternal(row);
+        return CmsCellTableUtil.formatErrorHtml(internalValue);
     }
 
     /**
@@ -123,4 +142,5 @@ public class CmsAliasPathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
 
         sortHandler.setComparator(this, getComparator());
     }
+
 }
