@@ -480,6 +480,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
      */
     protected void uploadFile() {
 
+        hideOkAndUploadButtons();
         CmsUploader uploader = new CmsUploader();
         CmsFileInfo info = m_fileInput.getFiles()[0];
         info.setOverrideFileName(CmsResource.getName(m_replaceInfo.getSitepath()));
@@ -595,6 +596,15 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
         m_fileWidget.setIcon(icon);
         checkFileType();
         return m_fileWidget;
+    }
+
+    /**
+     * Hides the OK and upload button while processing the upload.<p>
+     */
+    private void hideOkAndUploadButtons() {
+
+        m_uploadButton.setVisible(false);
+        m_okButton.setVisible(false);
     }
 
     /**
