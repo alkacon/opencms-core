@@ -1263,7 +1263,7 @@ public final class CmsContainerpageController {
                 try {
                     replaceContainerElement(elementWidget, newElement);
                     if (!isGroupcontainerEditing()) {
-                        setPageChanged(true, false);
+                        setPageChanged();
                     }
                     resetEditableListButtons();
                     addToRecentList(newElement.getClientId());
@@ -1450,7 +1450,7 @@ public final class CmsContainerpageController {
 
                     setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
                         org.opencms.gwt.client.Messages.GUI_SAVING_0));
-                    start(0, true);
+                    start(500, true);
                     getContainerpageService().saveContainerpage(
                         CmsCoreProvider.get().getStructureId(),
                         getPageContent(),
@@ -1464,9 +1464,8 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Void result) {
 
-                    stop(true);
+                    stop(false);
                     setPageChanged(false, false);
-                    Window.Location.reload();
                 }
             };
             action.execute();
@@ -1619,9 +1618,12 @@ public final class CmsContainerpageController {
      */
     public void setPageChanged() {
 
-        if (!hasPageChanged()) {
-            setPageChanged(true, false);
-        }
+        // the container page will be saved immediately
+        m_pageChanged = true;
+        saveContainerpage();
+        //        if (!hasPageChanged()) {
+        //            setPageChanged(true, false);
+        //        }
     }
 
     /**
@@ -1871,18 +1873,22 @@ public final class CmsContainerpageController {
      */
     protected void removeContainerElements(String resourceId) {
 
+        boolean changed = false;
         Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> it = getAllDragElements().iterator();
         while (it.hasNext()) {
             org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement = it.next();
             if (resourceId.startsWith(containerElement.getId())) {
                 containerElement.removeFromParent();
-                setPageChanged();
+                changed = true;
             }
         }
         for (String elementId : m_elements.keySet()) {
             if (elementId.startsWith(resourceId)) {
                 m_elements.remove(elementId);
             }
+        }
+        if (changed) {
+            setPageChanged();
         }
     }
 

@@ -474,6 +474,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsResource containerpage = cms.readResource(pageStructureId);
+            ensureLock(containerpage);
             String containerpageUri = cms.getSitePath(containerpage);
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
             List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
@@ -482,10 +483,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 containerBeans.add(containerBean);
             }
             CmsContainerPageBean page = new CmsContainerPageBean(contentLocale, containerBeans);
-            cms.lockResourceTemporary(containerpageUri);
             CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
             xmlCnt.save(cms, contentLocale, page);
-            cms.unlockResource(containerpageUri);
+            tryUnlock(containerpage);
         } catch (Throwable e) {
             error(e);
         }

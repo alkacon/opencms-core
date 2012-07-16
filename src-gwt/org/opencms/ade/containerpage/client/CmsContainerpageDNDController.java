@@ -236,11 +236,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
 
-        m_dragInfos.put(target, new DragInfo(
-            handler.getDragHelper(),
-            handler.getPlaceholder(),
-            handler.getCursorOffsetX(),
-            handler.getCursorOffsetY()));
+        m_dragInfos.put(
+            target,
+            new DragInfo(
+                handler.getDragHelper(),
+                handler.getPlaceholder(),
+                handler.getCursorOffsetX(),
+                handler.getCursorOffsetY()));
         m_controller.getHandler().hideMenu();
         String clientId = draggable.getId();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
@@ -281,6 +283,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     */
     public void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
+        boolean changedContainerpage = false;
         if (target != m_initialDropTarget) {
             if (target instanceof I_CmsDropContainer) {
                 I_CmsDropContainer container = (I_CmsDropContainer)target;
@@ -304,10 +307,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     } else {
                         container.insert(containerElement, container.getPlaceholderIndex());
                     }
-                    if (!m_controller.isGroupcontainerEditing()) {
-                        // changes are only relevant to the container page if not group-container editing
-                        m_controller.setPageChanged();
-                    }
+                    // changes are only relevant to the container page if not group-container editing
+                    changedContainerpage = !m_controller.isGroupcontainerEditing();
                     if (draggable instanceof CmsContainerPageElementPanel) {
                         ((CmsContainerPageElementPanel)draggable).removeFromParent();
                     }
@@ -334,16 +335,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
             }
             m_controller.addToRecentList(draggable.getId());
-            if (!m_controller.isGroupcontainerEditing()) {
-                // changes are only relevant to the container page if not group-container editing
-                m_controller.setPageChanged();
-            }
+            // changes are only relevant to the container page if not group-container editing
+            changedContainerpage = !m_controller.isGroupcontainerEditing();
         } else if (draggable instanceof CmsContainerPageElementPanel) {
             // to reset mouse over state remove and attach the option bar 
             CmsContainerPageElementPanel containerElement = (CmsContainerPageElementPanel)draggable;
             CmsElementOptionBar optionBar = containerElement.getElementOptionBar();
             optionBar.removeFromParent();
             containerElement.setElementOptionBar(optionBar);
+        }
+        if (changedContainerpage) {
+            m_controller.setPageChanged();
         }
         stopDrag(handler);
     }

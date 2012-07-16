@@ -400,6 +400,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         m_save = new CmsToolbarSaveButton(containerpageHandler);
         m_save.addClickHandler(clickHandler);
+        // save and reset buttons are hidden, as changes will be saved immediately
+        m_save.setVisible(false);
         m_toolbar.addLeft(m_save);
 
         m_publish = new CmsToolbarPublishButton(containerpageHandler);
@@ -466,6 +468,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_reset = new CmsToolbarResetButton(containerpageHandler);
         m_reset.addClickHandler(clickHandler);
         m_toolbar.addRight(m_reset);
+        // save and reset buttons are hidden, as changes will be saved immediately
+        m_reset.setVisible(false);
         containerpageHandler.enableSaveReset(false);
         m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
         m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());

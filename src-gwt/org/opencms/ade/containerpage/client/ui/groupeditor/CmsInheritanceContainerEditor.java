@@ -320,8 +320,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             }
         }
         getController().addToRecentList(getGroupContainerWidget().getId());
-        getController().setPageChanged();
         closeDialog(true);
+        getController().setPageChanged();
     }
 
     /**

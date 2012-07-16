@@ -169,8 +169,8 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
 
         final List<CmsContainerElement> elements = getElements();
         if (elements.isEmpty()) {
-            getController().setPageChanged();
             closeDialog(true);
+            getController().setPageChanged();
             return;
         }
         Set<String> elementIds = new HashSet<String>();
@@ -210,8 +210,8 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
             }
         }
         getController().addToRecentList(m_groupContainerBean.getClientId());
-        getController().setPageChanged();
         closeDialog(true);
+        getController().setPageChanged();
     }
 
     /**
