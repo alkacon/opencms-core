@@ -1,6 +1,5 @@
-package org.opencms.editors.tinymce;
 
-import javax.servlet.http.HttpServletRequest;
+package org.opencms.editors.tinymce;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsHtmlConverter;
@@ -8,17 +7,22 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.editors.CmsSimplePageEditor;
 
-public class CmsTinyMCE extends CmsSimplePageEditor{
-	
-	/** String constant separator for button groups. */
-	public static final String GROUP_SEPARATOR = "|";
-	
-	/** Suffix for the style file that is added to the used template  styles file name. */
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * The tinyMCE based editor.<p>
+ */
+public class CmsTinyMCE extends CmsSimplePageEditor {
+
+    /** String constant separator for button groups. */
+    public static final String GROUP_SEPARATOR = "|";
+
+    /** Suffix for the style file that is added to the used template  styles file name. */
     public static final String SUFFIX_STYLE = "_style";
-	
-	/** Constant for the editor type, must be the same as the editors sub folder name in the VFS. */
+
+    /** Constant for the editor type, must be the same as the editors sub folder name in the VFS. */
     private static final String EDITOR_TYPE = "tinymce";
-    
+
     /**
      * Public constructor.<p>
      * 
@@ -28,58 +32,64 @@ public class CmsTinyMCE extends CmsSimplePageEditor{
 
         super(jsp);
     }
-    
+
     /**
-     * Build toolbar Javascript file for TinyMCE
+     * Builds toolbar javascript file for TinyMCE.<p>
+     * 
      * @param buttonString button names and block separators delimited by comma
-     * @return Javascript for the toolbar
+     * 
+     * @return returns the javascript for the toolbar
      */
-    public static String buildToolbar(String buttonString){
-    	StringBuilder toolbar = new StringBuilder() ;
-    	String[] buttons = buttonString.split("\\,") ;
-    	
-    	String button ;
-    	boolean theFirstButtonInGroup = true;
-    	int rowNum = 1 ;
-    	for(int i=0; i < buttons.length; i++){
-    		button = buttons[i] ;
-    		if(theFirstButtonInGroup){
-    			toolbar.append("theme_advanced_buttons"+rowNum+" : \""+button);
-    			theFirstButtonInGroup = false ;
-    		} else {
-    			toolbar.append(","+button) ;
-    		}
-    		if(GROUP_SEPARATOR.equals(button)){
-    			toolbar.append("\",\n");
-    			rowNum++;
-    			theFirstButtonInGroup = true;
-    		}
-    	}
-    	    	
-    	return toolbar.toString() ;
+    public static String buildToolbar(String buttonString) {
+
+        StringBuilder toolbar = new StringBuilder();
+        String[] buttons = buttonString.split("\\,");
+
+        String button;
+        boolean theFirstButtonInGroup = true;
+        int rowNum = 1;
+        for (int i = 0; i < buttons.length; i++) {
+            button = buttons[i];
+            if (theFirstButtonInGroup) {
+                toolbar.append("theme_advanced_buttons" + rowNum + " : \"" + button);
+                theFirstButtonInGroup = false;
+            } else {
+                toolbar.append("," + button);
+            }
+            if (GROUP_SEPARATOR.equals(button)) {
+                toolbar.append("\",\n");
+                rowNum++;
+                theFirstButtonInGroup = true;
+            }
+        }
+
+        return toolbar.toString();
     }
-    
+
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/jscripts/tiny_mce/";
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         if (CmsStringUtil.isNotEmpty(request.getParameter(PARAM_RESOURCE))) {
             super.initWorkplaceRequestValues(settings, request);
         }
     }
-    
+
     /**
      * @see org.opencms.workplace.editors.CmsSimplePageEditor#prepareContent(boolean)
      */
+    @Override
     protected String prepareContent(boolean save) {
 
         if (save) {

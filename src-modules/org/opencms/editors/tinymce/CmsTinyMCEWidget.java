@@ -175,7 +175,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
         Properties displayOptions = options.getDisplayOptions(cms);
         try {
-            result.put(" elements", "ta_" + param.getId());
+            result.put("elements", "ta_" + param.getId());
             if (options.showElement("gallery.enhancedoptions", displayOptions)) {
                 result.put("cmsGalleryEnhancedOptions", true);
             }
