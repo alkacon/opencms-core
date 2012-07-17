@@ -1,4 +1,4 @@
-@external html-face;
+@external html-face, cmsState;
 
 .editorGallery {}
 @if user.agent ie8 {
@@ -139,6 +139,15 @@ div.searchTabInputWide {
 	width: 497px;
 	float: right;
 }
+
+div.searchTabInputWide.hasButton > div{
+	margin-right: 24px;
+}
+div.searchTabInputWide.hasButton > div.cmsState{
+	margin: 0px;
+	float:right;
+}
+
 div.searchTabBorderLayer {
 	position:absolute; 
 	top:0px; 
@@ -164,6 +173,7 @@ div.infoLabel {
 div.quickFilterBox {
 	float: right;
 	width: 200px;
+	margin-right: 4px;
 }
 div.quickFilterBox > div{
 	padding-top: 3px;

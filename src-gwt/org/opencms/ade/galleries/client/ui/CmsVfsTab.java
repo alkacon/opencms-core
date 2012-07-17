@@ -113,6 +113,7 @@ public class CmsVfsTab extends A_CmsListTab {
         m_scrollList.truncate(TM_CATEGORY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_tabHandler = tabHandler;
         addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().listOnlyTab());
+        init();
     }
 
     /**
@@ -194,6 +195,7 @@ public class CmsVfsTab extends A_CmsListTab {
         SelectionHandler selectionHandler = new SelectionHandler(vfsEntry, checkbox);
         checkbox.addClickHandler(selectionHandler);
         liWidget.addDoubleClickHandler(selectionHandler);
+        liWidget.addButton(createSelectButton(selectionHandler));
         m_entryMap.put(result, vfsEntry);
         m_itemsByPath.put(vfsEntry.getSitePath(), result);
         result.setLeafStyle(false);

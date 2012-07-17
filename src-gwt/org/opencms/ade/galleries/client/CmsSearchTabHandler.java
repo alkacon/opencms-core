@@ -155,16 +155,6 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     }
 
     /**
-     * Delegates the clear input action (click on the clear button) to the controller.<p>
-     * 
-     * @param searchQuery the search query
-     */
-    public void setSearchQuery(String searchQuery) {
-
-        m_controller.addSearchQuery(searchQuery);
-    }
-
-    /**
      * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
      */
     @Override

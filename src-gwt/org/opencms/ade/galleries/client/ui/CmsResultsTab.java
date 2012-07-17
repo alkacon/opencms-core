@@ -283,6 +283,7 @@ public class CmsResultsTab extends A_CmsListTab {
         m_tab.insert(m_params, 0);
         getList().addScrollHandler(new CmsAsynchronousScrollToBottomHandler());
         getList().addScrollHandler(m_backwardScrollHandler);
+        init();
     }
 
     /**

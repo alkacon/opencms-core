@@ -155,10 +155,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             m_searchObject.setScope(m_dialogBean.getScope());
         }
         if (m_dialogBean != null) {
-            m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
-
             m_eventBus = new SimpleEventBus();
-            addValueChangeHandler(handler);
+            addValueChangeHandler(m_handler);
+            m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
         }
     }
 

@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsLabelSelectCell;
@@ -56,6 +57,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -163,6 +165,10 @@ public class CmsSearchTab extends A_CmsTab {
     @UiField
     protected HTMLPanel m_scopeRow;
 
+    /** The search button. */
+    @UiField
+    protected CmsPushButton m_searchButton;
+
     /** The select box for the search scope selection. */
     @UiField
     protected CmsSelectBox m_scopeSelection;
@@ -236,7 +242,7 @@ public class CmsSearchTab extends A_CmsTab {
         if (availableLocales.size() <= 1) {
             m_localeRow.getElement().getStyle().setDisplay(Display.NONE);
         }
-
+        m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         // add the query
         m_searchLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0));
         m_includeExpiredCheckBox.setChecked(false);
@@ -266,6 +272,17 @@ public class CmsSearchTab extends A_CmsTab {
         // add the clear button
         m_clearButton.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_BUTTON_CLEAR_0));
         m_clearButton.setUseMinWidth(true);
+        // add change handler to display the query string changes that may have occurred within another tab
+        getTabHandler().addSearchChangeHandler(new ValueChangeHandler<CmsGallerySearchBean>() {
+
+            public void onValueChange(ValueChangeEvent<CmsGallerySearchBean> arg0) {
+
+                // only set the query if the tab is not currently selected
+                if (!isSelected()) {
+                    m_searchInput.setFormValueAsString(arg0.getValue().getQuery());
+                }
+            }
+        });
     }
 
     /**
@@ -585,5 +602,16 @@ public class CmsSearchTab extends A_CmsTab {
                 }
             });
         }
+    }
+
+    /**
+     * Starts the search.<p>
+     * 
+     * @param event the click event
+     */
+    @UiHandler("m_searchButton")
+    protected void startSearch(ClickEvent event) {
+
+        getTabHandler().selectResultTab();
     }
 }

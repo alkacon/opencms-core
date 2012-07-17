@@ -45,6 +45,9 @@ public abstract class A_CmsTab extends Composite {
     /** The tab text accessor. */
     protected HasText m_tabTextAccessor;
 
+    /** Flag indicating that the tab is currently selected. */
+    private boolean m_isSelected;
+
     /** The tab id. */
     private String m_tabId;
 
@@ -67,16 +70,6 @@ public abstract class A_CmsTab extends Composite {
     }
 
     /**
-     * Removes the parameter with the given key from the tab.<p>
-     * 
-     * @param paramKey the parameter key
-     */
-    public void removeParam(String paramKey) {
-
-        getTabHandler().removeParam(paramKey);
-    }
-
-    /**
      * Returns the search parameters to display within the result tab.<p>
      * 
      * @param searchObj the current search object
@@ -96,11 +89,22 @@ public abstract class A_CmsTab extends Composite {
     }
 
     /**
+     * Returns if the tab is currently selected.<p>
+     * 
+     * @return <code>true</code> if the tab is currently selected
+     */
+    public boolean isSelected() {
+
+        return m_isSelected;
+    }
+
+    /**
      * Will be triggered when a tab is deselected.<p>
      */
     public void onDeselection() {
 
         getTabHandler().onDeselection();
+        m_isSelected = false;
     }
 
     /**
@@ -109,6 +113,17 @@ public abstract class A_CmsTab extends Composite {
     public void onSelection() {
 
         getTabHandler().onSelection();
+        m_isSelected = true;
+    }
+
+    /**
+     * Removes the parameter with the given key from the tab.<p>
+     * 
+     * @param paramKey the parameter key
+     */
+    public void removeParam(String paramKey) {
+
+        getTabHandler().removeParam(paramKey);
     }
 
     /**

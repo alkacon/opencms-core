@@ -120,6 +120,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         m_scrollList.truncate(TM_CATEGORY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_tabHandler = tabHandler;
         m_isInitOpen = false;
+        init();
     }
 
     /**
@@ -292,13 +293,12 @@ public class CmsCategoriesTab extends A_CmsListTab {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickSearch()
      */
     @Override
-    protected boolean hasQuickFilter() {
+    protected boolean hasQuickSearch() {
 
-        // allow filter if not in tree mode
-        return SortParams.tree != SortParams.valueOf(m_sortSelectBox.getFormValueAsString());
+        return true;
     }
 
     /**
@@ -352,6 +352,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         SelectionHandler selectionHandler = new SelectionHandler(category.getPath(), checkBox);
         checkBox.addClickHandler(selectionHandler);
         listItemWidget.addDoubleClickHandler(selectionHandler);
+        listItemWidget.addButton(createSelectButton(selectionHandler));
         // set the category tree item and add to list 
         CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, listItemWidget);
         treeItem.setId(category.getPath());

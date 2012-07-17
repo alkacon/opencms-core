@@ -114,6 +114,7 @@ public class CmsTypesTab extends A_CmsListTab {
         m_tabHandler = tabHandler;
         m_dndHandler = dndHandler;
         m_scrollList.truncate(TM_TYPE_TAB, CmsGalleryDialog.DIALOG_WIDTH);
+        init();
     }
 
     /**
@@ -136,16 +137,17 @@ public class CmsTypesTab extends A_CmsListTab {
             listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
             listItemWidget.setUnselectable();
             CmsCheckBox checkBox = new CmsCheckBox();
-            SelectionHandler selectionHendler = new SelectionHandler(typeBean.getType(), checkBox);
-            checkBox.addClickHandler(selectionHendler);
-            listItemWidget.addDoubleClickHandler(selectionHendler);
+            SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
+            checkBox.addClickHandler(selectionHandler);
+            listItemWidget.addDoubleClickHandler(selectionHandler);
             if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
                 checkBox.setChecked(true);
             }
+            listItemWidget.addButton(createSelectButton(selectionHandler));
             CmsListItem listItem = new CmsListItem(checkBox, listItemWidget);
             listItem.setId(typeBean.getType());
             if (typeBean.isCreatableType() && (m_dndHandler != null)) {
-                listItem.initMoveHandle(m_dndHandler);
+                listItem.initMoveHandle(m_dndHandler, true);
             }
             addWidgetToList(listItem);
         }
@@ -221,12 +223,12 @@ public class CmsTypesTab extends A_CmsListTab {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickSearch()
      */
     @Override
-    protected boolean hasQuickFilter() {
+    protected boolean hasQuickSearch() {
 
         // quick filter not available for this tab
-        return false;
+        return true;
     }
 }
