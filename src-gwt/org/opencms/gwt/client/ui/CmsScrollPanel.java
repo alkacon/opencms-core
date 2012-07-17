@@ -70,6 +70,16 @@ public class CmsScrollPanel extends ScrollPanel {
 
             super.onAttach();
         }
+
+        /**
+         * @see com.google.gwt.user.client.ui.CustomButton#onDetach()
+         */
+        @Override
+        protected void onDetach() {
+
+            // TODO: Auto-generated method stub
+            super.onDetach();
+        }
     }
 
     /** The prevent outer scrolling handler. */
@@ -115,6 +125,16 @@ public class CmsScrollPanel extends ScrollPanel {
         super(root, scrollabel, container);
         m_resize = new ResizeButton();
 
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.ScrollPanel#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        super.onDetach();
+        m_resize.onDetach();
     }
 
     /**
