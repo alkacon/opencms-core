@@ -8,6 +8,13 @@ input.textBox {
 	background: transparent;
 	padding: 0px;
 	border-radius: value("constants.css.borderRadius");
+	color: value("constants.css.textColor");
+	line-height: value("constants.css.lineHeight");
+	font-size: value("constants.css.fontSize");
+	box-shadow:none;
+}
+input.textBox:focus{
+	box-shadow:none;
 }
 
 .highTextBoxes .textBox {
