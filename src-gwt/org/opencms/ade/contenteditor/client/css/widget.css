@@ -1,4 +1,4 @@
-@external html-face,textboxGhostMode, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external html-face, popup,popupContent, textboxGhostMode, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 .radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -38,6 +38,22 @@ textarea.textAreaBox {
 	resize: none;
 	overflow: hidden;
 	font-family: value("constants.css.fontFamily");
+}
+
+.colorpickerpopup > div.popupContent > div {
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
 }
 
 
