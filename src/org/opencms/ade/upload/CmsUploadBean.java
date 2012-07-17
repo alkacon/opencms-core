@@ -198,7 +198,7 @@ public class CmsUploadBean extends CmsJspBean {
             // an expected error occurred while parsing the request, the error message is already set in the exception
             LOG.debug(e.getMessage(), e);
             return generateResponse(Boolean.FALSE, e.getMessage(), formatStackTrace(e));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // an unexpected error occurred while parsing the request, create a non-specific error message 
             LOG.error(e.getMessage(), e);
             String message = m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_UNEXPECTED_0);
@@ -341,6 +341,12 @@ public class CmsUploadBean extends CmsJspBean {
                 getCmsObject().lockResource(newResname);
                 getCmsObject().deleteResource(newResname, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 throw sqlExc;
+            } catch (OutOfMemoryError e) {
+                // the file is to large try to clear up
+                content = null;
+                getCmsObject().lockResource(newResname);
+                getCmsObject().deleteResource(newResname, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                throw e;
             }
         } else {
             // if the resource already exists, replace it
@@ -358,6 +364,12 @@ public class CmsUploadBean extends CmsJspBean {
                 file.setContents(contents);
                 getCmsObject().writeFile(file);
                 throw sqlExc;
+            } catch (OutOfMemoryError e) {
+                // the file is to large try to clear up
+                content = null;
+                file.setContents(contents);
+                getCmsObject().writeFile(file);
+                throw e;
             }
         }
         return createdResource;
@@ -370,7 +382,7 @@ public class CmsUploadBean extends CmsJspBean {
      * 
      * @return the stacktrace as String
      */
-    private String formatStackTrace(Exception e) {
+    private String formatStackTrace(Throwable e) {
 
         StringBuffer result = new StringBuffer(64);
         for (String s : new ThrowableInformation(e).getThrowableStrRep()) {
