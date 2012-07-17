@@ -611,19 +611,6 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
-     * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
-     */
-    public void setFormValue(Object value) {
-
-        if (value instanceof String) {
-            String strValue = (String)value;
-            setText(strValue);
-        }
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
      */
     public void setFormValueAsString(String newValue) {
@@ -636,6 +623,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             setGhostStyleEnabled(true);
             m_textbox.setValue(m_ghostValue);
         } else {
+            setGhostMode(false);
+            setGhostStyleEnabled(false);
             setFormValue(newValue);
         }
     }
@@ -781,6 +770,19 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     protected void showError() {
 
         m_error.showError();
+    }
+
+    /**
+     * Sets the value of the widget.<p>
+     * 
+     * @param value the new value 
+     */
+    private void setFormValue(Object value) {
+
+        if (value instanceof String) {
+            String strValue = (String)value;
+            setText(strValue);
+        }
     }
 
     /**

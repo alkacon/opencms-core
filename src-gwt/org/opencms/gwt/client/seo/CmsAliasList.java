@@ -222,7 +222,7 @@ public class CmsAliasList extends Composite {
         final HorizontalPanel hp = new HorizontalPanel();
         hp.getElement().getStyle().setMargin(2, Unit.PX);
         final CmsTextBox textbox = createTextBox();
-        textbox.setFormValue(alias.getSitePath());
+        textbox.setFormValueAsString(alias.getSitePath());
         hp.add(textbox);
 
         CmsSelectBox selectbox = createSelectBox();
@@ -354,7 +354,7 @@ public class CmsAliasList extends Composite {
                         if (result == null) {
                             CmsAliasMode mode = CmsAliasMode.valueOf(selectbox.getFormValueAsString());
                             addAlias(new CmsAliasBean(textbox.getText(), mode));
-                            textbox.setFormValue(""); //$NON-NLS-1$
+                            textbox.setFormValueAsString("");
                         } else {
                             textbox.setErrorMessage(result);
                         }
