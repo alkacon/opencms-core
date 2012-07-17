@@ -8,6 +8,8 @@
 	
 	>
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="msg" type="org.opencms.ade.sitemap.client.alias.CmsAliasMessages" />
 	
 	<ui:style>
 		.standardInput {
@@ -54,14 +56,30 @@
 			padding-top: 4px; 
 		}
 		
+		.separatorBox {
+			border: 1px solid gray !important;
+			width: 20px !important;
+			margin-left: 5px;
+
+		}
+		
+		.separatorRow {
+			margin-top: 4px;
+			margin-bottom: 4px; 
+		}
+		
 	</ui:style>
-	<g:FlowPanel addStyleNames="{style.main}">
+	<g:FlowPanel addStyleNames="{style.main} {inputstyle.inputCss.highTextBoxes}" >
 		<g:HorizontalPanel addStyleNames="{style.topRow}">
 			<g:FormPanel ui:field="m_formPanel">
 				<g:FlowPanel ui:field="m_formPanelContents"></g:FlowPanel>
 			</g:FormPanel> 
 			<g:Label ui:field="m_pathLabel" addStyleNames="{style.pathLabel}"/>
 			<cms:CmsPushButton ui:field="m_submitButton" addStyleNames="{style.submit}"></cms:CmsPushButton>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel addStyleNames="{style.separatorRow}">
+				<g:Label text="{msg.messageImportSeparator}" />
+				<g:TextBox addStyleNames="{style.separatorBox} {resources.generalCss.cornerAll}" ui:field="m_separator"  maxLength="1" />
 		</g:HorizontalPanel>
 		<cms:CmsScrollPanel ui:field="m_scrollPanel" addStyleNames="{style.resultBox} {resources.generalCss.cornerAll}">
 					<local:CmsImportResultList ui:field="m_results"></local:CmsImportResultList>

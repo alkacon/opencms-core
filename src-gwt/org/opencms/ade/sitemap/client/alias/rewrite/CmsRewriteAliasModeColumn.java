@@ -55,6 +55,7 @@ implements FieldUpdater<CmsRewriteAliasTableRow, String> {
     private static Comparator<CmsRewriteAliasTableRow> comparator = Ordering.natural().onResultOf(
         new Function<CmsRewriteAliasTableRow, String>() {
 
+            @SuppressWarnings("synthetic-access")
             public String apply(CmsRewriteAliasTableRow row) {
 
                 return optionMapping.get(row.getMode());

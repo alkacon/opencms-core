@@ -62,6 +62,9 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexRequestContextInfo;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
+import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
+import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspNavBuilder;
@@ -4945,6 +4948,39 @@ public final class CmsDriverManager implements I_CmsEventListener {
             userDriver.writeAccessControlEntry(dbc, dbc.currentProject(), i.next());
         }
         m_monitor.clearAccessControlListCache();
+    }
+
+    /**
+     * Imports a rewrite alias.<p>
+     * 
+     * @param dbc the database context 
+     * @param siteRoot the site root of the alias 
+     * @param source the source of the alias 
+     * @param target the target of the alias 
+     * @param mode the alias mode 
+     * 
+     * @return the import result 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsAliasImportResult importRewriteAlias(
+        CmsDbContext dbc,
+        String siteRoot,
+        String source,
+        String target,
+        CmsAliasMode mode) throws CmsException {
+
+        CmsRewriteAlias alias = new CmsRewriteAlias(new CmsUUID(), siteRoot, source, target, mode);
+        List<CmsRewriteAlias> aliases = new ArrayList<CmsRewriteAlias>();
+        aliases.add(alias);
+        getVfsDriver(dbc).insertRewriteAliases(dbc, aliases);
+        CmsAliasImportResult result = new CmsAliasImportResult(
+            CmsAliasImportStatus.aliasNew,
+            "OK",
+            source,
+            target,
+            mode);
+        return result;
     }
 
     /**

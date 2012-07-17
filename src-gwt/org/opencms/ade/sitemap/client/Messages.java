@@ -40,6 +40,9 @@ public final class Messages {
     public static final String GUI_ALIAS_EDITING_NOT_PERMITTED_0 = "GUI_ALIAS_EDITING_NOT_PERMITTED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ALIAS_FIELD_SEPARATOR_0 = "GUI_ALIAS_FIELD_SEPARATOR_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIASES_BUTTON_CANCEL_0 = "GUI_ALIASES_BUTTON_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */

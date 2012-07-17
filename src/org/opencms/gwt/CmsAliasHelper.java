@@ -27,8 +27,11 @@
 
 package org.opencms.gwt;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import org.opencms.db.CmsAlias;
 import org.opencms.db.CmsAliasManager;
+import org.opencms.db.CmsRewriteAlias;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -39,6 +42,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,17 +78,35 @@ public class CmsAliasHelper {
 
         String siteRoot = cms.getRequestContext().getSiteRoot();
         List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForSite(cms, siteRoot);
-        StringBuffer resultBuffer = new StringBuffer();
+        StringWriter writer = new StringWriter();
+        @SuppressWarnings("resource")
+        CSVWriter csvWriter = new CSVWriter(writer);
+        StringBuffer resultBuffer = writer.getBuffer();
         for (CmsAlias alias : aliases) {
             try {
                 CmsResource resource = cms.readResource(alias.getStructureId());
-                String line = alias.getAliasPath() + "," + cms.getSitePath(resource) + "," + alias.getMode().toString();
-                resultBuffer.append(line);
-                resultBuffer.append("\n");
+                csvWriter.writeNext(new String[] {
+                    alias.getAliasPath(),
+                    cms.getSitePath(resource),
+                    alias.getMode().toString()});
             } catch (CmsException e) {
                 LOG.warn("Could not read alias resource", e);
                 continue;
             }
+        }
+
+        List<CmsRewriteAlias> rewriteAliases = OpenCms.getAliasManager().getRewriteAliases(cms, siteRoot);
+        for (CmsRewriteAlias rewrite : rewriteAliases) {
+            csvWriter.writeNext(new String[] {
+                rewrite.getPatternString(),
+                rewrite.getReplacementString(),
+                rewrite.getMode().toString(),
+                "rewrite"});
+        }
+        try {
+            csvWriter.flush();
+        } catch (IOException e) {
+            // can't happen
         }
         return resultBuffer.toString();
     }
@@ -134,7 +157,7 @@ public class CmsAliasHelper {
         if (org.opencms.db.CmsAlias.ALIAS_PATTERN.matcher(path).matches()) {
             return null;
         } else {
-            return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_INVALID_PATH_0); //$NON-NLS-1$
+            return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_INVALID_PATH_0);
         }
     }
 
@@ -193,7 +216,7 @@ public class CmsAliasHelper {
         }
         Map<String, String> errorMessagesByPath = new HashMap<String, String>();
         for (String path : duplicatePaths) {
-            errorMessagesByPath.put(path, Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_DUPLICATE_PATH_0)); //$NON-NLS-1$
+            errorMessagesByPath.put(path, Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_DUPLICATE_PATH_0));
         }
         seenPaths.removeAll(duplicatePaths);
 
@@ -204,7 +227,7 @@ public class CmsAliasHelper {
             } else {
                 errorMessagesByPath.put(path, null);
                 if (m_cms.existsResource(path, CmsResourceFilter.ALL)) {
-                    errorMessagesByPath.put(path, Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IS_VFS_0)); //$NON-NLS-1$
+                    errorMessagesByPath.put(path, Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IS_VFS_0));
                 } else {
                     List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(
                         m_cms,
@@ -225,7 +248,7 @@ public class CmsAliasHelper {
                                 // this may happen if there are outdated entries in the database table
                                 errorMessagesByPath.put(
                                     path,
-                                    Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_ALREADY_USED_UNKNOWN_0)); //$NON-NLS-1$
+                                    Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_ALREADY_USED_UNKNOWN_0));
                                 break;
                             }
                         }

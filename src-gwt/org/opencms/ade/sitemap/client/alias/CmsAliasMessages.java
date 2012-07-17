@@ -249,6 +249,16 @@ public final class CmsAliasMessages {
      * 
      * @return the message text 
      */
+    public static String messageImportSeparator() {
+
+        return Messages.get().key(Messages.GUI_ALIAS_FIELD_SEPARATOR_0);
+    }
+
+    /**
+     * Message accessor.<p>
+     * 
+     * @return the message text 
+     */
     public static String messageLabelRegex() {
 
         return messageColumnPattern() + ":";

@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
@@ -57,6 +58,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -96,12 +98,19 @@ public class CmsImportView extends Composite {
     @UiField
     protected CmsScrollPanel m_scrollPanel;
 
+    /** Text box for setting the separator. */
+    @UiField
+    protected HasText m_separator;
+
     /** The button used to submit the file which should be imported to the server. */
     @UiField
     protected CmsPushButton m_submitButton;
 
     /** The upload button. */
     protected CmsUploadButton m_uploadButton;
+
+    /** The hidden form field for the separator parameter. */
+    private Hidden m_separatorField = new Hidden(I_CmsAliasConstants.PARAM_SEPARATOR);
 
     /**
      * Creates a new widget instance.<p>
@@ -147,6 +156,8 @@ public class CmsImportView extends Composite {
         m_submitButton.setSize(I_CmsButton.Size.big);
 
         m_submitButton.setEnabled(false);
+        m_separator.setText(",");
+
         initializeForm();
     }
 
@@ -171,6 +182,12 @@ public class CmsImportView extends Composite {
     @UiHandler("m_submitButton")
     public void onClickSubmit(ClickEvent event) {
 
+        String separator = ",";
+        String selectedValue = m_separator.getText().trim();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(selectedValue)) {
+            separator = selectedValue;
+        }
+        m_separatorField.setValue(separator);
         m_formPanel.submit();
     }
 
@@ -232,6 +249,7 @@ public class CmsImportView extends Composite {
         Hidden siteRootField = new Hidden(I_CmsAliasConstants.PARAM_SITEROOT);
         siteRootField.setValue(CmsCoreProvider.get().getSiteRoot());
         m_formPanelContents.add(siteRootField);
+        m_formPanelContents.add(m_separatorField);
         m_formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 
             public void onSubmitComplete(SubmitCompleteEvent event) {

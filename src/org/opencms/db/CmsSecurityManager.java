@@ -53,6 +53,8 @@ import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.gwt.shared.alias.CmsAliasImportResult;
+import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
@@ -3132,6 +3134,36 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return newResource;
+    }
+
+    /**
+     * Imports a rewrite alias.<p>
+     * 
+     * @param requestContext the current request context 
+     * @param siteRoot the site root 
+     * @param source the rewrite alias source 
+     * @param target the rewrite alias target 
+     * @param mode the alias mode 
+     * @return the import result
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsAliasImportResult importRewriteAlias(
+        CmsRequestContext requestContext,
+        String siteRoot,
+        String source,
+        String target,
+        CmsAliasMode mode) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
+        try {
+            return m_driverManager.importRewriteAlias(dbc, siteRoot, source, target, mode);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
+            return null;
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**

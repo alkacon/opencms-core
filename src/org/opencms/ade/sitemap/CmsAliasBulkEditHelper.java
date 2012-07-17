@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap;
 
 import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.PARAM_IMPORTFILE;
+import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.PARAM_SEPARATOR;
 import static org.opencms.ade.sitemap.shared.I_CmsAliasConstants.PARAM_SITEROOT;
 
 import org.opencms.db.CmsAlias;
@@ -42,7 +43,6 @@ import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasSaveValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasTableRow;
 import org.opencms.gwt.shared.alias.CmsRewriteAliasTableRow;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
@@ -99,17 +99,20 @@ public class CmsAliasBulkEditHelper {
         List<FileItem> items = upload.parseRequest(request);
         byte[] data = null;
         String siteRoot = null;
+        String separator = ",";
         for (FileItem fileItem : items) {
             String name = fileItem.getFieldName();
             if (PARAM_IMPORTFILE.equals(name)) {
                 data = fileItem.get();
             } else if (PARAM_SITEROOT.equals(name)) {
-                siteRoot = new String(fileItem.get(), CmsEncoder.ENCODING_UTF_8);
+                siteRoot = new String(fileItem.get(), request.getCharacterEncoding());
+            } else if (PARAM_SEPARATOR.equals(name)) {
+                separator = new String(fileItem.get(), request.getCharacterEncoding());
             }
         }
         List<CmsAliasImportResult> result = new ArrayList<CmsAliasImportResult>();
         if ((siteRoot != null) && (data != null)) {
-            result = OpenCms.getAliasManager().importAliases(m_cms, data, siteRoot);
+            result = OpenCms.getAliasManager().importAliases(m_cms, data, siteRoot, separator);
         }
         String key = CmsVfsSitemapService.addAliasImportResult(result);
         // only respond with a key, then the client can get the data for the key via GWT-RPC

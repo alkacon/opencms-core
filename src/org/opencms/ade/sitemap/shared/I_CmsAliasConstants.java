@@ -48,6 +48,9 @@ public interface I_CmsAliasConstants {
     String PARAM_IMPORTFILE = "importfile";
 
     /** Request parameter name. */
+    String PARAM_SEPARATOR = "separator";
+
+    /** Request parameter name. */
     String PARAM_SITEROOT = "siteroot";
 
 }

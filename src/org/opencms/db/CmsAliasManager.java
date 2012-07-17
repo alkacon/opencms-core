@@ -27,6 +27,8 @@
 
 package org.opencms.db;
 
+import au.com.bytecode.opencsv.CSVParser;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -44,6 +46,7 @@ import org.opencms.util.CmsUUID;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -268,13 +271,17 @@ public class CmsAliasManager {
      * 
      * @param cms the current CMS context 
      * @param aliasData the alias data 
-     * @param siteRoot the root of the site into which the alias data should be imported 
+     * @param siteRoot the root of the site into which the alias data should be imported
+     * @param separator the field separator which is used by the imported data  
      * @return the list of import results 
      * 
      * @throws Exception if something goes wrong 
      */
-    public synchronized List<CmsAliasImportResult> importAliases(CmsObject cms, byte[] aliasData, String siteRoot)
-    throws Exception {
+    public synchronized List<CmsAliasImportResult> importAliases(
+        CmsObject cms,
+        byte[] aliasData,
+        String siteRoot,
+        String separator) throws Exception {
 
         checkPermissionsForMassEdit(cms);
         BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -284,7 +291,7 @@ public class CmsAliasManager {
         List<CmsAliasImportResult> totalResult = new ArrayList<CmsAliasImportResult>();
         CmsAliasImportResult result;
         while (line != null) {
-            result = processAliasLine(cms, siteRoot, line);
+            result = processAliasLine(cms, siteRoot, line, separator);
             if (result != null) {
                 totalResult.add(result);
             }
@@ -426,11 +433,12 @@ public class CmsAliasManager {
      * 
      * @param cms the current CMS context 
      * @param siteRoot the site root 
-     * @param line the line with the data to import 
+     * @param line the line with the data to import
+     * @param separator the field separator 
      * 
      * @return the import result 
      */
-    protected CmsAliasImportResult processAliasLine(CmsObject cms, String siteRoot, String line) {
+    protected CmsAliasImportResult processAliasLine(CmsObject cms, String siteRoot, String line, String separator) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         line = line.trim();
@@ -438,56 +446,62 @@ public class CmsAliasManager {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(line) || line.startsWith("#")) {
             return null;
         }
-        boolean comma = line.contains(",");
-        boolean semicolon = line.contains(";");
-        String separatorRegex;
-        // Depending on the country, Excel may use either commas or semicolons as separators  
-        if (comma && !semicolon) {
-            separatorRegex = ",";
-        } else if (semicolon && !comma) {
-            separatorRegex = ";";
-        } else {
-            return new CmsAliasImportResult(
-                line,
-                CmsAliasImportStatus.aliasParseError,
-                messageImportBadSeparator(locale));
-        }
-        String[] tokens = line.split(separatorRegex);
-        if ((tokens.length == 2) || (tokens.length == 3)) {
-            String alias = tokens[0].trim();
-            String vfsPath = tokens[1].trim();
-            CmsAliasMode mode = CmsAliasMode.permanentRedirect;
-            if (tokens.length == 3) {
-                try {
-                    mode = CmsAliasMode.valueOf(tokens[2].trim());
-                } catch (Exception e) {
-                    return new CmsAliasImportResult(
-                        line,
-                        CmsAliasImportStatus.aliasParseError,
-                        messageImportInvalidFormat(locale));
-                }
+        CSVParser parser = new CSVParser(separator.charAt(0));
+        String[] tokens = null;
+        try {
+            tokens = parser.parseLine(line);
+            for (int i = 0; i < tokens.length; i++) {
+                tokens[i] = tokens[i].trim();
             }
-            CmsAliasImportResult returnValue = processAliasImport(cms, siteRoot, alias, vfsPath, mode);
-            returnValue.setLine(line);
-            return returnValue;
-        } else {
+        } catch (IOException e) {
             return new CmsAliasImportResult(
                 line,
                 CmsAliasImportStatus.aliasParseError,
                 messageImportInvalidFormat(locale));
         }
-    }
-
-    /**
-     * Message accessor.<p>
-     * 
-     * @param locale the message locale 
-     * 
-     * @return the message string 
-     */
-    private String messageImportBadSeparator(Locale locale) {
-
-        return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_BAD_SEPARATOR_0);
+        int numTokens = tokens.length;
+        String alias = null;
+        String vfsPath = null;
+        if (numTokens >= 2) {
+            alias = tokens[0];
+            vfsPath = tokens[1];
+        }
+        CmsAliasMode mode = CmsAliasMode.permanentRedirect;
+        if (numTokens >= 3) {
+            try {
+                mode = CmsAliasMode.valueOf(tokens[2].trim());
+            } catch (Exception e) {
+                return new CmsAliasImportResult(
+                    line,
+                    CmsAliasImportStatus.aliasParseError,
+                    messageImportInvalidFormat(locale));
+            }
+        }
+        boolean isRewrite = false;
+        if (numTokens == 4) {
+            if (!tokens[3].equals("rewrite")) {
+                return new CmsAliasImportResult(
+                    line,
+                    CmsAliasImportStatus.aliasParseError,
+                    messageImportInvalidFormat(locale));
+            } else {
+                isRewrite = true;
+            }
+        }
+        if ((numTokens < 2) || (numTokens > 4)) {
+            return new CmsAliasImportResult(
+                line,
+                CmsAliasImportStatus.aliasParseError,
+                messageImportInvalidFormat(locale));
+        }
+        CmsAliasImportResult returnValue = null;
+        if (isRewrite) {
+            returnValue = processRewriteImport(cms, siteRoot, alias, vfsPath, mode);
+        } else {
+            returnValue = processAliasImport(cms, siteRoot, alias, vfsPath, mode);
+        }
+        returnValue.setLine(line);
+        return returnValue;
     }
 
     /**
@@ -552,6 +566,37 @@ public class CmsAliasManager {
     private String messageImportUpdate(Locale locale) {
 
         return Messages.get().getBundle(locale).key(Messages.ERR_ALIAS_IMPORT_UPDATED_0);
+    }
+
+    /**
+     * Handles the import of a rewrite alias.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param siteRoot the site root 
+     * @param source the rewrite pattern 
+     * @param target the rewrite replacement 
+     * @param mode the alias mode 
+     * 
+     * @return the import result 
+     */
+    private CmsAliasImportResult processRewriteImport(
+        CmsObject cms,
+        String siteRoot,
+        String source,
+        String target,
+        CmsAliasMode mode) {
+
+        try {
+            return m_securityManager.importRewriteAlias(cms.getRequestContext(), siteRoot, source, target, mode);
+        } catch (CmsException e) {
+            return new CmsAliasImportResult(
+                CmsAliasImportStatus.aliasImportError,
+                e.getLocalizedMessage(),
+                source,
+                target,
+                mode);
+        }
+
     }
 
     /**
