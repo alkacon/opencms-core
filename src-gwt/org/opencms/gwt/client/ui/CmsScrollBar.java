@@ -214,6 +214,19 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     }
 
     /**
+     * @param reziseable true if the panel is resizeable
+     * 
+     */
+    public void isResizeable(boolean reziseable) {
+
+        if (reziseable) {
+            this.getElement().getStyle().setMarginBottom(7, Unit.PX);
+        } else {
+            this.getElement().getStyle().setMarginBottom(0, Unit.PX);
+        }
+    }
+
+    /**
      * @see com.google.gwt.event.dom.client.HasScrollHandlers#addScrollHandler(com.google.gwt.event.dom.client.ScrollHandler)
      */
     public HandlerRegistration addScrollHandler(ScrollHandler handler) {
