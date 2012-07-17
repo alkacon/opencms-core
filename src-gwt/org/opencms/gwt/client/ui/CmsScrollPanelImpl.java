@@ -270,6 +270,20 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsScrollPanel#setResizable(boolean)
+     */
+    @Override
+    public void setResizable(boolean resize) {
+
+        super.setResizable(resize);
+        if (resize) {
+            m_scrollbar.asWidget().getElement().getStyle().setMarginBottom(7, Unit.PX);
+        } else {
+            m_scrollbar.asWidget().getElement().getStyle().setMarginBottom(0, Unit.PX);
+        }
+    }
+
+    /**
      * Returns the vertical scroll bar.<p>
      * 
      * @return the vertical scroll bar

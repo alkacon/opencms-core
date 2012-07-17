@@ -4,7 +4,6 @@ div.scrollBar{
 	right: 0px;
 	width: 8px;
 	bottom: 0px;
-	margin-bottom: 7px;
 }
 div.scrollBar:focus{
 	border:none;
