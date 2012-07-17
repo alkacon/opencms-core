@@ -122,7 +122,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
                 }
                 String[] splittext = m_textArea.getText().split("\\n");
                 for (int i = 0; i < splittext.length; i++) {
-                    occurences += (splittext[i].length() * 6.88) / m_textArea.getOffsetWidth();
+                    occurences += (splittext[i].length() * 6.77) / m_textArea.getOffsetWidth();
                 }
                 int height = occurences + 1;
                 if (m_defaultRows > height) {
