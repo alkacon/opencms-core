@@ -113,9 +113,6 @@ public class CmsADEManager {
     /** The configuration file name. */
     public static final String CONFIG_FILE_NAME = ".config";
 
-    /** The content folder name. */
-    public static final String CONTENT_FOLDER_NAME = ".content";
-
     /** The name of the sitemap configuration file type. */
     public static final String CONFIG_FOLDER_TYPE = "content_folder";
 
@@ -127,6 +124,9 @@ public class CmsADEManager {
 
     /** The name of the sitemap configuration file type. */
     public static final String CONFIG_TYPE = "sitemap_config";
+
+    /** The content folder name. */
+    public static final String CONTENT_FOLDER_NAME = ".content";
 
     /** Default favorite list size constant. */
     public static final int DEFAULT_FAVORITE_LIST_SIZE = 10;
@@ -645,13 +645,7 @@ public class CmsADEManager {
      */
     public void saveFavoriteList(CmsObject cms, List<CmsContainerElementBean> favoriteList) throws CmsException {
 
-        JSONArray data = new JSONArray();
-        for (CmsContainerElementBean element : favoriteList) {
-            data.put(elementToJson(element));
-        }
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, data.toString());
-        cms.writeUser(user);
+        saveElementList(cms, favoriteList, ADDINFO_ADE_FAVORITE_LIST);
     }
 
     /**
@@ -707,13 +701,7 @@ public class CmsADEManager {
      */
     public void saveRecentList(CmsObject cms, List<CmsContainerElementBean> recentList) throws CmsException {
 
-        JSONArray data = new JSONArray();
-        for (CmsContainerElementBean element : recentList) {
-            data.put(elementToJson(element));
-        }
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        user.setAdditionalInfo(ADDINFO_ADE_RECENT_LIST, data.toString());
-        cms.writeUser(user);
+        saveElementList(cms, recentList, ADDINFO_ADE_RECENT_LIST);
     }
 
     /**
@@ -836,4 +824,28 @@ public class CmsADEManager {
         return result;
     }
 
+    /**
+     * Saves an element list to the user additional infos.<p>
+     * 
+     * @param cms the cms context
+     * @param elementList the element list
+     * @param listKey the list key
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private void saveElementList(CmsObject cms, List<CmsContainerElementBean> elementList, String listKey)
+    throws CmsException {
+
+        // limit the favorite list size to 100 entries to avoid the additional info size limit
+        while (elementList.size() > 100) {
+            elementList.remove(elementList.size() - 1);
+        }
+        JSONArray data = new JSONArray();
+        for (CmsContainerElementBean element : elementList) {
+            data.put(elementToJson(element));
+        }
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        user.setAdditionalInfo(listKey, data.toString());
+        cms.writeUser(user);
+    }
 }
