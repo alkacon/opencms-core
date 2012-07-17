@@ -25,6 +25,51 @@ input.textBoxReadOnly {
 	background-color: value("constants.css.backgroundColorDisabled");
 }
 
+.colorPicker {
+	bordercolor: 1px solid #7788AA;
+	border-radius: value("constants.css.borderRadius");
+	background-color:transparent;
+	box-shadow: none;
+}
+.colorPicker input {
+	border: 1px solid #7788AA;
+    box-shadow: none;
+    color: value("constants.css.textColor");
+    padding: 0 4px;
+    display: block;
+    float: left;
+    font-size: 12px;
+    height: 18px;
+    margin-left: 105px;
+    width: 87.4%;
+}
+.colorPicker div {
+	border: 1px solid #7788AA;
+    border-radius: value("constants.css.borderRadius");
+    height: 18px;
+    width: 100px;
+    cursor: pointer;
+}
+
+
+.colorPickerInValid input{
+	border: 1px solid value("constants.css.borderColorHighlight");
+	box-shadow: none;
+    color: value("constants.css.textColor");
+    padding: 0 4px;
+    display: block;
+    float: left;
+    font-size: 12px;
+    height: 18px;
+    margin-left: 105px;
+    width: 87.4%;
+}
+.colorPickerInValid div {
+	border: 1px solid value("constants.css.borderColorHighlight");
+    border-radius: value("constants.css.borderRadius");
+    height: 18px;
+    width: 100px;
+}
 .textBoxPanel, .textAreaContainer {
 	border: 1px solid value("constants.css.borderColor");
 	overflow:hidden;
@@ -358,7 +403,7 @@ div.selectBoxOpener {
     overflow: hidden;
     position: relative;
     top: -19px;
-    width: 98%;
+    width: 98.2%;
 }
 
 .inputTextBoxFaider{   	
