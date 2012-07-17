@@ -732,7 +732,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      * @see org.opencms.gwt.client.ui.CmsListItem#getMoveHandle()
      */
     @Override
-    protected I_CmsDragHandle getMoveHandle() {
+    public I_CmsDragHandle getMoveHandle() {
 
         CmsSitemapHoverbar hoverbar = getHoverbar();
         if (hoverbar != null) {

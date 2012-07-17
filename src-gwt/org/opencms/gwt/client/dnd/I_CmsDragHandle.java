@@ -50,4 +50,11 @@ public interface I_CmsDragHandle extends HasMouseDownHandlers {
      * @return the handle element
      */
     Element getElement();
+
+    /**
+     * Sets the title attribute.<p>
+     * 
+     * @param title the title
+     */
+    void setTitle(String title);
 }

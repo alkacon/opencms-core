@@ -37,6 +37,12 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_TYPES_CREATE_NEW_0 = "GUI_TAB_TYPES_CREATE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_SEARCH_SEARCH_EXISTING_0 = "GUI_TAB_SEARCH_SEARCH_EXISTING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ADVANCED_TAB_LABEL_ADVISORY_TITLE_0 = "GUI_ADVANCED_TAB_LABEL_ADVISORY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

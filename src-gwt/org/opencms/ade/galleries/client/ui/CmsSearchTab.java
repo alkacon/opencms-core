@@ -245,6 +245,7 @@ public class CmsSearchTab extends A_CmsTab {
         m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         // add the query
         m_searchLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0));
+        m_searchInput.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
         m_includeExpiredCheckBox.setChecked(false);
         m_includeExpiredCheckBox.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_INCLUDE_EXPIRED_0));
         // set the labels for the date box widgets

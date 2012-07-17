@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsContextMenuHandler;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
@@ -83,6 +84,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
     public CmsContextMenuButton(final CmsUUID structureId, final CmsContextMenuHandler handler) {
 
         super(null, I_CmsImageBundle.INSTANCE.style().menuIcon());
+        setTitle(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0));
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table

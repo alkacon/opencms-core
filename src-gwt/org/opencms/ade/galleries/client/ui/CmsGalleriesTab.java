@@ -464,6 +464,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         list.put(SortParams.title_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_DECS_0));
         list.put(SortParams.type_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_ASC_0));
         list.put(SortParams.type_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_DESC_0));
+        list.put(SortParams.tree.name(), Messages.get().key(Messages.GUI_SORT_LABEL_HIERARCHIC_0));
         return list;
     }
 
@@ -483,7 +484,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
     protected boolean hasQuickFilter() {
 
         // allow filter if not in tree mode
-        return true;
+        return SortParams.tree != SortParams.valueOf(m_sortSelectBox.getFormValueAsString());
     }
 
     /**

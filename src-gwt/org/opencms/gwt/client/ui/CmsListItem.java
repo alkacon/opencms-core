@@ -71,7 +71,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /** The move handle. */
-    protected class MoveHandle extends CmsPushButton implements I_CmsDragHandle {
+    public class MoveHandle extends CmsPushButton implements I_CmsDragHandle {
 
         /** The draggable. */
         private CmsListItem m_draggable;
@@ -300,6 +300,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
+     * Returns the move handle.<p>
+     * 
+     * @return the move handle
+     */
+    public I_CmsDragHandle getMoveHandle() {
+
+        return m_moveHandle;
+    }
+
+    /**
      * Returns the parent list.<p>
      * 
      * @return the parent list
@@ -501,16 +511,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         }
 
         return clone;
-    }
-
-    /**
-     * Returns the move handle.<p>
-     * 
-     * @return the move handle
-     */
-    protected I_CmsDragHandle getMoveHandle() {
-
-        return m_moveHandle;
     }
 
     /**

@@ -56,8 +56,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
@@ -166,12 +170,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** A label for displaying additional information about the tab. */
     protected HasText m_infoLabel;
 
-    /** The quick search box. */
-    protected CmsTextBox m_quickSearch;
-
-    /** The quick search button. */
-    protected CmsPushButton m_searchButton;
-
     /** The borded panel to hold the scrollable list. */
     @UiField
     protected CmsScrollPanel m_list;
@@ -180,8 +178,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     @UiField
     protected FlowPanel m_options;
 
+    /** The quick search box. */
+    protected CmsTextBox m_quickSearch;
+
     /** The scrollable list panel. */
     protected CmsList<? extends I_CmsListItem> m_scrollList;
+
+    /** The quick search button. */
+    protected CmsPushButton m_searchButton;
 
     /** The select box to change the sort order. */
     protected CmsSelectBox m_sortSelectBox;
@@ -192,6 +196,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /** The quick filter timer. */
     private Timer m_filterTimer;
+
+    /** The quick search handler registration. */
+    private HandlerRegistration m_quickSearchRegistration;
 
     /**
      * The default constructor with drag handler.<p>
@@ -215,111 +222,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         initWidget(uiBinder.createAndBindUi(this));
         m_scrollList = createScrollList();
         m_list.add(m_scrollList);
-    }
-
-    /**
-     * Call after all handlers have been set.<p>
-     */
-    protected void init() {
-
-        LinkedHashMap<String, String> sortList = getSortList();
-        if (sortList != null) {
-            m_sortSelectBox = new CmsSelectBox(sortList);
-            m_sortSelectBox.addValueChangeHandler(this);
-            m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
-            m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
-            m_options.add(m_sortSelectBox);
-            Label infoLabel = new Label();
-            infoLabel.setStyleName(DIALOG_CSS.infoLabel());
-            m_infoLabel = infoLabel;
-            m_options.insert(infoLabel, 0);
-            if (hasQuickSearch() || hasQuickFilter()) {
-                m_quickSearch = new CmsTextBox();
-                //   m_quickFilter.setVisible(hasQuickFilter());
-                m_quickSearch.addStyleName(DIALOG_CSS.quickFilterBox());
-                m_quickSearch.setTriggerChangeOnKeyPress(true);
-                m_quickSearch.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
-                m_quickSearch.setGhostModeClear(true);
-                m_options.insert(m_quickSearch, 0);
-                m_searchButton = new CmsPushButton();
-                m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-                m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
-                m_options.insert(m_searchButton, 0);
-                m_quickSearch.addValueChangeHandler(this);
-                if (hasQuickFilter()) {
-                    m_filterTimer = new Timer() {
-
-                        @Override
-                        public void run() {
-
-                            getTabHandler().onSort(
-                                m_sortSelectBox.getFormValueAsString(),
-                                m_quickSearch.getFormValueAsString());
-
-                        }
-                    };
-                } else {
-                    m_searchButton.addClickHandler(new ClickHandler() {
-
-                        public void onClick(ClickEvent arg0) {
-
-                            quickSearch();
-                        }
-                    });
-                    getTabHandler().addSearchChangeHandler(new ValueChangeHandler<CmsGallerySearchBean>() {
-
-                        public void onValueChange(ValueChangeEvent<CmsGallerySearchBean> event) {
-
-                            m_quickSearch.setFormValueAsString(event.getValue().getQuery());
-                        }
-                    });
-                }
-            }
-        }
-
-    }
-
-    /**
-     * Sets the search query an selects the result tab.<p>
-     */
-    protected void quickSearch() {
-
-        if ((m_quickSearch != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_quickSearch.getFormValueAsString())) {
-            getTabHandler().setSearchQuery(m_quickSearch.getFormValueAsString());
-            getTabHandler().selectResultTab();
-        }
-    }
-
-    /**
-     * Checks the quick search input and enables/disables the search button accordingly.<p>
-     */
-    protected void checkQuickSearchStatus() {
-
-        if ((m_quickSearch != null) && (m_searchButton != null)) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_quickSearch.getFormValueAsString())) {
-                m_searchButton.enable();
-            } else {
-                m_searchButton.disable("Enter a search query");
-            }
-        }
-    }
-
-    /**
-     * Creates a select button.<p>
-     * 
-     * @param selectionHandler the selction handler
-     * 
-     * @return the select button
-     */
-    protected CmsPushButton createSelectButton(A_SelectionHandler selectionHandler) {
-
-        CmsPushButton selectButton = new CmsPushButton();
-        selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-        selectButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        selectionHandler.setSelectButton(selectButton);
-        selectButton.addClickHandler(selectionHandler);
-        return selectButton;
     }
 
     /**
@@ -355,10 +257,19 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         cancelQuickFilterTimer();
         if (event.getSource() == m_sortSelectBox) {
+            // depending on the sort value the tab may or may not have the quick filter ability
+            if (hasQuickFilter()) {
+                if (m_quickSearch == null) {
+                    createQuickBox();
+                }
+            } else {
+                removeQuickBox();
+            }
             getTabHandler().onSort(event.getValue(), hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
         }
         if ((event.getSource() == m_quickSearch)) {
             if (hasQuickFilter()) {
+
                 if ((CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue()) || (event.getValue().length() >= 3))) {
                     // only act if filter length is at least 3 characters or empty
                     scheduleQuickFilterTimer();
@@ -409,7 +320,23 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      */
     protected void cancelQuickFilterTimer() {
 
-        m_filterTimer.cancel();
+        if (m_filterTimer != null) {
+            m_filterTimer.cancel();
+        }
+    }
+
+    /**
+     * Checks the quick search input and enables/disables the search button accordingly.<p>
+     */
+    protected void checkQuickSearchStatus() {
+
+        if ((m_quickSearch != null) && (m_searchButton != null)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_quickSearch.getFormValueAsString())) {
+                m_searchButton.enable();
+            } else {
+                m_searchButton.disable("Enter a search query");
+            }
+        }
     }
 
     /**
@@ -429,6 +356,24 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected CmsList<? extends I_CmsListItem> createScrollList() {
 
         return new CmsList<I_CmsListItem>();
+    }
+
+    /**
+     * Creates a select button.<p>
+     * 
+     * @param selectionHandler the selction handler
+     * 
+     * @return the select button
+     */
+    protected CmsPushButton createSelectButton(A_SelectionHandler selectionHandler) {
+
+        CmsPushButton selectButton = new CmsPushButton();
+        selectButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
+        selectButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
+        selectButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        selectionHandler.setSelectButton(selectButton);
+        selectButton.addClickHandler(selectionHandler);
+        return selectButton;
     }
 
     /**
@@ -482,6 +427,38 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * Call after all handlers have been set.<p>
+     */
+    protected void init() {
+
+        LinkedHashMap<String, String> sortList = getSortList();
+        if (sortList != null) {
+            m_sortSelectBox = new CmsSelectBox(sortList);
+            m_sortSelectBox.addValueChangeHandler(this);
+            m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
+            m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
+            m_options.add(m_sortSelectBox);
+            Label infoLabel = new Label();
+            infoLabel.setStyleName(DIALOG_CSS.infoLabel());
+            m_infoLabel = infoLabel;
+            m_options.insert(infoLabel, 0);
+            createQuickBox();
+        }
+
+    }
+
+    /**
+     * Sets the search query an selects the result tab.<p>
+     */
+    protected void quickSearch() {
+
+        if ((m_quickSearch != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_quickSearch.getFormValueAsString())) {
+            getTabHandler().setSearchQuery(m_quickSearch.getFormValueAsString());
+            getTabHandler().selectResultTab();
+        }
+    }
+
+    /**
      * Schedules the quick filter action.<p>
      */
     protected void scheduleQuickFilterTimer() {
@@ -516,5 +493,86 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             }
         }
         return resultItem;
+    }
+
+    /**
+     * Creates the quick search/finder box.<p>
+     */
+    private void createQuickBox() {
+
+        if (hasQuickSearch() || hasQuickFilter()) {
+            m_quickSearch = new CmsTextBox();
+            //   m_quickFilter.setVisible(hasQuickFilter());
+            m_quickSearch.addStyleName(DIALOG_CSS.quickFilterBox());
+            m_quickSearch.setTriggerChangeOnKeyPress(true);
+            m_quickSearch.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
+            m_quickSearch.setGhostModeClear(true);
+            m_options.insert(m_quickSearch, 0);
+            m_searchButton = new CmsPushButton();
+            m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
+            m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
+            m_options.insert(m_searchButton, 0);
+            m_quickSearch.addValueChangeHandler(this);
+            if (hasQuickFilter()) {
+                m_filterTimer = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        getTabHandler().onSort(
+                            m_sortSelectBox.getFormValueAsString(),
+                            m_quickSearch.getFormValueAsString());
+
+                    }
+                };
+                m_searchButton.setTitle(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0));
+            } else {
+                m_quickSearch.addKeyPressHandler(new KeyPressHandler() {
+
+                    public void onKeyPress(KeyPressEvent event) {
+
+                        if (event.getCharCode() == KeyCodes.KEY_ENTER) {
+                            quickSearch();
+                        }
+                    }
+                });
+                m_searchButton.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent arg0) {
+
+                        quickSearch();
+                    }
+                });
+                m_quickSearchRegistration = getTabHandler().addSearchChangeHandler(
+                    new ValueChangeHandler<CmsGallerySearchBean>() {
+
+                        public void onValueChange(ValueChangeEvent<CmsGallerySearchBean> event) {
+
+                            m_quickSearch.setFormValueAsString(event.getValue().getQuery());
+                        }
+                    });
+                m_searchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
+            }
+        }
+    }
+
+    /**
+     * Removes the quick search/finder box.<p>
+     */
+    private void removeQuickBox() {
+
+        if (m_quickSearch != null) {
+            m_quickSearch.removeFromParent();
+            m_quickSearch = null;
+        }
+        if (m_searchButton != null) {
+            m_searchButton.removeFromParent();
+            m_searchButton = null;
+        }
+        if (m_quickSearchRegistration != null) {
+            m_quickSearchRegistration.removeHandler();
+            m_quickSearchRegistration = null;
+        }
     }
 }

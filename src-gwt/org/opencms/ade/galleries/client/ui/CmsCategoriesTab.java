@@ -293,12 +293,13 @@ public class CmsCategoriesTab extends A_CmsListTab {
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickSearch()
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
      */
     @Override
-    protected boolean hasQuickSearch() {
+    protected boolean hasQuickFilter() {
 
-        return true;
+        // allow filter if not in tree mode
+        return SortParams.tree != SortParams.valueOf(m_sortSelectBox.getFormValueAsString());
     }
 
     /**
