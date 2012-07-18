@@ -52,6 +52,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -512,6 +513,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
             m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
             m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
+            m_searchButton.getElement().getStyle().setMarginTop(1, Unit.PX);
             m_options.insert(m_searchButton, 0);
             m_quickSearch.addValueChangeHandler(this);
             if (hasQuickFilter()) {
