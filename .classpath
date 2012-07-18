@@ -111,6 +111,6 @@
 	<classpathentry exported="true" kind="lib" path="webapp/setup/database/oracle/ojdbc14-10.2.0.3.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/opencsv-2.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/opencsv-2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
