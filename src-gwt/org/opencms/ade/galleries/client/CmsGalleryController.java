@@ -980,6 +980,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 @Override
                 public void execute() {
 
+                    start(200, true);
                     m_currentCallId++;
                     m_callId = m_currentCallId;
                     m_loading = true;
@@ -1011,6 +1012,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_searchObject.setPage(searchObj.getPage());
                     m_searchObject.setLastPage(searchObj.getLastPage());
                     m_handler.onResultTabSelection(m_searchObject);
+                    stop(false);
                 }
             };
             searchAction.execute();
@@ -1243,6 +1245,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             @Override
             public void execute() {
 
+                start(200, true);
                 CmsCoreProvider.getService().getCategoriesForSitePath(m_dialogBean.getReferenceSitePath(), this);
             }
 
@@ -1252,6 +1255,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 m_dialogBean.setCategories(result);
                 m_handler.setCategoriesTabContent(result);
                 m_handler.onCategoriesTabSelection();
+                stop(false);
             }
         };
         action.execute();
@@ -1267,6 +1271,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             @Override
             public void execute() {
 
+                start(200, true);
                 List<String> types = new ArrayList<String>();
                 for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
                     types.add(type.getType());
@@ -1281,6 +1286,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 m_dialogBean.setGalleries(result);
                 m_handler.setGalleriesTabContent(result, m_searchObject.getGalleries());
                 m_handler.onGalleriesTabSelection();
+                stop(false);
             }
         };
         action.execute();
