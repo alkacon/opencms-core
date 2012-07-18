@@ -321,7 +321,7 @@ public class CmsSearchTab extends A_CmsTab {
 
         List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
         // get the required data
-        String query = m_searchInput.getText();
+        String query = m_searchInput.getFormValueAsString();
         String createdStart = m_dateCreatedStartDateBox.getValueAsFormatedString();
         String createdEnd = m_dateCreatedEndDateBox.getValueAsFormatedString();
         String modifiedStart = m_dateModifiedStartDateBox.getValueAsFormatedString();
