@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.util.CmsUUID;
@@ -203,10 +204,10 @@ public class CmsAliasList extends Composite {
 
         m_panel.addStyleName(INPUT_CSS.highTextBoxes());
         m_structureId = structureId;
-        Label newLabel = createLabel(aliasMessages.newAlias()); //$NON-NLS-1$
+        Label newLabel = createLabel(aliasMessages.newAlias());
         m_panel.add(newLabel);
         m_panel.add(m_newBox);
-        Label changeLabel = createLabel(aliasMessages.existingAliases()); //$NON-NLS-1$
+        Label changeLabel = createLabel(aliasMessages.existingAliases());
         m_panel.add(changeLabel);
         m_panel.add(m_changeBox);
         init(aliases);
@@ -268,6 +269,7 @@ public class CmsAliasList extends Composite {
             }
         });
         m_changeBox.add(hp);
+        CmsDomUtil.resizeAncestor(this);
     }
 
     /**
@@ -460,7 +462,7 @@ public class CmsAliasList extends Composite {
 
         I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
         PushButton button = createIconButton(imagestyle.addIcon());
-        button.setTitle(aliasMessages.addAlias()); //$NON-NLS-1$
+        button.setTitle(aliasMessages.addAlias());
         return button;
     }
 
@@ -473,7 +475,7 @@ public class CmsAliasList extends Composite {
 
         I_CmsImageStyle imagestyle = I_CmsImageBundle.INSTANCE.style();
         PushButton button = createIconButton(imagestyle.deleteIcon());
-        button.setTitle(aliasMessages.removeAlias()); //$NON-NLS-1$
+        button.setTitle(aliasMessages.removeAlias());
         return button;
     }
 
@@ -519,12 +521,12 @@ public class CmsAliasList extends Composite {
     protected CmsSelectBox createSelectBox() {
 
         CmsSelectBox selectbox = new CmsSelectBox();
-        selectbox.setTitle(CmsAliasMode.page.toString(), aliasMessages.pageDescription()); //$NON-NLS-1$
-        selectbox.setTitle(CmsAliasMode.redirect.toString(), aliasMessages.redirectDescription()); //$NON-NLS-1$
-        selectbox.setTitle(CmsAliasMode.permanentRedirect.toString(), aliasMessages.movedDescription()); //$NON-NLS-1$
-        selectbox.addOption(CmsAliasMode.page.toString(), aliasMessages.optionPage()); //$NON-NLS-1$
-        selectbox.addOption(CmsAliasMode.redirect.toString(), aliasMessages.optionRedirect()); //$NON-NLS-1$
-        selectbox.addOption(CmsAliasMode.permanentRedirect.toString(), aliasMessages.optionMoved()); //$NON-NLS-1$
+        selectbox.setTitle(CmsAliasMode.page.toString(), aliasMessages.pageDescription());
+        selectbox.setTitle(CmsAliasMode.redirect.toString(), aliasMessages.redirectDescription());
+        selectbox.setTitle(CmsAliasMode.permanentRedirect.toString(), aliasMessages.movedDescription());
+        selectbox.addOption(CmsAliasMode.page.toString(), aliasMessages.optionPage());
+        selectbox.addOption(CmsAliasMode.redirect.toString(), aliasMessages.optionRedirect());
+        selectbox.addOption(CmsAliasMode.permanentRedirect.toString(), aliasMessages.optionMoved());
 
         selectbox.getElement().getStyle().setWidth(190, Unit.PX);
         selectbox.getElement().getStyle().setMarginRight(5, Unit.PX);

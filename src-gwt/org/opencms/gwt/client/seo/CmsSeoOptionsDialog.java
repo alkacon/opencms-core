@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
@@ -52,6 +53,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
@@ -78,6 +80,7 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /** The validation has finished successfully. */
     protected static final int VALIDATION_OK = 0;
+
     /** The validation isn't finished yet. */
     protected static final int VALIDATION_RUNNING = 1;
 
@@ -92,6 +95,7 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /** The validation status for the properties. */
     protected int m_propertyValidationStatus;
+
     /** The structure id of the resource whose aliases are being edited. */
     protected CmsUUID m_structureId;
 
@@ -122,7 +126,7 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
         Map<String, CmsXmlContentProperty> propertyConfig,
         I_CmsPropertyEditorHandler propertyEditorHandler) {
 
-        super(aliasMessages.seoOptions()); //$NON-NLS-1$
+        super(aliasMessages.seoOptions());
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
@@ -155,12 +159,14 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
         //------------------------ ALIASES ------------------------------------------
 
         CmsFieldSet aliasFieldset = new CmsFieldSet();
-        aliasFieldset.setLegend(aliasMessages.aliases()); //$NON-NLS-1$
+        aliasFieldset.setLegend(aliasMessages.aliases());
         m_aliasList = new CmsAliasList(structureId, aliases);
         aliasFieldset.getElement().getStyle().setMarginTop(10, Unit.PX);
-        aliasFieldset.addContent(m_aliasList);
-        m_panel.add(aliasFieldset);
-        Style style = m_aliasList.getElement().getStyle();
+        CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
+        scrollPanel.setWidget(m_aliasList);
+        aliasFieldset.addContent(scrollPanel);
+        m_panel.add(scrollPanel);
+        Style style = scrollPanel.getElement().getStyle();
         style.setProperty("minHeight", "300px"); //$NON-NLS-1$ //$NON-NLS-2$
         style.setProperty("maxHeight", "450px"); //$NON-NLS-1$ //$NON-NLS-2$
         style.setOverflowY(Overflow.AUTO);
