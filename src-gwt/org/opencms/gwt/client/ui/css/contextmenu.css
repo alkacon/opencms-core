@@ -44,10 +44,21 @@ div.cmsMenuBar { /* the outer menu bar */
 }
 .cmsMenuBar .cmsMenuItem .label, .cmsMenuBar .cmsMenuItem .html-face { /* menu item label */
 	padding: 4px 4px 4px 0px;
-	margin: 0px 0px 0px 26px;
+	
 	font-size: value("constants.css.fontSizeBig");
 	text-align: left;
 }
+.cmsMenuBar .cmsMenuItem .label{
+	margin: 0px 0px 0px 26px;
+}
+
+.cmsMenuBar .cmsMenuItem .html-face {
+	margin: 0px;
+}
+.cmsMenuBar .cmsMenuItem .html-face > span{
+	margin-right: 6px;
+}
+
 .cmsMenuBar .cmsMenuItem .arrow { /* symbol for sub menus */
 	float: right;
 	margin-right: 2px;

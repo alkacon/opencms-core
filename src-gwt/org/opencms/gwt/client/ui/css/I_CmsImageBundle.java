@@ -140,6 +140,12 @@ public interface I_CmsImageBundle extends ClientBundle {
         String refresh();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String replace();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */

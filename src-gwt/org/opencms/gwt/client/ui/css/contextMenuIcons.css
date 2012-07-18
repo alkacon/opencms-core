@@ -39,6 +39,9 @@
 @sprite .cmsMenuItem .refresh{
     gwt-image: "icons.refreshIcon";
 }
+@sprite .cmsMenuItem .replace{
+    gwt-image: "icons.refreshIcon";
+}
 @sprite .cmsMenuItem .gotoPage{
     gwt-image: "icons.gotoPageIcon";
 }
