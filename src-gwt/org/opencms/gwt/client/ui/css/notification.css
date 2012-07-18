@@ -48,7 +48,7 @@ div.notificationOverlay {
 	}
 }
 .popup div.notificationContainer{
-	top: 0px;
+	top: 50px;
 	z-index: value("constants.css.zIndexPopup");
 }
 div.notificationContainer {
