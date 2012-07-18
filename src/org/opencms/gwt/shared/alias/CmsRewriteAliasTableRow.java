@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.shared.alias;
 
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -134,7 +133,6 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
     public void setError(String error) {
 
         m_error = error;
-        CmsDebugLog.getInstance().printLine(error);
     }
 
     /**
