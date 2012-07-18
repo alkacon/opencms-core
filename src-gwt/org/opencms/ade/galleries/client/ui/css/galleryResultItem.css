@@ -46,12 +46,17 @@
 	margin: 1px;
 }
 
-.tilingList .tilingItem .cmsHovering .buttonPanel{
+.tilingList .tilingItem .cmsHovering .buttonPanel, .tilingList .tilingItem .buttonPanel.permaVisible{
 	gwt-image: "backgrounds.softBackground";
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
 	background-color: value("constants.css.backgroundColorSoft");
 	border-radius:2px;
+	display:block;
+}
+
+.buttonPanel.permaVisible > *{
+	visibility: visible;
 }
 
 .unselectable {} 

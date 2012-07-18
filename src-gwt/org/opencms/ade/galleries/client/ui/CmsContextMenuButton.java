@@ -102,7 +102,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
 
             public void onClose(CloseEvent<PopupPanel> event) {
 
-                removeStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+                getParent().removeStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             }
         });
         addClickHandler(new ClickHandler() {
@@ -114,7 +114,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
 
                 if (!isOpen()) {
                     openMenu();
-                    addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+                    getParent().addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
                     handler.loadContextMenu(structureId, AdeContext.containerpage, CmsContextMenuButton.this);
                 } else {
                     hideMenu();
