@@ -107,7 +107,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             if (!m_ghostMode && m_textbox.getText().equals("")) {
                 setGhostValue(m_ghostValue, true);
             } else if (m_ghostMode) {
-                setGhostStyleEnabled(true);
+                setGhostStyleEnabled(true, true);
             }
             checkForChange();
         }
@@ -117,7 +117,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
          */
         public void onFocus(FocusEvent event) {
 
-            setGhostStyleEnabled(false);
+            setGhostStyleEnabled(false, m_ghostMode);
         }
 
         /**
@@ -167,7 +167,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             setGhostMode(false);
             if ((m_ghostValue != null) && "".equals(m_textbox.getValue())) {
                 m_ghostMode = true;
-                setGhostStyleEnabled(true);
+                setGhostStyleEnabled(true, true);
                 m_textbox.setValue(m_ghostValue);
             }
             if (!event.getValue().equals(m_currentValue)) {
@@ -620,11 +620,11 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         }
         if ("".equals(newValue) && (m_ghostValue != null)) {
             m_ghostMode = true;
-            setGhostStyleEnabled(true);
+            setGhostStyleEnabled(true, true);
             m_textbox.setValue(m_ghostValue);
         } else {
             setGhostMode(false);
-            setGhostStyleEnabled(false);
+            setGhostStyleEnabled(false, true);
             setFormValue(newValue);
         }
     }
@@ -656,15 +656,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      * 
      * This *only* changes the style, not the actual mode.
      * 
-     * @param enabled true if the ghost mode style should be enabled, false if it should be disabled 
+     * @param enabled <code>true</code> if the ghost mode style should be enabled, false if it should be disabled 
+     * @param mayClear <code>true</code> if no value was previously set
      */
-    public void setGhostStyleEnabled(boolean enabled) {
+    public void setGhostStyleEnabled(boolean enabled, boolean mayClear) {
 
         if (enabled) {
             m_textbox.addStyleName(CSS.textboxGhostMode());
         } else {
             m_textbox.removeStyleName(CSS.textboxGhostMode());
-            if (m_clearOnChangeMode) {
+            if (m_clearOnChangeMode && mayClear) {
                 setText("");
             }
         }
@@ -681,7 +682,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         }
         m_textbox.setValue(value);
         setGhostMode(true);
-        setGhostStyleEnabled(true);
+        setGhostStyleEnabled(true, true);
     }
 
     /**

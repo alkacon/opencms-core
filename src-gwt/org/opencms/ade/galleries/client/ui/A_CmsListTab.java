@@ -532,7 +532,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
                     public void onKeyPress(KeyPressEvent event) {
 
-                        if (event.getCharCode() == KeyCodes.KEY_ENTER) {
+                        if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
                             quickSearch();
                         }
                     }
