@@ -415,7 +415,9 @@ public class CmsContainerpageUtil {
             elementData.hasViewPermission(),
             elementData.isReleasedAndNotExpired());
         addOptionBar(dragElement);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(elementData.getNoEditReason())) {
+        // only enable inline editing for the new content editor
+        if (!m_controller.getData().isUseClassicEditor()
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(elementData.getNoEditReason())) {
             dragElement.initContentEditor(m_controller);
         }
         return dragElement;
