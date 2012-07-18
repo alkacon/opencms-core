@@ -4704,6 +4704,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             parameters.add(filter.getSiteRoot());
             conditions.add("SITE_ROOT = ?");
         }
+        if (filter.getId() != null) {
+            parameters.add(filter.getId().toString());
+            conditions.add("ID = ?");
+        }
         return CmsPair.create(CmsStringUtil.listAsString(conditions, " AND "), parameters);
     }
 

@@ -42,7 +42,6 @@
 		
 		.topTextBox2 {
 			width: 180px;
-/*			width: 300px; */
 		}
 		
 		.topModeSelector {	
@@ -101,6 +100,10 @@
 				margin-top: 2px;
 			}
 			
+			.leftButton {
+				float: left; 
+			}
+			
 	</ui:style>
 	<g:VerticalPanel addStyleNames="{inputstyle.inputCss.highTextBoxes}">
 		<cms:CmsFieldSet addStyleNames="{style.topButtonBox}" legend="{msg.messageNewFieldsetLegend}">
@@ -125,8 +128,6 @@
 				<g:FlowPanel addStyleNames="{style.actionButtonBox}">
 					<g:InlineLabel ui:field="m_countLabel" />
 					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_deleteButton" text="{msg.messageButtonDelete}"/>
-					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_downloadButton" text="{msg.messageButtonDownload}" />
-					<cms:CmsPushButton  addStyleNames="{style.actionButton}"  ui:field="m_uploadButton" text="{msg.messageButtonSubmit}" />
 					<g:Label addStyleNames="{style.clearbox}" />
 				</g:FlowPanel>
 				<cms:CmsScrollPanel ui:field="m_tableContainer"  addStyleNames="{style.tableContainer} {resources.generalCss.cornerAll} {style.tableContainer}"> 
@@ -158,6 +159,8 @@
 		<g:FlowPanel addStyleNames="{style.invisible}">
 			<cms:CmsPushButton ui:field="m_saveButton"  text="{msg.messageButtonSave}"  useMinWidth="true" />	
 			<cms:CmsPushButton ui:field="m_cancelButton" text="{msg.messageButtonCancel}"  useMinWidth="true" />
+			<cms:CmsPushButton  addStyleNames="{style.actionButton} {style.leftButton}"  ui:field="m_downloadButton" text="{msg.messageButtonDownload}" useMinWidth="true"/>
+			<cms:CmsPushButton  addStyleNames="{style.actionButton} {style.leftButton}"  ui:field="m_uploadButton" text="{msg.messageButtonSubmit}"  useMinWidth="true"/>
 		</g:FlowPanel>
 	</g:VerticalPanel>
 </ui:UiBinder>

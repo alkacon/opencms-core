@@ -4970,6 +4970,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String target,
         CmsAliasMode mode) throws CmsException {
 
+        I_CmsVfsDriver vfs = getVfsDriver(dbc);
+        List<CmsRewriteAlias> existingAliases = vfs.readRewriteAliases(
+            dbc,
+            new CmsRewriteAliasFilter().setSiteRoot(siteRoot));
+        CmsUUID idToDelete = null;
+        for (CmsRewriteAlias alias : existingAliases) {
+            if (alias.getPatternString().equals(source)) {
+                idToDelete = alias.getId();
+            }
+        }
+        if (idToDelete != null) {
+            vfs.deleteRewriteAliases(dbc, new CmsRewriteAliasFilter().setId(idToDelete));
+        }
         CmsRewriteAlias alias = new CmsRewriteAlias(new CmsUUID(), siteRoot, source, target, mode);
         List<CmsRewriteAlias> aliases = new ArrayList<CmsRewriteAlias>();
         aliases.add(alias);
@@ -8532,7 +8545,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void saveRewriteAliases(CmsDbContext dbc, String siteRoot, List<CmsRewriteAlias> newAliases)
     throws CmsException {
 
-        CmsRewriteAliasFilter filter = new CmsRewriteAliasFilter(siteRoot);
+        CmsRewriteAliasFilter filter = new CmsRewriteAliasFilter().setSiteRoot(siteRoot);
         getVfsDriver(dbc).deleteRewriteAliases(dbc, filter);
         getVfsDriver(dbc).insertRewriteAliases(dbc, newAliases);
     }

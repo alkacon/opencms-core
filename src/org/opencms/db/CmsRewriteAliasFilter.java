@@ -27,22 +27,27 @@
 
 package org.opencms.db;
 
+import org.opencms.util.CmsUUID;
+
 /**
  * Filter class used for selecting rewrite aliases from the database.<p>
  */
 public class CmsRewriteAliasFilter {
 
+    /** The id to use for filtering. */
+    private CmsUUID m_id;
+
     /** The site root to filter with. */
     private String m_siteRoot;
 
     /**
-     * Creates a new filter instance.<p>
+     * Gets the id to filter with.<p>
      * 
-     * @param siteRoot the site root to filter with 
+     * @return the id to filter with 
      */
-    public CmsRewriteAliasFilter(String siteRoot) {
+    public CmsUUID getId() {
 
-        m_siteRoot = siteRoot;
+        return m_id;
     }
 
     /**
@@ -53,5 +58,31 @@ public class CmsRewriteAliasFilter {
     public String getSiteRoot() {
 
         return m_siteRoot;
+    }
+
+    /**
+     * Sets the id of the rewrite alias we want.<p>
+     * 
+     * @param id a rewrite alias id
+     *  
+     * @return this filter 
+     */
+    public CmsRewriteAliasFilter setId(CmsUUID id) {
+
+        m_id = id;
+        return this;
+    }
+
+    /**
+     * Sets the site root to use for filtering.<p>
+     * 
+     * @param siteRoot the site root 
+     * 
+     * @return this filter 
+     */
+    public CmsRewriteAliasFilter setSiteRoot(String siteRoot) {
+
+        m_siteRoot = siteRoot;
+        return this;
     }
 }

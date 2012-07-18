@@ -155,7 +155,7 @@ public class CmsAliasManager {
      */
     public List<CmsRewriteAlias> getRewriteAliases(CmsObject cms, String siteRoot) throws CmsException {
 
-        CmsRewriteAliasFilter filter = new CmsRewriteAliasFilter(siteRoot);
+        CmsRewriteAliasFilter filter = new CmsRewriteAliasFilter().setSiteRoot(siteRoot);
         List<CmsRewriteAlias> result = m_securityManager.getRewriteAliases(cms.getRequestContext(), filter);
         return result;
     }

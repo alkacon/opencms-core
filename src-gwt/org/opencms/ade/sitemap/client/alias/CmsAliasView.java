@@ -248,6 +248,8 @@ public class CmsAliasView extends Composite {
         List<CmsPushButton> buttons = new ArrayList<CmsPushButton>();
         buttons.add(m_cancelButton);
         buttons.add(m_saveButton);
+        buttons.add(m_downloadButton);
+        buttons.add(m_uploadButton);
         return buttons;
     }
 
