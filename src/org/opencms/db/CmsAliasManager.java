@@ -31,7 +31,6 @@ import au.com.bytecode.opencsv.CSVParser;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasImportStatus;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
@@ -40,7 +39,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -182,88 +181,17 @@ public class CmsAliasManager {
      * @param cms the current CMS context  
      * @param siteRoot the site root to check 
      * @return true if the user from the CMS context is allowed to mass edit the alias table 
-     * 
-     * @throws CmsException if something goes wrong 
      */
-    public boolean hasPermissionsForMassEdit(CmsObject cms, String siteRoot) throws CmsException {
+    public boolean hasPermissionsForMassEdit(CmsObject cms, String siteRoot) {
 
         String originalSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             cms.getRequestContext().setSiteRoot(siteRoot);
-            CmsResource siteRootRes = cms.readResource("/");
-            return cms.hasPermissions(siteRootRes, CmsPermissionSet.ACCESS_CONTROL, false, CmsResourceFilter.DEFAULT);
+            return OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.ADMINISTRATOR, "/");
         } finally {
             cms.getRequestContext().setSiteRoot(originalSiteRoot);
         }
 
-    }
-
-    /**
-     * Imports a single alias.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site root 
-     * @param aliasPath the alias path  
-     * @param vfsPath the VFS path 
-     * @param mode the alias mode
-     *  
-     * @return the result of the import
-     *  
-     * @throws CmsException if something goes wrong 
-     */
-    public synchronized CmsAliasImportResult importAlias(
-        CmsObject cms,
-        String siteRoot,
-        String aliasPath,
-        String vfsPath,
-        CmsAliasMode mode) throws CmsException {
-
-        CmsResource resource;
-        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
-        try {
-            cms.getRequestContext().setSiteRoot(siteRoot);
-            resource = cms.readResource(vfsPath);
-        } catch (CmsException e) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasImportError, messageImportCantReadResource(
-                locale,
-                vfsPath), aliasPath, vfsPath, mode);
-        } finally {
-            cms.getRequestContext().setSiteRoot(originalSiteRoot);
-        }
-        if (!CmsAlias.ALIAS_PATTERN.matcher(aliasPath).matches()) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasImportError, messageImportInvalidAliasPath(
-                locale,
-                aliasPath), aliasPath, vfsPath, mode);
-        }
-        List<CmsAlias> maybeAlias = getAliasesForPath(cms, siteRoot, aliasPath);
-        if (maybeAlias.isEmpty()) {
-            CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
-            m_securityManager.addAlias(cms.getRequestContext(), newAlias);
-            touch(cms, resource);
-            return new CmsAliasImportResult(
-                CmsAliasImportStatus.aliasNew,
-                messageImportOk(locale),
-                aliasPath,
-                vfsPath,
-                mode);
-        } else {
-            CmsAlias existingAlias = maybeAlias.get(0);
-            CmsAliasFilter deleteFilter = new CmsAliasFilter(
-                siteRoot,
-                existingAlias.getAliasPath(),
-                existingAlias.getStructureId());
-            m_securityManager.deleteAliases(cms.getRequestContext(), deleteFilter);
-            CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
-            m_securityManager.addAlias(cms.getRequestContext(), newAlias);
-            touch(cms, resource);
-            return new CmsAliasImportResult(
-                CmsAliasImportStatus.aliasChanged,
-                messageImportUpdate(locale),
-                aliasPath,
-                vfsPath,
-                mode);
-        }
     }
 
     /**
@@ -328,6 +256,7 @@ public class CmsAliasManager {
     public void saveRewriteAliases(CmsObject cms, String siteRoot, List<CmsRewriteAlias> newAliases)
     throws CmsException {
 
+        checkPermissionsForMassEdit(cms, siteRoot);
         m_securityManager.saveRewriteAliases(cms.getRequestContext(), siteRoot, newAliases);
     }
 
@@ -388,14 +317,75 @@ public class CmsAliasManager {
      */
     protected void checkPermissionsForMassEdit(CmsObject cms) throws CmsException {
 
-        // read site root folder and check if we have control permissions on it  
-        CmsResource siteRootRes = cms.readResource("/");
-        m_securityManager.checkPermissions(
-            cms.getRequestContext(),
-            siteRootRes,
-            CmsPermissionSet.ACCESS_CONTROL,
-            false,
-            CmsResourceFilter.DEFAULT);
+        OpenCms.getRoleManager().checkRoleForResource(cms, CmsRole.ADMINISTRATOR, "/");
+    }
+
+    /**
+     * Imports a single alias.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param siteRoot the site root 
+     * @param aliasPath the alias path  
+     * @param vfsPath the VFS path 
+     * @param mode the alias mode
+     *  
+     * @return the result of the import
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    protected synchronized CmsAliasImportResult importAlias(
+        CmsObject cms,
+        String siteRoot,
+        String aliasPath,
+        String vfsPath,
+        CmsAliasMode mode) throws CmsException {
+
+        CmsResource resource;
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot(siteRoot);
+            resource = cms.readResource(vfsPath);
+        } catch (CmsException e) {
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasImportError, messageImportCantReadResource(
+                locale,
+                vfsPath), aliasPath, vfsPath, mode);
+        } finally {
+            cms.getRequestContext().setSiteRoot(originalSiteRoot);
+        }
+        if (!CmsAlias.ALIAS_PATTERN.matcher(aliasPath).matches()) {
+            return new CmsAliasImportResult(CmsAliasImportStatus.aliasImportError, messageImportInvalidAliasPath(
+                locale,
+                aliasPath), aliasPath, vfsPath, mode);
+        }
+        List<CmsAlias> maybeAlias = getAliasesForPath(cms, siteRoot, aliasPath);
+        if (maybeAlias.isEmpty()) {
+            CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
+            m_securityManager.addAlias(cms.getRequestContext(), newAlias);
+            touch(cms, resource);
+            return new CmsAliasImportResult(
+                CmsAliasImportStatus.aliasNew,
+                messageImportOk(locale),
+                aliasPath,
+                vfsPath,
+                mode);
+        } else {
+            CmsAlias existingAlias = maybeAlias.get(0);
+            CmsAliasFilter deleteFilter = new CmsAliasFilter(
+                siteRoot,
+                existingAlias.getAliasPath(),
+                existingAlias.getStructureId());
+            m_securityManager.deleteAliases(cms.getRequestContext(), deleteFilter);
+            CmsAlias newAlias = new CmsAlias(resource.getStructureId(), siteRoot, aliasPath, mode);
+            m_securityManager.addAlias(cms.getRequestContext(), newAlias);
+            touch(cms, resource);
+            return new CmsAliasImportResult(
+                CmsAliasImportStatus.aliasChanged,
+                messageImportUpdate(locale),
+                aliasPath,
+                vfsPath,
+                mode);
+        }
     }
 
     /**
@@ -502,6 +492,25 @@ public class CmsAliasManager {
         }
         returnValue.setLine(line);
         return returnValue;
+    }
+
+    /**
+     * Checks that the user has permissions for a mass edit operation in a given site.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param siteRoot the site for which the permissions should be checked 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private void checkPermissionsForMassEdit(CmsObject cms, String siteRoot) throws CmsException {
+
+        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot(siteRoot);
+            checkPermissionsForMassEdit(cms);
+        } finally {
+            cms.getRequestContext().setSiteRoot(originalSiteRoot);
+        }
     }
 
     /**
