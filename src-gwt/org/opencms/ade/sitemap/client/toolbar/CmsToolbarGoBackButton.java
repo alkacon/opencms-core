@@ -127,4 +127,5 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
         }
 
     }
+
 }

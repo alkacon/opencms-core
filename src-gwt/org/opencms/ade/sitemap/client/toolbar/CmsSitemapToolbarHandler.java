@@ -29,6 +29,7 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsDisableable;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
@@ -38,7 +39,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -112,6 +113,18 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
         if (m_contextMenuCommands == null) {
             I_CmsContextMenuCommandInitializer initializer = GWT.create(I_CmsContextMenuCommandInitializer.class);
             m_contextMenuCommands = initializer.initCommands();
+            List<String> toRemove = new ArrayList<String>();
+            for (Map.Entry<String, I_CmsContextMenuCommand> entry : m_contextMenuCommands.entrySet()) {
+                I_CmsContextMenuCommand command = entry.getValue();
+                if ((command != null)
+                    && (command instanceof I_CmsDisableable)
+                    && ((I_CmsDisableable)command).isDisabled()) {
+                    toRemove.add(entry.getKey());
+                }
+            }
+            for (String removeKey : toRemove) {
+                m_contextMenuCommands.remove(removeKey);
+            }
         }
         return m_contextMenuCommands;
     }
@@ -156,17 +169,7 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
     @Override
     public List<I_CmsContextMenuEntry> transformEntries(List<CmsContextMenuEntryBean> menuBeans, CmsUUID structureId) {
 
-        // TODO: do this with server side rules!!
         List<I_CmsContextMenuEntry> result = super.transformEntries(menuBeans, structureId);
-        if (!CmsSitemapView.getInstance().getController().getData().canEditAliases()) {
-            Iterator<I_CmsContextMenuEntry> it = result.iterator();
-            while (it.hasNext()) {
-                I_CmsContextMenuEntry entry = it.next();
-                if (entry.getName().equals(CmsAliasDialog.class.getName())) {
-                    it.remove();
-                }
-            }
-        }
         return result;
     }
 

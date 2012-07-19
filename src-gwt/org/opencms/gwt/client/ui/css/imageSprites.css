@@ -11,12 +11,12 @@
     vertical-align: middle;
 }
 @sprite .cmsState-down .menuIcon, .cmsState-up-hovering .menuIcon, .cmsState-down-hovering .menuIcon{
-    gwt-image: "bigIcons.menuBigIconActive";
+    gwt-image: "icons.menuIconActive";
     display: inline-block;
     vertical-align: middle;
 }
 @sprite .cmsState-up .menuIcon, .cmsState-up-disabled .menuIcon, .cmsState-down-disabled .menuIcon{
-    gwt-image: "bigIcons.menuBigIconDeactivated";
+    gwt-image: "icons.menuIconDeactivated";
     display: inline-block;
     vertical-align: middle;
 }
@@ -70,6 +70,8 @@
     display: inline-block;
     vertical-align: middle;
 }
+
+
 @sprite .cmsState-down .propertyIcon, .cmsState-up-hovering .propertyIcon, .cmsState-down-hovering .propertyIcon{
     gwt-image: "icons.propertyIconActive";
     display: inline-block;
@@ -80,16 +82,51 @@
     display: inline-block;
     vertical-align: middle;
 }
+
 @sprite .cmsState-down .searchIcon, .cmsState-up-hovering .searchIcon, .cmsState-down-hovering .searchIcon{
 	gwt-image: "icons.searchIconActive";
 	display: inline-block;
 	vertical-align: middle;
 }
+
+
 @sprite .cmsState-up .searchIcon, .cmsState-down-disabled .searchIcon, .cmsState-up-disabled .searchIcon{
 	gwt-image: "icons.searchIconDeactivated";
 	display: inline-block;
 	vertical-align: middle;
 }
+
+@sprite .cmsState-down .previewIcon, .cmsState-up-hovering .previewIcon, .cmsState-down-hovering .previewIcon {
+	gwt-image: "icons.previewIconActive";
+	display: inline-block;
+	vertical-align: middle;
+}
+
+@sprite .cmsState-up .previewIcon, .cmsState-down-disabled .previewIcon, .cmsState-up-disabled .previewIcon {
+	gwt-image: "icons.previewIconDeactivated";
+	display: inline-block;
+	vertical-align: middle;
+}
+
+@sprite .cmsState-down .checkIcon, .cmsState-up-hovering .checkIcon, .cmsState-down-hovering .checkIcon {
+	gwt-image: "icons.checkIconActive";
+	display: inline-block;
+	vertical-align: middle;
+}
+
+@sprite .cmsState-up .checkIcon, .cmsState-down-disabled .checkIcon, .cmsState-up-disabled .checkIcon {
+	gwt-image: "icons.checkIconDeactivated";
+	display: inline-block;
+	vertical-align: middle;
+}
+
+
+
+
+
+
+
+
 @sprite .cmsState-down .uploadIcon, .cmsState-up-hovering .uploadIcon, .cmsState-down-hovering .uploadIcon{
     gwt-image: "icons.uploadIconActive";
     display: inline-block;

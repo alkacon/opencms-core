@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,8 +28,7 @@
 package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
-import org.opencms.ade.sitemap.client.alias.CmsAliasEditor;
-import org.opencms.gwt.client.I_CmsDisableable;
+import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
@@ -39,16 +38,9 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
 /**
- * The alias dialog context menu command.<p>
+ * Context menu entry for the 'Refresh' action.<p>
  */
-public final class CmsAliasDialog implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand, I_CmsDisableable {
-
-    /**
-     * Constructor.<p>
-     */
-    private CmsAliasDialog() {
-
-    }
+public class CmsRefreshAction implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
 
     /**
      * Returns the context menu command according to 
@@ -58,7 +50,7 @@ public final class CmsAliasDialog implements I_CmsHasContextMenuCommand, I_CmsCo
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
 
-        return new CmsAliasDialog();
+        return new CmsRefreshAction();
     }
 
     /**
@@ -66,8 +58,8 @@ public final class CmsAliasDialog implements I_CmsHasContextMenuCommand, I_CmsCo
      */
     public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-        CmsAliasEditor editor = new CmsAliasEditor();
-        editor.show();
+        CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+        controller.updateEntry(controller.getData().getRoot().getId());
     }
 
     /**
@@ -75,7 +67,7 @@ public final class CmsAliasDialog implements I_CmsHasContextMenuCommand, I_CmsCo
      */
     public String getCommandIconClass() {
 
-        return I_CmsImageBundle.INSTANCE.contextMenuIcons().seo();
+        return I_CmsImageBundle.INSTANCE.contextMenuIcons().refresh();
     }
 
     /**
@@ -95,14 +87,6 @@ public final class CmsAliasDialog implements I_CmsHasContextMenuCommand, I_CmsCo
     public boolean hasItemWidget() {
 
         return false;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.I_CmsDisableable#isDisabled()
-     */
-    public boolean isDisabled() {
-
-        return !CmsSitemapView.getInstance().getController().getData().canEditAliases();
     }
 
 }

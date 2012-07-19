@@ -20,7 +20,6 @@
 	gwt-image: "icons.seoIcon";
 }
 
-
 @sprite .cmsMenuItem .move{
     gwt-image: "icons.moveIconActive";
 }
@@ -39,9 +38,15 @@
 @sprite .cmsMenuItem .refresh{
     gwt-image: "icons.refreshIcon";
 }
+
 @sprite .cmsMenuItem .replace{
-    gwt-image: "icons.refreshIcon";
+    gwt-image: "icons.replaceIcon";
 }
+
+@sprite .cmsMenuItem .rename {
+	gwt-image: "icons.renameIcon";
+}
+
 @sprite .cmsMenuItem .gotoPage{
     gwt-image: "icons.gotoPageIcon";
 }

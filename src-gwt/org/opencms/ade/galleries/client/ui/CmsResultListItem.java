@@ -93,12 +93,12 @@ public class CmsResultListItem extends CmsListItem {
         // add  preview button
         if (hasPreview) {
             m_previewButton = createButton(
-                I_CmsImageBundle.INSTANCE.style().searchIcon(),
+                I_CmsImageBundle.INSTANCE.style().previewIcon(),
                 Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
             resultItemWidget.addButton(m_previewButton);
         }
         m_selectButton = createButton(
-            I_CmsImageBundle.INSTANCE.style().addIcon(),
+            I_CmsImageBundle.INSTANCE.style().checkIcon(),
             Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
@@ -108,6 +108,18 @@ public class CmsResultListItem extends CmsListItem {
         if (!resultItem.isReleasedAndNotExpired()) {
             addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expired());
         }
+    }
+
+    /**
+     * Creates the delete button for this item.<p>
+     * 
+     * @return the delete button
+     */
+    public static CmsPushButton createDeleteButton() {
+
+        return createButton(
+            I_CmsImageBundle.INSTANCE.style().deleteIcon(),
+            Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
     }
 
     /**
@@ -125,18 +137,6 @@ public class CmsResultListItem extends CmsListItem {
         result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         result.setTitle(title);
         return result;
-    }
-
-    /**
-     * Creates the delete button for this item.<p>
-     * 
-     * @return the delete button
-     */
-    public static CmsPushButton createDeleteButton() {
-
-        return createButton(
-            I_CmsImageBundle.INSTANCE.style().deleteIcon(),
-            Messages.get().key(Messages.GUI_RESULT_BUTTON_DELETE_0));
     }
 
     //    /**

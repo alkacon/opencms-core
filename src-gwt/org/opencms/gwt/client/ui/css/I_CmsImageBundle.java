@@ -140,16 +140,22 @@ public interface I_CmsImageBundle extends ClientBundle {
         String refresh();
 
         /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String replace();
-
-        /** Access method.<p>
          *
          * @return the CSS class name
          */
         String remove();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String rename();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String replace();
 
         /** Access method.<p>
          *
@@ -188,6 +194,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String changeOrderIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String checkIcon();
 
         /** Access method.<p>
          *
@@ -242,6 +254,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String opencmsSymbol();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String previewIcon();
 
         /** Access method.<p>
          *

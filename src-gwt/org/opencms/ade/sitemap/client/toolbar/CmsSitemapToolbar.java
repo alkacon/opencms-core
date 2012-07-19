@@ -32,7 +32,6 @@ import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -61,15 +60,10 @@ public class CmsSitemapToolbar extends CmsToolbar {
         addLeft(new CmsToolbarPublishButton(this, controller));
         m_newMenuButton = new CmsToolbarNewButton(this, controller);
         if (controller.isEditable() && (controller.getData().getDefaultNewElementInfo() != null)) {
-            addLeft(m_newMenuButton);
             addLeft(new CmsToolbarClipboardButton(this, controller));
+            addLeft(m_newMenuButton);
         }
         addLeft(new CmsToolbarShowNonNavigationButton());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(controller.getData().getParentSitemap())) {
-            addRight(new CmsToolbarGoToParentButton(this, controller));
-        }
-        addRight(new CmsToolbarRefreshButton(this, controller));
-        addRight(new CmsToolbarGoBackButton(this, controller));
         ClickHandler clickHandler = new ClickHandler() {
 
             /**
@@ -85,6 +79,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
             controller.getData().getContextMenuEntries()));
         m_contextMenuButton.addClickHandler(clickHandler);
         addRight(m_contextMenuButton);
+        addRight(new CmsToolbarGoBackButton(this, controller));
     }
 
     /**

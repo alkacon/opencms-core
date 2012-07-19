@@ -63,6 +63,9 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
                 command = getContextMenuCommands().get(name);
             }
+            if (command == null) {
+                continue;
+            }
             CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, command);
             entry.setBean(bean);
             if (bean.hasSubMenu()) {
