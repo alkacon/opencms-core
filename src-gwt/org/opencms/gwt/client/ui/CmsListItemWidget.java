@@ -36,7 +36,6 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemWidgetCss;
 import org.opencms.gwt.client.ui.input.CmsLabel;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
@@ -83,6 +82,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -224,9 +224,6 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /** Text metrics key. */
     private static final String TM_SUBTITLE = "Subtitle";
 
-    /** Text metrics key. */
-    private static final String TM_TITLE = "Title";
-
     /** The ui-binder instance for this class. */
     private static I_CmsListItemWidgetUiBinder uiBinder = GWT.create(I_CmsListItemWidgetUiBinder.class);
 
@@ -252,16 +249,20 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /** The open-close button for the additional info. */
     protected CmsPushButton m_openClose;
 
+    /** A label which is optionally displayed after the subtitle. */
+    protected InlineLabel m_shortExtraInfoLabel;
+
     /** Sub title label. */
     @UiField
     protected CmsLabel m_subtitle;
 
-    /** A label which is optionally displayed after the subtitle. */
-    protected CmsLabel m_subtitleSuffix;
-
     /** Title label. */
     @UiField
     protected CmsLabel m_title;
+
+    /** Container for the title. */
+    @UiField
+    protected FlowPanel m_titleBox;
 
     /** The title row, holding the title and the open-close button for the additional info. */
     @UiField
@@ -318,8 +319,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         initWidget(uiBinder.createAndBindUi(this));
         m_handlerRegistrations = new ArrayList<HandlerRegistration>();
         m_backgroundStyle = new CmsStyleVariable(this);
-        m_subtitleSuffix = new CmsLabel();
-        m_subtitleSuffix.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().inlineBlock());
+        m_shortExtraInfoLabel = new InlineLabel();
         init(infoBean);
     }
 
@@ -518,6 +518,16 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
+     * Returns the label after the subtitle.<p>
+     * 
+     * @return the label after the subtitle
+     */
+    public InlineLabel getShortExtraInfoLabel() {
+
+        return m_shortExtraInfoLabel;
+    }
+
+    /**
      * Returns the subtitle label.<p>
      *
      * @return the subtitle label
@@ -525,16 +535,6 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     public String getSubtitleLabel() {
 
         return m_subtitle.getText();
-    }
-
-    /**
-     * Returns the label after the subtitle.<p>
-     * 
-     * @return the label after the subtitle
-     */
-    public CmsLabel getSubTitleSuffix() {
-
-        return m_subtitleSuffix;
     }
 
     /**
@@ -681,6 +681,27 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
+     * Sets the extra info text, and hides or displays the extra info label depending on whether
+     * the text is null or not null.<p>
+     * 
+     * @param text the text to put into the subtitle suffix 
+     */
+    public void setExtraInfo(String text) {
+
+        if (text == null) {
+            if (m_shortExtraInfoLabel.getParent() != null) {
+                m_shortExtraInfoLabel.removeFromParent();
+            }
+        } else {
+            if (m_shortExtraInfoLabel.getParent() == null) {
+                m_titleBox.add(m_shortExtraInfoLabel);
+            }
+            m_shortExtraInfoLabel.setText(text);
+        }
+        updateTruncation();
+    }
+
+    /**
      * Sets the icon of this item.<p>
      * 
      * @param image the image to use as icon
@@ -810,27 +831,6 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
-     * Sets the subtitle suffix text, and hides or displays the subtitle suffix depending on whether
-     * the text is null or not null.<p>
-     * 
-     * @param text the text to put into the subtitle suffix 
-     */
-    public void setSubtitleSuffixText(String text) {
-
-        if (text == null) {
-            if (m_subtitleSuffix.getParent() != null) {
-                m_subtitleSuffix.removeFromParent();
-            }
-        } else {
-            if (m_subtitleSuffix.getParent() == null) {
-                m_titleRow.add(m_subtitleSuffix);
-            }
-            m_subtitleSuffix.setText(text);
-        }
-        updateTruncation();
-    }
-
-    /**
      * Enables or disabled editing of the title field.<p>
      * 
      * @param editable if true, makes the title field editable 
@@ -891,7 +891,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /**
      * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
      */
-    public void truncate(String textMetricsPrefix, int widgetWidth) {
+    public void truncate(final String textMetricsPrefix, final int widgetWidth) {
 
         m_childWidth = widgetWidth;
         m_tmPrefix = textMetricsPrefix;
@@ -906,24 +906,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
             // IE fails with a JS error if the width is negative 
             width = 0;
         }
-        m_title.truncate(textMetricsPrefix + TM_TITLE, width - 10);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_subtitleSuffix.getText())) {
-            m_subtitleSuffix.getElement().getStyle().clearWidth();
-            int suffixWidth = m_subtitleSuffix.getOffsetWidth();
-            CmsDebugLog.getInstance().printLine("suffix '" + m_subtitleSuffix.getText() + "' width: " + suffixWidth);
-            if (suffixWidth <= 0) {
-                // in case the suffix is not rendered yet and no width is available, use truncation
-                suffixWidth = 100;
-                m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", suffixWidth);
-            }
-            if (suffixWidth > 200) {
-                suffixWidth = 200;
-                m_subtitleSuffix.truncate(textMetricsPrefix + "_STSUFFIX", suffixWidth);
-            }
-            m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - suffixWidth - 10);
-        } else {
-            m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width - 10);
-        }
+        m_titleBox.setWidth(Math.max(0, width - 30) + "px");
+        m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width);
         for (Widget addInfo : m_additionalInfo) {
             ((AdditionalInfoItem)addInfo).truncate(textMetricsPrefix, widgetWidth - 10);
         }
@@ -995,7 +979,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
                 }
             }
         });
-        m_titleRow.insert(box, 1);
+        m_titleBox.insert(box, 2);
         box.setFocus(true);
     }
 
@@ -1009,7 +993,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
                 I_CmsImageBundle.INSTANCE.style().triangleRight(),
                 I_CmsImageBundle.INSTANCE.style().triangleDown());
             m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-            m_titleRow.insert(m_openClose, 0);
+            m_titleBox.insert(m_openClose, 0);
             m_openClose.addClickHandler(new ClickHandler() {
 
                 /**

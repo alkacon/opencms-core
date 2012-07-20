@@ -143,7 +143,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         m_decoratedPanel.addDecorationBoxStyle(CSS.sitemapEntryDecoration());
         m_detailPageLabelTitleGenerator = new DetailPageLabelTitleGenerator();
         getListItemWidget().setUnselectable();
-        getListItemWidget().getSubTitleSuffix().setTitleGenerator(m_detailPageLabelTitleGenerator);
         getListItemWidget().addOpenHandler(new OpenHandler<CmsListItemWidget>() {
 
             public void onOpen(OpenEvent<CmsListItemWidget> event) {
@@ -426,6 +425,27 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.CmsListItem#getMoveHandle()
+     */
+    @Override
+    public I_CmsDragHandle getMoveHandle() {
+
+        CmsSitemapHoverbar hoverbar = getHoverbar();
+        if (hoverbar != null) {
+            int count = hoverbar.getWidgetCount();
+            if (count > 0) {
+                for (int i = 0; i < count; i++) {
+                    Widget w = hoverbar.getWidget(i);
+                    if (w instanceof I_CmsDragHandle) {
+                        return (I_CmsDragHandle)w;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.tree.CmsTreeItem#getPath()
      */
     @Override
@@ -621,9 +641,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         }
         m_detailPageLabelTitleGenerator.setDetailPageTitle(suffixTitle);
         getListItemWidget().updateTruncation();
-        CmsLabel label = getListItemWidget().getSubTitleSuffix();
+        Widget label = getListItemWidget().getShortExtraInfoLabel();
         label.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().subtitleSuffix());
-        getListItemWidget().setSubtitleSuffixText(text);
+        getListItemWidget().setExtraInfo(text);
     }
 
     /**
@@ -726,27 +746,6 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         label.addStyleName(CSS.marker());
         getListItemWidget().addButton(label);
         return label;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsListItem#getMoveHandle()
-     */
-    @Override
-    public I_CmsDragHandle getMoveHandle() {
-
-        CmsSitemapHoverbar hoverbar = getHoverbar();
-        if (hoverbar != null) {
-            int count = hoverbar.getWidgetCount();
-            if (count > 0) {
-                for (int i = 0; i < count; i++) {
-                    Widget w = hoverbar.getWidget(i);
-                    if (w instanceof I_CmsDragHandle) {
-                        return (I_CmsDragHandle)w;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     /**

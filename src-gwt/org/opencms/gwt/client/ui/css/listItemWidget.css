@@ -32,6 +32,7 @@ li div.itemContainer.cmsHovering{
 	font-weight: bold;
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
+	display: inline-block; 
 }
 
 @external navMode;
