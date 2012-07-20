@@ -35,6 +35,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
+    /** Path of the base content CSS. */
+    public static final String BASE_CONTENT_CSS = "/system/workplace/editors/tinymce/base_content.css";
+
     /** The translation of the generic widget button names to TinyMCE specific button names. */
     public static final String BUTTON_TRANSLATION =
     /* Row 1*/
@@ -223,10 +226,13 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                     LOG.debug(e.getLocalizedMessage(), e);
                 }
             }
-            if (cssConfigured) {
-                result.put("content_css", OpenCms.getLinkManager().substituteLink(cms, cssPath));
-            }
 
+            List<String> contentCssLinks = new ArrayList<String>();
+            contentCssLinks.add(OpenCms.getLinkManager().substituteLink(cms, BASE_CONTENT_CSS));
+            if (cssConfigured) {
+                contentCssLinks.add(OpenCms.getLinkManager().substituteLink(cms, cssPath));
+            }
+            result.put("content_css", CmsStringUtil.listAsString(contentCssLinks, ","));
             if (getHtmlWidgetOption().showStylesFormat()) {
                 try {
                     CmsFile file = cms.readFile(getHtmlWidgetOption().getStylesFormatPath());
