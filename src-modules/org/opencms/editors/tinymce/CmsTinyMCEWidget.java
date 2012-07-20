@@ -131,9 +131,8 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append(id);
         result.append("\" id=\"ta_");
         result.append(id);
-        result.append("\" style=\"height: ");
-        result.append(getHtmlWidgetOption().getEditorHeight());
-        result.append(";\" rows=\"20\" cols=\"60\">");
+        result.append("\" style=\"");
+        result.append("\" rows=\"20\" cols=\"60\">");
         result.append(CmsEncoder.escapeXml(value));
         result.append("</textarea>");
         result.append("<input type=\"hidden\" name=\"");
@@ -145,6 +144,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append("\">");
 
         result.append("<script type=\"text/javascript\">\n");
+
         result.append("initTinyMCE(").append(getTinyMceConfiguration(cms, param)).append(");\n");
         result.append("contentFields[contentFields.length] = document.getElementById(\"").append(id).append("\");\n");
         result.append("</script>\n");
@@ -176,6 +176,12 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         Properties displayOptions = options.getDisplayOptions(cms);
         try {
             result.put("elements", "ta_" + param.getId());
+            result.put("theme_advanced_row_height", 0);
+            String editorHeight = getHtmlWidgetOption().getEditorHeight();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
+                editorHeight = editorHeight.replaceAll("px", "");
+                result.put("height", editorHeight);
+            }
             if (options.showElement("gallery.enhancedoptions", displayOptions)) {
                 result.put("cmsGalleryEnhancedOptions", true);
             }
