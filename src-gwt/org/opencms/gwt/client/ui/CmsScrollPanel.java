@@ -82,148 +82,6 @@ public class CmsScrollPanel extends ScrollPanel {
         }
     }
 
-    /** The prevent outer scrolling handler. */
-    private CmsFocusedScrollingHandler m_focusedScrollingHandler;
-
-    /** The scroll handler registration. */
-    private HandlerRegistration m_handlerRegistration;
-
-    /** The preview handler registration. */
-    protected HandlerRegistration m_previewHandlerRegistration;
-
-    /** The button to resize the scrolling panel. */
-    private ResizeButton m_resize;
-
-    /** The start Y coordination. */
-    private int m_clientY;
-    /** The start height. */
-    private double m_oldheight;
-
-    /** The default height. */
-    private double m_defaultHeight = -1;
-
-    /**
-     * Constructor.<p>
-     * 
-     * @see com.google.gwt.user.client.ui.ScrollPanel#ScrollPanel()
-     */
-    public CmsScrollPanel() {
-
-        m_resize = new ResizeButton();
-
-    }
-
-    /**
-     * Constructor to be used by {@link org.opencms.gwt.client.ui.CmsScrollPanelImpl}.<p>
-     * 
-     * @param root the root element of the widget
-     * @param scrollabel the scrollable element of the widget
-     * @param container the container element of the widget
-     */
-    protected CmsScrollPanel(Element root, Element scrollabel, Element container) {
-
-        super(root, scrollabel, container);
-        m_resize = new ResizeButton();
-
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.ScrollPanel#onDetach()
-     */
-    @Override
-    protected void onDetach() {
-
-        super.onDetach();
-        m_resize.onDetach();
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.ScrollPanel#onAttach()
-     */
-    @Override
-    protected void onAttach() {
-
-        super.onAttach();
-        m_resize.onAttach();
-
-    }
-
-    /**
-     * Enables or disables the focused scrolling feature.<p>
-     * Focused scrolling is enabled by default.<p>
-     * 
-     * @param enable <code>true</code> to enable the focused scrolling feature
-     */
-    public void enableFocusedScrolling(boolean enable) {
-
-        if (enable) {
-            if (m_handlerRegistration == null) {
-                m_handlerRegistration = addScrollHandler(new ScrollHandler() {
-
-                    public void onScroll(ScrollEvent event) {
-
-                        ensureFocusedScrolling();
-                    }
-                });
-            }
-        } else if (m_handlerRegistration != null) {
-            m_handlerRegistration.removeHandler();
-            m_handlerRegistration = null;
-        }
-    }
-
-    /**
-     * Ensures the focused scrolling event preview handler is registered.<p>
-     */
-    protected void ensureFocusedScrolling() {
-
-        if (m_focusedScrollingHandler == null) {
-            m_focusedScrollingHandler = CmsFocusedScrollingHandler.installFocusedScrollingHandler(this);
-        } else if (!m_focusedScrollingHandler.isRegistered()) {
-            m_focusedScrollingHandler.register();
-        }
-    }
-
-    /**
-     * Sets the scrollpanel resizeable.<p> 
-     * 
-     * @param resize true if the scrollpanel should be resizeable.
-     */
-    public void setResizable(boolean resize) {
-
-        if (m_resize != null) {
-            if (resize) {
-                getElement().appendChild(m_resize.getElement());
-                adopt(m_resize);
-                m_resize.addMouseDownHandler(new MouseDownHandler() {
-
-                    public void onMouseDown(MouseDownEvent event) {
-
-                        setStartParameters(event);
-                        CmsDebugLog.getInstance().printLine("Registering preview handler");
-                        if (m_previewHandlerRegistration != null) {
-                            m_previewHandlerRegistration.removeHandler();
-                        }
-                        m_previewHandlerRegistration = Event.addNativePreviewHandler(new ResizeEventPreviewHandler());
-                    }
-                });
-            } else {
-                m_resize.removeFromParent();
-            }
-        }
-    }
-
-    /**
-     * Sets the start parameters of the resize event.<p>
-     * 
-     * @param event
-     */
-    protected void setStartParameters(MouseDownEvent event) {
-
-        m_oldheight = Double.parseDouble(getElement().getStyle().getHeight().replace("px", ""));
-        m_clientY = event.getClientY();
-    }
-
     /**
      * Drag and drop event preview handler.<p>
      * 
@@ -264,6 +122,76 @@ public class CmsScrollPanel extends ScrollPanel {
 
     }
 
+    /** The preview handler registration. */
+    protected HandlerRegistration m_previewHandlerRegistration;
+
+    /** The start Y coordination. */
+    private int m_clientY;
+
+    /** The default height. */
+    private double m_defaultHeight = -1;
+
+    /** The prevent outer scrolling handler. */
+    private CmsFocusedScrollingHandler m_focusedScrollingHandler;
+
+    /** The scroll handler registration. */
+    private HandlerRegistration m_handlerRegistration;
+
+    /** The start height. */
+    private double m_oldheight;
+
+    /** The button to resize the scrolling panel. */
+    private ResizeButton m_resize;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @see com.google.gwt.user.client.ui.ScrollPanel#ScrollPanel()
+     */
+    public CmsScrollPanel() {
+
+        m_resize = new ResizeButton();
+
+    }
+
+    /**
+     * Constructor to be used by {@link org.opencms.gwt.client.ui.CmsScrollPanelImpl}.<p>
+     * 
+     * @param root the root element of the widget
+     * @param scrollabel the scrollable element of the widget
+     * @param container the container element of the widget
+     */
+    protected CmsScrollPanel(Element root, Element scrollabel, Element container) {
+
+        super(root, scrollabel, container);
+        m_resize = new ResizeButton();
+
+    }
+
+    /**
+     * Enables or disables the focused scrolling feature.<p>
+     * Focused scrolling is enabled by default.<p>
+     * 
+     * @param enable <code>true</code> to enable the focused scrolling feature
+     */
+    public void enableFocusedScrolling(boolean enable) {
+
+        if (enable) {
+            if (m_handlerRegistration == null) {
+                m_handlerRegistration = addScrollHandler(new ScrollHandler() {
+
+                    public void onScroll(ScrollEvent event) {
+
+                        ensureFocusedScrolling();
+                    }
+                });
+            }
+        } else if (m_handlerRegistration != null) {
+            m_handlerRegistration.removeHandler();
+            m_handlerRegistration = null;
+        }
+    }
+
     /**
      * Sets the default height of the scrolling panel.
      * 
@@ -272,6 +200,68 @@ public class CmsScrollPanel extends ScrollPanel {
     public void setDefaultHeight(double height) {
 
         m_defaultHeight = height;
+    }
+
+    /**
+     * Sets the scrollpanel resizeable.<p> 
+     * 
+     * @param resize true if the scrollpanel should be resizeable.
+     */
+    public void setResizable(boolean resize) {
+
+        if (m_resize != null) {
+            if (resize) {
+                getElement().appendChild(m_resize.getElement());
+                adopt(m_resize);
+                m_resize.addMouseDownHandler(new MouseDownHandler() {
+
+                    public void onMouseDown(MouseDownEvent event) {
+
+                        setStartParameters(event);
+                        CmsDebugLog.getInstance().printLine("Registering preview handler");
+                        if (m_previewHandlerRegistration != null) {
+                            m_previewHandlerRegistration.removeHandler();
+                        }
+                        m_previewHandlerRegistration = Event.addNativePreviewHandler(new ResizeEventPreviewHandler());
+                    }
+                });
+            } else {
+                m_resize.removeFromParent();
+            }
+        }
+    }
+
+    /**
+     * Ensures the focused scrolling event preview handler is registered.<p>
+     */
+    protected void ensureFocusedScrolling() {
+
+        if (m_focusedScrollingHandler == null) {
+            m_focusedScrollingHandler = CmsFocusedScrollingHandler.installFocusedScrollingHandler(this);
+        } else if (!m_focusedScrollingHandler.isRegistered()) {
+            m_focusedScrollingHandler.register();
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.ScrollPanel#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        m_resize.onAttach();
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.ScrollPanel#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        super.onDetach();
+        m_resize.onDetach();
     }
 
     /**
@@ -288,6 +278,17 @@ public class CmsScrollPanel extends ScrollPanel {
             }
         }
         getElement().getStyle().setHeight(newheight, Unit.PX);
+    }
+
+    /**
+     * Sets the start parameters of the resize event.<p>
+     * 
+     * @param event
+     */
+    protected void setStartParameters(MouseDownEvent event) {
+
+        m_oldheight = Double.parseDouble(getElement().getStyle().getHeight().replace("px", ""));
+        m_clientY = event.getClientY();
     }
 
 }
