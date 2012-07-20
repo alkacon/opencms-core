@@ -67,7 +67,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     public static final String NO_SELECTION_TEXT = "%NO_SELECTION_TEXT%";
 
     /** The widget type identifier. */
-    private static final String WIDGET_TYPE = "select";
+    private static final String WIDGET_TYPE = "combo";
 
     /** The ghost value. */
     protected String m_ghostValue;

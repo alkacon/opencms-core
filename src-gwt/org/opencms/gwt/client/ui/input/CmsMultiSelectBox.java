@@ -61,7 +61,7 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
     private static final String TM_OPENER_LABEL = "OpenerLabel";
 
     /** The widget type identifier. */
-    private static final String WIDGET_TYPE = "select";
+    private static final String WIDGET_TYPE = "multiselectbox";
 
     /** The ghost value. */
     protected String m_ghostValue;
@@ -233,12 +233,12 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
 
         String[] values = value.split("\\|");
         List<CmsCheckBox> checkBox = m_multiSelectCell.getCheckbox();
-        for (int i = 0; i < values.length; i++) {
+        for (String value2 : values) {
             Iterator<CmsCheckBox> it = checkBox.iterator();
             int y = 0;
             while (it.hasNext()) {
                 CmsCheckBox chbox = it.next();
-                if (chbox.getText().equals(values[i])) {
+                if (chbox.getText().equals(value2)) {
                     m_multiSelectCell.get(y).setChecked(true);
                 }
                 y++;
