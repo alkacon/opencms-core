@@ -601,6 +601,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage"/>
 			<entry key="GUI_EXPLORER_CONTEXT_DELETE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource" rule="containerpage"/>
+			<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges"/>
 			<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog" rule="containerpage"/>
 			<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage"/>
           </contextmenu>
@@ -838,7 +839,7 @@
     	</menurule>
     	<menurule name="containerpage">
     	  <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
-    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+    	  <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
     	</menurule>
     	<menurule name="sitemap">
     	  <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapActive" />
@@ -847,6 +848,14 @@
     	<menurule name="adecheckfile">
     	    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActiveAndFileAvailable" />
     	    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+    	</menurule>
+    	<menurule name="ade-undochanges">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerPageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNotDeletedNoAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveChangedAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
     	</menurule>
    	  </menurules>
     </explorertypes>

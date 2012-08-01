@@ -1,0 +1,42 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="msg" type="org.opencms.gwt.client.ui.restore.CmsRestoreMessages" />
+	
+	<ui:style>
+		
+		.invisible {
+			display: none;
+		}
+		
+		.confirmLabel {
+			margin-top: 10px; 
+		}
+		
+		.mainPanel {
+			padding: 7px; 
+		}
+		
+		.undoMoveCheckbox {
+			margin-top: 10px;
+		}
+	</ui:style>
+	<g:FlowPanel>
+		<g:FlowPanel ui:field="m_infoBoxContainer"></g:FlowPanel>
+		<g:FlowPanel addStyleNames="{style.mainPanel}">
+			<g:FlowPanel ui:field="m_movedSection" visible="false">
+				<g:Label ui:field="m_movedLabel" />
+				<cmsi:CmsCheckBox addStyleNames="{style.undoMoveCheckbox}" ui:field="m_undoMoveCheckbox" text="{msg.messageUndoMove}" />
+			</g:FlowPanel>
+			<g:Label addStyleNames="{style.confirmLabel}" text="{msg.messageConfirmRestore}"></g:Label>
+		</g:FlowPanel>
+		<g:FlowPanel addStyleNames="{style.invisible}">
+			<cms:CmsPushButton ui:field="m_okButton"  text="{msg.messageRestoreOk}" useMinWidth="true" />
+			<cms:CmsPushButton ui:field="m_cancelButton" text="{msg.messageRestoreCancel}" useMinWidth="true" />
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 

@@ -36,6 +36,7 @@ import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
+import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
@@ -227,6 +228,16 @@ public interface I_CmsVfsService extends RemoteService {
     CmsRenameInfoBean getRenameInfo(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>
+     * 
+     * @param structureId the structure id of the resource 
+     * @return the information for the resource 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsRestoreInfoBean getRestoreInfo(CmsUUID structureId) throws CmsRpcException;
+
+    /**
      * Returns the root entries of the VFS.<p>
      * 
      * @return a list of root entries
@@ -308,6 +319,16 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     String substituteLinkForRootPath(String currentSiteRoot, String rootPath) throws CmsRpcException;
+
+    /**
+     * Undoes the changes to a given resource, i.e. restores its online content to its offline version.<p>
+     * 
+     * @param structureId the structure id of the resource to undo 
+     * @param undoMove true if move operations should be undone
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void undoChanges(CmsUUID structureId, boolean undoMove) throws CmsRpcException;
 
     /**
      * Validates alias paths for a page.<p>

@@ -358,6 +358,24 @@ public final class Messages {
     public static final String GUI_RESOURCE_STATE_UNCHANGED_0 = "GUI_RESOURCE_STATE_UNCHANGED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTORE_CHECKBOX_UNDO_MOVE_0 = "GUI_RESTORE_CHECKBOX_UNDO_MOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTORE_CONFIRM_MESSAGE_0 = "GUI_RESTORE_CONFIRM_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTORE_DIALOG_TITLE_0 = "GUI_RESTORE_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTORE_INFO_OFFLINE_DATE_0 = "GUI_RESTORE_INFO_OFFLINE_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTORE_INFO_ONLINE_DATE_0 = "GUI_RESTORE_INFO_ONLINE_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTORE_RESOURCE_MOVED_2 = "GUI_RESTORE_RESOURCE_MOVED_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SAVE_0 = "GUI_SAVE_0";
 
     /** Message constant for key in the resource bundle. */

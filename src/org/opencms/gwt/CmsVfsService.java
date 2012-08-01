@@ -29,9 +29,11 @@ package org.opencms.gwt;
 
 import org.opencms.ade.galleries.CmsPreviewService;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeBinary;
@@ -53,6 +55,7 @@ import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
+import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -75,6 +78,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -84,8 +88,10 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -446,6 +452,37 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getRestoreInfo(org.opencms.util.CmsUUID)
+     */
+    public CmsRestoreInfoBean getRestoreInfo(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource resource = cms.readResource(structureId);
+            CmsListInfoBean listInfo = getPageInfo(resource);
+            CmsRestoreInfoBean result = new CmsRestoreInfoBean();
+            result.setListInfoBean(listInfo);
+
+            CmsObject onlineCms = OpenCms.initCmsObject(cms);
+            CmsProject onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_NAME);
+            onlineCms.getRequestContext().setCurrentProject(onlineProject);
+            CmsResource onlineResource = onlineCms.readResource(structureId);
+            result.setOnlinePath(onlineResource.getRootPath());
+            result.setOfflinePath(resource.getRootPath());
+
+            String offlineDate = formatDateTime(resource.getDateLastModified());
+            String onlineDate = formatDateTime(onlineResource.getDateLastModified());
+            result.setOfflineDate(offlineDate);
+            result.setOnlineDate(onlineDate);
+            result.setStructureId(structureId);
+            return result;
+        } catch (CmsException e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getRootEntries()
      */
     public List<CmsVfsEntryBean> getRootEntries() throws CmsRpcException {
@@ -674,6 +711,30 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#undoChanges(org.opencms.util.CmsUUID, boolean)
+     */
+    public void undoChanges(CmsUUID structureId, boolean undoMove) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource resource = cms.readResource(structureId);
+            ensureLock(resource);
+            CmsResourceUndoMode mode = undoMove ? CmsResource.UNDO_MOVE_CONTENT : CmsResource.UNDO_CONTENT;
+            String path = cms.getSitePath(resource);
+            cms.undoChanges(path, mode);
+            try {
+                resource = cms.readResource(structureId);
+                path = cms.getSitePath(resource);
+                cms.unlockResource(path);
+            } catch (CmsException e) {
+                LOG.info("Could not unlock resource after undoing changes: " + e.getLocalizedMessage(), e);
+            }
+        } catch (Throwable e) {
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#validateAliases(org.opencms.util.CmsUUID, java.util.Map)
      */
     public Map<String, String> validateAliases(CmsUUID uuid, Map<String, String> aliasPaths) throws CmsRpcException {
@@ -816,6 +877,22 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
         }
+    }
+
+    /**
+     * Formats the date for the current user's locale.<p>
+     * 
+     * @param date the date to format
+     *  
+     * @return the formatted date for the current user's locale 
+     */
+    private String formatDateTime(long date) {
+
+        CmsObject cms = getCmsObject();
+        return CmsDateUtil.getDateTime(
+            new Date(date),
+            DateFormat.MEDIUM,
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
     }
 
     /**
@@ -1316,4 +1393,5 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
                 properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
     }
+
 }
