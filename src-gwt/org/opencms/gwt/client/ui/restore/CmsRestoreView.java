@@ -114,7 +114,7 @@ public class CmsRestoreView extends Composite {
         CmsListItemWidget liWidget = new CmsListItemWidget(restoreInfo.getListInfoBean());
         CmsListItem li = new CmsListItem(liWidget);
         m_infoBoxContainer.add(li);
-        if (restoreInfo.isMoved()) {
+        if (restoreInfo.isMoved() && restoreInfo.canUndoMove()) {
             m_movedLabel.setText(CmsRestoreMessages.messageMoved(
                 restoreInfo.getOnlinePath(),
                 restoreInfo.getOfflinePath()));

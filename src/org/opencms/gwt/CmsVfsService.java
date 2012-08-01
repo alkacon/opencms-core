@@ -475,6 +475,16 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             result.setOfflineDate(offlineDate);
             result.setOnlineDate(onlineDate);
             result.setStructureId(structureId);
+
+            CmsObject offlineRootCms = OpenCms.initCmsObject(cms);
+            offlineRootCms.getRequestContext().setSiteRoot("");
+            CmsObject onlineRootCms = OpenCms.initCmsObject(onlineCms);
+            onlineRootCms.getRequestContext().setSiteRoot("");
+            String parent = CmsResource.getParentFolder(onlineResource.getRootPath());
+            boolean canUndoMove = offlineRootCms.existsResource(parent);
+
+            result.setCanUndoMove(canUndoMove);
+
             return result;
         } catch (CmsException e) {
             error(e);

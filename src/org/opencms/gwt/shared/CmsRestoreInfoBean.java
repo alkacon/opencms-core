@@ -36,6 +36,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsRestoreInfoBean implements IsSerializable {
 
+    /** A flag which indicates whether a move operation can be undone. */
+    private boolean m_canUndoMove;
+
     /** The bean containing the data for the list item widget. */
     private CmsListInfoBean m_listInfoBean;
 
@@ -60,6 +63,16 @@ public class CmsRestoreInfoBean implements IsSerializable {
     public CmsRestoreInfoBean() {
 
         // empty
+    }
+
+    /**
+     * Returns true if the move operation can be undone.<p>
+     * 
+     * @return true if the move operation can be undone
+     */
+    public boolean canUndoMove() {
+
+        return m_canUndoMove;
     }
 
     /**
@@ -130,6 +143,16 @@ public class CmsRestoreInfoBean implements IsSerializable {
     public boolean isMoved() {
 
         return !m_offlinePath.equals(m_onlinePath);
+    }
+
+    /**
+     * Sets the 'canUndoMove' property.<p>
+     * 
+     * @param canUndoMove the new value for the 'canUndoMove' property
+     */
+    public void setCanUndoMove(boolean canUndoMove) {
+
+        m_canUndoMove = canUndoMove;
     }
 
     /**
