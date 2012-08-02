@@ -1,4 +1,4 @@
-@external html-face, popup,popupContent, textboxGhostMode, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external html-face, popup,popupContent, colorPicker, textboxGhostMode, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 .radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -41,19 +41,7 @@ textarea.textAreaBox {
 }
 
 .colorpickerpopup > div.popupContent > div {
-	margin: 0;
-	padding: 0;
-	border: none;
-	color: value("constants.css.textColor");
-	font-family: value("constants.css.fontFamily");
-	font-size: value("constants.css.fontSize");
-	line-height: value("constants.css.lineHeight");
-	background: transparent;
-	text-align: left;
-	min-height: 0;
-	max-height: none;
-	min-width: 0;
-	max-width: none;
+	
 }
 
 
@@ -61,6 +49,28 @@ div.textAreaBoxPanel{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
+}
+
+div.vfsInputBox{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	display: block;
+	width: auto;
+	padding: 0px 4px;
+	height: 18px;
+	font-size: 12px;
+}
+div.vfsInputBox input{
+	border: none;
+	font-family: value("constants.css.fontFamily");
+	border-radius: value("constants.css.borderRadius");
+	color: value("constants.css.textColor");
+	width: 98%;
+	height: 18px;
+	font-size: 12px;
+	box-shadow: none;
+	padding: 0px 0px;
 }
 
 input.textBox{
@@ -219,6 +229,9 @@ div.radioButtonlabel.cmsState-down-disabled{
 }
 
 .emptyValue input.textBox{
+	border: 1px solid value("constants.css.borderColor");
+}
+.emptyValue div.vfsInputBox{
 	border: 1px solid value("constants.css.borderColor");
 }
 

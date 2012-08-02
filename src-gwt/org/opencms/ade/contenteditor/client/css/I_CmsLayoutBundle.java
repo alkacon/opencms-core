@@ -158,6 +158,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the css class
          */
         String colorpickerpopup();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String vfsInputBox();
     }
 
     /** The XML content editor CSS. */
