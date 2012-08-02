@@ -108,7 +108,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
             m_panel.add(m_arrayRadioButtons[i]);
         }
         m_scrollPanel.add(m_panel);
-        m_scrollPanel.setResizable(true);
+        m_scrollPanel.setResizable(false);
         int height = (m_rowsToShow * 17);
         if (m_arrayRadioButtons.length < m_rowsToShow) {
             height = (m_arrayRadioButtons.length * 17);

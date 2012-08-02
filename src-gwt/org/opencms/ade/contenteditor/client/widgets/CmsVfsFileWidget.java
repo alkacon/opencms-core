@@ -29,14 +29,15 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.ui.input.CmsLinkSelector;
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsVfsSelection;
+import org.opencms.gwt.client.ui.input.CmsVfsSelector;
 
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  *
@@ -46,8 +47,14 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
     /** Value of the activation. */
     private boolean m_active = true;
 
-    /** THe link selector. */
-    private CmsLinkSelector m_linkSelect = new CmsLinkSelector();
+    /** The link selector. */
+    private CmsVfsSelection m_linkSelect;
+
+    /** The icon string. */
+    private String m_imageClass = "";
+
+    /** The popup to select a file. */
+    protected CmsVfsSelector m_selector = new CmsVfsSelector();
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -55,14 +62,19 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
      */
     public CmsVfsFileWidget(String config) {
 
-        //parseconfig(config);
+        parseconfig(config);
+        m_linkSelect = new CmsVfsSelection(m_imageClass);
+        m_linkSelect.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
+        m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-        // Place the check above the box using a vertical panel.
-        VerticalPanel panel = new VerticalPanel();
-        panel.add(m_linkSelect);
+            public void onValueChange(ValueChangeEvent<String> event) {
 
+                fireChangeEvent();
+
+            }
+        });
         // All composites must call initWidget() in their constructors.
-        initWidget(panel);
+        initWidget(m_linkSelect);
 
     }
 
@@ -146,6 +158,16 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
             fireChangeEvent();
         }
 
+    }
+
+    /**
+     * Parse the given configuration string.<p>
+     * @param config the given configuration string
+     * */
+    private void parseconfig(String config) {
+
+        String[] configs = config.split(";");
+        m_imageClass = configs[configs.length - 1];
     }
 
 }

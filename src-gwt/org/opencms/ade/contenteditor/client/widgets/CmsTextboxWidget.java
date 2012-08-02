@@ -98,6 +98,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
             public void onFocus(FocusEvent event) {
 
                 m_mainPanel.remove(m_fadePanel);
+                setTitle("");
 
             }
         });
@@ -121,6 +122,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
                 m_mainPanel.add(m_fadePanel);
                 m_textbox.setCursorPos(0);
+                setTitle(m_textbox.getText());
 
             }
         });
@@ -236,8 +238,22 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
         // set the saved value to the textArea
         m_textbox.setText(value);
+
         if (fireEvents) {
             fireChangeEvent();
+        }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
+     */
+    @Override
+    public void setTitle(String title) {
+
+        if ((title.length() * 6.88) > m_mainPanel.getOffsetWidth()) {
+            m_mainPanel.getElement().setTitle(title);
+        } else {
+            m_mainPanel.getElement().setTitle("");
         }
     }
 

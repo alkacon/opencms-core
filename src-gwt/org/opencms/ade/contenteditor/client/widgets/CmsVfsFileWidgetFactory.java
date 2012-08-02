@@ -34,6 +34,7 @@ import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.user.client.Element;
 
@@ -50,7 +51,7 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public static void initClass() {
 
-        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsVfsImageWidgetFactory());
+        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsVfsFileWidgetFactory());
     }
 
     /**
@@ -58,7 +59,8 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new CmsVfsImageWidget(configuration));
+        configuration += ";" + I_CmsImageBundle.INSTANCE.style().directoryIcon();
+        return new FormWidgetWrapper(new CmsVfsFileWidget(configuration));
     }
 
     /**
@@ -66,6 +68,6 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsVfsImageWidget(configuration);
+        return new CmsVfsFileWidget(configuration);
     }
 }

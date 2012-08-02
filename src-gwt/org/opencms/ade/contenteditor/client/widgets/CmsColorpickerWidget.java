@@ -27,7 +27,6 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
-import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.gwt.client.ui.input.CmsColorPicker;
@@ -37,6 +36,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Provides a DHTML calendar widget, for use on a widget dialog.<p>
@@ -50,6 +50,9 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
     /** The global select box. */
     private CmsColorPicker m_colorPicker = new CmsColorPicker();
 
+    /**The main panel. */
+    private SimplePanel m_panel = new SimplePanel();
+
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD.
@@ -57,7 +60,8 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
     public CmsColorpickerWidget(String config) {
 
         // All composites must call initWidget() in their constructors.
-        initWidget(m_colorPicker);
+        m_panel.add(m_colorPicker);
+        initWidget(m_panel);
         m_colorPicker.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -127,12 +131,7 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
     public void setActive(boolean active) {
 
         m_active = active;
-        if (m_active) {
-            getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
-            getElement().focus();
-        } else {
-            getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
-        }
+        m_colorPicker.setEnabled(active);
         if (active) {
             fireChangeEvent();
         }

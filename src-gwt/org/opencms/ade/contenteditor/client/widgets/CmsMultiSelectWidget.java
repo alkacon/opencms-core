@@ -157,7 +157,7 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
         }
         // All composites must call initWidget() in their constructors.
         m_scrollPanel.add(m_panel);
-        m_scrollPanel.setResizable(true);
+        m_scrollPanel.setResizable(false);
         int height = (m_rowsToShow * 17);
         if (m_arrayCheckbox.length < m_rowsToShow) {
             height = (m_arrayCheckbox.length * 17);
