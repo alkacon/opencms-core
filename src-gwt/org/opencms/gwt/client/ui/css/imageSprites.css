@@ -214,3 +214,7 @@
 @sprite table tr td.warningBigIcon, div.warningBigIcon, span.warningBigIcon{
 	gwt-image: "warningBigImage"; 
 }
+
+@sprite div.directoryIcon, span.directoryIcon{
+	gwt-image: "directorySmallImage"; 
+}

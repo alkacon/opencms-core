@@ -180,6 +180,13 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String vfsInputBoxFaider();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String inputTextAreaFaider();
 
     /**
@@ -415,13 +422,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String colorPicker();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String colorPickerInValid();
 
     /**
      * Css class reader.<p>

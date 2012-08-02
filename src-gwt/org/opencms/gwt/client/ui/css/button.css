@@ -34,7 +34,7 @@ div.resizeButton{
     bottom: 0;
     height: 12px;
     right: 0;
-    cursor: move;
+    cursor: s-resize;
     
 }
 @if user.agent ie6 ie8 {
@@ -87,6 +87,18 @@ div.resizeButton{
 											rgba(119,136,170,1) 90%,rgba(119,136,170,0) 92%,
 											rgba(119,136,170,0) 100%);
 	}
+}
+
+/** Button styles for vfs selection.*/
+div.openVfsButton{
+    bottom: 12px;
+    cursor: pointer;
+    height: 12px;
+    padding: 0;
+    position: absolute;
+    right: 8px;
+    width: 12px;
+    background: transparent;
 }
 
 /** Button size styles. */

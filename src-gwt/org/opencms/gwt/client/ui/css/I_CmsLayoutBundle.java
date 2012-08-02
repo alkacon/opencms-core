@@ -220,6 +220,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String yellow();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String openVfsButton();
     }
 
     /** The content editor dialog CSS. */

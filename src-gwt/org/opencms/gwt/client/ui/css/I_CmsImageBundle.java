@@ -327,6 +327,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String warningIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String directoryIcon();
     }
 
     /** The bundle instance. */
@@ -614,4 +620,13 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/warningSmallImage.png")
     ImageResource warningSmallImage();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/filetypeNavlevelSmall.png")
+    ImageResource directorySmallImage();
+
 }
