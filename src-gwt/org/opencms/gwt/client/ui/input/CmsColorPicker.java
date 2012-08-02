@@ -33,7 +33,6 @@ import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
@@ -47,10 +46,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -105,9 +106,9 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         m_panel.add(m_textboxColorValue);
         m_panel.add(m_colorField);
         m_panel.add(m_error);
-        m_panel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_textboxColorValue.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
+        m_colorField.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
         m_panel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
-
         m_textboxColorValue.addBlurHandler(new BlurHandler() {
 
             public void onBlur(BlurEvent event) {
@@ -237,21 +238,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
-     */
-    public void setEnabled(boolean enabled) {
-
-        if (enabled) {
-            getElement().setAttribute("contentEditable", "true");
-            getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
-            getElement().focus();
-        } else {
-            getElement().setAttribute("contentEditable", "false");
-            getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
-        }
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
     public void setErrorMessage(String errorMessage) {
@@ -313,14 +299,8 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
         boolean valid = validateColorValue(m_colorValue);
         if (valid) {
-            m_panel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
-            m_panel.removeStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPickerInValid());
             m_textboxColorValue.setValue(m_colorValue, true);
             m_colorField.getElement().getStyle().setBackgroundColor(m_colorValue);
-        } else {
-            // TODO: error massages and red border;
-            m_panel.removeStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
-            m_panel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPickerInValid());
         }
         return valid;
     }
@@ -343,17 +323,24 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
         m_popup.setWidth(450);
         m_popup.setHeight(280);
+        m_popup.addDialogClose(new Command() {
+
+            public void execute() {
+
+                closePopup();
+
+            }
+        });
 
         if (m_previewHandlerRegistration != null) {
             m_previewHandlerRegistration.removeHandler();
         }
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         m_popup.showRelativeTo(m_colorField);
-        m_popup.addStyleName(org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().colorpickerpopup());
         if (m_popup.getWidgetCount() == 0) {
             m_popup.setModal(false);
 
-            org.opencms.gwt.client.ui.input.colorpicker.CmsColorPicker picker = new org.opencms.gwt.client.ui.input.colorpicker.CmsColorPicker();
+            org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector picker = new org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector();
             try {
                 picker.setHex(m_textboxColorValue.getText().replace("#", ""));
             } catch (Exception e) {
@@ -364,14 +351,18 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         }
         m_xcoordspopup = m_popup.getPopupLeft();
         m_ycoordspopup = m_popup.getPopupTop();
+
     }
 
     /**
+     * Close the popup and store the color value in the colorvalue field.<p>
      * 
      */
     protected void closePopup() {
 
-        org.opencms.gwt.client.ui.input.colorpicker.CmsColorPicker picker = (org.opencms.gwt.client.ui.input.colorpicker.CmsColorPicker)m_popup.getWidget(0);
+        m_previewHandlerRegistration.removeHandler();
+        m_previewHandlerRegistration = null;
+        org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector picker = (org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector)m_popup.getWidget(0);
         m_colorValue = "#" + picker.getHexColor();
         if (checkvalue()) {
             m_popup.hide();
@@ -380,8 +371,9 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
-     * @param i
-     * @return The hex string
+     * Converts the integer value to an hex value.<p>
+     * @param i the integer value
+     * @return the hex string
      */
     protected String convertToHex(int i) {
 
@@ -409,22 +401,40 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
                 case Event.ONMOUSEMOVE:
                     break;
                 case Event.ONMOUSEUP:
+
                     int x_coord = nativeEvent.getClientX();
-                    int y_coord = nativeEvent.getClientY();
-                    if (((x_coord > (m_xcoordspopup + 450 + 10)) || (x_coord < (m_xcoordspopup - 10)))
-                        || ((y_coord > ((m_ycoordspopup + 300) - 10)) || (y_coord < ((m_ycoordspopup) - 10)))) {
-                        m_previewHandlerRegistration.removeHandler();
-                        m_previewHandlerRegistration = null;
+                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
+
+                    if (((x_coord > (m_xcoordspopup + 450)) || (x_coord < (m_xcoordspopup)))
+                        || ((y_coord > ((m_ycoordspopup + 280))) || (y_coord < ((m_ycoordspopup))))) {
                         closePopup();
                     }
                     break;
                 case Event.ONKEYDOWN:
                     break;
                 case Event.ONMOUSEWHEEL:
+                    closePopup();
                     break;
                 default:
                     // do nothing
             }
+        }
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+
+        if (enabled) {
+            m_colorField.removeStyleName(I_LayoutBundle.INSTANCE.form().inActive());
+            m_textboxColorValue.removeStyleName(I_LayoutBundle.INSTANCE.form().inActive());
+        } else {
+            m_colorField.getElement().getStyle().setBackgroundColor("#FFFFFF");
+            m_colorField.addStyleName(I_LayoutBundle.INSTANCE.form().inActive());
+            m_textboxColorValue.addStyleName(I_LayoutBundle.INSTANCE.form().inActive());
+            m_textboxColorValue.setText("");
         }
 
     }

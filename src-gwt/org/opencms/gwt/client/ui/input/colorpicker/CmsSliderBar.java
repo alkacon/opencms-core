@@ -79,7 +79,7 @@ public final class CmsSliderBar extends HTML {
     /** Image resourcen. */
     private I_CmsColorPickerImageResource m_cpImageBundle;
     /** The parent CmsColorPicker. */
-    private CmsColorPicker m_parent;
+    private CmsColorSelector m_parent;
     /** Image holder. */
     private Image m_slider;
 
@@ -87,7 +87,7 @@ public final class CmsSliderBar extends HTML {
      * Initialize the SliderMap.<p>
      * @param parent the parent of the slider bar
      */
-    public CmsSliderBar(CmsColorPicker parent) {
+    public CmsSliderBar(CmsColorSelector parent) {
 
         super();
 

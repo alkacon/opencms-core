@@ -308,6 +308,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
                 onValueSelect(strValue);
             } else {
                 m_openerWidget.setText(strValue);
+                m_openerWidget.getElement().setTitle(strValue);
             }
 
         }
@@ -474,6 +475,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
         m_faidpanel = new SimplePanel();
         m_openerWidget = new TextBox();
         m_panel.add(m_faidpanel);
+
         m_openerWidget.addBlurHandler(new BlurHandler() {
 
             public void onBlur(BlurEvent event) {
@@ -481,6 +483,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
                 // on focus lost add the fader to the textbox and set cursor to the text beginning.
                 m_openerWidget.setCursorPos(0);
                 m_panel.add(m_faidpanel);
+                m_openerWidget.getElement().setTitle(m_openerWidget.getText());
 
             }
         });
@@ -490,6 +493,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
                 // on focus remove the fader.
                 m_panel.remove(m_faidpanel);
+                m_openerWidget.getElement().setTitle("");
 
             }
         });

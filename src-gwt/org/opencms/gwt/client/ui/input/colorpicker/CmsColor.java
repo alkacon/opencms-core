@@ -128,7 +128,7 @@ public class CmsColor {
                 Integer.parseInt(hex.substring(1, 2), 16),
                 Integer.parseInt(hex.substring(2, 3), 16));
         } else {
-            throw new Exception();
+            setRGB(255, 255, 255);
         }
     }
 

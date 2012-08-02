@@ -52,7 +52,7 @@ public final class CmsSliderMap extends HTML {
     /***/
     private I_CmsColorPickerImageResource m_cpImageBundle;
     /***/
-    private CmsColorPicker m_parent;
+    private CmsColorSelector m_parent;
     /***/
     private Image m_slider;
 
@@ -60,7 +60,7 @@ public final class CmsSliderMap extends HTML {
      * Initialize the SliderMap -- default mode is Saturation.
      * @param parent 
      */
-    public CmsSliderMap(CmsColorPicker parent) {
+    public CmsSliderMap(CmsColorSelector parent) {
 
         super();
 

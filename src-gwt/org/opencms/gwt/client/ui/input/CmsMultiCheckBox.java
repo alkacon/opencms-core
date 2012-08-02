@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Panel;
 public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
     /** The type string for this widget. */
-    public static final String WIDGET_TYPE = "multiselect";
+    public static final String WIDGET_TYPE = "multicheck";
 
     /** The list of checkboxes. */
     private List<CmsCheckBox> m_checkboxes = new ArrayList<CmsCheckBox>();

@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Main class for the color picker. 
  * */
-public class CmsColorPicker extends Composite implements KeyPressHandler, ClickHandler, ChangeHandler {
+public class CmsColorSelector extends Composite implements KeyPressHandler, ClickHandler, ChangeHandler {
 
     /** The blue value. */
     private int m_blue;
@@ -110,7 +110,7 @@ public class CmsColorPicker extends Composite implements KeyPressHandler, ClickH
     /**
      *  Constructor to create an CmsColorPicker. <p>
      */
-    public CmsColorPicker() {
+    public CmsColorSelector() {
 
         m_hue = 0;
         m_saturation = 100;
@@ -120,6 +120,7 @@ public class CmsColorPicker extends Composite implements KeyPressHandler, ClickH
         m_blue = 0;
 
         HorizontalPanel panel = new HorizontalPanel();
+        panel.setSpacing(5);
         FlexTable table = new FlexTable();
 
         // Add the slider map
@@ -135,7 +136,7 @@ public class CmsColorPicker extends Composite implements KeyPressHandler, ClickH
         panel.setCellHeight(m_sliderbar, "258px");
 
         m_colorpreview = new HTML("");
-        m_colorpreview.setWidth("50px");
+        m_colorpreview.setWidth("auto");
         m_colorpreview.setHeight("50px");
         m_colorpreview.getElement().getStyle().setBorderColor("black");
         m_colorpreview.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
@@ -166,37 +167,37 @@ public class CmsColorPicker extends Composite implements KeyPressHandler, ClickH
         m_tbHue = new TextBox();
         m_tbHue.setText(new Integer(m_hue).toString());
         m_tbHue.setMaxLength(3);
-        m_tbHue.setVisibleLength(4);
+        m_tbHue.setVisibleLength(6);
         m_tbHue.addKeyPressHandler(this);
         m_tbHue.addChangeHandler(this);
         m_tbSaturation = new TextBox();
         m_tbSaturation.setText(new Integer(m_saturation).toString());
         m_tbSaturation.setMaxLength(3);
-        m_tbSaturation.setVisibleLength(4);
+        m_tbSaturation.setVisibleLength(6);
         m_tbSaturation.addKeyPressHandler(this);
         m_tbSaturation.addChangeHandler(this);
         m_tbBrightness = new TextBox();
         m_tbBrightness.setText(new Integer(m_brightness).toString());
         m_tbBrightness.setMaxLength(3);
-        m_tbBrightness.setVisibleLength(4);
+        m_tbBrightness.setVisibleLength(6);
         m_tbBrightness.addKeyPressHandler(this);
         m_tbBrightness.addChangeHandler(this);
         m_tbRed = new TextBox();
         m_tbRed.setText(new Integer(m_red).toString());
         m_tbRed.setMaxLength(3);
-        m_tbRed.setVisibleLength(4);
+        m_tbRed.setVisibleLength(6);
         m_tbRed.addKeyPressHandler(this);
         m_tbRed.addChangeHandler(this);
         m_tbGreen = new TextBox();
         m_tbGreen.setText(new Integer(m_green).toString());
         m_tbGreen.setMaxLength(3);
-        m_tbGreen.setVisibleLength(4);
+        m_tbGreen.setVisibleLength(6);
         m_tbGreen.addKeyPressHandler(this);
         m_tbGreen.addChangeHandler(this);
         m_tbBlue = new TextBox();
         m_tbBlue.setText(new Integer(m_blue).toString());
         m_tbBlue.setMaxLength(3);
-        m_tbBlue.setVisibleLength(4);
+        m_tbBlue.setVisibleLength(6);
         m_tbBlue.addKeyPressHandler(this);
         m_tbBlue.addChangeHandler(this);
         m_tbHexColor = new TextBox();
@@ -207,8 +208,7 @@ public class CmsColorPicker extends Composite implements KeyPressHandler, ClickH
         m_tbHexColor.addChangeHandler(this);
 
         // Put together the FlexTable
-        table.setWidget(0, 0, m_colorpreview);
-        table.getFlexCellFormatter().setColSpan(0, 0, 3);
+        table.setWidget(0, 1, m_colorpreview);
         table.setWidget(1, 0, m_rbHue);
         table.setWidget(1, 1, m_tbHue);
         table.setWidget(1, 2, new HTML("&deg;"));
@@ -224,10 +224,10 @@ public class CmsColorPicker extends Composite implements KeyPressHandler, ClickH
         table.setWidget(5, 1, m_tbGreen);
         table.setWidget(6, 0, m_rbBlue);
         table.setWidget(6, 1, m_tbBlue);
-        table.setText(7, 0, "#:");
+        table.setText(7, 0, "Web:");
         table.setWidget(7, 1, m_tbHexColor);
-        table.getFlexCellFormatter().setColSpan(7, 1, 2);
 
+        table.setCellSpacing(3);
         // Final setup
         panel.add(table);
         m_radioButtonGroup.selectButton(m_rbRed);
@@ -585,33 +585,34 @@ public class CmsColorPicker extends Composite implements KeyPressHandler, ClickH
     public void onKeyPress(KeyPressEvent event) {
 
         Widget widget = (Widget)event.getSource();
+        int unicodeCharCode = event.getUnicodeCharCode();
         char keyCode = event.getCharCode();
 
         if (widget == m_tbHexColor) {
             // Disallow non-hex in hexadecimal boxes
             if ((!Character.isDigit(keyCode))
-                && (keyCode != 'A')
-                && (keyCode != 'a')
-                && (keyCode != 'B')
-                && (keyCode != 'b')
-                && (keyCode != 'C')
-                && (keyCode != 'c')
-                && (keyCode != 'D')
-                && (keyCode != 'd')
-                && (keyCode != 'E')
-                && (keyCode != 'e')
-                && (keyCode != 'F')
-                && (keyCode != 'f')
-                && (keyCode != (char)KeyCodes.KEY_TAB)
-                && (keyCode != (char)KeyCodes.KEY_BACKSPACE)
-                && (keyCode != (char)KeyCodes.KEY_DELETE)
-                && (keyCode != (char)KeyCodes.KEY_ENTER)
-                && (keyCode != (char)KeyCodes.KEY_HOME)
-                && (keyCode != (char)KeyCodes.KEY_END)
-                && (keyCode != (char)KeyCodes.KEY_LEFT)
-                && (keyCode != (char)KeyCodes.KEY_UP)
-                && (keyCode != (char)KeyCodes.KEY_RIGHT)
-                && (keyCode != (char)KeyCodes.KEY_DOWN)) {
+                && (unicodeCharCode != 'A')
+                && (unicodeCharCode != 'a')
+                && (unicodeCharCode != 'B')
+                && (unicodeCharCode != 'b')
+                && (unicodeCharCode != 'C')
+                && (unicodeCharCode != 'c')
+                && (unicodeCharCode != 'D')
+                && (unicodeCharCode != 'd')
+                && (unicodeCharCode != 'E')
+                && (unicodeCharCode != 'e')
+                && (unicodeCharCode != 'F')
+                && (unicodeCharCode != 'f')
+                && (unicodeCharCode != KeyCodes.KEY_TAB)
+                && (unicodeCharCode != (char)KeyCodes.KEY_BACKSPACE)
+                && (unicodeCharCode != (char)KeyCodes.KEY_DELETE)
+                && (unicodeCharCode != (char)KeyCodes.KEY_ENTER)
+                && (unicodeCharCode != (char)KeyCodes.KEY_HOME)
+                && (unicodeCharCode != (char)KeyCodes.KEY_END)
+                && (unicodeCharCode != (char)KeyCodes.KEY_LEFT)
+                && (unicodeCharCode != (char)KeyCodes.KEY_UP)
+                && (unicodeCharCode != (char)KeyCodes.KEY_RIGHT)
+                && (unicodeCharCode != (char)KeyCodes.KEY_DOWN)) {
                 ((TextBox)widget).cancelKey();
             }
         } else {

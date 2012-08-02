@@ -65,6 +65,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
@@ -213,6 +215,9 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /** The popup panel to show the the date time picker widget in. */
     private CmsPopup m_popup;
 
+    /***/
+    protected HandlerRegistration m_previewHandlerRegistration;
+
     /**
      * The event preview handler.<p>
      * 
@@ -269,9 +274,16 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         m_popup.add(m_dateTimePanel);
         m_popup.setWidth(0);
-        m_popup.setModal(true);
+        m_popup.setModal(false);
         m_popup.removePadding();
         m_popup.setBackgroundColor(I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog());
+        m_popup.addDialogClose(new Command() {
+
+            public void execute() {
+
+                m_box.setPreventShowError(false);
+            }
+        });
         m_popup.addCloseHandler(dateBoxHandler);
         m_popup.addAutoHidePartner(m_box.getElement());
         m_popup.setAutoHideEnabled(true);
@@ -759,7 +771,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     /**
      * Hides the date time popup.<p>
      */
-    private void hidePopup() {
+    protected void hidePopup() {
 
         if (CmsDateConverter.validateTime(getTimeText())) {
             // before hiding the date picker remove the date box popup from the auto hide partners of the parent popup
@@ -767,6 +779,8 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
                 m_autoHideParent.removeAutoHidePartner(getElement());
             }
             m_popup.hide();
+            m_previewHandlerRegistration.removeHandler();
+            m_previewHandlerRegistration = null;
         }
     }
 
@@ -809,6 +823,10 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         updateFromTextBox(true);
         m_box.setPreventShowError(true);
         m_popup.showRelativeTo(m_box);
+        if (m_previewHandlerRegistration != null) {
+            m_previewHandlerRegistration.removeHandler();
+        }
+        m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
     }
 
     /**
@@ -839,5 +857,35 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         setPickerValue(date, false);
         m_time.setErrorMessage(null);
         fireChange(getValue());
+    }
+
+    /**
+     * Drag and drop event preview handler.<p>
+     * 
+     * To be used while dragging.<p>
+     */
+    protected class CloseEventPreviewHandler implements NativePreviewHandler {
+
+        /**
+         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+         */
+        public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+            Event nativeEvent = Event.as(event.getNativeEvent());
+            switch (DOM.eventGetType(nativeEvent)) {
+                case Event.ONMOUSEMOVE:
+                    break;
+                case Event.ONMOUSEUP:
+                    break;
+                case Event.ONKEYDOWN:
+                    break;
+                case Event.ONMOUSEWHEEL:
+                    hidePopup();
+                    break;
+                default:
+                    // do nothing
+            }
+        }
+
     }
 }

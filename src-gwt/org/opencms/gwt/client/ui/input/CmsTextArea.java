@@ -143,6 +143,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
             public void onFocus(FocusEvent event) {
 
                 m_panel.remove(m_faidpanel);
+                m_panel.getElement().setTitle("");
 
             }
         });
@@ -167,6 +168,7 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
                 int height = occurences + 1;
                 if (m_defaultRows < height) {
                     m_panel.add(m_faidpanel);
+                    m_panel.getElement().setTitle(string);
                 }
                 m_textAreaContainer.scrollToTop();
 
@@ -203,8 +205,10 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
                 if (m_defaultRows > height) {
                     height = m_defaultRows;
                     m_panel.remove(m_faidpanel);
+                    m_panel.getElement().setTitle("");
                 }
                 m_panel.add(m_faidpanel);
+                m_panel.getElement().setTitle(string);
                 m_textArea.setVisibleLines(height);
                 m_textAreaContainer.onResize();
             }
