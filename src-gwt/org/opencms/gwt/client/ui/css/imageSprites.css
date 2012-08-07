@@ -218,3 +218,7 @@
 @sprite div.directoryIcon, span.directoryIcon{
 	gwt-image: "directorySmallImage"; 
 }
+
+@sprite div.imageSearchIcon, span.imageSearchIcon{
+	gwt-image: "imageSearchIcon";
+}

@@ -333,6 +333,12 @@ public interface I_CmsImageBundle extends ClientBundle {
         * @return the CSS class name
         */
         String directoryIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String imageSearchIcon();
     }
 
     /** The bundle instance. */
@@ -628,5 +634,13 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/icons/filetypeNavlevelSmall.png")
     ImageResource directorySmallImage();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/imageSearchIcon.png")
+    ImageResource imageSearchIcon();
 
 }
