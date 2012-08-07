@@ -204,12 +204,10 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
         m_active = active;
         if (m_active) {
-            getElement().setAttribute("contentEditable", "true");
             getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
             getElement().focus();
             m_textbox.setText(m_defaultValue);
         } else {
-            getElement().setAttribute("contentEditable", "false");
             getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
         }
         if (!active) {

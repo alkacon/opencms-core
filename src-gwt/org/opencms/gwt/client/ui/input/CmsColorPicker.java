@@ -27,8 +27,6 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import com.alkacon.acacia.client.css.I_LayoutBundle;
-
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
@@ -427,15 +425,27 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
      */
     public void setEnabled(boolean enabled) {
 
-        if (enabled) {
-            m_colorField.removeStyleName(I_LayoutBundle.INSTANCE.form().inActive());
-            m_textboxColorValue.removeStyleName(I_LayoutBundle.INSTANCE.form().inActive());
-        } else {
-            m_colorField.getElement().getStyle().setBackgroundColor("#FFFFFF");
-            m_colorField.addStyleName(I_LayoutBundle.INSTANCE.form().inActive());
-            m_textboxColorValue.addStyleName(I_LayoutBundle.INSTANCE.form().inActive());
-            m_textboxColorValue.setText("");
-        }
+        // TODO: Auto-generated method stub
 
+    }
+
+    /**
+     * Returns the colorfield.<p>
+     * 
+     * @return the colorfield
+     */
+    public SimplePanel getColorfield() {
+
+        return m_colorField;
+    }
+
+    /**
+     * Returns the color value textbox.<p>
+     * 
+     * @return the color value textbox
+     */
+    public TextBox getColorValueBox() {
+
+        return m_textboxColorValue;
     }
 }

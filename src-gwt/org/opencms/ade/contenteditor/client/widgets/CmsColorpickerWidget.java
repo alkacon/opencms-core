@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.gwt.client.ui.input.CmsColorPicker;
@@ -130,11 +131,24 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        if (m_active == active) {
+            return;
+        }
+
         m_active = active;
-        m_colorPicker.setEnabled(active);
+        if (m_active) {
+            getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
+        } else {
+            getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+            m_colorPicker.getColorfield().getElement().getStyle().setBackgroundColor("#FFFFFF");
+        }
+        if (!active) {
+            m_colorPicker.getColorValueBox().setText("");
+        }
         if (active) {
             fireChangeEvent();
         }
+
     }
 
     /**

@@ -140,6 +140,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /**
      * TextBox widget to open the gallery selection.<p>
      * @param iconImage the image of the icon shown in the 
+     * @param type 
      */
     public CmsVfsSelection(String iconImage, String type) {
 
