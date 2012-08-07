@@ -46,8 +46,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
@@ -55,6 +55,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -69,7 +70,7 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
-    /**Inner class for the open button. */
+    /** Inner class for the open button. */
     protected class OpenButton extends CmsPushButton {
 
         /**
@@ -84,6 +85,12 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         }
 
     }
+
+    /** The filelink mode of this widget. */
+    public static final String FILE_LINK = "file_link";
+
+    /** The imagelink mode of this widget. */
+    public static final String IMAGE_LINK = "image_link";
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "vfsselection";
@@ -115,8 +122,14 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** A counter used for giving text box widgets ids. */
     private static int idCounter;
 
+    /** The x-coords of the popup. */
+    protected int m_xcoordspopup;
+
+    /** The y-coords of the popup. */
+    protected int m_ycoordspopup;
+
     /***/
-    private HandlerRegistration m_previewHandlerRegistration;
+    protected HandlerRegistration m_previewHandlerRegistration;
 
     /***/
     private String m_id;
@@ -128,13 +141,18 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      * TextBox widget to open the gallery selection.<p>
      * @param iconImage the image of the icon shown in the 
      */
-    public CmsVfsSelection(String iconImage) {
+    public CmsVfsSelection(String iconImage, String type) {
 
         super();
         m_textBox = new TextBox();
-        m_textBox.getElement().setId("CmsVfsSelection_" + (idCounter++));
+        m_id = "CmsVfsSelection_" + (idCounter++);
+        if (type.equals(FILE_LINK)) {
+            m_textBox.getElement().setId("CmsVfsSelection_" + (idCounter++));
+        } else if (type.equals(IMAGE_LINK)) {
+            m_textBox.getElement().setId("img.CmsVfsSelection_" + (idCounter++));
+        }
         m_openSelection = new OpenButton(iconImage);
-        m_id = m_textBox.getElement().getId();
+
         m_textBoxContainer.add(m_openSelection);
         creatFaider();
         initWidget(m_panel);
@@ -155,12 +173,12 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         m_panel.add(m_error);
         m_textBoxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
-        m_textBox.addFocusHandler(new FocusHandler() {
+        m_textBox.addMouseUpHandler(new MouseUpHandler() {
 
-            public void onFocus(FocusEvent event) {
+            public void onMouseUp(MouseUpEvent event) {
 
                 m_textBoxContainer.remove(m_faidpanel);
-                m_panel.getElement().setTitle("");
+                setTitle("");
                 if (m_popup == null) {
                     open();
                 } else if (m_popup.isShowing()) {
@@ -170,6 +188,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
                 }
 
             }
+
         });
         m_textBox.addBlurHandler(new BlurHandler() {
 
@@ -334,7 +353,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            m_textBox.setValue(strValue);
+            m_textBox.setText(strValue);
             creatFaider();
             setTitle(strValue);
         }
@@ -386,25 +405,49 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     protected void open() {
 
         m_oldValue = m_textBox.getValue();
-        String title = org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
-        m_popup = new CmsFramePopup(title, buildGalleryUrl());
-        m_popup.setModal(false);
-        m_popup.setId(m_id);
-        m_popup.setHeight(530);
-        m_popup.setWidth(710);
-        m_popup.getFrame().setSize("700px", "490px");
+        if (m_popup == null) {
+            String title = org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
+            m_popup = new CmsFramePopup(title, buildGalleryUrl());
+
+            m_popup.setCloseHandler(new Runnable() {
+
+                public void run() {
+
+                    String textboxValue = m_textBox.getText();
+
+                    if (!m_oldValue.equals(textboxValue)) {
+                        m_textBox.setValue("", true);
+                        m_textBox.setValue(textboxValue, true);
+                    }
+
+                    if (m_previewHandlerRegistration != null) {
+                        m_previewHandlerRegistration.removeHandler();
+                        m_previewHandlerRegistration = null;
+                    }
+                }
+            });
+            m_popup.setModal(false);
+            m_popup.setId(m_id);
+            m_popup.setHeight(530);
+            m_popup.setWidth(715);
+            m_popup.getFrame().setSize("710px", "530px");
+            m_popup.addDialogClose(new Command() {
+
+                public void execute() {
+
+                    close();
+
+                }
+            });
+        } else {
+            m_popup.getFrame().setUrl(buildGalleryUrl());
+        }
         m_popup.showRelativeTo(m_textBox);
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
 
-        m_popup.addDialogClose(new Command() {
-
-            public void execute() {
-
-                close();
-
-            }
-        });
+        m_xcoordspopup = m_popup.getPopupLeft();
+        m_ycoordspopup = m_popup.getPopupTop();
 
     }
 
@@ -413,11 +456,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      * */
     protected void close() {
 
-        if (m_previewHandlerRegistration != null) {
-            m_previewHandlerRegistration.removeHandler();
-            m_previewHandlerRegistration = null;
-        }
-        m_popup.hide();
+        m_popup.hideDelayed();
     }
 
     /**
@@ -431,9 +470,9 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
-     * Drag and drop event preview handler.<p>
+     * Event preview handler.<p>
      * 
-     * To be used while dragging.<p>
+     * To be used while popup open.<p>
      */
     protected class CloseEventPreviewHandler implements NativePreviewHandler {
 
@@ -448,7 +487,14 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
                     break;
                 case Event.ONMOUSEUP:
                     break;
-                case Event.ONKEYDOWN:
+                case Event.ONMOUSEDOWN:
+                    int x_coord = nativeEvent.getClientX();
+                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
+
+                    if (((x_coord > (m_xcoordspopup + 715)) || (x_coord < (m_xcoordspopup)))
+                        || ((y_coord > ((m_ycoordspopup + 530))) || (y_coord < ((m_ycoordspopup - m_textBox.getOffsetHeight()))))) {
+                        close();
+                    }
                     break;
                 case Event.ONKEYUP:
                     if (m_textBox.getValue().length() > 0) {
@@ -508,7 +554,12 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     protected String buildGalleryUrl() {
 
         String basePath = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
-        return CmsCoreProvider.get().link(basePath + "?dialogmode=widget&fieldid=" + m_id);
-    }
+        basePath += "?dialogmode=widget&fieldid=" + m_id;
+        String pathparameter = m_textBox.getText();
+        if (pathparameter.indexOf("/") > -1) {
+            basePath += "&gallerypath=" + pathparameter.substring(0, pathparameter.lastIndexOf("/") + 1);
+        }
 
+        return CmsCoreProvider.get().link(basePath);
+    }
 }
