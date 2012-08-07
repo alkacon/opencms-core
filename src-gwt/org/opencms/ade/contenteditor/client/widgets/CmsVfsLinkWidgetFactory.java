@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Element;
 public class CmsVfsLinkWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
     /** The widget name. */
-    private static final String WIDGET_NAME = "org.opencms.widgets.CmsVfsImageWidget";
+    private static final String WIDGET_NAME = "org.opencms.widgets.CmsVfsImagessWidget";
 
     /**
      * Initializes this class.<p>

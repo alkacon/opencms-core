@@ -42,17 +42,17 @@ import com.google.gwt.user.client.Element;
 /**
  * Factory to generate basic input widget.<p>
  */
-public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
+public class CmsVfsImageWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
     /** The widget name. */
-    private static final String WIDGET_NAME = "org.opencms.widgets.CmsVfsFileWidget";
+    private static final String WIDGET_NAME = "org.opencms.widgets.CmsVfsImageWidget";
 
     /**
      * Initializes this class.<p>
      */
     public static void initClass() {
 
-        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsVfsFileWidgetFactory());
+        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsVfsImageWidgetFactory());
     }
 
     /**
@@ -60,8 +60,8 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        configuration += ";" + I_CmsImageBundle.INSTANCE.style().directoryIcon();
-        return new FormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.FILE_LINK));
+        configuration += ";" + I_CmsImageBundle.INSTANCE.style().imageSearchIcon();
+        return new FormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.IMAGE_LINK));
     }
 
     /**
@@ -69,6 +69,6 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsVfsWidget(configuration, CmsVfsSelection.FILE_LINK);
+        return new CmsVfsWidget(configuration, CmsVfsSelection.IMAGE_LINK);
     }
 }

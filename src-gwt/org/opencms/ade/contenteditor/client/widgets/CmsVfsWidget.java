@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  *
  * */
-public class CmsVfsFileWidget extends Composite implements I_EditWidget {
+public class CmsVfsWidget extends Composite implements I_EditWidget {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -58,12 +58,13 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
-     * @param config The configuration string given from OpenCms XSD.
+     * @param config the configuration string given from OpenCms XSD
+     * @param type the mode in witch the widget should be started
      */
-    public CmsVfsFileWidget(String config) {
+    public CmsVfsWidget(String config, String type) {
 
         parseconfig(config);
-        m_linkSelect = new CmsVfsSelection(m_imageClass);
+        m_linkSelect = new CmsVfsSelection(m_imageClass, type);
         m_linkSelect.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -132,6 +133,9 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        if (m_active == active) {
+            return;
+        }
         m_active = active;
         if (active) {
             fireChangeEvent();
@@ -144,7 +148,7 @@ public class CmsVfsFileWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value) {
 
-        setValue(value, true);
+        setValue(value, false);
 
     }
 
