@@ -211,6 +211,21 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     }
 
+    /**
+     * Gets all detail page info beans which are defined anywhere in the configuration.<p>
+     * 
+     * @return the list of detail page info beans 
+     */
+    protected synchronized List<CmsDetailPageInfo> getAllDetailPages() {
+
+        readRemainingConfigurations();
+        List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
+        for (CmsADEConfigData configData : m_siteConfigurations.values()) {
+            result.addAll(configData.getAllDetailPages(true));
+        }
+        return result;
+    }
+
     /** 
      * Gets the base path for a given sitemap configuration file.<p>
      * 

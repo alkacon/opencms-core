@@ -200,6 +200,12 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property for the visible method in the administration view. */
     public static final String PROPERTY_VISIBLE = "visiblemethod";
 
+    /** Property for the XML sitemap change frequency. */
+    public static final String PROPERTY_XMLSITEMAP_CHANGEFREQ = "xmlsitemap.changefreq";
+
+    /** Property for the XML sitemap priority. */
+    public static final String PROPERTY_XMLSITEMAP_PRIORITY = "xmlsitemap.priority";
+
     /** The property definition type for resources. */
     public static final int PROPERYDEFINITION_RESOURCE = 1;
 

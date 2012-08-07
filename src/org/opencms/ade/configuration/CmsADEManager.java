@@ -101,6 +101,7 @@ public class CmsADEManager {
 
     /** User additional info key constant. */
     public static final String ADDINFO_ADE_FAVORITE_LIST_SIZE = "ADE_FAVORITE_LIST_SIZE";
+
     /** User additional info key constant. */
     public static final String ADDINFO_ADE_RECENT_LIST_SIZE = "ADE_RECENT_LIST_SIZE";
 
@@ -175,6 +176,7 @@ public class CmsADEManager {
 
     /** The offline cache instance. */
     private CmsConfigurationCache m_onlineCache;
+
     /** The online CMS context. */
     private CmsObject m_onlineCms;
 
@@ -218,6 +220,21 @@ public class CmsADEManager {
             return cms.getRequestContext().addSiteRoot("/");
         }
         return result;
+    }
+
+    /**
+     * Gets the complete list of beans for the currently configured detail pages.<p>
+     * 
+     * @param cms the CMS context to use
+     *   
+     * @return the list of detail page infos 
+     */
+    public List<CmsDetailPageInfo> getAllDetailPages(CmsObject cms) {
+
+        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
+        ? m_onlineCache
+        : m_offlineCache;
+        return cache.getAllDetailPages();
     }
 
     /**

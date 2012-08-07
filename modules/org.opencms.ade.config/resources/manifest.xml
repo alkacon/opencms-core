@@ -125,6 +125,24 @@
 				</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="seo_file" id="305">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/render-seo-file.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/seo_file.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
 				name="inheritance_group" id="303">
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd
 				</param>
@@ -134,10 +152,6 @@
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd
 				</param>
 			</type>
-
-
-
-
 		</resourcetypes>
 		<explorertypes>
 
@@ -286,6 +300,12 @@
 						permissions="+r+v-w-c" />
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
 				</accesscontrol>
+			</explorertype>
+			<explorertype name="seo_file" key="fileicon.seo_file"
+				reference="xmlcontent">
+				<newresource page="structurecontent"
+					uri="newresource_xmlcontent.jsp?newresourcetype=seo_file" order="998"
+					autosetnavigation="false" autosettitle="false" info="desc.seo_file" />
 			</explorertype>
 			<explorertype name="containerpage_template" key="fileicon.containerpage_template"
 				icon="containerpage_template.png" bigicon="containerpage_template_big.png"
