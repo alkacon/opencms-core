@@ -34,6 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsFileUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,12 +63,12 @@ public class CmsJspNavBuilder {
 
     /** The visibility mode. */
     public static enum Visibility {
-        /** Navigation only. */
-        navigation,
+        /** All entries. */
+        all,
         /** Navigation including hidden entries. */
         includeHidden,
-        /** All entries. */
-        all
+        /** Navigation only. */
+        navigation
     }
 
     /** Default file property value to mark navigation level folders. */
@@ -375,6 +376,35 @@ public class CmsJspNavBuilder {
         return getNavigationForFolder(folder, Visibility.navigation, CmsResourceFilter.DEFAULT);
     }
 
+    /** 
+     * Build a navigation for the folder that is either minus levels up 
+     * from the given folder, or that is plus levels down from the 
+     * root folder towards the given folder.<p> 
+     * 
+     * If level is set to zero the root folder is used by convention.<p>
+     * 
+     * @param folder the selected folder
+     * @param level if negative, walk this many levels up, if positive, walk this many 
+     *                  levels down from root folder 
+     *                  
+     * @return a sorted (ascending to navigation position) list of navigation elements
+     */
+    public List<CmsJspNavElement> getNavigationForFolder(String folder, int level) {
+
+        folder = CmsResource.getFolderPath(folder);
+        // If level is one just use root folder
+        if (level == 0) {
+            return getNavigationForFolder("/");
+        }
+        String navfolder = CmsResource.getPathPart(folder, level);
+        // If navigation folder found use it to build navigation
+        if (navfolder != null) {
+            return getNavigationForFolder(navfolder);
+        }
+        // Nothing found, return empty list
+        return Collections.<CmsJspNavElement> emptyList();
+    }
+
     /**
      * Collect all navigation elements from the files in the given folder.<p>
      *
@@ -412,35 +442,6 @@ public class CmsJspNavBuilder {
         }
         Collections.sort(result);
         return result;
-    }
-
-    /** 
-     * Build a navigation for the folder that is either minus levels up 
-     * from the given folder, or that is plus levels down from the 
-     * root folder towards the given folder.<p> 
-     * 
-     * If level is set to zero the root folder is used by convention.<p>
-     * 
-     * @param folder the selected folder
-     * @param level if negative, walk this many levels up, if positive, walk this many 
-     *                  levels down from root folder 
-     *                  
-     * @return a sorted (ascending to navigation position) list of navigation elements
-     */
-    public List<CmsJspNavElement> getNavigationForFolder(String folder, int level) {
-
-        folder = CmsResource.getFolderPath(folder);
-        // If level is one just use root folder
-        if (level == 0) {
-            return getNavigationForFolder("/");
-        }
-        String navfolder = CmsResource.getPathPart(folder, level);
-        // If navigation folder found use it to build navigation
-        if (navfolder != null) {
-            return getNavigationForFolder(navfolder);
-        }
-        // Nothing found, return empty list
-        return Collections.<CmsJspNavElement> emptyList();
     }
 
     /**
@@ -576,6 +577,7 @@ public class CmsJspNavBuilder {
      */
     public List<CmsJspNavElement> getSiteNavigation(String folder, int endLevel) {
 
+        folder = CmsFileUtil.addTrailingSeparator(folder);
         // check if a specific end level was given, if not, build the complete navigation
         boolean noLimit = false;
         if (endLevel < 0) {
