@@ -27,6 +27,8 @@
 
 package org.opencms.ade.publish.client;
 
+import com.alkacon.geranium.client.ui.SimplePanel;
+
 import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsList;
@@ -52,6 +54,7 @@ import org.opencms.util.CmsUUID;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -59,6 +62,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A panel representing a single publish group.<p>
@@ -69,6 +73,18 @@ public class CmsPublishGroupPanel extends Composite {
 
     /** The CSS bundle used for this widget. */
     protected static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+
+    /** The number of button slits. */
+    private static final int NUM_BUTTON_SLOTS = 3;
+
+    /** The slot for the preview button. */
+    private static final int SLOT_PREVIEW = 0;
+
+    /** The slot for the 'remove' checkbox. */
+    private static final int SLOT_REMOVE = 2;
+
+    /** The slot for the warning symbol. */
+    private static final int SLOT_WARNING = 1;
 
     /** Text metrics key. */
     private static final String TM_PUBLISH_LIST = "PublishList";
@@ -176,11 +192,21 @@ public class CmsPublishGroupPanel extends Composite {
             info.addAdditionalInfo(stateLabel, stateName, CmsResourceStateUtil.getStateStyle(resourceBean.getState()));
         }
         CmsListItemWidget itemWidget = new CmsListItemWidget(info);
+        for (int i = 0; i < NUM_BUTTON_SLOTS; i++) {
+            SimplePanel panel = new SimplePanel();
+            panel.getElement().getStyle().setWidth(20, Unit.PX);
+            panel.getElement().getStyle().setHeight(20, Unit.PX);
+            if (i == SLOT_WARNING) {
+                panel.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+            }
+            itemWidget.addButton(panel);
+        }
+
         if (CmsPublishDataModel.hasProblems(resourceBean)) {
             Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
             warningImage.setTitle(resourceBean.getInfo().getValue());
             warningImage.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
-            itemWidget.addButton(warningImage);
+            fillButtonSlot(itemWidget, SLOT_WARNING, warningImage);
         }
         String noPreviewReason = resourceBean.getInfo() == null ? null : resourceBean.getInfo().getNoPreviewReason();
         CmsPushButton previewButton = new CmsPushButton();
@@ -198,10 +224,24 @@ public class CmsPublishGroupPanel extends Composite {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noPreviewReason)) {
             previewButton.disable(noPreviewReason);
         }
-        itemWidget.addButton(previewButton);
+        fillButtonSlot(itemWidget, SLOT_PREVIEW, previewButton);
 
         itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType(), false));
         return itemWidget;
+    }
+
+    /**
+     * Fills a slot for a button in a publish list item widget.<p>
+     *  
+     * @param listItemWidget the list item widget 
+     * @param index the slot index 
+     * @param widget the widget which should be displayed in the slot 
+     */
+    private static void fillButtonSlot(CmsListItemWidget listItemWidget, int index, Widget widget) {
+
+        SimplePanel panel = (SimplePanel)listItemWidget.getButton(index);
+        panel.clear();
+        panel.add(widget);
     }
 
     /** 
@@ -359,8 +399,7 @@ public class CmsPublishGroupPanel extends Composite {
                     m_model.signal(remove ? Signal.remove : Signal.unremove, resourceBean.getId());
                 }
             });
-            itemWidget.addButtonToFront(remover);
-
+            fillButtonSlot(itemWidget, SLOT_REMOVE, remover);
             controller.update(status);
         }
         return row;
