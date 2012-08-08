@@ -90,6 +90,9 @@ public class CmsPublishDataModel {
     /** The publish resources indexed by path. */
     private Map<String, CmsPublishResource> m_publishResourcesByPath = Maps.newHashMap();
 
+    /** The action to execute when the selection changes. */
+    private Runnable m_selectionChangeAction;
+
     /** The item status bean, indexed by structure id. */
     private Map<CmsUUID, CmsPublishItemStatus> m_status = Maps.newHashMap();
 
@@ -296,6 +299,16 @@ public class CmsPublishDataModel {
     }
 
     /**
+     * Sets the action which should be executed when the selection changes.<p>
+     * 
+     * @param action the action to run when the selection changes 
+     */
+    public void setSelectionChangeAction(Runnable action) {
+
+        m_selectionChangeAction = action;
+    }
+
+    /**
      * Sends a signal to a publish item status bean with the given id.<p>
      * 
      * @param signal the signal 
@@ -304,6 +317,7 @@ public class CmsPublishDataModel {
     public void signal(Signal signal, CmsUUID id) {
 
         getStatus(id).handleSignal(signal);
+        runSelectionChangeAction();
     }
 
     /**
@@ -316,6 +330,7 @@ public class CmsPublishDataModel {
         for (Map.Entry<CmsUUID, CmsPublishItemStatus> entry : m_status.entrySet()) {
             entry.getValue().handleSignal(signal);
         }
+        runSelectionChangeAction();
     }
 
     /**
@@ -330,6 +345,17 @@ public class CmsPublishDataModel {
         for (CmsPublishResource res : group.getResources()) {
             CmsUUID id = res.getId();
             m_status.get(id).handleSignal(signal);
+        }
+        runSelectionChangeAction();
+    }
+
+    /**
+     * Executes the action defined for selection changes.<p>
+     */
+    private void runSelectionChangeAction() {
+
+        if (m_selectionChangeAction != null) {
+            m_selectionChangeAction.run();
         }
     }
 

@@ -73,32 +73,32 @@ public class CmsPublishGroupPanel extends Composite {
     /** Text metrics key. */
     private static final String TM_PUBLISH_LIST = "PublishList";
 
-    /** The handler which is called when the publish item selection changes. */
-    protected I_CmsPublishSelectionChangeHandler m_selectionChangeHandler;
-
-    /** The group header (containing the label and add/remove buttons). */
-    private CmsSimpleListItem m_header = new CmsSimpleListItem();
+    /** The group index for this panel's corresponding group. */
+    protected int m_groupIndex;
 
     /** The data model for the publish dialog. */
     protected CmsPublishDataModel m_model;
 
-    /** The root panel of this widget. */
-    private CmsList<CmsTreeItem> m_panel = new CmsList<CmsTreeItem>();
+    /** The handler which is called when the publish item selection changes. */
+    protected I_CmsPublishSelectionChangeHandler m_selectionChangeHandler;
 
-    /** The button for selecting all resources in the group. */
-    private CmsPushButton m_selectAll;
+    /** The global map of selection controllers of *ALL* groups (to which this group's selection controllers are added). */
+    private Map<CmsUUID, CmsPublishItemSelectionController> m_controllersById;
 
-    /** The group index for this panel's corresponding group. */
-    protected int m_groupIndex;
+    /** The group header (containing the label and add/remove buttons). */
+    private CmsSimpleListItem m_header = new CmsSimpleListItem();
 
     /** The number of loaded publish item widgets for this group (used for scrolling).<p> */
     private int m_itemIndex;
 
+    /** The root panel of this widget. */
+    private CmsList<CmsTreeItem> m_panel = new CmsList<CmsTreeItem>();
+
     /** The publish resources of the current group.<p>*/
     private List<CmsPublishResource> m_publishResources;
 
-    /** The global map of selection controllers of *ALL* groups (to which this group's selection controllers are added). */
-    private Map<CmsUUID, CmsPublishItemSelectionController> m_controllersById;
+    /** The button for selecting all resources in the group. */
+    private CmsPushButton m_selectAll;
 
     /** The button for deselecting all resources in the group. */
     private CmsPushButton m_selectNone;
@@ -132,6 +132,9 @@ public class CmsPublishGroupPanel extends Composite {
         m_controllersById = controllersById;
         m_panel.truncate(TM_PUBLISH_LIST, CmsPublishDialog.DIALOG_WIDTH);
         initSelectButtons();
+        if (groupIndex == 0) {
+            m_model.signalGroup(Signal.publish, 0);
+        }
         if (hasOnlyProblemResources()) {
             m_selectAll.setEnabled(false);
             m_selectNone.setEnabled(false);
@@ -305,12 +308,12 @@ public class CmsPublishGroupPanel extends Composite {
 
         final CmsCheckBox checkbox = new CmsCheckBox();
         CmsTreeItem row;
-        row = new CmsTreeItem(false, checkbox, itemWidget);
+        row = new CmsTreeItem(true, checkbox, itemWidget);
         if (isSubItem) {
             checkbox.getElement().getStyle().setVisibility(Visibility.HIDDEN);
         }
 
-        row.setOpen(true);
+        row.setOpen(false);
         row.addStyleName(CSS.publishRow());
 
         // we do not need most of the interactive elements for the sub-items 
@@ -324,7 +327,6 @@ public class CmsPublishGroupPanel extends Composite {
 
                     boolean checked = checkbox.isChecked();
                     m_model.signal(checked ? Signal.publish : Signal.unpublish, resourceBean.getId());
-                    m_selectionChangeHandler.onChangePublishSelection();
                 }
             };
             checkbox.addClickHandler(checkboxHandler);
@@ -355,7 +357,6 @@ public class CmsPublishGroupPanel extends Composite {
 
                     boolean remove = remover.isChecked();
                     m_model.signal(remove ? Signal.remove : Signal.unremove, resourceBean.getId());
-                    m_selectionChangeHandler.onChangePublishSelection();
                 }
             });
             itemWidget.addButtonToFront(remover);
@@ -384,7 +385,6 @@ public class CmsPublishGroupPanel extends Composite {
             public void onClick(ClickEvent event) {
 
                 m_model.signalGroup(Signal.publish, m_groupIndex);
-                CmsPublishGroupPanel.this.m_selectionChangeHandler.onChangePublishSelection();
             }
         });
 
@@ -401,7 +401,6 @@ public class CmsPublishGroupPanel extends Composite {
             public void onClick(ClickEvent event) {
 
                 m_model.signalGroup(Signal.unpublish, m_groupIndex);
-                CmsPublishGroupPanel.this.m_selectionChangeHandler.onChangePublishSelection();
             }
         });
 

@@ -464,6 +464,13 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public void setGroups(List<CmsPublishGroup> groups, boolean newData) {
 
         m_model = new CmsPublishDataModel(groups, this);
+        m_model.setSelectionChangeAction(new Runnable() {
+
+            public void run() {
+
+                onChangePublishSelection();
+            }
+        });
         m_currentGroupIndex = 0;
         m_currentGroupPanel = null;
         m_problemsPanel.clear();
@@ -664,7 +671,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     protected void onSelectAllClick(ClickEvent event) {
 
         m_model.signalAll(Signal.publish);
-        CmsPublishSelectPanel.this.onChangePublishSelection();
     }
 
     /**
@@ -678,7 +684,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     protected void onSelectNoneClick(ClickEvent event) {
 
         m_model.signalAll(Signal.unpublish);
-        CmsPublishSelectPanel.this.onChangePublishSelection();
     }
 
     /**
