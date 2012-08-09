@@ -81,10 +81,10 @@ public class CmsPublishGroupPanel extends Composite {
     private static final int SLOT_PREVIEW = 0;
 
     /** The slot for the 'remove' checkbox. */
-    private static final int SLOT_REMOVE = 2;
+    private static final int SLOT_REMOVE = 1;
 
     /** The slot for the warning symbol. */
-    private static final int SLOT_WARNING = 1;
+    private static final int SLOT_WARNING = 2;
 
     /** Text metrics key. */
     private static final String TM_PUBLISH_LIST = "PublishList";
@@ -210,7 +210,7 @@ public class CmsPublishGroupPanel extends Composite {
         }
         String noPreviewReason = resourceBean.getInfo() == null ? null : resourceBean.getInfo().getNoPreviewReason();
         CmsPushButton previewButton = new CmsPushButton();
-        previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
+        previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().previewIcon());
         previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         previewButton.addClickHandler(new ClickHandler() {
 
