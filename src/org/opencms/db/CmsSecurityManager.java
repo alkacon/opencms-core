@@ -1096,7 +1096,11 @@ public final class CmsSecurityManager {
         byte[] content,
         List<CmsProperty> properties) throws CmsException {
 
-        if (existsResource(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION)) {
+        String checkExistsPath = "/".equals(resourcename) ? "/" : CmsFileUtil.removeTrailingSeparator(resourcename);
+        // We use checkExistsPath instead of resourcename because when creating a folder /foo/bar/, we want to fail
+        // if a file /foo/bar already exists. 
+
+        if (existsResource(context, checkExistsPath, CmsResourceFilter.ALL)) {
             // check if the resource already exists by name
             throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
                 org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
@@ -1136,7 +1140,6 @@ public final class CmsSecurityManager {
         List<CmsProperty> properties) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
         CmsResource sibling = null;
         try {
             checkOfflineProject(dbc);
