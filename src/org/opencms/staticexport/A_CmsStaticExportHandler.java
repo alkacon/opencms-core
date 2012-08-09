@@ -481,6 +481,10 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
 
         List<File> files = new ArrayList<File>();
         try {
+            if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+                // Accessing the ADE manager during setup may not work. 
+                return files;
+            }
             List<String> urlNames = cms.getAllUrlNames(res.getStructureId());
             Collection<String> detailpages = OpenCms.getADEManager().getDetailPageFinder().getAllDetailPages(
                 cms,

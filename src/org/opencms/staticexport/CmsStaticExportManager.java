@@ -1201,18 +1201,24 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String rfsName;
         try {
             CmsResource vfsRes = null;
-            try {
-                vfsRes = cms.readResource(vfsName);
-                I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
-                String detailPage = finder.getDetailPage(cms, vfsRes.getRootPath(), cms.getRequestContext().getUri());
-                if (detailPage != null) {
-                    vfsName = CmsStringUtil.joinPaths(
-                        detailPage,
-                        CmsDetailPageUtil.getBestUrlName(cms, vfsRes.getStructureId()),
-                        "/");
+            if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+                // Accessing the ADEManager during setup may not work.
+                try {
+                    vfsRes = cms.readResource(vfsName);
+                    I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
+                    String detailPage = finder.getDetailPage(
+                        cms,
+                        vfsRes.getRootPath(),
+                        cms.getRequestContext().getUri());
+                    if (detailPage != null) {
+                        vfsName = CmsStringUtil.joinPaths(
+                            detailPage,
+                            CmsDetailPageUtil.getBestUrlName(cms, vfsRes.getStructureId()),
+                            "/");
+                    }
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // ignore
                 }
-            } catch (CmsVfsResourceNotFoundException e) {
-                // ignore
             }
             rfsName = getRfsNameWithExportName(cms, vfsName);
             String extension = CmsFileUtil.getExtension(rfsName);
