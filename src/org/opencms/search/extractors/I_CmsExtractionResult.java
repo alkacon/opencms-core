@@ -27,7 +27,10 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.search.fields.I_CmsSearchField;
+
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The result of a document text extraction.<p>
@@ -76,18 +79,18 @@ public interface I_CmsExtractionResult {
     String ITEM_TITLE = "title";
 
     /**
-     * Returns the extracted content combined as a String.<p>
-     *
-     * @return the extracted content combined as a String
-     */
-    String getContent();
-
-    /**
      * Returns this extraction result serialized as a byte array.<p>
      * 
      * @return this extraction result serialized as a byte array
      */
     byte[] getBytes();
+
+    /**
+     * Returns the extracted content combined as a String.<p>
+     *
+     * @return the extracted content combined as a String
+     */
+    String getContent();
 
     /**
      * Returns the extracted content as individual items.<p>
@@ -111,6 +114,20 @@ public interface I_CmsExtractionResult {
      * @return the extracted content as individual items
      */
     Map<String, String> getContentItems();
+
+    /**
+     * Returns a list of mapping fields.<p>
+     * 
+     * @return a list of mapping fields
+     */
+    Set<I_CmsSearchField> getMappingFields();
+
+    /** 
+     * Adds a mapping field to the extraction result.<p>
+     * 
+     * @param field the field to add
+     */
+    void addMappingField(I_CmsSearchField field);
 
     /**
      * Releases the information stored in this extraction result, to free up the memory used.<p>

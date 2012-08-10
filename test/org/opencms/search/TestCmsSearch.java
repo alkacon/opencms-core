@@ -29,13 +29,14 @@ package org.opencms.search;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsDateUtil;
@@ -169,7 +170,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
             "org/opencms/search/pdf-test-112.pdf",
             "/test/master.pdf",
             CmsResourceTypeBinary.getStaticTypeId(),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         // create a copy
         cms.copyResource("/test/master.pdf", "/test/copy.pdf");
@@ -198,10 +199,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         echo("With Permission check, with excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.PERMISSIONS,
+            A_CmsSearchIndex.PERMISSIONS,
             CmsStringUtil.TRUE);
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.EXCERPT,
+            CmsLuceneIndex.EXCERPT,
             CmsStringUtil.TRUE);
 
         cmsSearchBean.setSearchPage(1);
@@ -228,10 +229,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         echo("With Permission check, without excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.PERMISSIONS,
+            A_CmsSearchIndex.PERMISSIONS,
             CmsStringUtil.TRUE);
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.EXCERPT,
+            CmsLuceneIndex.EXCERPT,
             CmsStringUtil.FALSE);
 
         cmsSearchBean.setSearchPage(1);
@@ -248,10 +249,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         echo("Without Permission check, with excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.PERMISSIONS,
+            A_CmsSearchIndex.PERMISSIONS,
             CmsStringUtil.FALSE);
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.EXCERPT,
+            CmsLuceneIndex.EXCERPT,
             CmsStringUtil.TRUE);
 
         cmsSearchBean.setSearchPage(1);
@@ -268,10 +269,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         echo("Without Permission check, without excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.PERMISSIONS,
+            A_CmsSearchIndex.PERMISSIONS,
             CmsStringUtil.FALSE);
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.EXCERPT,
+            CmsLuceneIndex.EXCERPT,
             CmsStringUtil.FALSE);
 
         cmsSearchBean.setSearchPage(1);
@@ -332,7 +333,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
                 "org/opencms/search/pdf-test-112.pdf",
                 folderName + "master.pdf",
                 CmsResourceTypeBinary.getStaticTypeId(),
-                Collections.EMPTY_LIST);
+                Collections.<CmsProperty> emptyList());
 
             // publish the project and update the search index
             I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
@@ -409,11 +410,11 @@ public class TestCmsSearch extends OpenCmsTestCase {
      */
     public void testIndexGeneration() throws Throwable {
 
-        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_TEST);
+        CmsLuceneIndex searchIndex = new CmsLuceneIndex(INDEX_TEST);
         searchIndex.setProjectName("Offline");
         // important: use german locale for a special treat on term analyzing
         searchIndex.setLocale(Locale.GERMAN);
-        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
+        searchIndex.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
 
@@ -453,7 +454,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
     public void testQueryEncoding() {
 
         // without encoding
-        String query = "Ölmühlmäher";
+        String query = "ï¿½lmï¿½hlmï¿½her";
         CmsSearch test = new CmsSearch();
         test.setQuery(query);
         assertEquals(query, test.getQuery());
@@ -529,7 +530,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
             CmsSearchResult res = i.next();
             String path = cms.getRequestContext().removeSiteRoot(res.getPath());
             colPath = Math.max(colPath, path.length() + 3);
-            String title = res.getField(CmsSearchField.FIELD_TITLE);
+            String title = res.getField(I_CmsSearchField.FIELD_TITLE);
             if (title == null) {
                 title = "";
             } else {
@@ -543,7 +544,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
             count++;
             System.out.print(CmsStringUtil.padRight("" + count, 4));
             System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), colPath));
-            String title = res.getField(CmsSearchField.FIELD_TITLE);
+            String title = res.getField(I_CmsSearchField.FIELD_TITLE);
             if (title == null) {
                 title = "";
             } else {
@@ -556,8 +557,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
             }
             System.out.print(CmsStringUtil.padRight(type, 10));
             if (res.getDateLastModified() != null) {
-                System.out.print(CmsStringUtil.padRight(""
-                    + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN), 17));
+                System.out.print(CmsStringUtil.padRight(
+                    "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
+                    17));
             }
             System.out.println("score: " + res.getScore());
             if (showExcerpt) {

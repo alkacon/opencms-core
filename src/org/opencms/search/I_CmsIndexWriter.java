@@ -29,8 +29,6 @@ package org.opencms.search;
 
 import java.io.IOException;
 
-import org.apache.lucene.document.Document;
-
 /**
  * Abstracts the index writer implementation for the most important index manipulation operations.
  * 
@@ -64,6 +62,10 @@ public interface I_CmsIndexWriter {
     /**
      * Optimizes the index.<p>
      * 
+     * Please note that as of Lucene 3.5, the direct use of optimize is discouraged
+     * as Lucene apparently is now able to manage the file structure so efficiently that
+     * frequent optimizations are not longer required.<p>
+     * 
      * @throws IOException
      */
     void optimize() throws IOException;
@@ -76,5 +78,5 @@ public interface I_CmsIndexWriter {
      * 
      * @throws IOException in case something goes wrong
      */
-    void updateDocument(String rootPath, Document document) throws IOException;
+    void updateDocument(String rootPath, I_CmsSearchDocument document) throws IOException;
 }

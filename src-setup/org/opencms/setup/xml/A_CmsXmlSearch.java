@@ -35,6 +35,8 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
+import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.util.CmsStringUtil;
 
@@ -67,7 +69,8 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
             document,
             xpath + "/" + CmsSearchConfiguration.N_DESCRIPTION,
             fieldConf.getDescription());
-        for (CmsSearchField field : fieldConf.getFields()) {
+        for (I_CmsSearchField sField : fieldConf.getFields()) {
+            CmsSearchField field = (CmsSearchField)sField;
             String fieldPath = xpath
                 + "/"
                 + CmsSearchConfiguration.N_FIELDS
@@ -190,7 +193,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
             index = CmsStringUtil.FALSE;
         }
         CmsSetupXmlHelper.setValue(document, xpath + "/@" + CmsSearchConfiguration.A_INDEX, index);
-        if (field.getBoost() != CmsSearchField.BOOST_DEFAULT) {
+        if (field.getBoost() != I_CmsSearchField.BOOST_DEFAULT) {
             CmsSetupXmlHelper.setValue(
                 document,
                 xpath + "/@" + CmsSearchConfiguration.A_BOOST,
@@ -214,9 +217,9 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
         }
 
         // field mappings
-        Iterator<CmsSearchFieldMapping> mappings = field.getMappings().iterator();
+        Iterator<I_CmsSearchFieldMapping> mappings = field.getMappings().iterator();
         while (mappings.hasNext()) {
-            CmsSearchFieldMapping mapping = mappings.next();
+            CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)mappings.next();
             String mappingPath = xpath
                 + "/"
                 + CmsSearchConfiguration.N_MAPPING

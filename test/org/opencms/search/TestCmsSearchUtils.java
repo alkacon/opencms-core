@@ -27,7 +27,7 @@
 
 package org.opencms.search;
 
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 
 import java.util.Iterator;
 import java.util.List;
@@ -60,43 +60,43 @@ public class TestCmsSearchUtils extends TestCase {
 
         long startDate = DateTools.stringToTime("20060101");
         long endDate = DateTools.stringToTime("20081231");
-        List<String> range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
+        List<String> range = CmsLuceneIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
         assertEquals("Date range result list does not have required size", 85, range.size());
 
         startDate = DateTools.stringToTime("20060101");
         endDate = DateTools.stringToTime("20071231");
-        range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
+        range = CmsLuceneIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
         assertEquals("Date range result list does not have required size", 84, range.size());
 
         startDate = DateTools.stringToTime("20060101");
         endDate = DateTools.stringToTime("20061231");
-        range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
+        range = CmsLuceneIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
         assertEquals("Date range result list does not have required size", 72, range.size());
 
         startDate = DateTools.stringToTime("20060101");
         endDate = DateTools.stringToTime("20060131");
-        range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
+        range = CmsLuceneIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
         assertEquals("Date range result list does not have required size", 31, range.size());
 
         startDate = DateTools.stringToTime("20060131");
         endDate = DateTools.stringToTime("20060201");
-        range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
+        range = CmsLuceneIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
         assertEquals("Date range result list does not have required size", 2, range.size());
 
         startDate = DateTools.stringToTime("20060201");
         endDate = DateTools.stringToTime("20060301");
-        range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
+        range = CmsLuceneIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
         assertEquals("Date range result list does not have required size", 29, range.size());
 
         startDate = DateTools.stringToTime("20060201");
         endDate = DateTools.stringToTime("20060201");
-        range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
+        range = CmsLuceneIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
         assertEquals("Date range result list does not have required size", 1, range.size());
     }
@@ -123,12 +123,14 @@ public class TestCmsSearchUtils extends TestCase {
      */
     public void testParentFolderTokenizer() throws Exception {
 
-        assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens(null));
-        assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens(""));
-        assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/"));
-        assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/"));
-        assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites"));
-        assertEquals("/ /sites/ /sites/default/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default/"));
-        assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default"));
+        assertEquals("/", A_CmsSearchFieldConfiguration.getParentFolderTokens(null));
+        assertEquals("/", A_CmsSearchFieldConfiguration.getParentFolderTokens(""));
+        assertEquals("/", A_CmsSearchFieldConfiguration.getParentFolderTokens("/"));
+        assertEquals("/ /sites/", A_CmsSearchFieldConfiguration.getParentFolderTokens("/sites/"));
+        assertEquals("/", A_CmsSearchFieldConfiguration.getParentFolderTokens("/sites"));
+        assertEquals(
+            "/ /sites/ /sites/default/",
+            A_CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default/"));
+        assertEquals("/ /sites/", A_CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default"));
     }
 }

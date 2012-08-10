@@ -31,10 +31,12 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.CmsSearch;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -60,7 +62,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * A <code>{@link org.opencms.workplace.CmsWidgetDialog}</code> that performs a 
- * search on the <code>{@link org.opencms.search.CmsSearchIndex}</code> identified 
+ * search on the <code>{@link org.opencms.search.A_CmsSearchIndex}</code> identified 
  * by request parameter 
  * <code>{@link org.opencms.workplace.tools.searchindex.A_CmsEditSearchIndexDialog#PARAM_INDEXNAME}</code> 
  * using an instance of <code>{@link org.opencms.search.CmsSearchParameters}</code> 
@@ -126,6 +128,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#actionToggleElement()
      */
+    @Override
     public void actionToggleElement() {
 
         super.actionToggleElement();
@@ -140,6 +143,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @return the standard javascript for submitting the dialog
      */
+    @Override
     public String dialogScriptSubmit() {
 
         StringBuffer html = new StringBuffer(512);
@@ -231,11 +235,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @return the list of searchable fields used in the workplace search index
      */
-    public List getSearchFields() {
+    public List<I_CmsSearchField> getSearchFields() {
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(getParamIndexName());
-        List result = new ArrayList();
-        Iterator i = index.getFieldConfiguration().getFields().iterator();
+        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(getParamIndexName());
+        List<I_CmsSearchField> result = new ArrayList<I_CmsSearchField>();
+        Iterator<I_CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
             CmsSearchField field = (CmsSearchField)i.next();
             if (field.isIndexed() && field.isDisplayed()) {
@@ -325,6 +329,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#closeDialogOnCommit()
      */
+    @Override
     protected boolean closeDialogOnCommit() {
 
         return false;
@@ -333,6 +338,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -379,6 +385,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @return html code
      */
+    @Override
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -418,6 +425,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // initialization -> initUserObject
@@ -462,6 +470,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @see org.opencms.workplace.tools.searchindex.A_CmsEditSearchIndexDialog#initUserObject()
      */
+    @Override
     protected void initUserObject() {
 
         super.initUserObject();
@@ -483,7 +492,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
                 m_search = new CmsSearch();
             }
         }
-        m_searchParams.setSearchIndex(m_index);
+        m_searchParams.setSearchIndex((CmsLuceneIndex)m_index);
     }
 
     /**
@@ -491,6 +500,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -623,11 +633,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects
      */
-    private List getFieldList() {
+    private List<CmsSelectWidgetOption> getFieldList() {
 
-        List retVal = new ArrayList();
+        List<CmsSelectWidgetOption> retVal = new ArrayList<CmsSelectWidgetOption>();
         try {
-            Iterator i = getSearchFields().iterator();
+            Iterator<I_CmsSearchField> i = getSearchFields().iterator();
             while (i.hasNext()) {
                 CmsSearchField field = (CmsSearchField)i.next();
                 retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
@@ -644,9 +654,9 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @return the different select options for sort search result criteria 
      */
-    private List getSortWidgetConfiguration() {
+    private List<CmsSelectWidgetOption> getSortWidgetConfiguration() {
 
-        List result = new LinkedList();
+        List<CmsSelectWidgetOption> result = new LinkedList<CmsSelectWidgetOption>();
         CmsMessages messages = Messages.get().getBundle(getLocale());
         result.add(new CmsSelectWidgetOption(
             CmsSearchParameters.SORT_NAMES[0],

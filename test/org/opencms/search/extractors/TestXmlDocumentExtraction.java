@@ -29,7 +29,7 @@ package org.opencms.search.extractors;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.CmsDocumentXmlPage;
 import org.opencms.test.OpenCmsTestCase;
@@ -102,7 +102,7 @@ public class TestXmlDocumentExtraction extends OpenCmsTestCase {
         CmsDocumentXmlPage doc = new CmsDocumentXmlPage("xmlpage");
         CmsObject cms = getCmsObject();
         CmsResource resource = cms.readResource("/folder1/page4.html");
-        CmsSearchIndex index = new CmsSearchIndex();
+        CmsLuceneIndex index = new CmsLuceneIndex();
         index.setLocale(Locale.ENGLISH);
 
         I_CmsExtractionResult extractionResult = doc.extractContent(cms, resource, index);
@@ -123,7 +123,7 @@ public class TestXmlDocumentExtraction extends OpenCmsTestCase {
         CmsDocumentXmlContent doc = new CmsDocumentXmlContent("xmlcontent");
         CmsObject cms = getCmsObject();
         CmsResource resource = cms.readResource("/xmlcontent/article_0003.html");
-        CmsSearchIndex index = new CmsSearchIndex();
+        CmsLuceneIndex index = new CmsLuceneIndex();
         index.setLocale(Locale.ENGLISH);
 
         I_CmsExtractionResult extractionResult = doc.extractContent(cms, resource, index);

@@ -33,13 +33,16 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsLuceneIndex;
+import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -52,7 +55,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.Document;
 
 /**
  * Special document text extraction factory for the gallery index that creates multiple fields for the content
@@ -78,14 +80,15 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
      * 
-     * For gallery document generators, we never check for {@link CmsSearchIndex#isExtractingContent()} since
+     * For gallery document generators, we never check for {@link CmsLuceneIndex#isExtractingContent()} since
      * all these classes are assumed to be written with optimizations special to gallery search indexing anyway.<p>
      * 
-     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, CmsSearchIndex, I_CmsExtractionResult)
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, CmsSearchIndex)
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, I_CmsExtractionResult)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, A_CmsSearchIndex)
      */
     @Override
-    public Document createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException {
+    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    throws CmsException {
 
         // extract the content from the resource
         I_CmsExtractionResult content = null;
@@ -109,10 +112,10 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
      * accessible using their xpath. The xpath will start with the locale and have the form like for example 
      * <code>de/Text[1]</code> or <code>en/Nested[1]/Text[1]</code>.<p>  
      * 
-     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, A_CmsSearchIndex)
      */
     @Override
-    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
     throws CmsException {
 
         logContentExtraction(resource, index);
@@ -151,14 +154,14 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                                         String fieldName = null;
                                         if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propertyName)) {
                                             // field is title
-                                            fieldName = CmsSearchField.FIELD_TITLE_UNSTORED;
+                                            fieldName = I_CmsSearchField.FIELD_TITLE_UNSTORED;
                                         } else {
                                             // if field is not title, it must be description
-                                            fieldName = CmsSearchField.FIELD_DESCRIPTION;
+                                            fieldName = I_CmsSearchField.FIELD_DESCRIPTION;
                                         }
                                         // append language individual property field
                                         items.put(
-                                            CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, locale),
+                                            A_CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale),
                                             extracted);
                                     }
                                 }
@@ -169,7 +172,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                 if (content.length() > 0) {
                     // append language individual content field
                     items.put(
-                        CmsGallerySearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale),
+                        A_CmsSearchFieldConfiguration.getLocaleExtendedName(I_CmsSearchField.FIELD_CONTENT, locale),
                         content.toString());
                 }
                 // store the locales

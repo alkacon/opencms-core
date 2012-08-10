@@ -28,7 +28,6 @@
 package org.opencms.search;
 
 import org.opencms.db.CmsPublishedResource;
-import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -43,7 +42,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.Document;
 
 /**
  * An indexer indexing {@link CmsResource} based content from the OpenCms VFS.<p>
@@ -62,7 +60,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     protected CmsObject m_cms;
 
     /** The index. */
-    protected CmsSearchIndex m_index;
+    protected A_CmsSearchIndex m_index;
 
     /** The report. */
     protected I_CmsReport m_report;
@@ -111,7 +109,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      *     
      * @return the OpenCms search index updated by this indexer 
      */
-    public CmsSearchIndex getIndex() {
+    public A_CmsSearchIndex getIndex() {
 
         return m_index;
     }
@@ -153,9 +151,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex)
+     * @see org.opencms.search.I_CmsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.A_CmsSearchIndex)
      */
-    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, CmsSearchIndex index) {
+    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, A_CmsSearchIndex index) {
 
         CmsVfsIndexer indexer = new CmsVfsIndexer();
 
@@ -266,42 +264,11 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      */
     protected void addResourceToUpdateData(CmsPublishedResource pubRes, CmsSearchIndexUpdateData updateData) {
 
-        if (pubRes.getState().isNew()) {
-            // new resource just needs to be updated
-            if (pubRes.getPublishTag() < 0) {
-                // this is for an offline index
-                if (isResourceInTimeWindow(pubRes)) {
-                    // update only if resource is in time window
-                    updateData.addResourceToUpdate(pubRes);
-                } else {
-                    // for offline index state may be wrong, correct this
-                    pubRes.setState(CmsResourceState.STATE_DELETED);
-                    // in the offline indexes we must delete new resources outside of the time window
-                    updateData.addResourceToDelete(pubRes);
-                }
-            } else {
-                // for a standard index, just index the resource
-                updateData.addResourceToUpdate(pubRes);
-            }
-        } else if (pubRes.getState().isDeleted()) {
+        if (pubRes.getState().isDeleted()) {
             // deleted resource just needs to be removed
             updateData.addResourceToDelete(pubRes);
-        } else if (pubRes.getState().isChanged() || pubRes.getState().isUnchanged()) {
-            if (pubRes.getPublishTag() < 0) {
-                // this is for an offline index
-                if (isResourceInTimeWindow(pubRes)) {
-                    // update only if resource is in time window
-                    updateData.addResourceToUpdate(pubRes);
-                } else {
-                    // for offline index state may be wrong, correct this
-                    pubRes.setState(CmsResourceState.STATE_DELETED);
-                    // in the offline indexes we must delete new resources outside of the time window
-                    updateData.addResourceToDelete(pubRes);
-                }
-            } else {
-                // for a standard index, just update the resource
-                updateData.addResourceToUpdate(pubRes);
-            }
+        } else if (pubRes.getState().isNew() || pubRes.getState().isChanged() || pubRes.getState().isUnchanged()) {
+            updateData.addResourceToUpdate(pubRes);
         }
     }
 
@@ -389,7 +356,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      * @param rootPath the root path of the resource to update
      * @param doc the new document for the resource
      */
-    protected void updateResource(I_CmsIndexWriter indexWriter, String rootPath, Document doc) {
+    protected void updateResource(I_CmsIndexWriter indexWriter, String rootPath, I_CmsSearchDocument doc) {
 
         try {
             indexWriter.updateDocument(rootPath, doc);

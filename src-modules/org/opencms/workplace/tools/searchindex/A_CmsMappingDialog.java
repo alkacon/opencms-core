@@ -35,6 +35,7 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -94,7 +95,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     protected CmsSearchField m_field;
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchFieldConfiguration m_fieldconfiguration;
+    protected I_CmsSearchFieldConfiguration m_fieldconfiguration;
 
     /** The user object that is edited on this dialog. */
     protected CmsSearchFieldMapping m_mapping;
@@ -161,7 +162,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
             while (itMappings.hasNext()) {
                 CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
                 if (curMapping.getType().toString().equals(m_mapping.getType().toString())
-                    && ((curMapping.getParam() == null && m_mapping.getParam() == null) || (curMapping.getParam().equals(m_mapping.getParam())))) {
+                    && (((curMapping.getParam() == null) && (m_mapping.getParam() == null)) || (curMapping.getParam().equals(m_mapping.getParam())))) {
                     found = true;
                 }
             }
@@ -324,7 +325,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
                 while (itMappings.hasNext()) {
                     CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
                     if (curMapping.getType().toString().equals(getParamType())
-                        && (curMapping.getParam() == null && getParamParam().equals("-") || (curMapping.getParam().equals(getParamParam())))) {
+                        && (((curMapping.getParam() == null) && getParamParam().equals("-")) || (curMapping.getParam().equals(getParamParam())))) {
                         m_mapping = curMapping;
                         break;
                     }

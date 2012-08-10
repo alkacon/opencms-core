@@ -32,12 +32,13 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -212,6 +213,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws IOException, ServletException, CmsRuntimeException {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
@@ -248,6 +250,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
@@ -295,6 +298,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -314,15 +318,13 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    @Override
+    protected List<CmsListItem> getListItems() {
 
-        List result = new ArrayList();
+        List<CmsListItem> result = new ArrayList<CmsListItem>();
         // get content
-        List indexes = searchIndexes();
-        Iterator itIndexes = indexes.iterator();
-        CmsSearchIndex index;
-        while (itIndexes.hasNext()) {
-            index = (CmsSearchIndex)itIndexes.next();
+        List<A_CmsSearchIndex> indexes = OpenCms.getSearchManager().getSearchIndexes();
+        for (A_CmsSearchIndex index : indexes) {
             CmsListItem item = getList().newItem(index.getName());
             item.set(LIST_COLUMN_NAME, index.getName());
             item.set(LIST_COLUMN_CONFIGURATION, index.getFieldConfiguration().getName());
@@ -337,6 +339,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -348,6 +351,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for edit
@@ -477,6 +481,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add index source details
@@ -515,6 +520,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add delete multi action
@@ -563,9 +569,9 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         StringBuffer html = new StringBuffer();
         // search for the corresponding CmsSearchIndex: 
         String idxName = (String)item.get(LIST_COLUMN_NAME);
-        CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(idxName);
+        A_CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(idxName);
 
-        CmsSearchFieldConfiguration idxFieldConfiguration = idx.getFieldConfiguration();
+        I_CmsSearchFieldConfiguration idxFieldConfiguration = idx.getFieldConfiguration();
         List fields = idxFieldConfiguration.getFields();
 
         html.append("<ul>\n");
@@ -596,7 +602,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             if (fieldExcerpt) {
                 html.append(", ").append("excerpt=").append(fieldExcerpt);
             }
-            if (fieldBoost != CmsSearchField.BOOST_DEFAULT) {
+            if (fieldBoost != I_CmsSearchField.BOOST_DEFAULT) {
                 html.append(", ").append("boost=").append(fieldBoost);
             }
             if (fieldDefault != null) {
@@ -636,7 +642,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         StringBuffer html = new StringBuffer();
         // search for the corresponding CmsSearchIndex: 
         String idxName = (String)item.get(LIST_COLUMN_NAME);
-        CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(idxName);
+        A_CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(idxName);
 
         // get the index sources (nice API)
         List idxSources = new LinkedList();
@@ -684,16 +690,5 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
         html.append("</ul>\n");
         item.set(detailId, html.toString());
-    }
-
-    /**
-     * Returns the available search indexes of this installation. 
-     * 
-     * @return the available search indexes of this installation
-     */
-    private List searchIndexes() {
-
-        CmsSearchManager manager = OpenCms.getSearchManager();
-        return manager.getSearchIndexes();
     }
 }

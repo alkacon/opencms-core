@@ -59,6 +59,7 @@ public final class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(TestCategoryResourceCollectors.suite());
         suite.addTest(TestPriorityResourceCollectors.suite());
+        suite.addTest(TestCmsSolrCollector.suite());
         //$JUnit-END$
         return suite;
     }

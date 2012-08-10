@@ -50,6 +50,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_XML_SCHEMA_IO_1 = "ERR_XML_SCHEMA_IO_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_XML_SCHEMA_MAPPING_CLASS_NOT_EXIST_3 = "ERR_XML_SCHEMA_MAPPING_CLASS_NOT_EXIST_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_SCHEMA_PARSE_1 = "ERR_XML_SCHEMA_PARSE_1";
 
     /** Message constant for key in the resource bundle. */

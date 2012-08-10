@@ -63,6 +63,7 @@ public final class AllTests {
         suite.addTest(TestCmsSearchFields.suite());
         suite.addTest(TestCmsSearchInDocuments.suite());
         suite.addTest(TestCmsSearchAdvancedFeatures.suite());
+        suite.addTest(TestCmsSearchSpecialFeatures.suite());
         suite.addTest(TestCmsSearchOffline.suite());
         //$JUnit-END$
         return suite;

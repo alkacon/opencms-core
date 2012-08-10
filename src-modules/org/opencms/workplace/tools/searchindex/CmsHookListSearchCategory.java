@@ -150,7 +150,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
     protected void onGetCall(Object peer, int index) {
 
         // zero categories are all (first condition)
-        if ((m_backupCategories.size() == 0 && size() != 0) || !(containsAll(m_backupCategories))) {
+        if (((m_backupCategories.size() == 0) && (size() != 0)) || !(containsAll(m_backupCategories))) {
             ((CmsSearchParameters)peer).setSearchPage(1);
         }
     }

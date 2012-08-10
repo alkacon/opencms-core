@@ -41,7 +41,7 @@ import org.apache.tika.parser.microsoft.ooxml.OOXMLParser;
  * 
  * @since 8.0.1 
  */
-public class CmsExtractorMsOfficeOOXML extends A_CmsTextExtractor {
+public final class CmsExtractorMsOfficeOOXML extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
     private static final CmsExtractorMsOfficeOOXML INSTANCE = new CmsExtractorMsOfficeOOXML();

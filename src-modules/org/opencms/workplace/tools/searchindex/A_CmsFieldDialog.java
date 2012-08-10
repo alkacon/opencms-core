@@ -34,6 +34,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -79,7 +80,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     protected CmsSearchField m_field;
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchFieldConfiguration m_fieldconfiguration;
+    protected I_CmsSearchFieldConfiguration m_fieldconfiguration;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;
@@ -304,7 +305,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
 
         if (!isNewField()) {
             // test the needed parameters
-            if (getParamField() == null && getJsp().getRequest().getParameter("name.0") == null) {
+            if ((getParamField() == null) && (getJsp().getRequest().getParameter("name.0") == null)) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
                     PARAM_FIELD));

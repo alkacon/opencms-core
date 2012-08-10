@@ -28,7 +28,7 @@
 package org.opencms.search;
 
 import org.opencms.main.CmsLog;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -104,6 +104,9 @@ public class CmsSearchCategoryCollector extends Collector {
     /** The index searcher used. */
     private IndexSearcher m_searcher;
 
+    /** The index of the document reader. */
+    private int m_docBase;
+
     /**
      * Creates a new category search collector instance.<p>
      * 
@@ -112,6 +115,7 @@ public class CmsSearchCategoryCollector extends Collector {
     public CmsSearchCategoryCollector(IndexSearcher searcher) {
 
         super();
+        m_docBase = 0;
         m_searcher = searcher;
         m_categories = new HashMap<String, CmsCategroyCount>();
     }
@@ -156,13 +160,16 @@ public class CmsSearchCategoryCollector extends Collector {
     public void collect(int id) {
 
         String category = null;
+        int rebasedId = m_docBase + id;
         try {
-            Document doc = m_searcher.doc(id);
-            category = doc.get(CmsSearchField.FIELD_CATEGORY);
+            Document doc = m_searcher.doc(rebasedId);
+            category = doc.get(I_CmsSearchField.FIELD_CATEGORY);
         } catch (IOException e) {
             // category will be null
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_CATEGORY_FAILED_1, new Integer(id)), e);
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_READ_CATEGORY_FAILED_1, new Integer(rebasedId)),
+                    e);
             }
 
         }
@@ -201,7 +208,7 @@ public class CmsSearchCategoryCollector extends Collector {
     @Override
     public void setNextReader(IndexReader reader, int docBase) {
 
-        // ignored, we just count hits 
+        m_docBase = docBase;
     }
 
     /**

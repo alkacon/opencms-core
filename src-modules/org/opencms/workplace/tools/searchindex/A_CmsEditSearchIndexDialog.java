@@ -31,7 +31,8 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
@@ -80,7 +81,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     public static final String PARAM_INDEXNAME = "indexname";
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchIndex m_index;
+    protected A_CmsSearchIndex m_index;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;
@@ -123,9 +124,10 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * Commits the edited search index to the search manager.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
 
@@ -175,7 +177,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Initializes the user object (a <code>{@link CmsSearchIndex}</code> instance.<p>
+     * Initializes the user object (a <code>{@link A_CmsSearchIndex}</code> instance.<p>
      * 
      * Implementation always have to call <code>"super.defineWidgets()"</code> first as 
      * this action may only be done here (relies on filled request parameters, the next 
@@ -184,6 +186,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initUserObject();
@@ -194,6 +197,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -212,6 +216,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -247,6 +252,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         m_searchManager = OpenCms.getSearchManager();
@@ -256,15 +262,17 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
         // save the current search index
-        Map dialogObject = (Map)getDialogObject();
+        @SuppressWarnings("unchecked")
+        Map<String, A_CmsSearchIndex> dialogObject = (Map<String, A_CmsSearchIndex>)getDialogObject();
         if (dialogObject == null) {
-            dialogObject = new HashMap();
+            dialogObject = new HashMap<String, A_CmsSearchIndex>();
             dialogObject.put(PARAM_INDEXNAME, m_index);
             setDialogObject(dialogObject);
         }
@@ -284,6 +292,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (!isNewSearchIndex()) {
@@ -296,6 +305,11 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
         }
     }
 
+    /**
+     * Creates a dummy index source.<p>
+     * 
+     * @return the dummy search index source
+     */
     private CmsSearchIndexSource createDummyIndexSource() {
 
         CmsSearchIndexSource result = new CmsSearchIndexSource();
@@ -318,22 +332,21 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      *         a <code>null</code> name property that will be used for being filled with 
      *         the widget bean technology
      */
-    private CmsSearchIndex createDummySearchIndex() {
+    private CmsLuceneIndex createDummySearchIndex() {
 
-        CmsSearchIndex result = new CmsSearchIndex();
+        CmsLuceneIndex result = new CmsLuceneIndex();
         result.setLocale(Locale.ENGLISH);
         result.setProjectName("Online");
         result.setRebuildMode("auto");
 
         // find default source 
-        Map sources = m_searchManager.getSearchIndexSources();
+        Map<String, CmsSearchIndexSource> sources = m_searchManager.getSearchIndexSources();
         if (sources.isEmpty()) {
             CmsSearchIndexSource source = createDummyIndexSource();
             sources.put(source.getName(), source);
         }
-        result.addSourceName((String)sources.keySet().iterator().next());
+        result.addSourceName(sources.keySet().iterator().next());
 
         return result;
-
     }
 }

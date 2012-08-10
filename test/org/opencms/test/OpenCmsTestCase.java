@@ -55,6 +55,7 @@ import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.relations.CmsRelation;
 import org.opencms.report.CmsShellReport;
+import org.opencms.search.solr.TestCmsSearch;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -158,6 +159,30 @@ public class OpenCmsTestCase extends TestCase {
     /** test article type id constant. */
     public static final int ARTICLE_TYPEID = 27;
 
+    /** Special character constant. */
+    public static final String C_AUML_LOWER = "\u00e4";
+
+    /** Special character constant. */
+    public static final String C_AUML_UPPER = "\u00c4";
+
+    /** Special character constant. */
+    public static final String C_EURO = "\u20ac";
+
+    /** Special character constant. */
+    public static final String C_OUML_LOWER = "\u00f6";
+
+    /** Special character constant. */
+    public static final String C_OUML_UPPER = "\u00d6";
+
+    /** Special character constant. */
+    public static final String C_SHARP_S = "\u00df";
+
+    /** Special character constant. */
+    public static final String C_UUML_LOWER = "\u00fc";
+
+    /** Special character constant. */
+    public static final String C_UUML_UPPER = "\u00dc";
+
     /** Key for tests on MySql database. */
     public static final String DB_MYSQL = "mysql";
 
@@ -187,6 +212,9 @@ public class OpenCmsTestCase extends TestCase {
 
     /** The setup connection data. */
     protected static ConnectionData m_setupConnection;
+
+    /** The cached list of OpenCms class names. */
+    private static List<String> classNameList;
 
     /** The file date of the configuration files. */
     private static long[] m_dateConfigFiles;
@@ -548,6 +576,48 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Gets the list of all names of classes which exist as class files in a directory in the classpath (not in JARs) and whose path contains 'opencms' or 'alkacon'.
+     * 
+     * @return the list of all opencms class on the class path
+     *  
+     * @throws Exception if something goes  wrong 
+     */
+    public static List<String> getClassNames() throws Exception {
+
+        if (classNameList != null) {
+            return classNameList;
+        }
+
+        FileFilter filter = new FileFilter() {
+
+            public boolean accept(File pathname) {
+
+                return pathname.isFile() && pathname.getName().endsWith(".class");
+            }
+        };
+        String[] classpaths = System.getProperty("java.class.path", "").split(File.pathSeparator);
+        List<String> classNames = new ArrayList<String>();
+
+        for (String path : classpaths) {
+            File baseFile = new File(path);
+            String basePath = baseFile.getPath();
+            List<File> classFiles = CmsFileUtil.getFiles(path, filter, true);
+            for (File classFile : classFiles) {
+                String relativePath = classFile.getPath().substring(basePath.length());
+                String className = relativePath.replace("" + File.separatorChar, ".").substring(1).replaceFirst(
+                    "\\.class$",
+                    "");
+
+                if ((className.indexOf("opencms") > -1) || (className.indexOf("alkacon") > -1)) {
+                    classNames.add(className);
+                }
+            }
+        }
+        classNameList = classNames;
+        return classNames;
+    }
+
+    /**
      * Returns the currently used database/configuration.<p>
      * 
      * @return he currently used database/configuration
@@ -696,6 +766,14 @@ public class OpenCmsTestCase extends TestCase {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("WEB-INF/index/");
+        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
+            CmsFileUtil.purgeDirectory(new File(path));
+        }
+        path = getTestDataPath("WEB-INF/solr/" + TestCmsSearch.SOLR_OFFLINE + "/");
+        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
+            CmsFileUtil.purgeDirectory(new File(path));
+        }
+        path = getTestDataPath("WEB-INF/solr/" + TestCmsSearch.INDEX_TEST + "/");
         if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
@@ -3617,21 +3695,9 @@ public class OpenCmsTestCase extends TestCase {
 
             String key = "setup";
             m_setupConnection = new ConnectionData();
-            m_setupConnection.m_dbName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + "dbName");
-            m_setupConnection.m_jdbcUrl = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + "jdbcUrl");
-            m_setupConnection.m_userName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + "user");
+            m_setupConnection.m_dbName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+            m_setupConnection.m_jdbcUrl = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "jdbcUrl");
+            m_setupConnection.m_userName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "user");
             m_setupConnection.m_userPassword = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
                 + "."
                 + key
@@ -3655,11 +3721,7 @@ public class OpenCmsTestCase extends TestCase {
 
             key = "default";
             m_defaultConnection = new ConnectionData();
-            m_defaultConnection.m_dbName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + "dbName");
+            m_defaultConnection.m_dbName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
             m_defaultConnection.m_userName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
                 + "."
                 + key

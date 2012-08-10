@@ -28,7 +28,7 @@
 package org.opencms.search;
 
 import org.opencms.main.CmsLog;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 
 import java.io.IOException;
 
@@ -45,20 +45,14 @@ import org.apache.lucene.store.Directory;
  */
 public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
-    /** The threshold for the commits until optimize is called. */
-    public static final int COMMIT_OPTIMIZE_THRESHOLD = 1000;
-
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsLuceneIndexWriter.class);
 
     /** The OpenCms search index instance this writer to supposed to write to. */
-    private CmsSearchIndex m_index;
+    private CmsLuceneIndex m_index;
 
     /** The Lucene index writer to use. */
     private final IndexWriter m_indexWriter;
-
-    /** A counter for the commits until optimize is called. */
-    private int m_optimizeCounter;
 
     /**
      * Creates a new index writer based on the provided standard Lucene IndexWriter.<p>
@@ -80,10 +74,9 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
      * @param indexWriter the standard Lucene IndexWriter to use as delegate
      * @param index the OpenCms search index instance this writer to supposed to write to
      */
-    public CmsLuceneIndexWriter(IndexWriter indexWriter, CmsSearchIndex index) {
+    public CmsLuceneIndexWriter(IndexWriter indexWriter, CmsLuceneIndex index) {
 
         m_indexWriter = indexWriter;
-        m_optimizeCounter = 0;
         m_index = index;
         if ((m_index != null) && LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(
@@ -127,13 +120,6 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
                 m_index.getPath()));
         }
         m_indexWriter.commit();
-        m_optimizeCounter++;
-        if (m_optimizeCounter >= COMMIT_OPTIMIZE_THRESHOLD) {
-            // optimize the search index when the threshold is reached
-            optimize();
-            m_indexWriter.commit();
-            m_optimizeCounter = 0;
-        }
     }
 
     /**
@@ -142,7 +128,7 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     public void deleteDocuments(String rootPath) throws IOException {
 
         // search for an exact match on the document root path
-        Term term = new Term(CmsSearchField.FIELD_PATH, rootPath);
+        Term term = new Term(I_CmsSearchField.FIELD_PATH, rootPath);
         if ((m_index != null) && LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_DOC_DELETE_3,
@@ -155,6 +141,9 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
     /**
      * @see org.opencms.search.I_CmsIndexWriter#optimize()
+     * 
+     * As optimize is deprecated with Lucene 3.5, this implementation 
+     * actually calls {@link IndexWriter#forceMerge(int)}.<p>
      */
     public void optimize() throws IOException {
 
@@ -167,16 +156,16 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
         int oldPriority = Thread.currentThread().getPriority();
         // we don't want the priority too low as the process should complete as fast as possible
         Thread.currentThread().setPriority(Thread.NORM_PRIORITY / 2);
-        m_indexWriter.optimize();
+        m_indexWriter.forceMerge(5);
         Thread.currentThread().setPriority(oldPriority);
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexWriter#updateDocument(java.lang.String, org.apache.lucene.document.Document)
+     * @see org.opencms.search.I_CmsIndexWriter#updateDocument(java.lang.String, org.opencms.search.I_CmsSearchDocument)
      */
-    public void updateDocument(String rootPath, Document document) throws IOException {
+    public void updateDocument(String rootPath, I_CmsSearchDocument document) throws IOException {
 
-        Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
+        Term pathTerm = new Term(I_CmsSearchField.FIELD_PATH, rootPath);
         if ((m_index != null) && LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_DOC_UPDATE_3,
@@ -184,6 +173,6 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
                 m_index.getName(),
                 m_index.getPath()));
         }
-        m_indexWriter.updateDocument(pathTerm, document);
+        m_indexWriter.updateDocument(pathTerm, (Document)document.getDocument());
     }
 }

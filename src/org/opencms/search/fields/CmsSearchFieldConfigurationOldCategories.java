@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 
@@ -58,40 +59,32 @@ public class CmsSearchFieldConfigurationOldCategories extends CmsSearchFieldConf
     }
 
     /**
-     * Extends the given document by resource category information based on properties.<p>
-     * 
-     * @param document the document to extend
-     * @param cms the OpenCms context used for building the search index
-     * @param resource the resource that is indexed
-     * @param extractionResult the plain text extraction result from the resource
-     * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
-     * @return the document extended by resource category information
+     * @see org.opencms.search.fields.A_CmsSearchFieldConfiguration#appendCategories(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
     @Override
-    protected Document appendCategories(
-        Document document,
+    protected I_CmsSearchDocument appendCategories(
+        I_CmsSearchDocument document,
         CmsObject cms,
         CmsResource resource,
         I_CmsExtractionResult extractionResult,
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
 
-        Fieldable field;
-        String value;
+        Document doc = (Document)document.getDocument();
 
-        // add the category of the file (this is searched so the value can also be attached on a folder)
-        value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, propertiesSearched).getValue();
+        String value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, propertiesSearched).getValue();
         if (CmsStringUtil.isNotEmpty(value)) {
-            // all categories are internally stored lower case
             value = value.trim().toLowerCase();
             if (value.length() > 0) {
-                field = new Field(CmsSearchField.FIELD_CATEGORY, value, Field.Store.YES, Field.Index.NOT_ANALYZED);
-                field.setBoost(0);
-                document.add(field);
-            }
+                Fieldable field = new Field(
+                    I_CmsSearchField.FIELD_CATEGORY,
+                    value,
+                    Field.Store.YES,
+                    Field.Index.NOT_ANALYZED);
 
+                field.setBoost(0.0F);
+                doc.add(field);
+            }
         }
 
         return document;

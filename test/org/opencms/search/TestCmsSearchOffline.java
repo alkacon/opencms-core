@@ -105,10 +105,10 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
      */
     public void testSearchIndexSetup() throws Exception {
 
-        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
+        CmsLuceneIndex searchIndex = new CmsLuceneIndex(INDEX_SPECIAL);
         searchIndex.setProjectName("Offline");
         searchIndex.setLocale(Locale.ENGLISH);
-        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
+        searchIndex.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_OFFLINE);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
 
@@ -136,6 +136,11 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         assertEquals("/sites/default/xmlcontent/article_0001.html", searchResult.get(0).getPath());
     }
 
+    /**
+     * Delays execution.<p>
+     * 
+     * @throws InterruptedException if sth. goes wrong
+     */
     protected void waitForUpdate() throws InterruptedException {
 
         // wait for the offline index

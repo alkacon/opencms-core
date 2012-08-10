@@ -117,10 +117,41 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoSearchsetting">
+		<xsd:sequence>
+			<xsd:element name="solrfield" type="OpenCmsDefaultAppinfoSolrField" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
 		<xsd:attribute name="element" type="xsd:string" use="required" />
 		<xsd:attribute name="searchcontent" type="xsd:boolean" use="optional" default="true" />
 	</xsd:complexType>
-	
+
+	<xsd:complexType name="OpenCmsDefaultAppinfoSolrField">
+		<xsd:sequence>
+			<xsd:element name="mapping" type="OpenCmsDefaultAppinfoSolrFieldMapping" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="sourcefield" type="xsd:string" use="required" />
+		<xsd:attribute name="targetfield" type="xsd:string" use="required" />
+		<xsd:attribute name="copyfields" type="xsd:string" use="optional" />
+		<xsd:attribute name="locale" type="xsd:string" use="optional" />
+		<xsd:attribute name="default" type="xsd:string" use="optional" />
+		<xsd:attribute name="boost" type="xsd:string" use="optional" />
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsDefaultAppinfoSolrFieldMapping">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="type" type="OpenCmsDefaultAppinfoMappingType" use="required" />
+				<xsd:attribute name="default" type="xsd:string" use="optional" />
+				<xsd:attribute name="class" type="xsd:string" use="optional" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:simpleType name="OpenCmsDefaultAppinfoMappingType">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="content|property|property-search|item|dynamic|attribute" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:complexType name="OpenCmsDefaultAppinfoRelations">
 		<xsd:sequence>
 			<xsd:element name="relation" type="OpenCmsDefaultAppinfoRelation" minOccurs="0" maxOccurs="unbounded" />
@@ -149,6 +180,7 @@
 		<xsd:sequence>
 			<xsd:element name="tab" type="OpenCmsDefaultAppinfoTab" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
+		<xsd:attribute name="useall" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoTab">
