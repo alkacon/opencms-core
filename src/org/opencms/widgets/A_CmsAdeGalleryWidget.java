@@ -29,6 +29,8 @@ package org.opencms.widgets;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
@@ -37,8 +39,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 8.0.0 
  */
-public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
+public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The widget configuration. */
     private CmsGalleryWidgetConfiguration m_widgetConfiguration;
@@ -203,9 +207,9 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
         result.put(I_CmsGalleryProviderConstants.ReqParam.fieldid.name(), param.getId());
         result.put(I_CmsGalleryProviderConstants.ReqParam.hashid.name(), "" + hashId);
         // use javascript to read the current field value
-        result.put(
-            I_CmsGalleryProviderConstants.ReqParam.currentelement.name(),
-            "'+document.getElementById('" + param.getId() + "').getAttribute('value')+'");
+        result.put(I_CmsGalleryProviderConstants.ReqParam.currentelement.name(), "'+document.getElementById('"
+            + param.getId()
+            + "').getAttribute('value')+'");
         // the edited resource
         if (widgetDialog instanceof CmsDialog) {
             String paramResource = ((CmsDialog)widgetDialog).getParamResource();
@@ -315,6 +319,58 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
                 getConfiguration());
         }
         return m_widgetConfiguration;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsResource resource) {
+
+        CmsMessages messages = new CmsMessages(resource.getName(), "en");
+        CmsGalleryWidgetConfiguration config = new CmsGalleryWidgetConfiguration(
+            cms,
+            messages,
+            null,
+            getConfiguration());
+        String result = config.getConfigString();
+
+        return result;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        // TODO: Auto-generated method stub
+        return true;
     }
 
 }

@@ -319,4 +319,23 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
         m_showFormat = showFormat;
     }
 
+    /**
+     * Returns the values as a parameter string.<p>
+     * 
+     * @return the values as a parameter string
+     * */
+    @Override
+    public String getConfigString() {
+
+        String result = "";
+        if (m_startup != null) {
+            result += "&startup=" + m_startup;
+        }
+        if (m_type != null) {
+            result += "&type=" + m_type;
+        }
+
+        return result;
+    }
+
 }
