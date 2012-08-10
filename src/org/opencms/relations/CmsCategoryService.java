@@ -95,7 +95,8 @@ public class CmsCategoryService {
      */
     public void addResourceToCategory(CmsObject cms, String resourceName, CmsCategory category) throws CmsException {
 
-        if (readResourceCategories(cms, resourceName).contains(category)) {
+        if (readResourceCategories(cms, cms.readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION)).contains(
+            category)) {
             return;
         }
         String sitePath = cms.getRequestContext().removeSiteRoot(category.getRootPath());
@@ -413,8 +414,9 @@ public class CmsCategoryService {
         } else if (lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
             cms.changeLock(catPath);
         }
-        cms.moveResource(catPath, cms.getRequestContext().removeSiteRoot(
-            internalCategoryRootPath(category.getBasePath(), newCatPath)));
+        cms.moveResource(
+            catPath,
+            cms.getRequestContext().removeSiteRoot(internalCategoryRootPath(category.getBasePath(), newCatPath)));
     }
 
     /**
@@ -848,9 +850,10 @@ public class CmsCategoryService {
                     repaired = true;
                     // try to set the right category again
                     try {
-                        CmsCategory actualCat = readCategory(cms, CmsCategory.getCategoryPath(
-                            relation.getTargetPath(),
-                            baseFolder), resourceName);
+                        CmsCategory actualCat = readCategory(
+                            cms,
+                            CmsCategory.getCategoryPath(relation.getTargetPath(), baseFolder),
+                            resourceName);
                         addResourceToCategory(cms, resourceName, actualCat);
                         result.add(actualCat);
                     } catch (CmsException ex) {
