@@ -56,6 +56,9 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
     /** The popup to select a file. */
     protected CmsVfsSelector m_selector = new CmsVfsSelector();
 
+    /***/
+    private String m_config = "";
+
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config the configuration string given from OpenCms XSD
@@ -64,7 +67,7 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
     public CmsVfsWidget(String config, String type) {
 
         parseconfig(config);
-        m_linkSelect = new CmsVfsSelection(m_imageClass, type);
+        m_linkSelect = new CmsVfsSelection(m_imageClass, type, m_config);
         m_linkSelect.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -172,6 +175,7 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
 
         String[] configs = config.split(";");
         m_imageClass = configs[configs.length - 1];
+        m_config = configs[0];
     }
 
 }

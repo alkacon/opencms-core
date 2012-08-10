@@ -87,18 +87,24 @@ input.textBox{
 	font-size: 12px;
 }
 
-input.passwordTextBox{
+.passwordTextBox{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
+	width: auto;
+	padding: 0px 4px;
+}
+
+.passwordTextBox input{
+	border: none;
 	font-family: value("constants.css.fontFamily");
 	display: block;
 	color: value("constants.css.textColor");
 	box-shadow: none;
-	width: 98.9%;
-	padding: 0px 4px;
 	height: 18px;
 	font-size: 12px;
+	width:98.6%;
+	padding: 0 4px;
 }
 
 .calendarStyle input {
@@ -125,7 +131,7 @@ div.calendarStyle {
 	height: 18px;
 }
 
-.inActive div.calendarStyle, .inActive input.passwordTextBox {
+.inActive div.calendarStyle, .passwordTextBox.inActive  {
 	border: 1px solid value("constants.css.borderColor");
 }
 

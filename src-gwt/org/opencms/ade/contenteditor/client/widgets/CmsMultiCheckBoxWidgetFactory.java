@@ -45,7 +45,7 @@ import com.google.gwt.user.client.Element;
 public class CmsMultiCheckBoxWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
     /** The widget name. */
-    private static final String WIDGET_NAME = "org.opencms.widgets.CmsAdeDownloadGalleryWidget";
+    private static final String WIDGET_NAME = "org.opencms.widgets.CmsMultiSelectWidget";
 
     /**
      * Initializes this class.<p>

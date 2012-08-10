@@ -34,23 +34,26 @@ import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.input.CmsVfsSelection;
 
 import com.google.gwt.user.client.Element;
 
 /**
  * Factory to generate basic input widget.<p>
  */
-public class CmsVfsLinkWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
+public class CmsHtmlGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
     /** The widget name. */
-    private static final String WIDGET_NAME = "org.opencms.widgets.CmsVfsImagessWidget";
+    private static final String WIDGET_NAME = "org.opencms.widgets.CmsHtmlGalleryWidget";
 
     /**
      * Initializes this class.<p>
      */
     public static void initClass() {
 
-        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsVfsLinkWidgetFactory());
+        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsHtmlGalleryWidgetFactory());
+
     }
 
     /**
@@ -58,7 +61,9 @@ public class CmsVfsLinkWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new CmsVfsLinkWidget(configuration));
+        configuration += "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/Widgetdemo/wd_00025.html\"}";
+        configuration += ";" + I_CmsImageBundle.INSTANCE.style().htmlGalleryIcon();
+        return new FormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.HTML));
     }
 
     /**
@@ -66,7 +71,6 @@ public class CmsVfsLinkWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsVfsLinkWidget(configuration);
+        return new CmsVfsWidget(configuration, CmsVfsSelection.HTML);
     }
-
 }

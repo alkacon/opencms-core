@@ -42,17 +42,18 @@ import com.google.gwt.user.client.Element;
 /**
  * Factory to generate basic input widget.<p>
  */
-public class CmsTableGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
+public class CmsLinkGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
     /** The widget name. */
-    private static final String WIDGET_NAME = "org.opencms.widgets.CmsTableGalleryWidget";
+    private static final String WIDGET_NAME = "org.opencms.widgets.CmsLinkGalleryWidget";
 
     /**
      * Initializes this class.<p>
      */
     public static void initClass() {
 
-        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsTableGalleryWidgetFactory());
+        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsLinkGalleryWidgetFactory());
+
     }
 
     /**
@@ -60,9 +61,9 @@ public class CmsTableGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasIn
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        configuration += "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/Widgetdemo/wd_00026.html\"}";
-        configuration += ";" + I_CmsImageBundle.INSTANCE.style().tableGalleryIcon();
-        return new FormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.TABLE));
+        configuration += "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/Widgetdemo/wd_00023.html\"}";
+        configuration += ";" + I_CmsImageBundle.INSTANCE.style().linkGalleryIcon();
+        return new FormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.LINK));
     }
 
     /**
@@ -70,6 +71,6 @@ public class CmsTableGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasIn
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsVfsWidget(configuration, CmsVfsSelection.TABLE);
+        return new CmsVfsWidget(configuration, CmsVfsSelection.LINK);
     }
 }

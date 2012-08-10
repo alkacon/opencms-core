@@ -39,9 +39,8 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Provides a standard HTML form password widget, for use on a widget dialog.<p>
@@ -56,7 +55,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
     private PasswordTextBox m_passwordTextBox = new PasswordTextBox();
 
     /**The main panel of this widget. */
-    Panel m_mainPanel = new FlowPanel();
+    SimplePanel m_mainPanel = new SimplePanel();
 
     /**
      * Constructs an CmsComboWidget.<p>
@@ -66,7 +65,7 @@ public class CmsPasswordWidget extends Composite implements I_EditWidget {
         // All composites must call initWidget() in their constructors.
         m_mainPanel.add(m_passwordTextBox);
         initWidget(m_mainPanel);
-        m_passwordTextBox.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().passwordTextBox());
+        m_mainPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().passwordTextBox());
         m_passwordTextBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
