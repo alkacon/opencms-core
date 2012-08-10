@@ -27,7 +27,9 @@
 
 package org.opencms.ade.sitemap.client.toolbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
@@ -123,9 +125,11 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
             };
 
             goBackAction.execute();
-
+        } else {
+            CmsSitemapController controller = CmsSitemapView.getInstance().getController();
+            CmsClientSitemapEntry root = controller.getData().getRoot();
+            String newPath = root.getSitePath();
+            controller.leaveEditor(newPath);
         }
-
     }
-
 }
