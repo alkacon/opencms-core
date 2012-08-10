@@ -95,7 +95,8 @@ public class CmsCategoryService {
      */
     public void addResourceToCategory(CmsObject cms, String resourceName, CmsCategory category) throws CmsException {
 
-        if (readResourceCategories(cms, resourceName).contains(category)) {
+        if (readResourceCategories(cms, cms.readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION)).contains(
+            category)) {
             return;
         }
         String sitePath = cms.getRequestContext().removeSiteRoot(category.getRootPath());
