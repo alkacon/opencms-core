@@ -92,6 +92,21 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** The imagelink mode of this widget. */
     public static final String IMAGE_LINK = "image_link";
 
+    /** The downloadlink mode of this widget. */
+    public static final String DOWNLOAD_LINK = "download_link";
+
+    /** The link mode of this widget. */
+    public static final String LINK = "link";
+
+    /** The table mode of this widget. */
+    public static final String TABLE = "table";
+
+    /** The download mode of this widget. */
+    public static final String DOWNLOAD = "download";
+
+    /** The html mode of this widget. */
+    public static final String HTML = "html";
+
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "vfsselection";
 
@@ -137,21 +152,26 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /***/
     protected String m_oldValue = "";
 
+    /***/
+    private String m_type;
+
+    /***/
+    private String m_config;
+
     /**
      * TextBox widget to open the gallery selection.<p>
      * @param iconImage the image of the icon shown in the 
-     * @param type 
+     * @param type the type of this widget
+     * @param config the configuration for this widget
      */
-    public CmsVfsSelection(String iconImage, String type) {
+    public CmsVfsSelection(String iconImage, String type, String config) {
 
         super();
+        m_type = type;
+        m_config = config;
         m_textBox = new TextBox();
         m_id = "CmsVfsSelection_" + (idCounter++);
-        if (type.equals(FILE_LINK)) {
-            m_textBox.getElement().setId("CmsVfsSelection_" + (idCounter++));
-        } else if (type.equals(IMAGE_LINK)) {
-            m_textBox.getElement().setId("img.CmsVfsSelection_" + (idCounter++));
-        }
+        m_textBox.getElement().setId(m_id);
         m_openSelection = new OpenButton(iconImage);
 
         m_textBoxContainer.add(m_openSelection);
@@ -426,13 +446,26 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
                         m_previewHandlerRegistration.removeHandler();
                         m_previewHandlerRegistration = null;
                     }
+                    m_textBox.setFocus(true);
+                    m_textBox.setCursorPos(m_textBox.getText().length());
                 }
             });
             m_popup.setModal(false);
             m_popup.setId(m_id);
-            m_popup.setHeight(530);
-            m_popup.setWidth(715);
-            m_popup.getFrame().setSize("710px", "530px");
+            m_popup.setWidth(717);
+
+            if (m_type.equals(DOWNLOAD)) {
+                m_popup.getFrame().setSize("705px", "640px");
+            } else if (m_type.equals(HTML)) {
+                m_popup.getFrame().setSize("705px", "640px");
+            } else if (m_type.equals(LINK)) {
+                m_popup.getFrame().setSize("705px", "640px");
+            } else if (m_type.equals(TABLE)) {
+                m_popup.getFrame().setSize("705px", "640px");
+            } else {
+                m_popup.getFrame().setSize("705px", "485px");
+            }
+
             m_popup.addDialogClose(new Command() {
 
                 public void execute() {
@@ -445,7 +478,9 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
             m_popup.getFrame().setUrl(buildGalleryUrl());
         }
         m_popup.showRelativeTo(m_textBox);
-        m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
+        if (m_previewHandlerRegistration == null) {
+            m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
+        }
 
         m_xcoordspopup = m_popup.getPopupLeft();
         m_ycoordspopup = m_popup.getPopupTop();
@@ -458,6 +493,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     protected void close() {
 
         m_popup.hideDelayed();
+        m_textBox.setFocus(true);
+        m_textBox.setCursorPos(m_textBox.getText().length());
     }
 
     /**
@@ -554,13 +591,30 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
      */
     protected String buildGalleryUrl() {
 
-        String basePath = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+        String basePath = "";
+        if (m_type.equals(LINK) || m_type.equals(DOWNLOAD) || m_type.equals(HTML) || m_type.equals(TABLE)) {
+            basePath = "/system/workplace/galleries/" + m_type + "gallery/index.jsp";
+        } else {
+            basePath = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+        }
         basePath += "?dialogmode=widget&fieldid=" + m_id;
         String pathparameter = m_textBox.getText();
         if (pathparameter.indexOf("/") > -1) {
-            basePath += "&gallerypath=" + pathparameter.substring(0, pathparameter.lastIndexOf("/") + 1);
+            basePath += "&currentelement=" + pathparameter;
         }
-
+        if (m_type.equals(TABLE)) {
+            basePath += m_config;
+        }
+        if (m_type.equals(IMAGE_LINK)) {
+            basePath += m_config;
+        }
+        if (m_type.equals(DOWNLOAD_LINK)) {
+            basePath += m_config;
+        }
+        if (m_type.equals(LINK)) {
+            basePath += "&params={\"startupfolder\":/,\"startuptype\":null}";
+        }
+        //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary  
         return CmsCoreProvider.get().link(basePath);
     }
 }

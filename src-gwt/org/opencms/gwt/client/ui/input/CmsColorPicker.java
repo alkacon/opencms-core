@@ -79,6 +79,8 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     /** The field to display the color. */
     protected SimplePanel m_colorField = new SimplePanel();
 
+    /** The field to display the value. */
+    protected SimplePanel m_textboxpanel = new SimplePanel();
     /** The popup to choose the color. */
     protected CmsPopup m_popup = new CmsPopup();
 
@@ -100,11 +102,13 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     public CmsColorPicker() {
 
         super();
+
         initWidget(m_panel);
-        m_panel.add(m_textboxColorValue);
+        m_panel.add(m_textboxpanel);
         m_panel.add(m_colorField);
         m_panel.add(m_error);
-        m_textboxColorValue.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
+        m_textboxpanel.add(m_textboxColorValue);
+        m_textboxpanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPickerValue());
         m_colorField.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
         m_panel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
         m_textboxColorValue.addBlurHandler(new BlurHandler() {
