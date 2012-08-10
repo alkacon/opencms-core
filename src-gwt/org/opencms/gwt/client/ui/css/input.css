@@ -1,4 +1,4 @@
-@external transparentSelectBox, inActive, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external transparentSelectBox, emptyValue, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 
 /* inner text box of the text box widget */
@@ -33,52 +33,58 @@ input.textBoxReadOnly {
 }
 
 .colorPicker {
-	bordercolor: 1px solid value("constants.css.borderColor");
-	border-radius: value("constants.css.borderRadius");
-	background-color:transparent;
-	box-shadow: none;
-}
-.colorPicker input.colorPicker.inActive{
-	border: 1px solid value("constants.css.borderColor");
+background-color: transparent;
+    border-radius: 3px 3px 3px 3px;
     box-shadow: none;
-    color: value("constants.css.textColor");
-    padding: 0 4px;
     display: block;
-    float: left;
-    font-size: 12px;
-    height: 18px;
-    margin-left: 105px;
-    background-color:value("constants.css.backgroundColorDialog");
-    width: 87.3%;
-}
-.colorPicker .inActive div {
-	border: 1px solid value("constants.css.borderColor");
-   	border-radius: value("constants.css.borderRadius");
-    height: 18px;
-    width: 100px;
-    cursor: pointer;
-}
-.colorPicker div.colorPicker{
-	border: 1px solid #7788AA;
-	border-radius: value("constants.css.borderRadius");
-    height: 18px;
-    width: 100px;
-    cursor: pointer;
+    height: 20px;
+    width: auto;
 }
 
-.colorPicker input.colorPicker{
-	border: 1px solid #7788AA;
-	box-shadow: none;
-    color: value("constants.css.textColor");
-    padding: 0 4px;
+.colorPicker .colorPickerValue {
+	background: none repeat scroll 0 0 white;
+    border: 1px solid #7788AA;
+    border-radius: 3px 3px 3px 3px;
     display: block;
-    float: left;
-    font-size: 12px;
-    height: 18px;
+    height: 17px;
     margin-left: 105px;
-    background-color:value("constants.css.backgroundColorDialog");
-    width: 87.3%;
+    padding: 1px 4px 0;
+    position: relative;
+    width: auto;	
 }
+
+.colorPicker .colorPickerValue input{
+	background-color: #FFFFFF;
+    border: none;
+    box-shadow: none;
+    color: #222222;
+    display: block;
+    font-size: 12px;
+    height: 16px;
+    padding: 0;
+    width: 100%;
+}
+
+.colorPicker div.colorPicker{
+	border: 1px solid #7788AA;
+    border-radius: 3px 3px 3px 3px;
+    cursor: pointer;
+    display: block;
+    height: 18px;
+    position: relative;
+    top: -20px;
+    width: 100px;
+}
+
+.emptyValue .colorPicker .colorPickerValue{
+    border: 1px solid value("constants.css.borderColor");
+}
+.emptyValue .colorPicker div.colorPicker {
+	border: 1px solid value("constants.css.borderColor");
+}
+
+
+
 
 .textBoxPanel, .textAreaContainer {
 	border: 1px solid value("constants.css.borderColor");
@@ -432,7 +438,7 @@ div.selectBoxOpener {
     overflow: hidden;
     width: 40px;
     position: absolute;
-    top: 29px;
+    bottom: 9px;
     right: 5px;
 }
 

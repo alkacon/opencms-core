@@ -222,3 +222,19 @@
 @sprite div.imageSearchIcon, span.imageSearchIcon{
 	gwt-image: "imageSearchIcon";
 }
+
+@sprite div.downloadGalleryIcon, span.downloadGalleryIcon{
+	gwt-image: "downloadGalleryIcon";
+}
+
+@sprite div.linkGalleryIcon, span.linkGalleryIcon{
+	gwt-image: "linkGalleryIcon";
+}
+
+@sprite div.htmlGalleryIcon, span.htmlGalleryIcon{
+	gwt-image: "htmlGalleryIcon";
+}
+
+@sprite div.tableGalleryIcon, span.tableGalleryIcon{
+	gwt-image: "tableGalleryIcon";
+}

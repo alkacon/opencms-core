@@ -339,6 +339,30 @@ public interface I_CmsImageBundle extends ClientBundle {
         * @return the CSS class name
         */
         String imageSearchIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String downloadGalleryIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String linkGalleryIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String htmlGalleryIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String tableGalleryIcon();
     }
 
     /** The bundle instance. */
@@ -643,4 +667,35 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Source("images/icons/imageSearchIcon.png")
     ImageResource imageSearchIcon();
 
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/downloadGallery.png")
+    ImageResource downloadGalleryIcon();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/linkGallery.png")
+    ImageResource linkGalleryIcon();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/htmlGallery.png")
+    ImageResource htmlGalleryIcon();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/tableGallery.png")
+    ImageResource tableGalleryIcon();
 }
