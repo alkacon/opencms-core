@@ -35,10 +35,10 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -211,12 +211,12 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         String fieldConfiguration = getSelectedItem().getId();
-        Map params = new HashMap();
+        Map<String, String[]> params = new HashMap<String, String[]>();
         String action = getParamListAction();
 
-        params.put(A_CmsFieldConfigurationDialog.PARAM_FIELDCONFIGURATION, fieldConfiguration);
-        params.put(PARAM_ACTION, DIALOG_INITIAL);
-        params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        params.put(A_CmsFieldConfigurationDialog.PARAM_FIELDCONFIGURATION, new String[] {fieldConfiguration});
+        params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
+        params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         if (action.equals(LIST_ACTION_EDIT)) {
             // forward to the edit indexsource screen   
             getToolManager().jspForwardTool(this, "/searchindex/fieldconfigurations/fieldconfiguration/edit", params);
@@ -243,11 +243,11 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
     protected void fillDetails(String detailId) {
 
         // get content
-        List items = getList().getAllContent();
-        Iterator itItems = items.iterator();
+        List<CmsListItem> items = getList().getAllContent();
+        Iterator<CmsListItem> itItems = items.iterator();
         CmsListItem item;
         while (itItems.hasNext()) {
-            item = (CmsListItem)itItems.next();
+            item = itItems.next();
             if (detailId.equals(LIST_DETAIL_FIELDCONFIGURATION)) {
                 fillDetailFieldConfiguration(item, detailId);
             }
@@ -258,18 +258,19 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     @Override
-    protected List getListItems() {
+    protected List<CmsListItem> getListItems() {
 
-        List result = new ArrayList();
+        List<CmsListItem> result = new ArrayList<CmsListItem>();
         CmsSearchManager manager = OpenCms.getSearchManager();
 
         // get content
-        List configs = new LinkedList(manager.getFieldConfigurations());
-        Iterator itConfigs = configs.iterator();
-        CmsSearchFieldConfiguration config;
+        List<I_CmsSearchFieldConfiguration> configs = new LinkedList<I_CmsSearchFieldConfiguration>(
+            manager.getFieldConfigurationsLucene());
+        Iterator<I_CmsSearchFieldConfiguration> itConfigs = configs.iterator();
+        I_CmsSearchFieldConfiguration config;
         while (itConfigs.hasNext()) {
             try {
-                config = (CmsSearchFieldConfiguration)itConfigs.next();
+                config = itConfigs.next();
                 CmsListItem item = getList().newItem(config.getName());
                 item.set(LIST_COLUMN_NAME, config.getName());
                 item.set(LIST_COLUMN_DESCRIPTION, config.getDescription());
@@ -433,10 +434,10 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
 
         I_CmsSearchFieldConfiguration idxFieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(
             idxConfigName);
-        List fields = idxFieldConfiguration.getFields();
+        List<I_CmsSearchField> fields = idxFieldConfiguration.getFields();
 
         html.append("<ul>\n");
-        Iterator itFields = fields.iterator();
+        Iterator<I_CmsSearchField> itFields = fields.iterator();
         while (itFields.hasNext()) {
             CmsSearchField field = (CmsSearchField)itFields.next();
             String fieldName = field.getName();
@@ -465,7 +466,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
             }
             html.append("\n").append("    <ul>\n");
 
-            Iterator itMappings = field.getMappings().iterator();
+            Iterator<I_CmsSearchFieldMapping> itMappings = field.getMappings().iterator();
             while (itMappings.hasNext()) {
                 CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)itMappings.next();
                 html.append("  <li>\n").append("    ");

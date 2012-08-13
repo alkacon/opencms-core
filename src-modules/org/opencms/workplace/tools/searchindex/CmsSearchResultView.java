@@ -36,11 +36,11 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWidgetDialog;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -69,6 +69,51 @@ import javax.servlet.jsp.PageContext;
  */
 public class CmsSearchResultView {
 
+    /**
+     * A simple wrapper around html for a form and it's name for value 
+     * side of form cache, necessary as order in Map is arbitrary, 
+     * SortedMap unusable as backlinks have higher order, lower formname... <p>
+     */
+    private final class HTMLForm {
+
+        /** The html of the generated form. **/
+        String m_formHtml;
+
+        /** The name of the generated form. **/
+        String m_formName;
+
+        /**
+         * Creates an instance with the given formname and the given html code for the form. <p>
+         * 
+         * @param formName the form name of the form 
+         * @param formHtml the form html of the form
+         */
+        HTMLForm(String formName, String formHtml) {
+
+            m_formName = formName;
+            m_formHtml = formHtml;
+        }
+
+        /**
+         * Returns the form html.<p> 
+         * 
+         * @return the form html
+         * 
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            return m_formHtml;
+        }
+    }
+
+    /** The project that forces evaluation of all dynamic content. */
+    protected CmsProject m_offlineProject;
+
+    /** The project that allows static export. */
+    protected CmsProject m_onlineProject;
+
     /** The flag that decides whether links to search result point to their exported version or not. */
     private boolean m_exportLinks;
 
@@ -77,16 +122,10 @@ public class CmsSearchResultView {
      * 
      * Avoids duplicate forms.<p>
      */
-    private SortedMap m_formCache;
+    private SortedMap<String, HTMLForm> m_formCache;
 
     /** The CmsJspActionElement to use. **/
     private CmsJspActionElement m_jsp;
-
-    /** The project that forces evaluation of all dynamic content. */
-    protected CmsProject m_offlineProject;
-
-    /** The project that allows static export. */
-    protected CmsProject m_onlineProject;
 
     /** The url to a proprietary search url (different from m_jsp.getRequestContext().getUri). **/
     private String m_searchRessourceUrl;
@@ -99,7 +138,7 @@ public class CmsSearchResultView {
     public CmsSearchResultView(CmsJspActionElement action) {
 
         m_jsp = action;
-        m_formCache = new TreeMap();
+        m_formCache = new TreeMap<String, HTMLForm>();
         try {
             m_onlineProject = m_jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID);
             m_offlineProject = m_jsp.getRequestContext().getCurrentProject();
@@ -138,10 +177,10 @@ public class CmsSearchResultView {
         result.append("<h3>\n");
         result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_TITLE_0));
         result.append("\n</h1>\n");
-        List searchResult;
+        List<CmsSearchResult> searchResult;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(search.getQuery())) {
             search.setQuery("");
-            searchResult = new ArrayList();
+            searchResult = Collections.emptyList();
         } else {
             search.setMatchesPerPage(5);
             searchResult = search.getSearchResult();
@@ -174,7 +213,7 @@ public class CmsSearchResultView {
             result.append("\n");
             result.append("</p>\n<p>\n");
 
-            Iterator iterator = searchResult.iterator();
+            Iterator<CmsSearchResult> iterator = searchResult.iterator();
 
             try {
                 if (m_exportLinks) {
@@ -184,7 +223,7 @@ public class CmsSearchResultView {
                 String name;
                 String path;
                 while (iterator.hasNext()) {
-                    CmsSearchResult entry = (CmsSearchResult)iterator.next();
+                    CmsSearchResult entry = iterator.next();
                     result.append("\n<div class=\"searchResult\">");
                     result.append("<a class=\"navhelp\" href=\"#\" onclick=\"javascript:window.open('");
                     // CmsJspActionElement.link() is not programmed for using from root site 
@@ -201,7 +240,7 @@ public class CmsSearchResultView {
                     result.append(path);
                     result.append("', '_blank', 'width='+screen.availWidth+', height='+ screen.availHeight+', scrollbars=yes, menubar=yes, toolbar=yes')\"");
                     result.append("\">\n");
-                    name = entry.getField(CmsSearchField.FIELD_TITLE);
+                    name = entry.getField(I_CmsSearchField.FIELD_TITLE);
                     if (name == null) {
                         name = entry.getPath();
                     }
@@ -239,18 +278,19 @@ public class CmsSearchResultView {
                     result.append(messages.key(org.opencms.search.Messages.GUI_HELP_BUTTON_BACK_0));
                     result.append(" &lt;&lt;</a>&nbsp;&nbsp;\n");
                 }
-                Map pageLinks = search.getPageLinks();
-                Iterator i = pageLinks.keySet().iterator();
+                Map<Integer, String> pageLinks = search.getPageLinks();
+                Iterator<Integer> i = pageLinks.keySet().iterator();
                 while (i.hasNext()) {
-                    int pageNumber = ((Integer)i.next()).intValue();
+                    int pageNumber = (i.next()).intValue();
 
                     result.append(" ");
                     if (pageNumber != search.getSearchPage()) {
                         result.append("<a class=\"searchlink\" href=\"").append(
-                            getSearchPageLink(m_jsp.link(new StringBuffer(
-                                (String)pageLinks.get(new Integer(pageNumber))).append('&').append(
-                                CmsLocaleManager.PARAMETER_LOCALE).append("=").append(
-                                m_jsp.getRequestContext().getLocale()).toString()), search));
+                            getSearchPageLink(
+                                m_jsp.link(new StringBuffer(pageLinks.get(new Integer(pageNumber))).append('&').append(
+                                    CmsLocaleManager.PARAMETER_LOCALE).append("=").append(
+                                    m_jsp.getRequestContext().getLocale()).toString()),
+                                search));
                         result.append("\" target=\"_self\">").append(pageNumber).append("</a>\n");
                     } else {
                         result.append(pageNumber);
@@ -272,12 +312,46 @@ public class CmsSearchResultView {
         }
 
         // include the post forms for the page links: 
-        Iterator values = m_formCache.values().iterator();
+        Iterator<HTMLForm> values = m_formCache.values().iterator();
         while (values.hasNext()) {
             result.append(values.next());
         }
         return result.toString();
 
+    }
+
+    /**
+     * Returns true if the links to search results shall point to exported content, false else. <p>
+     * @return true if the links to search results shall point to exported content, false else
+     */
+    public boolean isExportLinks() {
+
+        return m_exportLinks;
+    }
+
+    /**
+     * Set wether the links to search results point to exported content or not. <p>
+     * 
+     * @param exportLinks The value that decides Set wether the links to search results point to exported content or not. 
+     */
+    public void setExportLinks(boolean exportLinks) {
+
+        m_exportLinks = exportLinks;
+    }
+
+    /**
+     * Set a proprietary resource uri for the search page. <p>
+     * 
+     * This is optional but allows to override the standard search result links 
+     * (for next or previous pages) that point to 
+     * <code>getJsp().getRequestContext().getUri()</code> whenever the search 
+     * uri is element of some template and should not be linked directly.<p>
+     * 
+     * @param uri the proprietary resource uri for the search page
+     */
+    public void setSearchRessourceUrl(String uri) {
+
+        m_searchRessourceUrl = uri;
     }
 
     /**
@@ -320,40 +394,6 @@ public class CmsSearchResultView {
     }
 
     /**
-     * Returns true if the links to search results shall point to exported content, false else. <p>
-     * @return true if the links to search results shall point to exported content, false else
-     */
-    public boolean isExportLinks() {
-
-        return m_exportLinks;
-    }
-
-    /**
-     * Set wether the links to search results point to exported content or not. <p>
-     * 
-     * @param exportLinks The value that decides Set wether the links to search results point to exported content or not. 
-     */
-    public void setExportLinks(boolean exportLinks) {
-
-        m_exportLinks = exportLinks;
-    }
-
-    /**
-     * Set a proprietary resource uri for the search page. <p>
-     * 
-     * This is optional but allows to override the standard search result links 
-     * (for next or previous pages) that point to 
-     * <code>getJsp().getRequestContext().getUri()</code> whenever the search 
-     * uri is element of some template and should not be linked directly.<p>
-     * 
-     * @param uri the proprietary resource uri for the search page
-     */
-    public void setSearchRessourceUrl(String uri) {
-
-        m_searchRessourceUrl = uri;
-    }
-
-    /**
      * Generates a html form (named form&lt;n&gt;) with parameters found in 
      * the given GET request string (appended params with "?value=param&value2=param2). 
      * &gt;n&lt; is the number of forms that already have been generated. 
@@ -379,43 +419,6 @@ public class CmsSearchResultView {
      */
     private String toPostParameters(String getRequestUri, CmsSearch search) {
 
-        /**
-         * A simple wrapper around html for a form and it's name for value 
-         * side of form cache, necessary as order in Map is arbitrary, 
-         * SortedMap unusable as backlinks have higher order, lower formname... <p>
-         */
-        final class HTMLForm {
-
-            /** The html of the generated form. **/
-            String m_formHtml;
-
-            /** The name of the generated form. **/
-            String m_formName;
-
-            /**
-             * Creates an instance with the given formname and the given html code for the form. <p>
-             * 
-             * @param formName the form name of the form 
-             * @param formHtml the form html of the form
-             */
-            HTMLForm(String formName, String formHtml) {
-
-                m_formName = formName;
-                m_formHtml = formHtml;
-            }
-
-            /**
-             * Returns the form html.<p> 
-             * 
-             * @return the form html
-             * 
-             * @see java.lang.Object#toString()
-             */
-            public String toString() {
-
-                return m_formHtml;
-            }
-        }
         StringBuffer result;
         String formname = "";
 
@@ -454,8 +457,8 @@ public class CmsSearchResultView {
                 // custom search index code for making category widget - compatible 
                 // this is needed for transforming e.g. the CmsSearch-generated 
                 // "&category=a,b,c" to widget fields categories.0..categories.n.
-                List categories = search.getParameters().getCategories();
-                Iterator it = categories.iterator();
+                List<String> categories = search.getParameters().getCategories();
+                Iterator<String> it = categories.iterator();
                 int count = 0;
                 while (it.hasNext()) {
                     result.append("  <input type=\"hidden\" name=\"");
@@ -463,7 +466,7 @@ public class CmsSearchResultView {
                     result.append(it.next()).append("\" />\n");
                     count++;
                 }
-                List roots = search.getParameters().getRoots();
+                List<String> roots = search.getParameters().getRoots();
                 it = roots.iterator();
                 count = 0;
                 while (it.hasNext()) {
@@ -492,7 +495,7 @@ public class CmsSearchResultView {
             return formname;
 
         } else {
-            HTMLForm form = (HTMLForm)m_formCache.get(getRequestUri);
+            HTMLForm form = m_formCache.get(getRequestUri);
             return form.m_formName;
         }
     }

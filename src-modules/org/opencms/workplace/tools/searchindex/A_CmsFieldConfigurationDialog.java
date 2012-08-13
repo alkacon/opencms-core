@@ -32,15 +32,14 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -110,9 +109,10 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             // if new create it first
@@ -159,6 +159,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -185,6 +186,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -193,6 +195,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initUserObject();
@@ -202,6 +205,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -220,6 +224,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -252,6 +257,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         m_searchManager = OpenCms.getSearchManager();
@@ -261,6 +267,8 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -289,6 +297,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (!isNewFieldConfiguration()) {
@@ -308,10 +317,8 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
      */
     private boolean checkWriteConfiguration() {
 
-        if (!m_fieldconfiguration.getFields().isEmpty()) {
-            Iterator itFields = m_fieldconfiguration.getFields().iterator();
-            while (itFields.hasNext()) {
-                CmsSearchField field = (CmsSearchField)itFields.next();
+        if ((m_fieldconfiguration != null) || m_fieldconfiguration.getFields().isEmpty()) {
+            for (I_CmsSearchField field : m_fieldconfiguration.getFields()) {
                 if (field.getMappings().isEmpty()) {
                     return false;
                 }

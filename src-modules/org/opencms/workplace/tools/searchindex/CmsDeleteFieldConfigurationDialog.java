@@ -24,7 +24,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
@@ -77,9 +77,10 @@ public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDi
     /**
      * Commits the edited search index to the search manager.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
 
@@ -106,6 +107,7 @@ public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDi
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(512);

@@ -46,6 +46,7 @@ import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -157,6 +158,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         // view only 
@@ -165,6 +167,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         // view only
@@ -196,22 +199,23 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List items = getList().getAllContent();
-        Iterator itItems = items.iterator();
+        List<CmsListItem> items = getList().getAllContent();
+        Iterator<CmsListItem> itItems = items.iterator();
         CmsListItem item;
         if (detailId.equals(LIST_DETAIL_MIMETYPES)) {
             while (itItems.hasNext()) {
-                item = (CmsListItem)itItems.next();
+                item = itItems.next();
                 fillDetailMimetypes(item, detailId);
 
             }
         }
         if (detailId.equals(LIST_DETAIL_RESOURCETYPES)) {
             while (itItems.hasNext()) {
-                item = (CmsListItem)itItems.next();
+                item = itItems.next();
                 fillDetailResourceTypes(item, detailId);
 
             }
@@ -223,15 +227,16 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    @Override
+    protected List<CmsListItem> getListItems() {
 
-        List result = new ArrayList();
+        List<CmsListItem> result = new ArrayList<CmsListItem>();
         // get content
-        List doctypes = documentTypes();
-        Iterator itDoctypes = doctypes.iterator();
+        List<CmsSearchDocumentType> doctypes = documentTypes();
+        Iterator<CmsSearchDocumentType> itDoctypes = doctypes.iterator();
         CmsSearchDocumentType doctype;
         while (itDoctypes.hasNext()) {
-            doctype = (CmsSearchDocumentType)itDoctypes.next();
+            doctype = itDoctypes.next();
             CmsListItem item = getList().newItem(doctype.getName());
             item.set(LIST_COLUMN_NAME, doctype.getName());
             item.set(LIST_COLUMN_DOCCLASS, doctype.getClassName());
@@ -243,6 +248,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -254,6 +260,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create dummy column for corporate design reasons
@@ -293,6 +300,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add document types of index source detail help
@@ -332,6 +340,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // view only
@@ -340,6 +349,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
@@ -370,20 +380,20 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
      * 
      * @return the configured document types of the current indexsource
      */
-    private List documentTypes() {
+    private List<CmsSearchDocumentType> documentTypes() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
         CmsSearchIndexSource indexsource = manager.getIndexSource(getParamIndexsource());
-        List result;
+        List<CmsSearchDocumentType> result;
         if (indexsource != null) {
-            List doctypes = indexsource.getDocumentTypes();
+            List<String> doctypes = indexsource.getDocumentTypes();
             // transform these mere names to real document types... 
-            result = new ArrayList(doctypes.size());
-            Iterator it = doctypes.iterator();
+            result = new ArrayList<CmsSearchDocumentType>(doctypes.size());
+            Iterator<String> it = doctypes.iterator();
             String doctypename = "";
             CmsSearchDocumentType doctype;
             while (it.hasNext()) {
-                doctypename = (String)it.next();
+                doctypename = it.next();
                 if (doctypename != null) {
                     doctype = manager.getDocumentTypeConfig(doctypename);
                     if (doctype != null) {
@@ -392,7 +402,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
                 }
             }
         } else {
-            result = new ArrayList(0);
+            result = Collections.emptyList();
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
@@ -418,7 +428,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
         CmsSearchDocumentType docType = searchManager.getDocumentTypeConfig(doctypeName);
 
         // output of mime types
-        Iterator itMimetypes = docType.getMimeTypes().iterator();
+        Iterator<String> itMimetypes = docType.getMimeTypes().iterator();
         html.append("<ul>\n");
         while (itMimetypes.hasNext()) {
             html.append("  <li>\n").append("  ").append(itMimetypes.next()).append("\n");
@@ -445,7 +455,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
         CmsSearchDocumentType docType = searchManager.getDocumentTypeConfig(doctypeName);
 
         // output of resource types
-        Iterator itResourcetypes = docType.getResourceTypes().iterator();
+        Iterator<String> itResourcetypes = docType.getResourceTypes().iterator();
         html.append("<ul>\n");
         while (itResourcetypes.hasNext()) {
             html.append("  <li>\n").append("  ").append(itResourcetypes.next()).append("\n");

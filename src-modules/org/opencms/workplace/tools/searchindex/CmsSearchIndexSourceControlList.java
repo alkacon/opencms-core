@@ -225,36 +225,27 @@ public class CmsSearchIndexSourceControlList extends A_CmsListDialog {
     public void executeListSingleActions() throws IOException, ServletException {
 
         String indexSource = getSelectedItem().getId();
-        Map params = new HashMap();
+
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, new String[] {indexSource});
+        params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
+        params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
+
         String action = getParamListAction();
         if (action.equals(LIST_ACTION_EDIT)) {
             // forward to the edit indexsource screen   
-            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, indexSource);
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/indexsources/indexsource/edit", params);
         } else if (action.equals(LIST_ACTION_DELETE)) {
             // forward to the delete indexsource screen   
-            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, indexSource);
-            params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/indexsources/indexsource/delete", params);
         } else if (action.equals(LIST_ACTION_RESOURCES)) {
             // forward to the assign resources to indexsource screen   
-            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, indexSource);
-            params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/indexsources/indexsource/resources", params);
         } else if (action.equals(LIST_ACTION_DOCUMENTS)) {
             // forward to the assign document types to indexsource screen   
-            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, indexSource);
-            params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/indexsources/indexsource/doctypes", params);
         } else if (action.equals(LIST_ACTION_OVERVIEW_INDEXSOURCE)) {
             // forward to the index overview screen   
-            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, indexSource);
-            params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/indexsources/indexsource", params);
         }
         listSave();

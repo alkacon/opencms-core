@@ -170,14 +170,14 @@ public class CmsSearchIndexSourceList extends A_CmsEmbeddedListDialog {
     public void executeListSingleActions() throws IOException, ServletException {
 
         String indexSource = getSelectedItem().getId();
-        Map params = new HashMap();
+        Map<String, String[]> params = new HashMap<String, String[]>();
         String action = getParamListAction();
         if (action.equals(CmsSearchIndexSourceControlList.LIST_ACTION_OVERVIEW_INDEXSOURCE)
             || action.equals(CmsSearchIndexSourceControlList.LIST_ACTION_OVERVIEW_INDEXSOURCE2)) {
             // forward to the index overview screen   
-            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, indexSource);
-            params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, new String[] {indexSource});
+            params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
+            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             getToolManager().jspForwardTool(this, "/searchindex/indexsources/indexsource", params);
         }
     }

@@ -64,7 +64,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
     private Throwable m_error;
 
     /** A list of names of the indexes to refresh or null for all indexes. */
-    private List m_indexNames;
+    private List<String> m_indexNames;
 
     /**
      * Creates an indexing Thread for full update.<p>
@@ -72,7 +72,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      * @param indexNames a list of names of the indexes to refresh or null for all indexes
      */
-    public CmsIndexingReportThread(CmsObject cms, List indexNames) {
+    public CmsIndexingReportThread(CmsObject cms, List<String> indexNames) {
 
         super(cms, Messages.get().getBundle().key(Messages.GUI_INDEXING_THREAD_NAME_0));
         initHtmlReport(cms.getRequestContext().getLocale());
@@ -85,6 +85,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * 
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
+    @Override
     public Throwable getError() {
 
         return m_error;
@@ -95,6 +96,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * 
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -105,6 +107,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * 
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         getReport().println(
@@ -112,7 +115,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
             I_CmsReport.FORMAT_HEADLINE);
 
         try {
-            Map params = new HashMap();
+            Map<String, Object> params = new HashMap<String, Object>();
             params.put(I_CmsEventListener.KEY_REPORT, getReport());
             if (m_indexNames != null) {
                 params.put(I_CmsEventListener.KEY_INDEX_NAMES, CmsStringUtil.collectionAsString(m_indexNames, ","));

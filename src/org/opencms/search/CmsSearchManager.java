@@ -56,6 +56,7 @@ import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.search.solr.CmsSolrConfiguration;
+import org.opencms.search.solr.CmsSolrFieldConfiguration;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
@@ -1040,6 +1041,40 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         List<I_CmsSearchFieldConfiguration> result = new ArrayList<I_CmsSearchFieldConfiguration>(
             m_fieldConfigurations.values());
+        Collections.sort(result);
+        return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Returns the Lucene search field configurations only.<p>
+     * 
+     * @return the Lucene search field configurations
+     */
+    public List<CmsSearchFieldConfiguration> getFieldConfigurationsLucene() {
+
+        List<CmsSearchFieldConfiguration> result = new ArrayList<CmsSearchFieldConfiguration>();
+        for (I_CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
+            if (conf instanceof CmsSearchFieldConfiguration) {
+                result.add((CmsSearchFieldConfiguration)conf);
+            }
+        }
+        Collections.sort(result);
+        return Collections.unmodifiableList(result);
+    }
+
+    /** 
+     * Returns the Solr search field configurations only.<p>
+     * 
+     * @return the Solr search field configurations
+     */
+    public List<CmsSolrFieldConfiguration> getFieldConfigurationsSolr() {
+
+        List<CmsSolrFieldConfiguration> result = new ArrayList<CmsSolrFieldConfiguration>();
+        for (I_CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
+            if (conf instanceof CmsSolrFieldConfiguration) {
+                result.add((CmsSolrFieldConfiguration)conf);
+            }
+        }
         Collections.sort(result);
         return Collections.unmodifiableList(result);
     }

@@ -34,6 +34,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -126,17 +127,17 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
 
             // if new create it first
             boolean found = false;
-            Iterator itFields = m_fieldconfiguration.getFields().iterator();
-            while (itFields.hasNext()) {
-                if (((CmsSearchField)itFields.next()).getName().equals(m_field.getName())) {
+            for (I_CmsSearchField field : m_fieldconfiguration.getFields()) {
+                if (field.getName().equals(m_field.getName())) {
                     found = true;
                 }
             }
@@ -199,6 +200,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -207,6 +209,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initUserObject();
@@ -216,6 +219,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -240,7 +244,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
 
         if (m_field == null) {
             try {
-                Iterator itFields = m_fieldconfiguration.getFields().iterator();
+                Iterator<I_CmsSearchField> itFields = m_fieldconfiguration.getFields().iterator();
                 while (itFields.hasNext()) {
                     CmsSearchField curField = (CmsSearchField)itFields.next();
                     if (curField.getName().equals(getParamField())) {
@@ -263,6 +267,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         m_searchManager = OpenCms.getSearchManager();
@@ -272,6 +277,8 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -301,6 +308,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (!isNewField()) {

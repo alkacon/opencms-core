@@ -105,6 +105,7 @@ public class CmsRebuildReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread() 
      */
+    @Override
     public I_CmsReportThread initializeThread() throws CmsRuntimeException {
 
         if (getParamIndexes() == null) {
@@ -112,7 +113,7 @@ public class CmsRebuildReport extends A_CmsListReport {
                 Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
                 PARAM_INDEXES));
         }
-        List indexes = extractIndexNames();
+        List<String> indexes = extractIndexNames();
         CmsIndexingReportThread thread = new CmsIndexingReportThread(getCms(), indexes);
         return thread;
     }
@@ -131,17 +132,18 @@ public class CmsRebuildReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
         // closelink is a bit complicated: If a forward from a single searchindex overview page 
         // was made, go back to that searchindex-overview. If more indexes are in the given 
         // parameter "indexes" go back to the search management entry page...
-        List indexes = extractIndexNames();
+        List<String> indexes = extractIndexNames();
         if (indexes.size() == 1) {
             // back to index overview
-            Map params = new HashMap();
-            params.put(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME, indexes.get(0));
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME, new String[] {indexes.get(0)});
             setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex/singleindex", params));
         } else {
             // back to search entry page
@@ -153,9 +155,9 @@ public class CmsRebuildReport extends A_CmsListReport {
      * Extracts all modules to delete form the module parameter.<p>
      * @return list of module names
      */
-    private List extractIndexNames() {
+    private List<String> extractIndexNames() {
 
-        List modules = new ArrayList();
+        List<String> modules = new ArrayList<String>();
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamIndexes())) {
             StringTokenizer tok = new StringTokenizer(getParamIndexes(), ",");

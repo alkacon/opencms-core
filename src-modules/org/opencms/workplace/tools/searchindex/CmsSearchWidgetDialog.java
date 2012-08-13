@@ -470,6 +470,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @see org.opencms.workplace.tools.searchindex.A_CmsEditSearchIndexDialog#initUserObject()
      */
+    @SuppressWarnings("rawtypes")
     @Override
     protected void initUserObject() {
 
@@ -500,6 +501,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
@@ -509,7 +511,6 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             dialogMap.put(PARAM_SEARCH_PARAMS, m_searchParams);
             dialogMap.put(PARAM_SEARCH_OBJECT, m_search);
         }
-
     }
 
     /**
@@ -527,7 +528,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         if (m_searchParams.isCalculateCategories()) {
             // trigger calculation of categories, even if we don't need search results 
             // this is cached unless more set operation on CmsSearch are performed
-            Map categoryMap = m_search.getSearchResultCategories();
+            Map<String, Integer> categoryMap = m_search.getSearchResultCategories();
             if (categoryMap != null) {
                 result.append(dialogContentStart(null));
                 result.append(result.append(createWidgetTableStart()));
@@ -539,10 +540,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
                 // categories:
                 result.append("\n<p>\n");
-                Map.Entry entry;
-                Iterator it = categoryMap.entrySet().iterator();
-                while (it.hasNext()) {
-                    entry = (Map.Entry)it.next();
+                for (Map.Entry<String, Integer> entry : categoryMap.entrySet()) {
                     result.append("  ").append("<a class=\"searchcategory\" href=\"#\" onClick=\"filterCategory('");
                     result.append(entry.getKey()).append("')\")>");
                     result.append(entry.getKey());
@@ -560,6 +558,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         return result.toString();
     }
 
+    /**
+     * Returns the HTML for the search results.<p>
+     * 
+     * @return the HTML for the search results
+     */
     private String createSearchResults() {
 
         String query = m_searchParams.getQuery();
@@ -596,6 +599,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         return result.toString();
     }
 
+    /**
+     * Generates the JavaScript to filter categories.<p>
+     * 
+     * @return the JavaScript
+     */
     private String filterCategoryJS() {
 
         StringBuffer result = new StringBuffer();
@@ -677,6 +685,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         return result;
     }
 
+    /**
+     * Normalizes the JavaScript for the previous search query.<p>
+     * 
+     * @return the normalized JavaScript
+     */
     private String normalizePreviousQueryJS() {
 
         StringBuffer result = new StringBuffer();
@@ -693,6 +706,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         return result.toString();
     }
 
+    /**
+     * Returns the JavaScript for submitting the search form.<p>
+     *  
+     * @return the JavaScript for submitting the search form
+     */
     private String submitJS() {
 
         StringBuffer result = new StringBuffer();

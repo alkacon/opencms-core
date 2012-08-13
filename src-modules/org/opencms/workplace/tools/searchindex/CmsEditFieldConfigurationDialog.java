@@ -74,6 +74,7 @@ public class CmsEditFieldConfigurationDialog extends A_CmsFieldConfigurationDial
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -98,6 +99,7 @@ public class CmsEditFieldConfigurationDialog extends A_CmsFieldConfigurationDial
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();

@@ -32,8 +32,6 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndexSource;
-import org.opencms.search.CmsSearchManager;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
@@ -136,6 +134,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         // view only 
@@ -144,6 +143,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         // view only
@@ -175,6 +175,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no details by now
@@ -183,15 +184,16 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    @Override
+    protected List<CmsListItem> getListItems() {
 
-        List result = new ArrayList();
+        List<CmsListItem> result = new ArrayList<CmsListItem>();
         // get content
-        List resources = resources();
-        Iterator itResources = resources.iterator();
+        List<String> resources = resources();
+        Iterator<String> itResources = resources.iterator();
         String path;
         while (itResources.hasNext()) {
-            path = (String)itResources.next();
+            path = itResources.next();
             CmsListItem item = getList().newItem(path);
             item.set(LIST_COLUMN_PATH, path);
             result.add(item);
@@ -202,6 +204,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -213,6 +216,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create dummy column for corporate design reasons
@@ -243,6 +247,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // no detail actions
@@ -252,6 +257,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // view only
@@ -260,6 +266,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
@@ -290,12 +297,9 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
      * 
      * @return the configured resources of the current indexsource
      */
-    private List resources() {
+    private List<String> resources() {
 
-        CmsSearchManager manager = OpenCms.getSearchManager();
-        CmsSearchIndexSource indexsource = manager.getIndexSource(getParamIndexsource());
-        List result = indexsource.getResourcesNames();
-        return result;
+        return OpenCms.getSearchManager().getIndexSource(getParamIndexsource()).getResourcesNames();
     }
 
 }

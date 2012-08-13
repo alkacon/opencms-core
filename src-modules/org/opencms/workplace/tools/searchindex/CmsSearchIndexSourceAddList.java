@@ -233,10 +233,10 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
         } else if (action.equals(CmsSearchIndexSourceControlList.LIST_ACTION_OVERVIEW_INDEXSOURCE)) {
 
             // action currently unused (not triggered by a column any more)
-            Map params = new HashMap();
+            Map<String, String[]> params = new HashMap<String, String[]>();
             // forward to the edit indexsource screen   
-            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, indexsourceName);
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+            params.put(A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE, new String[] {indexsourceName});
+            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             getToolManager().jspForwardTool(this, "/searchindex/indexsources/indexsource", params);
 
         }

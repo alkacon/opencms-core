@@ -78,6 +78,7 @@ public class CmsSearchIndexSourceAssignResourcesWidget extends A_CmsEditIndexSou
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -109,6 +110,7 @@ public class CmsSearchIndexSourceAssignResourcesWidget extends A_CmsEditIndexSou
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();

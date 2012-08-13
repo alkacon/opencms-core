@@ -107,6 +107,7 @@ public abstract class A_CmsEmbeddedListDialog extends A_CmsListDialog {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     public String defaultActionHtmlStart() {
 
         return new StringBuffer(getList().listJs()).append(dialogContentStart(getParamTitle())).toString();
