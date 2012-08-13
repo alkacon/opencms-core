@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsColorPicker;
 
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -63,6 +64,8 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
         // All composites must call initWidget() in their constructors.
         m_panel.add(m_colorPicker);
         initWidget(m_panel);
+        m_colorPicker.getColorfield().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().colorPicker());
+        m_colorPicker.getTextboxPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().colorPickerValue());
         m_colorPicker.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -137,9 +140,9 @@ public class CmsColorpickerWidget extends Composite implements I_EditWidget {
 
         m_active = active;
         if (m_active) {
-            getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
+            m_colorPicker.getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
         } else {
-            getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+            m_colorPicker.getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
             m_colorPicker.getColorfield().getElement().getStyle().setBackgroundColor("#FFFFFF");
         }
         if (!active) {
