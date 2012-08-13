@@ -106,7 +106,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
     public void testSearchIndexSetup() throws Exception {
 
         CmsLuceneIndex searchIndex = new CmsLuceneIndex(INDEX_SPECIAL);
-        searchIndex.setProjectName("Offline");
+        searchIndex.setProject("Offline");
         searchIndex.setLocale(Locale.ENGLISH);
         searchIndex.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_OFFLINE);
         // available pre-configured in the test configuration files opencms-search.xml

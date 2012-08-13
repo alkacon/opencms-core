@@ -495,7 +495,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         CmsSolrIndex index = new CmsSolrIndex(INDEX_TEST);
 
-        index.setProjectName("Offline");
+        index.setProject("Offline");
         // important: use german locale for a special treat on term analyzing
         index.setLocale(Locale.GERMAN);
         index.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_AUTO);

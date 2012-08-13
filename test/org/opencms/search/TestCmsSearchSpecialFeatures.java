@@ -109,7 +109,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
     public void testSearchIndexSetup() throws Exception {
 
         CmsLuceneIndex searchIndex = new CmsLuceneIndex(INDEX_SPECIAL);
-        searchIndex.setProjectName("Online");
+        searchIndex.setProject("Online");
         searchIndex.setLocale(Locale.ENGLISH);
         searchIndex.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml

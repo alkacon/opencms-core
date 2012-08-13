@@ -336,7 +336,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
 
         CmsLuceneIndex result = new CmsLuceneIndex();
         result.setLocale(Locale.ENGLISH);
-        result.setProjectName("Online");
+        result.setProject("Online");
         result.setRebuildMode("auto");
 
         // find default source 

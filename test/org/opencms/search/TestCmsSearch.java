@@ -411,7 +411,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
     public void testIndexGeneration() throws Throwable {
 
         CmsLuceneIndex searchIndex = new CmsLuceneIndex(INDEX_TEST);
-        searchIndex.setProjectName("Offline");
+        searchIndex.setProject("Offline");
         // important: use german locale for a special treat on term analyzing
         searchIndex.setLocale(Locale.GERMAN);
         searchIndex.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_AUTO);
