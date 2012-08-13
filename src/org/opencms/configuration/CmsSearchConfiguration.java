@@ -272,7 +272,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(xPath, "setServerUrl", 1);
         digester.addCallParam(xPath, 0, A_SERVER_URL);
         digester.addCallMethod(xPath + "/" + N_HOME, "setHomeFolderPath", 0);
-        digester.addCallMethod(xPath + "/" + N_CONFIG_FILE, "setSolrXmlName", 0);
+        digester.addCallMethod(xPath + "/" + N_CONFIG_FILE, "setSolrFileName", 0);
         digester.addSetNext(xPath, "setSolrServerConfiguration");
 
         // document type rule
