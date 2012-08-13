@@ -81,7 +81,10 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     protected I_CmsMessageBundle[] getTestMessageBundles() {
 
         return new I_CmsMessageBundle[] {
+            org.opencms.editors.codemirror.Messages.get(),
             org.opencms.editors.fckeditor.Messages.get(),
+            org.opencms.workplace.tools.searchindex.sourcesearch.Messages.get(),
+            org.opencms.workplace.tools.workplace.logging.Messages.get(),
             org.opencms.workplace.administration.Messages.get(),
             org.opencms.workplace.tools.accounts.Messages.get(),
             org.opencms.workplace.tools.cache.Messages.get(),
