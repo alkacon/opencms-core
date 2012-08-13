@@ -799,11 +799,11 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
     /**
      * Sets the name of the project used to index resources.<p>
      * 
-     * @param projectName the name of the project used to index resources
+     * @param project the name of the project used to index resources
      */
-    public void setProjectName(String projectName) {
+    public void setProject(String project) {
 
-        m_project = projectName;
+        m_project = project;
     }
 
     /**
