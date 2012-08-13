@@ -685,6 +685,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Returns <code>true</code> if the index for the given name is a Lucene index, <code>false</code> otherwise.<p>
+     * 
+     * @param indexName the name of the index to check
+     * 
+     * @return <code>true</code> if the index for the given name is a Lucene index
+     */
+    public static boolean isLuceneIndex(String indexName) {
+
+        return OpenCms.getSearchManager().getIndexLucene(indexName) != null ? true : false;
+    }
+
+    /**
      * Adds an analyzer.<p>
      * 
      * @param analyzer an analyzer
