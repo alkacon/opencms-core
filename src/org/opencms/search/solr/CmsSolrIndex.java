@@ -87,6 +87,9 @@ import org.apache.solr.response.SolrQueryResponse;
  */
 public class CmsSolrIndex extends A_CmsSearchIndex {
 
+    /** The name for the default Solr offline index. */
+    public static final String SOLR_OFFLINE_INDEX_NAME = "Solr Offline";
+
     /** The solr document type name for xml-contents. */
     public static final String TYPE_XMLCONTENT_SOLR = "xmlcontent-solr";
 
