@@ -297,7 +297,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate(xPath, A_CLASS, CmsLuceneIndex.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_REBUILD, "setRebuildMode", 0);
-        digester.addCallMethod(xPath + "/" + N_PROJECT, "setProjectName", 0);
+        digester.addCallMethod(xPath + "/" + N_PROJECT, "setProject", 0);
         digester.addCallMethod(xPath + "/" + N_LOCALE, "setLocaleString", 0);
         digester.addCallMethod(xPath + "/" + N_CONFIGURATION, "setFieldConfigurationName", 0);
         digester.addCallMethod(xPath + "/" + N_SOURCES + "/" + N_SOURCE, "addSourceName", 0);
