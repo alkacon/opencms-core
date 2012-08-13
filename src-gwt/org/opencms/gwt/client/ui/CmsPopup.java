@@ -794,7 +794,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         if (height <= 0) {
             m_containerElement.getStyle().clearWidth();
         } else {
-            int contentHeight = height;
+            int contentHeight = height - 6;
             if (hasCaption()) {
                 contentHeight = contentHeight - 36;
             }
@@ -802,8 +802,8 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
                 contentHeight = contentHeight - 34;
             }
             contentHeight = contentHeight - m_contentHeightCorrection;
-            m_containerElement.getStyle().setProperty("height", height + Unit.PX.toString());
-            m_main.getStyle().setProperty("height", contentHeight + Unit.PX.toString());
+            m_containerElement.getStyle().setHeight(height, Unit.PX);
+            m_main.getStyle().setHeight(contentHeight, Unit.PX);
         }
     }
 

@@ -108,8 +108,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         m_panel.add(m_colorField);
         m_panel.add(m_error);
         m_textboxpanel.add(m_textboxColorValue);
-        m_textboxpanel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPickerValue());
-        m_colorField.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
+
         m_panel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().colorPicker());
         m_textboxColorValue.addBlurHandler(new BlurHandler() {
 
@@ -444,10 +443,20 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
+     * Returns the color value textboxpanel.<p>
+     * 
+     * @return the color value textboxpanel
+     */
+    public SimplePanel getTextboxPanel() {
+
+        return m_textboxpanel;
+    }
+
+    /**
      * Returns the color value textbox.<p>
      * 
      * @return the color value textbox
-     */
+     * */
     public TextBox getColorValueBox() {
 
         return m_textboxColorValue;
