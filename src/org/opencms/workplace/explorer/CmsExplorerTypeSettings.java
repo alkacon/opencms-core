@@ -33,6 +33,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -73,6 +74,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /** The explorer type access. */
     private CmsExplorerTypeAccess m_access;
+
     /** Flag for showing that this is an additional resource type which defined in a module. */
     private boolean m_addititionalModuleExplorerType;
 
@@ -81,6 +83,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /** The auto set title flag. */
     private boolean m_autoSetTitle;
+
     /** The name of the big icon for this explorer type. */
     private String m_bigIcon;
 
@@ -555,6 +558,10 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      */
     public boolean isEditable(CmsObject cms, CmsResource resource) {
 
+        if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)) {
+            return true;
+        }
         // determine if this resource type is editable for the current user
         CmsPermissionSet permissions = getAccess().getPermissions(cms, resource);
         return permissions.requiresWritePermission();

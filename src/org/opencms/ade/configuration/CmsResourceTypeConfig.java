@@ -170,6 +170,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             || "".equals(cms.getRequestContext().getSiteRoot())) {
             return false;
         }
+        if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)) {
+            return true;
+        }
         if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(m_typeName)) {
             return OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER);
         }
