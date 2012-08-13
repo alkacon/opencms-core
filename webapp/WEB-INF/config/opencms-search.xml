@@ -127,9 +127,11 @@
       <documenttype>
         <name>xmlcontent-solr</name>
         <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>
-        <mimetypes/>
+        <mimetypes>
+        	<mimetype>text/html</mimetype>
+        </mimetypes>
         <resourcetypes>
-          <resourcetype>*</resourcetype>
+          <resourcetype>xmlcontent-solr</resourcetype>
         </resourcetypes>
       </documenttype>
       <documenttype>
