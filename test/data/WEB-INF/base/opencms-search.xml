@@ -223,7 +223,7 @@
         <locale>all</locale>   
         <configuration>solr_fields</configuration> 
         <sources>
-          <source>solrSource</source>
+          <source>solr_source</source>
         </sources>   
       </index>
       <!-- 
@@ -297,7 +297,7 @@
         </documenttypes-indexed>
       </indexsource>
       <indexsource>
-        <name>solrSource</name>
+        <name>solr_source</name>
         <indexer class="org.opencms.search.CmsVfsIndexer"/>
         <resources>
           <resource>/sites/default/</resource>
