@@ -38,6 +38,7 @@ import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -63,6 +64,8 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -74,6 +77,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -199,15 +203,21 @@ public final class CmsContentEditor {
     public void openFormEditor(String locale, String elementId, Command onClose) {
 
         m_onClose = onClose;
-        m_editor.loadDefinition(
-            CmsContentDefinition.uuidToEntityId(new CmsUUID(elementId), locale),
-            new I_CmsSimpleCallback<CmsContentDefinition>() {
+        CmsUUID structureId = new CmsUUID(elementId);
+        if (CmsCoreProvider.get().lock(structureId)) {
+            m_editor.loadDefinition(
+                CmsContentDefinition.uuidToEntityId(structureId, locale),
+                new I_CmsSimpleCallback<CmsContentDefinition>() {
 
-                public void execute(CmsContentDefinition contentDefinition) {
+                    public void execute(CmsContentDefinition contentDefinition) {
 
-                    initEditor(contentDefinition, null, false);
-                }
-            });
+                        initEditor(contentDefinition, null, false);
+                    }
+                });
+        } else {
+            showLockedResourceMessage();
+        }
+
     }
 
     /**
@@ -223,13 +233,17 @@ public final class CmsContentEditor {
         String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
         m_locale = locale;
         m_onClose = onClose;
-        m_editor.loadDefinition(entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
+        if (CmsCoreProvider.get().lock(elementId)) {
+            m_editor.loadDefinition(entityId, new I_CmsSimpleCallback<CmsContentDefinition>() {
 
-            public void execute(CmsContentDefinition contentDefinition) {
+                public void execute(CmsContentDefinition contentDefinition) {
 
-                initEditor(contentDefinition, panel, true);
-            }
-        });
+                    initEditor(contentDefinition, panel, true);
+                }
+            });
+        } else {
+            showLockedResourceMessage();
+        }
     }
 
     /**
@@ -247,8 +261,13 @@ public final class CmsContentEditor {
             return;
         }
         m_isStandAlone = true;
-        m_editor.registerContentDefinition(definition);
-        initEditor(definition, null, false);
+        if (CmsCoreProvider.get().lock(CmsContentDefinition.entityIdToUuid(definition.getEntityId()))) {
+
+            m_editor.registerContentDefinition(definition);
+            initEditor(definition, null, false);
+        } else {
+            showLockedResourceMessage();
+        }
     }
 
     /**
@@ -273,6 +292,9 @@ public final class CmsContentEditor {
             m_onClose.execute();
         }
         m_editor.destroyFrom(true);
+        if (m_entityId != null) {
+            CmsCoreProvider.get().unlock(CmsContentDefinition.entityIdToUuid(m_entityId));
+        }
         clearEditor();
     }
 
@@ -480,8 +502,10 @@ public final class CmsContentEditor {
      */
     private void clearEditor() {
 
-        m_toolbar.removeFromParent();
-        m_toolbar = null;
+        if (m_toolbar != null) {
+            m_toolbar.removeFromParent();
+            m_toolbar = null;
+        }
         m_cancelButton = null;
         m_localeSelect = null;
         m_openFormButton = null;
@@ -670,5 +694,22 @@ public final class CmsContentEditor {
         });
         m_toolbar.addLeft(m_openFormButton);
         RootPanel.get().add(m_toolbar);
+    }
+
+    /**
+     * Shows the locked resource error message.<p>
+     */
+    private void showLockedResourceMessage() {
+
+        CmsErrorDialog dialog = new CmsErrorDialog(Messages.get().key(
+            Messages.ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0), null);
+        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                cancelEdit();
+            }
+        });
+        dialog.center();
     }
 }

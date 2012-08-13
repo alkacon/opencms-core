@@ -37,6 +37,9 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0 = "ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALE_DIALOG_CANCEL_0 = "GUI_LOCALE_DIALOG_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */
