@@ -29,6 +29,7 @@ package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.report.I_CmsReportThread;
 import org.opencms.util.CmsStringUtil;
@@ -46,6 +47,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * A report for displaying the rebuild process of the corresponding
  * <code>{@link org.opencms.workplace.tools.searchindex.CmsIndexingReportThread}</code>.<p>
@@ -59,6 +62,9 @@ public class CmsRebuildReport extends A_CmsListReport {
 
     /** The request parameter value for search indexes: comma-separated names. **/
     private String m_paramIndexes;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsRebuildReport.class);
 
     /**
      * Public constructor with JSP action element.<p>
@@ -109,9 +115,15 @@ public class CmsRebuildReport extends A_CmsListReport {
     public I_CmsReportThread initializeThread() throws CmsRuntimeException {
 
         if (getParamIndexes() == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
+            CmsIllegalArgumentException ex = new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
                 PARAM_INDEXES));
+            LOG.error(ex);
+            try {
+                getToolManager().jspForwardTool(this, "/searchindex", null);
+            } catch (Exception e) {
+                LOG.error(e);
+            }
         }
         List<String> indexes = extractIndexNames();
         CmsIndexingReportThread thread = new CmsIndexingReportThread(getCms(), indexes);

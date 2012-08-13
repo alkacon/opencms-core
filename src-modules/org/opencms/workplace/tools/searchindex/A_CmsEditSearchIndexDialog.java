@@ -332,9 +332,9 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      *         a <code>null</code> name property that will be used for being filled with 
      *         the widget bean technology
      */
-    private CmsLuceneIndex createDummySearchIndex() {
+    private A_CmsSearchIndex createDummySearchIndex() {
 
-        CmsLuceneIndex result = new CmsLuceneIndex();
+        A_CmsSearchIndex result = new CmsLuceneIndex();
         result.setLocale(Locale.ENGLISH);
         result.setProject("Online");
         result.setRebuildMode("auto");

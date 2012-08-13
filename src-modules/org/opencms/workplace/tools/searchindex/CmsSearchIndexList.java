@@ -255,6 +255,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsSearchManager searchManager = OpenCms.getSearchManager();
         String index = getSelectedItem().getId();
 
+        getCms().getRequestContext().setAttribute(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME, index);
+
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put(CmsRebuildReport.PARAM_INDEXES, new String[] {index});
         params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
@@ -419,7 +421,14 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         searchCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         searchCol.setSorteable(false);
         // add search action
-        CmsListDirectAction searchAction = new CmsListDirectAction(LIST_ACTION_SEARCH);
+        CmsListDirectAction searchAction = new CmsListDirectAction(LIST_ACTION_SEARCH) {
+
+            @Override
+            public boolean isEnabled() {
+
+                return CmsSearchManager.isLuceneIndex((String)getItem().get(LIST_COLUMN_NAME));
+            }
+        };
         searchAction.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_ACTION_SEARCH_NAME_0));
         searchAction.setHelpText(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_ACTION_SEARCH_HELP_0));
         searchAction.setIconPath(LIST_ICON_SEARCH);

@@ -49,7 +49,6 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.5.3
  */
-@SuppressWarnings("unchecked")
 public class CmsSourceSearchCollector extends A_CmsListResourceCollector {
 
     /** Parameter of the default collector name. */

@@ -208,9 +208,11 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
     /**
      * Locks the current resource.<p>
      * 
-     * @param cms the current CmsObject
+     * @param cmsObject the current CmsObject 
      * @param cmsResource the resource to lock
      * @param report the report
+     * 
+     * @return <code>true</code> if the given resource was locked was successfully
      * 
      * @throws CmsException if some goes wrong
      */
@@ -225,7 +227,9 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
                 cmsObject.getRequestContext().getCurrentProject())) {
             // prove is current lock from current user in current project
             return true;
-        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())) {
+        } else if ((lock != null)
+            && !lock.isUnlocked()
+            && !lock.isOwnedBy(cmsObject.getRequestContext().getCurrentUser())) {
             // the resource is not locked by the current user, so can not lock it
             m_lockedFiles += 1;
             return false;
