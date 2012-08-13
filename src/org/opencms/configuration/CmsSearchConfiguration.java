@@ -375,6 +375,21 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             searchElement.addAttribute(A_CLASS, m_searchManager.getClass().getName());
         }
 
+        if (m_searchManager.getSolrServerConfiguration() != null) {
+            CmsSolrConfiguration conf = m_searchManager.getSolrServerConfiguration();
+            Element solr = searchElement.addElement(N_SOLR);
+            solr.addAttribute(A_EMBEDDED, new Boolean(conf.isEmbedded()).toString());
+            if (conf.getServerUrl() != null) {
+                solr.addAttribute(A_SERVER_URL, conf.getServerUrl().toString());
+            }
+            if (conf.getHome() != null) {
+                solr.addElement(N_HOME).addText(conf.getHome());
+            }
+            if (conf.getSolrFileName() != null) {
+                solr.addElement(N_CONFIG_FILE).addText(conf.getSolrFileName());
+            }
+        }
+
         // add <directory> element
         searchElement.addElement(N_DIRECTORY).addText(m_searchManager.getDirectory());
         // add <timeout> element

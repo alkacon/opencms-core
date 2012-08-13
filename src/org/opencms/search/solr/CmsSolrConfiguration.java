@@ -39,8 +39,8 @@ import org.opencms.util.CmsStringUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.core.SolrConfig;
@@ -67,11 +67,11 @@ public class CmsSolrConfiguration {
     /** The system property name for the Solr home directory. */
     public static final String SOLR_HOME_PROPERTY = "solr.solr.home";
 
-    /** Signals whether the server should be embedded or if to use an external. */
-    private boolean m_embedded;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrConfiguration.class);
+
+    /** Signals whether the server should be embedded or if to use an external. */
+    private boolean m_embedded;
 
     /** The Solr home. */
     private String m_home;
@@ -80,7 +80,7 @@ public class CmsSolrConfiguration {
     private IndexSchema m_schema;
 
     /** The servers URL, must be set if embedded is false. */
-    private URI m_serverUrl;
+    private URL m_serverUrl;
 
     /** The Solr configuration. */
     private SolrConfig m_solrConfig;
@@ -121,7 +121,7 @@ public class CmsSolrConfiguration {
      * 
      * @return the external servers URL
      */
-    public URI getServerUrl() {
+    public URL getServerUrl() {
 
         return m_serverUrl;
     }
@@ -259,8 +259,8 @@ public class CmsSolrConfiguration {
     public void setServerUrl(String url) throws CmsConfigurationException {
 
         try {
-            m_serverUrl = new URI(url);
-        } catch (URISyntaxException e) {
+            m_serverUrl = new URL(url);
+        } catch (MalformedURLException e) {
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_SOLR_BAD_SERVER_URL_1,
                 m_serverUrl), e);
