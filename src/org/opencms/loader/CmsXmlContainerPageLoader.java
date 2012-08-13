@@ -49,10 +49,10 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @since 7.6
  */
-public class CmsXmlContainerPageLoader extends A_CmsXmlDocumentLoader {
+public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
 
     /** The id of this loader. */
-    public static final int RESOURCE_LOADER_ID = 11;
+    public static final int CONTAINER_PAGE_RESOURCE_LOADER_ID = 11;
 
     /**
      * Default constructor.<p>
@@ -65,9 +65,10 @@ public class CmsXmlContainerPageLoader extends A_CmsXmlDocumentLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
-        return RESOURCE_LOADER_ID;
+        return CONTAINER_PAGE_RESOURCE_LOADER_ID;
     }
 
     /**
@@ -76,6 +77,7 @@ public class CmsXmlContainerPageLoader extends A_CmsXmlDocumentLoader {
      * 
      * @return a describing String for the ResourceLoader 
      */
+    @Override
     public String getResourceLoaderInfo() {
 
         return Messages.get().getBundle().key(Messages.GUI_LOADER_CONTAINERPAGE_DEFAULT_DESC_0);

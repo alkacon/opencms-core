@@ -229,7 +229,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     @Override
     public int getLoaderId() {
 
-        return CmsXmlContainerPageLoader.RESOURCE_LOADER_ID;
+        return CmsXmlContainerPageLoader.CONTAINER_PAGE_RESOURCE_LOADER_ID;
     }
 
     /**
