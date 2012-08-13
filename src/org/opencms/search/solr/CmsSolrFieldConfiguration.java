@@ -110,6 +110,9 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         return document;
     }
 
+    /**
+     * @see org.opencms.search.fields.A_CmsSearchFieldConfiguration#appendDates(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     */
     @Override
     protected I_CmsSearchDocument appendDates(
         I_CmsSearchDocument document,
