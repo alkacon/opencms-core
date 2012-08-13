@@ -27,8 +27,6 @@
 
 package org.opencms.ade.publish.client;
 
-import com.alkacon.geranium.client.ui.SimplePanel;
-
 import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.shared.CmsPublishResource;
 import org.opencms.gwt.client.ui.CmsList;
@@ -62,6 +60,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
