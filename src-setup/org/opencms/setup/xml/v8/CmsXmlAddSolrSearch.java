@@ -52,9 +52,10 @@ public class CmsXmlAddSolrSearch extends A_CmsXmlSearch {
 
         Element node = (Element)doc.selectSingleNode("/opencms/search");
         if (node.selectSingleNode("solr") == null) {
-            String solrComment = "To enable Solr search engine you have to create a Solr home\n"
-                + "           directory according to the OpenCms standard distribution below\n"
-                + "           the WEB-INF directory of your OpenCms web application.";
+            String solrComment = "To enable Solr in OpenCms you must create a solr/ home\n"
+                + "           directory in the WEB-INF folder of your OpenCms application.\n"
+                + "           Copy the solr/ folder from the OpenCms standard distribution\n"
+                + "           as a starting point for your configuration.";
             try {
                 Element solrElement = createElementFromXml("<solr enabled=\"false\"></solr>");
                 solrElement.addComment(solrComment);
