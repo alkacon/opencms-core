@@ -39,8 +39,6 @@ import org.opencms.util.CmsStringUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.core.SolrConfig;
@@ -70,20 +68,26 @@ public class CmsSolrConfiguration {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrConfiguration.class);
 
-    /** Signals whether the server should be embedded or if to use an external. */
-    private boolean m_embedded;
+    /** Signals whether the server is enabled or disabled. */
+    private boolean m_enabled;
 
     /** The Solr home. */
     private String m_home;
+
+    /** The configured path to the Solr home. */
+    private String m_homeFolderPath;
 
     /** The schema file. */
     private IndexSchema m_schema;
 
     /** The servers URL, must be set if embedded is false. */
-    private URL m_serverUrl;
+    private String m_serverUrl;
 
     /** The Solr configuration. */
     private SolrConfig m_solrConfig;
+
+    /** The Solr configuration file "solr.xml". */
+    private File m_solrFile;
 
     /** The file name of the Solr configuration. */
     private String m_solrFileName;
@@ -103,7 +107,7 @@ public class CmsSolrConfiguration {
      */
     public String getHome() {
 
-        if (m_home == null) {
+        if (m_homeFolderPath == null) {
             if (CmsStringUtil.isNotEmpty(System.getProperty(SOLR_HOME_PROPERTY))) {
                 m_home = System.getProperty(SOLR_HOME_PROPERTY);
             } else {
@@ -112,8 +116,20 @@ public class CmsSolrConfiguration {
             m_home = (m_home.endsWith(File.separator)
             ? m_home.substring(0, m_home.lastIndexOf(File.separator))
             : m_home);
+        } else {
+            m_home = m_homeFolderPath;
         }
         return m_home;
+    }
+
+    /**
+     * Returns the configured Solr home.<p>
+     * 
+     * @return the configured Solr home
+     */
+    public String getHomeFolderPath() {
+
+        return m_homeFolderPath;
     }
 
     /**
@@ -121,7 +137,7 @@ public class CmsSolrConfiguration {
      * 
      * @return the external servers URL
      */
-    public URL getServerUrl() {
+    public String getServerUrl() {
 
         return m_serverUrl;
     }
@@ -137,16 +153,16 @@ public class CmsSolrConfiguration {
         if (m_solrConfig == null) {
             try {
                 InputSource solrConfig = new InputSource(new FileInputStream(getSolrConfigFile()));
-                m_solrConfig = new SolrConfig(m_home, null, solrConfig);
+                m_solrConfig = new SolrConfig(getHome(), null, solrConfig);
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
                     Messages.ERR_SOLR_CONFIG_XML_NOT_FOUND_1,
-                    getSolrConfigFile().getPath()), e);
+                    getSolrConfigFile()), e);
                 LOG.error(ex.getLocalizedMessage(), ex);
             } catch (Exception e) {
                 CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
                     Messages.ERR_SOLR_CONFIG_XML_NOT_READABLE_1,
-                    getSolrConfigFile().getPath()), e);
+                    getSolrConfigFile()), e);
                 LOG.error(ex.getLocalizedMessage(), ex);
             }
         }
@@ -170,10 +186,11 @@ public class CmsSolrConfiguration {
      */
     public File getSolrFile() {
 
-        if (m_solrFileName == null) {
-            m_solrFileName = SOLR_CONFIG_FILE;
+        if (m_solrFile == null) {
+            String solrFileName = m_solrFileName != null ? m_solrFileName : SOLR_CONFIG_FILE;
+            m_solrFile = new File(getHome() + File.separator + solrFileName);
         }
-        return new File(getHome() + File.separator + m_solrFileName);
+        return m_solrFile;
     }
 
     /**
@@ -222,21 +239,19 @@ public class CmsSolrConfiguration {
      * 
      * @return <code>true</code> if the Solr server is embedded, <code>false</code> otherwise
      */
-    public boolean isEmbedded() {
+    public boolean isEnabled() {
 
-        return m_embedded;
+        return m_enabled;
     }
 
     /**
-     * Sets the embedded flag.<p>
+     * Sets the enabled flag.<p>
      * 
-     * Set it to <code>true</code>, if the embedded Solr server should be used, <code>false</code> otherwise.<p>
-     * 
-     * @param isEmbedded <code>true</code>, if the embedded Solr server should be used, <code>false</code> otherwise
+     * @param isEnabled <code>true</code>, if the Solr server should be used, <code>false</code> otherwise
      */
-    public void setEmbedded(String isEmbedded) {
+    public void setEnabled(String isEnabled) {
 
-        m_embedded = Boolean.valueOf(isEmbedded).booleanValue();
+        m_enabled = Boolean.valueOf(isEnabled).booleanValue();
     }
 
     /**
@@ -246,25 +261,17 @@ public class CmsSolrConfiguration {
      */
     public void setHomeFolderPath(String homeFolderPath) {
 
-        m_home = homeFolderPath;
+        m_homeFolderPath = homeFolderPath;
     }
 
     /**
      * Sets the external servers URL, should be not null if the embedded falg is <code>false</code>.<p>
      * 
      * @param url the URL
-     * 
-     * @throws CmsConfigurationException if somehting goes wrong
      */
-    public void setServerUrl(String url) throws CmsConfigurationException {
+    public void setServerUrl(String url) {
 
-        try {
-            m_serverUrl = new URL(url);
-        } catch (MalformedURLException e) {
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_SOLR_BAD_SERVER_URL_1,
-                m_serverUrl), e);
-        }
+        m_serverUrl = url;
     }
 
     /**

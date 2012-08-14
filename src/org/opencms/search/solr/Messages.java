@@ -41,7 +41,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INDEX_SOLR_CONFIGURATION_INVALID_0 = "ERR_INDEX_SOLR_CONFIGURATION_INVALID_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_INDEX_SOLR_CONFIGURATION_MISS_2 = "ERR_INDEX_SOLR_CONFIGURATION_MISS_2";
+    public static final String ERR_INDEX_SOLR_CONFIGURATION_MISS_1 = "ERR_INDEX_SOLR_CONFIGURATION_MISS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RESULT_ITERATION_FAILED_0 = "LOG_RESULT_ITERATION_FAILED_0";

@@ -162,7 +162,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             }
         } catch (Exception e) {
             // ignore and assume that the document could not be found
-            LOG.error(e);
+            LOG.error(e.getMessage(), e);
         }
         return null;
     }
@@ -212,15 +212,16 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
         super.initialize();
         m_solrConfig = OpenCms.getSearchManager().getSolrServerConfiguration();
-
-        // if solr is not configured throw an exception
-        if (m_solrConfig == null) {
+        if ((m_solrConfig == null) || !m_solrConfig.isEnabled()) {
             // No solr server configured
             throw new CmsSearchException(Messages.get().container(
-                Messages.ERR_INDEX_SOLR_CONFIGURATION_MISS_2,
-                getName(),
-                getPath()));
-        } else if (m_solrConfig.isEmbedded()) {
+                Messages.ERR_INDEX_SOLR_CONFIGURATION_MISS_1,
+                getName()));
+        } else if (m_solrConfig.getServerUrl() != null) {
+            // HTTP Server configured
+            m_solr = new HttpSolrServer(m_solrConfig.getServerUrl());
+        } else {
+
             // Embedded server configured
             try {
 
@@ -271,17 +272,13 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                     m_solr = new EmbeddedSolrServer(coreContainer, getName());
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_INDEX_SOLR_EMBEDDED_CREATED_1, getName()));
                 }
+
             } catch (Exception e) {
                 throw new CmsSearchException(Messages.get().container(
                     Messages.ERR_INDEX_SOLR_EMBEDDED_START_2,
                     getPath(),
                     getName()), e);
             }
-        } else if (m_solrConfig.getServerUrl() != null) {
-            m_solr = new HttpSolrServer(m_solrConfig.getServerUrl().toString());
-        } else {
-            // Invalid server URL
-            throw new CmsSearchException(Messages.get().container(Messages.ERR_INDEX_SOLR_CONFIGURATION_INVALID_0));
         }
     }
 
@@ -473,7 +470,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     @Override
     public void shutDown() {
 
-        if ((m_solrConfig != null) && (m_solrConfig.isEmbedded()) && (m_solr instanceof EmbeddedSolrServer)) {
+        if (m_solr instanceof EmbeddedSolrServer) {
             ((EmbeddedSolrServer)m_solr).getCoreContainer().shutdown();
         }
     }
@@ -491,7 +488,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void writeResponse(ServletResponse response, CmsSolrResultList result) throws Exception {
 
-        if (m_solrConfig.isEmbedded()) {
+        if (m_solr instanceof EmbeddedSolrServer) {
 
             SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
 

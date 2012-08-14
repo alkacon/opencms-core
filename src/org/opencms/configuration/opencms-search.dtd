@@ -35,7 +35,7 @@
 	configfile?
 )>
 <!ATTLIST solr
-	embedded (true|false|TRUE|FALSE) #REQUIRED
+	enabled (true|false|TRUE|FALSE) #REQUIRED
 	serverUrl CDATA #IMPLIED
 >
 <!ELEMENT home (#PCDATA)>

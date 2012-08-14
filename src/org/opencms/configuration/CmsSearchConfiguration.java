@@ -69,9 +69,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     /** The "boost" attribute. */
     public static final String A_BOOST = "boost";
 
-    /** The embedded attribute, set to true to use the embedded server. */
-    public static final String A_EMBEDDED = "embedded";
-
     /** The Solr server URL attribute, set if embedded = false. */
     public static final String A_SERVER_URL = "serverUrl";
 
@@ -267,8 +264,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         xPath = XPATH_SEARCH + "/" + N_SOLR;
         digester.addObjectCreate(xPath, CmsSolrConfiguration.class);
-        digester.addCallMethod(xPath, "setEmbedded", 1);
-        digester.addCallParam(xPath, 0, A_EMBEDDED);
+        digester.addCallMethod(xPath, "setEnabled", 1);
+        digester.addCallParam(xPath, 0, A_ENABLED);
         digester.addCallMethod(xPath, "setServerUrl", 1);
         digester.addCallParam(xPath, 0, A_SERVER_URL);
         digester.addCallMethod(xPath + "/" + N_HOME, "setHomeFolderPath", 0);
@@ -375,15 +372,16 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             searchElement.addAttribute(A_CLASS, m_searchManager.getClass().getName());
         }
 
+        // add the Solr node
+        Element solr = searchElement.addElement(N_SOLR);
         if (m_searchManager.getSolrServerConfiguration() != null) {
             CmsSolrConfiguration conf = m_searchManager.getSolrServerConfiguration();
-            Element solr = searchElement.addElement(N_SOLR);
-            solr.addAttribute(A_EMBEDDED, new Boolean(conf.isEmbedded()).toString());
+            solr.addAttribute(A_ENABLED, new Boolean(conf.isEnabled()).toString());
             if (conf.getServerUrl() != null) {
                 solr.addAttribute(A_SERVER_URL, conf.getServerUrl().toString());
             }
-            if (conf.getHome() != null) {
-                solr.addElement(N_HOME).addText(conf.getHome());
+            if (conf.getHomeFolderPath() != null) {
+                solr.addElement(N_HOME).addText(conf.getHomeFolderPath());
             }
             if (conf.getSolrFileName() != null) {
                 solr.addElement(N_CONFIG_FILE).addText(conf.getSolrFileName());
