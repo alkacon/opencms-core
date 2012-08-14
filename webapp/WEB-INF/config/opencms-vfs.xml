@@ -649,12 +649,63 @@
 				<translation>s#[\s]+#-#g</translation>
 				<translation>s#\\#/#g</translation>
 				<translation>s#&#0228;#ae#g</translation>
-        		<translation>s#&#0196;#Ae#g</translation>
-    			<translation>s#&#0246;#oe#g</translation>
-    			<translation>s#&#0214;#Oe#g</translation>
-    			<translation>s#&#0252;#ue#g</translation>
-    			<translation>s#&#0220;#Ue#g</translation>
-   				<translation>s#&#0223;#ss#g</translation> 
+				<translation>s#&#0196;#Ae#g</translation>
+				<translation>s#&#0246;#oe#g</translation>
+				<translation>s#&#0214;#Oe#g</translation>
+				<translation>s#&#0252;#ue#g</translation>
+				<translation>s#&#0220;#Ue#g</translation>
+				<translation>s#&#0223;#ss#g</translation>
+				<translation>s#[&#x00e0;&#x00e1;&#x00e2;&#x00e3;&#x00e5;&#x0101;&#x0103;&#x0105;&#x01ce;&#x01df;&#x01e1;&#x01fb;&#x0201;&#x0203;&#x0227;&#x1e01;&#x1e9a;&#x1ea1;&#x1ea3;&#x1ea5;&#x1ea7;&#x1ea9;&#x1eab;&#x1ead;&#x1eaf;&#x1eb1;&#x1eb3;&#x1eb5;&#x1eb7;]#a#g</translation>
+				<translation>s#[&#x00c0;&#x00c1;&#x00c2;&#x00c3;&#x00c5;&#x0100;&#x0102;&#x0104;&#x01cd;&#x01de;&#x01e0;&#x01fa;&#x0200;&#x0202;&#x0226;&#x1e00;&#x1ea0;&#x1ea2;&#x1ea4;&#x1ea6;&#x1ea8;&#x1eaa;&#x1eac;&#x1eae;&#x1eb0;&#x1eb2;&#x1eb4;&#x1eb6;]#A#g</translation>
+				<translation>s#[&#x0180;&#x0253;&#x0183;&#x1e03;&#x1e05;&#x1e07;]#b#g</translation>
+				<translation>s#[&#x0181;&#x0182;&#x1e02;&#x1e04;&#x1e06;]#B#g</translation>
+				<translation>s#[&#x00e7;&#x0107;&#x0109;&#x010b;&#x010d;&#x0188;&#x0255;&#x1e09;]#c#g</translation>
+				<translation>s#[&#x00c7;&#x0106;&#x0108;&#x010a;&#x010c;&#x0187;&#x1e08;]#C#g</translation>
+				<translation>s#[&#x010f;&#x0111;&#x0257;&#x018c;&#x0221;&#x0256;&#x1e0b;&#x1e0d;&#x1e0f;&#x1e11;&#x1e13;]#d#g</translation>
+				<translation>s#[&#x010e;&#x0110;&#x018a;&#x018b;&#x01c5;&#x01f2;&#x1e0a;&#x1e0c;&#x1e0e;&#x1e10;&#x1e12;]#D#g</translation>
+				<translation>s#[&#x00e8;&#x00e9;&#x00ea;&#x00eb;&#x0113;&#x0115;&#x0117;&#x0119;&#x011b;&#x0205;&#x0207;&#x0229;&#x1e15;&#x1e17;&#x1e19;&#x1e1b;&#x1e1d;&#x1eb9;&#x1ebb;&#x1ebd;&#x1ebf;&#x1ec1;&#x1ec3;&#x1ec5;&#x1ec7;]#e#g</translation>
+				<translation>s#[&#x00c8;&#x00c9;&#x00ca;&#x00cb;&#x0112;&#x0114;&#x0116;&#x0118;&#x011a;&#x0204;&#x0206;&#x0228;&#x1e14;&#x1e16;&#x1e18;&#x1e1a;&#x1e1c;&#x1eb8;&#x1eba;&#x1ebc;&#x1ebe;&#x1ec0;&#x1ec2;&#x1ec4;&#x1ec6;]#E#g</translation>
+				<translation>s#[&#x0192;&#x1e1f;]#f#g</translation>
+				<translation>s#[&#x0191;&#x1e1e;]#F#g</translation>
+				<translation>s#[&#x011d;&#x011f;&#x0121;&#x0123;&#x0260;&#x01e5;&#x01e7;&#x01f5;&#x1e21;]#g#g</translation>
+				<translation>s#[&#x011c;&#x011e;&#x0120;&#x0122;&#x0193;&#x01e4;&#x01e6;&#x01f4;&#x1e20;]#G#g</translation>
+				<translation>s#[&#x0125;&#x0127;&#x021f;&#x0266;&#x1e23;&#x1e25;&#x1e27;&#x1e29;&#x1e2b;&#x1e96;]#h#g</translation>
+				<translation>s#[&#x0124;&#x0126;&#x021e;&#x1e22;&#x1e24;&#x1e26;&#x1e28;&#x1e2a;]#H#g</translation>
+				<translation>s#[&#x00ec;&#x00ed;&#x00ee;&#x00ef;&#x0129;&#x012b;&#x012d;&#x012f;&#x0268;&#x01d0;&#x0209;&#x020b;&#x1e2d;&#x1e2f;&#x1ec9;&#x1ecb;]#i#g</translation>
+				<translation>s#[&#x00cc;&#x00cd;&#x00ce;&#x00cf;&#x0128;&#x012a;&#x012c;&#x012e;&#x0130;&#x0197;&#x01cf;&#x0208;&#x020a;&#x1e2c;&#x1e2e;&#x1ec8;&#x1eca;]#I#g</translation>
+				<translation>s#[&#x0135;&#x01f0;&#x029d;]#j#g</translation>
+				<translation>s#[&#x0134;]#J#g</translation>
+				<translation>s#[&#x0137;&#x0199;&#x01e9;&#x1e31;&#x1e33;&#x1e35;]#k#g</translation>
+				<translation>s#[&#x0136;&#x0198;&#x01e8;&#x1e30;&#x1e32;&#x1e34;]#K#g</translation>
+				<translation>s#[&#x013a;&#x013c;&#x013e;&#x0140;&#x0142;&#x019a;&#x0234;&#x026b;&#x026c;&#x026d;&#x1e37;&#x1e39;&#x1e3b;&#x1e3d;]#l#g</translation>
+				<translation>s#[&#x0139;&#x013b;&#x013d;&#x013f;&#x0141;&#x01c8;&#x1e36;&#x1e38;&#x1e3a;&#x1e3c;]#L#g</translation>
+				<translation>s#[&#x0271;&#x1e3f;&#x1e41;&#x1e43;]#m#g</translation>
+				<translation>s#[&#x1e3e;&#x1e40;&#x1e42;]#M#g</translation>
+				<translation>s#[&#x00f1;&#x0144;&#x0146;&#x0148;&#x0272;&#x019e;&#x0220;&#x01f9;&#x0235;&#x0273;&#x1e45;&#x1e47;&#x1e49;&#x1e4b;]#n#g</translation>
+				<translation>s#[&#x00d1;&#x0143;&#x0145;&#x0147;&#x019d;&#x01cb;&#x01f8;&#x1e44;&#x1e46;&#x1e48;&#x1e4a;]#N#g</translation>
+				<translation>s#[&#x00f2;&#x00f3;&#x00f4;&#x00f5;&#x00f8;&#x014d;&#x014f;&#x0151;&#x01a1;&#x01d2;&#x01eb;&#x01ed;&#x01ff;&#x020d;&#x020f;&#x022b;&#x022d;&#x022f;&#x0231;&#x1e4d;&#x1e4e;&#x1e4f;&#x1e50;&#x1e51;&#x1e52;&#x1e53;&#x1ecd;&#x1ece;&#x1ecf;&#x1ed0;&#x1ed1;&#x1ed2;&#x1ed3;&#x1ed4;&#x1ed5;&#x1ed6;&#x1ed7;&#x1ed9;&#x1edb;&#x1edd;&#x1ede;&#x1edf;&#x1ee1;&#x1ee3;]#o#g</translation>
+				<translation>s#[&#x00d2;&#x00d3;&#x00d4;&#x00d5;&#x00d8;&#x014c;&#x014e;&#x0150;&#x019f;&#x01a0;&#x01d1;&#x01ea;&#x01ec;&#x01fe;&#x020c;&#x020e;&#x022a;&#x022c;&#x022e;&#x0230;&#x1e4c;&#x1ecc;&#x1ed8;&#x1eda;&#x1edc;&#x1ee0;&#x1ee2;]#O#g</translation>
+				<translation>s#[&#x01a5;&#x1e55;&#x1e57;]#p#g</translation>
+				<translation>s#[&#x01a4;&#x1e54;&#x1e56;]#P#g</translation>
+				<translation>s#[&#x02a0;]#q#g</translation>
+				<translation>s#[&#x0155;&#x0157;&#x0159;&#x0211;&#x0213;&#x027c;&#x027d;&#x027e;&#x1e59;&#x1e5b;&#x1e5d;&#x1e5f;]#r#g</translation>
+				<translation>s#[&#x0154;&#x0156;&#x0158;&#x0210;&#x0212;&#x1e58;&#x1e5a;&#x1e5c;&#x1e5e;]#R#g</translation>
+				<translation>s#[&#x015b;&#x015d;&#x015f;&#x0161;&#x0219;&#x0282;&#x1e61;&#x1e63;&#x1e64;&#x1e65;&#x1e66;&#x1e67;&#x1e69;]#s#g</translation>
+				<translation>s#[&#x015a;&#x015c;&#x015e;&#x0160;&#x0218;&#x1e60;&#x1e62;&#x1e68;]#S#g</translation>
+				<translation>s#[&#x0163;&#x0165;&#x0167;&#x01ab;&#x01ad;&#x0288;&#x021b;&#x0236;&#x1e6b;&#x1e6d;&#x1e6f;&#x1e71;&#x1e97;]#t#g</translation>
+				<translation>s#[&#x0162;&#x0164;&#x0166;&#x01ac;&#x01ae;&#x021a;&#x1e6a;&#x1e6c;&#x1e6e;&#x1e70;]#T#g</translation>
+				<translation>s#[&#x00f9;&#x00fa;&#x00fb;&#x0169;&#x016b;&#x016d;&#x016f;&#x0171;&#x0173;&#x01b0;&#x01d4;&#x01d6;&#x01d8;&#x01da;&#x01dc;&#x0215;&#x0217;&#x1e73;&#x1e75;&#x1e77;&#x1e79;&#x1e7a;&#x1e7b;&#x1ee5;&#x1ee6;&#x1ee7;&#x1ee9;&#x1eeb;&#x1eec;&#x1eed;&#x1eef;&#x1ef1;]#u#g</translation>
+				<translation>s#[&#x00d9;&#x00da;&#x00db;&#x0168;&#x016a;&#x016c;&#x016e;&#x0170;&#x0172;&#x01af;&#x01d3;&#x01d5;&#x01d7;&#x01d9;&#x01db;&#x0214;&#x0216;&#x1e72;&#x1e74;&#x1e76;&#x1e78;&#x1ee4;&#x1ee8;&#x1eea;&#x1eee;&#x1ef0;]#U#g</translation>
+				<translation>s#[&#x028b;&#x1e7d;&#x1e7f;]#v#g</translation>
+				<translation>s#[&#x01b2;&#x1e7c;&#x1e7e;]#V#g</translation>
+				<translation>s#[&#x0175;&#x1e81;&#x1e83;&#x1e85;&#x1e87;&#x1e89;&#x1e98;]#w#g</translation>
+				<translation>s#[&#x0174;&#x1e80;&#x1e82;&#x1e84;&#x1e86;&#x1e88;]#W#g</translation>
+				<translation>s#[&#x1e8b;&#x1e8d;]#x#g</translation>
+				<translation>s#[&#x1e8a;&#x1e8c;]#X#g</translation>
+				<translation>s#[&#x00fd;&#x00ff;&#x0177;&#x01b4;&#x0233;&#x1e8f;&#x1e99;&#x1ef3;&#x1ef5;&#x1ef6;&#x1ef7;&#x1ef9;]#y#g</translation>
+				<translation>s#[&#x00dd;&#x0178;&#x0176;&#x01b3;&#x0232;&#x1e8e;&#x1ef2;&#x1ef4;&#x1ef8;]#Y#g</translation>
+				<translation>s#[&#x017a;&#x017c;&#x017e;&#x01b6;&#x0225;&#x0290;&#x0291;&#x1e91;&#x1e93;&#x1e95;&#x1e95;]#z#g</translation>
+				<translation>s#[&#x0179;&#x017b;&#x017d;&#x01b5;&#x0224;&#x1e90;&#x1e92;&#x1e94;]#Z#g</translation>
 				<translation>s#[^0-9a-zA-Z_$~\.\-\/]#!#g</translation>
 				<translation>s#!+##g</translation>
 			</filetranslations>
