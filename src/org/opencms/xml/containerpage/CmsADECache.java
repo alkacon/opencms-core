@@ -34,9 +34,13 @@ import org.opencms.main.CmsLog;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.logging.Log;
 
@@ -62,6 +66,9 @@ public final class CmsADECache extends CmsVfsCache {
     /** Cache for online group containers. */
     private Map<String, CmsXmlGroupContainer> m_groupContainersOnline;
 
+    /** Read-write lock to ensure that the cache maps aren't accessed while we iterate through them to remove invalid entries. */
+    private ReadWriteLock m_lock = new ReentrantReadWriteLock(true);
+
     /**
      * Initializes the cache. Only intended to be called during startup.<p>
      * 
@@ -83,10 +90,15 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public void flushContainerPages(boolean online) {
 
-        if (online) {
-            m_containerPagesOnline.clear();
-        } else {
-            m_containerPagesOffline.clear();
+        try {
+            m_lock.writeLock().lock();
+            if (online) {
+                m_containerPagesOnline.clear();
+            } else {
+                m_containerPagesOffline.clear();
+            }
+        } finally {
+            m_lock.writeLock().unlock();
         }
     }
 
@@ -97,10 +109,15 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public void flushGroupContainers(boolean online) {
 
-        if (online) {
-            m_groupContainersOnline.clear();
-        } else {
-            m_groupContainersOffline.clear();
+        try {
+            m_lock.writeLock().lock();
+            if (online) {
+                m_groupContainersOnline.clear();
+            } else {
+                m_groupContainersOffline.clear();
+            }
+        } finally {
+            m_lock.writeLock().unlock();
         }
     }
 
@@ -114,40 +131,45 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public CmsXmlContainerPage getCacheContainerPage(String key, boolean online) {
 
-        CmsXmlContainerPage retValue;
-        if (online) {
-            retValue = m_containerPagesOnline.get(key);
-            if (LOG.isDebugEnabled()) {
-                if (retValue == null) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_CACHE_MISSED_ONLINE_1,
-                        new Object[] {key}));
+        try {
+            m_lock.readLock().lock();
+            CmsXmlContainerPage retValue;
+            if (online) {
+                retValue = m_containerPagesOnline.get(key);
+                if (LOG.isDebugEnabled()) {
+                    if (retValue == null) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_CACHE_MISSED_ONLINE_1,
+                            new Object[] {key}));
 
-                } else {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_CACHE_MATCHED_ONLINE_2,
-                        new Object[] {key, retValue}));
+                    } else {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_CACHE_MATCHED_ONLINE_2,
+                            new Object[] {key, retValue}));
+                    }
+                }
+            } else {
+                retValue = m_containerPagesOffline.get(key);
+                if (LOG.isDebugEnabled()) {
+                    if (retValue == null) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_CACHE_MISSED_OFFLINE_1,
+                            new Object[] {key}));
+
+                    } else {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_CACHE_MATCHED_OFFLINE_2,
+                            new Object[] {key, retValue}));
+                    }
                 }
             }
-        } else {
-            retValue = m_containerPagesOffline.get(key);
-            if (LOG.isDebugEnabled()) {
-                if (retValue == null) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_CACHE_MISSED_OFFLINE_1,
-                        new Object[] {key}));
-
-                } else {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_CACHE_MATCHED_OFFLINE_2,
-                        new Object[] {key, retValue}));
-                }
+            if (retValue != null) {
+                //System.out.println("got cached page: " + retValue.getFile().getRootPath());
             }
+            return retValue;
+        } finally {
+            m_lock.readLock().unlock();
         }
-        if (retValue != null) {
-            //System.out.println("got cached page: " + retValue.getFile().getRootPath());
-        }
-        return retValue;
     }
 
     /**
@@ -160,37 +182,42 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public CmsXmlGroupContainer getCacheGroupContainer(String key, boolean online) {
 
-        CmsXmlGroupContainer retValue;
-        if (online) {
-            retValue = m_groupContainersOnline.get(key);
-            if (LOG.isDebugEnabled()) {
-                if (retValue == null) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_CACHE_MISSED_ONLINE_1,
-                        new Object[] {key}));
+        try {
+            m_lock.readLock().lock();
+            CmsXmlGroupContainer retValue;
+            if (online) {
+                retValue = m_groupContainersOnline.get(key);
+                if (LOG.isDebugEnabled()) {
+                    if (retValue == null) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_CACHE_MISSED_ONLINE_1,
+                            new Object[] {key}));
 
-                } else {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_CACHE_MATCHED_ONLINE_2,
-                        new Object[] {key, retValue}));
+                    } else {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_CACHE_MATCHED_ONLINE_2,
+                            new Object[] {key, retValue}));
+                    }
+                }
+            } else {
+                retValue = m_groupContainersOffline.get(key);
+                if (LOG.isDebugEnabled()) {
+                    if (retValue == null) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_CACHE_MISSED_OFFLINE_1,
+                            new Object[] {key}));
+
+                    } else {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_CACHE_MATCHED_OFFLINE_2,
+                            new Object[] {key, retValue}));
+                    }
                 }
             }
-        } else {
-            retValue = m_groupContainersOffline.get(key);
-            if (LOG.isDebugEnabled()) {
-                if (retValue == null) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_CACHE_MISSED_OFFLINE_1,
-                        new Object[] {key}));
-
-                } else {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_CACHE_MATCHED_OFFLINE_2,
-                        new Object[] {key, retValue}));
-                }
-            }
+            return retValue;
+        } finally {
+            m_lock.readLock().unlock();
         }
-        return retValue;
     }
 
     /**
@@ -215,22 +242,27 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public void setCacheContainerPage(String key, CmsXmlContainerPage containerPage, boolean online) {
 
-        //System.out.println("caching page:" + containerPage.getFile().getRootPath());
+        try {
+            m_lock.writeLock().lock();
+            //System.out.println("caching page:" + containerPage.getFile().getRootPath());
 
-        if (online) {
-            m_containerPagesOnline.put(key, containerPage);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
-                    new Object[] {key, containerPage}));
+            if (online) {
+                m_containerPagesOnline.put(key, containerPage);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
+                        new Object[] {key, containerPage}));
+                }
+            } else {
+                m_containerPagesOffline.put(key, containerPage);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
+                        new Object[] {key, containerPage}));
+                }
             }
-        } else {
-            m_containerPagesOffline.put(key, containerPage);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
-                    new Object[] {key, containerPage}));
-            }
+        } finally {
+            m_lock.writeLock().unlock();
         }
     }
 
@@ -243,20 +275,25 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public void setCacheGroupContainer(String key, CmsXmlGroupContainer groupContainer, boolean online) {
 
-        if (online) {
-            m_groupContainersOnline.put(key, groupContainer);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
-                    new Object[] {key, groupContainer}));
+        try {
+            m_lock.writeLock().lock();
+            if (online) {
+                m_groupContainersOnline.put(key, groupContainer);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
+                        new Object[] {key, groupContainer}));
+                }
+            } else {
+                m_groupContainersOffline.put(key, groupContainer);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
+                        new Object[] {key, groupContainer}));
+                }
             }
-        } else {
-            m_groupContainersOffline.put(key, groupContainer);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
-                    new Object[] {key, groupContainer}));
-            }
+        } finally {
+            m_lock.writeLock().unlock();
         }
     }
 
@@ -268,12 +305,17 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public void uncacheContainerPage(CmsUUID structureId, boolean online) {
 
-        if (online) {
-            m_containerPagesOnline.remove(getCacheKey(structureId, true));
-            m_containerPagesOnline.remove(getCacheKey(structureId, false));
-        } else {
-            m_containerPagesOffline.remove(getCacheKey(structureId, true));
-            m_containerPagesOffline.remove(getCacheKey(structureId, false));
+        try {
+            m_lock.writeLock().lock();
+            if (online) {
+                m_containerPagesOnline.remove(getCacheKey(structureId, true));
+                m_containerPagesOnline.remove(getCacheKey(structureId, false));
+            } else {
+                m_containerPagesOffline.remove(getCacheKey(structureId, true));
+                m_containerPagesOffline.remove(getCacheKey(structureId, false));
+            }
+        } finally {
+            m_lock.writeLock().unlock();
         }
     }
 
@@ -285,12 +327,17 @@ public final class CmsADECache extends CmsVfsCache {
      */
     public void uncacheGroupContainer(CmsUUID structureId, boolean online) {
 
-        if (online) {
-            m_groupContainersOnline.remove(getCacheKey(structureId, true));
-            m_groupContainersOnline.remove(getCacheKey(structureId, false));
-        } else {
-            m_groupContainersOffline.remove(getCacheKey(structureId, true));
-            m_groupContainersOffline.remove(getCacheKey(structureId, false));
+        try {
+            m_lock.writeLock().lock();
+            if (online) {
+                m_groupContainersOnline.remove(getCacheKey(structureId, true));
+                m_groupContainersOnline.remove(getCacheKey(structureId, false));
+            } else {
+                m_groupContainersOffline.remove(getCacheKey(structureId, true));
+                m_groupContainersOffline.remove(getCacheKey(structureId, false));
+            }
+        } finally {
+            m_lock.writeLock().unlock();
         }
     }
 
@@ -300,8 +347,13 @@ public final class CmsADECache extends CmsVfsCache {
     @Override
     protected void flush(boolean online) {
 
-        flushContainerPages(online);
-        flushGroupContainers(online);
+        try {
+            m_lock.writeLock().lock();
+            flushContainerPages(online);
+            flushGroupContainers(online);
+        } finally {
+            m_lock.writeLock().unlock();
+        }
     }
 
     /**
@@ -310,16 +362,19 @@ public final class CmsADECache extends CmsVfsCache {
     @Override
     protected void uncacheResource(CmsResource resource) {
 
-        if (resource == null) {
-            LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
-            return;
-        }
-        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-            // remove the resource cached by it's structure ID
-            //System.out.println("uncaching page: " + resource.getRootPath());
-            uncacheContainerPage(resource.getStructureId(), false);
-        } else {
-            uncacheGroupContainer(resource.getStructureId(), false);
+        try {
+            m_lock.writeLock().lock();
+            if (resource == null) {
+                LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
+                return;
+            }
+            if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                removeCachedContent(resource, m_containerPagesOffline);
+            } else {
+                removeCachedContent(resource, m_groupContainersOffline);
+            }
+        } finally {
+            m_lock.writeLock().unlock();
         }
     }
 
@@ -348,5 +403,26 @@ public final class CmsADECache extends CmsVfsCache {
         lruMapGroupContainer = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getGroupContainerOnlineSize());
         m_groupContainersOnline = Collections.synchronizedMap(lruMapGroupContainer);
         memMonitor.register(CmsADECache.class.getName() + ".groupContainersOnline", lruMapGroupContainer);
+    }
+
+    /**
+     * Removes a cached XML content from the cache if it matches a given resource.<p>
+     * 
+     * @param resource the resource for which the cached XML content should be removed 
+     * @param cache the cache from which to remove the XML content
+     */
+    private <CONTENT extends CmsXmlContent> void removeCachedContent(CmsResource resource, Map<String, CONTENT> cache) {
+
+        Iterator<Map.Entry<String, CONTENT>> iterator = cache.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, CONTENT> entry = iterator.next();
+            CONTENT content = entry.getValue();
+            CmsResource contentFile = content.getFile();
+            if (contentFile.getStructureId().equals(resource.getStructureId())
+                || contentFile.getResourceId().equals(resource.getResourceId())) {
+                iterator.remove();
+            }
+        }
+
     }
 }
