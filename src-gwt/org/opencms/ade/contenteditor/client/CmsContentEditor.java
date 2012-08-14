@@ -73,6 +73,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -106,6 +108,9 @@ public final class CmsContentEditor {
 
     /** The id's of the changed entities. */
     private Set<String> m_changedEntityIds;
+
+    /** The window closing handler registration. */
+    private HandlerRegistration m_closingHandlerRegistration;
 
     /** The locales present within the edited content. */
     private Set<String> m_contentLocales;
@@ -292,9 +297,7 @@ public final class CmsContentEditor {
             m_onClose.execute();
         }
         m_editor.destroyFrom(true);
-        if (m_entityId != null) {
-            CmsCoreProvider.get().unlock(CmsContentDefinition.entityIdToUuid(m_entityId));
-        }
+        unlockResource();
         clearEditor();
     }
 
@@ -356,6 +359,7 @@ public final class CmsContentEditor {
 
         m_locale = contentDefinition.getLocale();
         m_entityId = contentDefinition.getEntityId();
+        initClosingHandler();
         setContentDefinition(contentDefinition);
         initToolbar();
         if (inline && (formParnet != null)) {
@@ -498,6 +502,16 @@ public final class CmsContentEditor {
     }
 
     /**
+     * Unlocks the edited resource.<p>
+     */
+    void unlockResource() {
+
+        if (m_entityId != null) {
+            CmsCoreProvider.get().unlock(CmsContentDefinition.entityIdToUuid(m_entityId));
+        }
+    }
+
+    /**
      * Closes the editor.<p>
      */
     private void clearEditor() {
@@ -528,6 +542,10 @@ public final class CmsContentEditor {
         if (m_resizeHandlerRegistration != null) {
             m_resizeHandlerRegistration.removeHandler();
             m_resizeHandlerRegistration = null;
+        }
+        if (m_closingHandlerRegistration != null) {
+            m_closingHandlerRegistration.removeHandler();
+            m_closingHandlerRegistration = null;
         }
         if (m_isStandAlone) {
             closeEditorWidow();
@@ -576,6 +594,23 @@ public final class CmsContentEditor {
     private String getIdForLocale(String locale) {
 
         return CmsContentDefinition.uuidToEntityId(CmsContentDefinition.entityIdToUuid(m_entityId), locale);
+    }
+
+    /** 
+     * Initializes the window closing handler to ensure the resource will be unlocked when leaving the editor.<p>
+     */
+    private void initClosingHandler() {
+
+        m_closingHandlerRegistration = Window.addWindowClosingHandler(new ClosingHandler() {
+
+            /**
+             * @see com.google.gwt.user.client.Window.ClosingHandler#onWindowClosing(com.google.gwt.user.client.Window.ClosingEvent)
+             */
+            public void onWindowClosing(ClosingEvent event) {
+
+                unlockResource();
+            }
+        });
     }
 
     /**
