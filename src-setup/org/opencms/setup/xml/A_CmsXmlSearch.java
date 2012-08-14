@@ -31,8 +31,8 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.CmsVfsIndexer;
+import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchField;
@@ -59,7 +59,11 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
      * @param fieldConf the field configuration
      * @param clazz the optional class attribute value
      */
-    public void createFieldConfig(Document document, String xpath, CmsSearchFieldConfiguration fieldConf, Class<?> clazz) {
+    public void createFieldConfig(
+        Document document,
+        String xpath,
+        A_CmsSearchFieldConfiguration fieldConf,
+        Class<?> clazz) {
 
         if (clazz != null) {
             CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, clazz.getName());
