@@ -128,7 +128,7 @@
         <name>xmlcontent-solr</name>
         <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>
         <mimetypes>
-        	<mimetype>text/html</mimetype>
+          <mimetype>text/html</mimetype>
         </mimetypes>
         <resourcetypes>
           <resourcetype>xmlcontent-solr</resourcetype>
@@ -179,7 +179,7 @@
         <locale>de</locale>
       </analyzer>
       <analyzer>
-				<class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>
+        <class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>
         <locale>en</locale>
       </analyzer>
       <analyzer>
@@ -187,7 +187,7 @@
         <locale>fr</locale>
       </analyzer>
       <analyzer>
-				<class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>
+         <class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>
         <locale>it</locale>
       </analyzer>
       <analyzer>
@@ -227,11 +227,11 @@
         <name>Solr Offline</name>
         <rebuild>offline</rebuild>
         <project>Offline</project>
-        <locale>all</locale>   
-        <configuration>solr_fields</configuration> 
+        <locale>all</locale>
+        <configuration>solr_fields</configuration>
         <sources>
           <source>solr_source</source>
-        </sources>   
+        </sources>
       </index>
       <index>
         <name>German online help</name>
@@ -318,8 +318,8 @@
         </resources>
         <documenttypes-indexed>
           <name>xmlcontent-galleries</name>
-        </documenttypes-indexed>				
-      </indexsource>  			
+        </documenttypes-indexed>
+      </indexsource>
       <indexsource>
         <name>solr_source</name>
         <indexer class="org.opencms.search.CmsVfsIndexer"/>
