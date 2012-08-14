@@ -126,6 +126,7 @@ public final class CmsDirectEditButtonSelection {
      * 
      * @return the selected edit options as a String
      */
+    @Override
     public String toString() {
 
         if (m_stringValue == null) {

@@ -51,7 +51,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
     private static final Log LOG = CmsLog.getLog(CmsModuleDeleteThread.class);
 
     /** A list of module name to delete. */
-    private List m_moduleNames;
+    private List<String> m_moduleNames;
 
     /** mode indicating if pre-replacement or final deletion. */
     private boolean m_replaceMode;
@@ -63,7 +63,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
      * @param moduleNames the name of the module
      * @param replaceMode the replace mode
      */
-    public CmsModuleDeleteThread(CmsObject cms, List moduleNames, boolean replaceMode) {
+    public CmsModuleDeleteThread(CmsObject cms, List<String> moduleNames, boolean replaceMode) {
 
         super(cms, Messages.get().getBundle().key(Messages.GUI_DELETE_MODULE_THREAD_NAME_1, moduleNames));
         m_moduleNames = moduleNames;
@@ -77,6 +77,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -85,6 +86,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         I_CmsReport report = getReport();
@@ -98,9 +100,9 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             m_moduleNames = CmsModuleManager.topologicalSort(m_moduleNames, null);
             Collections.reverse(m_moduleNames);
 
-            Iterator j = m_moduleNames.iterator();
+            Iterator<String> j = m_moduleNames.iterator();
             while (j.hasNext()) {
-                String moduleName = (String)j.next();
+                String moduleName = j.next();
 
                 moduleName = moduleName.replace('\\', '/');
 

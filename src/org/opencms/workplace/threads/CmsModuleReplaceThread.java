@@ -48,11 +48,22 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleReplaceThread.class);
 
+    /** The delete thread. */
     private A_CmsReportThread m_deleteThread;
+
+    /** The import thread. */
     private A_CmsReportThread m_importThread;
+
+    /** The module name. */
     private String m_moduleName;
+
+    /** The replacement phase. */
     private int m_phase;
+
+    /** The report content. */
     private String m_reportContent;
+
+    /** The zip file name. */
     private String m_zipName;
 
     /**
@@ -67,7 +78,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         m_moduleName = moduleName;
         m_zipName = zipName;
 
-        List modules = new ArrayList();
+        List<String> modules = new ArrayList<String>();
         modules.add(m_moduleName);
         m_deleteThread = new CmsModuleDeleteThread(getCms(), modules, true);
         m_importThread = new CmsDatabaseImportThread(getCms(), m_zipName, true);
@@ -84,15 +95,16 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
      * 
      * @return Vector with path Strings of resources
      */
-    public static Vector getModuleResources(String moduleName) {
+    public static Vector<String> getModuleResources(String moduleName) {
 
-        Vector resNames = new Vector(OpenCms.getModuleManager().getModule(moduleName).getResources());
+        Vector<String> resNames = new Vector<String>(OpenCms.getModuleManager().getModule(moduleName).getResources());
         return resNames;
     }
 
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         switch (m_phase) {
@@ -116,6 +128,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         if (LOG.isDebugEnabled()) {

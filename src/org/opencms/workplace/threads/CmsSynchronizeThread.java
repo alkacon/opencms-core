@@ -64,6 +64,7 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
+    @Override
     public Throwable getError() {
 
         return m_error;
@@ -72,6 +73,7 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -80,6 +82,7 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         I_CmsReport report = getReport();

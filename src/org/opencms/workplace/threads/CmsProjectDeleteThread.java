@@ -44,7 +44,10 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsProjectDeleteThread.class);
 
+    /** The throwable. */
     private Throwable m_error;
+
+    /** The project id. */
     private CmsUUID m_projectId;
 
     /**
@@ -62,6 +65,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
+    @Override
     public Throwable getError() {
 
         return m_error;
@@ -70,6 +74,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return "";
@@ -78,12 +83,13 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         try {
             getCms().deleteProject(m_projectId);
         } catch (Throwable e) {
-            m_error = e;            
+            m_error = e;
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_PROJECT_DELETE_FAILED_1, m_projectId), e);
         }
     }

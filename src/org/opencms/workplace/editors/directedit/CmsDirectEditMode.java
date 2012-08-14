@@ -182,6 +182,7 @@ public final class CmsDirectEditMode {
      * @see java.lang.Object#toString()
      * @see #valueOf(String)
      */
+    @Override
     public String toString() {
 
         switch (m_mode) {

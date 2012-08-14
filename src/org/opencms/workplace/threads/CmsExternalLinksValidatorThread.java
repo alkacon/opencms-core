@@ -72,6 +72,7 @@ public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -80,6 +81,7 @@ public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
     /**
      * The run method which starts the import process.<p>
      */
+    @Override
     public void run() {
 
         try {

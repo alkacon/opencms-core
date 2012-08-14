@@ -74,6 +74,7 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -82,6 +83,7 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         getReport().println(
@@ -123,7 +125,7 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(m_settings.getResourceTypeId());
         String path = CmsResource.getFolderPath(m_settings.getVfsFolder());
         // get the list of resources to check
-        List resources = getCms().readResources(path, filter, m_settings.isIncludeSubFolders());
+        List<CmsResource> resources = getCms().readResources(path, filter, m_settings.isIncludeSubFolders());
 
         // set the report counters
         int count = 0;
@@ -133,11 +135,11 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(getCms());
 
         // iterate the resources
-        Iterator i = resources.iterator();
+        Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
 
             count++;
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
 
             // generate report output
             getReport().print(

@@ -113,6 +113,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
     /**
      * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#init(org.opencms.file.CmsObject, org.opencms.workplace.editors.directedit.CmsDirectEditMode, java.lang.String)
      */
+    @Override
     public void init(CmsObject cms, CmsDirectEditMode mode, String fileName) {
 
         super.init(cms, mode, fileName);
@@ -202,6 +203,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
      * 
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#isManual(org.opencms.workplace.editors.directedit.CmsDirectEditMode)
      */
+    @Override
     public boolean isManual(CmsDirectEditMode mode) {
 
         return false;

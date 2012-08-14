@@ -45,6 +45,7 @@ public class CmsExportThread extends A_CmsReportThread {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExportThread.class);
 
+    /** The import export handler. */
     private I_CmsImportExportHandler m_handler;
 
     /**
@@ -68,6 +69,7 @@ public class CmsExportThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -76,6 +78,7 @@ public class CmsExportThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         try {

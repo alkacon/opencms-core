@@ -69,6 +69,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -77,6 +78,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         CmsImportParameters parameters = new CmsImportParameters(m_importFile, "/", m_keepPermissions);
