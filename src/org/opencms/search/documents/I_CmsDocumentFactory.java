@@ -30,11 +30,11 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.extractors.I_CmsExtractionResult;
 
 import java.util.List;
-
-import org.apache.lucene.document.Document;
 
 /**
  * Used to create index Lucene Documents for OpenCms resources,
@@ -67,13 +67,13 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      * @param resource the search index resource to create the Lucene document from
      * @param index the search index to create the Document for
      * 
-     * @return the Lucene Document for the given index resource and the given search index
+     * @return the Search Document for the given index resource and the given search index
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, CmsSearchIndex, org.opencms.search.extractors.I_CmsExtractionResult)
+     * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, I_CmsExtractionResult)
      */
-    Document createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException;
+    I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, A_CmsSearchIndex index) throws CmsException;
 
     /**
      * Returns the disk based cache used to store the raw extraction results.<p>

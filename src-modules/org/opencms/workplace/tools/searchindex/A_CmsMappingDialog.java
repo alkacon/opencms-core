@@ -35,6 +35,9 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -91,13 +94,13 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     public static final String PARAM_TYPE = "type";
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchField m_field;
+    protected I_CmsSearchField m_field;
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchFieldConfiguration m_fieldconfiguration;
+    protected I_CmsSearchFieldConfiguration m_fieldconfiguration;
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchFieldMapping m_mapping;
+    protected I_CmsSearchFieldMapping m_mapping;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;
@@ -149,19 +152,20 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
 
             // if new create it first
             boolean found = false;
-            Iterator itMappings = m_field.getMappings().iterator();
+            Iterator<I_CmsSearchFieldMapping> itMappings = m_field.getMappings().iterator();
             while (itMappings.hasNext()) {
-                CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
+                I_CmsSearchFieldMapping curMapping = itMappings.next();
                 if (curMapping.getType().toString().equals(m_mapping.getType().toString())
-                    && ((curMapping.getParam() == null && m_mapping.getParam() == null) || (curMapping.getParam().equals(m_mapping.getParam())))) {
+                    && (((curMapping.getParam() == null) && (m_mapping.getParam() == null)) || (curMapping.getParam().equals(m_mapping.getParam())))) {
                     found = true;
                 }
             }
@@ -262,6 +266,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -270,6 +275,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initUserObject();
@@ -279,6 +285,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -303,9 +310,9 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
 
         if (m_field == null) {
             try {
-                Iterator itFields = m_fieldconfiguration.getFields().iterator();
+                Iterator<I_CmsSearchField> itFields = m_fieldconfiguration.getFields().iterator();
                 while (itFields.hasNext()) {
-                    CmsSearchField curField = (CmsSearchField)itFields.next();
+                    I_CmsSearchField curField = itFields.next();
                     if (curField.getName().equals(getParamField())) {
                         m_field = curField;
                         break;
@@ -320,11 +327,11 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
         }
         if (m_mapping == null) {
             try {
-                Iterator itMappings = m_field.getMappings().iterator();
+                Iterator<I_CmsSearchFieldMapping> itMappings = m_field.getMappings().iterator();
                 while (itMappings.hasNext()) {
-                    CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
+                    I_CmsSearchFieldMapping curMapping = itMappings.next();
                     if (curMapping.getType().toString().equals(getParamType())
-                        && (curMapping.getParam() == null && getParamParam().equals("-") || (curMapping.getParam().equals(getParamParam())))) {
+                        && (((curMapping.getParam() == null) && getParamParam().equals("-")) || (curMapping.getParam().equals(getParamParam())))) {
                         m_mapping = curMapping;
                         break;
                     }
@@ -344,6 +351,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         m_searchManager = OpenCms.getSearchManager();
@@ -353,6 +361,8 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -388,6 +398,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (!isNewMapping()) {

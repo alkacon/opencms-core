@@ -79,6 +79,7 @@ public class CmsEditMappingDialog extends A_CmsMappingDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -103,13 +104,18 @@ public class CmsEditMappingDialog extends A_CmsMappingDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();
 
         // widgets to display
         // new indexsource
-        addWidget(new CmsWidgetDialogParameter(this, "type", PAGES[0], new CmsSelectWidget(getTypeWidgetConfiguration())));
+        addWidget(new CmsWidgetDialogParameter(
+            this,
+            "type",
+            PAGES[0],
+            new CmsSelectWidget(getTypeWidgetConfiguration())));
         addWidget(new CmsWidgetDialogParameter(m_mapping, "param", "", PAGES[0], new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_mapping, "defaultValue", "", PAGES[0], new CmsInputWidget(), 0, 1));
     }
@@ -131,7 +137,7 @@ public class CmsEditMappingDialog extends A_CmsMappingDialog {
      */
     public String getType() {
 
-        if (m_mapping != null && m_mapping.getType() != null) {
+        if ((m_mapping != null) && (m_mapping.getType() != null)) {
             return m_mapping.getType().toString();
         }
         return "";
@@ -142,9 +148,9 @@ public class CmsEditMappingDialog extends A_CmsMappingDialog {
      * 
      * @return a list of CmsSearchFieldMappingTypes
      */
-    private List getTypeWidgetConfiguration() {
+    private List<CmsSelectWidgetOption> getTypeWidgetConfiguration() {
 
-        List result = new ArrayList();
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
         result.add(new CmsSelectWidgetOption(CmsSearchFieldMappingType.CONTENT.toString(), true));
         result.add(new CmsSelectWidgetOption(CmsSearchFieldMappingType.PROPERTY.toString(), false));
         result.add(new CmsSelectWidgetOption(CmsSearchFieldMappingType.PROPERTY_SEARCH.toString(), false));

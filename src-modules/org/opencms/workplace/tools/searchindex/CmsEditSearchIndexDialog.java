@@ -31,7 +31,8 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
@@ -39,11 +40,8 @@ import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,7 +84,10 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
+     * 
+     * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -109,8 +110,9 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
-     * Creates the list of widgets for this dialog.<p>
+     * @see org.opencms.workplace.tools.searchindex.A_CmsEditSearchIndexDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();
@@ -131,63 +133,55 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
             getFieldConfigurationWidgetConfiguration()), 0, 1));
     }
 
-    private List getFieldConfigurationWidgetConfiguration() {
+    /**
+     * Creates the options  for the search field configuration.<p>
+     * 
+     * @return the option list
+     */
+    private List<CmsSelectWidgetOption> getFieldConfigurationWidgetConfiguration() {
 
-        List result = new ArrayList();
-        List fieldConfigurations;
-        fieldConfigurations = m_searchManager.getFieldConfigurations();
-        Iterator itFieldConfigs = fieldConfigurations.iterator();
-        CmsSelectWidgetOption option;
-        CmsSearchFieldConfiguration curFieldConfig;
-        while (itFieldConfigs.hasNext()) {
-            curFieldConfig = (CmsSearchFieldConfiguration)itFieldConfigs.next();
-            option = new CmsSelectWidgetOption(
-                curFieldConfig.getName(),
-                (curFieldConfig.getName()).equals(CmsSearchFieldConfiguration.STR_STANDARD));
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
+        List<I_CmsSearchFieldConfiguration> fieldConfigurations = m_searchManager.getFieldConfigurations();
+
+        for (I_CmsSearchFieldConfiguration config : fieldConfigurations) {
+            CmsSelectWidgetOption option = new CmsSelectWidgetOption(
+                config.getName(),
+                (config.getName()).equals(A_CmsSearchFieldConfiguration.STR_STANDARD));
             result.add(option);
         }
         return result;
     }
 
-    private List getLocaleWidgetConfiguration() {
+    /**
+     * Returns the locale widget configuration.<p>
+     * 
+     * @return the locale widget configuration
+     */
+    private List<CmsSelectWidgetOption> getLocaleWidgetConfiguration() {
 
-        List result = new ArrayList();
-        Locale indexLocale = m_index.getLocale();
-
-        Iterator analyzers = m_searchManager.getAnalyzers().keySet().iterator();
-
-        Set distinctLocales = new HashSet();
-        while (analyzers.hasNext()) {
-            distinctLocales.add(analyzers.next());
-        }
-
-        // put an option for each distinct locale
-        Iterator locales = distinctLocales.iterator();
-        Locale locale;
-        CmsSelectWidgetOption option;
-        while (locales.hasNext()) {
-            locale = (Locale)locales.next();
-            option = new CmsSelectWidgetOption(locale.toString(), locale.equals(indexLocale));
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
+        for (Locale locale : m_searchManager.getAnalyzers().keySet()) {
+            CmsSelectWidgetOption option = new CmsSelectWidgetOption(
+                locale.toString(),
+                locale.equals(m_index.getLocale()));
             result.add(option);
         }
         return result;
     }
 
-    private List getProjectWidgetConfiguration() {
+    /**
+     * Returns the project widget configuration.<p>
+     * 
+     * @return the project widget configuration
+     */
+    private List<CmsSelectWidgetOption> getProjectWidgetConfiguration() {
 
-        List result = new ArrayList();
-        List projects;
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
         try {
-            projects = OpenCms.getOrgUnitManager().getAllManageableProjects(getCms(), "", true);
-            //projects.addAll(getCms().getAllHistoricalProjects());
+            List<CmsProject> projects = OpenCms.getOrgUnitManager().getAllManageableProjects(getCms(), "", true);
             projects.add(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
-            Iterator itProjects = projects.iterator();
-            String project = m_index.getProject();
-            String curProject;
-            CmsSelectWidgetOption option;
-            while (itProjects.hasNext()) {
-                curProject = ((CmsProject)itProjects.next()).getName();
-                option = new CmsSelectWidgetOption(curProject, curProject.equals(project));
+            for (CmsProject project : projects) {
+                CmsSelectWidgetOption option = new CmsSelectWidgetOption(project.getName(), project.equals(project));
                 result.add(option);
             }
         } catch (CmsException e) {
@@ -196,16 +190,18 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         return result;
     }
 
-    private List getRebuildModeWidgetConfiguration() {
+    /**
+     * Returns the rebuild mode widget configuration.<p>
+     * 
+     * @return the rebuild mode widget configuration
+     */
+    private List<CmsSelectWidgetOption> getRebuildModeWidgetConfiguration() {
 
-        List result = new ArrayList();
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
         String rebuildMode = m_index.getRebuildMode();
-        CmsSelectWidgetOption option = new CmsSelectWidgetOption("auto", "auto".equals(rebuildMode));
-        result.add(option);
-        option = new CmsSelectWidgetOption("manual", "manual".equals(rebuildMode));
-        result.add(option);
-        option = new CmsSelectWidgetOption("offline", "offline".equals(rebuildMode));
-        result.add(option);
+        result.add(new CmsSelectWidgetOption("auto", "auto".equals(rebuildMode)));
+        result.add(new CmsSelectWidgetOption("manual", "manual".equals(rebuildMode)));
+        result.add(new CmsSelectWidgetOption("offline", "offline".equals(rebuildMode)));
         return result;
     }
 

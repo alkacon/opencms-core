@@ -30,7 +30,7 @@ package org.opencms.search;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
@@ -150,7 +150,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // search in the default fields (does not contain one result from a "NavText" property)
         System.out.println("\n\nResults found searching in standard index fields:");
-        searchBean.setField(CmsSearchIndex.DOC_META_FIELDS);
+        searchBean.setField(CmsLuceneIndex.DOC_META_FIELDS);
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
         TestCmsSearch.printResults(searchResult, cms);
@@ -186,7 +186,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         assertEquals(7, searchResult.size());
 
         // now also require that "article" is part of the Title
-        searchBean.addFieldQueryMust(CmsSearchField.FIELD_TITLE_UNSTORED, "article");
+        searchBean.addFieldQueryMust(I_CmsSearchField.FIELD_TITLE_UNSTORED, "article");
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
         System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field:");
@@ -194,7 +194,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         assertEquals(4, searchResult.size());
 
         // now also require that "SearchEgg1" is part of the Title
-        searchBean.addFieldQueryMust(CmsSearchField.FIELD_TITLE_UNSTORED, "SearchEgg1");
+        searchBean.addFieldQueryMust(I_CmsSearchField.FIELD_TITLE_UNSTORED, "SearchEgg1");
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
         System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field again:");
@@ -212,7 +212,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         searchBean.addFieldQueryMust("special", "Cologne");
 
         // now also require that "article" is part of the Title
-        searchBean.addFieldQueryMustNot(CmsSearchField.FIELD_TITLE_UNSTORED, "article");
+        searchBean.addFieldQueryMustNot(I_CmsSearchField.FIELD_TITLE_UNSTORED, "article");
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
         System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field with NOT option:");
@@ -248,7 +248,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         assertEquals(7, searchResult.size());
 
         // now also require that "SearchEgg1" is part of the Title
-        searchBean.addFieldQueryShould(CmsSearchField.FIELD_TITLE_UNSTORED, "SearchEgg1");
+        searchBean.addFieldQueryShould(I_CmsSearchField.FIELD_TITLE_UNSTORED, "SearchEgg1");
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
         System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field again:");
@@ -276,20 +276,20 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // search for "article" or "opencms" in the "title" field, or "opencms" in the content field
         searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
+            I_CmsSearchField.FIELD_TITLE_UNSTORED,
             Occur.SHOULD,
             Arrays.asList("article", "opencms"),
             Occur.SHOULD));
-        searchBean.addFieldQueryShould(CmsSearchField.FIELD_CONTENT, "opencms");
+        searchBean.addFieldQueryShould(I_CmsSearchField.FIELD_CONTENT, "opencms");
         // extend the search to make the query more complex
         searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
+            I_CmsSearchField.FIELD_TITLE_UNSTORED,
             Occur.MUST,
             Arrays.asList("article", "page*", "index", "alkacon"),
             Occur.SHOULD));
         // extend the search to make the query more complex
         searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
+            I_CmsSearchField.FIELD_TITLE_UNSTORED,
             Occur.MUST_NOT,
             Arrays.asList("subfolder", "page1"),
             Occur.SHOULD));
@@ -473,7 +473,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // now also require that "article" is part of the content
         // this is required because "special" is not in the excerpt
-        searchBean.addFieldQueryMust(CmsSearchField.FIELD_CONTENT, "article");
+        searchBean.addFieldQueryMust(I_CmsSearchField.FIELD_CONTENT, "article");
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
         System.out.println("\n\nResults found with field query searching in 'special' and 'Content' index field:");

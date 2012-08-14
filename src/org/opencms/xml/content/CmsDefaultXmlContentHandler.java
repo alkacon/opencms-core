@@ -53,6 +53,11 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMappingType;
+import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.solr.CmsSolrField;
+import org.opencms.search.solr.CmsSolrFieldMapping;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
@@ -110,11 +115,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "appinfo" element name itself. */
     public static final String APPINFO_APPINFO = "appinfo";
 
+    /** Constant for the "boost" appinfo attribute name. */
+    public static final String APPINFO_ATTR_BOOST = "boost";
+
+    /** Constant for the "class" appinfo attribute name. */
+    public static final String APPINFO_ATTR_CLASS = "class";
+
     /** Constant for the "collapse" appinfo attribute name. */
     public static final String APPINFO_ATTR_COLLAPSE = "collapse";
 
     /** Constant for the "configuration" appinfo attribute name. */
     public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
+
+    /** Constant for the "copyfields" appinfo attribute name. */
+    public static final String APPINFO_ATTR_COPY_FIELDS = "copyfields";
 
     /** Constant for the "default" appinfo attribute name. */
     public static final String APPINFO_ATTR_DEFAULT = "default";
@@ -136,6 +150,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "locale" appinfo attribute name. */
     public static final String APPINFO_ATTR_LOCALE = "locale";
+
+    /** Constant for the "mapping" appinfo attribute name. */
+    public static final String APPINFO_ATTR_MAPPING = "mapping";
 
     /** Constant for the "mapto" appinfo attribute name. */
     public static final String APPINFO_ATTR_MAPTO = "mapto";
@@ -172,6 +189,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "select-inherit" appinfo attribute name. */
     public static final String APPINFO_ATTR_SELECT_INHERIT = "select-inherit";
+
+    /** Constant for the "sourcefield" appinfo attribute name. */
+    public static final String APPINFO_ATTR_SOURCE_FIELD = "sourcefield";
+
+    /** Constant for the "targetfield" appinfo attribute name. */
+    public static final String APPINFO_ATTR_TARGET_FIELD = "targetfield";
 
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
@@ -292,6 +315,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "settings" appinfo element name. */
     public static final String APPINFO_SETTINGS = "settings";
 
+    /** Constant for the "solrfield" appinfo element name. */
+    public static final String APPINFO_SOLR_FIELD = "solrfield";
+
     /** Constant for the "tab" appinfo element name. */
     public static final String APPINFO_TAB = "tab";
 
@@ -381,6 +407,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The configured settings for the formatters (as defined in the annotations). */
     protected Map<String, CmsXmlContentProperty> m_settings;
+
+    /** The Solr field configurations. */
+    protected Map<String, CmsSolrField> m_solrFields;
 
     /** The configured tabs. */
     protected List<CmsXmlContentTab> m_tabs;
@@ -653,6 +682,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource) {
 
         return Collections.unmodifiableMap(m_settings);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSolrField(org.opencms.xml.types.I_CmsXmlContentValue)
+     */
+    public CmsSolrField getSolrField(I_CmsXmlContentValue value) {
+
+        String schemaPath = CmsXmlUtils.removeXpath(value.getPath());
+        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(schemaPath, value.getLocale());
+        return m_solrFields.get(key);
     }
 
     /**
@@ -1456,6 +1495,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * Adds a Solr field for an element.<p>
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to map
+     * @param field the Solr field
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addSolrField(CmsXmlContentDefinition contentDefinition, String elementName, CmsSolrField field)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
+                Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
+                elementName));
+
+        }
+        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, field.getLocale());
+        m_solrFields.put(key, field);
+    }
+
+    /**
      * Adds a validation rule for a specified element.<p> 
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
@@ -1676,6 +1737,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
         m_titleMappings = new ArrayList<String>(2);
         m_formatters = new ArrayList<CmsFormatterBean>();
+        m_solrFields = new HashMap<String, CmsSolrField>();
     }
 
     /**
@@ -2034,15 +2096,67 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(root, APPINFO_SEARCHSETTING);
         while (i.hasNext()) {
-            // iterate all "searchsetting" elements in the "searchsettings" node
             Element element = i.next();
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String searchContent = element.attributeValue(APPINFO_ATTR_SEARCHCONTENT);
-            boolean include = CmsStringUtil.isEmpty(searchContent) || Boolean.valueOf(searchContent).booleanValue();
+            boolean include = (CmsStringUtil.isEmpty(searchContent)) || (Boolean.valueOf(searchContent).booleanValue());
             if (elementName != null) {
-                // add search exclusion for the element
-                // this may also be "false" in case a default of "true" is to be overwritten
                 addSearchSetting(contentDefinition, elementName, Boolean.valueOf(include));
+            }
+            Iterator<Element> it = CmsXmlGenericWrapper.elementIterator(element, APPINFO_SOLR_FIELD);
+            Element solrElement;
+            while (it.hasNext()) {
+                solrElement = it.next();
+                String localeNames = solrElement.attributeValue(APPINFO_ATTR_LOCALE);
+                List<Locale> locales = OpenCms.getLocaleManager().getAvailableLocales(localeNames);
+                if ((locales == null) || locales.isEmpty()) {
+                    locales = OpenCms.getLocaleManager().getAvailableLocales();
+                }
+                for (Locale locale : locales) {
+                    String sourceField = "*_" + locale.getLanguage();
+                    String targetField = solrElement.attributeValue(APPINFO_ATTR_TARGET_FIELD);
+                    String copyFieldNames = solrElement.attributeValue(APPINFO_ATTR_COPY_FIELDS, "");
+                    List<String> copyFields = CmsStringUtil.splitAsList(copyFieldNames, ',');
+                    String defaultValue = solrElement.attributeValue(APPINFO_ATTR_DEFAULT);
+                    String defaultBoost = String.valueOf(I_CmsSearchField.BOOST_DEFAULT);
+                    float boost = Float.valueOf(solrElement.attributeValue(APPINFO_ATTR_BOOST, defaultBoost)).floatValue();
+                    CmsSolrField field = new CmsSolrField(
+                        sourceField,
+                        targetField,
+                        copyFields,
+                        locale,
+                        defaultValue,
+                        boost);
+
+                    // create a mapping for the element itself
+                    CmsSolrFieldMapping mapping = new CmsSolrFieldMapping(CmsSearchFieldMappingType.ITEM, elementName);
+                    field.addMapping(mapping);
+
+                    Iterator<Element> ite = CmsXmlGenericWrapper.elementIterator(solrElement, APPINFO_ATTR_MAPPING);
+                    while (ite.hasNext()) {
+                        Element mappingElement = ite.next();
+
+                        String mappingClass = mappingElement.attributeValue(APPINFO_ATTR_CLASS);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mappingClass)) {
+                            try {
+                                Object object = Class.forName(mappingClass);
+                                mapping = (CmsSolrFieldMapping)object;
+                            } catch (ClassNotFoundException e) {
+                                throw new CmsXmlException(Messages.get().container(
+                                    Messages.ERR_XML_SCHEMA_MAPPING_CLASS_NOT_EXIST_3,
+                                    mappingClass,
+                                    contentDefinition.getTypeName(),
+                                    contentDefinition.getSchemaLocation()));
+                            }
+                        }
+                        String typeAsString = mappingElement.attributeValue(APPINFO_ATTR_TYPE);
+                        CmsSearchFieldMappingType type = CmsSearchFieldMappingType.valueOf(typeAsString);
+                        mapping = new CmsSolrFieldMapping(type, mappingElement.getStringValue());
+                        mapping.setDefaultValue(mappingElement.attributeValue(APPINFO_ATTR_DEFAULT));
+                        field.addMapping(mapping);
+                    }
+                    addSolrField(contentDefinition, elementName, field);
+                }
             }
         }
     }

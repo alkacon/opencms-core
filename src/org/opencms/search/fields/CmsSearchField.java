@@ -30,87 +30,15 @@ package org.opencms.search.fields;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
 
 /**
  * An individual field configuration in a search index.<p>
  * 
  * @since 7.0.0 
  */
-public class CmsSearchField {
-
-    /** Th default boost factor (1.0), used in case no boost has been set for a field. */
-    public static final float BOOST_DEFAULT = 1.0f;
-
-    /** Name of the field that contains the (optional) category of the document (hardcoded). */
-    public static final String FIELD_CATEGORY = "category";
-
-    /** Name of the field that usually contains the complete content of the document (optional). */
-    public static final String FIELD_CONTENT = "content";
-
-    /** Name of the field that contains the complete extracted content of the document as serialized object (hardcoded). */
-    public static final String FIELD_CONTENT_BLOB = "contentblob";
-
-    /** Name of the field that contains the document content date (hardcoded). */
-    public static final String FIELD_DATE_CONTENT = "contentdate";
-
-    /** Name of the field that contains the document creation date (hardcoded). */
-    public static final String FIELD_DATE_CREATED = "created";
-
-    /** Name of the field that contains the document creation date for fast lookup (hardcoded). */
-    public static final String FIELD_DATE_CREATED_LOOKUP = "created_lookup";
-
-    /** Name of the field that contains the document last modification date (hardcoded). */
-    public static final String FIELD_DATE_LASTMODIFIED = "lastmodified";
-
-    /** Name of the field that contains the document last modification date for fast lookup (hardcoded). */
-    public static final String FIELD_DATE_LASTMODIFIED_LOOKUP = "lastmodified_lookup";
-
-    /** Name of the field that usually contains the value of the "Description" property of the document (optional). */
-    public static final String FIELD_DESCRIPTION = "description";
-
-    /** Name of the field that usually contains the value of the "Keywords" property of the document (optional). */
-    public static final String FIELD_KEYWORDS = "keywords";
-
-    /** 
-     * Name of the field that usually combines all document "meta" information, 
-     * that is the values of the "Title", "Keywords" and "Description" properties (optional).
-     */
-    public static final String FIELD_META = "meta";
-
-    /** Name of the field that contains all VFS parent folders of a document (hardcoded). */
-    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
-
-    /** Name of the field that contains the document root path in the VFS (hardcoded). */
-    public static final String FIELD_PATH = "path";
-
-    /** 
-     * Name of the field that contains the (optional) document priority, 
-     * which can be used to boost the document in the result list (hardcoded). 
-     */
-    public static final String FIELD_PRIORITY = "priority";
-
-    /** 
-     * Name of the field that usually contains the value of the "Title" property of the document 
-     * as a keyword used for sorting and also for retrieving the title text (optional).
-     * 
-     * Please note: This field should NOT be used for searching. Use {@link #FIELD_TITLE_UNSTORED} instead.<p>
-     */
-    public static final String FIELD_TITLE = "title-key";
-
-    /** 
-     * Name of the field that usually contains the value of the "Title" property of the document 
-     * in an analyzed form used for searching in the title (optional).
-     */
-    public static final String FIELD_TITLE_UNSTORED = "title";
-
-    /** Name of the field that contains the type of the document. */
-    public static final String FIELD_TYPE = "type";
+public class CmsSearchField extends A_CmsSearchField {
 
     /** Value of m_displayName if field should not be displayed. */
     public static final String IGNORE_DISPLAY_NAME = "-";
@@ -139,9 +67,6 @@ public class CmsSearchField {
     /** Indicates if the content of this field is compressed. */
     private boolean m_compressed;
 
-    /** A default value for the field in case the content does not provide the value. */
-    private String m_defaultValue;
-
     /** Indicates if this field should be displayed. */
     private boolean m_displayed;
 
@@ -157,12 +82,6 @@ public class CmsSearchField {
     /** Indicates if the content of this field should be indexed. */
     private boolean m_indexed;
 
-    /** The search field mappings. */
-    private List<CmsSearchFieldMapping> m_mappings;
-
-    /** The name of the field. */
-    private String m_name;
-
     /** Indicates if the content of this field should be stored. */
     private boolean m_stored;
 
@@ -174,8 +93,7 @@ public class CmsSearchField {
      */
     public CmsSearchField() {
 
-        m_mappings = new ArrayList<CmsSearchFieldMapping>();
-        m_boost = BOOST_DEFAULT;
+        super();
     }
 
     /**
@@ -206,7 +124,7 @@ public class CmsSearchField {
      * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
      * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
      * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
-     * @param analyzer the Lucene analyzer to use for this field
+     * @param analyzer the analyzer to use, see {@link #setAnalyzer(Analyzer)}
      * @param boost the boost factor for the field, see {@link #setBoost(float)}
      * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
@@ -222,17 +140,14 @@ public class CmsSearchField {
         float boost,
         String defaultValue) {
 
-        this();
+        super(name, defaultValue, boost);
         setDisplayName(displayName);
-        setName(name);
         setStored(isStored);
         setCompressed(isCompressed);
         setIndexed(isIndexed);
         setTokenized(isTokenized);
         setInExcerpt(isInExcerpt);
         setAnalyzer(analyzer);
-        setBoost(boost);
-        setDefaultValue(defaultValue);
     }
 
     /**
@@ -261,26 +176,7 @@ public class CmsSearchField {
     }
 
     /**
-     * Adds a new field mapping to the internal list of mappings.<p>
-     * 
-     * @param mapping the mapping to add
-     */
-    public void addMapping(CmsSearchFieldMapping mapping) {
-
-        m_mappings.add(mapping);
-    }
-
-    /**
-     * Creates a Lucene field from the configuration and the provided content.<p>
-     * 
-     * The configured name of the field as provided by {@link #getName()} is used.<p>
-     * 
-     * If no valid content is provided (that is the content is either <code>null</code> or 
-     * only whitespace), then no field is created and <code>null</code> is returned.<p>
-     * 
-     * @param content the content to create the field with
-     * 
-     * @return a Lucene field created from the configuration and the provided content
+     * @see org.opencms.search.fields.I_CmsSearchField#createField(java.lang.String)
      */
     public Field createField(String content) {
 
@@ -288,15 +184,7 @@ public class CmsSearchField {
     }
 
     /**
-     * Creates a Lucene field with the given name from the configuration and the provided content.<p>
-     * 
-     * If no valid content is provided (that is the content is either <code>null</code> or 
-     * only whitespace), then no field is created and <code>null</code> is returned.<p>
-     * 
-     * @param name the name of the field to create
-     * @param content the content to create the field with
-     * 
-     * @return a Lucene field with the given name from the configuration and the provided content
+     * @see org.opencms.search.fields.I_CmsSearchField#createField(java.lang.String, java.lang.String)
      */
     public Field createField(String name, String content) {
 
@@ -305,7 +193,7 @@ public class CmsSearchField {
         }
         if (content != null) {
 
-            Index index = Field.Index.NO;
+            Field.Index index = Field.Index.NO;
             if (isIndexed()) {
                 if (isTokenizedAndIndexed()) {
                     index = Field.Index.ANALYZED;
@@ -327,20 +215,6 @@ public class CmsSearchField {
     }
 
     /**
-     * Two fields are equal if the name of the Lucene field is equal.<p>
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-
-        if (obj instanceof CmsSearchField) {
-            return CmsStringUtil.isEqual(m_name, ((CmsSearchField)obj).m_name);
-        }
-        return false;
-    }
-
-    /**
      * Returns the analyzer used for this field.<p>
      *
      * @return the analyzer used for this field
@@ -348,20 +222,6 @@ public class CmsSearchField {
     public Analyzer getAnalyzer() {
 
         return m_analyzer;
-    }
-
-    /**
-     * Returns the boost factor of this field.<p>
-     *
-     * The boost factor is a Lucene function that controls the "importance" of a field in the 
-     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field 
-     * less important for the result ranking, a higher value will make it more important.<p>
-     *
-     * @return the boost factor of this field
-     */
-    public float getBoost() {
-
-        return m_boost;
     }
 
     /**
@@ -378,18 +238,6 @@ public class CmsSearchField {
     }
 
     /**
-     * Returns the default value to use if no content for this field was collected.<p>
-     *
-     * In case no default is configured, <code>null</code> is returned.<p>
-     *
-     * @return the default value to use if no content for this field was collected
-     */
-    public String getDefaultValue() {
-
-        return m_defaultValue;
-    }
-
-    /**
      * Returns the display name of the field.<p>
      * 
      * @return the display name of the field
@@ -400,7 +248,7 @@ public class CmsSearchField {
             return IGNORE_DISPLAY_NAME;
         }
         if (m_displayName == null) {
-            return m_name;
+            return getName();
         } else {
             return m_displayName;
         }
@@ -434,37 +282,6 @@ public class CmsSearchField {
         } else {
             return String.valueOf(isIndexed());
         }
-    }
-
-    /**
-     * Returns the mappings for this field.<p>
-     * 
-     * @return the mappings for this field
-     */
-    public List<CmsSearchFieldMapping> getMappings() {
-
-        return m_mappings;
-    }
-
-    /**
-     * Returns the name of this field in the Lucene search index.<p>
-     *
-     * @return the name of this field in the Lucene search index
-     */
-    public String getName() {
-
-        return m_name;
-    }
-
-    /**
-     * The hash code for a field is based only on the field name.<p>
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        return (m_name == null) ? 41 : m_name.hashCode();
     }
 
     /**
@@ -587,50 +404,14 @@ public class CmsSearchField {
      *
      * The parameter must be a name of a class the implements the Lucene {@link Analyzer} interface.
      *
-     * @param analyzer the analyzer class name to set
+     * @param analyzerName the analyzer class name to set
      * 
      * @throws Exception in case of problems creating the analyzer class instance
      */
-    public void setAnalyzer(String analyzer) throws Exception {
+    public void setAnalyzer(String analyzerName) throws Exception {
 
-        setAnalyzer(CmsSearchManager.getAnalyzer(analyzer));
-    }
-
-    /**
-     * Sets the boost factor for this field.<p>
-     *
-     * The boost factor is a Lucene function that controls the "importance" of a field in the 
-     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field 
-     * less important for the result ranking, a higher value will make it more important.<p>
-     * 
-     * <b>Use with caution:</b> You should only use this if you fully understand the concept behind 
-     * Lucene boost factors. Otherwise it is likley that your result rankings will be worse then with 
-     * the default values.<p>
-     *
-     * @param boost the boost factor to set
-     */
-    public void setBoost(float boost) {
-
-        if (boost < 0.0f) {
-            boost = 0.0f;
-        }
-        m_boost = boost;
-    }
-
-    /**
-     * Sets the boost factor for this field from a String value.<p>
-     * 
-     * @param boost the boost factor to set
-     * 
-     * @see #setBoost(float)
-     */
-    public void setBoost(String boost) {
-
-        try {
-            setBoost(Float.valueOf(boost).floatValue());
-        } catch (NumberFormatException e) {
-            // invalid number format, use default boost factor
-            setBoost(BOOST_DEFAULT);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(analyzerName)) {
+            setAnalyzer(CmsSearchManager.getAnalyzer(analyzerName));
         }
     }
 
@@ -659,20 +440,6 @@ public class CmsSearchField {
         m_compressed = compressed;
         if (compressed) {
             setStored(true);
-        }
-    }
-
-    /**
-     * Sets the default value to use if no content for this field was collected.<p>
-     *
-     * @param defaultValue the default value to set
-     */
-    public void setDefaultValue(String defaultValue) {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defaultValue)) {
-            m_defaultValue = defaultValue.trim();
-        } else {
-            m_defaultValue = null;
         }
     }
 
@@ -786,16 +553,6 @@ public class CmsSearchField {
     public void setInExcerpt(String excerpt) {
 
         setInExcerpt(Boolean.valueOf(String.valueOf(excerpt)).booleanValue());
-    }
-
-    /**
-     * Sets the name of this field in the Lucene search index.<p>
-     *
-     * @param name the name to set
-     */
-    public void setName(String name) {
-
-        m_name = name;
     }
 
     /**

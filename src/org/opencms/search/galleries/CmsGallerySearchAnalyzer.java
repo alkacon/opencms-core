@@ -27,7 +27,7 @@
 
 package org.opencms.search.galleries;
 
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsLuceneIndex;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -86,7 +86,7 @@ public class CmsGallerySearchAnalyzer extends StopwordAnalyzerBase {
             new BufferedReader(new InputStreamReader(
                 CmsGallerySearchAnalyzer.class.getResourceAsStream("stopwords_multilanguage.txt"))),
             "#",
-            CmsSearchIndex.LUCENE_VERSION));
+            CmsLuceneIndex.LUCENE_VERSION));
     }
 
     /**

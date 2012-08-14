@@ -39,12 +39,15 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsLuceneDocument;
+import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.CmsSearchException;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.Messages;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
+import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -69,7 +72,7 @@ import org.apache.lucene.search.TopDocs;
  * 
  * @since 8.0.0 
  */
-public class CmsGallerySearchIndex extends CmsSearchIndex {
+public class CmsGallerySearchIndex extends CmsLuceneIndex {
 
     /** The system galleries path. */
     public static final String FOLDER_SYSTEM_GALLERIES = "/system/galleries/";
@@ -128,18 +131,18 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
      * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link CmsGallerySearchFieldMapping#FIELD_RESOURCE_STRUCTURE_ID} as field to search in
      */
     @Deprecated
-    public Document getDocument(CmsUUID structureId) {
+    public I_CmsSearchDocument getDocument(CmsUUID structureId) {
 
         return getDocument(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID, structureId.toString());
     }
 
     /**
-     * @see org.opencms.search.CmsSearchIndex#getDocumentFactory(org.opencms.file.CmsResource)
+     * @see org.opencms.search.A_CmsSearchIndex#getDocumentFactory(org.opencms.file.CmsResource)
      */
     @Override
     public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
 
-        if ((res != null) && (m_sources != null)) {
+        if ((res != null) && (getSources() != null)) {
             // the result can only be null or the type configured for the resource
             if (CmsResourceTypeXmlContent.isXmlContent(res) || CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
                 return OpenCms.getSearchManager().getDocumentFactory(TYPE_XMLCONTENT_GALLERIES, null);
@@ -298,7 +301,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 fields = getLocaleExtendedFields(params.getFields(), locale);
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.                
                 for (String field : fields) {
-                    QueryParser p = new QueryParser(CmsSearchIndex.LUCENE_VERSION, field, getAnalyzer());
+                    QueryParser p = new QueryParser(CmsLuceneIndex.LUCENE_VERSION, field, getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getSearchWords()), BooleanClause.Occur.SHOULD);
                 }
                 fieldsQuery = searcher.rewrite(booleanFieldsQuery);
@@ -341,8 +344,9 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
-                        doc = searcher.doc(hits.scoreDocs[i].doc);
-                        if (hasReadPermission(searchCms, doc)) {
+                        doc = getSearcher().doc(hits.scoreDocs[i].doc);
+                        I_CmsSearchDocument searchDoc = new CmsLuceneDocument(doc);
+                        if (hasReadPermission(searchCms, searchDoc)) {
                             // user has read permission
                             if (cnt >= start) {
                                 // do not use the resource to obtain the raw content, read it from the lucene document!
@@ -561,10 +565,10 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         for (String fieldName : fields) {
             result.add(fieldName);
             if (locale != null) {
-                result.add(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, locale));
+                result.add(A_CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale));
             } else {
                 for (Locale l : OpenCms.getLocaleManager().getAvailableLocales()) {
-                    result.add(CmsGallerySearchFieldConfiguration.getLocaleExtendedName(fieldName, l));
+                    result.add(A_CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, l));
                 }
             }
         }

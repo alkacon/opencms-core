@@ -28,6 +28,7 @@
 package org.opencms.search;
 
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 
 import org.apache.lucene.index.FieldInvertState;
 import org.apache.lucene.search.DefaultSimilarity;
@@ -72,7 +73,7 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
     @Override
     public float computeNorm(String fieldName, FieldInvertState state) {
 
-        if (fieldName.equals(CmsSearchField.FIELD_CONTENT)) {
+        if (fieldName.equals(I_CmsSearchField.FIELD_CONTENT)) {
             final int numTerms = state.getLength() - state.getNumOverlap();
             // special length norm for content
             return (float)(3.0 / (Math.log(1000 + numTerms) / LOG10));

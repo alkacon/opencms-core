@@ -28,7 +28,7 @@
 package org.opencms.search;
 
 import org.opencms.main.CmsLog;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -163,7 +163,7 @@ public class CmsSearchCategoryCollector extends Collector {
         int rebasedId = m_docBase + id;
         try {
             Document doc = m_searcher.doc(rebasedId);
-            category = doc.get(CmsSearchField.FIELD_CATEGORY);
+            category = doc.get(I_CmsSearchField.FIELD_CATEGORY);
         } catch (IOException e) {
             // category will be null
             if (LOG.isDebugEnabled()) {

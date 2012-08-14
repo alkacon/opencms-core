@@ -76,7 +76,7 @@ public interface I_CmsIndexer {
      * 
      * @return a new instance of this indexer implementation
      */
-    I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, CmsSearchIndex index);
+    I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, A_CmsSearchIndex index);
 
     /**
      * Rebuilds the index for the given configured index source.<p>

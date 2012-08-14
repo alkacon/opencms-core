@@ -42,7 +42,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.Document;
 
 /**
  * An indexer indexing {@link CmsResource} based content from the OpenCms VFS.<p>
@@ -61,7 +60,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     protected CmsObject m_cms;
 
     /** The index. */
-    protected CmsSearchIndex m_index;
+    protected A_CmsSearchIndex m_index;
 
     /** The report. */
     protected I_CmsReport m_report;
@@ -110,7 +109,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      *     
      * @return the OpenCms search index updated by this indexer 
      */
-    public CmsSearchIndex getIndex() {
+    public A_CmsSearchIndex getIndex() {
 
         return m_index;
     }
@@ -152,9 +151,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex)
+     * @see org.opencms.search.I_CmsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.A_CmsSearchIndex)
      */
-    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, CmsSearchIndex index) {
+    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, A_CmsSearchIndex index) {
 
         CmsVfsIndexer indexer = new CmsVfsIndexer();
 
@@ -357,7 +356,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      * @param rootPath the root path of the resource to update
      * @param doc the new document for the resource
      */
-    protected void updateResource(I_CmsIndexWriter indexWriter, String rootPath, Document doc) {
+    protected void updateResource(I_CmsIndexWriter indexWriter, String rootPath, I_CmsSearchDocument doc) {
 
         try {
             indexWriter.updateDocument(rootPath, doc);

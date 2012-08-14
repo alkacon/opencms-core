@@ -49,6 +49,7 @@ import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -172,17 +173,18 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
         if (getParamListAction().equals(LIST_MACTION_REMOVE_DOCTYPE)) {
             // execute the delete multiaction
-            Iterator itItems = getSelectedItems().iterator();
+            Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             CmsListItem listItem;
             String doctype;
             CmsSearchIndexSource idxsrc = searchManager.getIndexSource(getParamIndexsource());
             while (itItems.hasNext()) {
-                listItem = (CmsListItem)itItems.next();
+                listItem = itItems.next();
                 doctype = (String)listItem.get(LIST_COLUMN_NAME);
                 idxsrc.removeDocumentType(doctype);
             }
@@ -195,6 +197,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
@@ -235,22 +238,23 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List items = getList().getAllContent();
-        Iterator itItems = items.iterator();
+        List<CmsListItem> items = getList().getAllContent();
+        Iterator<CmsListItem> itItems = items.iterator();
         CmsListItem item;
         if (detailId.equals(LIST_DETAIL_MIMETYPES)) {
             while (itItems.hasNext()) {
-                item = (CmsListItem)itItems.next();
+                item = itItems.next();
                 fillDetailMimetypes(item, detailId);
 
             }
         }
         if (detailId.equals(LIST_DETAIL_RESOURCETYPES)) {
             while (itItems.hasNext()) {
-                item = (CmsListItem)itItems.next();
+                item = itItems.next();
                 fillDetailResourceTypes(item, detailId);
 
             }
@@ -262,15 +266,16 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    @Override
+    protected List<CmsListItem> getListItems() {
 
-        List result = new ArrayList();
+        List<CmsListItem> result = new ArrayList<CmsListItem>();
         // get content
-        List doctypes = documentTypes();
-        Iterator itDoctypes = doctypes.iterator();
+        List<CmsSearchDocumentType> doctypes = documentTypes();
+        Iterator<CmsSearchDocumentType> itDoctypes = doctypes.iterator();
         CmsSearchDocumentType doctype;
         while (itDoctypes.hasNext()) {
-            doctype = (CmsSearchDocumentType)itDoctypes.next();
+            doctype = itDoctypes.next();
             CmsListItem item = getList().newItem(doctype.getName());
             item.set(LIST_COLUMN_NAME, doctype.getName());
             item.set(LIST_COLUMN_DOCCLASS, doctype.getClassName());
@@ -282,6 +287,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -293,6 +299,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -301,6 +308,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create dummy column for corporate design reasons
@@ -361,6 +369,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add document types of index source detail help
@@ -400,6 +409,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add add multi action
@@ -414,6 +424,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
@@ -446,21 +457,21 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
      * @return the systems configured document types that are assigned 
      *         to the current indexsource (those that may be removed)
      */
-    private List documentTypes() {
+    private List<CmsSearchDocumentType> documentTypes() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
         CmsSearchIndexSource indexsource = manager.getIndexSource(getParamIndexsource());
-        List result;
+        List<CmsSearchDocumentType> result;
         if (indexsource != null) {
-            List doctypeNames = indexsource.getDocumentTypes();
+            List<String> doctypeNames = indexsource.getDocumentTypes();
 
             // transform these mere names to real document types... 
-            result = new ArrayList(doctypeNames.size());
-            Iterator it = doctypeNames.iterator();
+            result = new ArrayList<CmsSearchDocumentType>(doctypeNames.size());
+            Iterator<String> it = doctypeNames.iterator();
             String doctypename = "";
             CmsSearchDocumentType doctype;
             while (it.hasNext()) {
-                doctypename = (String)it.next();
+                doctypename = it.next();
                 if (doctypename != null) {
                     doctype = manager.getDocumentTypeConfig(doctypename);
                     if (doctype != null) {
@@ -469,7 +480,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
                 }
             }
         } else {
-            result = new ArrayList(0);
+            result = Collections.emptyList();
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1, "indexsource"));
             }
@@ -494,7 +505,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
         CmsSearchDocumentType docType = searchManager.getDocumentTypeConfig(doctypeName);
 
         // output of mime types
-        Iterator itMimetypes = docType.getMimeTypes().iterator();
+        Iterator<String> itMimetypes = docType.getMimeTypes().iterator();
         html.append("<ul>\n");
         while (itMimetypes.hasNext()) {
             html.append("  <li>\n").append("  ").append(itMimetypes.next()).append("\n");
@@ -521,7 +532,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
         CmsSearchDocumentType docType = searchManager.getDocumentTypeConfig(doctypeName);
 
         // output of resource types
-        Iterator itResourcetypes = docType.getResourceTypes().iterator();
+        Iterator<String> itResourcetypes = docType.getResourceTypes().iterator();
         html.append("<ul>\n");
         while (itResourcetypes.hasNext()) {
             html.append("  <li>\n").append("  ").append(itResourcetypes.next()).append("\n");

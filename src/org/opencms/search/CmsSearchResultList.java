@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * A search result object returned as result of a search in
- * <code>{@link org.opencms.search.CmsSearchIndex}</code>.<p>
+ * <code>{@link org.opencms.search.CmsLuceneIndex}</code>.<p>
  * 
  * @since 6.0.0 
  */

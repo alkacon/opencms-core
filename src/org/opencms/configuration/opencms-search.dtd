@@ -7,6 +7,7 @@
 # In this node the global search options are configured.
 -->
 <!ELEMENT search (
+	solr?,
 	cache?,
 	directory,
 	timeout,
@@ -25,6 +26,20 @@
 <!ATTLIST search
 	class CDATA #IMPLIED
 >
+
+<!--
+# Configuration node for the Solr Server
+-->
+<!ELEMENT solr (
+	home?,
+	configfile?
+)>
+<!ATTLIST solr
+	enabled (true|false|TRUE|FALSE) #REQUIRED
+	serverUrl CDATA #IMPLIED
+>
+<!ELEMENT home (#PCDATA)>
+<!ELEMENT configfile (#PCDATA)>
 
 <!--
 # the size of the search result LFU map.

@@ -27,12 +27,10 @@
 	<table width='400'>
 		<tr><th>Name</th><th>Rebuild Mode</th><th>Project</th><th>Locale</th></tr>
 <%
-
-	List indexNames = searchManager.getIndexNames();
+    List indexNames = searchManager.getIndexNames();
 	for (int i = 0, n = indexNames.size(); i < n; i++) {
 		String indexName = (String)indexNames.get(i);
-		CmsSearchIndex index = searchManager.getIndex(indexName);
-
+		CmsLuceneIndex index = searchManager.getIndex(indexName);
 %>
 		<tr>
 			<td><%=index.getName()%></td>

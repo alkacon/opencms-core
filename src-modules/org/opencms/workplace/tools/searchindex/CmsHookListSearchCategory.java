@@ -73,10 +73,11 @@ import java.util.List;
  */
 public class CmsHookListSearchCategory extends CmsHookList {
 
+    /** The serial version UID. */
     private static final long serialVersionUID = 145986432425221213L;
 
     /** The snapshot (clone) of this list at "clear()" time. **/
-    private List m_backupCategories;
+    private List<Object> m_backupCategories;
 
     /**
      * @param peer the search parameters to modify upon category modifications.
@@ -91,7 +92,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @param c a collection with all values for this list
      */
-    public CmsHookListSearchCategory(CmsSearchParameters peer, Collection c) {
+    public CmsHookListSearchCategory(CmsSearchParameters peer, Collection<String> c) {
 
         super(peer, c);
 
@@ -102,6 +103,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onAdded(java.lang.Object, int, java.lang.Object)
      */
+    @Override
     protected void onAdded(Object peer, int index, Object element) {
 
         // nop
@@ -110,6 +112,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
     /**
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onAdded(java.lang.Object, java.lang.Object)
      */
+    @Override
     protected void onAdded(Object peer, Object added) {
 
         // nop
@@ -122,15 +125,17 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onClear(java.lang.Object)
      */
+    @Override
     protected void onClear(Object peer) {
 
-        m_backupCategories = new LinkedList(this);
+        m_backupCategories = new LinkedList<Object>(this);
     }
 
     /**
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onCleared(java.lang.Object)
      */
+    @Override
     protected void onCleared(Object peer) {
 
         // nop
@@ -147,10 +152,11 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onGetCall(java.lang.Object, int)
      */
+    @Override
     protected void onGetCall(Object peer, int index) {
 
         // zero categories are all (first condition)
-        if ((m_backupCategories.size() == 0 && size() != 0) || !(containsAll(m_backupCategories))) {
+        if (((m_backupCategories.size() == 0) && (size() != 0)) || !(containsAll(m_backupCategories))) {
             ((CmsSearchParameters)peer).setSearchPage(1);
         }
     }
@@ -158,6 +164,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
     /**
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onIteratorCall(java.lang.Object)
      */
+    @Override
     protected void onIteratorCall(Object peer) {
 
         // nop 
@@ -170,6 +177,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onRemoved(java.lang.Object, int)
      */
+    @Override
     protected void onRemoved(Object peer, int index) {
 
         ((CmsSearchParameters)peer).setSearchPage(1);

@@ -36,7 +36,6 @@ import org.opencms.report.I_CmsReport;
 import java.io.IOException;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.Document;
 
 /**
  * Implements the management of indexing threads.<p>
@@ -130,7 +129,7 @@ public class CmsIndexingThreadManager {
             // the thread finished normally
             m_returnedCounter++;
         }
-        Document doc = thread.getResult();
+        I_CmsSearchDocument doc = thread.getResult();
         if (doc != null) {
             // write the document to the index
             indexer.updateResource(writer, res.getRootPath(), doc);
@@ -140,10 +139,12 @@ public class CmsIndexingThreadManager {
                 writer.commit();
             } catch (IOException e) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
-                        indexer.getIndex().getName(),
-                        indexer.getIndex().getPath()), e);
+                    LOG.warn(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
+                            indexer.getIndex().getName(),
+                            indexer.getIndex().getPath()),
+                        e);
                 }
             }
         }

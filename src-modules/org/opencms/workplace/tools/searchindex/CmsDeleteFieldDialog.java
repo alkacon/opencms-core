@@ -24,7 +24,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
@@ -73,9 +73,10 @@ public class CmsDeleteFieldDialog extends A_CmsFieldDialog {
     /**
      * Commits the edited search index to the search manager.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
 
@@ -85,7 +86,9 @@ public class CmsDeleteFieldDialog extends A_CmsFieldDialog {
             // if we go back to /searchindex/singleindex (overview) the deleted searchindex is not 
             // there any more in the CmsSearchManager and CmsOverviewSearchIndex.getUserObject will 
             // find null -> defineWidgets will provide null as bean...
-            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex/fieldconfigurations/fieldconfiguration"));
+            setParamCloseLink(CmsToolManager.linkForToolPath(
+                getJsp(),
+                "/searchindex/fieldconfigurations/fieldconfiguration"));
 
         } catch (Throwable t) {
             errors.add(t);
@@ -102,6 +105,7 @@ public class CmsDeleteFieldDialog extends A_CmsFieldDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(512);
@@ -114,9 +118,7 @@ public class CmsDeleteFieldDialog extends A_CmsFieldDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_LIST_FIELD_ACTION_DELETE_NAME_0)));
             result.append(createWidgetTableStart());
-            result.append(key(
-                Messages.GUI_LIST_FIELD_ACTION_DELETE_CONF_1,
-                new Object[] {m_field.getName()}));
+            result.append(key(Messages.GUI_LIST_FIELD_ACTION_DELETE_CONF_1, new Object[] {m_field.getName()}));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }

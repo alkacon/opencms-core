@@ -76,16 +76,17 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
     /**
      * Commits the edited search index to the search manager.<p>
      */
+    @Override
     public void actionCommit() {
 
-        List errors = new ArrayList();
+        List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
             // forward to the rebuild report page 
-            Map params = new HashMap();
+            Map<String, String[]> params = new HashMap<String, String[]>();
             // rebuild report built for several indexes (comma-separated value string)
-            params.put(CmsRebuildReport.PARAM_INDEXES, m_index.getName());
-            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+            params.put(CmsRebuildReport.PARAM_INDEXES, new String[] {m_index.getName()});
+            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/rebuildreport", params);
 
         } catch (Throwable t) {
@@ -103,6 +104,7 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(512);

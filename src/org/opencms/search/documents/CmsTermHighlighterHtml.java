@@ -29,8 +29,9 @@ package org.opencms.search.documents;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -58,11 +59,11 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
     private static final int EXCERPT_REQUIRED_FRAGMENTS = 5;
 
     /**
-     * @see org.opencms.search.documents.I_CmsTermHighlighter#getExcerpt(org.apache.lucene.document.Document, org.opencms.search.CmsSearchIndex, org.opencms.search.CmsSearchParameters, org.apache.lucene.search.Query, org.apache.lucene.analysis.Analyzer)
+     * @see org.opencms.search.documents.I_CmsTermHighlighter#getExcerpt(org.apache.lucene.document.Document, org.opencms.search.CmsLuceneIndex, org.opencms.search.CmsSearchParameters, org.apache.lucene.search.Query, org.apache.lucene.analysis.Analyzer)
      */
     public String getExcerpt(
         Document doc,
-        CmsSearchIndex index,
+        CmsLuceneIndex index,
         CmsSearchParameters params,
         Query query,
         Analyzer analyzer) throws IOException, InvalidTokenOffsetsException {
@@ -71,7 +72,8 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
             return null;
         }
         Highlighter highlighter = null;
-        Iterator<String> excerptFieldNames = index.getFieldConfiguration().getExcerptFieldNames().iterator();
+        CmsSearchFieldConfiguration conf = (CmsSearchFieldConfiguration)index.getFieldConfiguration();
+        Iterator<String> excerptFieldNames = conf.getExcerptFieldNames().iterator();
         StringBuffer excerptBuffer = new StringBuffer();
         while (excerptFieldNames.hasNext()) {
             String fieldName = excerptFieldNames.next();

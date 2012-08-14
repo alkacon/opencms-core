@@ -169,6 +169,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlAddDEHelpSearchIndex());
 
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddADESearch());
+        m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddSolrSearch());
 
         // system
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceHandlers());

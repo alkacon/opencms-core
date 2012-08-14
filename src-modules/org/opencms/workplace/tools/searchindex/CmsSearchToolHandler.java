@@ -29,7 +29,9 @@ package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsRole;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsToolHandler;
 
 /**
@@ -46,6 +48,32 @@ public class CmsSearchToolHandler extends A_CmsToolHandler {
     public boolean isEnabled(CmsObject cms) {
 
         return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.workplace.CmsWorkplace)
+     */
+    @Override
+    public boolean isEnabled(CmsWorkplace wp) {
+
+        if (getPath().startsWith("/searchindex/singleindex/search")
+            && (getParameters(wp).get(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME) != null)
+            && (getParameters(wp).get(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME).length > 0)) {
+            String indexName = getParameters(wp).get(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME)[0];
+            if (!CmsSearchManager.isLuceneIndex(indexName)) {
+                return false;
+            }
+        }
+        return isEnabled(wp.getCms());
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
+     */
+    @Override
+    public boolean isVisible(CmsWorkplace wp) {
+
+        return isEnabled(wp);
     }
 
     /**

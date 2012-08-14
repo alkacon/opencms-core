@@ -31,7 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
@@ -181,7 +181,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         OpenCms.getSearchManager().rebuildAllIndexes(report);
 
         // make sure the ADE index actually exists
-        CmsSearchIndex adeIndex = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        A_CmsSearchIndex adeIndex = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         assertNotNull("Index for galleries not initialized", adeIndex);
         assertEquals("Index for galleries not of required class", CmsGallerySearchIndex.class, adeIndex.getClass());
     }

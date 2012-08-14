@@ -210,11 +210,11 @@ public class CmsSourceSearchThread extends A_CmsReportThread {
     /**
      * Locks the current resource.<p>
      * 
-     * @param cms the current CmsObject
+     * @param cms the current CmsObject 
      * @param cmsResource the resource to lock
      * @param report the report
      * 
-     * @return <code>true</code> if the resource could be locked
+     * @return <code>true</code> if the given resource was locked was successfully
      * 
      * @throws CmsException if some goes wrong
      */

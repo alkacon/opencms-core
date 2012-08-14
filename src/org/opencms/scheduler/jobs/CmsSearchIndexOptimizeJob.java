@@ -30,7 +30,7 @@ package org.opencms.scheduler.jobs;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.util.CmsStringUtil;
 
@@ -41,7 +41,7 @@ import java.util.Map;
  * A schedulable OpenCms job that optimizes the Lucene based search indexes at runtime.<p>
  * 
  * Only indexes which return <code>true</code> for  
- * {@link CmsSearchIndex#isUpdatedIncremental()} are being optimized.
+ * {@link A_CmsSearchIndex#isUpdatedIncremental()} are being optimized.
  * By default, all such indexes are optimized if this job is run.<p>
  * 
  * Job parameters:<p>
@@ -87,7 +87,7 @@ public class CmsSearchIndexOptimizeJob implements I_CmsScheduledJob {
             }
         }
 
-        for (CmsSearchIndex index : OpenCms.getSearchManager().getSearchIndexes()) {
+        for (A_CmsSearchIndex index : OpenCms.getSearchManager().getSearchIndexes()) {
             if (index.isUpdatedIncremental()) {
                 // only indexes that are updated incremental need to be optimized
 

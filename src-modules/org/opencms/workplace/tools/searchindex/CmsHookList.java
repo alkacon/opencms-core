@@ -55,7 +55,7 @@ import java.util.LinkedList;
  * 
  * @since 6.0.0
  */
-public abstract class CmsHookList extends LinkedList {
+public abstract class CmsHookList extends LinkedList<String> {
 
     /** Id for safe serialization. */
     private static final long serialVersionUID = 3606129489707495072L;
@@ -86,7 +86,7 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @param c a collection with all values for this list
      */
-    public CmsHookList(Object peer, Collection c) {
+    public CmsHookList(Object peer, Collection<String> c) {
 
         super(c);
         m_peer = peer;
@@ -96,7 +96,8 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.List#add(int, java.lang.Object)
      */
-    public void add(int index, Object element) {
+    @Override
+    public void add(int index, String element) {
 
         super.add(index, element);
         onAdded(m_peer, index, element);
@@ -107,7 +108,8 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.Collection#add(java.lang.Object)
      */
-    public boolean add(Object o) {
+    @Override
+    public boolean add(String o) {
 
         if (super.add(o)) {
             this.onAdded(m_peer, o);
@@ -120,6 +122,7 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.Collection#clear()
      */
+    @Override
     public void clear() {
 
         onClear(m_peer);
@@ -131,9 +134,10 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.List#get(int)
      */
-    public Object get(int index) {
+    @Override
+    public String get(int index) {
 
-        Object ret = super.get(index);
+        String ret = super.get(index);
         onGetCall(m_peer, index);
         return ret;
     }
@@ -142,9 +146,10 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.Collection#iterator()
      */
-    public Iterator iterator() {
+    @Override
+    public Iterator<String> iterator() {
 
-        Iterator it = super.iterator();
+        Iterator<String> it = super.iterator();
         onIteratorCall(m_peer);
         return it;
     }
@@ -153,9 +158,10 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.List#remove(int)
      */
-    public Object remove(int index) {
+    @Override
+    public String remove(int index) {
 
-        Object ret = null;
+        String ret = null;
         // get an IndexOutOfBoundsException just like list interfaces contract
         ret = super.remove(index);
         return ret;

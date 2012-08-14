@@ -29,8 +29,6 @@ package org.opencms.search;
 
 import java.io.IOException;
 
-import org.apache.lucene.document.Document;
-
 /**
  * Abstracts the index writer implementation for the most important index manipulation operations.
  * 
@@ -80,5 +78,5 @@ public interface I_CmsIndexWriter {
      * 
      * @throws IOException in case something goes wrong
      */
-    void updateDocument(String rootPath, Document document) throws IOException;
+    void updateDocument(String rootPath, I_CmsSearchDocument document) throws IOException;
 }

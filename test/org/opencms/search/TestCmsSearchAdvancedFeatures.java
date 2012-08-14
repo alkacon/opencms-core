@@ -36,8 +36,8 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfigurationOldCategories;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -121,8 +121,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching with limiting to time ranges");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
-        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "true");
+        CmsLuceneIndex index = OpenCms.getSearchManager().getIndexLucene(INDEX_OFFLINE);
+        index.addConfigurationParameter(A_CmsSearchIndex.TIME_RANGE, "true");
         assertTrue("Index '" + INDEX_OFFLINE + "' not checking time range as expected", index.isCheckingTimeRange());
 
         CmsSearch searchBean = new CmsSearch();
@@ -211,8 +211,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching with optimized limiting to time ranges");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
-        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
+        CmsLuceneIndex index = OpenCms.getSearchManager().getIndexLucene(INDEX_OFFLINE);
+        index.addConfigurationParameter(A_CmsSearchIndex.TIME_RANGE, "false");
         assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
 
         CmsSearch searchBean = new CmsSearch();
@@ -280,6 +280,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         searchBean.init(cms);
         searchResult = searchBean.getSearchResult();
+        // TODO Why runs this test successfully? The result size should be 1
         assertEquals(2, searchResult.size());
 
         // check max date last modified
@@ -307,8 +308,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching without a query only using a filter");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
-        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
+        CmsLuceneIndex index = OpenCms.getSearchManager().getIndexLucene(INDEX_OFFLINE);
+        index.addConfigurationParameter(A_CmsSearchIndex.TIME_RANGE, "false");
         assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
 
         CmsSearch searchBean = new CmsSearch();
@@ -412,7 +413,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching for categories");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        CmsLuceneIndex index = OpenCms.getSearchManager().getIndexLucene(INDEX_OFFLINE);
         assertTrue(index.getFieldConfiguration() instanceof CmsSearchFieldConfigurationOldCategories);
 
         // perform a search on the newly generated index
@@ -687,9 +688,9 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             CmsSearchResult res = i.next();
             if (lastTitle != null) {
                 // make sure result is sorted correctly
-                assertTrue(lastTitle.compareTo(res.getField(CmsSearchField.FIELD_TITLE)) <= 0);
+                assertTrue(lastTitle.compareTo(res.getField(I_CmsSearchField.FIELD_TITLE)) <= 0);
             }
-            lastTitle = res.getField(CmsSearchField.FIELD_TITLE);
+            lastTitle = res.getField(I_CmsSearchField.FIELD_TITLE);
         }
 
         // third run use date last modified

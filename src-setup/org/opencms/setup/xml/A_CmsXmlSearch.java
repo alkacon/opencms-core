@@ -31,10 +31,12 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.CmsVfsIndexer;
+import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
+import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.util.CmsStringUtil;
 
@@ -57,7 +59,11 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
      * @param fieldConf the field configuration
      * @param clazz the optional class attribute value
      */
-    public void createFieldConfig(Document document, String xpath, CmsSearchFieldConfiguration fieldConf, Class<?> clazz) {
+    public void createFieldConfig(
+        Document document,
+        String xpath,
+        A_CmsSearchFieldConfiguration fieldConf,
+        Class<?> clazz) {
 
         if (clazz != null) {
             CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, clazz.getName());
@@ -67,7 +73,8 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
             document,
             xpath + "/" + CmsSearchConfiguration.N_DESCRIPTION,
             fieldConf.getDescription());
-        for (CmsSearchField field : fieldConf.getFields()) {
+        for (I_CmsSearchField sField : fieldConf.getFields()) {
+            CmsSearchField field = (CmsSearchField)sField;
             String fieldPath = xpath
                 + "/"
                 + CmsSearchConfiguration.N_FIELDS
@@ -190,7 +197,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
             index = CmsStringUtil.FALSE;
         }
         CmsSetupXmlHelper.setValue(document, xpath + "/@" + CmsSearchConfiguration.A_INDEX, index);
-        if (field.getBoost() != CmsSearchField.BOOST_DEFAULT) {
+        if (field.getBoost() != I_CmsSearchField.BOOST_DEFAULT) {
             CmsSetupXmlHelper.setValue(
                 document,
                 xpath + "/@" + CmsSearchConfiguration.A_BOOST,
@@ -214,9 +221,9 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
         }
 
         // field mappings
-        Iterator<CmsSearchFieldMapping> mappings = field.getMappings().iterator();
+        Iterator<I_CmsSearchFieldMapping> mappings = field.getMappings().iterator();
         while (mappings.hasNext()) {
-            CmsSearchFieldMapping mapping = mappings.next();
+            CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)mappings.next();
             String mappingPath = xpath
                 + "/"
                 + CmsSearchConfiguration.N_MAPPING

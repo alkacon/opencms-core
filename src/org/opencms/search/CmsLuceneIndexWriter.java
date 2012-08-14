@@ -28,7 +28,7 @@
 package org.opencms.search;
 
 import org.opencms.main.CmsLog;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchField;
 
 import java.io.IOException;
 
@@ -49,7 +49,7 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     protected static final Log LOG = CmsLog.getLog(CmsLuceneIndexWriter.class);
 
     /** The OpenCms search index instance this writer to supposed to write to. */
-    private CmsSearchIndex m_index;
+    private CmsLuceneIndex m_index;
 
     /** The Lucene index writer to use. */
     private final IndexWriter m_indexWriter;
@@ -74,7 +74,7 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
      * @param indexWriter the standard Lucene IndexWriter to use as delegate
      * @param index the OpenCms search index instance this writer to supposed to write to
      */
-    public CmsLuceneIndexWriter(IndexWriter indexWriter, CmsSearchIndex index) {
+    public CmsLuceneIndexWriter(IndexWriter indexWriter, CmsLuceneIndex index) {
 
         m_indexWriter = indexWriter;
         m_index = index;
@@ -128,7 +128,7 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     public void deleteDocuments(String rootPath) throws IOException {
 
         // search for an exact match on the document root path
-        Term term = new Term(CmsSearchField.FIELD_PATH, rootPath);
+        Term term = new Term(I_CmsSearchField.FIELD_PATH, rootPath);
         if ((m_index != null) && LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_DOC_DELETE_3,
@@ -161,11 +161,11 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexWriter#updateDocument(java.lang.String, org.apache.lucene.document.Document)
+     * @see org.opencms.search.I_CmsIndexWriter#updateDocument(java.lang.String, org.opencms.search.I_CmsSearchDocument)
      */
-    public void updateDocument(String rootPath, Document document) throws IOException {
+    public void updateDocument(String rootPath, I_CmsSearchDocument document) throws IOException {
 
-        Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
+        Term pathTerm = new Term(I_CmsSearchField.FIELD_PATH, rootPath);
         if ((m_index != null) && LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_DOC_UPDATE_3,
@@ -173,6 +173,6 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
                 m_index.getName(),
                 m_index.getPath()));
         }
-        m_indexWriter.updateDocument(pathTerm, document);
+        m_indexWriter.updateDocument(pathTerm, (Document)document.getDocument());
     }
 }

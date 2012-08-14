@@ -40,8 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
@@ -393,17 +392,17 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         CmsProperty maxBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            CmsSearchFieldConfiguration.SEARCH_PRIORITY_MAX_VALUE,
+            I_CmsSearchDocument.SEARCH_PRIORITY_MAX_VALUE,
             null,
             true);
         CmsProperty highBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            CmsSearchFieldConfiguration.SEARCH_PRIORITY_HIGH_VALUE,
+            I_CmsSearchDocument.SEARCH_PRIORITY_HIGH_VALUE,
             null,
             true);
         CmsProperty lowBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            CmsSearchFieldConfiguration.SEARCH_PRIORITY_LOW_VALUE,
+            I_CmsSearchDocument.SEARCH_PRIORITY_LOW_VALUE,
             null,
             true);
 
@@ -473,7 +472,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         searchBean.setQuery(query);
         // ensure only meta information is searched
-        searchBean.setField(new String[] {CmsSearchField.FIELD_META});
+        searchBean.setField(new String[] {I_CmsSearchField.FIELD_META});
         searchResult = searchBean.getSearchResult();
         // since no resource has any description, no results should be found
         System.out.println("\n\n----- No results should be displayed below");
@@ -531,17 +530,17 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         CmsProperty maxBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            CmsSearchFieldConfiguration.SEARCH_PRIORITY_MAX_VALUE,
+            I_CmsSearchDocument.SEARCH_PRIORITY_MAX_VALUE,
             null,
             true);
         CmsProperty highBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            CmsSearchFieldConfiguration.SEARCH_PRIORITY_HIGH_VALUE,
+            I_CmsSearchDocument.SEARCH_PRIORITY_HIGH_VALUE,
             null,
             true);
         CmsProperty lowBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            CmsSearchFieldConfiguration.SEARCH_PRIORITY_LOW_VALUE,
+            I_CmsSearchDocument.SEARCH_PRIORITY_LOW_VALUE,
             null,
             true);
 
@@ -608,31 +607,31 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
             "org/opencms/search/extractors/test1.pdf",
             "/search/test1.pdf",
             CmsResourceTypeBinary.getStaticTypeId(),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
         importTestResource(
             cms,
             "org/opencms/search/extractors/test1.doc",
             "/search/test1.doc",
             CmsResourceTypeBinary.getStaticTypeId(),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
         importTestResource(
             cms,
             "org/opencms/search/extractors/test1.rtf",
             "/search/test1.rtf",
             CmsResourceTypeBinary.getStaticTypeId(),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
         importTestResource(
             cms,
             "org/opencms/search/extractors/test1.xls",
             "/search/test1.xls",
             CmsResourceTypeBinary.getStaticTypeId(),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
         importTestResource(
             cms,
             "org/opencms/search/extractors/test1.ppt",
             "/search/test1.ppt",
             CmsResourceTypeBinary.getStaticTypeId(),
-            Collections.EMPTY_LIST);
+            Collections.<CmsProperty> emptyList());
 
         // HTML page is encoded using UTF-8
         List<CmsProperty> properties = new ArrayList<CmsProperty>();

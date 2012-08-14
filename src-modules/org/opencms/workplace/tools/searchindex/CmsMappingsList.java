@@ -34,8 +34,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -48,6 +50,7 @@ import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -153,23 +156,24 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
         if (getParamListAction().equals(LIST_MACTION_DELETEMAPPING)) {
             // execute the delete multi action, first search for the field to edit
-            List fields = searchManager.getFieldConfiguration(m_paramFieldconfiguration).getFields();
-            Iterator itFields = fields.iterator();
+            List<I_CmsSearchField> fields = searchManager.getFieldConfiguration(m_paramFieldconfiguration).getFields();
+            Iterator<I_CmsSearchField> itFields = fields.iterator();
             while (itFields.hasNext()) {
                 CmsSearchField curField = (CmsSearchField)itFields.next();
                 if (curField.getName().equals(m_paramField)) {
                     // we found the field to edit
-                    List deleteMappings = new ArrayList();
-                    Iterator itItems = getSelectedItems().iterator();
+                    List<I_CmsSearchFieldMapping> deleteMappings = new ArrayList<I_CmsSearchFieldMapping>();
+                    Iterator<CmsListItem> itItems = getSelectedItems().iterator();
                     while (itItems.hasNext()) {
                         // iterate all selected mappings
-                        CmsListItem listItem = (CmsListItem)itItems.next();
-                        Iterator itMappings = curField.getMappings().iterator();
+                        CmsListItem listItem = itItems.next();
+                        Iterator<I_CmsSearchFieldMapping> itMappings = curField.getMappings().iterator();
                         while (itMappings.hasNext()) {
                             // iterate all field mappings 
                             CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
@@ -184,7 +188,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
                         }
                     }
                     // delete the marked mappings
-                    Iterator itMappings = deleteMappings.iterator();
+                    Iterator<I_CmsSearchFieldMapping> itMappings = deleteMappings.iterator();
                     while (itMappings.hasNext()) {
                         CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)itMappings.next();
                         searchManager.removeSearchFieldMapping(curField, mapping);
@@ -202,19 +206,20 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws ServletException, IOException {
 
         CmsListItem item = getSelectedItem();
-        Map params = new HashMap();
+        Map<String, String[]> params = new HashMap<String, String[]>();
         String action = getParamListAction();
 
-        params.put(A_CmsMappingDialog.PARAM_FIELD, m_paramField);
-        params.put(A_CmsMappingDialog.PARAM_FIELDCONFIGURATION, m_paramFieldconfiguration);
-        params.put(A_CmsMappingDialog.PARAM_TYPE, item.get(LIST_COLUMN_TYPE));
-        params.put(A_CmsMappingDialog.PARAM_PARAM, item.get(LIST_COLUMN_VALUE));
+        params.put(A_CmsMappingDialog.PARAM_FIELD, new String[] {m_paramField});
+        params.put(A_CmsMappingDialog.PARAM_FIELDCONFIGURATION, new String[] {m_paramFieldconfiguration});
+        params.put(A_CmsMappingDialog.PARAM_TYPE, new String[] {item.get(LIST_COLUMN_TYPE).toString()});
+        params.put(A_CmsMappingDialog.PARAM_PARAM, new String[] {item.get(LIST_COLUMN_VALUE).toString()});
 
-        params.put(PARAM_ACTION, DIALOG_INITIAL);
-        params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
+        params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
 
         if (action.equals(LIST_ACTION_EDIT)
             || action.equals(LIST_ACTION_EDITTYPE)
@@ -277,6 +282,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -285,12 +291,13 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() {
+    @Override
+    protected List<CmsListItem> getListItems() {
 
-        List result = new ArrayList();
+        List<CmsListItem> result = new ArrayList<CmsListItem>();
         // get content
-        List mappings = getMappings();
-        Iterator itMappings = mappings.iterator();
+        List<I_CmsSearchFieldMapping> mappings = getMappings();
+        Iterator<I_CmsSearchFieldMapping> itMappings = mappings.iterator();
         CmsSearchFieldMapping mapping;
         while (itMappings.hasNext()) {
             mapping = (CmsSearchFieldMapping)itMappings.next();
@@ -314,6 +321,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create dummy column for corporate design reasons
@@ -366,6 +374,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // empty
@@ -374,6 +383,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add add multi action
@@ -407,13 +417,13 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
      * 
      * @return the configured mappings of the current field
      */
-    private List getMappings() {
+    private List<I_CmsSearchFieldMapping> getMappings() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        CmsSearchFieldConfiguration fieldConfig = manager.getFieldConfiguration(getParamFieldconfiguration());
+        I_CmsSearchFieldConfiguration fieldConfig = manager.getFieldConfiguration(getParamFieldconfiguration());
         CmsSearchField field;
-        List result = null;
-        Iterator itFields;
+        List<I_CmsSearchFieldMapping> result = null;
+        Iterator<I_CmsSearchField> itFields;
         if (fieldConfig != null) {
             itFields = fieldConfig.getFields().iterator();
             while (itFields.hasNext()) {
@@ -423,7 +433,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
                 }
             }
         } else {
-            result = new ArrayList(0);
+            result = Collections.emptyList();
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,

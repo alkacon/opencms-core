@@ -80,6 +80,7 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -104,6 +105,7 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();
@@ -121,9 +123,14 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
     }
 
-    private List getIndexerClassWidgetConfiguration() {
+    /**
+     * Returns the indexer class widget configuration.<p>
+     * 
+     * @return the indexer class widget configuration
+     */
+    private List<CmsSelectWidgetOption> getIndexerClassWidgetConfiguration() {
 
-        List result = new ArrayList();
+        List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
         result.add(new CmsSelectWidgetOption(CmsVfsIndexer.class.getName(), true));
         return result;
     }

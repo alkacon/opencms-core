@@ -34,8 +34,9 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
@@ -54,7 +55,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.Document;
 
 /**
  * Lucene document factory class to extract index data from a resource 
@@ -84,7 +84,8 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
      * since the content of the included elements may change any time.
      */
     @Override
-    public Document createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException {
+    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    throws CmsException {
 
         // extract the content from the resource
         I_CmsExtractionResult content = null;
@@ -107,9 +108,9 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
     /**
      * Returns the raw text content of a VFS resource of type <code>CmsResourceTypeContainerPage</code>.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, A_CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
     throws CmsException {
 
         logContentExtraction(resource, index);
