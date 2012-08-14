@@ -27,48 +27,71 @@
 
 package org.opencms.setup.xml.v8;
 
-import org.opencms.configuration.CmsSearchConfiguration;
-import org.opencms.main.OpenCms;
 import org.opencms.setup.xml.A_CmsXmlSearch;
-import org.opencms.setup.xml.CmsXmlUpdateAction;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
 /**
- * Adds the gallery search nodes.<p>
+ * Adds the solr search node.<p>
  * 
  * @since 8.0.0
  */
 public class CmsXmlAddSolrSearch extends A_CmsXmlSearch {
 
     /**
-     * Action to add the gallery modules index source.<p>
+     * @see org.opencms.setup.xml.CmsXmlUpdateAction#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
      */
-    public static class CmsAddSolrIndexSourceAction extends CmsXmlUpdateAction {
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 
-        /**
-         * @see org.opencms.setup.xml.CmsXmlUpdateAction#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
-         */
-        @Override
-        public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
-
-            OpenCms.writeConfiguration(CmsSearchConfiguration.class);
-
-            Element node = (Element)doc.selectSingleNode("/opencms/search");
-
-            // TODO: Is not yet tested in "real life"
-            String solrComment = "To enable Solr search engine you have to create a Solr home directory\n"
-                + "        according to the OpenCms default distribution below your webapplications\n"
-                + "        WEB-INF folder\n\n"
-                + "    <solr enabled=\"true\"/>\n";
-            node.addComment(solrComment);
-            return true;
+        Element node = (Element)doc.selectSingleNode("/opencms/search");
+        if (node.selectSingleNode("solr") == null) {
+            String solrComment = "To enable Solr search engine you have to create a Solr home\n"
+                + "           directory according to the OpenCms standard distribution below\n"
+                + "           the WEB-INF directory of your OpenCms web application.";
+            try {
+                Element solrElement = createElementFromXml("<solr enabled=\"false\"></solr>");
+                solrElement.addComment(solrComment);
+                node.elements().add(0, solrElement);
+            } catch (DocumentException e) {
+                System.out.println("Could not add solr node");
+                return false;
+            }
         }
+        return true;
     }
 
+    /**
+     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
+     */
     public String getName() {
 
         return "Add the Solr configuration";
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    @Override
+    protected String getCommonPath() {
+
+        // /opencms/system/internationalization
+        return "/opencms/search";
+
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
+     */
+    @Override
+    protected List<String> getXPathsToUpdate() {
+
+        return Collections.singletonList("/opencms/search");
     }
 }
