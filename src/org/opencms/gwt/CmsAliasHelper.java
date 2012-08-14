@@ -79,7 +79,6 @@ public class CmsAliasHelper {
         String siteRoot = cms.getRequestContext().getSiteRoot();
         List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForSite(cms, siteRoot);
         StringWriter writer = new StringWriter();
-        @SuppressWarnings("resource")
         CSVWriter csvWriter = new CSVWriter(writer);
         StringBuffer resultBuffer = writer.getBuffer();
         for (CmsAlias alias : aliases) {
