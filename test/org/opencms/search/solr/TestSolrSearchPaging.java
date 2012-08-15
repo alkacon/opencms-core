@@ -1,8 +1,12 @@
 /*
+ * File   : $Source$
+ * Date   : $Date$
+ * Version: $Revision$
+ *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -27,45 +31,66 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Main test suite for the package <code>{@link org.opencms.search}</code>.<p>
+ * Tests the Solr paging.<p>
  * 
- * 
- * @since 6.0
+ * @since 8.5.0
  */
-public final class AllTests {
+public class TestSolrSearchPaging extends OpenCmsTestCase {
 
     /**
-     * Hide constructor to prevent generation of class instances.<p>
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
      */
-    private AllTests() {
+    public TestSolrSearchPaging(String arg0) {
 
-        // empty
+        super(arg0);
     }
 
     /**
-     * Returns the JUnit test suite for this package.<p>
+     * Test suite for this test class.<p>
      * 
-     * @return the JUnit test suite for this package
+     * @return the test suite
      */
     public static Test suite() {
 
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        // suite.addTest(new TestSuite(TestCmsSearchUtils.class));
-        suite.addTest(TestCmsSearch.suite());
-        //        suite.addTest(TestCmsSearchFields.suite());
-        //        suite.addTest(TestCmsSearchInDocuments.suite());
-        suite.addTest(TestCmsSearchAdvancedFeatures.suite());
-        //        suite.addTest(TestCmsSearchSpecialFeatures.suite());
-        //        suite.addTest(TestCmsSearchOffline.suite());
-        //$JUnit-END$
-        return suite;
+
+        TestSuite suite = new TestSuite();
+        suite.setName(TestSolrSearchPaging.class.getName());
+        suite.addTest(new TestSolrSearchPaging("testPaging"));
+
+        TestSetup wrapper = new TestSetup(suite) {
+
+            @Override
+            protected void setUp() {
+
+                setupOpenCms("simpletest", "/");
+            }
+
+            @Override
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+        };
+
+        return wrapper;
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testPaging() throws Throwable {
+
+        // TODO: implement
     }
 }

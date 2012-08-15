@@ -11,6 +11,12 @@ import java.util.List;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.CommonParams;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.core.SolrCore;
+import org.apache.solr.request.LocalSolrQueryRequest;
+import org.apache.solr.request.SolrQueryRequest;
+import org.apache.solr.response.SolrQueryResponse;
 
 /**
  * Encapsulates a list of 'OpenCms resource documents' ({@link CmsSearchResource}).<p>
@@ -24,6 +30,9 @@ import org.apache.solr.common.SolrDocumentList;
  * @since 8.5.0
  */
 public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
+
+    /** The name for the parameters key of the response header. */
+    private static final String HEADER_PARAMS_NAME = "params";
 
     /** The name of the key that is used for the result documents inside the Solr query response. */
     private static final String QUERY_RESPONSE_NAME = "response";
@@ -52,12 +61,22 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     /** The row count. */
     private Integer m_rows;
 
+    /** The Solr query request. */
+    private SolrQueryRequest m_solrQueryRequest;
+
+    /** The Solr query response. */
+    private SolrQueryResponse m_solrQueryResponse;
+
+    /** The start time, when the search query was executed. */
+    private long m_startTime;
+
     /** The count of visible documents. */
     private long m_visibleHitCount;
 
     /**
      * The public constructor.<p>
      * 
+     * @param core the Solr core 
      * @param query original Solr query
      * @param queryResponse original query response
      * @param resultDocuments original list of Solr documents
@@ -72,6 +91,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
      */
     @SuppressWarnings("unchecked")
     public CmsSolrResultList(
+        final SolrCore core,
         SolrQuery query,
         QueryResponse queryResponse,
         SolrDocumentList resultDocuments,
@@ -87,6 +107,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         super();
 
         Integer queryTime = new Integer(new Long(System.currentTimeMillis() - startTime).intValue());
+        m_startTime = startTime;
 
         m_rows = rows;
         m_end = end;
@@ -98,7 +119,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         m_resultDocuments = resultDocuments;
         m_resultDocuments.setStart(start);
         m_resultDocuments.setMaxScore(maxScore);
-        m_resultDocuments.setNumFound(queryResponse.getResults().getNumFound());
+        m_resultDocuments.setNumFound(visibleHitCount);
 
         m_queryResponse = queryResponse;
         m_queryResponse.getResponse().setVal(
@@ -109,6 +130,10 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
             queryTime);
 
         addAll(resourceDocumentList);
+
+        if (core != null) {
+            initSolrResponse(core);
+        }
     }
 
     /**
@@ -162,16 +187,6 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     }
 
     /**
-     * Returns the query response.<p>
-     *  
-     * @return the query response
-     */
-    public final QueryResponse getQueryResponse() {
-
-        return m_queryResponse;
-    }
-
-    /**
      * Returns the requested row count.<p>
      * 
      * @return the rows
@@ -198,7 +213,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
      */
     public long getStartTime() {
 
-        return m_resultDocuments.getStart();
+        return m_startTime;
     }
 
     /**
@@ -209,5 +224,50 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     public long getVisibleHitCount() {
 
         return m_visibleHitCount;
+    }
+
+    /**
+     * Returns the solrQueryRequest.<p>
+     *
+     * @return the solrQueryRequest
+     */
+    protected SolrQueryRequest getSolrQueryRequest() {
+
+        return m_solrQueryRequest;
+    }
+
+    /**
+     * Returns the solrQueryResponse.<p>
+     *
+     * @return the solrQueryResponse
+     */
+    protected SolrQueryResponse getSolrQueryResponse() {
+
+        return m_solrQueryResponse;
+    }
+
+    /**
+     * Initializes the Solr query response.<p>
+     * 
+     * @param core the core to use
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void initSolrResponse(final SolrCore core) {
+
+        // create and initialize the solr response
+        m_solrQueryResponse = new SolrQueryResponse();
+        m_solrQueryResponse.setAllValues(m_queryResponse.getResponse());
+        m_solrQueryResponse.setEndTime(m_queryResponse.getQTime());
+        int paramsIndex = m_queryResponse.getResponseHeader().indexOf(HEADER_PARAMS_NAME, 0);
+        Object o = m_queryResponse.getResponseHeader().getVal(paramsIndex);
+        if (o instanceof NamedList) {
+            NamedList header = (NamedList)o;
+            header.setVal(header.indexOf(CommonParams.ROWS, 0), m_rows);
+            header.setVal(header.indexOf(CommonParams.START, 0), getStart());
+        }
+
+        // create and initialize the solr request
+        m_solrQueryRequest = new LocalSolrQueryRequest(core, m_queryResponse.getResponseHeader());
+        m_solrQueryRequest.setParams(m_query);
     }
 }

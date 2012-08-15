@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="Articles" type="OpenCmsArticles"/>
+	
+	<xsd:complexType name="OpenCmsArticles">
+		<xsd:sequence>
+			<xsd:element name="Article" type="OpenCmsArticle" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsArticle">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Teaser" type="OpenCmsString" maxOccurs="5"/>
+			<xsd:element name="Text" type="OpenCmsHtml" />
+			<xsd:element name="Release" type="OpenCmsDateTime" />			
+			<xsd:element name="Author" type="OpenCmsString" />
+			<xsd:element name="Homepage" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2"/>
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundles>
+				<xmlbundle name="org.opencms.xml.content.test.article">			
+					<bundle locale="DE_de">
+						<resource key="from.xml">Lokalisierung im XML Schema</resource>
+					</bundle>
+				</xmlbundle>			
+			</resourcebundles>		
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Release" mapto="attribute:datereleased" />
+			</mappings>
+			<defaults>
+				<default element="Title" value="Default title value"/>
+				<default element="Teaser" value="Default teaser value"/>
+				<default element="Release" value="1114525380000"/>
+				<default element="Author" value="%(property.Description)"/>
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

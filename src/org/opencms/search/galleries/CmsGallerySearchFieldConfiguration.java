@@ -43,6 +43,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Fieldable;
+
 /**
  * Describes the search field configuration that is used by the gallery index.<p>
  * 
@@ -186,8 +189,8 @@ public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfigurat
 
             if (value != null) {
                 // localized content is available for this field
-                field.setName(getLocaleExtendedName(fieldName, locale));
-                document.addSearchField(field, value);
+                Fieldable fieldable = field.createField(getLocaleExtendedName(fieldName, locale), value);
+                ((Document)document.getDocument()).add(fieldable);
             }
         }
 

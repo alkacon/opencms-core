@@ -101,10 +101,6 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
                     new CmsSolrField("*" + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES, prop.getName()
                         + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES, null, null, null, I_CmsSearchField.BOOST_DEFAULT),
                     prop.getValue());
-                document.addSearchField(
-                    new CmsSolrField("*" + I_CmsSearchField.FIELD_DYNAMIC_EXACT, prop.getName()
-                        + I_CmsSearchField.FIELD_DYNAMIC_EXACT, null, null, null, I_CmsSearchField.BOOST_DEFAULT),
-                    prop.getValue());
             }
         }
         return document;
