@@ -282,6 +282,7 @@
  <uniqueKey>id</uniqueKey>
 
  <copyField source="path"      dest="path_hierarchy" />
+ <copyField source="*_prop"    dest="*_exact" />
  <copyField source="*_prop"    dest="text" />
  <copyField source="content"   dest="text" />
  <copyField source="category"  dest="text" />
