@@ -45,6 +45,9 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** The structured id of the resource. */
     private String m_clientId;
 
+    /** The formatted date of the last modification. */
+    private String m_dateLastModified;
+
     /** The result item description. */
     private String m_description;
 
@@ -62,6 +65,9 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /** The resource type name. */
     private String m_type;
+
+    /** The name of the user who last modified the resource. */
+    private String m_userLastModified;
 
     /**
      * Returns the structured id.<p>
@@ -104,6 +110,19 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     }
 
     /**
+     * @see org.opencms.gwt.shared.CmsListInfoBean#getSubTitle()
+     */
+    @Override
+    public String getSubTitle() {
+
+        String fieldSubTitle = super.getSubTitle();
+        if (fieldSubTitle != null) {
+            return fieldSubTitle;
+        }
+        return m_userLastModified + " / " + m_dateLastModified;
+    }
+
+    /**
      * Returns the resource type name.<p>
      *
      * @return the resource type name
@@ -111,6 +130,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public String getType() {
 
         return m_type;
+    }
+
+    /** 
+     * Gets the name of the user who last modified the resource.<p>
+     * 
+     * @return the name of the user who last modified the resource  
+     */
+    public String getUserLastModified() {
+
+        return m_userLastModified;
     }
 
     /**
@@ -154,6 +183,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     }
 
     /**
+     * Sets the formatted last modification date.<p>
+     * 
+     * @param formattedDate the formatted last modification date 
+     */
+    public void setDateLastModified(String formattedDate) {
+
+        m_dateLastModified = formattedDate;
+    }
+
+    /**
      * Sets the description.<p>
      * 
      * Also used as sub-title.<p>
@@ -162,7 +201,6 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
      */
     public void setDescription(String description) {
 
-        super.setSubTitle(description);
         m_description = description;
     }
 
@@ -223,5 +261,15 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public void setType(String type) {
 
         m_type = type;
+    }
+
+    /**
+     * Sets the name of the user who last modified the resource.<p>
+     * 
+     * @param userLastModified a user name 
+     */
+    public void setUserLastModified(String userLastModified) {
+
+        m_userLastModified = userLastModified;
     }
 }

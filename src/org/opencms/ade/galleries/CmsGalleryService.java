@@ -57,7 +57,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.A_CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
@@ -72,8 +72,10 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -547,82 +549,106 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsObject cms = getCmsObject();
         for (CmsGallerySearchResult sResult : searchResult) {
             try {
-                Locale wpLocale = getWorkplaceLocale();
-                CmsResultItemBean bean = new CmsResultItemBean();
-                if (sResult == presetResult) {
-                    bean.setPreset(true);
-                }
-                bean.setReleasedAndNotExpired(sResult.isReleaseAndNotExpired(cms));
-                String path = sResult.getPath();
-                path = cms.getRequestContext().removeSiteRoot(path);
-
-                // resource path as id
-                bean.setPath(path);
-                // title
-                bean.setTitle(CmsStringUtil.isEmptyOrWhitespaceOnly(sResult.getTitle())
-                ? CmsResource.getName(sResult.getPath())
-                : sResult.getTitle());
-                // resource type
-                bean.setType(sResult.getResourceType());
-                // structured id
-                bean.setClientId(sResult.getStructureId());
-                // set nice resource type name as subtitle
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getResourceType());
-                String resourceTypeDisplayName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName());
-                String description = sResult.getDescription();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(description)) {
-                    bean.setDescription(description);
-                    bean.addAdditionalInfo(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DESCRIPTION_0),
-                        description);
-                } else {
-                    bean.setDescription(resourceTypeDisplayName);
-                }
-                if (!type.getTypeName().equals(CmsResourceTypeImage.getStaticTypeName())) {
-                    bean.addAdditionalInfo(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0),
-                        resourceTypeDisplayName);
-                }
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
-                    bean.addAdditionalInfo(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
-                        sResult.getExcerpt(),
-                        CmsListInfoBean.CSS_CLASS_MULTI_LINE);
-                }
-                if (type instanceof CmsResourceTypeImage) {
-                    CmsProperty imageDimensionProp = cms.readPropertyObject(
-                        path,
-                        CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
-                        false);
-                    if (!imageDimensionProp.isNullProperty()) {
-                        String temp = imageDimensionProp.getValue();
-                        bean.addAdditionalInfo(
-                            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
-                            temp.substring(2).replace(",h:", " x "));
-                    }
-                }
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
-                    (sResult.getLength() / 1000) + " kb");
-                bean.addAdditionalInfo(
-                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_CHANGED_0),
-                    CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
-                if ((sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT)
-                    && !sResult.getDateExpired().equals(CmsSearchFieldMapping.getDefaultDateExpired())) {
-                    bean.addAdditionalInfo(
-                        Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0),
-                        CmsDateUtil.getDate(sResult.getDateExpired(), DateFormat.SHORT, getWorkplaceLocale()));
-                }
-                bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(
-                    path,
-                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
-                    cms)));
+                CmsResultItemBean bean = buildSingleSearchResultItem(cms, sResult, presetResult);
                 list.add(bean);
             } catch (Exception e) {
                 logError(e);
             }
         }
         return list;
+    }
+
+    /**
+     * Builds a single search result list item for the client from a server-side search result.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param sResult the server-side search result 
+     * @param presetResult the preselected result 
+     * 
+     * @return the client side search result item
+     *  
+     * @throws CmsLoaderException
+     * @throws CmsException
+     * @throws ParseException
+     */
+    private CmsResultItemBean buildSingleSearchResultItem(
+        CmsObject cms,
+        CmsGallerySearchResult sResult,
+        CmsGallerySearchResult presetResult) throws CmsLoaderException, CmsException, ParseException {
+
+        Locale wpLocale = getWorkplaceLocale();
+        CmsResultItemBean bean = new CmsResultItemBean();
+        if (sResult == presetResult) {
+            bean.setPreset(true);
+        }
+        bean.setReleasedAndNotExpired(sResult.isReleaseAndNotExpired(cms));
+        String path = sResult.getPath();
+        path = cms.getRequestContext().removeSiteRoot(path);
+
+        // resource path as id
+        bean.setPath(path);
+        // title
+        bean.setTitle(CmsStringUtil.isEmptyOrWhitespaceOnly(sResult.getTitle())
+        ? CmsResource.getName(sResult.getPath())
+        : sResult.getTitle());
+        // resource type
+        bean.setType(sResult.getResourceType());
+        // structured id
+        bean.setClientId(sResult.getStructureId());
+        // set nice resource type name as subtitle
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getResourceType());
+        String resourceTypeDisplayName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName());
+        String description = sResult.getDescription();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(description)) {
+            bean.setDescription(description);
+            bean.addAdditionalInfo(
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DESCRIPTION_0),
+                description);
+        } else {
+            bean.setDescription(resourceTypeDisplayName);
+        }
+        bean.setUserLastModified(sResult.getUserLastModified());
+        Date date = sResult.getDateLastModified();
+        String formattedDate = CmsDateUtil.getDateTime(date, DateFormat.MEDIUM, wpLocale);
+        bean.setDateLastModified(formattedDate);
+        if (!type.getTypeName().equals(CmsResourceTypeImage.getStaticTypeName())) {
+            bean.addAdditionalInfo(
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_RESOURCE_TYPE_0),
+                resourceTypeDisplayName);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sResult.getExcerpt())) {
+            bean.addAdditionalInfo(
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_EXCERPT_0),
+                sResult.getExcerpt(),
+                CmsListInfoBean.CSS_CLASS_MULTI_LINE);
+        }
+        if (type instanceof CmsResourceTypeImage) {
+            CmsProperty imageDimensionProp = cms.readPropertyObject(
+                path,
+                CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                false);
+            if (!imageDimensionProp.isNullProperty()) {
+                String temp = imageDimensionProp.getValue();
+                bean.addAdditionalInfo(
+                    Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
+                    temp.substring(2).replace(",h:", " x "));
+            }
+        }
+        bean.addAdditionalInfo(
+            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_SIZE_0),
+            (sResult.getLength() / 1000) + " kb");
+        bean.addAdditionalInfo(
+            Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_CHANGED_0),
+            CmsDateUtil.getDate(sResult.getDateLastModified(), DateFormat.SHORT, getWorkplaceLocale()));
+        if ((sResult.getDateExpired().getTime() != CmsResource.DATE_EXPIRED_DEFAULT)
+            && !sResult.getDateExpired().equals(A_CmsSearchFieldMapping.getDefaultDateExpired())) {
+            bean.addAdditionalInfo(
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0),
+                CmsDateUtil.getDate(sResult.getDateExpired(), DateFormat.SHORT, getWorkplaceLocale()));
+        }
+        bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+            cms)));
+        return bean;
     }
 
     /**
