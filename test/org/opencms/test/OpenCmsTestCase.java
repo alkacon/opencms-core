@@ -55,7 +55,7 @@ import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.relations.CmsRelation;
 import org.opencms.report.CmsShellReport;
-import org.opencms.search.solr.TestCmsSearch;
+import org.opencms.search.solr.AllSolrTests;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -769,11 +769,11 @@ public class OpenCmsTestCase extends TestCase {
         if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
-        path = getTestDataPath("WEB-INF/solr/" + TestCmsSearch.SOLR_OFFLINE + "/");
+        path = getTestDataPath("WEB-INF/solr/" + AllSolrTests.SOLR_OFFLINE + "/");
         if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
-        path = getTestDataPath("WEB-INF/solr/" + TestCmsSearch.INDEX_TEST + "/");
+        path = getTestDataPath("WEB-INF/solr/" + AllSolrTests.INDEX_TEST + "/");
         if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
             CmsFileUtil.purgeDirectory(new File(path));
         }

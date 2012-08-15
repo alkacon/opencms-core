@@ -67,14 +67,11 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.FastWriter;
-import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
-import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.BinaryQueryResponseWriter;
 import org.apache.solr.response.QueryResponseWriter;
@@ -92,9 +89,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
     /** The solr document type name for xml-contents. */
     public static final String TYPE_XMLCONTENT_SOLR = "xmlcontent-solr";
-
-    /** The name for the parameters key of the response header. */
-    private static final String HEADER_PARAMS_NAME = "params";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
@@ -409,8 +403,14 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                 }
             }
 
+            SolrCore core = null;
+            if (m_solr instanceof EmbeddedSolrServer) {
+                core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
+            }
+
             // create and return the result
             return new CmsSolrResultList(
+                core,
                 query,
                 queryResponse,
                 solrDocumentList,
@@ -485,34 +485,16 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * 
      * @throws Exception if there is no embedded server
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void writeResponse(ServletResponse response, CmsSolrResultList result) throws Exception {
 
         if (m_solr instanceof EmbeddedSolrServer) {
 
             SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-
-            SolrQueryResponse queryResponse = new SolrQueryResponse();
-            queryResponse.setAllValues(result.getQueryResponse().getResponse());
-            long executionTime = System.currentTimeMillis() - result.getStartTime();
-            long endTime = result.getStartTime() + executionTime;
-            queryResponse.setEndTime(endTime);
-
-            SolrQueryRequest queryRequest = new LocalSolrQueryRequest(core, queryResponse.getResponseHeader());
-            queryRequest.setParams(result.getQuery());
-
-            // CHECK: Maybe there might be a better solution to reconstruct the original requested rows
-            int paramsIndex = queryResponse.getResponseHeader().indexOf(HEADER_PARAMS_NAME, 0);
-            Object o = queryResponse.getResponseHeader().getVal(paramsIndex);
-            if (o instanceof NamedList) {
-                NamedList header = (NamedList)o;
-                header.setVal(header.indexOf(CommonParams.ROWS, 0), result.getRows());
-                header.setVal(header.indexOf(CommonParams.START, 0), result.getStart());
-            }
-
+            SolrQueryResponse queryResponse = result.getSolrQueryResponse();
+            SolrQueryRequest queryRequest = result.getSolrQueryRequest();
             QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
-            final String ct = responseWriter.getContentType(queryRequest, queryResponse);
 
+            final String ct = responseWriter.getContentType(queryRequest, queryResponse);
             if (null != ct) {
                 response.setContentType(ct);
             }
