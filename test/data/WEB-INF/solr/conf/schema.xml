@@ -247,6 +247,10 @@
    <field name="text_hu"             type="text_hu"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German  text fields -->
    <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German  text fields -->
 
+   <!-- For test cases only -->
+   <field name="test_text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
+   <field name="test_text_de"             type="text_de"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
+
    <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" />
 
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>

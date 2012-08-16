@@ -2508,7 +2508,7 @@
 		<file>
 			<source>sites/default/xmlcontent/article_0001.html</source>
 			<destination>sites/default/xmlcontent/article_0001.html</destination>
-			<type>plain</type>
+			<type>article</type>
 			<uuidstructure>84d12484-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
 			<datelastmodified>Mon, 18 Oct 2004 16:59:00 GMT</datelastmodified>
@@ -2528,7 +2528,7 @@
 		<file>
 			<source>sites/default/xmlcontent/article_0002.html</source>
 			<destination>sites/default/xmlcontent/article_0002.html</destination>
-			<type>plain</type>
+			<type>article</type>
 			<uuidstructure>84eb6346-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>00b9d277-113f-11d9-831f-b70b5b3477aa</uuidresource>
 			<datelastmodified>Tue, 19 Oct 2004 16:59:00 GMT</datelastmodified>
@@ -2548,7 +2548,7 @@
 		<file>
 			<source>sites/default/xmlcontent/article_0003.html</source>
 			<destination>sites/default/xmlcontent/article_0003.html</destination>
-			<type>plain</type>
+			<type>article</type>
 			<uuidstructure>84f01e38-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>beeee83b-113f-11d9-831f-b70b5b3477aa</uuidresource>
 			<datelastmodified>Wed, 20 Oct 2004 17:00:00 GMT</datelastmodified>
@@ -2568,7 +2568,7 @@
 		<file>
 			<source>sites/default/xmlcontent/article_0004.html</source>
 			<destination>sites/default/xmlcontent/article_0004.html</destination>
-			<type>plain</type>
+			<type>article</type>
 			<uuidstructure>8500e71a-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>f7c19c2b-1140-11d9-831f-b70b5b3477aa</uuidresource>
 			<datelastmodified>Thu, 21 Oct 2004 17:00:00 GMT</datelastmodified>

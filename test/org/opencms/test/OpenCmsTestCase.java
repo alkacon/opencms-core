@@ -55,6 +55,7 @@ import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.relations.CmsRelation;
 import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 import org.opencms.search.solr.AllSolrTests;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -3398,6 +3399,30 @@ public class OpenCmsTestCase extends TestCase {
 
         // return the initialized cms context Object
         return cms;
+    }
+
+    /**
+     * Imports a module (zipfile) from the default module directory, 
+     * creating a temporary project for this.<p>
+     *
+     * @param importFile the name of the import module located in the default module directory
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, I_CmsReport, CmsImportParameters)
+     */
+    protected void importModuleFromDefault(String importFile) throws Exception {
+
+        String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
+        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);
+
+        CmsImportParameters params = new CmsImportParameters(fileName, "/", true);
+
+        OpenCms.getImportExportManager().importData(
+            getCmsObject(),
+            new CmsShellReport(getCmsObject().getRequestContext().getLocale()),
+            params);
     }
 
     /**
