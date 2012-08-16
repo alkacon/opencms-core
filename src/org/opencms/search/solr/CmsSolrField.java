@@ -33,7 +33,6 @@ package org.opencms.search.solr;
 
 import org.opencms.main.OpenCms;
 import org.opencms.search.fields.A_CmsSearchField;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 
 import java.util.List;
 import java.util.Locale;
@@ -55,32 +54,21 @@ public class CmsSolrField extends A_CmsSearchField {
     /** The locale of this field. */
     private Locale m_locale;
 
-    /** The name of the field to use as prototype in order to create this field. */
-    private String m_sourceField;
-
-    /** The name of the field without locale postfix. */
+    /** The name of the field. */
     private String m_targetField;
 
     /**
      * Public constructor.<p>
      * 
-     * @param sourceField the source field name
      * @param targetField the target field name
      * @param copyFields the field names to copy this field's value to
      * @param locale the locale
      * @param defaultValue the default value
      * @param boost the boost factor
      */
-    public CmsSolrField(
-        String sourceField,
-        String targetField,
-        List<String> copyFields,
-        Locale locale,
-        String defaultValue,
-        float boost) {
+    public CmsSolrField(String targetField, List<String> copyFields, Locale locale, String defaultValue, float boost) {
 
-        super(A_CmsSearchFieldConfiguration.getLocaleExtendedName(targetField, locale), defaultValue, boost);
-        m_sourceField = sourceField;
+        super(targetField, defaultValue, boost);
         m_targetField = targetField;
         m_copyFields = copyFields;
         m_locale = locale;
@@ -99,21 +87,13 @@ public class CmsSolrField extends A_CmsSearchField {
      */
     public Fieldable createField(String name, String value) {
 
+        // TODO: write a test case
         Fieldable fieldable = null;
         IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
-        if (!schema.hasExplicitField(name)) {
-            for (SchemaField protoType : schema.getDynamicFieldPrototypes()) {
-                if (protoType.getName().equals(getSourceField())) {
-                    SchemaField schemaField = new SchemaField(protoType, name);
-                    schema.registerDynamicField(new SchemaField[] {schemaField});
-                    fieldable = schemaField.createField(value, getBoost());
-                }
-            }
-        }
-        if (getCopyFields() != null) {
-            for (String copyName : getCopyFields()) {
-                schema.registerCopyField(name, copyName);
-            }
+        SchemaField schemaField = schema.getField(name);
+        if (schemaField != null) {
+            createCopyFields(getCopyFields());
+            fieldable = schemaField.createField(value, getBoost());
         }
         return fieldable;
     }
@@ -136,16 +116,6 @@ public class CmsSolrField extends A_CmsSearchField {
     public Locale getLocale() {
 
         return m_locale;
-    }
-
-    /**
-     * Returns the source field name.<p>
-     * 
-     * @return the source field name
-     */
-    public String getSourceField() {
-
-        return m_sourceField;
     }
 
     /**
@@ -179,16 +149,6 @@ public class CmsSolrField extends A_CmsSearchField {
     }
 
     /**
-     * Sets the field name of the field to use as prototype.<p>
-     *  
-     * @param sourceField the field name to use as prototype
-     */
-    public void setSourceField(String sourceField) {
-
-        m_sourceField = sourceField;
-    }
-
-    /**
      * Sets the target field name
      * 
      * @param targetField the name to set
@@ -196,5 +156,20 @@ public class CmsSolrField extends A_CmsSearchField {
     public void setTargetField(String targetField) {
 
         m_targetField = targetField;
+    }
+
+    /**
+     * Creates the copy fields.<p>
+     * 
+     * @param copyFields the names of the target fields
+     */
+    private void createCopyFields(List<String> copyFields) {
+
+        IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
+        if ((copyFields != null) && !copyFields.isEmpty()) {
+            for (String copyName : copyFields) {
+                schema.registerCopyField(getName(), copyName);
+            }
+        }
     }
 }

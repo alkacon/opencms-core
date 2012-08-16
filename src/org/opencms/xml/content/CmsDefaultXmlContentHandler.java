@@ -2078,20 +2078,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     locales = OpenCms.getLocaleManager().getAvailableLocales();
                 }
                 for (Locale locale : locales) {
-                    String sourceField = "*_" + locale.getLanguage();
-                    String targetField = solrElement.attributeValue(APPINFO_ATTR_TARGET_FIELD);
+                    String targetField = solrElement.attributeValue(APPINFO_ATTR_TARGET_FIELD)
+                        + "_"
+                        + locale.toString();
+                    String sourceField = solrElement.attributeValue(APPINFO_ATTR_SOURCE_FIELD);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sourceField)) {
+                        int lastUnderScore = sourceField.lastIndexOf("_");
+                        if (lastUnderScore > 0) {
+                            sourceField = sourceField.substring(lastUnderScore);
+                        }
+                        targetField += sourceField;
+                    }
+
                     String copyFieldNames = solrElement.attributeValue(APPINFO_ATTR_COPY_FIELDS, "");
                     List<String> copyFields = CmsStringUtil.splitAsList(copyFieldNames, ',');
                     String defaultValue = solrElement.attributeValue(APPINFO_ATTR_DEFAULT);
                     String defaultBoost = String.valueOf(I_CmsSearchField.BOOST_DEFAULT);
                     float boost = Float.valueOf(solrElement.attributeValue(APPINFO_ATTR_BOOST, defaultBoost)).floatValue();
-                    CmsSolrField field = new CmsSolrField(
-                        sourceField,
-                        targetField,
-                        copyFields,
-                        locale,
-                        defaultValue,
-                        boost);
+                    CmsSolrField field = new CmsSolrField(targetField, copyFields, locale, defaultValue, boost);
 
                     // create a mapping for the element itself
                     CmsSolrFieldMapping mapping = new CmsSolrFieldMapping(CmsSearchFieldMappingType.ITEM, elementName);

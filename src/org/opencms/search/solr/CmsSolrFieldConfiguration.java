@@ -97,10 +97,12 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
 
         for (CmsProperty prop : properties) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
-                document.addSearchField(
-                    new CmsSolrField("*" + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES, prop.getName()
-                        + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES, null, null, null, I_CmsSearchField.BOOST_DEFAULT),
-                    prop.getValue());
+                document.addSearchField(new CmsSolrField(
+                    prop.getName() + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES,
+                    null,
+                    null,
+                    null,
+                    I_CmsSearchField.BOOST_DEFAULT), prop.getValue());
             }
         }
         return document;
@@ -159,8 +161,14 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
                             text.append('\n');
                         }
                         text.append(mapResult);
+                    } else {
+                        text.append(mapping.getDefaultValue());
                     }
                 }
+            }
+            if (text.length() <= 0) {
+                // TODO: write a test case
+                text.append(field.getDefaultValue());
             }
             if (text.length() > 0) {
                 document.addSearchField(field, text.toString());
@@ -239,13 +247,9 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
 
         // add the content_<locale> fields to this configuration
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
-            CmsSolrField solrField = new CmsSolrField(
-                I_CmsSearchField.FIELD_PREFIX_DYNAMIC + locale.getLanguage(),
+            CmsSolrField solrField = new CmsSolrField(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
                 I_CmsSearchField.FIELD_CONTENT,
-                null,
-                locale,
-                null,
-                I_CmsSearchField.BOOST_DEFAULT);
+                locale), null, locale, null, I_CmsSearchField.BOOST_DEFAULT);
             solrField.addMapping(new CmsSolrFieldMapping(
                 CmsSearchFieldMappingType.CONTENT,
                 I_CmsSearchField.FIELD_CONTENT));

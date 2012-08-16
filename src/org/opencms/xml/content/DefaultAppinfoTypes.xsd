@@ -128,8 +128,8 @@
 		<xsd:sequence>
 			<xsd:element name="mapping" type="OpenCmsDefaultAppinfoSolrFieldMapping" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
-		<xsd:attribute name="sourcefield" type="xsd:string" use="required" />
 		<xsd:attribute name="targetfield" type="xsd:string" use="required" />
+		<xsd:attribute name="sourcefield" type="xsd:string" use="optional" />
 		<xsd:attribute name="copyfields" type="xsd:string" use="optional" />
 		<xsd:attribute name="locale" type="xsd:string" use="optional" />
 		<xsd:attribute name="default" type="xsd:string" use="optional" />
