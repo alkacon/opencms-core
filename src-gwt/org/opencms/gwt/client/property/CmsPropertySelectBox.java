@@ -70,7 +70,11 @@ public class CmsPropertySelectBox extends CmsSelectBox {
                 cell.setText(unselected);
                 cell.setOpenerText(unselected);
             } else {
-                String ghostValueMessage = m_selectCells.get(m_ghostValue).getText();
+                CmsLabelSelectCell ghostCell = m_selectCells.get(m_ghostValue);
+                String ghostValueMessage = m_ghostValue;
+                if (ghostCell != null) {
+                    ghostValueMessage = ghostCell.getText();
+                }
                 String inheritMsg = Messages.get().key(Messages.GUI_SELECTBOX_INHERIT_1, ghostValueMessage);
                 cell.setText(inheritMsg);
                 cell.setOpenerText(ghostValueMessage);
