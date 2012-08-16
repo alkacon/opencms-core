@@ -63,6 +63,7 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsWaitHandle;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -282,6 +283,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         /** If true a manual update (after file upload) was triggered. */
         private boolean m_updateTriggered;
 
+        /** The wait handle used for signalling when the worker thread has finished. */
+        private CmsWaitHandle m_waitHandle = new CmsWaitHandle();
+
         /**
          * Constructor.<p>
          * 
@@ -291,6 +295,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             super("OpenCms: Offline Search Indexer");
             m_handler = handler;
+        }
+
+        /** 
+         * Gets the wait handle used for signalling when the worker thread has finished.
+         *  
+         * @return the wait handle 
+         **/
+        public CmsWaitHandle getWaitHandle() {
+
+            return m_waitHandle;
         }
 
         /**
@@ -475,6 +489,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         public void run() {
 
             updateIndexOffline(m_report, m_resourcesToIndex);
+            if (m_offlineIndexThread != null) {
+                m_offlineIndexThread.getWaitHandle().release();
+            }
         }
     }
 
@@ -1920,12 +1937,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
             m_offlineIndexThread.interrupt();
             if (waitTime > 0) {
-                try {
-                    Thread.sleep(waitTime);
-                } catch (InterruptedException e) {
-                    // clear interrupt status of the current Thread and continue
-                    Thread.interrupted();
-                }
+                m_offlineIndexThread.getWaitHandle().enter(waitTime);
             }
         }
     }
