@@ -31,6 +31,7 @@
 
 package org.opencms.search.solr;
 
+import org.apache.solr.common.SolrInputDocument;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -123,7 +124,7 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         fieldValue = res.getField("ahtml_de");
         assertNotNull(fieldValue);
 
-        // copy fields
+        // Test the contents of the copy fields
         fieldValue = res.getField("test_text_de");
         assertNotNull(fieldValue);
         assertEquals(true, fieldValue.contains("Alkacon Software German"));
@@ -146,9 +147,17 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         assertNotNull(dateValue);
         assertEquals(true, "1308210420000".equals(new Long(dateValue.getTime()).toString()));
 
-        // boost
+        // Test the boost is not available
+        // the boost for a field can only be set for "SolrInputDocument"s
+        // fields of documents that are returned as query result "SolrDocument"s
+        // never have a boost
+        float boost = ((SolrInputDocument) res.getDocument().getDocument()).getField("ahtml_en").getBoost();
+        assertEquals(true, 1.0F == boost);
 
         // test the 'content' mapping
+        fieldValue = res.getField("ateaser_en");
+        assertNotNull(fieldValue);
+        assertEquals(true, fieldValue.contains("OpenCms Alkacon This is the article 1 text"));
 
         // test the property mapping
         fieldValue = res.getField("atitle_en");
@@ -162,6 +171,9 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         assertEquals(true, fieldValue.contains(">>GermanSearchEgg1<<"));
 
         // test the 'property-search' mapping
+        fieldValue = res.getField("ateaser_en");
+        assertNotNull(fieldValue);
+        assertEquals(true, fieldValue.contains("Cologne is a nice city"));       
 
         // test the 'item' mapping with default
         fieldValue = res.getField("ateaser_en");
@@ -174,8 +186,17 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         // test the 'dynamic' mapping with 'class' attribute
 
         // test the 'attribute' mapping
+        fieldValue = res.getField("ateaser_en");
+        assertNotNull(fieldValue);
+        // This is the Lucene optimized String representaion of the date
+        assertEquals(true, fieldValue.contains("20110616074840000"));
 
-        // test 'default' value for mappings
+        // test 'default' value for the whole field
+        fieldValue = res.getField("ahomepage_de");
+        assertNotNull(fieldValue);
+        assertEquals(true, fieldValue.equals("Homepage n.a."));
+        fieldValue = res.getField("ahomepage_en");
+        assertEquals(true, fieldValue.contains("/sites/default/index.html"));
 
     }
 }

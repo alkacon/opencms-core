@@ -52,8 +52,10 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -112,6 +114,10 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
             Map<String, String> items = new HashMap<String, String>();
             StringBuffer locales = new StringBuffer();
             for (Locale locale : xmlContent.getLocales()) {
+            	
+            	List<Locale> otherLocales = new ArrayList<Locale>(xmlContent.getLocales());
+            	otherLocales.remove(locale);
+            	
                 // loop over the locales
                 locales.append(locale.toString());
                 locales.append(' ');
@@ -119,6 +125,15 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                 for (String xpath : xmlContent.getNames(locale)) {
                     // loop over the content items
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
+                    
+                    List<Locale> valuesNotAvailableInLocale = new ArrayList<Locale>();
+                    for (Locale oLocale : otherLocales) {
+                    	I_CmsXmlContentValue valueNA = xmlContent.getValue(xpath, oLocale);
+                    	if (valueNA == null) {
+                    		valuesNotAvailableInLocale.add(oLocale);
+                    	}
+                    }
+                    
                     String extracted = value.getPlainText(cms);
 
                     if (value.isSimpleType()) {
@@ -143,11 +158,11 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                             }
                         }
 
-                        // resolve the field mappings configured in the XSD of the content
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                            // put those items into the extraction result for that a field mapping done in the XSD
-                            CmsSolrField field = xmlContent.getHandler().getSolrField(value);
-                            if (field != null) {
+                        // put those items into the extraction result for that a field mapping done in the XSD
+                        CmsSolrField field = xmlContent.getHandler().getSolrField(value);
+                        if (field != null) {
+	                        // resolve the field mappings configured in the XSD of the content
+	                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
                                 // The key must be the same as the parameter value of the Solr field mapping defined in:
                                 // org.opencms.xml.content.CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
                                 // later during index process the values are retrieved in:
@@ -156,7 +171,16 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                                     CmsXmlUtils.removeXpath(xpath),
                                     locale), extracted);
                                 fields.add(field);
-                            }
+	                        }
+	                        for (Locale naLocale : valuesNotAvailableInLocale) {
+	                        	items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
+	                                    CmsXmlUtils.removeXpath(xpath),
+	                                    naLocale), null);
+	                        	int ind = field.getTargetField().lastIndexOf("_" + locale.toString());
+	                        	String newFieldName = A_CmsSearchFieldConfiguration.getLocaleExtendedName(field.getTargetField().substring(0, ind),naLocale) ;
+	                        	CmsSolrField naField = new CmsSolrField(newFieldName, field.getCopyFields(), naLocale, field.getDefaultValue(), field.getBoost());
+	                        	fields.add(naField);
+	                        }
                         }
                     }
                 }

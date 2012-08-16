@@ -46,10 +46,13 @@
 				<searchsetting element="Teaser">
 					<solrfield targetfield="ateaser">
 						<mapping type="item" default="Homepage n.a.">Homepage</mapping>
+						<mapping type="content">content</mapping>
+						<mapping type="property-search">search.special</mapping>
+						<mapping type="attribute">dateReleased</mapping>
 					</solrfield>
 				</searchsetting>
 				<searchsetting element="Text" searchcontent="true">
-					<solrfield targetfield="ahtml" />
+					<solrfield targetfield="ahtml" boost="2.0"/>
 				</searchsetting>
 				<searchsetting element="Release" searchcontent="false">
 					<solrfield targetfield="arelease" sourcefield="*_dt" />
@@ -58,7 +61,7 @@
 					<solrfield targetfield="aauthor" locale="de" copyfields="test_text_de,test_text_en" />
 				</searchsetting>
 				<searchsetting element="Homepage" searchcontent="true">
-					<solrfield targetfield="ahomepage"  />
+					<solrfield targetfield="ahomepage" default="Homepage n.a." />
 				</searchsetting>
 			</searchsettings>
 			<defaults>

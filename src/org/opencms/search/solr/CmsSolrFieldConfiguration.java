@@ -162,7 +162,7 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
                         }
                         text.append(mapResult);
                     } else {
-                        text.append(mapping.getDefaultValue());
+                        text.append("\n" + mapping.getDefaultValue());
                     }
                 }
             }
