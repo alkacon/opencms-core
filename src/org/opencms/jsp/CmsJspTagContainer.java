@@ -832,8 +832,10 @@ public class CmsJspTagContainer extends TagSupport {
         int containerWidth = getContainerWidth();
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         element.initResource(cms);
-        // writing elements to the session cache to improve performance of the container-page editor
-        getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
+        // writing elements to the session cache to improve performance of the container-page editor in offline project
+        if (!isOnline) {
+            getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
+        }
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
             cms,
             cms.getRequestContext().getRootUri());
@@ -853,7 +855,9 @@ public class CmsJspTagContainer extends TagSupport {
                 try {
                     subelement.initResource(cms);
                     // writing elements to the session cache to improve performance of the container-page editor
-                    getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
+                    if (!isOnline) {
+                        getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
+                    }
                     CmsFormatterConfiguration subelementFormatters = adeConfig.getFormatters(
                         cms,
                         subelement.getResource());
