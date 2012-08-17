@@ -48,6 +48,9 @@ import org.apache.solr.schema.SchemaField;
  */
 public class CmsSolrField extends A_CmsSearchField {
 
+    /** The serial version UID. */
+    private static final long serialVersionUID = -3920245109164517028L;
+
     /** The fields to copy the value of this field to. */
     private List<String> m_copyFields;
 

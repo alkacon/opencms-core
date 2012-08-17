@@ -35,7 +35,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.I_CmsSearchField;
-import org.opencms.search.solr.CmsSolrField;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -229,6 +228,22 @@ public interface I_CmsXmlContentHandler {
     CmsRelationType getRelationType(String path);
 
     /**
+     * Returns the Solr field configuration.<p>
+     * 
+     * @param value the to get the field configuration for
+     * 
+     * @return the field configuration
+     */
+    I_CmsSearchField getSearchField(I_CmsXmlContentValue value);
+
+    /**
+     * Returns all configured Search fields for this XML content.<p>
+     * 
+     * @return the Search fields for this XMl content
+     */
+    Collection<I_CmsSearchField> getSearchFields();
+
+    /**
      * Returns the element settings defined for the container page formatters.<p>
      * 
      * @param cms the current CMS context
@@ -237,22 +252,6 @@ public interface I_CmsXmlContentHandler {
      * @return the element settings defined for the container page formatters
      */
     Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource);
-
-    /**
-     * Returns the Solr field configuration.<p>
-     * 
-     * @param value the to get the field configuration for
-     * 
-     * @return the field configuration
-     */
-    CmsSolrField getSolrField(I_CmsXmlContentValue value);
-
-    /**
-     * Returns all configured Search fields for this XML content.<p>
-     * 
-     * @return the Search fields for this XMl content
-     */
-    Collection<I_CmsSearchField> getSearchFields();
 
     /**
      * Returns the tabs to be displayed in the editor.<p>

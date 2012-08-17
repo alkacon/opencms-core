@@ -31,7 +31,9 @@
 
 package org.opencms.search.fields;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.lucene.document.Fieldable;
 
@@ -40,7 +42,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @since 8.5.0
  */
-public interface I_CmsSearchField {
+public interface I_CmsSearchField extends Serializable {
 
     /** Th default boost factor (1.0), used in case no boost has been set for a field. */
     public static final float BOOST_DEFAULT = 1.0f;
@@ -193,6 +195,13 @@ public interface I_CmsSearchField {
      * @return the default value to use if no content for this field was collected
      */
     String getDefaultValue();
+
+    /**
+     * Returns the locale of this field or <code>null</code> if the field does not have a locale.<p>
+     * 
+     * @return the locale of this field
+     */
+    Locale getLocale();
 
     /**
      * Returns the mappings for this field.<p>

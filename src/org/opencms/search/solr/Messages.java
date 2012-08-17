@@ -44,9 +44,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INDEX_SOLR_CONFIGURATION_MISS_1 = "ERR_INDEX_SOLR_CONFIGURATION_MISS_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_RESULT_ITERATION_FAILED_0 = "LOG_RESULT_ITERATION_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_SOLR_EMBEDDED_START_2 = "ERR_INDEX_SOLR_EMBEDDED_START_2";
 
     /** Message constant for key in the resource bundle. */
@@ -75,6 +72,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEX_SOLR_INDEX_DIR_CREATED_2 = "LOG_INDEX_SOLR_INDEX_DIR_CREATED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_RESULT_ITERATION_FAILED_0 = "LOG_RESULT_ITERATION_FAILED_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.search.solr.messages";

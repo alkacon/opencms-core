@@ -76,6 +76,9 @@ public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
     /** Name of the field that contains the name of the user who last modified the resource. */
     public static final String FIELD_RESOURCE_USER_LASTMODIFIED = "res_userLastModified";
 
+    /** Serial version UID. */
+    private static final long serialVersionUID = -9040025344745155491L;
+
     /**
      * Public constructor for a new search field mapping.<p>
      */

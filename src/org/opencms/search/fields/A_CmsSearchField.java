@@ -43,6 +43,9 @@ import java.util.List;
  */
 public abstract class A_CmsSearchField implements I_CmsSearchField {
 
+    /** Serial version UID. */
+    private static final long serialVersionUID = 3185631015824549119L;
+
     /** The boost factor of the field. */
     private float m_boost;
 
@@ -78,12 +81,6 @@ public abstract class A_CmsSearchField implements I_CmsSearchField {
         m_name = name;
         m_boost = boost;
         m_defaultValue = defaultValue;
-    }
-
-    @Override
-    public String toString() {
-
-        return getName();
     }
 
     /**
@@ -192,5 +189,14 @@ public abstract class A_CmsSearchField implements I_CmsSearchField {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return getName();
     }
 }

@@ -63,6 +63,9 @@ public abstract class A_CmsSearchFieldMapping implements I_CmsSearchFieldMapping
     /** The default expiration date. */
     private static Date m_defaultDateExpired;
 
+    /** Serial version UID. */
+    private static final long serialVersionUID = 3016384419639743033L;
+
     /** The configured default value. */
     private String m_defaultValue;
 

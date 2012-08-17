@@ -27,6 +27,13 @@
 
 package org.opencms.search.fields;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.util.CmsStringUtil;
+
+import java.util.List;
 
 /**
  * Describes a mapping of a piece of content from an OpenCms VFS resource to a field of a search index.<p>
@@ -34,6 +41,9 @@ package org.opencms.search.fields;
  * @since 7.0.0 
  */
 public class CmsSearchFieldMapping extends A_CmsSearchFieldMapping {
+
+    /** Serial version UID. */
+    private static final long serialVersionUID = -4118281721737064202L;
 
     /**
      * Public constructor for a new search field mapping.<p>
@@ -53,4 +63,25 @@ public class CmsSearchFieldMapping extends A_CmsSearchFieldMapping {
         super(type, param);
     }
 
+    /**
+     * @see org.opencms.search.fields.A_CmsSearchFieldMapping#getStringValue(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     */
+    @Override
+    public String getStringValue(
+        CmsObject cms,
+        CmsResource res,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        String content = super.getStringValue(cms, res, extractionResult, properties, propertiesSearched);
+        if (getType().equals(CmsSearchFieldMappingType.CONTENT) && CmsStringUtil.isEmptyOrWhitespaceOnly(content)) {
+            // try the localized content field
+            String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(
+                I_CmsSearchField.FIELD_CONTENT,
+                cms.getRequestContext().getLocale());
+            content = extractionResult.getContentItems().get(key);
+        }
+        return content;
+    }
 }

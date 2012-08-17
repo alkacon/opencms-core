@@ -62,14 +62,14 @@ import org.apache.solr.schema.IndexSchema;
  */
 public class CmsSolrDocument implements I_CmsSearchDocument {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSolrDocument.class);
+
     /** The Solr document. */
     private SolrInputDocument m_doc;
 
     /** Holds the score for this document. */
     private float m_score;
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSolrDocument.class);
 
     /**
      * Public constructor to create a encapsulate a Solr document.<p>
@@ -200,6 +200,9 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
         Object o = m_doc.getFieldValue(I_CmsSearchField.FIELD_CONTENT_BLOB);
         if (o != null) {
+            if (o instanceof byte[]) {
+                return (byte[])o;
+            }
             return o.toString().getBytes();
         }
         return null;

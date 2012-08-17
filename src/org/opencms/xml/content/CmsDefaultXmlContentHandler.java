@@ -54,10 +54,10 @@ import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.search.solr.CmsSolrField;
-import org.opencms.search.solr.CmsSolrFieldMapping;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
@@ -399,14 +399,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The relation check rules. */
     protected Map<String, CmsRelationType> m_relations;
 
+    /** The Solr field configurations. */
+    protected Map<String, I_CmsSearchField> m_searchFields;
+
     /** The search settings. */
     protected Map<String, Boolean> m_searchSettings;
 
     /** The configured settings for the formatters (as defined in the annotations). */
     protected Map<String, CmsXmlContentProperty> m_settings;
-
-    /** The Solr field configurations. */
-    protected Map<String, CmsSolrField> m_solrFields;
 
     /** The configured tabs. */
     protected List<CmsXmlContentTab> m_tabs;
@@ -661,21 +661,30 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchField(org.opencms.xml.types.I_CmsXmlContentValue)
+     */
+    public I_CmsSearchField getSearchField(I_CmsXmlContentValue value) {
+
+        String schemaPath = CmsXmlUtils.removeXpath(value.getPath());
+        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(schemaPath, value.getLocale());
+        return m_searchFields.get(key);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchFields()
+     */
+    public Collection<I_CmsSearchField> getSearchFields() {
+
+        Set<I_CmsSearchField> searchFields = new HashSet<I_CmsSearchField>(m_searchFields.values());
+        return Collections.unmodifiableCollection(searchFields);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSettings(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource) {
 
         return Collections.unmodifiableMap(m_settings);
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSolrField(org.opencms.xml.types.I_CmsXmlContentValue)
-     */
-    public CmsSolrField getSolrField(I_CmsXmlContentValue value) {
-
-        String schemaPath = CmsXmlUtils.removeXpath(value.getPath());
-        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(schemaPath, value.getLocale());
-        return m_solrFields.get(key);
     }
 
     /**
@@ -1469,7 +1478,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * @throws CmsXmlException in case an unknown element name is used
      */
-    protected void addSolrField(CmsXmlContentDefinition contentDefinition, String elementName, CmsSolrField field)
+    protected void addSolrField(CmsXmlContentDefinition contentDefinition, String elementName, I_CmsSearchField field)
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
@@ -1478,16 +1487,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 elementName));
         }
         String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, field.getLocale());
-        m_solrFields.put(key, field);
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchFields()
-     */
-    public Collection<I_CmsSearchField> getSearchFields() {
-
-        Set<I_CmsSearchField> searchFields = new HashSet<I_CmsSearchField>(m_solrFields.values());
-        return Collections.unmodifiableCollection(searchFields);
+        m_searchFields.put(key, field);
     }
 
     /**
@@ -1711,7 +1711,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
         m_titleMappings = new ArrayList<String>(2);
         m_formatters = new ArrayList<CmsFormatterBean>();
-        m_solrFields = new HashMap<String, CmsSolrField>();
+        m_searchFields = new HashMap<String, I_CmsSearchField>();
     }
 
     /**
@@ -2107,7 +2107,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     CmsSolrField field = new CmsSolrField(targetField, copyFields, locale, defaultValue, boost);
 
                     // create a mapping for the element itself
-                    CmsSolrFieldMapping mapping = new CmsSolrFieldMapping(CmsSearchFieldMappingType.ITEM, elementName);
+                    CmsSearchFieldMapping mapping = new CmsSearchFieldMapping(
+                        CmsSearchFieldMappingType.ITEM,
+                        A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, locale));
                     field.addMapping(mapping);
 
                     Iterator<Element> ite = CmsXmlGenericWrapper.elementIterator(solrElement, APPINFO_ATTR_MAPPING);
@@ -2118,7 +2120,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mappingClass)) {
                             try {
                                 Object object = Class.forName(mappingClass);
-                                mapping = (CmsSolrFieldMapping)object;
+                                mapping = (CmsSearchFieldMapping)object;
                             } catch (ClassNotFoundException e) {
                                 throw new CmsXmlException(Messages.get().container(
                                     Messages.ERR_XML_SCHEMA_MAPPING_CLASS_NOT_EXIST_3,
@@ -2129,7 +2131,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         }
                         String typeAsString = mappingElement.attributeValue(APPINFO_ATTR_TYPE);
                         CmsSearchFieldMappingType type = CmsSearchFieldMappingType.valueOf(typeAsString);
-                        mapping = new CmsSolrFieldMapping(type, mappingElement.getStringValue());
+
+                        if (type.equals(CmsSearchFieldMappingType.CONTENT)
+                            || type.equals(CmsSearchFieldMappingType.ITEM)) {
+                            mapping = new CmsSearchFieldMapping(
+                                type,
+                                A_CmsSearchFieldConfiguration.getLocaleExtendedName(
+                                    mappingElement.getStringValue(),
+                                    locale));
+                        } else {
+                            mapping = new CmsSearchFieldMapping(type, mappingElement.getStringValue());
+                        }
                         mapping.setDefaultValue(mappingElement.attributeValue(APPINFO_ATTR_DEFAULT));
                         field.addMapping(mapping);
                     }

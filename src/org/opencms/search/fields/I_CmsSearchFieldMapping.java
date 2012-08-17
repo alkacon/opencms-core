@@ -36,14 +36,16 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
- * Interface for a mapping of a piece of content from an OpenCms VFS resource to a field of a search document.<p>
+ * Describes a mapping of a piece of content from an OpenCms VFS 
+ * resource to a field of a search index.<p>
  * 
  * @since 8.5.0
  */
-public interface I_CmsSearchFieldMapping {
+public interface I_CmsSearchFieldMapping extends Serializable {
 
     /**
      * Returns the default value used for this field mapping in case no content is available.<p>
