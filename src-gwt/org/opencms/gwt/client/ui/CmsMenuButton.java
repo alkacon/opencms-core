@@ -39,7 +39,6 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
@@ -62,48 +61,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
      */
     interface I_CmsMenuButtonUiBinder extends UiBinder<Widget, CmsMenuButton> {
         // GWT interface, nothing to do here
-    }
-
-    /**
-     * The menu CSS interface.<p>
-     */
-    interface I_MenuButtonCss extends CssResource {
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String button();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String connect();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String hidden();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String menu();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String showAbove();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String toolbarMode();
     }
 
     /** The ui-binder instance for this class. */
