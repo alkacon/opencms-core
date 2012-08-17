@@ -199,7 +199,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
             m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
             m_registeredTypes = new HashMap<String, I_Type>();
-            readTypes(xmlContentDefinition, "");
+            readTypes(xmlContentDefinition, "", false);
             m_tabInfos = collectTabInfos(xmlContentDefinition);
         }
 
@@ -334,14 +334,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          * 
          * @param xmlContentDefinition the XML content definition
          * @param path the element path
+         * @param isChoiceType <code>true</code> when reading a choice type
          */
-        private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
+        private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path, boolean isChoiceType) {
 
             String typeName = getTypeUri(xmlContentDefinition);
             if (m_registeredTypes.containsKey(typeName)) {
                 return;
             }
             Type type = new Type(typeName);
+            type.setIsChoice(isChoiceType);
             m_registeredTypes.put(typeName, type);
 
             for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
@@ -361,7 +363,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 } else {
                     CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
                     subTypeName = getTypeUri(subTypeDefinition);
-                    readTypes(subTypeDefinition, childPath);
+                    readTypes(subTypeDefinition, childPath, subType.isChoiceType());
                 }
                 type.addAttribute(subAttributeName, subTypeName, subType.getMinOccurs(), subType.getMaxOccurs());
             }
