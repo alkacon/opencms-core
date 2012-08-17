@@ -57,6 +57,7 @@ import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.search.solr.CmsSolrField;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
@@ -1449,6 +1450,27 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * Adds a Solr field for an element.<p>
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to map
+     * @param field the Solr field
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addSearchField(CmsXmlContentDefinition contentDefinition, String elementName, I_CmsSearchField field)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
+                Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
+                elementName));
+        }
+        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, field.getLocale());
+        m_searchFields.put(key, field);
+    }
+
+    /**
      * Adds a search setting for an element.<p>
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
@@ -1467,27 +1489,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
         // store the search exclusion as defined
         m_searchSettings.put(elementName, value);
-    }
-
-    /**
-     * Adds a Solr field for an element.<p>
-     * 
-     * @param contentDefinition the XML content definition this XML content handler belongs to
-     * @param elementName the element name to map
-     * @param field the Solr field
-     * 
-     * @throws CmsXmlException in case an unknown element name is used
-     */
-    protected void addSolrField(CmsXmlContentDefinition contentDefinition, String elementName, I_CmsSearchField field)
-    throws CmsXmlException {
-
-        if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
-                elementName));
-        }
-        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, field.getLocale());
-        m_searchFields.put(key, field);
     }
 
     /**
@@ -2107,45 +2108,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     CmsSolrField field = new CmsSolrField(targetField, copyFields, locale, defaultValue, boost);
 
                     // create a mapping for the element itself
-                    CmsSearchFieldMapping mapping = new CmsSearchFieldMapping(
+                    CmsSearchFieldMapping valueMapping = new CmsSearchFieldMapping(
                         CmsSearchFieldMappingType.ITEM,
                         A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, locale));
-                    field.addMapping(mapping);
+                    field.addMapping(valueMapping);
 
+                    // create the field mappings for this element
                     Iterator<Element> ite = CmsXmlGenericWrapper.elementIterator(solrElement, APPINFO_ATTR_MAPPING);
                     while (ite.hasNext()) {
                         Element mappingElement = ite.next();
-
-                        String mappingClass = mappingElement.attributeValue(APPINFO_ATTR_CLASS);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mappingClass)) {
-                            try {
-                                Object object = Class.forName(mappingClass);
-                                mapping = (CmsSearchFieldMapping)object;
-                            } catch (ClassNotFoundException e) {
-                                throw new CmsXmlException(Messages.get().container(
-                                    Messages.ERR_XML_SCHEMA_MAPPING_CLASS_NOT_EXIST_3,
-                                    mappingClass,
-                                    contentDefinition.getTypeName(),
-                                    contentDefinition.getSchemaLocation()));
-                            }
-                        }
-                        String typeAsString = mappingElement.attributeValue(APPINFO_ATTR_TYPE);
-                        CmsSearchFieldMappingType type = CmsSearchFieldMappingType.valueOf(typeAsString);
-
-                        if (type.equals(CmsSearchFieldMappingType.CONTENT)
-                            || type.equals(CmsSearchFieldMappingType.ITEM)) {
-                            mapping = new CmsSearchFieldMapping(
-                                type,
-                                A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                                    mappingElement.getStringValue(),
-                                    locale));
-                        } else {
-                            mapping = new CmsSearchFieldMapping(type, mappingElement.getStringValue());
-                        }
-                        mapping.setDefaultValue(mappingElement.attributeValue(APPINFO_ATTR_DEFAULT));
-                        field.addMapping(mapping);
+                        field.addMapping(createSearchFieldMapping(contentDefinition, mappingElement, locale));
                     }
-                    addSolrField(contentDefinition, elementName, field);
+                    addSearchField(contentDefinition, elementName, field);
                 }
             }
         }
@@ -2783,6 +2757,64 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             content.setFile(file);
         }
         return file;
+    }
+
+    /**
+     * Creates a search field mapping for the given mapping element and the locale.<p>
+     * @param contentDefinition 
+     * 
+     * @param element the mapping element configured in the schema
+     * @param locale the locale
+     * 
+     * @return the created search field mapping
+     * 
+     * @throws CmsXmlException if the dynamic field class could not be found
+     */
+    private I_CmsSearchFieldMapping createSearchFieldMapping(
+        CmsXmlContentDefinition contentDefinition,
+        Element element,
+        Locale locale) throws CmsXmlException {
+
+        I_CmsSearchFieldMapping fieldMapping = null;
+        String typeAsString = element.attributeValue(APPINFO_ATTR_TYPE);
+        CmsSearchFieldMappingType type = CmsSearchFieldMappingType.valueOf(typeAsString);
+        switch (type.getMode()) {
+            case 0: // content
+            case 3: // item
+                // localized
+                String p = A_CmsSearchFieldConfiguration.getLocaleExtendedName(element.getStringValue(), locale);
+                fieldMapping = new CmsSearchFieldMapping(type, p);
+                break;
+            case 1: // property
+            case 2: // property-search
+            case 5: // attribute
+                // not localized
+                fieldMapping = new CmsSearchFieldMapping(type, element.getStringValue());
+                break;
+            case 4: // dynamic
+                String mappingClass = element.attributeValue(APPINFO_ATTR_CLASS);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mappingClass)) {
+                    try {
+                        fieldMapping = (I_CmsSearchFieldMapping)Class.forName(mappingClass).newInstance();
+                        fieldMapping.setType(CmsSearchFieldMappingType.DYNAMIC);
+                        fieldMapping.setParam(element.getStringValue());
+                    } catch (Exception e) {
+                        throw new CmsXmlException(Messages.get().container(
+                            Messages.ERR_XML_SCHEMA_MAPPING_CLASS_NOT_EXIST_3,
+                            mappingClass,
+                            contentDefinition.getTypeName(),
+                            contentDefinition.getSchemaLocation()));
+                    }
+
+                }
+                break;
+            default:
+                // NOOP
+        }
+        if (fieldMapping != null) {
+            fieldMapping.setDefaultValue(element.attributeValue(APPINFO_ATTR_DEFAULT));
+        }
+        return fieldMapping;
     }
 
 }

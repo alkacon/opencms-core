@@ -46,9 +46,10 @@
 				<searchsetting element="Teaser">
 					<solrfield targetfield="ateaser">
 						<mapping type="item" default="Homepage n.a.">Homepage</mapping>
-						<mapping type="content">content</mapping>
+						<mapping type="content"/>
 						<mapping type="property-search">search.special</mapping>
 						<mapping type="attribute">dateReleased</mapping>
+						<mapping type="dynamic" class="org.opencms.search.solr.CmsDynamicDummyField">special</mapping>
 					</solrfield>
 				</searchsetting>
 				<searchsetting element="Text" searchcontent="true">

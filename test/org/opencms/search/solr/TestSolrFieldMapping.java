@@ -185,6 +185,9 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         assertEquals(true, fieldValue.contains("Homepage n.a."));
 
         // test the 'dynamic' mapping with 'class' attribute
+        fieldValue = res.getField("ateaser_en");
+        assertNotNull(fieldValue);
+        assertEquals(true, fieldValue.contains("This is an amazing and very 'dynamic' content"));
 
         // test the 'attribute' mapping
         fieldValue = res.getField("ateaser_en");

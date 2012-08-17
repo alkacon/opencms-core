@@ -2586,6 +2586,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>sites/default/xmlcontent/link_article_0001.html</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>bf6b3a14-e862-11e1-b910-99baff57e903</uuidstructure>
+			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Thu, 16 Aug 2012 14:26:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<datereleased>Thu, 16 Jun 2011 07:48:40 GMT</datereleased>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Author</name>
+					<value><![CDATA[Alkacon Software English]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample article 1  (>>SearchEgg1<<)]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system</destination>
 			<type>folder</type>
 			<uuidstructure>34ef7816-e6ba-11e1-a542-99baff57e903</uuidstructure>
