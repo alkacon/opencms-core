@@ -140,7 +140,7 @@ public final class CmsContentEditor {
     private CmsSelectBox m_localeSelect;
 
     /** The on close call back. */
-    private Command m_onClose;
+    protected Command m_onClose;
 
     /** The open form button. */
     private CmsPushButton m_openFormButton;
@@ -171,7 +171,6 @@ public final class CmsContentEditor {
      */
     private CmsContentEditor() {
 
-        I_LayoutBundle.INSTANCE.form().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.widgetCss().ensureInjected();
         I_CmsContentServiceAsync service = GWT.create(I_CmsContentService.class);
@@ -429,8 +428,17 @@ public final class CmsContentEditor {
      */
     void save() {
 
-        m_editor.saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, true, m_onClose);
-        clearEditor();
+        m_editor.saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, true, new Command() {
+
+            public void execute() {
+
+                if (m_onClose != null) {
+                    m_onClose.execute();
+                }
+                clearEditor();
+            }
+        });
+
     }
 
     /**
@@ -514,7 +522,7 @@ public final class CmsContentEditor {
     /**
      * Closes the editor.<p>
      */
-    private void clearEditor() {
+    protected void clearEditor() {
 
         if (m_toolbar != null) {
             m_toolbar.removeFromParent();
