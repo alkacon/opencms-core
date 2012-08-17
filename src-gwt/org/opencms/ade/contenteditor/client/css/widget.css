@@ -256,7 +256,7 @@ div.colorPicker{
 
 /** Checkbox styles*/
 
-.checkBoxStyle .label{
+.checkBoxStyle div.label{
 	margin: 4px 3px 2px 20px;
 }
 .checkBoxStyle .widget{
