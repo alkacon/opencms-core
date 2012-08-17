@@ -56,6 +56,7 @@ import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.relations.CmsRelation;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.solr.AllSolrTests;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -78,6 +79,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -87,6 +89,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.lucene.store.FSDirectory;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -767,14 +770,6 @@ public class OpenCmsTestCase extends TestCase {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("WEB-INF/index/");
-        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
-            CmsFileUtil.purgeDirectory(new File(path));
-        }
-        path = getTestDataPath("WEB-INF/solr/" + AllSolrTests.SOLR_OFFLINE + "/");
-        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
-            CmsFileUtil.purgeDirectory(new File(path));
-        }
-        path = getTestDataPath("WEB-INF/solr/" + AllSolrTests.INDEX_TEST + "/");
         if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
             CmsFileUtil.purgeDirectory(new File(path));
         }

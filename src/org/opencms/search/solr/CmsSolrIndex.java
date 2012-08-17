@@ -470,8 +470,15 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     @Override
     public void shutDown() {
 
+    	super.shutDown();
         if (m_solr instanceof EmbeddedSolrServer) {
+        	EmbeddedSolrServer server = ((EmbeddedSolrServer)m_solr);
+        	for (SolrCore core : server.getCoreContainer().getCores()) {
+        		core.closeSearcher();
+        		core.close();
+        	}
             ((EmbeddedSolrServer)m_solr).getCoreContainer().shutdown();
+            ((EmbeddedSolrServer)m_solr).shutdown();
         }
     }
 
@@ -514,15 +521,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         } else {
             throw new UnsupportedOperationException();
         }
-    }
-
-    /**
-     * @see org.opencms.search.A_CmsSearchIndex#generateIndexDirectory()
-     */
-    @Override
-    protected String generateIndexDirectory() {
-
-        return OpenCms.getSearchManager().getDirectorySolr() + File.separatorChar + getName();
     }
 
     /**
