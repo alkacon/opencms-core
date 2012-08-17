@@ -52,13 +52,10 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -110,32 +107,20 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
             CmsFile file = readFile(cms, resource);
             // unmarshall the content
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
-            Set<I_CmsSearchField> fields = new HashSet<I_CmsSearchField>();
             Map<String, String> items = new HashMap<String, String>();
             StringBuffer locales = new StringBuffer();
             for (Locale locale : xmlContent.getLocales()) {
-            	
-            	List<Locale> otherLocales = new ArrayList<Locale>(xmlContent.getLocales());
-            	otherLocales.remove(locale);
-            	
+
                 // loop over the locales
                 locales.append(locale.toString());
                 locales.append(' ');
                 StringBuffer content = new StringBuffer();
                 for (String xpath : xmlContent.getNames(locale)) {
-                    // loop over the content items
+                    // loop over the content values
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
-                    
-                    List<Locale> valuesNotAvailableInLocale = new ArrayList<Locale>();
-                    for (Locale oLocale : otherLocales) {
-                    	I_CmsXmlContentValue valueNA = xmlContent.getValue(xpath, oLocale);
-                    	if (valueNA == null) {
-                    		valuesNotAvailableInLocale.add(oLocale);
-                    	}
-                    }
-                    
-                    String extracted = value.getPlainText(cms);
 
+                    // first try to receive the text value 
+                    String extracted = value.getPlainText(cms);
                     if (value.isSimpleType()) {
                         // put the extraction to the content and to the items
                         if (value.getContentDefinition().getContentHandler().isSearchable(value)
@@ -158,29 +143,14 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                             }
                         }
 
-                        // put those items into the extraction result for that a field mapping done in the XSD
-                        CmsSolrField field = xmlContent.getHandler().getSolrField(value);
-                        if (field != null) {
-	                        // resolve the field mappings configured in the XSD of the content
-	                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                                // The key must be the same as the parameter value of the Solr field mapping defined in:
-                                // org.opencms.xml.content.CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
-                                // later during index process the values are retrieved in:
-                                // org.opencms.search.fields.I_CmsSearchFieldMapping#getStringValue(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
-                                items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                                    CmsXmlUtils.removeXpath(xpath),
-                                    locale), extracted);
-                                fields.add(field);
-	                        }
-	                        for (Locale naLocale : valuesNotAvailableInLocale) {
-	                        	items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-	                                    CmsXmlUtils.removeXpath(xpath),
-	                                    naLocale), null);
-	                        	int ind = field.getTargetField().lastIndexOf("_" + locale.toString());
-	                        	String newFieldName = A_CmsSearchFieldConfiguration.getLocaleExtendedName(field.getTargetField().substring(0, ind),naLocale) ;
-	                        	CmsSolrField naField = new CmsSolrField(newFieldName, field.getCopyFields(), naLocale, field.getDefaultValue(), field.getBoost());
-	                        	fields.add(naField);
-	                        }
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                            // The key must be the same as the parameter value of the Solr field mapping defined in:
+                            // org.opencms.xml.content.CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
+                            // later during index process the values are retrieved in:
+                            // org.opencms.search.fields.I_CmsSearchFieldMapping#getStringValue(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+                            items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
+                                CmsXmlUtils.removeXpath(xpath),
+                                locale), extracted);
                         }
                     }
                 }
@@ -195,7 +165,8 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                 // store the locales that have been indexed for this document
                 items.put(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString());
             }
-            return new CmsExtractionResult(null, items, fields);
+            return new CmsExtractionResult(null, items, new HashSet<I_CmsSearchField>(
+                xmlContent.getHandler().getSearchFields()));
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),

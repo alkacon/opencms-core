@@ -31,7 +31,6 @@
 
 package org.opencms.search.solr;
 
-import org.apache.solr.common.SolrInputDocument;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -45,6 +44,8 @@ import java.util.Locale;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.apache.solr.common.SolrInputDocument;
 
 /**
  * Tests the Solr field mapping.<p>
@@ -151,7 +152,7 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         // the boost for a field can only be set for "SolrInputDocument"s
         // fields of documents that are returned as query result "SolrDocument"s
         // never have a boost
-        float boost = ((SolrInputDocument) res.getDocument().getDocument()).getField("ahtml_en").getBoost();
+        float boost = ((SolrInputDocument)res.getDocument().getDocument()).getField("ahtml_en").getBoost();
         assertEquals(true, 1.0F == boost);
 
         // test the 'content' mapping
@@ -173,7 +174,7 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         // test the 'property-search' mapping
         fieldValue = res.getField("ateaser_en");
         assertNotNull(fieldValue);
-        assertEquals(true, fieldValue.contains("Cologne is a nice city"));       
+        assertEquals(true, fieldValue.contains("Cologne is a nice city"));
 
         // test the 'item' mapping with default
         fieldValue = res.getField("ateaser_en");

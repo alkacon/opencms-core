@@ -85,6 +85,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1475,10 +1476,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
                 Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
                 elementName));
-
         }
         String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, field.getLocale());
         m_solrFields.put(key, field);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchFields()
+     */
+    public Collection<I_CmsSearchField> getSearchFields() {
+
+        Set<I_CmsSearchField> searchFields = new HashSet<I_CmsSearchField>(m_solrFields.values());
+        return Collections.unmodifiableCollection(searchFields);
     }
 
     /**
