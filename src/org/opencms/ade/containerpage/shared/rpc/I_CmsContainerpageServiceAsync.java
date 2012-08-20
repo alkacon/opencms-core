@@ -33,7 +33,9 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
+import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -189,6 +191,15 @@ public interface I_CmsContainerpageServiceAsync {
     Collection<CmsContainer> containers, String locale, AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
+     * Gets the status of a removed element.<p>
+     * 
+     * @param id the element's client id 
+     * 
+     * @param callback the asynchronous callback to execute with the results 
+     */
+    void getRemovedElementStatus(String id, AsyncCallback<CmsRemovedElementStatus> callback);
+
+    /**
      * Returns the initialization data.<p>
      * 
      * @param callback the async callback
@@ -196,7 +207,7 @@ public interface I_CmsContainerpageServiceAsync {
     void prefetch(AsyncCallback<CmsCntPageData> callback);
 
     /**
-     * Saves the container-page.<p>
+     * Saves the container-page.<p> 
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
@@ -233,7 +244,7 @@ public interface I_CmsContainerpageServiceAsync {
         CmsGroupContainer groupContainer,
         Collection<CmsContainer> containers,
         String locale,
-        AsyncCallback<Map<String, CmsContainerElementData>> callback);
+        AsyncCallback<CmsGroupContainerSaveResult> callback);
 
     /**
      * Saves an inheritance container.<p>

@@ -39,8 +39,10 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
+import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
@@ -54,16 +56,23 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -101,6 +110,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Sets;
 
 /**
  * The RPC service used by the container-page editor.<p>
@@ -405,6 +416,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRemovedElementStatus(java.lang.String)
+     */
+    public CmsRemovedElementStatus getRemovedElementStatus(String id) throws CmsRpcException {
+
+        if ((id == null) || !id.matches(CmsUUID.UUID_REGEX + ".*$")) {
+            return new CmsRemovedElementStatus(null, null, false);
+        }
+        try {
+            CmsUUID structureId = convertToServerId(id);
+            return internalGetRemovedElementStatus(structureId);
+        } catch (CmsException e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * Returns the serialized element data.<p>
      * 
      * @param elementBean the element to serialize
@@ -425,6 +453,35 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             cms.getRequestContext().getLocale());
         util.setElementInfo(elementBean, result);
         return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
+    }
+
+    /**
+     * Internal helper method to get the status of a removed element.<p>
+     * 
+     * @param structureId the structure id of the removed element 
+     * 
+     * @return the status of the removed element
+     *   
+     * @throws CmsException 
+     * @throws CmsLoaderException
+     */
+    public CmsRemovedElementStatus internalGetRemovedElementStatus(CmsUUID structureId)
+    throws CmsException, CmsLoaderException {
+
+        CmsObject cms = getCmsObject();
+        CmsResource elementResource = cms.readResource(structureId);
+        boolean hasWritePermissions = cms.hasPermissions(
+            elementResource,
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.ALL);
+        boolean isSystemResource = elementResource.getRootPath().startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/");
+        CmsRelationFilter relationFilter = CmsRelationFilter.relationsToStructureId(structureId);
+        List<CmsRelation> relationsToElement = cms.readRelations(relationFilter);
+        boolean hasNoRelations = relationsToElement.isEmpty();
+        boolean deletionCandidate = hasNoRelations && hasWritePermissions && !isSystemResource;
+        CmsListInfoBean elementInfo = CmsVfsService.getPageInfo(cms, elementResource);
+        return new CmsRemovedElementStatus(structureId, elementInfo, deletionCandidate);
     }
 
     /**
@@ -507,7 +564,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveGroupContainer(org.opencms.util.CmsUUID, java.lang.String, org.opencms.ade.containerpage.shared.CmsGroupContainer, java.util.Collection, java.lang.String)
      */
-    public Map<String, CmsContainerElementData> saveGroupContainer(
+    public CmsGroupContainerSaveResult saveGroupContainer(
         CmsUUID pageStructureId,
         String reqParams,
         CmsGroupContainer groupContainer,
@@ -515,14 +572,22 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String locale) throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
+        List<CmsRemovedElementStatus> removedElements = null;
         try {
-            internalSaveGroupContainer(cms, pageStructureId, groupContainer, locale);
+            CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> saveResult = internalSaveGroupContainer(
+                cms,
+                pageStructureId,
+                groupContainer,
+                locale);
+            removedElements = saveResult.getSecond();
         } catch (Throwable e) {
             error(e);
         }
         Collection<String> ids = new ArrayList<String>();
         ids.add(groupContainer.getClientId());
-        return getElementsData(pageStructureId, reqParams, ids, containers, locale);
+        return new CmsGroupContainerSaveResult(
+            getElementsData(pageStructureId, reqParams, ids, containers, locale),
+            removedElements);
     }
 
     /**
@@ -755,12 +820,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         Set<String> types = new HashSet<String>();
                         types.add(container.getType());
                         groupContainer.setTypes(types);
-                        elementData = internalSaveGroupContainer(
+                        CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> saveResult = internalSaveGroupContainer(
                             cms,
                             containerpage.getStructureId(),
                             groupContainer,
                             locale);
-
+                        elementData = saveResult.getFirst();
                     } else {
                         elementData = createNewElement(
                             containerpage.getStructureId(),
@@ -960,6 +1025,27 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Gets the structure ids of group container elements from an unmarshalled group container for a single locale.<p>
+     * 
+     * @param groupContainer the group container 
+     * @param locale the locale for which we want the element ids 
+     * 
+     * @return the group container's element ids for the given locale 
+     */
+    private Set<CmsUUID> getGroupElementIds(CmsXmlGroupContainer groupContainer, Locale locale) {
+
+        Set<CmsUUID> idSet = new HashSet<CmsUUID>();
+        CmsGroupContainerBean groupContainerBean = groupContainer.getGroupContainer(getCmsObject(), locale);
+        if (groupContainerBean != null) {
+            for (CmsContainerElementBean element : groupContainerBean.getElements()) {
+                idSet.add(element.getId());
+            }
+        }
+        return idSet;
+
+    }
+
+    /**
      * Returns the sub-elements of this inherit container resource.<p>
      * 
      * @param resource the inherit container resource
@@ -1152,18 +1238,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param cms the cms context 
      * @param pageStructureId the container page structure id 
      * @param groupContainer the group container to save 
-     * @param locale the locale for which the group container should be saved 
+     * @param localeStr the locale for which the group container should be saved 
      * 
      * @return the container element representing the group container
      *  
      * @throws CmsException if something goes wrong 
      * @throws CmsXmlException if the XML processing goes wrong 
      */
-    private CmsContainerElement internalSaveGroupContainer(
+    private CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> internalSaveGroupContainer(
         CmsObject cms,
         CmsUUID pageStructureId,
         CmsGroupContainer groupContainer,
-        String locale) throws CmsException, CmsXmlException {
+        String localeStr) throws CmsException, CmsXmlException {
 
         ensureSession();
         CmsResource pageResource = getCmsObject().readResource(pageStructureId, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -1185,18 +1271,29 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsGroupContainerBean groupContainerBean = getGroupContainerBean(
             groupContainer,
             pageResource.getStructureId(),
-            locale);
+            localeStr);
+
         cms.lockResourceTemporary(groupContainerResource);
         CmsFile groupContainerFile = cms.readFile(groupContainerResource);
+        Locale locale = CmsLocaleManager.getLocale(localeStr);
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, groupContainerFile);
-        xmlGroupContainer.save(cms, groupContainerBean, CmsLocaleManager.getLocale(locale));
+        Set<CmsUUID> oldElementIds = getGroupElementIds(xmlGroupContainer, locale);
+        xmlGroupContainer.save(cms, groupContainerBean, locale);
         cms.unlockResource(groupContainerResource);
-
+        Set<CmsUUID> newElementIds = getGroupElementIds(xmlGroupContainer, locale);
+        Set<CmsUUID> removedElementIds = Sets.difference(oldElementIds, newElementIds);
+        List<CmsRemovedElementStatus> deletionCandidateStatuses = new ArrayList<CmsRemovedElementStatus>();
+        for (CmsUUID removedId : removedElementIds) {
+            CmsRemovedElementStatus status = internalGetRemovedElementStatus(removedId);
+            if (status.isDeletionCandidate()) {
+                deletionCandidateStatuses.add(status);
+            }
+        }
         CmsContainerElement element = new CmsContainerElement();
         element.setClientId(groupContainerFile.getStructureId().toString());
         element.setSitePath(cms.getSitePath(groupContainerFile));
         element.setResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
-        return element;
+        return CmsPair.create(element, deletionCandidateStatuses);
     }
 
     /**

@@ -33,7 +33,9 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
+import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -49,13 +51,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @since 8.0.0
  */
 public interface I_CmsContainerpageService extends RemoteService {
-
-    /**
-     * This method is used for serialization purposes only.<p>
-     * 
-     * @return element info
-     */
-    CmsContainerElement getElementInfo();
 
     /**
      * Adds an element specified by it's id to the favorite list.<p>
@@ -113,6 +108,13 @@ public interface I_CmsContainerpageService extends RemoteService {
         String resourceType,
         CmsUUID modelResourceStructureId,
         String locale) throws CmsRpcException;
+
+    /**
+     * This method is used for serialization purposes only.<p>
+     * 
+     * @return element info
+     */
+    CmsContainerElement getElementInfo();
 
     /**
      * Returns container element data by client id.<p>
@@ -209,6 +211,17 @@ public interface I_CmsContainerpageService extends RemoteService {
         String locale) throws CmsRpcException;
 
     /**
+     * Gets the status of a removed element.<p>
+     * 
+     * @param id the client id of the removed element 
+     *  
+     * @return the status of the removed element 
+     * 
+     * @throws CmsRpcException
+     */
+    CmsRemovedElementStatus getRemovedElementStatus(String id) throws CmsRpcException;
+
+    /**
      * Returns the initialization data.<p>
      * 
      * @return the initialization data
@@ -251,7 +264,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    Map<String, CmsContainerElementData> saveGroupContainer(
+    CmsGroupContainerSaveResult saveGroupContainer(
         CmsUUID pageStructureId,
         String reqParams,
         CmsGroupContainer groupContainer,
@@ -296,4 +309,5 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
     throws CmsRpcException;
+
 }

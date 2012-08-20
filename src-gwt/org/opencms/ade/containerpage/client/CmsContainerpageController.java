@@ -39,7 +39,9 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
+import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
+import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -49,13 +51,20 @@ import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
+import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
@@ -77,6 +86,9 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -87,6 +99,8 @@ import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -473,6 +487,70 @@ public final class CmsContainerpageController {
             serverId = clientId.substring(0, clientId.indexOf(CLIENT_ID_SEPERATOR));
         }
         return serverId;
+    }
+
+    /**
+     * Asks the user whether an element which has been removed should be deleted.<p>
+     * 
+     * @param status the status of the removed element 
+     */
+    protected static void askWhetherRemovedElementShouldBeDeleted(final CmsRemovedElementStatus status) {
+
+        CmsListInfoBean elementInfo = status.getElementInfo();
+
+        FlowPanel panel = new FlowPanel();
+        CmsListItemWidget infoBox = new CmsListItemWidget(elementInfo);
+        panel.add(infoBox);
+        CmsMessages m = org.opencms.ade.containerpage.client.Messages.get();
+
+        Label label = new Label(m.key(org.opencms.ade.containerpage.client.Messages.GUI_ASK_DELETE_REMOVED_ELEMENT_0));
+        //"After removing this element, there are no pages referencing it. Do you want to delete it from the OpenCms file system?");
+        label.getElement().getStyle().setPadding(16, Unit.PX);
+        panel.add(label);
+        final CmsPopup popup = new CmsPopup(
+            m.key(org.opencms.ade.containerpage.client.Messages.GUI_ASK_DELETE_REMOVED_ELEMENT_TITLE_0));
+        popup.setMainContent(panel);
+        CmsPushButton okButton = new CmsPushButton();
+        okButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_DELETE_0));
+        CmsPushButton cancelButton = new CmsPushButton();
+        cancelButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_CANCEL_0));
+        cancelButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent e) {
+
+                popup.hide();
+            }
+        });
+        okButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent e) {
+
+                CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
+
+                    @Override
+                    public void execute() {
+
+                        start(200, true);
+                        CmsCoreProvider.getVfsService().deleteResource(status.getStructureId(), this);
+                    }
+
+                    @Override
+                    public void onResponse(Void result) {
+
+                        stop(true);
+                        popup.hide();
+                    }
+                };
+                deleteAction.execute();
+            }
+        });
+        okButton.setUseMinWidth(true);
+        cancelButton.setUseMinWidth(true);
+        okButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
+        popup.addButton(cancelButton);
+        popup.addButton(okButton);
+        popup.setWidth(550);
+        popup.center();
     }
 
     /**
@@ -1292,11 +1370,19 @@ public final class CmsContainerpageController {
             getGroupcontainer().refreshHighlighting();
         } else {
             // only set changed if not editing a group container
-            String id = dragElement.getId();
+            final String id = dragElement.getId();
             if (id != null) {
                 addToRecentList(id);
             }
-            setPageChanged();
+            Runnable checkReferencesAction = new Runnable() {
+
+                public void run() {
+
+                    checkReferencesToRemovedElement(id);
+                }
+            };
+
+            setPageChanged(checkReferencesAction);
         }
     }
 
@@ -1436,8 +1522,10 @@ public final class CmsContainerpageController {
 
     /**
      * Saves the current state of the container-page.<p>
+     * 
+     * @param afterSaveActions the actions to execute after saving 
      */
-    public void saveContainerpage() {
+    public void saveContainerpage(final Runnable... afterSaveActions) {
 
         if (hasPageChanged()) {
             CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
@@ -1466,6 +1554,9 @@ public final class CmsContainerpageController {
 
                     stop(false);
                     setPageChanged(false, false);
+                    for (Runnable afterSaveAction : afterSaveActions) {
+                        afterSaveAction.run();
+                    }
                 }
             };
             action.execute();
@@ -1513,7 +1604,7 @@ public final class CmsContainerpageController {
         final CmsGroupContainerElementPanel groupContainerElement) {
 
         if (getGroupcontainer() != null) {
-            CmsRpcAction<Map<String, CmsContainerElementData>> action = new CmsRpcAction<Map<String, CmsContainerElementData>>() {
+            CmsRpcAction<CmsGroupContainerSaveResult> action = new CmsRpcAction<CmsGroupContainerSaveResult>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -1534,11 +1625,12 @@ public final class CmsContainerpageController {
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                  */
                 @Override
-                protected void onResponse(Map<String, CmsContainerElementData> result) {
+                protected void onResponse(CmsGroupContainerSaveResult saveResult) {
 
-                    m_elements.putAll(result);
+                    Map<String, CmsContainerElementData> elementData = saveResult.getElementData();
+                    m_elements.putAll(elementData);
                     try {
-                        replaceContainerElement(groupContainerElement, result.get(groupContainerElement.getId()));
+                        replaceContainerElement(groupContainerElement, elementData.get(groupContainerElement.getId()));
                     } catch (Exception e) {
                         CmsDebugLog.getInstance().printLine("Error replacing group container element");
                     }
@@ -1546,6 +1638,10 @@ public final class CmsContainerpageController {
                     CmsNotification.get().send(
                         Type.NORMAL,
                         Messages.get().key(Messages.GUI_NOTIFICATION_GROUP_CONTAINER_SAVED_0));
+                    List<CmsRemovedElementStatus> removedElements = saveResult.getRemovedElements();
+                    for (CmsRemovedElementStatus removedElement : removedElements) {
+                        askWhetherRemovedElementShouldBeDeleted(removedElement);
+                    }
                 }
             };
             action.execute();
@@ -1614,13 +1710,15 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Sets the page changed flag to <code>true</code>.<p>
+     * Marks the page as changed.<p>
+     * 
+     * @param nextActions the actions to perform after the page has been marked as changed 
      */
-    public void setPageChanged() {
+    public void setPageChanged(Runnable... nextActions) {
 
         // the container page will be saved immediately
         m_pageChanged = true;
-        saveContainerpage();
+        saveContainerpage(nextActions);
         //        if (!hasPageChanged()) {
         //            setPageChanged(true, false);
         //        }
@@ -1704,6 +1802,41 @@ public final class CmsContainerpageController {
     protected void addElements(Map<String, CmsContainerElementData> elements) {
 
         m_elements.putAll(elements);
+    }
+
+    /**
+     * Checks that a removed can be possibly deleted and if so, asks the user if it should be deleted.<p>
+     * 
+     * @param id the client id of the element
+     */
+    protected void checkReferencesToRemovedElement(final String id) {
+
+        if (id != null) {
+            //NOTE: We only use an RPC call here to check for references on the server side. If, at a later point, we decide
+            //to add a save button again, this will have to be changed, because then we have to consider client-side state.
+            CmsRpcAction<CmsRemovedElementStatus> getStatusAction = new CmsRpcAction<CmsRemovedElementStatus>() {
+
+                @Override
+                public void execute() {
+
+                    start(200, true);
+                    getContainerpageService().getRemovedElementStatus(id, this);
+                }
+
+                @Override
+                public void onResponse(final CmsRemovedElementStatus status) {
+
+                    stop(false);
+                    if (status.isDeletionCandidate()) {
+                        askWhetherRemovedElementShouldBeDeleted(status);
+
+                    }
+                }
+
+            };
+            getStatusAction.execute();
+
+        }
     }
 
     /**

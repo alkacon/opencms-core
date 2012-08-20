@@ -167,6 +167,51 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Gets page information of a resource.<p>
+     * 
+     * @param cms the CMS context
+     * @param res the resource
+     * 
+     * @return gets the page information for the given resource 
+     * 
+     * @throws CmsException
+     * @throws CmsLoaderException
+     */
+    public static CmsListInfoBean getPageInfo(CmsObject cms, CmsResource res) throws CmsException, CmsLoaderException {
+
+        CmsListInfoBean result = new CmsListInfoBean();
+
+        result.setResourceState(res.getState());
+
+        String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+            result.setTitle(title);
+        } else {
+            result.setTitle(res.getName());
+        }
+        result.setSubTitle(cms.getSitePath(res));
+        String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+        if (Boolean.parseBoolean(secure)) {
+            result.setStateIcon(CmsListInfoBean.StateIcon.secure);
+        } else {
+            String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
+            if (Boolean.parseBoolean(export)) {
+                result.setStateIcon(CmsListInfoBean.StateIcon.export);
+            } else {
+                result.setStateIcon(CmsListInfoBean.StateIcon.standard);
+            }
+        }
+        String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
+        Locale currentLocale = cms.getRequestContext().getLocale();
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
+        String resTypeNiceName = messages.key(key);
+        result.addAdditionalInfo(messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0), resTypeNiceName);
+        result.setResourceType(resTypeName);
+        return result;
+    }
+
+    /**
      * Returns a new configured service instance.<p>
      * 
      * @param request the current request
@@ -1109,36 +1154,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     private CmsListInfoBean getPageInfo(CmsResource res) throws CmsException, CmsLoaderException {
 
         CmsObject cms = getCmsObject();
-        CmsListInfoBean result = new CmsListInfoBean();
-
-        result.setResourceState(res.getState());
-
-        String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-            result.setTitle(title);
-        } else {
-            result.setTitle(res.getName());
-        }
-        result.setSubTitle(cms.getSitePath(res));
-        String secure = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
-        if (Boolean.parseBoolean(secure)) {
-            result.setStateIcon(CmsListInfoBean.StateIcon.secure);
-        } else {
-            String export = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_EXPORT, true).getValue();
-            if (Boolean.parseBoolean(export)) {
-                result.setStateIcon(CmsListInfoBean.StateIcon.export);
-            } else {
-                result.setStateIcon(CmsListInfoBean.StateIcon.standard);
-            }
-        }
-        String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
-        Locale currentLocale = cms.getRequestContext().getLocale();
-        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
-        String resTypeNiceName = messages.key(key);
-        result.addAdditionalInfo(messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0), resTypeNiceName);
-        result.setResourceType(resTypeName);
-        return result;
+        return getPageInfo(cms, res);
     }
 
     /**

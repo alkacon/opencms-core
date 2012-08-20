@@ -49,6 +49,12 @@ public final class Messages {
     public static final String ERR_LOCK_TITLE_RESOURCE_LOCKED_0 = "ERR_LOCK_TITLE_RESOURCE_LOCKED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ASK_DELETE_REMOVED_ELEMENT_0 = "GUI_ASK_DELETE_REMOVED_ELEMENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ASK_DELETE_REMOVED_ELEMENT_TITLE_0 = "GUI_ASK_DELETE_REMOVED_ELEMENT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_BREAK_UP_TEXT_0 = "GUI_BUTTON_BREAK_UP_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
