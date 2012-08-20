@@ -90,9 +90,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
 
-    /** The embedded Solr server, only one embedded instance per OpenCms. */
-    private static SolrServer m_solr;
-
     /** Indicates the maximum number of documents from the complete result set to return. */
     private static final int ROWS_MAX = 50;
 
@@ -102,8 +99,11 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     /** The post document manipulator. */
     private I_CmsSolrPostSearchProcessor m_postProcessor;
 
+    /** The embedded Solr server, only one embedded instance per OpenCms. */
+    private SolrServer m_solr;
+
     /**
-     * Default constructor
+     * Default constructor.<p>
      */
     public CmsSolrIndex() {
 
@@ -180,16 +180,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public I_CmsSolrPostSearchProcessor getPostProcessor() {
 
         return m_postProcessor;
-    }
-
-    /**
-     * Returns the embedded Solr Server of OpenCms.<p>
-     * 
-     * @return the embedded server
-     */
-    public final SolrServer getSolr() {
-
-        return m_solr;
     }
 
     /**
@@ -298,6 +288,8 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             query.setStart(new Integer(0));
             query.setRows(new Integer((5 * rows * page) + start));
 
+            // restrict the search to the current index
+            query.add("core", new String[] {getName()});
             // perform the Solr query and remember the original Solr response
             QueryResponse queryResponse = m_solr.query(query);
 
@@ -402,10 +394,16 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public void shutDown() {
 
         super.shutDown();
-        SolrCore core = OpenCms.getSearchManager().getSolrCore(this);
-        if (core != null) {
-            core.closeSearcher();
-            core.close();
+        try {
+            if (m_solr instanceof EmbeddedSolrServer) {
+                SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
+                if (core != null) {
+                    core.closeSearcher();
+                    core.close();
+                }
+            }
+        } catch (NullPointerException e) {
+            // noop
         }
     }
 

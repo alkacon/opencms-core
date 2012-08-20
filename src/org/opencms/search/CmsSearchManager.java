@@ -513,6 +513,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSearchManager.class);
 
+    /** The embedded Solr server, only one embedded instance per OpenCms. */
+    private static SolrServer m_solr;
+
     /** The administrator OpenCms user context to access OpenCms VFS resources. */
     protected CmsObject m_adminCms;
 
@@ -524,9 +527,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap<Locale, CmsSearchAnalyzer> m_analyzers;
-
-    /** The core container for Solr indexes. */
-    private CoreContainer m_coreContainer;
 
     /** A map of document factory configurations. */
     private List<CmsSearchDocumentType> m_documentTypeConfigs;
@@ -1262,18 +1262,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns the Solr core for the given index, or <code>null</code> if not existent
-     * 
-     * @param index the index to get the core for
-     * 
-     * @return the core for the given index
-     */
-    public SolrCore getSolrCore(CmsSolrIndex index) {
-
-        return m_coreContainer != null ? m_coreContainer.getCore(index.getName()) : null;
-    }
-
-    /**
      * Returns the Solr configuration.<p>
      * 
      * @return the Solr configuration
@@ -1523,10 +1511,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             return registerOnHttpServer(index);
         }
 
-        m_coreContainer = m_coreContainer == null ? m_coreContainer = createCoreContainer() : m_coreContainer;
+        // get the core container
+        CoreContainer coreContainer;
+        // get the core container that contains one core for each configured index
+        if ((m_solr instanceof EmbeddedSolrServer) && (((EmbeddedSolrServer)m_solr).getCoreContainer() != null)) {
+            coreContainer = ((EmbeddedSolrServer)m_solr).getCoreContainer();
+        } else {
+            // still no core container: create it
+            coreContainer = createCoreContainer();
+        }
 
         // get the core
-        SolrCore core = m_coreContainer.getCore(index.getName());
+        SolrCore core = coreContainer.getCore(index.getName());
+
         if (core == null) {
             // Being sure the core container is not 'null',
             // we can create a core for this index if not already existent
@@ -1540,7 +1537,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         index.getPath()));
                 }
             }
-            CoreDescriptor descriptor = new CoreDescriptor(m_coreContainer, "descriptor", m_solrConfig.getHome());
+            CoreDescriptor descriptor = new CoreDescriptor(coreContainer, "descriptor", m_solrConfig.getHome());
             descriptor.setDataDir(dataDir.getAbsolutePath());
             core = new SolrCore(
                 index.getName(),
@@ -1551,11 +1548,17 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         // Register the newly created core
-        m_coreContainer.register(core, false);
-        LOG.info(Messages.get().getBundle().key(
-            Messages.LOG_SOLR_CREATED_EMBEDDED_SERVER_1,
-            m_solrConfig.getSolrFile().getAbsolutePath()));
-        return new EmbeddedSolrServer(m_coreContainer, index.getName());
+        coreContainer.register(core, false);
+
+        // create a new embedded server if not done before
+        if (m_solr == null) {
+            m_solr = new EmbeddedSolrServer(coreContainer, index.getName());
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_SOLR_CREATED_EMBEDDED_SERVER_1,
+                m_solrConfig.getSolrFile().getAbsolutePath()));
+        }
+
+        return m_solr;
     }
 
     /**
@@ -1977,8 +1980,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         // shutdown Solr server
-        if (m_coreContainer != null) {
-            m_coreContainer.shutdown();
+        if (m_solr instanceof EmbeddedSolrServer) {
+            ((EmbeddedSolrServer)m_solr).getCoreContainer().shutdown();
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -2141,9 +2144,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 // the index is configured correctly
                 try {
                     index.initialize();
-                    if (index instanceof CmsSolrIndex) {
-                        registerSolrIndex((CmsSolrIndex)index);
-                    }
                 } catch (CmsException e) {
                     // in this case the index will be disabled
                     if (CmsLog.INIT.isInfoEnabled()) {
