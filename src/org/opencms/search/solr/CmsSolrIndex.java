@@ -190,7 +190,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
         super.initialize();
         try {
-            m_solr = OpenCms.getSearchManager().registerSolrIndex(this);
+        	m_solr = OpenCms.getSearchManager().registerSolrIndex(this);
         } catch (CmsConfigurationException ex) {
             LOG.error(ex.getMessage());
             setEnabled(false);
@@ -288,8 +288,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             query.setStart(new Integer(0));
             query.setRows(new Integer((5 * rows * page) + start));
 
-            // restrict the search to the current index
-            query.add("core", new String[] {getName()});
             // perform the Solr query and remember the original Solr response
             QueryResponse queryResponse = m_solr.query(query);
 
@@ -385,26 +383,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public void setPostProcessor(I_CmsSolrPostSearchProcessor postProcessor) {
 
         m_postProcessor = postProcessor;
-    }
-
-    /**
-     * @see org.opencms.search.A_CmsSearchIndex#shutDown()
-     */
-    @Override
-    public void shutDown() {
-
-        super.shutDown();
-        try {
-            if (m_solr instanceof EmbeddedSolrServer) {
-                SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-                if (core != null) {
-                    core.closeSearcher();
-                    core.close();
-                }
-            }
-        } catch (NullPointerException e) {
-            // noop
-        }
     }
 
     /**
