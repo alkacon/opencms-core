@@ -544,7 +544,7 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
     /**
      * Initializes the search index.<p>
      * 
-     * @throws CmsSearchException if the index source association failed
+     * @throws CmsSearchException if the index source association failed or a configuration error occurred
      */
     public void initialize() throws CmsSearchException {
 
@@ -960,8 +960,9 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
      * @return the directory on the RFS for this index
      */
     protected String generateIndexDirectory() {
+
         return OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-                OpenCms.getSearchManager().getDirectory() + "/" + getName());
+            OpenCms.getSearchManager().getDirectory() + "/" + getName());
     }
 
     /**

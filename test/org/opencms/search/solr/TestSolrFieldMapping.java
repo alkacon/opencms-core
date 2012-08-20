@@ -156,7 +156,7 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         assertEquals(true, fieldValue.equals("Homepage n.a."));
         fieldValue = res.getField("ahomepage_en");
         assertEquals(true, fieldValue.contains("/sites/default/index.html"));
-        
+
         // Test the boost to have a complete set of test cases
         // the boost for a field can only be set for "SolrInputDocument"s
         // fields of documents that are returned as query result "SolrDocument"s
@@ -167,7 +167,7 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
         //////////////////
         // MAPPING TEST // 
         //////////////////
-        
+
         // test the 'content' mapping
         fieldValue = res.getField("ateaser_en");
         assertEquals(true, fieldValue.contains("OpenCms Alkacon This is the article 1 text"));

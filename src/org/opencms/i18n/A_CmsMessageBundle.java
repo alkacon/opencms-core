@@ -81,6 +81,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.search.Messages.get(),
             org.opencms.search.documents.Messages.get(),
             org.opencms.search.extractors.Messages.get(),
+            org.opencms.search.solr.Messages.get(),
             org.opencms.security.Messages.get(),
             org.opencms.site.Messages.get(),
             org.opencms.staticexport.Messages.get(),

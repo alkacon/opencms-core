@@ -33,27 +33,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @since 6.0.0 
+ * @since 8.5.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_INDEX_SOLR_CONFIGURATION_INVALID_0 = "ERR_INDEX_SOLR_CONFIGURATION_INVALID_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INDEX_SOLR_CONFIGURATION_MISS_1 = "ERR_INDEX_SOLR_CONFIGURATION_MISS_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INDEX_SOLR_EMBEDDED_START_2 = "ERR_INDEX_SOLR_EMBEDDED_START_2";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCH_INVALID_SEARCH_1 = "ERR_SEARCH_INVALID_SEARCH_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SEARCH_INVALID_SEARCH_NO_PARAMS_0 = "ERR_SEARCH_INVALID_SEARCH_NO_PARAMS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SOLR_BAD_SERVER_URL_1 = "ERR_SOLR_BAD_SERVER_URL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SOLR_CONFIG_XML_NOT_FOUND_1 = "ERR_SOLR_CONFIG_XML_NOT_FOUND_1";
@@ -63,15 +48,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SOLR_SCHEMA_XML_NOT_FOUND_1 = "ERR_SOLR_SCHEMA_XML_NOT_FOUND_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEX_SOLR_CORE_CREATE_2 = "LOG_INDEX_SOLR_CORE_CREATE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEX_SOLR_EMBEDDED_CREATED_1 = "LOG_INDEX_SOLR_EMBEDDED_CREATED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEX_SOLR_INDEX_DIR_CREATED_2 = "LOG_INDEX_SOLR_INDEX_DIR_CREATED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RESULT_ITERATION_FAILED_0 = "LOG_RESULT_ITERATION_FAILED_0";

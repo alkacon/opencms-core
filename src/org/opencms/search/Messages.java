@@ -149,6 +149,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SEARCHINDEX_CREATE_MISSING_NAME_0 = "ERR_SEARCHINDEX_CREATE_MISSING_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SOLR_CORE_CONTAINER_NOT_CREATED_1 = "ERR_SOLR_CORE_CONTAINER_NOT_CREATED_1";
+
+    /** Name of the used resource bundle. */
+    public static final String ERR_SOLR_NOT_ENABLED_0 = "ERR_SOLR_NOT_ENABLED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_BUTTON_BACK_0 = "GUI_HELP_BUTTON_BACK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -378,6 +384,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SKIPPED_1 = "LOG_SKIPPED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_CREATED_CORE_CONTAINER_1 = "LOG_SOLR_CREATED_CORE_CONTAINER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_CREATED_EMBEDDED_SERVER_1 = "LOG_SOLR_CREATED_EMBEDDED_SERVER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_CREATED_INDEX_DIR_2 = "LOG_SOLR_CREATED_INDEX_DIR_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_STAT_RESULTS_TIME_4 = "LOG_STAT_RESULTS_TIME_4";

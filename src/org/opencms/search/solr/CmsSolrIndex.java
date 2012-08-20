@@ -31,6 +31,7 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -49,7 +50,6 @@ import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsRequestUtil;
 
-import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -62,15 +62,12 @@ import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.FastWriter;
-import org.apache.solr.core.CoreContainer;
-import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.BinaryQueryResponseWriter;
@@ -104,9 +101,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
     /** The post document manipulator. */
     private I_CmsSolrPostSearchProcessor m_postProcessor;
-
-    /** The Solr configuration used by OpenCms. */
-    private CmsSolrConfiguration m_solrConfig;
 
     /**
      * Default constructor
@@ -205,74 +199,11 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public void initialize() throws CmsSearchException {
 
         super.initialize();
-        m_solrConfig = OpenCms.getSearchManager().getSolrServerConfiguration();
-        if ((m_solrConfig == null) || !m_solrConfig.isEnabled()) {
-            // No solr server configured
-            throw new CmsSearchException(Messages.get().container(
-                Messages.ERR_INDEX_SOLR_CONFIGURATION_MISS_1,
-                getName()));
-        } else if (m_solrConfig.getServerUrl() != null) {
-            // HTTP Server configured
-            m_solr = new HttpSolrServer(m_solrConfig.getServerUrl());
-        } else {
-
-            // Embedded server configured
-            try {
-
-                // get the core container
-                CoreContainer coreContainer;
-                // get the core container that contains one core for each configured index
-                if ((m_solr instanceof EmbeddedSolrServer) && (((EmbeddedSolrServer)m_solr).getCoreContainer() != null)) {
-                    coreContainer = ((EmbeddedSolrServer)m_solr).getCoreContainer();
-                } else {
-                    // still no core container: create it
-                    coreContainer = new CoreContainer(m_solrConfig.getHome(), m_solrConfig.getSolrFile());
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_INDEX_SOLR_CORE_CREATE_2,
-                        getName(),
-                        m_solrConfig.getHome() + File.separatorChar + m_solrConfig.getSolrFile()));
-                }
-
-                // get the core
-                SolrCore core = coreContainer.getCore(getName());
-                if (core == null) {
-                    // Being sure the core container is not 'null',
-                    // we can create a core for this index if not already existent
-                    File dataDir = new File(getPath());
-                    if (!dataDir.exists()) {
-                        if (!dataDir.exists()) {
-                            dataDir.mkdirs();
-                            LOG.info(Messages.get().getBundle().key(
-                                Messages.LOG_INDEX_SOLR_INDEX_DIR_CREATED_2,
-                                getName(),
-                                getPath()));
-                        }
-                    }
-                    CoreDescriptor descriptor = new CoreDescriptor(coreContainer, "descriptor", m_solrConfig.getHome());
-                    descriptor.setDataDir(dataDir.getAbsolutePath());
-                    core = new SolrCore(
-                        getName(),
-                        null,
-                        m_solrConfig.getSolrConfig(),
-                        m_solrConfig.getSolrSchema(),
-                        descriptor);
-                }
-
-                // Register the newly created core
-                coreContainer.register(core, false);
-
-                // create a new embedded server if not done before
-                if (m_solr == null) {
-                    m_solr = new EmbeddedSolrServer(coreContainer, getName());
-                    LOG.info(Messages.get().getBundle().key(Messages.LOG_INDEX_SOLR_EMBEDDED_CREATED_1, getName()));
-                }
-
-            } catch (Exception e) {
-                throw new CmsSearchException(Messages.get().container(
-                    Messages.ERR_INDEX_SOLR_EMBEDDED_START_2,
-                    getPath(),
-                    getName()), e);
-            }
+        try {
+            m_solr = OpenCms.getSearchManager().registerSolrIndex(this);
+        } catch (CmsConfigurationException ex) {
+            LOG.error(ex.getMessage());
+            setEnabled(false);
         }
     }
 
@@ -470,15 +401,11 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     @Override
     public void shutDown() {
 
-    	super.shutDown();
-        if (m_solr instanceof EmbeddedSolrServer) {
-        	EmbeddedSolrServer server = ((EmbeddedSolrServer)m_solr);
-        	for (SolrCore core : server.getCoreContainer().getCores()) {
-        		core.closeSearcher();
-        		core.close();
-        	}
-            ((EmbeddedSolrServer)m_solr).getCoreContainer().shutdown();
-            ((EmbeddedSolrServer)m_solr).shutdown();
+        super.shutDown();
+        SolrCore core = OpenCms.getSearchManager().getSolrCore(this);
+        if (core != null) {
+            core.closeSearcher();
+            core.close();
         }
     }
 
