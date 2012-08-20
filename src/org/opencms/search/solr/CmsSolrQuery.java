@@ -559,15 +559,17 @@ public class CmsSolrQuery extends SolrQuery {
             for (String field : fl) {
                 String commasep = field.replaceAll(" ", ",");
                 List<String> list = CmsStringUtil.splitAsList(commasep, ',');
-                if (!list.contains(I_CmsSearchField.FIELD_PATH)) {
-                    list.add(I_CmsSearchField.FIELD_PATH);
-                }
-                if (!list.contains(I_CmsSearchField.FIELD_TYPE)) {
-                    list.add(I_CmsSearchField.FIELD_TYPE);
+                if (!list.contains("*")) {
+                    if (!list.contains(I_CmsSearchField.FIELD_PATH)) {
+                        list.add(I_CmsSearchField.FIELD_PATH);
+                    }
+                    if (!list.contains(I_CmsSearchField.FIELD_TYPE)) {
+                        list.add(I_CmsSearchField.FIELD_TYPE);
+                    }
                 }
                 result.addAll(list);
             }
-            setParam(CommonParams.FL, result.toArray(new String[0]));
+            setParam(CommonParams.FL, CmsStringUtil.arrayAsString(result.toArray(new String[0]), ","));
         }
     }
 }
