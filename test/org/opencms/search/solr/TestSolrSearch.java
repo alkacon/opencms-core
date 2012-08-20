@@ -240,10 +240,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         index.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         index.setFieldConfigurationName("solr_fields");
-        index.addSourceName("source1");
-
-        // initialize the new index
-        index.initialize();
+        index.addSourceName("solr_source2");
 
         // add the search index to the manager
         OpenCms.getSearchManager().addSearchIndex(index);
@@ -255,7 +252,12 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         String query;
-        List<CmsSearchResource> results;
+        CmsSolrResultList results;
+
+        query = "q=*:*";
+        results = index.search(getCmsObject(), query);
+        AllSolrTests.printResults(getCmsObject(), results, false);
+        assertEquals(4, results.size());
 
         query = "q=+text_en:SearchEgg1";
         results = index.search(getCmsObject(), query);
