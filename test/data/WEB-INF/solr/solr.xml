@@ -38,4 +38,6 @@
   adminPath: RequestHandler path to manage cores.  
     If 'null' (or absent), cores will not be manageable via request handler
   -->
+  <cores adminPath="/admin/cores" shareSchema="true">
+  </cores>
 </solr>
