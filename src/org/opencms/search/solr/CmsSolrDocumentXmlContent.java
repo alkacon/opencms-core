@@ -31,15 +31,12 @@
 
 package org.opencms.search.solr;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
@@ -58,17 +55,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Special document text extraction factory for Solr index.<p>
  * 
  * @since 8.5.0 
  */
 public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSolrDocumentXmlContent.class);
 
     /**
      * Public constructor.<p>
@@ -81,22 +73,6 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
     }
 
     /**
-     * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.A_CmsSearchIndex)
-     */
-    @Override
-    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
-    throws CmsException {
-
-        I_CmsExtractionResult content = null;
-        try {
-            content = extractContent(cms, resource, index);
-        } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
-        }
-        return index.getFieldConfiguration().createDocument(cms, resource, index, content);
-    }
-
-    /**
      * @see org.opencms.search.documents.CmsDocumentXmlContent#extractContent(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.A_CmsSearchIndex)
      */
     @Override
@@ -105,23 +81,30 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
         logContentExtraction(resource, index);
         try {
-            CmsFile file = readFile(cms, resource);
+
             // unmarshall the content
-            A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
-            Set<I_CmsSearchField> fields = new HashSet<I_CmsSearchField>();
+            A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, readFile(cms, resource));
             Map<String, String> items = new HashMap<String, String>();
             StringBuffer locales = new StringBuffer();
+
+            // loop over the locales
             for (Locale locale : xmlContent.getLocales()) {
-                // loop over the locales
+
+                // store the extracted locales
                 locales.append(locale.toString());
                 locales.append(' ');
                 StringBuffer content = new StringBuffer();
-                for (String xpath : xmlContent.getNames(locale)) {
-                    // loop over the content items
-                    I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
-                    String extracted = value.getPlainText(cms);
 
+                // loop over the available element paths
+                for (String xpath : xmlContent.getNames(locale)) {
+
+                    // get the value for the element path
+                    I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
+
+                    // first try to receive the text value 
+                    String extracted = value.getPlainText(cms);
                     if (value.isSimpleType()) {
+
                         // put the extraction to the content and to the items
                         if (value.getContentDefinition().getContentHandler().isSearchable(value)
                             && CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
@@ -129,48 +112,44 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                             content.append(extracted);
                             content.append('\n');
                             items.put(xpath, extracted);
-
                         }
 
-                        // if the extraction was empty try to take the String value as fall-back for the items
+                        // if the extraction was empty try to take the String value as fall-back
                         if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)
                             && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value.getStringValue(cms))) {
                             try {
                                 extracted = value.getStringValue(cms);
                                 items.put(xpath, extracted);
                             } catch (CmsRuntimeException re) {
-                                // ignore: is only thrown for those XML content values that don't have a String representation
+                                // ignore: is only thrown for those XML content values 
+                                // that don't have a String representation for those we 
+                                // will store a 'null'
                             }
                         }
 
-                        // resolve the field mappings configured in the XSD of the content
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                            // put those items into the extraction result for that a field mapping done in the XSD
-                            CmsSolrField field = xmlContent.getHandler().getSolrField(value);
-                            if (field != null) {
-                                // The key must be the same as the parameter value of the Solr field mapping defined in:
-                                // org.opencms.xml.content.CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
-                                // later during index process the values are retrieved in:
-                                // org.opencms.search.fields.I_CmsSearchFieldMapping#getStringValue(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
-                                items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                                    CmsXmlUtils.removeXpath(xpath),
-                                    locale), extracted);
-                                fields.add(field);
-                            }
+                            // The key must be the local extended parameter value of the Solr field mapping defined in:
+                            // CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
+                            // later during index process the values are retrieved in:
+                            // I_CmsSearchFieldMapping#getStringValue(CmsObject, CmsResource, I_CmsExtractionResult, List, List)
+                            items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
+                                CmsXmlUtils.removeXpath(xpath),
+                                locale), extracted);
                         }
                     }
                 }
                 if (content.length() > 0) {
-                    // add the extracted content to the items, needed for multi-language support 
-                    String fieldname = A_CmsSearchFieldConfiguration.getLocaleExtendedName(
+                    // add the extracted content with a localized key into the extraction result
+                    String contentKey = A_CmsSearchFieldConfiguration.getLocaleExtendedName(
                         I_CmsSearchField.FIELD_CONTENT,
                         locale);
-                    items.put(fieldname, content.toString());
-                    items.put(I_CmsSearchField.FIELD_CONTENT, content.toString());
+                    items.put(contentKey, content.toString());
                 }
-                // store the locales that have been indexed for this document
+                // add the locales that have been indexed for this document as item
                 items.put(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString());
             }
+            // get all search fields configured in the XSD of this XML content
+            Set<I_CmsSearchField> fields = new HashSet<I_CmsSearchField>(xmlContent.getHandler().getSearchFields());
             return new CmsExtractionResult(null, items, fields);
         } catch (Exception e) {
             throw new CmsIndexException(

@@ -35,30 +35,25 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.A_CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
- * The Solr field mapping implementation.<p>
- * 
- * @since 8.5.0
+ * Dummy Field Mapping implementation.<p>
  */
-public class CmsSolrFieldMapping extends A_CmsSearchFieldMapping {
+public class CmsDynamicDummyField extends A_CmsSearchFieldMapping {
+
+    /** Serial version UID. */
+    private static final long serialVersionUID = -3451280904747959635L;
 
     /**
      * Public constructor.<p>
-     * 
-     * @param type the mapping type
-     * @param param the parameter
      */
-    public CmsSolrFieldMapping(CmsSearchFieldMappingType type, String param) {
+    public CmsDynamicDummyField() {
 
-        super(type, param);
+        super();
     }
 
     /**
@@ -72,15 +67,16 @@ public class CmsSolrFieldMapping extends A_CmsSearchFieldMapping {
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
 
-        if (getType().equals(CmsSearchFieldMappingType.CONTENT) || getType().equals(CmsSearchFieldMappingType.ITEM)) {
-            Locale locale = cms.getRequestContext().getLocale();
-            String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(getParam(), locale);
-            String content = extractionResult.getContentItems().get(key);
-            if (getType().equals(CmsSearchFieldMappingType.CONTENT) && CmsStringUtil.isEmptyOrWhitespaceOnly(content)) {
-                content = extractionResult.getContent();
+        String result = null;
+        if (getType().getMode() == CmsSearchFieldMappingType.DYNAMIC.getMode()) {
+            // dynamic mapping
+            if ("special".equals(getParam())) {
+                result = "This is an amazing and very 'dynamic' content";
             }
-            return content;
+        } else {
+            // default mapping
+            result = super.getStringValue(cms, res, extractionResult, properties, propertiesSearched);
         }
-        return super.getStringValue(cms, res, extractionResult, properties, propertiesSearched);
+        return result;
     }
 }

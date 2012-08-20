@@ -27,6 +27,7 @@
 
 package org.opencms.search;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
@@ -65,6 +66,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -81,6 +83,12 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.Version;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.core.CoreContainer;
+import org.apache.solr.core.CoreDescriptor;
+import org.apache.solr.core.SolrCore;
 
 /**
  * Implements the general management and configuration of the search and 
@@ -522,6 +530,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSearchManager.class);
 
+    /** The embedded Solr server, only one embedded instance per OpenCms. */
+    private static SolrServer m_solr;
+
     /** The administrator OpenCms user context to access OpenCms VFS resources. */
     protected CmsObject m_adminCms;
 
@@ -773,8 +784,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
                 try {
                     searchIndex.initialize();
-                } catch (CmsSearchException e) {
+                } catch (CmsException e) {
                     // should never happen
+                    LOG.error(e.getMessage(), e);
                 }
             }
         }
@@ -1496,6 +1508,77 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Registers a new Solr core for the given index.<p>
+     * 
+     * @param index the index to register a new Solr core for
+     * 
+     * @return the Solr server instance using the created core
+     * 
+     * @throws CmsConfigurationException if no Solr server is configured
+     */
+    public SolrServer registerSolrIndex(CmsSolrIndex index) throws CmsConfigurationException {
+
+        if ((m_solrConfig == null) || !m_solrConfig.isEnabled()) {
+            // No solr server configured
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_SOLR_NOT_ENABLED_0));
+        }
+
+        if (m_solrConfig.getServerUrl() != null) {
+            // HTTP Server configured
+            return registerOnHttpServer(index);
+        }
+
+        // get the core container
+        CoreContainer coreContainer;
+        // get the core container that contains one core for each configured index
+        if ((m_solr instanceof EmbeddedSolrServer) && (((EmbeddedSolrServer)m_solr).getCoreContainer() != null)) {
+            coreContainer = ((EmbeddedSolrServer)m_solr).getCoreContainer();
+        } else {
+            // still no core container: create it
+            coreContainer = createCoreContainer();
+        }
+
+        // get the core
+        SolrCore core = coreContainer.getCore(index.getName());
+
+        if (core == null) {
+            // Being sure the core container is not 'null',
+            // we can create a core for this index if not already existent
+            File dataDir = new File(index.getPath());
+            if (!dataDir.exists()) {
+                if (!dataDir.exists()) {
+                    dataDir.mkdirs();
+                    LOG.info(Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_CREATED_INDEX_DIR_2,
+                        index.getName(),
+                        index.getPath()));
+                }
+            }
+            CoreDescriptor descriptor = new CoreDescriptor(coreContainer, "descriptor", m_solrConfig.getHome());
+            descriptor.setDataDir(dataDir.getAbsolutePath());
+            core = new SolrCore(
+                index.getName(),
+                null,
+                m_solrConfig.getSolrConfig(),
+                m_solrConfig.getSolrSchema(),
+                descriptor);
+        }
+
+        // Register the newly created core
+        coreContainer.register(core, false);
+
+        // create a new embedded server if not done before
+        if (m_solr == null) {
+            m_solr = new EmbeddedSolrServer(coreContainer, index.getName());
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_SOLR_CREATED_EMBEDDED_SERVER_1,
+                m_solrConfig.getSolrFile().getAbsolutePath()));
+        }
+
+        return m_solr;
+    }
+
+    /**
      * Removes this field configuration from the OpenCms configuration (if it is not used any more).<p>
      * 
      * @param fieldConfiguration the field configuration to remove from the configuration 
@@ -1856,7 +1939,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Sets the Solr configurtaiotn.<p>
+     * Sets the Solr configuration.<p>
      * 
      * @param config the Solr configuration
      */
@@ -1912,6 +1995,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             A_CmsSearchIndex index = i.next();
             index.shutDown();
         }
+
+        // shutdown Solr server
+        if (m_solr instanceof EmbeddedSolrServer) {
+            ((EmbeddedSolrServer)m_solr).getCoreContainer().shutdown();
+        }
+
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
         }
@@ -1963,7 +2052,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             I_CmsDocumentFactory factory = i.next();
             names.add(factory.getName());
         }
-
         return names;
     }
 
@@ -2505,6 +2593,31 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Creates the Solr core container.<p>
+     * 
+     * @return the created core container
+     */
+    private CoreContainer createCoreContainer() {
+
+        CoreContainer container = null;
+        try {
+            // get the core container
+            // still no core container: create it
+            container = new CoreContainer(m_solrConfig.getHome(), m_solrConfig.getSolrFile());
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_SOLR_CREATED_CORE_CONTAINER_1,
+                m_solrConfig.getSolrFile().getAbsolutePath()));
+        } catch (Exception e) {
+            LOG.error(
+                Messages.get().container(
+                    Messages.ERR_SOLR_CORE_CONTAINER_NOT_CREATED_1,
+                    m_solrConfig.getSolrFile().getAbsolutePath()),
+                e);
+        }
+        return container;
+    }
+
+    /**
      * Returns the report in the given event data, if <code>null</code>
      * a new log report is used.<p>
      * 
@@ -2522,5 +2635,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             report = new CmsLogReport(Locale.ENGLISH, getClass());
         }
         return report;
+    }
+
+    /**
+     * Register the given index on the configured HTTP server.<p>
+     * 
+     * @param index the index to register
+     * 
+     * @return the created Solr server instance
+     */
+    private SolrServer registerOnHttpServer(CmsSolrIndex index) {
+
+        // TODO Implement multi core support for HTTP server
+        // @see http://lucidworks.lucidimagination.com/display/solr/Configuring+solr.xml
+        return new HttpSolrServer(m_solrConfig.getServerUrl());
     }
 }

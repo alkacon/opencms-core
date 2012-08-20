@@ -30,11 +30,13 @@ package org.opencms.search.fields;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Locale;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 
 /**
- * An individual field configuration in a search index.<p>
+ * An individual field configuration in a Lucene search index.<p>
  * 
  * @since 7.0.0 
  */
@@ -57,6 +59,9 @@ public class CmsSearchField extends A_CmsSearchField {
 
     /** Constant for the "yes" index setting. */
     public static final String STR_YES = "yes";
+
+    /** The serial version UID. */
+    private static final long serialVersionUID = -4946013624087640706L;
 
     /** The special analyzer to use for this field. */
     private Analyzer m_analyzer;
@@ -282,6 +287,15 @@ public class CmsSearchField extends A_CmsSearchField {
         } else {
             return String.valueOf(isIndexed());
         }
+    }
+
+    /**
+     * @see org.opencms.search.fields.I_CmsSearchField#getLocale()
+     */
+    public Locale getLocale() {
+
+        // The default implementation of Lucene Fields is not localized yet
+        return null;
     }
 
     /**

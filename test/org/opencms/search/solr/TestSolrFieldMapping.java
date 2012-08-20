@@ -31,12 +31,21 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
+import org.opencms.search.CmsSearchResource;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+
+import java.util.Date;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.apache.solr.common.SolrInputDocument;
 
 /**
  * Tests the Solr field mapping.<p>
@@ -66,16 +75,14 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrFieldMapping.class.getName());
-        suite.addTest(new TestSolrFieldMapping("testFieldMappingCopy"));
-        suite.addTest(new TestSolrFieldMapping("testFieldMappingDefault"));
-        suite.addTest(new TestSolrFieldMapping("testFieldMappingXSD"));
+        suite.addTest(new TestSolrFieldMapping("testAppinfoSolrField"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/");
+                setupOpenCms("solrtest", "/");
             }
 
             @Override
@@ -89,26 +96,109 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
     }
 
     /**
-     * @throws Throwable
+     * Tests the Solr field configuration that can be done in the XSD of an XML content.<p>
+     * 
+     * '@see /sites/default/xmlcontent/article.xsd'
+     * 
+     * @throws Throwable if something goes wrong
      */
-    public void testFieldMappingCopy() throws Throwable {
+    public void testAppinfoSolrField() throws Throwable {
 
-        // TODO: implement
-    }
+        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
+        OpenCms.getSearchManager().rebuildIndex(AllSolrTests.SOLR_OFFLINE, report);
 
-    /**
-     * @throws Throwable
-     */
-    public void testFieldMappingDefault() throws Throwable {
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_OFFLINE);
+        CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), "path:/sites/default/xmlcontent/article_0001.html");
+        CmsSolrResultList results = index.search(getCmsObject(), squery);
 
-        // TODO: implement
-    }
+        /////////////////
+        // RESULT TEST // 
+        /////////////////
 
-    /**
-     * @throws Throwable
-     */
-    public void testFieldMappingXSD() throws Throwable {
+        // Test the result count
+        AllSolrTests.printResults(getCmsObject(), results, false);
+        assertEquals(1, results.size());
 
-        // TODO: implement
+        // Test if the result contains the expected resource 
+        CmsSearchResource res = results.get(0);
+        assertEquals("/sites/default/xmlcontent/article_0001.html", res.getRootPath());
+
+        ////////////////
+        // FIELD TEST // 
+        ////////////////
+
+        // Test multiple language field
+        String fieldValue = res.getField("ahtml_en");
+        assertNotNull(fieldValue);
+        fieldValue = res.getField("ahtml_de");
+        assertNotNull(fieldValue);
+
+        // Test the contents of the copy fields
+        fieldValue = res.getField("test_text_de");
+        assertEquals(true, fieldValue.contains("Alkacon Software German"));
+        fieldValue = res.getField("test_text_en");
+        assertEquals(true, fieldValue.contains("Alkacon Software German"));
+
+        // Test locale restricted field
+        fieldValue = res.getField("aauthor_de");
+        assertEquals(true, fieldValue.equals("Alkacon Software German"));
+        fieldValue = res.getField("aauthor_en");
+        assertNull(fieldValue);
+
+        // Test source field
+        Date dateValue = res.getDateField("arelease_en_dt");
+        assertEquals(true, "1308210520000".equals(new Long(dateValue.getTime()).toString()));
+        dateValue = res.getDateField("arelease_de_dt");
+        assertEquals(true, "1308210420000".equals(new Long(dateValue.getTime()).toString()));
+
+        // test 'default' value for the whole field
+        fieldValue = res.getField("ahomepage_de");
+        assertEquals(true, fieldValue.equals("Homepage n.a."));
+        fieldValue = res.getField("ahomepage_en");
+        assertEquals(true, fieldValue.contains("/sites/default/index.html"));
+
+        // Test the boost to have a complete set of test cases
+        // the boost for a field can only be set for "SolrInputDocument"s
+        // fields of documents that are returned as query result "SolrDocument"s
+        // never have a boost
+        float boost = ((SolrInputDocument)res.getDocument().getDocument()).getField("ahtml_en").getBoost();
+        assertEquals(true, 1.0F == boost);
+
+        //////////////////
+        // MAPPING TEST // 
+        //////////////////
+
+        // test the 'content' mapping
+        fieldValue = res.getField("ateaser_en");
+        assertEquals(true, fieldValue.contains("OpenCms Alkacon This is the article 1 text"));
+
+        // test the 'item' mapping with default
+        fieldValue = res.getField("ateaser_en");
+        assertEquals(true, fieldValue.contains("/sites/default/index.html"));
+        fieldValue = res.getField("ateaser_de");
+        assertEquals(true, fieldValue.contains("Homepage n.a."));
+
+        // test the property mapping
+        fieldValue = res.getField("atitle_en");
+        assertEquals(true, fieldValue.contains("Alkacon Software English"));
+        fieldValue = res.getField("atitle_de");
+        // properties are not localized
+        assertEquals(false, fieldValue.contains("Alkacon Software German"));
+        assertEquals(true, fieldValue.contains("Alkacon Software English"));
+        // but the title item value is localized
+        assertEquals(true, fieldValue.contains(">>GermanSearchEgg1<<"));
+
+        // test the 'property-search' mapping
+        fieldValue = res.getField("ateaser_en");
+        assertEquals(true, fieldValue.contains("Cologne is a nice city"));
+
+        // test the 'attribute' mapping
+        fieldValue = res.getField("ateaser_en");
+        // This is the Lucene optimized String representaion of the date
+        assertEquals(true, fieldValue.contains("20110616074840000"));
+
+        // test the 'dynamic' mapping with 'class' attribute
+        fieldValue = res.getField("ateaser_en");
+        assertEquals(true, fieldValue.contains("This is an amazing and very 'dynamic' content"));
     }
 }

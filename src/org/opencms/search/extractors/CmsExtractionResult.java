@@ -133,6 +133,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
             if (obj instanceof CmsExtractionResult) {
                 CmsExtractionResult result = (CmsExtractionResult)obj;
                 result.m_serializedVersion = bytes;
+                return result;
             }
         }
         return null;

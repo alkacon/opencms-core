@@ -1252,13 +1252,6 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
         pathFilter.addTerm(new Term(I_CmsSearchField.FIELD_PARENT_FOLDERS, searchRoot));
     }
 
-    @Override
-    protected String generateIndexDirectory() {
-
-        return OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            OpenCms.getSearchManager().getDirectory() + "/" + getName());
-    }
-
     /**
      * Returns a cached Lucene term query filter for the given field and terms.<p>
      * 

@@ -100,10 +100,6 @@ public class TestSolrSearchPermissionHandling extends OpenCmsTestCase {
 
         echo("Testing search for permission check by comparing result counts");
 
-        echo("ID Admin: " + getCmsObject().getRequestContext().getCurrentUser().getId().toString());
-        echo("ID test1: " + getCmsObject().readUser("test1").getId().toString());
-        echo("ID test2: " + getCmsObject().readUser("test2").getId().toString());
-
         I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
         OpenCms.getSearchManager().rebuildIndex(AllSolrTests.SOLR_OFFLINE, report);
 

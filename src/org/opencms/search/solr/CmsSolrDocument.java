@@ -42,16 +42,17 @@ import org.opencms.util.CmsUUID;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.Fieldable;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.SolrInputField;
 import org.apache.solr.schema.DateField;
+import org.apache.solr.schema.FieldType;
 import org.apache.solr.schema.IndexSchema;
 
 /**
@@ -61,14 +62,14 @@ import org.apache.solr.schema.IndexSchema;
  */
 public class CmsSolrDocument implements I_CmsSearchDocument {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSolrDocument.class);
+
     /** The Solr document. */
     private SolrInputDocument m_doc;
 
     /** Holds the score for this document. */
     private float m_score;
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSolrDocument.class);
 
     /**
      * Public constructor to create a encapsulate a Solr document.<p>
@@ -163,18 +164,23 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     public void addSearchField(I_CmsSearchField sfield, String value) {
 
         CmsSolrField field = (CmsSolrField)sfield;
-        IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
-        if (!schema.hasExplicitField(field.getName())) {
-            Fieldable fieldable = field.createField(value);
-            if (fieldable != null) {
-                m_doc.addField(fieldable.name(), fieldable.stringValue(), fieldable.getBoost());
+        List<String> fieldsToAdd = new ArrayList<String>(Collections.singletonList(field.getName()));
+        if ((field.getCopyFields() != null) && !field.getCopyFields().isEmpty()) {
+            fieldsToAdd.addAll(field.getCopyFields());
+        }
+        for (String fieldName : fieldsToAdd) {
+
+            IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
+            FieldType type = schema.getFieldType(fieldName);
+            if (type instanceof DateField) {
+                value = DateField.formatExternal(new Date(new Long(value).longValue()));
             }
-        } else {
-            SolrInputField exfield = m_doc.getField(field.getName());
+
+            SolrInputField exfield = m_doc.getField(fieldName);
             if (exfield == null) {
-                m_doc.addField(field.getName(), value, field.getBoost());
+                m_doc.addField(fieldName, value, field.getBoost());
             } else {
-                m_doc.setField(field.getName(), value, field.getBoost());
+                m_doc.setField(fieldName, value, field.getBoost());
             }
         }
     }
@@ -194,6 +200,9 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
         Object o = m_doc.getFieldValue(I_CmsSearchField.FIELD_CONTENT_BLOB);
         if (o != null) {
+            if (o instanceof byte[]) {
+                return (byte[])o;
+            }
             return o.toString().getBytes();
         }
         return null;
@@ -221,6 +230,9 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     public Date getFieldValueAsDate(String fieldName) {
 
         Object o = m_doc.getFieldValue(fieldName);
+        if (o instanceof Date) {
+            return (Date)o;
+        }
         if (o != null) {
             try {
                 return DateField.parseDate(o.toString());

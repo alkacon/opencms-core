@@ -40,6 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
@@ -97,10 +98,12 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
 
         for (CmsProperty prop : properties) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
-                document.addSearchField(
-                    new CmsSolrField("*" + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES, prop.getName()
-                        + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES, null, null, null, I_CmsSearchField.BOOST_DEFAULT),
-                    prop.getValue());
+                document.addSearchField(new CmsSolrField(
+                    prop.getName() + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES,
+                    null,
+                    null,
+                    null,
+                    I_CmsSearchField.BOOST_DEFAULT), prop.getValue());
             }
         }
         return document;
@@ -159,8 +162,13 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
                             text.append('\n');
                         }
                         text.append(mapResult);
+                    } else if (mapping.getDefaultValue() != null) {
+                        text.append("\n" + mapping.getDefaultValue());
                     }
                 }
+            }
+            if ((text.length() <= 0) && (field.getDefaultValue() != null)) {
+                text.append(field.getDefaultValue());
             }
             if (text.length() > 0) {
                 document.addSearchField(field, text.toString());
@@ -239,18 +247,13 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
 
         // add the content_<locale> fields to this configuration
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
-            CmsSolrField solrField = new CmsSolrField(
-                I_CmsSearchField.FIELD_PREFIX_DYNAMIC + locale.getLanguage(),
+            CmsSolrField solrField = new CmsSolrField(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
                 I_CmsSearchField.FIELD_CONTENT,
-                null,
-                locale,
-                null,
-                I_CmsSearchField.BOOST_DEFAULT);
-            solrField.addMapping(new CmsSolrFieldMapping(
+                locale), null, locale, null, I_CmsSearchField.BOOST_DEFAULT);
+            solrField.addMapping(new CmsSearchFieldMapping(
                 CmsSearchFieldMappingType.CONTENT,
                 I_CmsSearchField.FIELD_CONTENT));
             addField(solrField);
         }
-
     }
 }

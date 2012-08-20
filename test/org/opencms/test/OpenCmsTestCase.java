@@ -55,6 +55,8 @@ import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.relations.CmsRelation;
 import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.solr.AllSolrTests;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -77,6 +79,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -86,6 +89,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.lucene.store.FSDirectory;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -766,14 +770,6 @@ public class OpenCmsTestCase extends TestCase {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("WEB-INF/index/");
-        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
-            CmsFileUtil.purgeDirectory(new File(path));
-        }
-        path = getTestDataPath("WEB-INF/solr/" + AllSolrTests.SOLR_OFFLINE + "/");
-        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
-            CmsFileUtil.purgeDirectory(new File(path));
-        }
-        path = getTestDataPath("WEB-INF/solr/" + AllSolrTests.INDEX_TEST + "/");
         if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
@@ -3398,6 +3394,30 @@ public class OpenCmsTestCase extends TestCase {
 
         // return the initialized cms context Object
         return cms;
+    }
+
+    /**
+     * Imports a module (zipfile) from the default module directory, 
+     * creating a temporary project for this.<p>
+     *
+     * @param importFile the name of the import module located in the default module directory
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, I_CmsReport, CmsImportParameters)
+     */
+    protected void importModuleFromDefault(String importFile) throws Exception {
+
+        String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
+        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);
+
+        CmsImportParameters params = new CmsImportParameters(fileName, "/", true);
+
+        OpenCms.getImportExportManager().importData(
+            getCmsObject(),
+            new CmsShellReport(getCmsObject().getRequestContext().getLocale()),
+            params);
     }
 
     /**

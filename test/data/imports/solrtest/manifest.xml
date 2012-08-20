@@ -2508,7 +2508,7 @@
 		<file>
 			<source>sites/default/xmlcontent/article_0001.html</source>
 			<destination>sites/default/xmlcontent/article_0001.html</destination>
-			<type>plain</type>
+			<type>article</type>
 			<uuidstructure>84d12484-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
 			<datelastmodified>Mon, 18 Oct 2004 16:59:00 GMT</datelastmodified>
@@ -2528,7 +2528,7 @@
 		<file>
 			<source>sites/default/xmlcontent/article_0002.html</source>
 			<destination>sites/default/xmlcontent/article_0002.html</destination>
-			<type>plain</type>
+			<type>article</type>
 			<uuidstructure>84eb6346-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>00b9d277-113f-11d9-831f-b70b5b3477aa</uuidresource>
 			<datelastmodified>Tue, 19 Oct 2004 16:59:00 GMT</datelastmodified>
@@ -2548,7 +2548,7 @@
 		<file>
 			<source>sites/default/xmlcontent/article_0003.html</source>
 			<destination>sites/default/xmlcontent/article_0003.html</destination>
-			<type>plain</type>
+			<type>article</type>
 			<uuidstructure>84f01e38-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>beeee83b-113f-11d9-831f-b70b5b3477aa</uuidresource>
 			<datelastmodified>Wed, 20 Oct 2004 17:00:00 GMT</datelastmodified>
@@ -2568,7 +2568,7 @@
 		<file>
 			<source>sites/default/xmlcontent/article_0004.html</source>
 			<destination>sites/default/xmlcontent/article_0004.html</destination>
-			<type>plain</type>
+			<type>article</type>
 			<uuidstructure>8500e71a-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>f7c19c2b-1140-11d9-831f-b70b5b3477aa</uuidresource>
 			<datelastmodified>Thu, 21 Oct 2004 17:00:00 GMT</datelastmodified>
@@ -2580,6 +2580,30 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[This is article number 4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/default/xmlcontent/link_article_0001.html</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>bf6b3a14-e862-11e1-b910-99baff57e903</uuidstructure>
+			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Thu, 16 Aug 2012 14:26:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<datereleased>Thu, 16 Jun 2011 07:48:40 GMT</datereleased>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Author</name>
+					<value><![CDATA[Alkacon Software English]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample article 1  (>>SearchEgg1<<)]]></value>
 				</property>
 			</properties>
 			<relations/>
