@@ -317,6 +317,16 @@
           <name>openoffice</name>
         </documenttypes-indexed>
       </indexsource>
+      <indexsource>
+        <name>solr_source2</name>
+        <indexer class="org.opencms.search.CmsVfsIndexer"/>
+        <resources>
+          <resource>/sites/default/</resource>
+        </resources>
+        <documenttypes-indexed>
+          <name>xmlcontent-solr</name>
+        </documenttypes-indexed>
+      </indexsource>
     </indexsources>
     <fieldconfigurations>
       <fieldconfiguration class="org.opencms.search.fields.CmsSearchFieldConfigurationOldCategories">
