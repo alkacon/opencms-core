@@ -406,9 +406,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                         // element itself
                         int elemIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(container));
-                        String elemPath = CmsXmlUtils.concatXpath(cntPath, CmsXmlUtils.createXpathElement(
-                            element.getName(),
-                            elemIndex));
+                        String elemPath = CmsXmlUtils.concatXpath(
+                            cntPath,
+                            CmsXmlUtils.createXpathElement(element.getName(), elemIndex));
                         I_CmsXmlSchemaType elemSchemaType = cntDef.getSchemaType(element.getName());
                         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                         addBookmark(elemPath, locale, true, elemValue);
@@ -459,8 +459,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                 m_cntPages.put(locale, new CmsContainerPageBean(locale, containers));
             } catch (NullPointerException e) {
-                LOG.error(org.opencms.xml.content.Messages.get().getBundle().key(
-                    org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+                LOG.error(
+                    org.opencms.xml.content.Messages.get().getBundle().key(
+                        org.opencms.xml.content.Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0),
+                    e);
             }
         }
     }
@@ -501,7 +503,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 CmsResource uriRes = fillResource(cms, uriElem, element.getId());
                 Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
                 fillResource(cms, formatterElem, element.getFormatterId());
-
+                if (element.isCreateNew()) {
+                    Element createNewElem = elemElement.addElement(XmlNode.CreateNew.name());
+                    createNewElem.addText(Boolean.TRUE.toString());
+                }
                 // the properties
                 Map<String, String> properties = element.getIndividualSettings();
                 Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(

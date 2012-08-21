@@ -536,7 +536,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
             List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
             for (CmsContainer container : containers) {
-                CmsContainerBean containerBean = getContainerBean(container, containerpage, locale);
+                CmsContainerBean containerBean = getContainerBeanToSave(container, containerpage, locale);
                 containerBeans.add(containerBean);
             }
             CmsContainerPageBean page = new CmsContainerPageBean(contentLocale, containerBeans);
@@ -805,64 +805,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      *  
      * @return a container bean
      */
-    private CmsContainerBean getContainerBean(CmsContainer container, CmsResource containerpage, String locale) {
+    private CmsContainerBean getContainerBeanToSave(CmsContainer container, CmsResource containerpage, String locale) {
 
         CmsObject cms = getCmsObject();
         List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElement elementData : container.getElements()) {
             try {
-                if (elementData.isNew()) {
-
-                    if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(elementData.getResourceType())) {
-                        CmsGroupContainer groupContainer = new CmsGroupContainer();
-                        groupContainer.setNew(true);
-                        groupContainer.setElements(new ArrayList<CmsContainerElement>());
-                        Set<String> types = new HashSet<String>();
-                        types.add(container.getType());
-                        groupContainer.setTypes(types);
-                        CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> saveResult = internalSaveGroupContainer(
-                            cms,
-                            containerpage.getStructureId(),
-                            groupContainer,
-                            locale);
-                        elementData = saveResult.getFirst();
-                    } else {
-                        elementData = createNewElement(
-                            containerpage.getStructureId(),
-                            elementData.getClientId(),
-                            elementData.getResourceType(),
-                            null,
-                            locale);
-                    }
-                }
-                CmsContainerElementBean element = getCachedElement(elementData.getClientId());
-
-                // make sure resource is readable, 
-                CmsResource resource = cms.readResource(element.getId(), CmsResourceFilter.IGNORE_EXPIRATION);
-
-                // check if there is a valid formatter
-                int containerWidth = container.getWidth();
-
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpage.getRootPath());
-                CmsFormatterConfiguration formatters = config.getFormatters(cms, resource);
-                String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-                String containerType = null;
-
-                if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(typeName)
-                    || CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME.equals(typeName)) {
-                    // always reference the preview formatter for group containers
-                    containerType = CmsFormatterBean.PREVIEW_TYPE;
-                } else {
-                    containerType = container.getType();
-                }
-
-                CmsFormatterBean formatter = formatters.getFormatter(containerType, containerWidth);
-                if (formatter != null) {
-                    elements.add(new CmsContainerElementBean(
-                        element.getId(),
-                        formatter.getJspStructureId(),
-                        element.getIndividualSettings(),
-                        false));
+                CmsContainerElementBean newElementBean = getContainerElementBeanToSave(
+                    cms,
+                    containerpage,
+                    container,
+                    elementData);
+                if (newElementBean != null) {
+                    elements.add(newElementBean);
                 }
             } catch (Exception e) {
                 log(e.getLocalizedMessage(), e);
@@ -870,6 +825,90 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         CmsContainerBean result = new CmsContainerBean(container.getName(), container.getType(), elements);
         return result;
+    }
+
+    /**
+     * Converts container page element data to a bean which can be saved in a container page.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param containerpage the container page resource 
+     * @param container the container containing the element 
+     * @param elementData the data for the single element 
+     * 
+     * @return the container element bean 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsContainerElementBean getContainerElementBeanToSave(
+        CmsObject cms,
+        CmsResource containerpage,
+        CmsContainer container,
+        CmsContainerElement elementData) throws CmsException {
+
+        String elementClientId = elementData.getClientId();
+        boolean hasUuidPrefix = (elementClientId != null) && elementClientId.matches(CmsUUID.UUID_REGEX + ".*$");
+        boolean isCreateNew = elementData.isNew() && hasUuidPrefix;
+        if (elementData.isNew() && !hasUuidPrefix) {
+
+            //                    if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(elementData.getResourceType())) {
+            //                        CmsGroupContainer groupContainer = new CmsGroupContainer();
+            //                        groupContainer.setNew(true);
+            //                        groupContainer.setElements(new ArrayList<CmsContainerElement>());
+            //                        Set<String> types = new HashSet<String>();
+            //                        types.add(container.getType());
+            //                        groupContainer.setTypes(types);
+            //                        CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> saveResult = internalSaveGroupContainer(
+            //                            cms,
+            //                            containerpage.getStructureId(),
+            //                            groupContainer,
+            //                            locale);
+            //                        elementData = saveResult.getFirst();
+            //                    } else {
+            //                        elementData = createNewElement(
+            //                            containerpage.getStructureId(),
+            //                            elementData.getClientId(),
+            //                            elementData.getResourceType(),
+            //                            null,
+            //                            locale);
+            //                    }
+
+            // Due to the changed save system without the save button, we need to make sure that new elements 
+            // are only created once. This must happen when the user first edits a new element. But we still 
+            // want to save changes to non-new elements on the page, so we skip new elements while saving.
+            return null;
+
+        }
+        CmsContainerElementBean element = getCachedElement(elementData.getClientId());
+
+        // make sure resource is readable, 
+        CmsResource resource = cms.readResource(element.getId(), CmsResourceFilter.IGNORE_EXPIRATION);
+
+        // check if there is a valid formatter
+        int containerWidth = container.getWidth();
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpage.getRootPath());
+        CmsFormatterConfiguration formatters = config.getFormatters(cms, resource);
+        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        String containerType = null;
+
+        if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(typeName)
+            || CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME.equals(typeName)) {
+            // always reference the preview formatter for group containers
+            containerType = CmsFormatterBean.PREVIEW_TYPE;
+        } else {
+            containerType = container.getType();
+        }
+
+        CmsFormatterBean formatter = formatters.getFormatter(containerType, containerWidth);
+        CmsContainerElementBean newElementBean = null;
+        if (formatter != null) {
+            newElementBean = new CmsContainerElementBean(
+                element.getId(),
+                formatter.getJspStructureId(),
+                element.getIndividualSettings(),
+                isCreateNew);
+        }
+        return newElementBean;
     }
 
     /**
