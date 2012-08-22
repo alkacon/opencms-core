@@ -45,6 +45,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
+        String calendarStyle();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
         String checkboxlabel();
 
         /**
@@ -53,6 +60,27 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the css class
          */
         String checkBoxStyle();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String colorPicker();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String colorpickerpopup();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String colorPickerValue();
 
         /**
          * Css class reader.<p>
@@ -80,7 +108,21 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
+        String galleryWidget();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
         String inputField();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String passwordTextBox();
 
         /**
          * Css class reader.<p>
@@ -143,42 +185,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
-        String calendarStyle();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String passwordTextBox();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String colorpickerpopup();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
         String vfsInputBox();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String colorPicker();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String colorPickerValue();
     }
 
     /** The XML content editor CSS. */

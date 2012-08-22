@@ -51,6 +51,24 @@ div.textAreaBoxPanel{
 	border-radius: value("constants.css.borderRadius");
 }
 
+div.galleryWidget{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	display: block;
+	width: auto;
+	padding: 0px;
+	height: 18px;
+	font-size: 12px;
+}
+div.galleryWidget input{
+	font-family: value("constants.css.fontFamily");
+	border-radius: value("constants.css.borderRadius");
+	color: value("constants.css.textColor");
+	height: 18px;
+	font-size: 12px;
+}
+
 div.vfsInputBox{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");

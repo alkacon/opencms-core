@@ -59,7 +59,7 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget {
 
         m_linkSelect = new CmsGalleryField(iconImage);
         m_linkSelect.parseConfiguration(config);
-        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
+        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
