@@ -69,6 +69,9 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
     /** The main panel of this widget. */
     FlowPanel m_panel = new FlowPanel();
 
+    /** The scroll panel around the multiselections. */
+    CmsScrollPanel m_scrollPanel = GWT.create(CmsScrollPanel.class);
+
     /** Value of the activation. */
     private boolean m_active = true;
 
@@ -80,9 +83,6 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
     /** Value of the radio group. */
     private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
-
-    /** The scroll panel around the multiselections. */
-    CmsScrollPanel m_scrollPanel = GWT.create(CmsScrollPanel.class);
 
     /** The parameter set from configuration.*/
     private int m_rowsToShow = DEFAULT_ROWS_SHOWN;

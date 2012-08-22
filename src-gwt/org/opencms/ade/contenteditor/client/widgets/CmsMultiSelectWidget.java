@@ -67,6 +67,9 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     /** Optional shortcut default marker. */
     private static final String DEFAULT_MARKER = "*";
 
+    /** Default value of rows to be shown. */
+    private static final int DEFAULT_ROWS_SHOWN = 10;
+
     /** Delimiter between option sets. */
     private static final String INPUT_DELIMITER = "|";
 
@@ -78,6 +81,9 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
 
     /** Key prefix for the 'help' text. */
     private static final String KEY_HELP = "help='";
+
+    /** Key prefix for the 'rows' text. */
+    private static final String KEY_LENGTH = "rows=";
 
     /** Key prefix for the 'option' text. */
     private static final String KEY_OPTION = "option='";
@@ -93,12 +99,6 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
 
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
-
-    /** Default value of rows to be shown. */
-    private static final int DEFAULT_ROWS_SHOWN = 10;
-
-    /** Key prefix for the 'rows' text. */
-    private static final String KEY_LENGTH = "rows=";
 
     /** The main panel of this widget. */
     FlowPanel m_panel = new FlowPanel();

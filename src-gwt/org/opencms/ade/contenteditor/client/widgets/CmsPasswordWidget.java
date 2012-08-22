@@ -48,14 +48,14 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * */
 public class CmsPasswordWidget extends Composite implements I_EditWidget {
 
+    /**The main panel of this widget. */
+    SimplePanel m_mainPanel = new SimplePanel();
+
     /** Value of the activation. */
     private boolean m_active = true;
 
     /** The Password input field. */
     private PasswordTextBox m_passwordTextBox = new PasswordTextBox();
-
-    /**The main panel of this widget. */
-    SimplePanel m_mainPanel = new SimplePanel();
 
     /**
      * Constructs an CmsComboWidget.<p>

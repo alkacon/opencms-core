@@ -136,6 +136,9 @@ public class CmsPrincipalWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        if (active == m_active) {
+            return;
+        }
         m_active = active;
         m_principalPanel.setEnabled(active);
         if (active) {

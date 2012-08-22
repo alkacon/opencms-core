@@ -44,20 +44,20 @@ import com.google.gwt.user.client.ui.Composite;
  * */
 public class CmsVfsWidget extends Composite implements I_EditWidget {
 
+    /** The popup to select a file. */
+    protected CmsVfsSelector m_selector = new CmsVfsSelector();
+
     /** Value of the activation. */
     private boolean m_active = true;
 
-    /** The link selector. */
-    private CmsVfsSelection m_linkSelect;
+    /***/
+    private String m_config = "";
 
     /** The icon string. */
     private String m_imageClass = "";
 
-    /** The popup to select a file. */
-    protected CmsVfsSelector m_selector = new CmsVfsSelector();
-
-    /***/
-    private String m_config = "";
+    /** The link selector. */
+    private CmsVfsSelection m_linkSelect;
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>

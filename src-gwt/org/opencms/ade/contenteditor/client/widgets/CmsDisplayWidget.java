@@ -148,6 +148,16 @@ public class CmsDisplayWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * Sets the color for the input box.<p>
+     * 
+     * @param color the color that should be set
+     * */
+    public void setColor(String color) {
+
+        m_textbox.getTextBox().getElement().getStyle().setColor(color);
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     public void setValue(String value) {

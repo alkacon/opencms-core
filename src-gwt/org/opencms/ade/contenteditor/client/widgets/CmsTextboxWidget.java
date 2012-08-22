@@ -59,8 +59,11 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     /** The layout bundle. */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
 
-    /** Default value. */
-    private String m_defaultValue = "";
+    /** The fader of this widget. */
+    Panel m_fadePanel = new SimplePanel();
+
+    /**The main panel of this widget. */
+    Panel m_mainPanel = new FlowPanel();
 
     /** The input test area.*/
     TextBox m_textbox = new TextBox();
@@ -68,11 +71,8 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     /** The token to control activation. */
     private boolean m_active = true;
 
-    /** The fader of this widget. */
-    Panel m_fadePanel = new SimplePanel();
-
-    /**The main panel of this widget. */
-    Panel m_mainPanel = new FlowPanel();
+    /** Default value. */
+    private String m_defaultValue = "";
 
     /**
      * Creates a new display widget.<p>
@@ -127,16 +127,6 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
             }
         });
         initWidget(m_mainPanel);
-    }
-
-    /**
-     * Parse the configuration String.<p>
-     * @param config the configuration String
-     */
-    private void parseConfig(String config) {
-
-        m_defaultValue = config;
-        setValue(m_defaultValue);
     }
 
     /**
@@ -220,6 +210,19 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
+     */
+    @Override
+    public void setTitle(String title) {
+
+        if ((title.length() * 6.88) > m_mainPanel.getOffsetWidth()) {
+            m_mainPanel.getElement().setTitle(title);
+        } else {
+            m_mainPanel.getElement().setTitle("");
+        }
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     public void setValue(String value) {
@@ -243,16 +246,13 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
+     * Parse the configuration String.<p>
+     * @param config the configuration String
      */
-    @Override
-    public void setTitle(String title) {
+    private void parseConfig(String config) {
 
-        if ((title.length() * 6.88) > m_mainPanel.getOffsetWidth()) {
-            m_mainPanel.getElement().setTitle(title);
-        } else {
-            m_mainPanel.getElement().setTitle("");
-        }
+        m_defaultValue = config;
+        setValue(m_defaultValue);
     }
 
 }

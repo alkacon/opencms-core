@@ -223,6 +223,9 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
+        if (active == m_active) {
+            return;
+        }
         m_active = active;
         m_comboBox.setEnabled(active);
         if (active) {
