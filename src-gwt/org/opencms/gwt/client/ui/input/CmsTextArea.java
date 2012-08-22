@@ -67,8 +67,11 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
 
-    /** The error display for this widget. */
-    private CmsErrorWidget m_error = new CmsErrorWidget();
+    /** The default rows set. */
+    int m_defaultRows;
+
+    /** The faid panel. */
+    Panel m_faidpanel = new SimplePanel();
 
     /** The root panel containing the other components of this widget. */
     Panel m_panel = new FlowPanel();
@@ -79,11 +82,8 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     /** The container for the text area. */
     CmsScrollPanel m_textAreaContainer = GWT.create(CmsScrollPanel.class);
 
-    /** The default rows set. */
-    int m_defaultRows;
-
-    /** The faid panel. */
-    Panel m_faidpanel = new SimplePanel();
+    /** The error display for this widget. */
+    private CmsErrorWidget m_error = new CmsErrorWidget();
 
     /**
      * Text area widgets for ADE forms.<p>
@@ -177,45 +177,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Composite#onAttach()
-     */
-    @Override
-    protected void onAttach() {
-
-        super.onAttach();
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            public void execute() {
-
-                String string = m_textArea.getText();
-                String searchString = "\n";
-                int occurences = 0;
-                if (0 != searchString.length()) {
-                    for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
-                        searchString,
-                        index + 1)) {
-                        occurences++;
-                    }
-                }
-                String[] splittext = m_textArea.getText().split("\\n");
-                for (int i = 0; i < splittext.length; i++) {
-                    occurences += (splittext[i].length() * 6.88) / m_textArea.getOffsetWidth();
-                }
-                int height = occurences + 1;
-                if (m_defaultRows > height) {
-                    height = m_defaultRows;
-                    m_panel.remove(m_faidpanel);
-                    m_panel.getElement().setTitle("");
-                }
-                m_panel.add(m_faidpanel);
-                m_panel.getElement().setTitle(string);
-                m_textArea.setVisibleLines(height);
-                m_textAreaContainer.onResize();
-            }
-        });
-    }
-
-    /**
      * Initializes this class.<p>
      */
     public static void initClass() {
@@ -231,6 +192,14 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
                 return new CmsTextArea();
             }
         });
+    }
+
+    /**
+     * @param handler
+     */
+    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_textArea.addValueChangeHandler(handler);
     }
 
     /**
@@ -286,21 +255,6 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     public TextArea getTextArea() {
 
         return m_textArea;
-    }
-
-    /**
-     * Sets the height of this textarea.<p>
-     * 
-     * @param rows the value of rows should be shown
-     */
-    public void setRows(int rows) {
-
-        m_defaultRows = rows;
-        double height_scroll = (rows * 17.95) + 8;
-        m_textArea.setVisibleLines(rows);
-        m_textAreaContainer.setHeight(height_scroll + "px");
-        m_textAreaContainer.setDefaultHeight(height_scroll);
-        m_textAreaContainer.onResize();
     }
 
     /**
@@ -379,6 +333,21 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     }
 
     /**
+     * Sets the height of this textarea.<p>
+     * 
+     * @param rows the value of rows should be shown
+     */
+    public void setRows(int rows) {
+
+        m_defaultRows = rows;
+        double height_scroll = (rows * 17.95) + 8;
+        m_textArea.setVisibleLines(rows);
+        m_textAreaContainer.setHeight(height_scroll + "px");
+        m_textAreaContainer.setDefaultHeight(height_scroll);
+        m_textAreaContainer.onResize();
+    }
+
+    /**
      * Sets the text in the text area.<p>
      * 
      * @param text the new text
@@ -389,10 +358,41 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     }
 
     /**
-     * @param handler
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
      */
-    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
+    @Override
+    protected void onAttach() {
 
-        m_textArea.addValueChangeHandler(handler);
+        super.onAttach();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                String string = m_textArea.getText();
+                String searchString = "\n";
+                int occurences = 0;
+                if (0 != searchString.length()) {
+                    for (int index = string.indexOf(searchString, 0); index != -1; index = string.indexOf(
+                        searchString,
+                        index + 1)) {
+                        occurences++;
+                    }
+                }
+                String[] splittext = m_textArea.getText().split("\\n");
+                for (int i = 0; i < splittext.length; i++) {
+                    occurences += (splittext[i].length() * 6.88) / m_textArea.getOffsetWidth();
+                }
+                int height = occurences + 1;
+                if (m_defaultRows > height) {
+                    height = m_defaultRows;
+                    m_panel.remove(m_faidpanel);
+                    m_panel.getElement().setTitle("");
+                }
+                m_panel.add(m_faidpanel);
+                m_panel.getElement().setTitle(string);
+                m_textArea.setVisibleLines(height);
+                m_textAreaContainer.onResize();
+            }
+        });
     }
 }

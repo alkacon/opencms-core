@@ -64,8 +64,66 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
+    /**
+     * Drag and drop event preview handler.<p>
+     * 
+     * To be used while dragging.<p>
+     */
+    protected class CloseEventPreviewHandler implements NativePreviewHandler {
+
+        /**
+         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+         */
+        public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+            Event nativeEvent = Event.as(event.getNativeEvent());
+            switch (DOM.eventGetType(nativeEvent)) {
+                case Event.ONMOUSEMOVE:
+                    break;
+                case Event.ONMOUSEUP:
+
+                    int x_coord = nativeEvent.getClientX();
+                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
+
+                    if (((x_coord > (m_xcoordspopup + 450)) || (x_coord < (m_xcoordspopup)))
+                        || ((y_coord > ((m_ycoordspopup + 280))) || (y_coord < ((m_ycoordspopup))))) {
+                        closePopup();
+                    }
+                    break;
+                case Event.ONKEYDOWN:
+                    break;
+                case Event.ONMOUSEWHEEL:
+                    closePopup();
+                    break;
+                default:
+                    // do nothing
+            }
+        }
+
+    }
+
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "colorPicker";
+
+    /** The field to display the color. */
+    protected SimplePanel m_colorField = new SimplePanel();
+
+    /** The color value.*/
+    protected String m_colorValue = "transparent";
+
+    /** The popup to choose the color. */
+    protected CmsPopup m_popup = new CmsPopup();
+
+    /***/
+    protected HandlerRegistration m_previewHandlerRegistration;
+    /** The field to display the value. */
+    protected SimplePanel m_textboxpanel = new SimplePanel();
+
+    /** The x-coords of the popup. */
+    protected int m_xcoordspopup;
+
+    /** The y-coords of the popup. */
+    protected int m_ycoordspopup;
 
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
@@ -75,26 +133,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /** The internal textbox used by this widget to display the color value. */
     private TextBox m_textboxColorValue = new TextBox();
-
-    /** The field to display the color. */
-    protected SimplePanel m_colorField = new SimplePanel();
-
-    /** The field to display the value. */
-    protected SimplePanel m_textboxpanel = new SimplePanel();
-    /** The popup to choose the color. */
-    protected CmsPopup m_popup = new CmsPopup();
-
-    /** The color value.*/
-    protected String m_colorValue = "transparent";
-
-    /** The x-coords of the popup. */
-    protected int m_xcoordspopup;
-
-    /** The y-coords of the popup. */
-    protected int m_ycoordspopup;
-
-    /***/
-    protected HandlerRegistration m_previewHandlerRegistration;
 
     /**
      * Text area widgets for ADE forms.<p>
@@ -136,22 +174,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Composite#onAttach()
-     */
-    @Override
-    protected void onAttach() {
-
-        super.onAttach();
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            public void execute() {
-
-                m_colorField.getElement().getStyle().setBackgroundColor(m_colorValue);
-            }
-        });
-    }
-
-    /**
      * Initializes this class.<p>
      */
     public static void initClass() {
@@ -170,11 +192,39 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
+     * @param handler
+     */
+    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_textboxColorValue.addValueChangeHandler(handler);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
     public String getApparentValue() {
 
         return getFormValueAsString();
+    }
+
+    /**
+     * Returns the colorfield.<p>
+     * 
+     * @return the colorfield
+     */
+    public SimplePanel getColorfield() {
+
+        return m_colorField;
+    }
+
+    /**
+     * Returns the color value textbox.<p>
+     * 
+     * @return the color value textbox
+     * */
+    public TextBox getColorValueBox() {
+
+        return m_textboxColorValue;
     }
 
     /**
@@ -215,6 +265,16 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
+     * Returns the color value textboxpanel.<p>
+     * 
+     * @return the color value textboxpanel
+     */
+    public SimplePanel getTextboxPanel() {
+
+        return m_textboxpanel;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
      */
     public boolean isEnabled() {
@@ -236,6 +296,15 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
         // nothing to do
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+
+        // TODO: Auto-generated method stub
+
     }
 
     /**
@@ -285,14 +354,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
-     * @param handler
-     */
-    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        m_textboxColorValue.addValueChangeHandler(handler);
-    }
-
-    /**
      * Validates the inputed color value.
      * @return true if the inputed color value is valid
      */
@@ -307,14 +368,49 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
-     * Checks if the given string is a valid colorvalue.<p>
+     * Close the popup and store the color value in the colorvalue field.<p>
      * 
-     * @param colorvalue to check
-     * @return true if the value is valid otherwise false
      */
-    private boolean validateColorValue(String colorvalue) {
+    protected void closePopup() {
 
-        return colorvalue.matches("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$");
+        m_previewHandlerRegistration.removeHandler();
+        m_previewHandlerRegistration = null;
+        org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector picker = (org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector)m_popup.getWidget(0);
+        m_colorValue = "#" + picker.getHexColor();
+        if (checkvalue()) {
+            m_popup.hide();
+        }
+
+    }
+
+    /**
+     * Converts the integer value to an hex value.<p>
+     * @param i the integer value
+     * @return the hex string
+     */
+    protected String convertToHex(int i) {
+
+        String hexString = Integer.toHexString(i);
+        while (hexString.length() < 2) {
+            hexString = "0" + hexString;
+        }
+        return hexString;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+
+        super.onAttach();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                m_colorField.getElement().getStyle().setBackgroundColor(m_colorValue);
+            }
+        });
     }
 
     /**
@@ -356,109 +452,13 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
-     * Close the popup and store the color value in the colorvalue field.<p>
+     * Checks if the given string is a valid colorvalue.<p>
      * 
+     * @param colorvalue to check
+     * @return true if the value is valid otherwise false
      */
-    protected void closePopup() {
+    private boolean validateColorValue(String colorvalue) {
 
-        m_previewHandlerRegistration.removeHandler();
-        m_previewHandlerRegistration = null;
-        org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector picker = (org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector)m_popup.getWidget(0);
-        m_colorValue = "#" + picker.getHexColor();
-        if (checkvalue()) {
-            m_popup.hide();
-        }
-
-    }
-
-    /**
-     * Converts the integer value to an hex value.<p>
-     * @param i the integer value
-     * @return the hex string
-     */
-    protected String convertToHex(int i) {
-
-        String hexString = Integer.toHexString(i);
-        while (hexString.length() < 2) {
-            hexString = "0" + hexString;
-        }
-        return hexString;
-    }
-
-    /**
-     * Drag and drop event preview handler.<p>
-     * 
-     * To be used while dragging.<p>
-     */
-    protected class CloseEventPreviewHandler implements NativePreviewHandler {
-
-        /**
-         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-         */
-        public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-            Event nativeEvent = Event.as(event.getNativeEvent());
-            switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-
-                    int x_coord = nativeEvent.getClientX();
-                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
-
-                    if (((x_coord > (m_xcoordspopup + 450)) || (x_coord < (m_xcoordspopup)))
-                        || ((y_coord > ((m_ycoordspopup + 280))) || (y_coord < ((m_ycoordspopup))))) {
-                        closePopup();
-                    }
-                    break;
-                case Event.ONKEYDOWN:
-                    break;
-                case Event.ONMOUSEWHEEL:
-                    closePopup();
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
-     */
-    public void setEnabled(boolean enabled) {
-
-        // TODO: Auto-generated method stub
-
-    }
-
-    /**
-     * Returns the colorfield.<p>
-     * 
-     * @return the colorfield
-     */
-    public SimplePanel getColorfield() {
-
-        return m_colorField;
-    }
-
-    /**
-     * Returns the color value textboxpanel.<p>
-     * 
-     * @return the color value textboxpanel
-     */
-    public SimplePanel getTextboxPanel() {
-
-        return m_textboxpanel;
-    }
-
-    /**
-     * Returns the color value textbox.<p>
-     * 
-     * @return the color value textbox
-     * */
-    public TextBox getColorValueBox() {
-
-        return m_textboxColorValue;
+        return colorvalue.matches("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$");
     }
 }

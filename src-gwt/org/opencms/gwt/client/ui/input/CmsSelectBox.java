@@ -176,6 +176,26 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     }
 
     /**
+     * Returns the opener of this widget.<p>
+     * 
+     * @return the opener of this widget
+     */
+    public FocusPanel getOpener() {
+
+        return m_opener;
+    }
+
+    /**
+     * Returns the selector of this widget.<p>
+     * 
+     * @return the selector of this widget
+     */
+    public Panel getSelector() {
+
+        return m_selector;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#selectValue(java.lang.String)
      */
     @Override
@@ -365,25 +385,5 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     protected void updateStyle() {
 
         // do nothing
-    }
-
-    /**
-     * Returns the opener of this widget.<p>
-     * 
-     * @return the opener of this widget
-     */
-    public FocusPanel getOpener() {
-
-        return m_opener;
-    }
-
-    /**
-     * Returns the selector of this widget.<p>
-     * 
-     * @return the selector of this widget
-     */
-    public Panel getSelector() {
-
-        return m_selector;
     }
 }

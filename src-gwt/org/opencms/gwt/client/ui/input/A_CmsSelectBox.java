@@ -88,8 +88,35 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         // binder interface
     }
 
-    /** The preview handler registration. */
-    protected HandlerRegistration m_previewHandlerRegistration;
+    /**
+     * Drag and drop event preview handler.<p>
+     * 
+     * To be used while dragging.<p>
+     */
+    protected class ScrollEventPreviewHandler implements NativePreviewHandler {
+
+        /**
+         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+         */
+        public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+            Event nativeEvent = Event.as(event.getNativeEvent());
+            switch (DOM.eventGetType(nativeEvent)) {
+                case Event.ONMOUSEMOVE:
+                    break;
+                case Event.ONMOUSEUP:
+                    break;
+                case Event.ONKEYDOWN:
+                    break;
+                case Event.ONMOUSEWHEEL:
+                    close();
+                    break;
+                default:
+                    // do nothing
+            }
+        }
+
+    }
 
     /** The layout bundle. */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -118,6 +145,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /** The popup panel inside which the selector will be shown.<p> */
     protected PopupPanel m_popup = new PopupPanel(true);
 
+    /** The preview handler registration. */
+    protected HandlerRegistration m_previewHandlerRegistration;
+
     /** Style of the select box widget. */
     protected final CmsStyleVariable m_selectBoxState;
 
@@ -142,14 +172,14 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     /** The maximum cell width. */
     private int m_maxCellWidth;
 
+    /** The value to test the popup resize behaviour.*/
+    private boolean m_resizePopup = true;
+
     /** The text metrics prefix. */
     private String m_textMetricsPrefix;
 
     /** The widget width for truncation. */
     private int m_widgetWidth;
-
-    /** The value to test the popup resize behaviour.*/
-    private boolean m_resizePopup = true;
 
     /**
      * Creates a new select box.<p>
@@ -207,36 +237,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         });
 
         initOpener();
-    }
-
-    /**
-     * Drag and drop event preview handler.<p>
-     * 
-     * To be used while dragging.<p>
-     */
-    protected class ScrollEventPreviewHandler implements NativePreviewHandler {
-
-        /**
-         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-         */
-        public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-            Event nativeEvent = Event.as(event.getNativeEvent());
-            switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-                    break;
-                case Event.ONKEYDOWN:
-                    break;
-                case Event.ONMOUSEWHEEL:
-                    close();
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-
     }
 
     /**
@@ -396,6 +396,15 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     public void setFormValueAsString(String formValue) {
 
         setFormValue(formValue);
+    }
+
+    /**
+     * Sets the behavior of the popup if the input is bigger than the selectbox itself. 
+     * @param resize 
+     */
+    public void setPopupResize(boolean resize) {
+
+        m_resizePopup = resize;
     }
 
     /**
@@ -685,15 +694,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
                 cell.removeStyleName(CSS.selectHover());
             }
         }, MouseOutEvent.getType());
-    }
-
-    /**
-     * Sets the behavior of the popup if the input is bigger than the selectbox itself. 
-     * @param resize 
-     */
-    public void setPopupResize(boolean resize) {
-
-        m_resizePopup = resize;
     }
 
     /**

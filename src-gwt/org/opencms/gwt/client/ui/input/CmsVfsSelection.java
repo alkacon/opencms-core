@@ -70,6 +70,56 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
+    /**
+     * Event preview handler.<p>
+     * 
+     * To be used while popup open.<p>
+     */
+    protected class CloseEventPreviewHandler implements NativePreviewHandler {
+
+        /**
+         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+         */
+        public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+            Event nativeEvent = Event.as(event.getNativeEvent());
+            switch (DOM.eventGetType(nativeEvent)) {
+                case Event.ONMOUSEMOVE:
+                    break;
+                case Event.ONMOUSEUP:
+                    break;
+                case Event.ONMOUSEDOWN:
+                    int x_coord = nativeEvent.getClientX();
+                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
+
+                    if (((x_coord > (m_xcoordspopup + 715)) || (x_coord < (m_xcoordspopup)))
+                        || ((y_coord > ((m_ycoordspopup + 530))) || (y_coord < ((m_ycoordspopup - m_textBox.getOffsetHeight()))))) {
+                        close();
+                    }
+                    break;
+                case Event.ONKEYUP:
+                    if (m_textBox.getValue().length() > 0) {
+                        close();
+                    } else {
+                        if (m_popup == null) {
+                            open();
+                        } else if (m_popup.isShowing()) {
+                            close();
+                        } else {
+                            open();
+                        }
+                    }
+                    break;
+                case Event.ONMOUSEWHEEL:
+                    close();
+                    break;
+                default:
+                    // do nothing
+            }
+        }
+
+    }
+
     /** Inner class for the open button. */
     protected class OpenButton extends CmsPushButton {
 
@@ -86,14 +136,20 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
 
     }
 
-    /** The filelink mode of this widget. */
-    public static final String FILE_LINK = "file_link";
-
-    /** The imagelink mode of this widget. */
-    public static final String IMAGE_LINK = "image_link";
+    /** The download mode of this widget. */
+    public static final String DOWNLOAD = "download";
 
     /** The downloadlink mode of this widget. */
     public static final String DOWNLOAD_LINK = "download_link";
+
+    /** The filelink mode of this widget. */
+    public static final String FILE_LINK = "file_link";
+
+    /** The html mode of this widget. */
+    public static final String HTML = "html";
+
+    /** The imagelink mode of this widget. */
+    public static final String IMAGE_LINK = "image_link";
 
     /** The link mode of this widget. */
     public static final String LINK = "link";
@@ -101,17 +157,32 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** The table mode of this widget. */
     public static final String TABLE = "table";
 
-    /** The download mode of this widget. */
-    public static final String DOWNLOAD = "download";
-
-    /** The html mode of this widget. */
-    public static final String HTML = "html";
+    /** A counter used for giving text box widgets ids. */
+    private static int idCounter;
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "vfsselection";
 
-    /** The error display for this widget. */
-    private CmsErrorWidget m_error = new CmsErrorWidget();
+    /** The faid panel. */
+    protected Panel m_faidpanel = new SimplePanel();
+
+    /***/
+    protected String m_oldValue = "";
+
+    /** THe popup frame. */
+    protected CmsFramePopup m_popup;
+
+    /***/
+    protected HandlerRegistration m_previewHandlerRegistration;
+
+    /** The x-coords of the popup. */
+    protected int m_xcoordspopup;
+
+    /** The y-coords of the popup. */
+    protected int m_ycoordspopup;
+
+    /** The default rows set. */
+    int m_defaultRows;
 
     /** The root panel containing the other components of this widget. */
     Panel m_panel = new FlowPanel();
@@ -122,41 +193,20 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** The container for the text area. */
     FlowPanel m_textBoxContainer = new FlowPanel();
 
-    /** The default rows set. */
-    int m_defaultRows;
-
-    /** The faid panel. */
-    protected Panel m_faidpanel = new SimplePanel();
-
-    /** The button to to open the selection. */
-    private OpenButton m_openSelection;
-
-    /** THe popup frame. */
-    protected CmsFramePopup m_popup;
-
-    /** A counter used for giving text box widgets ids. */
-    private static int idCounter;
-
-    /** The x-coords of the popup. */
-    protected int m_xcoordspopup;
-
-    /** The y-coords of the popup. */
-    protected int m_ycoordspopup;
-
     /***/
-    protected HandlerRegistration m_previewHandlerRegistration;
+    private String m_config;
+
+    /** The error display for this widget. */
+    private CmsErrorWidget m_error = new CmsErrorWidget();
 
     /***/
     private String m_id;
 
-    /***/
-    protected String m_oldValue = "";
+    /** The button to to open the selection. */
+    private OpenButton m_openSelection;
 
     /***/
     private String m_type;
-
-    /***/
-    private String m_config;
 
     /**
      * TextBox widget to open the gallery selection.<p>
@@ -258,6 +308,14 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * @param handler
+     */
+    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_textBox.addValueChangeHandler(handler);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
     public String getApparentValue() {
@@ -290,6 +348,20 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     public String getFormValueAsString() {
 
         return (String)getFormValue();
+    }
+
+    /**
+     * Returns the selected link as a bean.<p>
+     * 
+     * @return the selected link as a bean 
+     */
+    public CmsLinkBean getLinkBean() {
+
+        String link = m_textBox.getValue();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(link)) {
+            return null;
+        }
+        return new CmsLinkBean(m_textBox.getText(), true);
     }
 
     /**
@@ -390,6 +462,19 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * Sets the link from a bean.<p>
+     * 
+     * @param link the link bean 
+     */
+    public void setLinkBean(CmsLinkBean link) {
+
+        if (link == null) {
+            link = new CmsLinkBean("", true);
+        }
+        m_textBox.setValue(link.getLink());
+    }
+
+    /**
      * Sets the text in the text area.<p>
      * 
      * @param text the new text
@@ -397,14 +482,6 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     public void setText(String text) {
 
         m_textBox.setValue(text);
-    }
-
-    /**
-     * @param handler
-     */
-    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
-
-        m_textBox.addValueChangeHandler(handler);
     }
 
     /**
@@ -418,6 +495,69 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         } else {
             m_textBox.getElement().setTitle("");
         }
+    }
+
+    /**
+     * Creates the URL for the gallery dialog IFrame.<p>
+     * 
+     * @return the URL for the gallery dialog IFrame 
+     */
+    protected String buildGalleryUrl() {
+
+        String basePath = "";
+        if (m_type.equals(LINK) || m_type.equals(DOWNLOAD) || m_type.equals(HTML) || m_type.equals(TABLE)) {
+            if (m_type.equals(DOWNLOAD)) {
+                basePath = "system/workplace/galleries/downloadgallery/index.jsp?dialogmode=widget&fieldid="
+                    + m_id
+                    + "&params={\"startupfolder\":null,\"startuptype\":null,\"editedresource\":\"/widget-demo/.content/WidgetdemoOverview/wo_00001.html\"}";
+            } else if (m_type.equals(LINK)) {
+                basePath = "/system/workplace/galleries/linkgallery/index.jsp?dialogmode=widget&fieldid="
+                    + m_id
+                    + "&params={\"startupfolder\":null,\"startuptype\":null,\"editedresource\":\"/widget-demo/.content/WidgetdemoOverview/wo_00001.html\"}";
+            } else if (m_type.equals(HTML)) {
+                basePath = "/system/workplace/galleries/htmlgallery/index.jsp?dialogmode=widget&fieldid="
+                    + m_id
+                    + "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/WidgetdemoOverview/wo_00001.html\"}";
+            } else if (m_type.equals(TABLE)) {
+                basePath = "/system/workplace/galleries/tablegallery/index.jsp?dialogmode=widget&fieldid="
+                    + m_id
+                    + "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/WidgetdemoOverview/wo_00001.html\"}";
+            } else {
+                basePath = "/system/workplace/galleries/" + m_type + "gallery/index.jsp";
+            }
+        } else {
+            basePath = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+            basePath += "?dialogmode=widget&fieldid=" + m_id;
+        }
+
+        String pathparameter = m_textBox.getText();
+        if (pathparameter.indexOf("/") > -1) {
+            basePath += "&currentelement=" + pathparameter;
+        }
+        if (m_type.equals(TABLE)) {
+            basePath += m_config;
+        }
+        if (m_type.equals(IMAGE_LINK)) {
+            basePath += m_config;
+        }
+        if (m_type.equals(DOWNLOAD_LINK)) {
+            basePath += m_config;
+        }
+        if (m_type.equals(LINK)) {
+            basePath += "&params={\"startupfolder\":/,\"startuptype\":null}";
+        }
+        //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary  
+        return CmsCoreProvider.get().link(basePath);
+    }
+
+    /**
+     * Close the popup of this widget.<p>
+     * */
+    protected void close() {
+
+        m_popup.hideDelayed();
+        m_textBox.setFocus(true);
+        m_textBox.setCursorPos(m_textBox.getText().length());
     }
 
     /**
@@ -488,16 +628,6 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
-     * Close the popup of this widget.<p>
-     * */
-    protected void close() {
-
-        m_popup.hideDelayed();
-        m_textBox.setFocus(true);
-        m_textBox.setCursorPos(m_textBox.getText().length());
-    }
-
-    /**
      * Adds the fader if necessary.<p> 
      * */
     private void creatFaider() {
@@ -505,116 +635,5 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         if ((m_textBox.getValue().length() * 6.88) > m_textBox.getOffsetWidth()) {
             m_textBoxContainer.add(m_faidpanel);
         }
-    }
-
-    /**
-     * Event preview handler.<p>
-     * 
-     * To be used while popup open.<p>
-     */
-    protected class CloseEventPreviewHandler implements NativePreviewHandler {
-
-        /**
-         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-         */
-        public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-            Event nativeEvent = Event.as(event.getNativeEvent());
-            switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-                    break;
-                case Event.ONMOUSEDOWN:
-                    int x_coord = nativeEvent.getClientX();
-                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
-
-                    if (((x_coord > (m_xcoordspopup + 715)) || (x_coord < (m_xcoordspopup)))
-                        || ((y_coord > ((m_ycoordspopup + 530))) || (y_coord < ((m_ycoordspopup - m_textBox.getOffsetHeight()))))) {
-                        close();
-                    }
-                    break;
-                case Event.ONKEYUP:
-                    if (m_textBox.getValue().length() > 0) {
-                        close();
-                    } else {
-                        if (m_popup == null) {
-                            open();
-                        } else if (m_popup.isShowing()) {
-                            close();
-                        } else {
-                            open();
-                        }
-                    }
-                    break;
-                case Event.ONMOUSEWHEEL:
-                    close();
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-
-    }
-
-    /**
-     * Sets the link from a bean.<p>
-     * 
-     * @param link the link bean 
-     */
-    public void setLinkBean(CmsLinkBean link) {
-
-        if (link == null) {
-            link = new CmsLinkBean("", true);
-        }
-        m_textBox.setValue(link.getLink());
-    }
-
-    /**
-     * Returns the selected link as a bean.<p>
-     * 
-     * @return the selected link as a bean 
-     */
-    public CmsLinkBean getLinkBean() {
-
-        String link = m_textBox.getValue();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(link)) {
-            return null;
-        }
-        return new CmsLinkBean(m_textBox.getText(), true);
-    }
-
-    /**
-     * Creates the URL for the gallery dialog IFrame.<p>
-     * 
-     * @return the URL for the gallery dialog IFrame 
-     */
-    protected String buildGalleryUrl() {
-
-        String basePath = "";
-        if (m_type.equals(LINK) || m_type.equals(DOWNLOAD) || m_type.equals(HTML) || m_type.equals(TABLE)) {
-            basePath = "/system/workplace/galleries/" + m_type + "gallery/index.jsp";
-        } else {
-            basePath = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
-        }
-        basePath += "?dialogmode=widget&fieldid=" + m_id;
-        String pathparameter = m_textBox.getText();
-        if (pathparameter.indexOf("/") > -1) {
-            basePath += "&currentelement=" + pathparameter;
-        }
-        if (m_type.equals(TABLE)) {
-            basePath += m_config;
-        }
-        if (m_type.equals(IMAGE_LINK)) {
-            basePath += m_config;
-        }
-        if (m_type.equals(DOWNLOAD_LINK)) {
-            basePath += m_config;
-        }
-        if (m_type.equals(LINK)) {
-            basePath += "&params={\"startupfolder\":/,\"startuptype\":null}";
-        }
-        //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary  
-        return CmsCoreProvider.get().link(basePath);
     }
 }
