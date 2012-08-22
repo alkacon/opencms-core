@@ -29,26 +29,26 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.input.CmsCategoryField;
+import org.opencms.gwt.client.ui.input.CmsCategoryTree;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.relations.CmsCategory;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a standard HTML form category widget, for use on a widget dialog.<p>
@@ -64,11 +64,23 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** Configuration parameter to set the 'property' parameter. */
     public static final String CONFIGURATION_PROPERTY = "property";
 
-    /** Map of selected Values in relation to the select level. */
-    Map<Integer, String> m_selectedValue = new HashMap<Integer, String>();
+    /** Configuration parameter to set the default height. */
+    private static final int DEFAULT_HEIGHT = 242;
 
-    /** List off all categories. */
-    List<CmsCategoryTreeEntry> m_results = new ArrayList<CmsCategoryTreeEntry>();
+    /** Category widget. */
+    CmsCategoryField m_categoryField = new CmsCategoryField();
+
+    /***/
+    CmsCategoryTree m_cmsCategoryTree;
+
+    /***/
+    CmsPopup m_cmsPopup;
+
+    /** List of all selected categories. */
+    ArrayList<String> m_selected = new ArrayList<String>();
+
+    /** Map of selected Values in relation to the select level. */
+    String m_selectedValue;
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -76,24 +88,44 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** String of the configured category folder. */
     private String m_categoryFolder = "/sites/default/_categories/";
 
-    /** Horizontal panel. It holds all the select boxes. */
-    private HorizontalPanel m_panel = new HorizontalPanel();
+    /** List off all categories. */
+    private List<CmsCategoryTreeEntry> m_results = new ArrayList<CmsCategoryTreeEntry>();
+    /***/
+    private String[] m_selectedArray;
+
+    /** Height of the display field. */
+    int m_height = DEFAULT_HEIGHT;
+
+    /** Is true if only one value is set in xml. */
+    private boolean m_isSingelValue;
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
-     * @param config The configuration string given from OpenCms XSD.
+     * @param config The configuration string given from OpenCms XSD
+     * @param isSingelValue Is true if only one value is set in xml
      */
-    public CmsCategoryWidget(String config) {
+    public CmsCategoryWidget(String config, boolean isSingelValue) {
+
+        m_isSingelValue = isSingelValue;
 
         //merge configuration string
         parseConfiguration(config);
 
-        //generate the select boxes
-        getCategories();
-        m_panel.getElement().getStyle().setProperty("minHeight", "25px");
-        // All composites must call initWidget() in their constructors.
-        initWidget(m_panel);
+        m_categoryField.getScrollPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().categoryPanel());
 
+        m_categoryField.addDomHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                if ((m_cmsPopup == null) || !m_cmsPopup.isShowing()) {
+                    openPopup();
+                } else {
+                    closePopup();
+                }
+
+            }
+        }, ClickEvent.getType());
+        initWidget(m_categoryField);
     }
 
     /**
@@ -117,51 +149,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        //ValueChangeEvent.fire(this, value);
-        getSelections();
-
-    }
-
-    /**
-     * Represents a value change event.<p>
-     * @param value The selectbox how has fired the event.
-     */
-    public void fireChangeEvent(CmsSelectBox value) {
-
-        Iterator<Widget> it = m_panel.iterator();
-        int k = 0;
-        while (it.hasNext()) {
-            CmsSelectBox selectBox = (CmsSelectBox)it.next();
-            if (selectBox.equals(value)) {
-                m_selectedValue.put(Integer.valueOf(k), value.getFormValueAsString());
-                break;
-            }
-            k++;
-        }
-        removeTillSelectBox(value);
-        if (!value.getFormValueAsString().equals("Select value") && hasNext(value)) {
-            m_panel.add(getNextSelectbox(value, k));
-        }
-        it = m_panel.iterator();
-        String valuePath = m_categoryFolder + value.getFormValueAsString();
-        ValueChangeEvent.fire(this, valuePath);
-
-    }
-
-    /**
-     * Creates all the selectboxes and add them to the panel.<p>
-     * */
-    public void getSelections() {
-
-        // remove all widgets from panel.
-        m_panel.clear();
-        // add the root selectbox to the panel.
-        m_panel.add(getRootSelectBox());
-        // check if there are more selected sub categories.  
-        for (int i = 1; i < m_selectedValue.size(); i++) {
-            // create and add the sub category to the panel.
-            m_panel.add(getNextSelectbox((CmsSelectBox)m_panel.getWidget(i - 1), i));
-        }
+        ValueChangeEvent.fire(this, getValue());
 
     }
 
@@ -170,13 +158,31 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        Iterator<Widget> it = m_panel.iterator();
-        String selectedCategories = "";
-        while (it.hasNext()) {
-            CmsSelectBox selectBox = (CmsSelectBox)it.next();
-            selectedCategories = selectBox.getFormValueAsString();
+        Iterator<String> i = m_selected.iterator();
+        String result = "";
+        int y = 0;
+        if (m_isSingelValue) {
+            int max_length = 0;
+            while (i.hasNext()) {
+                String value = i.next();
+                if (value.split("/").length > max_length) {
+                    max_length = value.split("/").length;
+                    result = m_categoryFolder + value;
+                }
+
+            }
+
+        } else {
+            while (i.hasNext()) {
+                if (y != 0) {
+                    result += ",";
+
+                }
+                result += m_categoryFolder + i.next();
+                y++;
+            }
         }
-        return selectedCategories;
+        return result;
     }
 
     /**
@@ -200,16 +206,14 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public void setActive(boolean active) {
 
-        m_active = active;
-        Iterator<Widget> it = m_panel.iterator();
-        while (it.hasNext()) {
-            CmsSelectBox selectbox = (CmsSelectBox)it.next();
-            selectbox.setEnabled(active);
-        }
-        if (active) {
-            fireChangeEvent();
+        if (m_active == active) {
+            return;
         }
 
+        m_active = active;
+        if (m_active) {
+            setValue(m_selectedValue);
+        }
     }
 
     /**
@@ -226,182 +230,85 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        value = value.replace(m_categoryFolder, "");
-        String[] selectedValues = value.split("/");
-        String prefix = "";
-        for (int i = 0; i < selectedValues.length; i++) {
-            prefix += selectedValues[i] + "/";
-            m_selectedValue.put(Integer.valueOf(i), prefix);
+        m_selected.clear();
+        if (m_isSingelValue && !value.isEmpty() && !value.replace(m_categoryFolder, "").isEmpty()) {
+            value = value.replace(",", "");
+            String parentValue = value.replace(m_categoryFolder, "");
+            parentValue = parentValue.substring(0, parentValue.indexOf("/") + 1);
+            value += "," + m_categoryFolder + parentValue;
         }
+
+        String shortvalue = value.replaceAll(m_categoryFolder, "");
+        m_selectedValue = shortvalue;
+        String[] selected = shortvalue.split(",");
+        m_selectedArray = selected;
+        ArrayList<String> test = new ArrayList<String>();
+        for (int i = 0; i < selected.length; i++) {
+            m_selected.add(selected[i].replace(m_categoryFolder, ""));
+            test.add(selected[i].replace(m_categoryFolder, ""));
+        }
+
+        if (!selected[0].isEmpty()) {
+            m_results = new ArrayList<CmsCategoryTreeEntry>();
+            parseValues(test.toArray(new String[0]), null, 1);
+            m_categoryField.buildCategoryTree(m_results, m_selected);
+        } else {
+            m_results = new ArrayList<CmsCategoryTreeEntry>();
+            m_categoryField.buildCategoryTree(m_results, m_selected);
+        }
+
         if (fireEvents) {
             fireChangeEvent();
         }
-
+        if (!selected[0].isEmpty()) {
+            int elementheight = (selected.length * 24) + 2;
+            if (elementheight < DEFAULT_HEIGHT) {
+                m_height = elementheight;
+            } else {
+                m_height = DEFAULT_HEIGHT;
+            }
+        }
+        m_categoryField.setHeight(m_height);
     }
 
     /**
-     * Help function to get all the categories from the vfs.<p>
+     * 
      */
-    private void getCategories() {
+    protected void closePopup() {
 
-        // generate a list of all configured categories.
-        final List<String> categories = new ArrayList<String>();
-        categories.add(m_categoryFolder + "/");
-
-        // start request 
-        CmsRpcAction<List<CmsCategoryTreeEntry>> action = new CmsRpcAction<List<CmsCategoryTreeEntry>>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            public void execute() {
-
-                CmsCoreProvider.getService().getCategories("/", true, categories, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(List<CmsCategoryTreeEntry> result) {
-
-                // copy the result to the global variable. 
-                m_results = result;
-                // start to build the widget.
-                getSelections();
-            }
-
-        };
-        action.execute();
+        String selected = "";
+        for (String s : m_cmsCategoryTree.getAllSelected()) {
+            selected += m_categoryFolder + s + ",";
+        }
+        setValue(selected);
+        m_cmsPopup.hide();
     }
 
     /**
-     * Help function to get a List of all sub categories for given path.<p>
      * 
-     * @param path Path of the category.
-     * @return List of CategoryTreeEntries.
-     * */
-    private List<CmsCategoryTreeEntry> getCategoryTree(String path) {
+     */
+    protected void openPopup() {
 
-        // split the path into the all parts. Eg.: color/red/ => color;red;
-        String[] levels = path.split("/");
-        // copy the complete category tree. 
-        List<CmsCategoryTreeEntry> result = m_results;
-        // do for all the parts of the path.
-        for (int i = 0; i < levels.length; i++) {
-            // create iterator of the first level of category tree.
-            Iterator<CmsCategoryTreeEntry> it = result.iterator();
-            while (it.hasNext()) {
-                CmsCategoryTreeEntry next = it.next();
-                // split the path into the all parts. Eg.: color/red/ => color;red;
-                String[] nextPath = next.getPath().split("/");
-                // check if both pathes are equal.
-                if (nextPath[i].equalsIgnoreCase(levels[i].replace(" ", ""))) {
-                    // if they are, set the children of this tree to the results. 
-                    result = next.getChildren();
+        if (m_cmsPopup == null) {
+            m_cmsPopup = new CmsPopup("Category");
+            m_cmsPopup.setWidth(600);
+            m_cmsPopup.setHeight(350);
+            m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingelValue);
+            m_cmsPopup.add(m_cmsCategoryTree.getList());
+            m_cmsPopup.addDialogClose(new Command() {
+
+                public void execute() {
+
+                    closePopup();
                 }
-            }
+            });
         }
-        return result;
-    }
-
-    /**
-     * Help function to get the sub select box.<p>
-     * 
-     * @param parent the parent select box.
-     * @param level the level this select box stands.
-     * @return a CmsSelectBox
-     * */
-    private CmsSelectBox getNextSelectbox(CmsSelectBox parent, int level) {
-
-        // create new select box.
-        CmsSelectBox child = new CmsSelectBox();
-        child.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                fireChangeEvent((CmsSelectBox)event.getSource());
-            }
-
-        });
-        // get list of the children  from parent selctbox.
-        List<CmsCategoryTreeEntry> childs = getCategoryTree(parent.getFormValueAsString());
-        Map<String, String> items = new LinkedHashMap<String, String>();
-        // add default value to the results.
-        items.put("Select value", "Select value");
-        // copy the list to the results.
-        for (int y = 0; y < childs.size(); y++) {
-            items.put(childs.get(y).getPath(), childs.get(y).getTitle());
+        List<String> selected = new ArrayList<String>();
+        for (int i = 0; i < m_selectedArray.length; i++) {
+            selected.add(m_selectedArray[i].toLowerCase());
         }
-        // add the results to the select box.
-        child.setItems(items);
-        // check if the result has the selected value
-        if (items.containsKey(m_selectedValue.get(Integer.valueOf(level)))) {
-            // select the selected value.
-            child.selectValue(m_selectedValue.get(Integer.valueOf(level)));
-        } else {
-            // select the default value.
-            child.selectValue("Select value");
-        }
-        // return the generated select box.
-        return child;
-    }
+        m_cmsPopup.showRelativeTo(m_categoryField);
 
-    /**
-     * Helper function to get the root select box.<p>
-     * @return CmsSelectBox
-     * */
-    private CmsSelectBox getRootSelectBox() {
-
-        // create new select box.
-        CmsSelectBox child = new CmsSelectBox();
-        child.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-
-                fireChangeEvent((CmsSelectBox)event.getSource());
-            }
-
-        });
-        List<CmsCategoryTreeEntry> childs = m_results;
-        Map<String, String> items = new LinkedHashMap<String, String>();
-        // add default value to the results.
-        items.put("Select value", "Select value");
-        // copy the list to the results.
-        for (int y = 0; y < childs.size(); y++) {
-            items.put(childs.get(y).getPath(), childs.get(y).getTitle());
-        }
-        // add the results to the select box.
-        child.setItems(items);
-        // check if the result has the selected value
-        if (items.containsKey(m_selectedValue.get(Integer.valueOf(0)))) {
-            // select the selected value.
-            child.selectValue(m_selectedValue.get(Integer.valueOf(0)));
-        } else {
-            // select the default value.
-            child.selectValue("Select value");
-        }
-        // return the generated select box.
-        return child;
-    }
-
-    /**
-     * Helper function to check if the select box has children.<p>
-     * 
-     * @param parent the select box to be checked.
-     * @return true if has next.
-     * */
-    private boolean hasNext(CmsSelectBox parent) {
-
-        // try to get the children of the given parent.
-        List<CmsCategoryTreeEntry> childs = getCategoryTree(parent.getFormValueAsString());
-        // if there are no children return false.
-        if (childs == null) {
-            return false;
-        }
-        // if there are one or more children return true.      
-        return !childs.isEmpty();
     }
 
     /**
@@ -422,66 +329,56 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                 }
                 //m_categoryFolder = category;
             }
-            // TODO: check if the following configuration is necessary. 
-
-            /*int onlyLeafsIndex = configuration.indexOf(CONFIGURATION_ONLYLEAFS);
-            if (onlyLeafsIndex != -1) {
-                // only leafs is given
-                String onlyLeafs = configuration.substring(onlyLeafsIndex + CONFIGURATION_ONLYLEAFS.length() + 1);
-                if (onlyLeafs.indexOf('|') != -1) {
-                    // cut eventual following configuration values
-                    onlyLeafs = onlyLeafs.substring(0, onlyLeafs.indexOf('|'));
-                }
-                m_onlyLeafs = onlyLeafs;
-            }
-            int propertyIndex = configuration.indexOf(CONFIGURATION_PROPERTY);
-            if (propertyIndex != -1) {
-                // property is given
-                String property = configuration.substring(propertyIndex + CONFIGURATION_PROPERTY.length() + 1);
-                if (property.indexOf('|') != -1) {
-                    // cut eventual following configuration values
-                    property = property.substring(0, property.indexOf('|'));
-                }
-                m_property = property;
-            }*/
         }
     }
 
     /**
-     * Helper function to remove all select boxes beginning after the given select box.<p>
-     * 
-     * @param value the starting select box.
-     * */
-    private void removeTillSelectBox(CmsSelectBox value) {
+     * @param values 
+     * @param parent 
+     * @param level 
+     */
+    private void parseValues(String[] values, CmsCategoryTreeEntry parent, int level) {
 
-        // iterate about all widgets of the panel.
-        Iterator<Widget> it = m_panel.iterator();
-        // marker if the widgets should be removed. 
-        boolean remove = false;
-        // counter to get the point the removing starts.
-        int k = 0;
-        int i = 0;
-        // start to iterate 
-        while (it.hasNext()) {
-            CmsSelectBox selectbox = (CmsSelectBox)it.next();
-            // check if this one is to remove.
-            if (remove) {
-                it.remove();
-            }
-            // check if this select box is like the given one.
-            if (selectbox.equals(value) && !remove) {
-                // set the marker to true.
-                remove = true;
-                // stop counting the widgets.
-                k = i;
-            }
-            i++;
-        }
-        // remove all values from the map of selected values.
-        for (i = 0; i < m_selectedValue.size(); i++) {
-            // check if the counter has reached the widgetcounter.
-            if (i > k) {
-                m_selectedValue.remove(m_selectedValue.get(Integer.valueOf(i)));
+        for (int i = 0; i < values.length; i++) {
+            String value = values[i];
+            if ((value.indexOf("/") == (value.length() - 1)) && (parent == null)) {
+                try {
+                    String name = value.replace("/", "");
+
+                    CmsCategory category = new CmsCategory(null, m_categoryFolder + value, name, null, m_categoryFolder);
+                    CmsCategoryTreeEntry categoryEntry = new CmsCategoryTreeEntry(category);
+                    m_results.add(categoryEntry);
+                    List<String> test = new ArrayList<String>();
+                    for (int y = 0; y < values.length; y++) {
+                        if (!values[i].equals(values[y])) {
+                            test.add(values[y]);
+                        }
+                    }
+                    parseValues(test.toArray(new String[0]), categoryEntry, level + 1);
+                } catch (Exception e) {
+                    //TODO nothing
+                }
+            } else if (parent != null) {
+
+                if (value.contains(parent.getPath()) && (value.split("/").length == level)) {
+                    CmsCategory category;
+                    try {
+                        String name = value.replace(parent.getPath(), "").replace("/", "");
+                        category = new CmsCategory(null, m_categoryFolder + value, name, null, m_categoryFolder);
+                        CmsCategoryTreeEntry categoryEntry = new CmsCategoryTreeEntry(category);
+                        parent.addChild(categoryEntry);
+                        List<String> test = new ArrayList<String>();
+                        for (int y = 0; y < values.length; y++) {
+                            if (!values[i].equals(values[y])) {
+                                test.add(values[y]);
+                            }
+                        }
+                        parseValues(test.toArray(new String[0]), categoryEntry, level + 1);
+                    } catch (Exception e) {
+                        //TODO nothing
+                    }
+
+                }
             }
         }
     }
