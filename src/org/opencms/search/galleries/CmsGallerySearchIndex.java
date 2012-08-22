@@ -47,6 +47,7 @@ import org.opencms.search.Messages;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -411,7 +412,7 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
         if (locale != null) {
             // add query categories (if required)
             filter.add(new FilterClause(
-                getTermQueryFilter(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALES, locale),
+                getTermQueryFilter(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locale),
                 BooleanClause.Occur.MUST));
         }
 
