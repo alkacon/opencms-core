@@ -525,6 +525,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap<Locale, CmsSearchAnalyzer> m_analyzers;
 
+    /** The Solr core container. */
+    private CoreContainer m_coreContainer;
+
     /** A map of document factory configurations. */
     private List<CmsSearchDocumentType> m_documentTypeConfigs;
 
@@ -575,8 +578,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** Timeout for abandoning indexing thread. */
     private long m_timeout;
-
-	private CoreContainer m_coreContainer;
 
     /**
      * Default constructor when called as cron job.<p>
@@ -877,6 +878,23 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             default:
                 // no operation
         }
+    }
+
+    /**
+     * Returns all Solr index.<p>
+     * 
+     * @return all Solr indexes
+     */
+    public List<CmsSolrIndex> getAllSolrIndexes() {
+
+        List<CmsSolrIndex> result = new ArrayList<CmsSolrIndex>();
+        for (String indexName : getIndexNames()) {
+            CmsSolrIndex index = getIndexSolr(indexName);
+            if (index != null) {
+                result.add(index);
+            }
+        }
+        return result;
     }
 
     /**
@@ -1511,7 +1529,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         // get the core container that contains one core for each configured index
-        if (m_coreContainer == null)  {
+        if (m_coreContainer == null) {
             m_coreContainer = createCoreContainer();
         }
 
@@ -1531,22 +1549,26 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         index.getPath()));
                 }
             }
-            
+
             CoreDescriptor descriptor = new CoreDescriptor(m_coreContainer, "descriptor", m_solrConfig.getHome());
             descriptor.setDataDir(dataDir.getAbsolutePath());
             try {
-            	core = m_coreContainer.create(descriptor);
-            	core.setName(index.getName());
+                core = m_coreContainer.create(descriptor);
+                core.setName(index.getName());
                 // Register the newly created core
                 m_coreContainer.register(core, false);
-			} catch (Exception e) {
-				throw new CmsConfigurationException(Messages.get().container(Messages.ERR_SOLR_SERVER_NOT_CREATED_3, index.getName(), index.getPath(), m_solrConfig.getSolrConfigFile().getAbsolutePath()));
-			}
+            } catch (Exception e) {
+                throw new CmsConfigurationException(Messages.get().container(
+                    Messages.ERR_SOLR_SERVER_NOT_CREATED_3,
+                    index.getName(),
+                    index.getPath(),
+                    m_solrConfig.getSolrConfigFile().getAbsolutePath()));
+            }
         }
         SolrServer server = new EmbeddedSolrServer(m_coreContainer, index.getName());
         LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_SOLR_CREATED_EMBEDDED_SERVER_1,
-                OpenCms.getSearchManager().getSolrServerConfiguration().getSolrFile().getAbsolutePath()));
+            Messages.LOG_SOLR_CREATED_EMBEDDED_SERVER_1,
+            OpenCms.getSearchManager().getSolrServerConfiguration().getSolrFile().getAbsolutePath()));
         return server;
     }
 
@@ -1968,11 +1990,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             index.shutDown();
         }
 
-        if (m_coreContainer != null && m_coreContainer.getCores() != null) {
-        	for (SolrCore core : m_coreContainer.getCores()) {
+        if ((m_coreContainer != null) && (m_coreContainer.getCores() != null)) {
+            for (SolrCore core : m_coreContainer.getCores()) {
                 core.closeSearcher();
                 core.close();
-        	}
+            }
         }
         m_coreContainer.shutdown();
 
