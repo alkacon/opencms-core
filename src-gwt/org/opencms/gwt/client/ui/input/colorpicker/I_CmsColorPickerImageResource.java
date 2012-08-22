@@ -112,6 +112,14 @@ public interface I_CmsColorPickerImageResource extends ClientBundle {
      *
      * @return an image resource
      */
+    @Source("images/bar_hue.png")
+    ImageResource bar_hue();
+
+    /**
+     * Image resource accessor.<p>
+     *
+     * @return an image resource
+     */
     @Source("images/bar_red_bl.png")
     ImageResource bar_red_bl();
 
@@ -152,24 +160,8 @@ public interface I_CmsColorPickerImageResource extends ClientBundle {
      *
      * @return an image resource
      */
-    @Source("images/bar_hue.png")
-    ImageResource bar_hue();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
     @Source("images/bar_white.gif")
     ImageResource bar_white();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/rangearrows.gif")
-    ImageResource rangearrows();
 
     /**
      * Image resource accessor.<p>
@@ -224,14 +216,6 @@ public interface I_CmsColorPickerImageResource extends ClientBundle {
      *
      * @return an image resource
      */
-    @Source("images/mappoint.gif")
-    ImageResource mappoint();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
     @Source("images/map_red_max.png")
     ImageResource map_red_max();
 
@@ -266,4 +250,20 @@ public interface I_CmsColorPickerImageResource extends ClientBundle {
      */
     @Source("images/map_white.gif")
     ImageResource map_white();
+
+    /**
+     * Image resource accessor.<p>
+     *
+     * @return an image resource
+     */
+    @Source("images/mappoint.gif")
+    ImageResource mappoint();
+
+    /**
+     * Image resource accessor.<p>
+     *
+     * @return an image resource
+     */
+    @Source("images/rangearrows.gif")
+    ImageResource rangearrows();
 }

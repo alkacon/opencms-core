@@ -639,8 +639,20 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
      * @param x the distance along the x-axis, between 0 and 255
      * @param y the distance along the y-axis, between 0 and 255
      */
-    public void onMapSelected(int x, int y) {
+    public void onMapSelected(float x, float y) {
 
+        if (x > 255) {
+            x = 255;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+        if (y > 255) {
+            y = 255;
+        }
+        if (y < 0) {
+            y = 0;
+        }
         switch (m_colorMode) {
             case CmsSliderBar.HUE:
                 m_saturation = percentOf(x, 100);
@@ -664,22 +676,22 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
                 onChange(m_tbBrightness);
                 break;
             case CmsSliderBar.RED:
-                m_blue = x;
-                m_green = 256 - y;
+                m_blue = (int)x;
+                m_green = 255 - (int)y;
                 m_tbBlue.setText(Integer.toString(m_blue));
                 m_tbGreen.setText(Integer.toString(m_green));
                 onChange(m_tbRed);
                 break;
             case CmsSliderBar.GREEN:
-                m_blue = x;
-                m_red = 256 - y;
+                m_blue = (int)x;
+                m_red = 255 - (int)y;
                 m_tbBlue.setText(Integer.toString(m_blue));
                 m_tbRed.setText(Integer.toString(m_red));
                 onChange(m_tbGreen);
                 break;
             case CmsSliderBar.BLUE:
-                m_red = x;
-                m_green = 256 - y;
+                m_red = (int)x;
+                m_green = 255 - (int)y;
                 m_tbRed.setText(Integer.toString(m_red));
                 m_tbGreen.setText(Integer.toString(m_green));
                 onChange(m_tbBlue);
@@ -789,9 +801,9 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
      * @param second value.
      * @return result (first / 256) * second 
      */
-    private int percentOf(int first, int second) {
+    private int percentOf(float first, float second) {
 
-        return (int)((new Float(first).floatValue() / 256) * second);
+        return (int)((first / 256) * second);
     }
 
     /**

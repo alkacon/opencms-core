@@ -41,20 +41,20 @@ class CmsTransparencyImpl {
     /** Caches the original DXImageTransform.Microsoft.AlphaImageLoader settings for IE6. */
     private static Map<Element, String> map = new HashMap<Element, String>();
 
-    // Get IE version (provided by Microsoft)
     /**
+     * Get IE version (provided by Microsoft)
      * @return rv
      */
     public static native float getIEVersion() /*-{
-                                              var rv = -1;
-                                              if (navigator.appName == 'Microsoft Internet Explorer') {
-                                              var ua = navigator.userAgent;
-                                              var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-                                              if (re.exec(ua) != null)
-                                              rv = parseFloat(RegExp.$1);
-                                              }
-                                              return rv;
-                                              }-*/;
+        var rv = -1;
+        if (navigator.appName == 'Microsoft Internet Explorer') {
+            var ua = navigator.userAgent;
+            var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+            if (re.exec(ua) != null)
+                rv = parseFloat(RegExp.$1);
+        }
+        return rv;
+    }-*/;
 
     /** Given a DOM element, set the transparency value, with 100 being fully opaque and 0 being fully transparent.<p>
      * @param elem A com.google.gwt.user.client.Element object
@@ -107,6 +107,6 @@ class CmsTransparencyImpl {
      */
     //workaround for to strict debugger....
     private static native void setMozOpacity(Element elem, String opacity) /*-{
-                                                                           elem.style["-moz-opacity"] = opacity;
-                                                                           }-*/;
+        elem.style["-moz-opacity"] = opacity;
+    }-*/;
 }
