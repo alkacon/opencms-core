@@ -101,11 +101,11 @@ public class CmsSearchCategoryCollector extends Collector {
     /** The internal map of the categories found. */
     private Map<String, CmsCategroyCount> m_categories;
 
-    /** The index searcher used. */
-    private IndexSearcher m_searcher;
-
     /** The index of the document reader. */
     private int m_docBase;
+
+    /** The index searcher used. */
+    private IndexSearcher m_searcher;
 
     /**
      * Creates a new category search collector instance.<p>
