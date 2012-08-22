@@ -223,6 +223,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /** The default width of this dialog. */
     private static final int DEFAULT_WIDTH = 300;
 
+    /** The close command. */
+    protected Command m_closeCommand;
+
     /** The window width. */
     protected int m_windowWidth;
 
@@ -231,6 +234,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /** The dialog caption. */
     private Caption m_caption;
+
+    /** Flag indicating if the dialog should catch all notifications while visible. */
+    private boolean m_catchNotifications;
 
     /** The child widgets. */
     private WidgetCollection m_children;
@@ -243,6 +249,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /** The panel for the close button. */
     private CloseButton m_close;
+
+    /** The dialog closing handler registration used for organizing notifications. */
+    private HandlerRegistration m_closingHandlerRegistration;
 
     /** The popup container element. */
     private com.google.gwt.user.client.Element m_containerElement;
@@ -261,6 +270,12 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /** The main widget of this dialog containing all others. */
     private Element m_main;
+
+    /** The own notification widget. */
+    private A_CmsNotificationWidget m_ownNotificationWidget;
+
+    /** The parent notification widget. */
+    private I_CmsNotificationWidget m_parentNotificationWidget;
 
     /** The resize handler registration .*/
     private HandlerRegistration m_resizeHandlerRegistration;
@@ -412,6 +427,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void addDialogClose(final Command cmd) {
 
+        m_closeCommand = cmd;
         if (m_close == null) {
             m_close = new CloseButton();
             m_close.setTitle(Messages.get().key(Messages.GUI_CLOSE_0));
@@ -427,8 +443,8 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
                     boolean cancelled = false;
                     try {
-                        if (cmd != null) {
-                            cmd.execute();
+                        if (m_closeCommand != null) {
+                            m_closeCommand.execute();
                         }
                     } catch (CmsCancelCloseException e) {
                         cancelled = true;
@@ -450,27 +466,30 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void catchNotifications() {
 
-        // remember current notification widget
-        final I_CmsNotificationWidget widget = CmsNotification.get().getWidget();
-        // create our own notification overlay
-        final A_CmsNotificationWidget notificationWidget = createDialogNotificationWidget();
-        add(notificationWidget);
-        CmsNotification.get().setWidget(notificationWidget);
-
-        // when closing the dialog
-        addCloseHandler(new CloseHandler<PopupPanel>() {
-
-            /**
-             * @see CloseHandler#onClose(CloseEvent)
-             */
-            public void onClose(CloseEvent<PopupPanel> event) {
-
-                // restore the previous notification widget
-                CmsNotification.get().setWidget(widget);
-                // remove the overlay notification widget
-                remove(notificationWidget);
+        m_catchNotifications = true;
+        if (isShowing()) {
+            // remember current notification widget
+            m_parentNotificationWidget = CmsNotification.get().getWidget();
+            // create our own notification overlay
+            if (m_ownNotificationWidget == null) {
+                m_ownNotificationWidget = createDialogNotificationWidget();
             }
-        });
+            add(m_ownNotificationWidget);
+            CmsNotification.get().setWidget(m_ownNotificationWidget);
+        }
+        if (m_closingHandlerRegistration == null) {
+            // when closing the dialog
+            m_closingHandlerRegistration = addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                /**
+                 * @see CloseHandler#onClose(CloseEvent)
+                 */
+                public void onClose(CloseEvent<PopupPanel> event) {
+
+                    clearNotifications();
+                }
+            });
+        }
     }
 
     /**
@@ -936,6 +955,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
                 }
             });
         }
+        if (m_catchNotifications) {
+            catchNotifications();
+        }
     }
 
     /**
@@ -1220,6 +1242,17 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     protected void showArrow(Element arrow) {
 
         getElement().appendChild(arrow);
+    }
+
+    /**
+     * Resets the notification to the parent notification widget and detaches the own notification widget.<p>
+     */
+    void clearNotifications() {
+
+        // restore the previous notification widget
+        CmsNotification.get().setWidget(m_parentNotificationWidget);
+        // remove the overlay notification widget
+        remove(m_ownNotificationWidget);
     }
 
     /**
