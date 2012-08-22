@@ -107,6 +107,7 @@ public final class CmsGalleryFactory {
         CmsPopup popup = new CmsPopup(650);
         popup.setGlassEnabled(true);
         popup.catchNotifications();
+        popup.removePadding();
         SimplePanel container = new SimplePanel();
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(null, popup);
         new CmsGalleryController(
