@@ -141,7 +141,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsGalleryField();
+                return new CmsLinkSelector();
             }
         });
     }
