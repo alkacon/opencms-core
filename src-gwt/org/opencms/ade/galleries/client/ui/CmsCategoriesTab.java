@@ -32,9 +32,10 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.CmsDataValue;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
@@ -48,6 +49,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -218,13 +220,13 @@ public class CmsCategoriesTab extends A_CmsListTab {
             for (CmsCategoryBean categoryBean : categoriesBeans) {
                 m_categories.put(categoryBean.getPath(), categoryBean);
                 // set the list item widget
-                CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
+                CmsDataValue dataValue = new CmsDataValue(
+                    600,
+                    3,
                     categoryBean.getTitle(),
                     CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryBean.getDescription())
                     ? categoryBean.getDescription()
-                    : categoryBean.getPath(), null));
-                listItemWidget.setUnselectable();
-                listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
+                    : categoryBean.getPath());
                 // the checkbox
                 CmsCheckBox checkBox = new CmsCheckBox();
                 if ((selectedCategories != null) && selectedCategories.contains(categoryBean.getPath())) {
@@ -232,9 +234,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 }
                 SelectionHandler selectionHandler = new SelectionHandler(categoryBean.getPath(), checkBox);
                 checkBox.addClickHandler(selectionHandler);
-                listItemWidget.addDoubleClickHandler(selectionHandler);
+                dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
                 // set the category list item and add to list 
-                CmsTreeItem listItem = new CmsTreeItem(false, checkBox, listItemWidget);
+                CmsTreeItem listItem = new CmsTreeItem(false, checkBox, dataValue);
                 listItem.setId(categoryBean.getPath());
                 addWidgetToList(listItem);
             }
@@ -339,12 +341,18 @@ public class CmsCategoriesTab extends A_CmsListTab {
             category.getTitle(),
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()
-            : category.getPath(), null);
+            : category.getPath(),
+            null);
         m_categories.put(category.getPath(), category);
         // set the list item widget
-        CmsListItemWidget listItemWidget = new CmsListItemWidget(categoryBean);
-        listItemWidget.setUnselectable();
-        listItemWidget.setIcon(CATEGORY_ICON_CLASSES);
+        CmsDataValue dataValue = new CmsDataValue(
+            600,
+            3,
+            category.getTitle(),
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
+            ? category.getDescription()
+            : category.getPath());
+        dataValue.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryItem());
         // the checkbox
         CmsCheckBox checkBox = new CmsCheckBox();
         if ((selectedCategories != null) && selectedCategories.contains(category.getPath())) {
@@ -352,10 +360,10 @@ public class CmsCategoriesTab extends A_CmsListTab {
         }
         SelectionHandler selectionHandler = new SelectionHandler(category.getPath(), checkBox);
         checkBox.addClickHandler(selectionHandler);
-        listItemWidget.addDoubleClickHandler(selectionHandler);
-        listItemWidget.addButton(createSelectButton(selectionHandler));
+        dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
+        dataValue.addButton(createSelectButton(selectionHandler));
         // set the category tree item and add to list 
-        CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, listItemWidget);
+        CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, dataValue);
         treeItem.setId(category.getPath());
         return treeItem;
     }
