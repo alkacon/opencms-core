@@ -29,6 +29,8 @@ package org.opencms.ade.contenteditor.client.css;
 
 import com.alkacon.acacia.client.css.I_LayoutBundle.I_Widgets;
 
+import org.opencms.gwt.client.ui.css.I_CmsFloatDecoratedPanelCss;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 
@@ -38,7 +40,7 @@ import com.google.gwt.resources.client.CssResource;
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
 
     /** The XML content widget CSS. */
-    public interface I_CmsWidgetCss extends I_Widgets {
+    public interface I_CmsWidgetCss extends I_Widgets, I_CmsFloatDecoratedPanelCss {
 
         /**
          * Css class reader.<p>
@@ -172,6 +174,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the css class
          */
         String textAreaBoxPanel();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String categoryPanel();
 
         /**
          * Css class reader.<p>

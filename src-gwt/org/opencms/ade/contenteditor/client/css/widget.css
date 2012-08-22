@@ -20,13 +20,21 @@
 	border: 1px solid #7788AA  /*value("constants.css.borderColor")*/;
 }
 
+.categoryPanel {
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+}
 
+.categoryPanel:hover {
+	cursor: pointer;	
+}
 
 .selectBoxPopup {
 	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
 }
 
-.inputField{}
+
 
 textarea.textAreaBox {
 	background: none repeat scroll 0 0 transparent;
@@ -121,8 +129,8 @@ input.textBox{
 	box-shadow: none;
 	height: 18px;
 	font-size: 12px;
-	width:98.6%;
-	padding: 0 4px;
+	width:100%;
+	padding: 0;
 }
 
 .calendarStyle input {
@@ -293,14 +301,7 @@ div.colorPicker{
 	border: 1px solid value("constants.css.borderColor");
 	background: none repeat scroll 0 0 transparent;
 }
-.emptyValue div.textAreaBoxPanel{
-	border: 1px solid value("constants.css.borderColor");
-}
-
-.emptyValue input.textBox{
-	border: 1px solid value("constants.css.borderColor");
-}
-.emptyValue div.vfsInputBox{
+.emptyValue div.textAreaBoxPanel , .emptyValue .categoryPanel, .emptyValue input.textBox, .emptyValue div.vfsInputBox{
 	border: 1px solid value("constants.css.borderColor");
 }
 
@@ -370,6 +371,8 @@ div.colorPicker{
 	
 .emptyValue{}
 
+.inputField{}
+
 .hasError{}
 
 .hasWarning{}
@@ -383,3 +386,8 @@ div.colorPicker{
 .entity{}
 
 .attributeValue{}
+
+.floatDecoratedPanel{}
+.primary{}
+.floatBox{}
+.decorationBox{}
