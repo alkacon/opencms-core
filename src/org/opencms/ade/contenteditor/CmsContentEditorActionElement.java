@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
+import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
@@ -83,6 +84,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(getPrefetch());
         sb.append(super.export());
+        sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportWidget());
         sb.append(export());
         sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
