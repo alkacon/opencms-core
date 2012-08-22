@@ -18,7 +18,7 @@
 
 .decorationBox {
 	float:left;
-	margin-top: 12px;
+	margin-top: 2px;
 }
 
 @if user.agent ie6 {
