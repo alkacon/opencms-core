@@ -40,7 +40,6 @@ import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.ReqParam;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -208,9 +207,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
 
-    /** The gallery mode. */
-    private GalleryMode m_galleryMode;
-
     /** The workplace settings of the current user. */
     private CmsWorkplaceSettings m_workplaceSettings;
 
@@ -221,16 +217,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns a new configured service instance.<p>
      * 
      * @param request the current request
-     * @param galleryMode the gallery mode
      * 
      * @return a new service instance
      */
-    public static CmsGalleryService newInstance(HttpServletRequest request, GalleryMode galleryMode) {
+    public static CmsGalleryService newInstance(HttpServletRequest request) {
 
         CmsGalleryService srv = new CmsGalleryService();
         srv.setCms(CmsFlexController.getCmsObject(request));
         srv.setRequest(request);
-        srv.setGalleryMode(galleryMode);
         return srv;
     }
 
@@ -256,33 +250,36 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInitialSettings()
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInitialSettings(org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
-    public CmsGalleryDataBean getInitialSettings() throws CmsRpcException {
+    public CmsGalleryDataBean getInitialSettings(
+        GalleryMode galleryMode,
+        String referencePath,
+        String galleryPath,
+        String currentElement,
+        String resourceTypes,
+        String galleryTypes) throws CmsRpcException {
 
         CmsGalleryDataBean data = new CmsGalleryDataBean();
-        data.setMode(m_galleryMode);
+        data.setMode(galleryMode);
         data.setLocales(buildLocalesMap());
         data.setLocale(getCmsObject().getRequestContext().getLocale().toString());
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
         List<CmsResourceTypeBean> types = null;
-        switch (m_galleryMode) {
+        switch (galleryMode) {
             case editor:
             case view:
             case widget:
-                String referencePath = getRequest().getParameter(ReqParam.resource.name());
-                data.setStartGallery(getRequest().getParameter(ReqParam.gallerypath.name()));
-                data.setCurrentElement(getRequest().getParameter(ReqParam.currentelement.name()));
+                data.setStartGallery(galleryPath);
+                data.setCurrentElement(currentElement);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(referencePath)) {
                     referencePath = data.getStartGallery();
-
                 }
                 data.setReferenceSitePath(referencePath);
-                types = getResourceTypeBeans(data.getReferenceSitePath());
+                types = getResourceTypeBeans(galleryMode, data.getReferenceSitePath(), resourceTypes);
                 data.setTypes(types);
                 Map<String, CmsGalleryTypeInfo> galleryTypeInfos = readGalleryInfosByTypeBeans(types);
-                String galleryTypes = getRequest().getParameter(ReqParam.gallerytypes.name());
                 // in case the 'gallerytypes' parameter is set, allow only the given galleries
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {
                     Map<String, CmsGalleryTypeInfo> infos = new HashMap<String, CmsGalleryTypeInfo>();
@@ -312,7 +309,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             case ade:
                 data.setReferenceSitePath(getCmsObject().getRequestContext().getUri());
-                types = getResourceTypeBeans(data.getReferenceSitePath());
+                types = getResourceTypeBeans(galleryMode, data.getReferenceSitePath(), resourceTypes);
                 data.setTypes(types);
                 data.setStartTab(GalleryTabId.cms_tab_types);
                 break;
@@ -913,21 +910,26 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Returns the resource types configured to be used within the given gallery mode.<p>
      * 
+     * @param galleryMode the gallery mode
      * @param referenceSitePath the reference site-path to check permissions for
+     * @param typesParam the resource types parameter
      * 
      * @return the resource types
      * 
      * @throws CmsRpcException if something goes wrong reading the configuration
      */
-    private List<CmsResourceTypeBean> getResourceTypeBeans(String referenceSitePath) throws CmsRpcException {
+    private List<CmsResourceTypeBean> getResourceTypeBeans(
+        GalleryMode galleryMode,
+        String referenceSitePath,
+        String typesParam) throws CmsRpcException {
 
         List<I_CmsResourceType> resourceTypes = null;
         List<String> creatableTypes = null;
-        switch (m_galleryMode) {
+        switch (galleryMode) {
             case editor:
             case view:
             case widget:
-                resourceTypes = readResourceTypesFromRequest();
+                resourceTypes = readResourceTypesFromRequest(typesParam);
                 creatableTypes = Collections.<String> emptyList();
                 break;
             case ade:
@@ -1171,12 +1173,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Returns a list of resource types by a request parameter.<p>
      * 
+     * @param typesParam the resource types parameter
+     * 
      * @return the resource types
      */
-    private List<I_CmsResourceType> readResourceTypesFromRequest() {
+    private List<I_CmsResourceType> readResourceTypesFromRequest(String typesParam) {
 
         List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
-        String typesParam = getRequest().getParameter(ReqParam.types.name());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(typesParam)) {
             String[] temp = typesParam.split(",");
             for (int i = 0; i < temp.length; i++) {
@@ -1230,16 +1233,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         searchObjBean.setResults(buildSearchResultList(searchResults, null));
 
         return searchObjBean;
-    }
-
-    /**
-     * Sets the gallery mode.<p>
-     *
-     * @param galleryMode the gallery mode to set
-     */
-    private void setGalleryMode(GalleryMode galleryMode) {
-
-        m_galleryMode = galleryMode;
     }
 
     /**

@@ -40,6 +40,7 @@ import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
@@ -57,6 +58,7 @@ import org.opencms.gwt.shared.sort.CmsComparatorPath;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
 import org.opencms.gwt.shared.sort.CmsComparatorType;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -132,6 +134,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public CmsGalleryController(CmsGalleryControllerHandler handler) {
 
         m_handler = handler;
+        m_eventBus = new SimpleEventBus();
+        addValueChangeHandler(m_handler);
 
         // get initial search for gallery
         try {
@@ -155,10 +159,73 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             m_searchObject.setScope(m_dialogBean.getScope());
         }
         if (m_dialogBean != null) {
-            m_eventBus = new SimpleEventBus();
-            addValueChangeHandler(m_handler);
             m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
         }
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param handler the controller handler 
+     * @param galleryMode the gallery mode
+     * @param referencePath the reference path
+     * @param galleryPath the start gallery path
+     * @param currentElement the current element
+     * @param resourceTypes the available resource types (comma separated list)
+     * @param galleryTypes the gallery types (comma separated list)
+     * @param useFormats the use image formats flag
+     * @param imageFormats the image formats (comma separated list)
+     * @param imageFormatNames the image format names (comma separated list)
+     */
+    public CmsGalleryController(
+        CmsGalleryControllerHandler handler,
+        final GalleryMode galleryMode,
+        final String referencePath,
+        final String galleryPath,
+        final String currentElement,
+        final String resourceTypes,
+        final String galleryTypes,
+        boolean useFormats,
+        String imageFormats,
+        String imageFormatNames) {
+
+        m_handler = handler;
+        m_handler.m_galleryDialog.setUseFormats(useFormats);
+        m_handler.m_galleryDialog.setImageFormats(imageFormats);
+        m_handler.m_galleryDialog.setImageFormatNames(imageFormatNames);
+        m_eventBus = new SimpleEventBus();
+        addValueChangeHandler(m_handler);
+        CmsRpcAction<CmsGalleryDataBean> initAction = new CmsRpcAction<CmsGalleryDataBean>() {
+
+            @Override
+            public void execute() {
+
+                getGalleryService().getInitialSettings(
+                    galleryMode,
+                    referencePath,
+                    galleryPath,
+                    currentElement,
+                    resourceTypes,
+                    galleryTypes,
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsGalleryDataBean result) {
+
+                m_dialogBean = result;
+                m_dialogMode = m_dialogBean.getMode();
+                if (m_dialogBean.getStartTab() == GalleryTabId.cms_tab_results) {
+                    initialSearch();
+                } else {
+                    m_searchObject = new CmsGallerySearchBean();
+                    m_searchObject.setLocale(m_dialogBean.getLocale());
+                    m_searchObject.setScope(m_dialogBean.getScope());
+                    m_handler.onInitialSearch(m_searchObject, m_dialogBean, CmsGalleryController.this);
+                }
+            }
+        };
+        initAction.execute();
     }
 
     /**
@@ -717,10 +784,11 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * Selects the given resource and sets its path into the xml-content field or editor link.<p>
      * 
      * @param resourcePath the resource path
+     * @param structureId the structure id
      * @param title the resource title
      * @param resourceType the resource type
      */
-    public void selectResource(String resourcePath, String title, String resourceType) {
+    public void selectResource(String resourcePath, CmsUUID structureId, String title, String resourceType) {
 
         String provider = getProviderName(resourceType);
         if (provider == null) {
@@ -730,6 +798,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (m_previewFactoryRegistration.containsKey(provider)) {
             m_previewFactoryRegistration.get(provider).getPreview(m_handler.m_galleryDialog).selectResource(
                 resourcePath,
+                structureId,
                 title);
 
         } else {
@@ -1077,6 +1146,31 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
         };
         action.execute();
+    }
+
+    /**
+     * Does the initial search if not already pre-fetched.<p>
+     */
+    void initialSearch() {
+
+        CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getGalleryService().getSearch(m_dialogBean, this);
+            }
+
+            @Override
+            protected void onResponse(CmsGallerySearchBean result) {
+
+                stop(false);
+                m_searchObject = result;
+                m_handler.onInitialSearch(m_searchObject, m_dialogBean, CmsGalleryController.this);
+            }
+        };
+        searchAction.execute();
     }
 
     /**

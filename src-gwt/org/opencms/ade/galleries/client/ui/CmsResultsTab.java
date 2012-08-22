@@ -196,6 +196,9 @@ public class CmsResultsTab extends A_CmsListTab {
         /** The resource type of the selected item. */
         private String m_resourceType;
 
+        /** The structure id. */
+        private CmsUUID m_structureId;
+
         /** The resource title. */
         private String m_title;
 
@@ -203,12 +206,14 @@ public class CmsResultsTab extends A_CmsListTab {
          * Constructor.<p>
          * 
          * @param resourcePath the item resource path 
+         * @param structureId the structure id
          * @param title the resource title
          * @param resourceType the item resource type
          */
-        public SelectHandler(String resourcePath, String title, String resourceType) {
+        public SelectHandler(String resourcePath, CmsUUID structureId, String title, String resourceType) {
 
             m_resourcePath = resourcePath;
+            m_structureId = structureId;
             m_resourceType = resourceType;
             m_title = title;
         }
@@ -218,7 +223,7 @@ public class CmsResultsTab extends A_CmsListTab {
          */
         public void onClick(ClickEvent event) {
 
-            getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
+            getTabHandler().selectResource(m_resourcePath, m_structureId, m_title, m_resourceType);
         }
 
         /**
@@ -226,7 +231,7 @@ public class CmsResultsTab extends A_CmsListTab {
          */
         public void onDoubleClick(DoubleClickEvent event) {
 
-            getTabHandler().selectResource(m_resourcePath, m_title, m_resourceType);
+            getTabHandler().selectResource(m_resourcePath, m_structureId, m_title, m_resourceType);
         }
     }
 
@@ -469,11 +474,12 @@ public class CmsResultsTab extends A_CmsListTab {
         if (hasPreview) {
             listItem.addPreviewClickHandler(new PreviewHandler(resultItem.getPath(), resultItem.getType()));
         }
-        listItem.getListItemWidget().addButton(
-            new CmsContextMenuButton(new CmsUUID(resultItem.getClientId()), m_contextMenuHandler));
+        CmsUUID structureId = new CmsUUID(resultItem.getClientId());
+        listItem.getListItemWidget().addButton(new CmsContextMenuButton(structureId, m_contextMenuHandler));
         if (m_tabHandler.hasSelectResource()) {
             SelectHandler selectHandler = new SelectHandler(
                 resultItem.getPath(),
+                structureId,
                 resultItem.getTitle(),
                 resultItem.getType());
             listItem.addSelectClickHandler(selectHandler);

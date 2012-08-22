@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -188,24 +189,28 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#selectResource(java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#selectResource(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
     @Override
-    public void selectResource(String resourcePath, String title) {
+    public void selectResource(String resourcePath, CmsUUID structureId, String title) {
 
         CmsCroppingParamBean param;
         switch (getGalleryMode()) {
             case widget:
                 param = getInitialCroppingParameter(resourcePath);
-                if (CmsPreviewUtil.isAdvancedWidget()) {
-                    CmsPreviewUtil.setVfsImage(
-                        resourcePath,
-                        param.getScaleParam(),
-                        param.getFormatName(),
-                        param.getRatio() + "");
+                if (getGalleryDialog().getWidgetHandler() != null) {
+                    getGalleryDialog().getWidgetHandler().setWidgetValue(resourcePath, structureId, param);
                 } else {
-                    CmsPreviewUtil.setResourcePath(resourcePath
-                        + ((param.isCropped() || param.isScaled()) ? "?" + param.toString() : ""));
+                    if (CmsPreviewUtil.isAdvancedWidget()) {
+                        CmsPreviewUtil.setVfsImage(
+                            resourcePath,
+                            param.getScaleParam(),
+                            param.getFormatName(),
+                            param.getRatio() + "");
+                    } else {
+                        CmsPreviewUtil.setResourcePath(resourcePath
+                            + ((param.isCropped() || param.isScaled()) ? "?" + param.toString() : ""));
+                    }
                 }
                 break;
             case editor:
@@ -238,17 +243,24 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
 
         switch (getGalleryMode()) {
             case widget:
-                if (CmsPreviewUtil.isAdvancedWidget()) {
-                    CmsPreviewUtil.setVfsImage(
+                if (getGalleryDialog().getWidgetHandler() != null) {
+                    getGalleryDialog().getWidgetHandler().setWidgetValue(
                         m_infoBean.getResourcePath(),
-                        croppingParam.getScaleParam(),
-                        croppingParam.getFormatName(),
-                        croppingParam.getRatio() + "");
+                        m_infoBean.getStructureId(),
+                        croppingParam);
                 } else {
-                    CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath()
-                        + ((croppingParam.isCropped() || croppingParam.isScaled())
-                        ? "?" + croppingParam.toString()
-                        : ""));
+                    if (CmsPreviewUtil.isAdvancedWidget()) {
+                        CmsPreviewUtil.setVfsImage(
+                            m_infoBean.getResourcePath(),
+                            croppingParam.getScaleParam(),
+                            croppingParam.getFormatName(),
+                            croppingParam.getRatio() + "");
+                    } else {
+                        CmsPreviewUtil.setResourcePath(m_infoBean.getResourcePath()
+                            + ((croppingParam.isCropped() || croppingParam.isScaled())
+                            ? "?" + croppingParam.toString()
+                            : ""));
+                    }
                 }
                 break;
             case editor:
@@ -314,6 +326,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
         CmsImageInfoBean imageInfo = getImageInfo(resourcePath);
         CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
             getGalleryMode(),
+            m_handler.getGalleryDialog(),
             resourcePath,
             imageInfo.getHeight(),
             imageInfo.getWidth());

@@ -27,6 +27,8 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.util.CmsUUID;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -165,12 +167,13 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
      * Selects the given resource and sets its path into the xml-content field or editor link.<p>
      * 
      * @param resourcePath the item resource path 
+     * @param structureId the structure id
      * @param title the resource title
      * @param resourceType the item resource type
      */
-    public void selectResource(String resourcePath, String title, String resourceType) {
+    public void selectResource(String resourcePath, CmsUUID structureId, String title, String resourceType) {
 
-        m_controller.selectResource(resourcePath, title, resourceType);
+        m_controller.selectResource(resourcePath, structureId, title, resourceType);
     }
 
     /**

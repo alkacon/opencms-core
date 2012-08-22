@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.shared.property.CmsClientProperty;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -131,13 +132,17 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#selectResource(java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#selectResource(java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
      */
-    public void selectResource(String resourcePath, String title) {
+    public void selectResource(String resourcePath, CmsUUID structureId, String title) {
 
         switch (getGalleryMode()) {
             case widget:
-                CmsPreviewUtil.setResourcePath(resourcePath);
+                if (getGalleryDialog().getWidgetHandler() != null) {
+                    getGalleryDialog().getWidgetHandler().setWidgetValue(resourcePath, structureId, null);
+                } else {
+                    CmsPreviewUtil.setResourcePath(resourcePath);
+                }
                 break;
             case editor:
                 CmsPreviewUtil.setLink(resourcePath, title, null);
@@ -164,7 +169,10 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
      */
     public void setResource() {
 
-        selectResource(m_infoBean.getResourcePath(), m_infoBean.getProperties().get(CmsClientProperty.PROPERTY_TITLE));
+        selectResource(
+            m_infoBean.getResourcePath(),
+            m_infoBean.getStructureId(),
+            m_infoBean.getProperties().get(CmsClientProperty.PROPERTY_TITLE));
     }
 
     /**

@@ -122,6 +122,19 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     }
 
     /**
+     * Exports the gallery messages for widget use.<p>
+     * 
+     * @return the gallery messages
+     */
+    public String exportWidget() {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(ClientMessages.get().export(getRequest()));
+        wrapScript(sb);
+        return sb.toString();
+    }
+
+    /**
      * Returns the editor title.<p>
      * 
      * @return the editor title
@@ -162,8 +175,14 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
      */
     private String export(GalleryMode galleryMode) throws Exception {
 
-        CmsGalleryService galleryService = CmsGalleryService.newInstance(getRequest(), galleryMode);
-        CmsGalleryDataBean data = galleryService.getInitialSettings();
+        CmsGalleryService galleryService = CmsGalleryService.newInstance(getRequest());
+        CmsGalleryDataBean data = galleryService.getInitialSettings(
+            galleryMode,
+            getRequest().getParameter(ReqParam.resource.name()),
+            getRequest().getParameter(ReqParam.gallerypath.name()),
+            getRequest().getParameter(ReqParam.currentelement.name()),
+            getRequest().getParameter(ReqParam.types.name()),
+            getRequest().getParameter(ReqParam.gallerytypes.name()));
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {
             search = galleryService.getSearch(data);
@@ -178,7 +197,14 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
         sb.append(CmsGalleryDataBean.DICT_NAME).append("='");
-        sb.append(serializeForJavascript(I_CmsGalleryService.class.getMethod("getInitialSettings"), data));
+        sb.append(serializeForJavascript(I_CmsGalleryService.class.getMethod(
+            "getInitialSettings",
+            GalleryMode.class,
+            String.class,
+            String.class,
+            String.class,
+            String.class,
+            String.class), data));
         sb.append("';");
         sb.append(CmsGallerySearchBean.DICT_NAME).append("='").append(
             serializeForJavascript(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));

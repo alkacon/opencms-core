@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
+import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
@@ -106,6 +107,12 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The galleries tab. */
     private CmsGalleriesTab m_galleriesTab;
 
+    /** The image format names. */
+    private String m_imageFormatNames;
+
+    /** The image formats. */
+    private String m_imageFormats;
+
     /** The flag for the initails search. */
     private boolean m_isInitialSearch;
 
@@ -124,8 +131,14 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The types tab. */
     private CmsTypesTab m_typesTab;
 
+    /** The use formats flag. */
+    private boolean m_useFormats;
+
     /** The VFS folder tab. */
     private CmsVfsTab m_vfsTab;
+
+    /** The widget handler. */
+    private I_CmsGalleryWidgetHandler m_widgetHandler;
 
     /**
      * The constructor.<p> 
@@ -176,20 +189,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         // All composites must call initWidget() in their constructors.
         initWidget(m_parentPanel);
         addResizeHandler(this);
-    }
-
-    /**
-     * Ensures all style sheets are loaded.<p>
-     */
-    private void initCss() {
-
-        I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.croppingDialogCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.imageEditorFormCss().ensureInjected();
-        I_CmsLayoutBundle.INSTANCE.imageAdvancedFormCss().ensureInjected();
     }
 
     /**
@@ -354,6 +353,26 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Returns the image format names.<p>
+     *
+     * @return the image format names
+     */
+    public String getImageFormatNames() {
+
+        return m_imageFormatNames;
+    }
+
+    /**
+     * Returns the image formats.<p>
+     *
+     * @return the image formats
+     */
+    public String getImageFormats() {
+
+        return m_imageFormats;
+    }
+
+    /**
      * Returns the parent panel of the dialog.<p>
      *
      * @return the parent
@@ -404,6 +423,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Returns the widget handler.<p>
+     * 
+     * @return the widget handler
+     */
+    public I_CmsGalleryWidgetHandler getWidgetHandler() {
+
+        return m_widgetHandler;
+    }
+
+    /**
      * Hides or shows the show-preview-button.<p>
      * 
      * @param hide <code>true</code> to hide the button
@@ -411,6 +440,26 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public void hideShowPreviewButton(boolean hide) {
 
         m_showPreview.setVisible(!hide);
+    }
+
+    /**
+     * Returns if the gallery is used as a native widget.<p>
+     * 
+     * @return <code>true</code> if the gallery is used as a native widget
+     */
+    public boolean isNativeWidget() {
+
+        return m_widgetHandler != null;
+    }
+
+    /**
+     * Returns the use formats flag.<p>
+     *
+     * @return the use formats flag
+     */
+    public boolean isUseFormats() {
+
+        return m_useFormats;
     }
 
     /**
@@ -503,6 +552,26 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Sets the image format names.<p>
+     *
+     * @param imageFormatNames the image format names to set
+     */
+    public void setImageFormatNames(String imageFormatNames) {
+
+        m_imageFormatNames = imageFormatNames;
+    }
+
+    /**
+     * Sets the image formats.<p>
+     *
+     * @param imageFormats the image formats to set
+     */
+    public void setImageFormats(String imageFormats) {
+
+        m_imageFormats = imageFormats;
+    }
+
+    /**
      * Sets the on attach command.<p>
      *
      * @param onAttachCommand the on attach command to set
@@ -510,6 +579,26 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public void setOnAttachCommand(Command onAttachCommand) {
 
         m_onAttachCommand = onAttachCommand;
+    }
+
+    /**
+     * Sets the use formats flag.<p>
+     *
+     * @param useFormats the use formats flag to set
+     */
+    public void setUseFormats(boolean useFormats) {
+
+        m_useFormats = useFormats;
+    }
+
+    /**
+     * Sets the widget handler.<p>
+     * 
+     * @param widgetHandler the widget handler
+     */
+    public void setWidgetHandler(I_CmsGalleryWidgetHandler widgetHandler) {
+
+        m_widgetHandler = widgetHandler;
     }
 
     /**
@@ -568,6 +657,22 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     protected void updateSizes() {
 
-        m_resultsTab.updateListSize();
+        if (m_resultsTab != null) {
+            m_resultsTab.updateListSize();
+        }
+    }
+
+    /**
+     * Ensures all style sheets are loaded.<p>
+     */
+    private void initCss() {
+
+        I_CmsLayoutBundle.INSTANCE.galleryDialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.listTreeCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.previewDialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.croppingDialogCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.imageEditorFormCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.imageAdvancedFormCss().ensureInjected();
     }
 }

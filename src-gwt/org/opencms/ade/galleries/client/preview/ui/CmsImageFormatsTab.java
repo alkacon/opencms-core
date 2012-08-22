@@ -89,6 +89,7 @@ public class CmsImageFormatsTab extends A_CmsPreviewDetailTab {
         m_handler.getGalleryDialog().getParentPanel().add(croppingDialog);
         CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
             getDialogMode(),
+            m_handler.getGalleryDialog(),
             imageInfo.getSelectedPath(),
             imageInfo.getHeight(),
             imageInfo.getWidth());

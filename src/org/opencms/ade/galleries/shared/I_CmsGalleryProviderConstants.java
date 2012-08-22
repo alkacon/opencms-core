@@ -159,6 +159,12 @@ public interface I_CmsGalleryProviderConstants {
         /** The widget field id hash. */
         hashid,
 
+        /** Image format names. */
+        imageFormatNames,
+
+        /** Image formats. */
+        imageFormats,
+
         /** The current locale. */
         locale,
 
@@ -169,7 +175,10 @@ public interface I_CmsGalleryProviderConstants {
         tabs,
 
         /** The available types for the gallery dialog. */
-        types;
+        types,
+
+        /** Use image formats. */
+        useFormats;
     }
 
     /** Sorting parameters. */

@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.client.preview;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.ui.CmsCroppingDialog;
 import org.opencms.ade.galleries.client.preview.ui.CmsImageFormatsForm;
+import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.util.CmsStringUtil;
@@ -130,11 +131,17 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      * Constructor.<p>
      * 
      * @param galleryMode the gallery mode
+     * @param dialog the gallery dialog
      * @param selectedPath the selected gallery path
      * @param imageHeight the image height
      * @param imageWidth the image width
      */
-    public CmsImageFormatHandler(GalleryMode galleryMode, String selectedPath, int imageHeight, int imageWidth) {
+    public CmsImageFormatHandler(
+        GalleryMode galleryMode,
+        CmsGalleryDialog dialog,
+        String selectedPath,
+        int imageHeight,
+        int imageWidth) {
 
         m_originalHeight = imageHeight;
         m_originalWidth = imageWidth;
@@ -142,7 +149,16 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         m_croppingParam.setOrgHeight(imageHeight);
         m_croppingParam.setOrgWidth(imageWidth);
         m_ratioLocked = true;
-        readFormatsConfig(galleryMode);
+        m_useFormats = dialog.isUseFormats();
+        if (m_useFormats) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(dialog.getImageFormats())) {
+                m_formatValues = dialog.getImageFormats().split(",");
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(dialog.getImageFormatNames())) {
+                m_formatNames = dialog.getImageFormatNames().split(",");
+            }
+        }
+        readFormatsConfig(galleryMode, dialog.isNativeWidget());
         if (m_useFormats) {
             generateFormats();
         }
@@ -562,8 +578,9 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      * Reads the format configuration for the given gallery mode.<p>
      * 
      * @param mode the gallery mode
+     * @param isNativeWidget if the dialog is used as a native widget
      */
-    private void readFormatsConfig(GalleryMode mode) {
+    private void readFormatsConfig(GalleryMode mode, boolean isNativeWidget) {
 
         switch (mode) {
             case editor:
@@ -572,14 +589,16 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                 m_formatValues = DEFAULT_FORMAT_VALUES;
                 break;
             case widget:
-                m_useFormats = CmsPreviewUtil.isShowFormats();
-                if (m_useFormats) {
-                    m_formatValues = CmsPreviewUtil.getFormats();
-                    if (m_formatValues == null) {
-                        m_formatNames = DEFAULT_FORMAT_NAMES;
-                        m_formatValues = DEFAULT_FORMAT_VALUES;
-                    } else {
-                        m_formatNames = CmsPreviewUtil.getFormatNames();
+                if (!isNativeWidget) {
+                    m_useFormats = CmsPreviewUtil.isShowFormats();
+                    if (m_useFormats) {
+                        m_formatValues = CmsPreviewUtil.getFormats();
+                        if (m_formatValues == null) {
+                            m_formatNames = DEFAULT_FORMAT_NAMES;
+                            m_formatValues = DEFAULT_FORMAT_VALUES;
+                        } else {
+                            m_formatNames = CmsPreviewUtil.getFormatNames();
+                        }
                     }
                 }
                 break;

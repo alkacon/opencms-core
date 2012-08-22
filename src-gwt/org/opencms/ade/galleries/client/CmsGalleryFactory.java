@@ -28,9 +28,13 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Factory class to create gallery dialog with or without parameter.<p>
@@ -72,5 +76,54 @@ public final class CmsGalleryFactory {
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(dndHandler, autoHideParent);
         new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
+    }
+
+    /**
+     * Creates a gallery widget pop-up.<p>
+     * 
+     * @param handler the widget handler, used to set the widgets value
+     * @param referencePath the reference path, for example the resource being edited
+     * @param galleryPath the startup gallery
+     * @param currentElement the currently selected resource
+     * @param resourceTypes the resource types (comma separated list)
+     * @param galleryTypes the gallery types (comma separated list)
+     * @param useFormats the use image formats flag
+     * @param imageFormats the image formats (comma separated list)
+     * @param imageFormatNames the image format names (comma separated list)
+     * 
+     * @return the generated pop-up
+     */
+    public static CmsPopup createGalleryPopup(
+        I_CmsGalleryWidgetHandler handler,
+        String referencePath,
+        String galleryPath,
+        String currentElement,
+        String resourceTypes,
+        String galleryTypes,
+        boolean useFormats,
+        String imageFormats,
+        String imageFormatNames) {
+
+        CmsPopup popup = new CmsPopup(650);
+        popup.setGlassEnabled(true);
+        popup.catchNotifications();
+        SimplePanel container = new SimplePanel();
+        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(null, popup);
+        new CmsGalleryController(
+            new CmsGalleryControllerHandler(galleryDialog),
+            GalleryMode.widget,
+            referencePath,
+            galleryPath,
+            currentElement,
+            resourceTypes,
+            galleryTypes,
+            useFormats,
+            imageFormats,
+            imageFormatNames);
+        galleryDialog.setWidgetHandler(handler);
+        container.setWidget(galleryDialog);
+        popup.setMainContent(container);
+        popup.addDialogClose(null);
+        return popup;
     }
 }
