@@ -136,6 +136,22 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     */
+    @Override
+    public String getConfiguration(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        parseSelectOptions(cms, messages, null);
+        String results = getConfiguration();
+
+        return results;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     @Override
@@ -304,18 +320,6 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    @Override
-    protected List<CmsSelectWidgetOption> parseSelectOptions(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) {
-
-        return parseSelectOptions(cms, widgetDialog.getMessages(), param);
-    }
-
-    /**
      * @see org.opencms.widgets.CmsSelectGroupWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override
@@ -370,6 +374,18 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
             setSelectOptions(result);
         }
         return getSelectOptions();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
+    protected List<CmsSelectWidgetOption> parseSelectOptions(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        return parseSelectOptions(cms, widgetDialog.getMessages(), param);
     }
 
     /**
@@ -467,18 +483,5 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
         // set the flag to include sub OUs
         m_includeSubOus = Boolean.parseBoolean(config.get(CONFIGURATION_INCLUDESUBOUS));
         m_defaultAllAvailable = Boolean.parseBoolean(config.get(CONFIGURATION_DEFAULT_ALL));
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.file.CmsResource)
-     */
-    @Override
-    public String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsResource resource) {
-
-        CmsMessages messages = new CmsMessages(resource.getName(), cms.getRequestContext().getLocale());
-        parseSelectOptions(cms, messages, null);
-        String results = getConfiguration();
-
-        return results;
     }
 }

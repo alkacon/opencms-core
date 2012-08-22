@@ -29,6 +29,8 @@ package org.opencms.widgets;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
@@ -37,8 +39,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 8.0.0 
  */
-public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
+public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The widget configuration. */
     private CmsGalleryWidgetConfiguration m_widgetConfiguration;
@@ -67,6 +71,88 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
     public A_CmsAdeGalleryWidget() {
 
         this("");
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        return getJSONConfig(cms, schemaType, messages, resource).toString();
+    }
+
+    /**
+     * Returns the gallery widget configuration as a JSON object.<p>
+     * 
+     * @param cms the cms context
+     * @param schemaType the schema type
+     * @param messages the messages
+     * @param resource the edited resource
+     * 
+     * @return  the gallery widget configuration
+     */
+    protected JSONObject getJSONConfig(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        JSONObject result = new JSONObject();
+        try {
+            for (Entry<String, String> paramEntry : getGalleryOpenParams(
+                cms,
+                messages,
+                null,
+                cms.getSitePath(resource),
+                0).entrySet()) {
+                result.put(paramEntry.getKey(), paramEntry.getValue());
+            }
+            JSONObject additional = getAdditionalGalleryInfo(cms, messages, null);
+            if (additional != null) {
+                result.merge(additional, true, true);
+            }
+
+            result.remove(I_CmsGalleryProviderConstants.ReqParam.currentelement.name());
+        } catch (JSONException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        return true;
     }
 
     /**
@@ -143,7 +229,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
 
         JSONObject additional = null;
         try {
-            additional = getAdditionalGalleryInfo(cms, widgetDialog, param);
+            additional = getAdditionalGalleryInfo(cms, widgetDialog.getMessages(), param);
         } catch (JSONException e) {
             LOG.error("Error parsing widget configuration", e);
         }
@@ -169,7 +255,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
      * May be <code>null</code>.<p>
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
+     * @param messages the dialog messages
      * @param param the widget parameter to generate the widget for
      * 
      * @return additional widget information
@@ -178,43 +264,44 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
      */
     protected abstract JSONObject getAdditionalGalleryInfo(
         CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
+        CmsMessages messages,
         I_CmsWidgetParameter param) throws JSONException;
 
     /**
      * Returns the required gallery open parameters.
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
+     * @param messages the dialog messages
      * @param param the widget parameter to generate the widget for
+     * @param resource the resource being edited
      * @param hashId the field id hash
      * 
      * @return the gallery open parameters
      */
     protected Map<String, String> getGalleryOpenParams(
         CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
+        CmsMessages messages,
         I_CmsWidgetParameter param,
+        String resource,
         long hashId) {
 
         Map<String, String> result = new HashMap<String, String>();
         result.put(I_CmsGalleryProviderConstants.ReqParam.dialogmode.name(), A_CmsAjaxGallery.MODE_WIDGET);
         result.put(I_CmsGalleryProviderConstants.ReqParam.types.name(), getGalleryTypes());
-        result.put(I_CmsGalleryProviderConstants.ReqParam.fieldid.name(), param.getId());
+        if (param != null) {
+            result.put(I_CmsGalleryProviderConstants.ReqParam.fieldid.name(), param.getId());
+            // use javascript to read the current field value
+            result.put(I_CmsGalleryProviderConstants.ReqParam.currentelement.name(), "'+document.getElementById('"
+                + param.getId()
+                + "').getAttribute('value')+'");
+        }
         result.put(I_CmsGalleryProviderConstants.ReqParam.hashid.name(), "" + hashId);
-        // use javascript to read the current field value
-        result.put(
-            I_CmsGalleryProviderConstants.ReqParam.currentelement.name(),
-            "'+document.getElementById('" + param.getId() + "').getAttribute('value')+'");
         // the edited resource
-        if (widgetDialog instanceof CmsDialog) {
-            String paramResource = ((CmsDialog)widgetDialog).getParamResource();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
-                result.put(I_CmsGalleryProviderConstants.ReqParam.resource.name(), paramResource);
-            }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resource)) {
+            result.put(I_CmsGalleryProviderConstants.ReqParam.resource.name(), resource);
         }
         // the start up gallery path
-        CmsGalleryWidgetConfiguration configuration = getWidgetConfiguration(cms, widgetDialog, param);
+        CmsGalleryWidgetConfiguration configuration = getWidgetConfiguration(cms, messages, param);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
             result.put(I_CmsGalleryProviderConstants.ReqParam.gallerypath.name(), configuration.getStartup());
         }
@@ -266,9 +353,13 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
             // may fail if widget is not opened from xml content editor, ignore
         }
         sb.append("?__locale=").append(contentLocale.toString());
-
         // add other open parameters
-        for (Entry<String, String> paramEntry : getGalleryOpenParams(cms, widgetDialog, param, hashId).entrySet()) {
+        for (Entry<String, String> paramEntry : getGalleryOpenParams(
+            cms,
+            widgetDialog.getMessages(),
+            param,
+            widgetDialog instanceof CmsDialog ? ((CmsDialog)widgetDialog).getParamResource() : null,
+            hashId).entrySet()) {
             sb.append("&").append(paramEntry.getKey()).append("=").append(paramEntry.getValue());
         }
         sb.append("', '").append(param.getId()).append("', 488, 650); return false;");
@@ -297,22 +388,18 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget {
      * Returns the widget configuration.<p>
      *  
      * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
+     * @param messages the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
      * 
      * @return the widget configuration
      */
     protected CmsGalleryWidgetConfiguration getWidgetConfiguration(
         CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
+        CmsMessages messages,
         I_CmsWidgetParameter param) {
 
         if (m_widgetConfiguration == null) {
-            m_widgetConfiguration = new CmsGalleryWidgetConfiguration(
-                cms,
-                widgetDialog.getMessages(),
-                param,
-                getConfiguration());
+            m_widgetConfiguration = new CmsGalleryWidgetConfiguration(cms, messages, param, getConfiguration());
         }
         return m_widgetConfiguration;
     }

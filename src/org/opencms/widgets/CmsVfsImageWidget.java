@@ -30,6 +30,7 @@ package org.opencms.widgets;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -175,7 +176,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
 
         JSONObject additional = null;
         try {
-            additional = getAdditionalGalleryInfo(cms, widgetDialog, param);
+            additional = getAdditionalGalleryInfo(cms, widgetDialog.getMessages(), param);
         } catch (JSONException e) {
             LOG.error("Error parsing widget configuration", e);
         }
@@ -185,7 +186,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
             result.append(additional.toString()).append(";\n");
             result.append("</script>");
         }
-        CmsVfsImageWidgetConfiguration configuration = getWidgetConfiguration(cms, widgetDialog, param);
+        CmsVfsImageWidgetConfiguration configuration = getWidgetConfiguration(cms, widgetDialog.getMessages(), param);
         String format = value.getFormat(cms);
         if (configuration.isShowFormat()) {
             // show the format select box, also create hidden format value field
@@ -388,13 +389,11 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
     }
 
     /**
-     * @see org.opencms.widgets.CmsAdeImageGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
+    * @see org.opencms.widgets.CmsAdeImageGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
+    */
     @Override
-    protected JSONObject getAdditionalGalleryInfo(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) throws JSONException {
+    protected JSONObject getAdditionalGalleryInfo(CmsObject cms, CmsMessages widgetDialog, I_CmsWidgetParameter param)
+    throws JSONException {
 
         JSONObject result = super.getAdditionalGalleryInfo(cms, widgetDialog, param);
         result.put("isAdvancedWidget", true);
@@ -402,16 +401,17 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryOpenParams(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter, long)
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryOpenParams(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter, java.lang.String, long)
      */
     @Override
     protected Map<String, String> getGalleryOpenParams(
         CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
+        CmsMessages widgetDialog,
         I_CmsWidgetParameter param,
+        String resource,
         long hashId) {
 
-        Map<String, String> result = super.getGalleryOpenParams(cms, widgetDialog, param, hashId);
+        Map<String, String> result = super.getGalleryOpenParams(cms, widgetDialog, param, resource, hashId);
         // the current element value will be read by java-script including the image input field and the scale input field
         StringBuffer currentElement = new StringBuffer("'+document.getElementById('");
         currentElement.append(PREFIX_IMAGE).append(param.getId());

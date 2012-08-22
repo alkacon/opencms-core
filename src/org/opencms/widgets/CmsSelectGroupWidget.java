@@ -117,24 +117,59 @@ public class CmsSelectGroupWidget extends CmsSelectWidget implements I_CmsADEWid
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        parseSelectOptions(cms, messages, null);
+        String results = getConfiguration();
+
+        return results;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        return true;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
     @Override
     public I_CmsWidget newInstance() {
 
         return new CmsSelectGroupWidget(getConfiguration());
-    }
-
-    /**
-     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    @Override
-    protected List<CmsSelectWidgetOption> parseSelectOptions(
-        CmsObject cms,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) {
-
-        return parseSelectOptions(cms, widgetDialog.getMessages(), param);
     }
 
     /**
@@ -196,6 +231,18 @@ public class CmsSelectGroupWidget extends CmsSelectWidget implements I_CmsADEWid
             setSelectOptions(result);
         }
         return getSelectOptions();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
+    protected List<CmsSelectWidgetOption> parseSelectOptions(
+        CmsObject cms,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        return parseSelectOptions(cms, widgetDialog.getMessages(), param);
     }
 
     /**
@@ -295,50 +342,5 @@ public class CmsSelectGroupWidget extends CmsSelectWidget implements I_CmsADEWid
             // set the flag to include sub OUs
             m_includeSubOus = Boolean.valueOf(config.get(CONFIGURATION_INCLUDESUBOUS)).booleanValue();
         }
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.file.CmsResource)
-     */
-    public String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsResource resource) {
-
-        CmsMessages messages = new CmsMessages(resource.getName(), "en");
-
-        parseSelectOptions(cms, messages, null);
-        String results = getConfiguration();
-
-        return results;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
-     */
-    public List<String> getCssResourceLinks(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
-     */
-    public String getInitCall() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
-     */
-    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
-     */
-    public boolean isInternal() {
-
-        return true;
     }
 }

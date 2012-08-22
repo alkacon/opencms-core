@@ -31,6 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
@@ -95,9 +96,13 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     }
 
     /**
-    * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.file.CmsResource)
-    */
-    public String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsResource resource) {
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
 
         return getJSONConfiguration(cms, resource).toString();
     }

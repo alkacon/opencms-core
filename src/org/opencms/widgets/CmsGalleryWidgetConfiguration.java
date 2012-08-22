@@ -156,17 +156,17 @@ public class CmsGalleryWidgetConfiguration {
      * Initializes the widget configuration using the given configuration string.<p>
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param widgetDialog the dialog where the widget is used on
+     * @param messages the dialog messages
      * @param param the widget parameter to generate the widget for
      * @param configuration the widget configuration string
      */
-    protected void init(CmsObject cms, CmsMessages widgetDialog, I_CmsWidgetParameter param, String configuration) {
+    protected void init(CmsObject cms, CmsMessages messages, I_CmsWidgetParameter param, String configuration) {
 
         if (configuration == null) {
             // no configuration String found, return
             return;
         }
-        configuration = CmsMacroResolver.resolveMacros(configuration, cms, widgetDialog);
+        configuration = CmsMacroResolver.resolveMacros(configuration, cms, messages);
         JSONObject jsonObj = new JSONObject();
         try {
             jsonObj = new JSONObject(configuration);
@@ -187,12 +187,12 @@ public class CmsGalleryWidgetConfiguration {
         // determine the initial item list settings
         setType(jsonObj.optString(CONFIG_KEY_TYPE));
         if ((CONFIG_VALUE_DYNAMIC.equals(getType()) || CmsStringUtil.isEmpty(getType())) && (dynConf != null)) {
-            setType(dynConf.getType(cms, widgetDialog, param));
+            setType(dynConf.getType(cms, messages, param));
         }
         setGalleryTypes(jsonObj.optString(CONFIG_KEY_GALLERYTYPES, null));
         setStartup(jsonObj.optString(CONFIG_KEY_STARTUP));
         if ((CONFIG_VALUE_DYNAMIC.equals(getStartup()) || CmsStringUtil.isEmpty(getStartup())) && (dynConf != null)) {
-            setStartup(dynConf.getStartup(cms, widgetDialog, param));
+            setStartup(dynConf.getStartup(cms, messages, param));
         }
     }
 

@@ -66,6 +66,33 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        CmsGalleryWidgetConfiguration config = new CmsGalleryWidgetConfiguration(
+            cms,
+            messages,
+            null,
+            getConfiguration());
+        String result = config.getConfigString();
+        return result;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     @Override
@@ -251,6 +278,22 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
      * Returns the lower case name of the gallery, for example <code>"html"</code>.<p>
      * 
      * @return the lower case name of the gallery
@@ -265,61 +308,18 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
     public abstract String getNameUpper();
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        return true;
+    }
+
+    /**
      * Returns <code>true</code> if the preview button should be shown.<p>
      * 
      * @param value the current widget value
      * @return <code>true</code> if the preview button should be shown
      */
     public abstract boolean showPreview(String value);
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.file.CmsResource)
-     */
-    public String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsResource resource) {
-
-        CmsMessages messages = new CmsMessages(resource.getName(), "en");
-        CmsGalleryWidgetConfiguration config = new CmsGalleryWidgetConfiguration(
-            cms,
-            messages,
-            null,
-            getConfiguration());
-        String result = config.getConfigString();
-        return result;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
-     */
-    public List<String> getCssResourceLinks(CmsObject cms) {
-
-        // TODO: Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
-     */
-    public String getInitCall() {
-
-        // TODO: Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
-     */
-    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
-
-        // TODO: Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
-     */
-    public boolean isInternal() {
-
-        // TODO: Auto-generated method stub
-        return true;
-    }
 }

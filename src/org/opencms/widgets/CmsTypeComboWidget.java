@@ -30,6 +30,7 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -62,6 +63,50 @@ public class CmsTypeComboWidget extends CmsComboWidget implements I_CmsADEWidget
         super();
         super.setConfiguration(createConfiguration());
 
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        return createConfiguration();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        return true;
     }
 
     /**
@@ -103,46 +148,6 @@ public class CmsTypeComboWidget extends CmsComboWidget implements I_CmsADEWidget
         }
         Collections.sort(options);
         return Joiner.on("|").join(options);
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.file.CmsResource)
-     */
-    public String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsResource resource) {
-
-        return createConfiguration();
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
-     */
-    public List<String> getCssResourceLinks(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
-     */
-    public String getInitCall() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
-     */
-    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
-     */
-    public boolean isInternal() {
-
-        return true;
     }
 
 }

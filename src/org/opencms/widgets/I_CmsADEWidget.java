@@ -29,6 +29,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.List;
@@ -43,11 +44,12 @@ public interface I_CmsADEWidget extends I_CmsWidget {
      * 
      * @param cms the OpenCms context
      * @param schemaType the schema type
+     * @param messages the messages
      * @param resource the edited resource
      * 
      * @return the configuration string
      */
-    String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsResource resource);
+    String getConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType, CmsMessages messages, CmsResource resource);
 
     /**
      * Returns a list of CSS resources required by the widget.<p>
