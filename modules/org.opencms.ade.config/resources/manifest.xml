@@ -84,7 +84,7 @@
 				<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd
 				</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
+			<type class="org.opencms.file.types.CmsResourceTypeFolderSubSitemap"
 				name="subsitemap" id="23" />
 			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
 				name="content_folder" id="24">

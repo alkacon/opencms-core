@@ -59,6 +59,8 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
+import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
+import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
@@ -125,8 +127,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -256,6 +256,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      */
     public CmsSitemapChange createSubSitemap(CmsUUID entryId) throws CmsRpcException {
 
+        return createSubSitemap(entryId, getEntryPointType());
+
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubSitemap(org.opencms.util.CmsUUID)
+     */
+    public CmsSitemapChange createSubSitemap(CmsUUID entryId, int typeId) throws CmsRpcException {
+
         CmsObject cms = getCmsObject();
         try {
             ensureSession();
@@ -283,7 +292,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     sitemapConfigName,
                     OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
             }
-            subSitemapFolder.setType(getEntryPointType());
+            subSitemapFolder.setType(typeId);
             cms.writeResource(subSitemapFolder);
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
@@ -1489,15 +1498,20 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Gets the type id for entry point folders.<p>
-     *
-     * @return the type id for entry point folders
-     *
-     * @throws CmsException if something goes wrong
+     * Gets the default type id for entry point folders.<p>
+     * 
+     * @return the default type id for entry point folders
+     * 
+     * @throws CmsRpcException in case of an error
      */
-    private int getEntryPointType() throws CmsException {
+    private int getEntryPointType() throws CmsRpcException {
 
-        return OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolderExtended.TYPE_ENTRY_POINT).getTypeId();
+        try {
+            return OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolderExtended.TYPE_ENTRY_POINT).getTypeId();
+        } catch (CmsLoaderException e) {
+            error(e);
+        }
+        return CmsResourceTypeUnknownFolder.getStaticTypeId();
     }
 
     /**
@@ -1877,11 +1891,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param navElement the nav-element
      *
      * @return <code>true</code> if the given nav-element resembles a sub-sitemap entry-point.<p>
-     * @throws CmsException if something goes wrong
      */
-    private boolean isSubSitemap(CmsJspNavElement navElement) throws CmsException {
+    private boolean isSubSitemap(CmsJspNavElement navElement) {
 
-        return navElement.getResource().getTypeId() == getEntryPointType();
+        return CmsResourceTypeFolderSubSitemap.isSubSitemap(navElement.getResource());
     }
 
     /**
