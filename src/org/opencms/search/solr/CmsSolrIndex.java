@@ -55,6 +55,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletResponse;
 
@@ -129,7 +130,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     @Override
     public I_CmsIndexWriter createIndexWriter(boolean create, I_CmsReport report) {
 
-        return new CmsSolrIndexWriter(m_solr);
+        return new CmsSolrIndexWriter(m_solr, this);
     }
 
     /**
@@ -170,6 +171,31 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the language locale for the given resource in this index.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param resource the resource to check
+     * @param availableLocales a list of locales supported by the resource
+     * 
+     * @return the language locale for the given resource in this index
+     */
+    @Override
+    public Locale getLocaleForResource(CmsObject cms, CmsResource resource, List<Locale> availableLocales) {
+
+        Locale result;
+        List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+        if ((availableLocales != null) && (availableLocales.size() > 0)) {
+            result = OpenCms.getLocaleManager().getBestMatchingLocale(
+                defaultLocales.get(0),
+                defaultLocales,
+                availableLocales);
+        } else {
+            result = defaultLocales.get(0);
+        }
+        return result;
     }
 
     /**

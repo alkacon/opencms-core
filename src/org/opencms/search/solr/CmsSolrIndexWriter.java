@@ -31,14 +31,17 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.main.CmsLog;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.Messages;
 import org.opencms.search.fields.I_CmsSearchField;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest;
@@ -52,6 +55,12 @@ import org.apache.solr.common.SolrInputDocument;
  */
 public class CmsSolrIndexWriter implements I_CmsIndexWriter {
 
+    /** The log object for this class. */
+    protected static final Log LOG = CmsLog.getLog(CmsSolrIndexWriter.class);
+
+    /** The Solr index. */
+    private CmsSolrIndex m_index;
+
     /** The Solr server. */
     private SolrServer m_server;
 
@@ -62,7 +71,29 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      */
     public CmsSolrIndexWriter(SolrServer server) {
 
+        this(server, null);
+    }
+
+    /**
+     * Creates a new index writer based on the provided standard Lucene IndexWriter for the 
+     * provided OpenCms search index instance.<p>
+     * 
+     * The OpenCms search instance is currently used only for improved logging of the 
+     * index operations.<p>
+     * 
+     * @param server the standard Lucene IndexWriter to use as delegate
+     * @param index the OpenCms search index instance this writer to supposed to write to
+     */
+    public CmsSolrIndexWriter(SolrServer server, CmsSolrIndex index) {
+
         m_server = server;
+        m_index = index;
+        if ((m_index != null) && LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_INDEX_WRITER_MSG_CREATE_2,
+                m_index.getName(),
+                m_index.getPath()));
+        }
     }
 
     /**
@@ -79,10 +110,16 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      */
     public void commit() throws IOException {
 
-        try {
-            m_server.commit();
-        } catch (SolrServerException e) {
-            throw new IOException(e.getLocalizedMessage(), e);
+        if ((m_server != null) && (m_index != null)) {
+            try {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_COMMIT_2,
+                    m_index.getName(),
+                    m_index.getPath()));
+                m_server.commit();
+            } catch (SolrServerException e) {
+                throw new IOException(e.getLocalizedMessage(), e);
+            }
         }
     }
 
@@ -91,10 +128,17 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      */
     public void deleteDocuments(String rootPath) throws IOException {
 
-        try {
-            m_server.deleteByQuery(I_CmsSearchField.FIELD_PATH + ":" + rootPath + "*");
-        } catch (SolrServerException e) {
-            throw new IOException(e.getLocalizedMessage(), e);
+        if ((m_server != null) && (m_index != null)) {
+            try {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_DOC_DELETE_3,
+                    rootPath,
+                    m_index.getName(),
+                    m_index.getPath()));
+                m_server.deleteByQuery(I_CmsSearchField.FIELD_PATH + ":" + rootPath + "*");
+            } catch (SolrServerException e) {
+                throw new IOException(e.getLocalizedMessage(), e);
+            }
         }
     }
 
@@ -103,10 +147,16 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      */
     public void optimize() throws IOException {
 
-        try {
-            m_server.optimize();
-        } catch (SolrServerException e) {
-            throw new IOException(e.getLocalizedMessage(), e);
+        if ((m_server != null) && (m_index != null)) {
+            try {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_OPTIMIZE_2,
+                    m_index.getName(),
+                    m_index.getPath()));
+                m_server.optimize();
+            } catch (SolrServerException e) {
+                throw new IOException(e.getLocalizedMessage(), e);
+            }
         }
     }
 
@@ -115,25 +165,18 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      */
     public void updateDocument(String rootPath, I_CmsSearchDocument document) throws IOException {
 
-        if (document.getDocument() != null) {
-            SolrInputDocument doc = (SolrInputDocument)document.getDocument();
-            List<SolrInputDocument> docs = new ArrayList<SolrInputDocument>(1);
-            docs.add(doc);
-            updateSolrDocuments(docs);
-        }
-    }
-
-    /**
-     * Deletes the the whole index.<p>
-     * 
-     * @throws IOException if something goes wrong
-     */
-    protected void deleteSolrIndex() throws IOException {
-
-        try {
-            m_server.deleteByQuery(CmsSolrQuery.DEFAULT_QUERY);
-        } catch (SolrServerException e) {
-            throw new IOException(e.getLocalizedMessage(), e);
+        if ((m_server != null) && (m_index != null)) {
+            if (document.getDocument() != null) {
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_DOC_UPDATE_3,
+                    rootPath,
+                    m_index.getName(),
+                    m_index.getPath()));
+                SolrInputDocument doc = (SolrInputDocument)document.getDocument();
+                List<SolrInputDocument> docs = new ArrayList<SolrInputDocument>(1);
+                docs.add(doc);
+                updateSolrDocuments(docs);
+            }
         }
     }
 
@@ -144,7 +187,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      * 
      * @throws IOException if something goes wrong
      */
-    protected void updateSolrDocuments(List<SolrInputDocument> docs) throws IOException {
+    private void updateSolrDocuments(List<SolrInputDocument> docs) throws IOException {
 
         UpdateRequest req = new UpdateRequest();
         req.setAction(AbstractUpdateRequest.ACTION.COMMIT, false, false);
