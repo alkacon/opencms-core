@@ -32,14 +32,11 @@
 package org.opencms.search.solr;
 
 import org.opencms.main.OpenCms;
-import org.opencms.report.CmsShellReport;
-import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.Date;
-import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -104,10 +101,7 @@ public class TestSolrFieldMapping extends OpenCmsTestCase {
      */
     public void testAppinfoSolrField() throws Throwable {
 
-        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
-        OpenCms.getSearchManager().rebuildIndex(AllSolrTests.SOLR_OFFLINE, report);
-
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_OFFLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), "path:/sites/default/xmlcontent/article_0001.html");
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
