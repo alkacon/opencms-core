@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
+package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.util.CmsUUID;
@@ -207,19 +208,19 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
             config = eval("(" + configuration + ")");
         }
         if (config.types)
-            this.@org.opencms.gwt.client.ui.input.CmsGalleryField::setTypes(Ljava/lang/String;)(config.types);
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setTypes(Ljava/lang/String;)(config.types);
         if (config.gallerypath)
-            this.@org.opencms.gwt.client.ui.input.CmsGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
         if (config.gallerytypes)
-            this.@org.opencms.gwt.client.ui.input.CmsGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
         if (config.referencepath)
-            this.@org.opencms.gwt.client.ui.input.CmsGalleryField::setReferencePath(Ljava/lang/String;)(config.referencepath);
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setReferencePath(Ljava/lang/String;)(config.referencepath);
         if (config.useFormats)
-            this.@org.opencms.gwt.client.ui.input.CmsGalleryField::setUseFormats(Z)(config.useFormats);
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setUseFormats(Z)(config.useFormats);
         if (config.imageFormats)
-            this.@org.opencms.gwt.client.ui.input.CmsGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
         if (config.imgaeFormatNames)
-            this.@org.opencms.gwt.client.ui.input.CmsGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFromatNames.toString());
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFromatNames.toString());
     }-*/;
 
     /**
