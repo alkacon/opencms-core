@@ -176,7 +176,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                         content.toString());
                 }
                 // store the locales
-                items.put(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALES, locales.toString());
+                items.put(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString());
             }
 
             // return the extraction result

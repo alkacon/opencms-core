@@ -35,7 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.A_CmsSearchFieldMapping;
+import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 
 import java.util.List;
@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * Dummy Field Mapping implementation.<p>
  */
-public class CmsDynamicDummyField extends A_CmsSearchFieldMapping {
+public class CmsDynamicDummyField extends CmsSearchFieldMapping {
 
     /** Serial version UID. */
     private static final long serialVersionUID = -3451280904747959635L;
@@ -57,7 +57,7 @@ public class CmsDynamicDummyField extends A_CmsSearchFieldMapping {
     }
 
     /**
-     * @see org.opencms.search.fields.A_CmsSearchFieldMapping#getStringValue(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     * @see org.opencms.search.fields.CmsSearchFieldMapping#getStringValue(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
     @Override
     public String getStringValue(

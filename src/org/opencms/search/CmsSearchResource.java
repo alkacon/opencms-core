@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * A resource implementation that combines the Solr document together with a OpenCms VFS resource.<p>
@@ -182,6 +183,20 @@ public class CmsSearchResource extends CmsResource {
     public String getField(String fieldName) {
 
         return m_doc.getFieldValueAsString(fieldName);
+    }
+
+    /**
+     * Delegator.<p>
+     * 
+     * {@link I_CmsSearchDocument#getFieldValueAsString(String)}
+     * 
+     * @param fieldName the field name to get the value for
+     * 
+     * @return the value
+     */
+    public List<String> getMultivaluedField(String fieldName) {
+
+        return m_doc.getMultivaluedFieldAsStringList(fieldName);
     }
 
     /**

@@ -310,7 +310,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_locales = null;
-        f = doc.getFieldable(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LOCALES);
+        f = doc.getFieldable(I_CmsSearchField.FIELD_RESOURCE_LOCALES);
         if (f != null) {
             String locales = f.stringValue();
             m_locales = CmsStringUtil.splitAsList(locales, ' ');

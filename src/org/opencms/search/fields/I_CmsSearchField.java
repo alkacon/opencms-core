@@ -122,6 +122,9 @@ public interface I_CmsSearchField extends Serializable {
     /** Name of the field that contains the resource locales of the document. */
     public static final String FIELD_RESOURCE_LOCALES = "res_locales";
 
+    /** Name of the field that contains the locale of the document. */
+    public static final String FIELD_CONTENT_LOCALES = "con_locales";
+
     /** The name of the score field. */
     public static final String FIELD_SCORE = "score";
 

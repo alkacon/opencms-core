@@ -217,9 +217,9 @@
         </sources>
       </index>
       <index class="org.opencms.search.solr.CmsSolrIndex">
-        <name>Solr Offline</name>
-        <rebuild>offline</rebuild>
-        <project>Offline</project>
+        <name>Solr Online</name>
+        <rebuild>auto</rebuild>
+        <project>Online</project>
         <locale>all</locale>   
         <configuration>solr_fields</configuration> 
         <sources>
@@ -315,6 +315,16 @@
           <name>msoffice-ole2</name>
           <name>msoffice-ooxml</name>
           <name>openoffice</name>
+        </documenttypes-indexed>
+      </indexsource>
+      <indexsource>
+        <name>solr_source2</name>
+        <indexer class="org.opencms.search.CmsVfsIndexer"/>
+        <resources>
+          <resource>/sites/default/</resource>
+        </resources>
+        <documenttypes-indexed>
+          <name>xmlcontent-solr</name>
         </documenttypes-indexed>
       </indexsource>
     </indexsources>

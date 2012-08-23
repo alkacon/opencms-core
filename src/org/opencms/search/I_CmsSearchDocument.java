@@ -32,6 +32,7 @@ import org.opencms.search.fields.I_CmsSearchField;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The interface for search documents.<p>
@@ -54,6 +55,15 @@ public interface I_CmsSearchDocument {
     static final String VFS_DOCUMENT_KEY_PREFIX = "VFS";
 
     /**
+     * Returns a list of Strings representing the values of an multi valued field.<p>
+     * 
+     * @param fieldName the name of the multi valued field to get the content of
+     * 
+     * @return the list of Strings, or <code>null</code>
+     */
+    public List<String> getMultivaluedFieldAsStringList(String fieldName);
+
+    /**
      * Adds the list of the given categories to this document.<p>
      * 
      * @param categories the categories to add
@@ -66,6 +76,13 @@ public interface I_CmsSearchDocument {
      * @param content the content to add 
      */
     void addContentField(byte[] content);
+
+    /**
+     * Adds the locales of the content to this document.<p>
+     * 
+     * @param locales the locales of the content
+     */
+    void addContentLocales(List<Locale> locales);
 
     /**
      * Puts the given date into the field with the given name.<p>
@@ -86,9 +103,9 @@ public interface I_CmsSearchDocument {
     /**
      * Adds the locales of the resource to this document.<p>
      * 
-     * @param locales the locales of the document
+     * @param locales the locales of the resource
      */
-    void addResourceLocales(List<String> locales);
+    void addResourceLocales(List<Locale> locales);
 
     /**
      * Puts the given root path into its default field.<p>

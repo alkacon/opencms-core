@@ -42,13 +42,16 @@ import org.opencms.util.CmsUUID;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.SolrInputField;
 import org.apache.solr.schema.DateField;
@@ -113,6 +116,18 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * @see org.opencms.search.I_CmsSearchDocument#addContentLocales(java.util.List)
+     */
+    public void addContentLocales(List<Locale> locales) {
+
+        if ((locales != null) && !locales.isEmpty()) {
+            for (Locale locale : locales) {
+                m_doc.addField(I_CmsSearchField.FIELD_CONTENT_LOCALES, locale.toString());
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.search.I_CmsSearchDocument#addDateField(java.lang.String, long, boolean)
      */
     public void addDateField(String name, long time, boolean analyzed) {
@@ -141,11 +156,11 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     /**
      * @see org.opencms.search.I_CmsSearchDocument#addResourceLocales(java.util.List)
      */
-    public void addResourceLocales(List<String> locales) {
+    public void addResourceLocales(List<Locale> locales) {
 
         if ((locales != null) && !locales.isEmpty()) {
-            for (String locale : locales) {
-                m_doc.addField(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locale);
+            for (Locale locale : locales) {
+                m_doc.addField(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locale.toString());
             }
         }
     }
@@ -171,16 +186,28 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         for (String fieldName : fieldsToAdd) {
 
             IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
-            FieldType type = schema.getFieldType(fieldName);
-            if (type instanceof DateField) {
-                value = DateField.formatExternal(new Date(new Long(value).longValue()));
-            }
+            try {
+                FieldType type = schema.getFieldType(fieldName);
+                if (type instanceof DateField) {
+                    value = DateField.formatExternal(new Date(new Long(value).longValue()));
+                }
 
-            SolrInputField exfield = m_doc.getField(fieldName);
-            if (exfield == null) {
-                m_doc.addField(fieldName, value, field.getBoost());
-            } else {
-                m_doc.setField(fieldName, value, field.getBoost());
+                SolrInputField exfield = m_doc.getField(fieldName);
+                if (exfield == null) {
+                    if (schema.hasExplicitField(fieldName)) {
+                        m_doc.addField(fieldName, value);
+                    } else {
+                        m_doc.addField(fieldName, value, field.getBoost());
+                    }
+                } else {
+                    if (schema.hasExplicitField(fieldName)) {
+                        m_doc.setField(fieldName, value);
+                    } else {
+                        m_doc.setField(fieldName, value, field.getBoost());
+                    }
+                }
+            } catch (SolrException e) {
+                LOG.error(e.getMessage(), e);
             }
         }
     }
@@ -257,6 +284,24 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * @see org.opencms.search.I_CmsSearchDocument#getMultivaluedFieldAsStringList(java.lang.String)
+     */
+    public List<String> getMultivaluedFieldAsStringList(String fieldName) {
+
+        List<String> result = new ArrayList<String>();
+        Collection<Object> coll = m_doc.getFieldValues(fieldName);
+        if (coll != null) {
+            for (Object o : coll) {
+                if (o != null) {
+                    result.add(o.toString());
+                }
+            }
+            return result;
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.search.I_CmsSearchDocument#getPath()
      */
     public String getPath() {
@@ -322,6 +367,9 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         m_score = score;
     }
 
+    /**
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
 

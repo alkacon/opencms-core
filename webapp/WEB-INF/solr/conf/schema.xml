@@ -229,6 +229,7 @@
    <field name="parent-folders"      type="string"       indexed="true"  stored="false" required="true" multiValued="true" />
    <field name="type"                type="string"       indexed="true"  stored="true"  required="true" />
    <field name="res_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
+   <field name="con_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
    <field name="contentdate"         type="date"         indexed="true"  stored="true"  required="true" />
    <field name="created"             type="date"         indexed="true"  stored="true"  required="true" />
    <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />
@@ -283,24 +284,18 @@
 
  <copyField source="path"      dest="path_hierarchy" />
  <copyField source="*_prop"    dest="*_exact" />
+
+ <copyField source="*_en"      dest="text_en"/>
+ <copyField source="*_de"      dest="text_de"/>
+ <copyField source="*_el"      dest="text_el"/>
+ <copyField source="*_es"      dest="text_es"/>
+ <copyField source="*_fi"      dest="text_fi"/>
+ <copyField source="*_fr"      dest="text_fr"/>
+ <copyField source="*_hu"      dest="text_hu"/>
+ <copyField source="*_it"      dest="text_it"/>
+ <copyField source="text_*"    dest="text"/>
  <copyField source="*_prop"    dest="text" />
  <copyField source="content"   dest="text" />
  <copyField source="category"  dest="text" />
- <copyField source="*_en"      dest="text_en"/>
- <copyField source="text"      dest="text_en"/>
- <copyField source="*_de"      dest="text_de"/>
- <copyField source="text"      dest="text_de"/>
- <copyField source="*_el"      dest="text_el"/>
- <copyField source="text"      dest="text_el"/>
- <copyField source="*_es"      dest="text_es"/>
- <copyField source="text"      dest="text_es"/>
- <copyField source="*_fi"      dest="text_fi"/>
- <copyField source="text"      dest="text_fi"/>
- <copyField source="*_fr"      dest="text_fr"/>
- <copyField source="text"      dest="text_fr"/>
- <copyField source="*_hu"      dest="text_hu"/>
- <copyField source="text"      dest="text_hu"/>
- <copyField source="*_it"      dest="text_it"/>
- <copyField source="text"      dest="text_it"/>
 
 </schema>

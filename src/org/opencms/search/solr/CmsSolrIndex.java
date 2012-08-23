@@ -55,6 +55,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletResponse;
 
@@ -129,7 +130,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     @Override
     public I_CmsIndexWriter createIndexWriter(boolean create, I_CmsReport report) {
 
-        return new CmsSolrIndexWriter(m_solr);
+        return new CmsSolrIndexWriter(m_solr, this);
     }
 
     /**
@@ -170,6 +171,31 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the language locale for the given resource in this index.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param resource the resource to check
+     * @param availableLocales a list of locales supported by the resource
+     * 
+     * @return the language locale for the given resource in this index
+     */
+    @Override
+    public Locale getLocaleForResource(CmsObject cms, CmsResource resource, List<Locale> availableLocales) {
+
+        Locale result;
+        List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+        if ((availableLocales != null) && (availableLocales.size() > 0)) {
+            result = OpenCms.getLocaleManager().getBestMatchingLocale(
+                defaultLocales.get(0),
+                defaultLocales,
+                availableLocales);
+        } else {
+            result = defaultLocales.get(0);
+        }
+        return result;
     }
 
     /**
@@ -261,9 +287,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      */
     public synchronized CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
 
+        LOG.debug("### START SRARCH (time in ms) ###");
         int previousPriority = Thread.currentThread().getPriority();
         long startTime = System.currentTimeMillis();
-
         try {
 
             // initialize the search context
@@ -288,10 +314,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             query.setStart(new Integer(0));
             query.setRows(new Integer((5 * rows * page) + start));
 
-            // restrict the search to the current index
-            query.add("core", new String[] {getName()});
             // perform the Solr query and remember the original Solr response
             QueryResponse queryResponse = m_solr.query(query);
+            LOG.debug("### Query Time After Execution  : " + (System.currentTimeMillis() - startTime));
 
             // initialize the hit count and the max score
             long hitCount, visibleHitCount = hitCount = queryResponse.getResults().getNumFound();
@@ -330,6 +355,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             if (m_solr instanceof EmbeddedSolrServer) {
                 core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
             }
+            LOG.debug("### Query Time After Permission : " + (System.currentTimeMillis() - startTime));
 
             // create and return the result
             return new CmsSolrResultList(
@@ -388,26 +414,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#shutDown()
-     */
-    @Override
-    public void shutDown() {
-
-        super.shutDown();
-        try {
-            if (m_solr instanceof EmbeddedSolrServer) {
-                SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-                if (core != null) {
-                    core.closeSearcher();
-                    core.close();
-                }
-            }
-        } catch (NullPointerException e) {
-            // noop
-        }
-    }
-
-    /**
      * Writes the response into the writer.<p>
      * 
      * NOTE: Currently not available for HTTP server.<p>
@@ -446,6 +452,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         } else {
             throw new UnsupportedOperationException();
         }
+        LOG.debug("### Query Time After Write      : " + (System.currentTimeMillis() - result.getStartTime()));
     }
 
     /**

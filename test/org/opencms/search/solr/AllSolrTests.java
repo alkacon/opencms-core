@@ -103,7 +103,7 @@ public final class AllSolrTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
         suite.addTest(TestSolrConfiguration.suite());
-        suite.addTest(TestSolrFieldMapping.suite());
+        suite.addTest(TestSolrFieldConfiguration.suite());
         suite.addTest(TestSolrIndexing.suite());
         suite.addTest(TestSolrSearch.suite());
         suite.addTest(TestSolrSearchAutoSuggeting.suite());
@@ -189,7 +189,7 @@ public final class AllSolrTests {
         int colTitle = 0;
         while (i.hasNext()) {
             CmsSearchResource res = i.next();
-            String path = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+            String path = res.getRootPath();
             colPath = Math.max(colPath, path.length() + 3);
             String title = res.getField(I_CmsSearchField.FIELD_TITLE
                 + "_"
@@ -204,7 +204,7 @@ public final class AllSolrTests {
 
         for (CmsSearchResource res : results) {
             System.out.print(CmsStringUtil.padRight("" + ++count, 4));
-            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getRootPath()), colPath));
+            System.out.print(CmsStringUtil.padRight(res.getRootPath(), colPath));
             String title = res.getField(I_CmsSearchField.FIELD_TITLE
                 + "_"
                 + cms.getRequestContext().getLocale().toString());

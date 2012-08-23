@@ -34,12 +34,8 @@ package org.opencms.search.solr;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
-import org.opencms.report.CmsShellReport;
-import org.opencms.report.I_CmsReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
-
-import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -99,27 +95,22 @@ public class TestSolrSearchPermissionHandling extends OpenCmsTestCase {
     public void testPermissionHandling() throws Throwable {
 
         echo("Testing search for permission check by comparing result counts");
-
-        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
-        OpenCms.getSearchManager().rebuildIndex(AllSolrTests.SOLR_OFFLINE, report);
-
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_OFFLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
 
         CmsSolrQuery squery = new CmsSolrQuery(getCmsObject());
         squery.setSearchRoots("/sites/default/");
         CmsSolrResultList results = index.search(getCmsObject(), squery);
         AllSolrTests.printResults(getCmsObject(), results, true);
+        assertEquals(53, results.getNumFound());
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test1"));
         results = index.search(cms, squery);
         AllSolrTests.printResults(cms, results, true);
+        assertEquals(47, results.getNumFound());
 
         cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
         results = index.search(cms, squery);
         AllSolrTests.printResults(cms, results, true);
-
-        //        assertEquals(1, results.size());
-        //        assertEquals("/sites/default/types/text.txt", (results.get(0)).getRootPath());
-
+        assertEquals(49, results.getNumFound());
     }
 }

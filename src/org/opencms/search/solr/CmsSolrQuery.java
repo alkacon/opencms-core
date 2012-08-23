@@ -32,12 +32,12 @@
 package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -105,13 +105,21 @@ public class CmsSolrQuery extends SolrQuery {
     private String[] m_texts;
 
     /**
+     * Creates a empty Solr query that only has the minimum query parameters set to perform a OpenCms search query.<p>
+     */
+    public CmsSolrQuery() {
+
+        this(null, null, null, null, null);
+    }
+
+    /**
      * Creates a query.<p>
      * 
      * @param cms the current CmsObject
      */
     public CmsSolrQuery(CmsObject cms) {
 
-        this(cms, null, null, null);
+        this(cms, null, null, null, null);
     }
 
     /**
@@ -123,7 +131,7 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public CmsSolrQuery(CmsObject cms, Map<String, String[]> params) {
 
-        this(cms, null, params, null);
+        this(cms, null, params, null, null);
     }
 
     /**
@@ -134,7 +142,7 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public CmsSolrQuery(CmsObject cms, String q) {
 
-        this(cms, q, null, null);
+        this(cms, q, null, null, null);
     }
 
     /**
@@ -156,14 +164,20 @@ public class CmsSolrQuery extends SolrQuery {
      * @param query the Solr query string {@link CommonParams#Q}
      * @param parameters the request parameter map, can contain any Solr query parameter
      * @param locales the locales that should be used for the search, can be <code>null</code>
+     * @param searchRoots the search roots that should be used
      */
-    public CmsSolrQuery(CmsObject cms, String query, Map<String, String[]> parameters, List<Locale> locales) {
+    public CmsSolrQuery(
+        CmsObject cms,
+        String query,
+        Map<String, String[]> parameters,
+        List<Locale> locales,
+        List<String> searchRoots) {
 
         // set the defaults
-        setFacetDateGab(FACET_DATE_GAB);
         setQueryType(QUERY_TYPE);
         addField(SCORE_FIELD);
         setRows(new Integer(CmsSolrQuery.RESULT_COUNT));
+        setFacetDateGab(FACET_DATE_GAB);
 
         // set the query
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
@@ -174,19 +188,18 @@ public class CmsSolrQuery extends SolrQuery {
 
         // set the locales to search for
         List<Locale> localesToUse = new ArrayList<Locale>();
-        if ((locales != null) && !locales.isEmpty()) {
-            localesToUse = locales;
-        } else if (cms != null) {
+        if ((locales == null) && (cms != null)) {
             localesToUse.add(cms.getRequestContext().getLocale());
-        } else {
-            localesToUse.add(CmsLocaleManager.getDefaultLocale());
         }
         setLocales(localesToUse);
 
-        // set the search root
-        if (cms != null) {
-            setSearchRoots(cms.getRequestContext().getSiteRoot() + "/");
+        // set the search roots
+        // set the locales to search for
+        List<String> searchRootsToUse = new ArrayList<String>();
+        if ((searchRoots == null) && (cms != null)) {
+            searchRootsToUse.add(cms.getRequestContext().getSiteRoot() + "/");
         }
+        setSearchRoots(searchRootsToUse.toArray(new String[0]));
 
         // set the given parameters
         if ((parameters != null) && !parameters.isEmpty()) {
@@ -206,6 +219,7 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public CmsSolrQuery(Map<String, String[]> params) {
 
+        addField(SCORE_FIELD);
         addParameterMap(params);
         ensureReturnFields();
     }
@@ -223,13 +237,25 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Adds the text field for the given locale to the list text fields that should be searched.<p>
+     * Adds all the text fields for the given locales to the list text fields that should be searched.<p>
      * 
-     * @param locale the locale to add
+     * @param locales the locales to set the text fields for
      */
-    public void addTextField(Locale locale) {
+    public void addTextFields(Locale... locales) {
 
-        m_textFields.add(I_CmsSearchField.FIELD_PREFIX_TEXT + locale.toString());
+        for (Locale locale : locales) {
+            m_textFields.add(I_CmsSearchField.FIELD_PREFIX_TEXT + locale.toString());
+        }
+    }
+
+    /**
+     * Adds the given fields to those to search text in.<p>
+     * 
+     * @param textsFields the concrete field names to search for texts in
+     */
+    public void addTextFields(String... textsFields) {
+
+        m_textFields.addAll(Arrays.asList(textsFields));
     }
 
     /**
@@ -392,14 +418,17 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public void setLocales(List<Locale> locales) {
 
-        List<String> localeStrings = new ArrayList<String>();
-        for (Locale locale : locales) {
-            localeStrings.add(locale.toString());
-            addTextField(locale);
+        if ((locales == null) || locales.isEmpty()) {
+            removeFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES);
+        } else {
+            List<String> localeStrings = new ArrayList<String>();
+            for (Locale locale : locales) {
+                localeStrings.add(locale.toString());
+            }
+            String[] asArray = localeStrings.toArray(new String[0]);
+            addFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES, asArray);
+            m_locales = asArray;
         }
-        String[] asArray = localeStrings.toArray(new String[0]);
-        addFilterQuery(I_CmsSearchField.FIELD_RESOURCE_LOCALES, asArray);
-        m_locales = asArray;
     }
 
     /**
@@ -442,19 +471,6 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Adds all the text fields for the given locales to the list text fields that should be searched.<p>
-     * 
-     * @param locales the loacles to set the text fields for
-     */
-    public void setTextFields(List<Locale> locales) {
-
-        m_textFields = new ArrayList<String>();
-        for (Locale locale : locales) {
-            m_textFields.add(I_CmsSearchField.FIELD_PREFIX_TEXT + locale.toString());
-        }
-    }
-
-    /**
      * Sets the search text phrases to search for.<p>
      * 
      * @param texts the texts
@@ -462,9 +478,8 @@ public class CmsSolrQuery extends SolrQuery {
     public void setTexts(String... texts) {
 
         m_texts = texts;
-        for (String textFields : m_textFields) {
-            addFilterQuery(textFields, true, texts);
-        }
+        String query = "{!q.op=AND qf=text}" + CmsStringUtil.arrayAsString(texts, " ");
+        setQuery(query);
     }
 
     /**

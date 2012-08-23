@@ -225,27 +225,28 @@
  <fields>
    <field name="id"                  type="uuid"         indexed="true"  stored="true"  default="NEW" /> <!-- Unique indetifier. -->
    <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
-   <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="false" required="true" /><!-- is copied -->
-   <field name="parent-folders"      type="string"       indexed="true"  stored="false" required="true" multiValued="true" />
+   <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="true" required="true" /><!-- is copied -->
+   <field name="parent-folders"      type="string"       indexed="true"  stored="true" required="true" multiValued="true" />
    <field name="type"                type="string"       indexed="true"  stored="true"  required="true" />
    <field name="res_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
+   <field name="con_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
    <field name="contentdate"         type="date"         indexed="true"  stored="true"  required="true" />
    <field name="created"             type="date"         indexed="true"  stored="true"  required="true" />
    <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />
    <field name="expired"             type="date"         indexed="true"  stored="true"  />
    <field name="relased"             type="date"         indexed="true"  stored="true"  />
-   <field name="content"             type="text_general" indexed="true"  stored="false" multiValued="true" compressed="true" />
+   <field name="content"             type="text_general" indexed="true"  stored="true" multiValued="true" compressed="true" />
    <field name="contentblob"         type="binary"       indexed="false" stored="true"  compressed="true" />
    <field name="category"            type="text_general" indexed="true"  stored="true"  multiValued="true" />
-   <field name="category_exact"      type="string"       indexed="true"  stored="false" multiValued="true" termVectors="true" /><!-- is copied -->
-   <field name="text"                type="text_general" indexed="true"  stored="false" multiValued="true"/><!-- Catchall for general text fields -->
-   <field name="text_en"             type="text_en"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for English text fields -->
-   <field name="text_de"             type="text_de"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German  text fields -->
-   <field name="text_el"             type="text_el"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German  text fields -->
-   <field name="text_es"             type="text_es"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German  text fields -->
-   <field name="text_fr"             type="text_fr"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German  text fields -->
-   <field name="text_hu"             type="text_hu"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German  text fields -->
-   <field name="text_it"             type="text_it"      indexed="true"  stored="false" multiValued="true"/><!-- Catchall for German  text fields -->
+   <field name="category_exact"      type="string"       indexed="true"  stored="true" multiValued="true" termVectors="true" /><!-- is copied -->
+   <field name="text"                type="text_general" indexed="true"  stored="true" multiValued="true"/><!-- Catchall for general text fields -->
+   <field name="text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
+   <field name="text_de"             type="text_de"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
+   <field name="text_el"             type="text_el"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
+   <field name="text_es"             type="text_es"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
+   <field name="text_fr"             type="text_fr"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
+   <field name="text_hu"             type="text_hu"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
+   <field name="text_it"             type="text_it"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
 
    <!-- For test cases only -->
    <field name="test_text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
@@ -253,7 +254,7 @@
 
    <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" />
 
-   <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
+   <dynamicField name="*_exact"      type="string"       indexed="true"  stored="true"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
    <dynamicField name="*_s"          type="string"       indexed="true"  stored="true"/>
@@ -271,7 +272,7 @@
    <dynamicField name="*_b"          type="boolean"      indexed="true"  stored="true"/>
    <dynamicField name="*_f"          type="float"        indexed="true"  stored="true"/>
    <dynamicField name="*_d"          type="double"       indexed="true"  stored="true"/>
-   <dynamicField name="*_coordinate" type="tdouble"      indexed="true"  stored="false"/>
+   <dynamicField name="*_coordinate" type="tdouble"      indexed="true"  stored="true"/>
    <dynamicField name="*_ti"         type="tint"         indexed="true"  stored="true"/>
    <dynamicField name="*_tl"         type="tlong"        indexed="true"  stored="true"/>
    <dynamicField name="*_tf"         type="tfloat"       indexed="true"  stored="true"/>
@@ -287,24 +288,18 @@
 
  <copyField source="path"      dest="path_hierarchy" />
  <copyField source="*_prop"    dest="*_exact" />
+
+ <copyField source="*_en"      dest="text_en"/>
+ <copyField source="*_de"      dest="text_de"/>
+ <copyField source="*_el"      dest="text_el"/>
+ <copyField source="*_es"      dest="text_es"/>
+ <copyField source="*_fi"      dest="text_fi"/>
+ <copyField source="*_fr"      dest="text_fr"/>
+ <copyField source="*_hu"      dest="text_hu"/>
+ <copyField source="*_it"      dest="text_it"/>
+ <copyField source="text_*"    dest="text"/>
  <copyField source="*_prop"    dest="text" />
  <copyField source="content"   dest="text" />
  <copyField source="category"  dest="text" />
- <copyField source="*_en"      dest="text_en"/>
- <copyField source="text"      dest="text_en"/>
- <copyField source="*_de"      dest="text_de"/>
- <copyField source="text"      dest="text_de"/>
- <copyField source="*_el"      dest="text_el"/>
- <copyField source="text"      dest="text_el"/>
- <copyField source="*_es"      dest="text_es"/>
- <copyField source="text"      dest="text_es"/>
- <copyField source="*_fi"      dest="text_fi"/>
- <copyField source="text"      dest="text_fi"/>
- <copyField source="*_fr"      dest="text_fr"/>
- <copyField source="text"      dest="text_fr"/>
- <copyField source="*_hu"      dest="text_hu"/>
- <copyField source="text"      dest="text_hu"/>
- <copyField source="*_it"      dest="text_it"/>
- <copyField source="text"      dest="text_it"/>
 
 </schema>

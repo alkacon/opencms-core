@@ -37,6 +37,8 @@ import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,14 +46,15 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * The OpenCms Solr handler.<p>
  * 
- * Usage example:<p>
+ * Reachable under: "/opencms/opencms/handleSolrSelect".<p>
  * 
+ * Usage example:<p>
  * <code>http://localhost:8080/opencms/opencms/handleSolrSelect?fq=parent-folders:/sites/+type=v8article&fl=path&rows=10&sort=path%20asc</code>
  */
 public class OpenCmsSolrHandler implements I_CmsRequestHandler {
 
     /** Some HTML to use for display solr errors. */
-    private static final String ERROR_HTML = "<html><head><title>SolrError</title></head><body><div><h4>Solr Error</h4><div>$content$</div></body></html>";
+    private static final String ERROR_HTML = Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_0);
 
     /** 
      * A constant for all handler names that are implemented by this class.<p>
@@ -77,15 +80,35 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
             CmsObject cms = OpenCmsCore.getInstance().initCmsObjectFromSession(req);
             if (cms == null) {
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
-                res.getWriter().println(ERROR_HTML.replace("$content$", "Not logged into OpenCms"));
+                String message = Messages.get().getBundle().key(Messages.GUI_SOLR_NOT_LOGGED_IN_0);
+                res.getWriter().println(ERROR_HTML.replace("$content$", message));
+            } else {
+                CmsSolrIndex index = null;
+                Map<String, String[]> params = CmsRequestUtil.createParameterMap(req.getParameterMap());
+                String indexName = params.get("core") != null ? params.get("core")[0] : (params.get("index") != null
+                ? params.get("index")[0]
+                : null);
+                index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
+                if (index == null) {
+                    List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
+                    if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
+                        index = solrs.get(0);
+                    }
+                }
+                if (index != null) {
+                    CmsSolrQuery query = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(req.getParameterMap()));
+                    index.writeResponse(res, index.search(cms, query));
+                } else {
+                    res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+                    String message = Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName);
+                    res.getWriter().println(ERROR_HTML.replace("$content$", message));
+                }
             }
-            CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr("Solr Offline");
-            CmsSolrQuery query = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(req.getParameterMap()));
-            index.writeResponse(res, index.search(cms, query));
         } catch (Exception e) {
             res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
-            res.getWriter().println(
-                ERROR_HTML.replace("$content$", CmsException.getStackTraceAsString(e).replace("\n", "<br/>")));
+            String message = Messages.get().getBundle().key(Messages.GUI_SOLR_UNEXPECTED_ERROR_0);
+            String formattedException = CmsException.getStackTraceAsString(e).replace("\n", "<br/>");
+            res.getWriter().println(ERROR_HTML.replace("$content$", message + formattedException));
         } finally {
             res.getWriter().flush();
         }

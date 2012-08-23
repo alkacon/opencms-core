@@ -86,6 +86,8 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, readFile(cms, resource));
             Map<String, String> items = new HashMap<String, String>();
             StringBuffer locales = new StringBuffer();
+            Locale resLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
+            String defaultContent = null;
 
             // loop over the locales
             for (Locale locale : xmlContent.getLocales()) {
@@ -144,13 +146,16 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                         I_CmsSearchField.FIELD_CONTENT,
                         locale);
                     items.put(contentKey, content.toString());
+                    if (resLocale.equals(locale)) {
+                        defaultContent = content.toString();
+                    }
                 }
                 // add the locales that have been indexed for this document as item
                 items.put(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString());
             }
             // get all search fields configured in the XSD of this XML content
             Set<I_CmsSearchField> fields = new HashSet<I_CmsSearchField>(xmlContent.getHandler().getSearchFields());
-            return new CmsExtractionResult(null, items, fields);
+            return new CmsExtractionResult(defaultContent, items, fields);
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
