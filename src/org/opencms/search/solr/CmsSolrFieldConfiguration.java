@@ -88,10 +88,10 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
     }
 
     /**
-     * @see org.opencms.search.fields.A_CmsSearchFieldConfiguration#appendAllProperties(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     * @see org.opencms.search.fields.A_CmsSearchFieldConfiguration#appendProperties(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
     @Override
-    protected I_CmsSearchDocument appendAllProperties(
+    protected I_CmsSearchDocument appendProperties(
         I_CmsSearchDocument document,
         CmsObject cms,
         CmsResource resource,

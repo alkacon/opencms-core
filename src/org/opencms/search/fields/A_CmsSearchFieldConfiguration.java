@@ -191,21 +191,14 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
         List<CmsProperty> properties = cms.readPropertyObjects(resource, false);
 
         document = appendContentBlob(document, cms, resource, extraction, properties, propertiesSearched);
-
-        document = appendFieldMappings(document, cms, resource, extraction, properties, propertiesSearched);
-
         document = appendPath(document, cms, resource, extraction, properties, propertiesSearched);
-
-        document = appendCategories(document, cms, resource, extraction, properties, propertiesSearched);
-
-        document = appendDates(document, cms, resource, extraction, properties, propertiesSearched);
-
         document = appendType(document, cms, resource, extraction, properties, propertiesSearched);
-
+        document = appendDates(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendLocales(document, cms, resource, extraction, properties, propertiesSearched);
-
-        document = appendAllProperties(document, cms, resource, extraction, properties, propertiesSearched);
-
+        document = appendProperties(document, cms, resource, extraction, properties, propertiesSearched);
+        // TODO: also append searched properties.
+        document = appendCategories(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendFieldMappings(document, cms, resource, extraction, properties, propertiesSearched);
         document = setBoost(document, cms, resource, extraction, properties, propertiesSearched);
 
         return document;
@@ -318,7 +311,7 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
      * 
      * @return the document extended by resource category information
      */
-    protected I_CmsSearchDocument appendAllProperties(
+    protected I_CmsSearchDocument appendProperties(
         I_CmsSearchDocument document,
         CmsObject cms,
         CmsResource resource,
