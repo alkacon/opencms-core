@@ -397,6 +397,12 @@ public final class Messages {
     public static final String GUI_SITEMAP_TOO_DEEP_TITLE_0 = "GUI_SITEMAP_TOO_DEEP_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_TYPE_CHOICE_TEXT_0 = "GUI_SITEMAP_TYPE_CHOICE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_TYPE_CHOICE_TITLE_0 = "GUI_SITEMAP_TYPE_CHOICE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SPECIAL_TAB_DESCRIPTION_0 = "GUI_SPECIAL_TAB_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */

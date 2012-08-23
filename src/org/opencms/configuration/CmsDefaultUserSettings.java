@@ -40,6 +40,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Default user workplace settings, used as default values for worklace settings in the
  * user preferences.<p>
@@ -105,6 +107,26 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         }
     }
 
+    /**
+     * Enum for the subsitemap creation mode 
+     */
+    public enum SubsitemapCreationMode {
+        /** In  this mode, existing folders are converted into subsitemaps. */
+        convert,
+
+        /** In this mode, new subsitemap folders are created, giving the user a choice of which folder type they want to use. */
+        createfolder
+    }
+
+    /** 
+     * Array of the possible "button styles".
+     * Must be private because of Findbugs rule "MS".
+     */
+    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
+
+    /** Array list for fast lookup of "button styles". */
+    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
+
     /** Constant for the publish related resources mode, checkbox disabled by default. */
     public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FALSE = CmsPublishRelatedResourcesMode.MODE_FALSE;
 
@@ -126,15 +148,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /** Publish button appearance: show never. */
     public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
-    /** 
-     * Array of the possible "button styles".
-     * Must be private because of Findbugs rule "MS".
-     */
-    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
-
-    /** Array list for fast lookup of "button styles". */
-    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
-
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
 
@@ -153,6 +166,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /** Value for preserving siblings in delete dialog settings. */
     private static final String DELETEMODE_PRESERVE = "preservesiblings";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDefaultUserSettings.class);
+
     /** Value for publishing only resources in publish dialog settings. */
     private static final String PUBLISHMODE_ONLYRESOURCE = "onlyresource";
 
@@ -164,6 +180,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** The publish related resources mode. */
     private CmsPublishRelatedResourcesMode m_publishRelatedResourcesMode;
+
+    /** The subsitemap creation mode. */
+    private SubsitemapCreationMode m_subsitemapCreationMode;
 
     /**
      * Gets the default copy mode when copying a file of the user.<p>
@@ -491,6 +510,31 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getShowPublishNotificationString() {
 
         return String.valueOf(getShowPublishNotification());
+    }
+
+    /**
+     * Gets the subsitemap creation mode to use for the sitemap editor.<p>
+     * 
+     * @return the subsitemap creation mode to use for the sitemap editor 
+     */
+    public SubsitemapCreationMode getSubsitemapCreationMode() {
+
+        return getSubsitemapCreationMode(SubsitemapCreationMode.convert);
+    }
+
+    /**
+     * Gets the subsitemap creation mode, or returns a default value given as a parameter if the mode is not set.<p>
+     * 
+     * @param defaultValue the value to return when the subsitemap creation mode is not set
+     * 
+     * @return the subsitemap creation mode 
+     */
+    public SubsitemapCreationMode getSubsitemapCreationMode(SubsitemapCreationMode defaultValue) {
+
+        if (m_subsitemapCreationMode != null) {
+            return m_subsitemapCreationMode;
+        }
+        return defaultValue;
     }
 
     /**
@@ -947,6 +991,20 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setShowUploadTypeDialog(String booleanValue) {
 
         setShowUploadTypeDialog(Boolean.valueOf(booleanValue));
+    }
+
+    /**
+     * Sets the subsitemap creation mode.<p>
+     * 
+     * @param mode the string value of the subsitemap creation mode 
+     */
+    public void setSubsitemapCreationMode(String mode) {
+
+        try {
+            m_subsitemapCreationMode = SubsitemapCreationMode.valueOf(mode);
+        } catch (Exception e) {
+            LOG.warn("Invalid value for subsitemap creation mode was ignored: " + mode);
+        }
     }
 
     /**

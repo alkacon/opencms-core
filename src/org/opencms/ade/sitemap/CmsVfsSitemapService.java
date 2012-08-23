@@ -44,6 +44,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
+import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsAlias;
 import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsRewriteAlias;
@@ -58,7 +59,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -72,6 +72,7 @@ import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
@@ -101,7 +102,10 @@ import org.opencms.site.CmsSite;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -258,43 +262,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      */
     public CmsSitemapChange createSubSitemap(CmsUUID entryId) throws CmsRpcException {
 
-        return createSubSitemap(entryId, getEntryPointType());
-
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createSubSitemap(org.opencms.util.CmsUUID)
-     */
-    public CmsSitemapChange createSubSitemap(CmsUUID entryId, int typeId) throws CmsRpcException {
-
         CmsObject cms = getCmsObject();
         try {
             ensureSession();
             CmsResource subSitemapFolder = cms.readResource(entryId);
             ensureLock(subSitemapFolder);
             String sitePath = cms.getSitePath(subSitemapFolder);
-            String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
-            String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
-            if (!cms.existsResource(folderName)) {
-                cms.createResource(
-                    folderName,
-                    OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
-            }
-            I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
-            if (cms.existsResource(sitemapConfigName)) {
-                CmsResource configFile = cms.readResource(sitemapConfigName);
-                if (configFile.getTypeId() != configType.getTypeId()) {
-                    throw new CmsException(Messages.get().container(
-                        Messages.ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2,
-                        sitemapConfigName,
-                        CmsADEManager.CONFIG_TYPE));
-                }
-            } else {
-                cms.createResource(
-                    sitemapConfigName,
-                    OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
-            }
-            subSitemapFolder.setType(typeId);
+            createSitemapContentFolder(cms, subSitemapFolder);
+            subSitemapFolder.setType(getSubsitemapType());
             cms.writeResource(subSitemapFolder);
             tryUnlock(subSitemapFolder);
             CmsSitemapClipboardData clipboard = getClipboardData();
@@ -310,6 +285,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             error(e);
         }
         return null;
+
     }
 
     /**
@@ -476,7 +452,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
                 CmsResource baseDir = rootCms.readResource(basePath, CmsResourceFilter.ONLY_VISIBLE);
-                OpenCms.getLocaleManager();
                 locale = CmsLocaleManager.getMainLocale(cms, baseDir);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
@@ -526,9 +501,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             List<String> allPropNames = getPropertyNames(cms);
             String returnCode = getRequest().getParameter(CmsCoreData.PARAM_RETURNCODE);
+
             cms.getRequestContext().getSiteRoot();
             String aliasImportUrl = OpenCms.getLinkManager().substituteLinkForRootPath(cms, ALIAS_IMPORT_PATH);
             boolean canEditAliases = OpenCms.getAliasManager().hasPermissionsForMassEdit(cms, siteRoot);
+            List<CmsListInfoBean> subsitemapFolderTypeInfos = collectSitemapTypeInfos(cms, configData);
 
             result = new CmsSitemapData(
                 (new CmsTemplateFinder(cms)).getTemplates(),
@@ -557,7 +534,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 returnCode,
                 canEditDetailPages,
                 aliasImportUrl,
-                canEditAliases);
+                canEditAliases,
+                OpenCms.getWorkplaceManager().getDefaultUserSettings().getSubsitemapCreationMode() == CmsDefaultUserSettings.SubsitemapCreationMode.createfolder,
+                subsitemapFolderTypeInfos);
         } catch (Throwable e) {
             error(e);
         }
@@ -945,7 +924,89 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Helper method to convert a server-side alias object to a client-side alias table row.<p>
+     * Builds the list info bean for a resource type which can be used as a sub-sitemap folder.<p>
+     * 
+     * @param sitemapType the sitemap folder type 
+     * 
+     * @return the list info bean for the given type 
+     */
+    private CmsListInfoBean buildSitemapTypeInfo(I_CmsResourceType sitemapType) {
+
+        CmsListInfoBean result = new CmsListInfoBean();
+        CmsWorkplaceManager wm = OpenCms.getWorkplaceManager();
+        String typeName = sitemapType.getTypeName();
+        Locale wpLocale = wm.getWorkplaceLocale(getCmsObject());
+        String title = typeName;
+        String description = "";
+        try {
+            title = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+        } catch (Throwable e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        try {
+            description = CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, typeName);
+        } catch (Throwable e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        result.setResourceType(typeName);
+        result.setTitle(title);
+        result.setSubTitle(description);
+        return result;
+    }
+
+    /**
+     * Gets the information for the available sitemap folder types.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param configData the configuration data for the current subsitemap  
+     * @return the list info beans corresponding to available sitemap folder types
+     */
+    private List<CmsListInfoBean> collectSitemapTypeInfos(CmsObject cms, CmsADEConfigData configData) {
+
+        List<CmsListInfoBean> subsitemapFolderTypeInfos = new ArrayList<CmsListInfoBean>();
+        List<Integer> sitemapTypeIds = CmsResourceTypeFolderSubSitemap.getSubSitemapResourceTypeIds();
+        String checkPath = configData.getBasePath();
+        if (checkPath != null) {
+            checkPath = cms.getRequestContext().removeSiteRoot(checkPath);
+        } else {
+            checkPath = "/";
+        }
+        CmsResource checkResource = null;
+        try {
+            checkResource = cms.readResource(checkPath);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+        for (Integer typeId : sitemapTypeIds) {
+            try {
+                I_CmsResourceType sitemapType = OpenCms.getResourceManager().getResourceType(typeId.intValue());
+                String typeName = sitemapType.getTypeName();
+                CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+
+                // if explorer type and check resource available, perform a permission check 
+                if ((explorerType != null) && (checkResource != null)) {
+                    try {
+                        CmsExplorerTypeAccess access = explorerType.getAccess();
+                        if (!access.getPermissions(cms, checkResource).requiresControlPermission()) {
+                            continue;
+                        }
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+                CmsListInfoBean infoBean = buildSitemapTypeInfo(sitemapType);
+                subsitemapFolderTypeInfos.add(infoBean);
+
+            } catch (CmsLoaderException e) {
+                LOG.warn("Could not read sitemap folder type " + typeId + ": " + e.getLocalizedMessage(), e);
+            }
+        }
+        return subsitemapFolderTypeInfos;
+    }
+
+    /**
+     * Creates a client alias bean from a server-side alias.<p>
      * 
      * @param cms the current CMS context
      * @param alias the alias to convert 
@@ -1072,11 +1133,18 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         isNavigationLevel = true;
                     }
                 }
+                String folderType = CmsResourceTypeFolder.getStaticTypeName();
+                String createSitemapFolderType = change.getCreateSitemapFolderType();
+                if (createSitemapFolderType != null) {
+                    folderType = createSitemapFolderType;
+                }
+
+                int folderTypeId = OpenCms.getResourceManager().getResourceType(folderType).getTypeId();
                 entryFolder = new CmsResource(
                     change.getEntryId(),
                     new CmsUUID(),
                     entryFolderPath,
-                    CmsResourceTypeFolder.getStaticTypeId(),
+                    folderTypeId,
                     true,
                     0,
                     cms.getRequestContext().getCurrentProject().getUuid(),
@@ -1098,11 +1166,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER,
                         null));
                 }
-                entryFolder = cms.createResource(
-                    entryFolderPath,
-                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId(),
-                    null,
-                    folderProperties);
+                entryFolder = cms.createResource(entryFolderPath, folderTypeId, null, folderProperties);
+                if (createSitemapFolderType != null) {
+                    createSitemapContentFolder(cms, entryFolder);
+                }
                 if (idWasNull) {
                     change.setEntryId(entryFolder.getStructureId());
                 }
@@ -1277,6 +1344,43 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 locale,
                 name), CmsWorkplaceMessages.getResourceTypeDescription(locale, name), null, false, subtitle);
         }
+    }
+
+    /**
+     * Helper method for creating the .content folder of a sub-sitemap.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param subSitemapFolder the sub-sitemap folder in which the .content folder should be created 
+     * 
+     * @throws CmsException if something goes wrong 
+     * @throws CmsLoaderException
+     */
+    private void createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder)
+    throws CmsException, CmsLoaderException {
+
+        String sitePath = cms.getSitePath(subSitemapFolder);
+        String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
+        String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
+        if (!cms.existsResource(folderName)) {
+            cms.createResource(
+                folderName,
+                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_FOLDER_TYPE).getTypeId());
+        }
+        I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE);
+        if (cms.existsResource(sitemapConfigName)) {
+            CmsResource configFile = cms.readResource(sitemapConfigName);
+            if (configFile.getTypeId() != configType.getTypeId()) {
+                throw new CmsException(Messages.get().container(
+                    Messages.ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2,
+                    sitemapConfigName,
+                    CmsADEManager.CONFIG_TYPE));
+            }
+        } else {
+            cms.createResource(
+                sitemapConfigName,
+                OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
+        }
+
     }
 
     /**
@@ -1497,23 +1601,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
         }
         return result;
-    }
-
-    /**
-     * Gets the default type id for entry point folders.<p>
-     * 
-     * @return the default type id for entry point folders
-     * 
-     * @throws CmsRpcException in case of an error
-     */
-    private int getEntryPointType() throws CmsRpcException {
-
-        try {
-            return OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolderExtended.TYPE_ENTRY_POINT).getTypeId();
-        } catch (CmsLoaderException e) {
-            error(e);
-        }
-        return CmsResourceTypeUnknownFolder.getStaticTypeId();
     }
 
     /**
@@ -1788,6 +1875,23 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             OpenCms.getSiteManager().getCurrentSite(cms).getUrl()
                 + OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, basePath),
             title);
+    }
+
+    /**
+     * Gets the default type id for subsitemap folders.<p>
+     * 
+     * @return the default type id for subsitemap folders
+     * 
+     * @throws CmsRpcException in case of an error
+     */
+    private int getSubsitemapType() throws CmsRpcException {
+
+        try {
+            return OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolderSubSitemap.TYPE_SUBSITEMAP).getTypeId();
+        } catch (CmsLoaderException e) {
+            error(e);
+        }
+        return CmsResourceTypeUnknownFolder.getStaticTypeId();
     }
 
     /**

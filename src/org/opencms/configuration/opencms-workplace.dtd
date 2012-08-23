@@ -483,7 +483,8 @@
 									publishrelatedresources?,
 									newfolder-editproperties?, 
 									newfolder-createindexpage?,
-									show-uploadtypedialog?)>
+									show-uploadtypedialog?, 
+									subsitemap-creation-mode?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -558,6 +559,8 @@
 <!ELEMENT newfolder-createindexpage (#PCDATA)>
 
 <!ELEMENT show-uploadtypedialog (#PCDATA)>
+
+<!ELEMENT subsitemap-creation-mode (#PCDATA)>
 
 <!ELEMENT newfolder-editproperties (#PCDATA)>
 								

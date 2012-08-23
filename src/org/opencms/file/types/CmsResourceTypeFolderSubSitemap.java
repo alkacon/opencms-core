@@ -45,6 +45,9 @@ public class CmsResourceTypeFolderSubSitemap extends CmsResourceTypeFolderExtend
     /** The registered sub site map resource type id's.    */
     private static List<Integer> m_subSitemapResourceTypeIds = new ArrayList<Integer>();
 
+    /** The type name for subsitemaps. */
+    public static final String TYPE_SUBSITEMAP = "subsitemap";
+
     /**
      * Returns the registered sub site map resource type id's.<p>
      * 

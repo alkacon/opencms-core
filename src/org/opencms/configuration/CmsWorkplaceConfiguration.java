@@ -441,6 +441,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the state column node. */
     public static final String N_STATE = "show-state";
 
+    /** The node name for the subsitemap creation mode setting. */
+    public static final String N_SUBSITEMAP_CREATION_MODE = "subsitemap-creation-mode";
+
     /** The name of the text node. */
     public static final String N_TEXT = "text";
 
@@ -1241,6 +1244,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         workplaceGeneraloptions.addElement(N_SHOWUPLOADTYPEDIALOG).setText(
             m_workplaceManager.getDefaultUserSettings().getShowUploadTypeDialog().toString());
 
+        CmsDefaultUserSettings.SubsitemapCreationMode subsitemapCreationMode = m_workplaceManager.getDefaultUserSettings().getSubsitemapCreationMode(
+            null);
+        if (subsitemapCreationMode != null) {
+            workplaceGeneraloptions.addElement(N_SUBSITEMAP_CREATION_MODE).setText(subsitemapCreationMode.toString());
+        }
+
         // add the <workplace-startupsettings> node
         Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);
         // add the <locale> node
@@ -1615,6 +1624,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(xPathPrefix + "/" + N_NEWFOLDEREDITPROPERTIES, "setNewFolderEditProperties", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_NEWFOLDERCREATEINDEXPAGE, "setNewFolderCreateIndexPage", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_SHOWUPLOADTYPEDIALOG, "setShowUploadTypeDialog", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_SUBSITEMAP_CREATION_MODE, "setSubsitemapCreationMode", 0);
 
         // add workplace preferences startup settings rules
         xPathPrefix = "*/"

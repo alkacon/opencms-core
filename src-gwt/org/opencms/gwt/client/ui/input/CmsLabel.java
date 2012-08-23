@@ -133,7 +133,7 @@ public class CmsLabel extends Label implements I_CmsTruncable {
 
         super.setText(text);
         m_originalText = text;
-        setTitle(getTitle());
+        setTitle(getTitle(true));
     }
 
     /**

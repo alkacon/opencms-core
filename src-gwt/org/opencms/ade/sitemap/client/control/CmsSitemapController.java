@@ -275,31 +275,18 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * 
      * @param newEntry the new entry
      * @param parentId the parent entry id
-     * @param structureId the structure id of the model page (if null, uses default model page)
-     */
-    public void create(final CmsClientSitemapEntry newEntry, CmsUUID parentId, CmsUUID structureId) {
-
-        if (structureId == null) {
-            structureId = m_data.getDefaultNewElementInfo().getCopyResourceId();
-        }
-        create(newEntry, parentId, m_data.getDefaultNewElementInfo().getId(), structureId, null);
-    }
-
-    /**
-     * Registers a new sitemap entry.<p>
-     * 
-     * @param newEntry the new entry
-     * @param parentId the parent entry id
      * @param resourceTypeId the resource type id
      * @param copyResourceId the copy resource id
-     * @param parameter an additional parameter which may contain more information needed to create the new resource 
+     * @param parameter an additional parameter which may contain more information needed to create the new resource
+     * @param isNewSitemap a flag controlling whether a new sitemap should be created  
      */
     public void create(
         CmsClientSitemapEntry newEntry,
         CmsUUID parentId,
         int resourceTypeId,
         CmsUUID copyResourceId,
-        String parameter) {
+        String parameter,
+        boolean isNewSitemap) {
 
         assert (getEntry(newEntry.getSitePath()) == null);
 
@@ -313,6 +300,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
         change.setTitle(newEntry.getTitle());
         change.setCreateParameter(parameter);
         change.setNewResourceTypeId(resourceTypeId);
+        if (isNewSitemap) {
+            change.setCreateSitemapFolderType(newEntry.getResourceTypeName());
+        }
         change.setNewCopyResourceId(copyResourceId);
         if (isDetailPage(newEntry)) {
             CmsDetailPageTable table = getDetailPageTable().copy();
@@ -329,6 +319,50 @@ public class CmsSitemapController implements I_CmsSitemapController {
         data.addModified(newEntry);
         change.setClipBoardData(data);
         commitChange(change, null);
+    }
+
+    /**
+     * Creates a sitemap folder.<p>
+     * 
+     * @param newEntry the new entry 
+     * @param parentId the entry parent id 
+     * @param sitemapType the resource type for the subsitemap folder
+     */
+    public void createSitemapSubEntry(final CmsClientSitemapEntry newEntry, CmsUUID parentId, String sitemapType) {
+
+        CmsUUID structureId = m_data.getDefaultNewElementInfo().getCopyResourceId();
+        newEntry.setResourceTypeName(sitemapType);
+        create(newEntry, parentId, m_data.getDefaultNewElementInfo().getId(), structureId, null, true);
+    }
+
+    /**
+     * Creates a new sub-entry which is a subsitemap.<p>
+     * 
+     * @param parent the parent entry 
+     * @param sitemapFolderType the sitemap folder type 
+     */
+    public void createSitemapSubEntry(final CmsClientSitemapEntry parent, final String sitemapFolderType) {
+
+        CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(parent.getId());
+        AsyncCallback<CmsClientSitemapEntry> callback = new AsyncCallback<CmsClientSitemapEntry>() {
+
+            public void onFailure(Throwable caught) {
+
+                // do nothing 
+            }
+
+            public void onSuccess(CmsClientSitemapEntry result) {
+
+                final CmsClientSitemapEntry newEntry = makeNewEntry(parent);
+                newEntry.setResourceTypeName(sitemapFolderType);
+                createSitemapSubEntry(newEntry, parent.getId(), sitemapFolderType);
+            }
+        };
+        if (item.getLoadState().equals(LoadState.UNLOADED)) {
+            getChildren(parent.getId(), true, callback);
+        } else {
+            callback.onSuccess(parent);
+        }
     }
 
     /**
@@ -349,7 +383,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void createSubEntry(final CmsClientSitemapEntry parent, final CmsUUID structureId) {
 
-        final CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry();
         CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(parent.getId());
         AsyncCallback<CmsClientSitemapEntry> callback = new AsyncCallback<CmsClientSitemapEntry>() {
 
@@ -360,18 +393,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
             public void onSuccess(CmsClientSitemapEntry result) {
 
-                String urlName = ensureUniqueName(parent, NEW_ENTRY_NAME);
-                //newEntry.setTitle(urlName);
-                newEntry.setName(urlName);
-                String sitePath = parent.getSitePath() + urlName + "/";
-                newEntry.setSitePath(sitePath);
-                newEntry.setVfsPath(null);
-                newEntry.setPosition(0);
-                newEntry.setNew(true);
-                newEntry.setInNavigation(true);
-                newEntry.setResourceTypeName("folder");
-                create(newEntry, parent.getId(), structureId);
+                final CmsClientSitemapEntry newEntry = makeNewEntry(parent);
+                createSubEntry(newEntry, parent.getId(), structureId);
             }
+
         };
 
         if (item.getLoadState().equals(LoadState.UNLOADED)) {
@@ -379,6 +404,21 @@ public class CmsSitemapController implements I_CmsSitemapController {
         } else {
             callback.onSuccess(parent);
         }
+    }
+
+    /**
+     * Registers a new sitemap entry.<p>
+     * 
+     * @param newEntry the new entry
+     * @param parentId the parent entry id
+     * @param structureId the structure id of the model page (if null, uses default model page)
+     */
+    public void createSubEntry(final CmsClientSitemapEntry newEntry, CmsUUID parentId, CmsUUID structureId) {
+
+        if (structureId == null) {
+            structureId = m_data.getDefaultNewElementInfo().getCopyResourceId();
+        }
+        create(newEntry, parentId, m_data.getDefaultNewElementInfo().getId(), structureId, null, false);
     }
 
     /**
@@ -737,7 +777,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public CmsClientSitemapEntry getEntry(String entryPath) {
 
         return m_entriesByPath.get(entryPath);
-        }
+    }
 
     /**
      * Finds an entry by id.<p>
@@ -1322,7 +1362,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                     }
                     if (change.hasNewParent()) {
                         cleanupOldPaths(oldSitepath, destParent.getSitePath());
-                }
+                    }
                 }
                 if (change.hasChangedName()) {
                     CmsClientSitemapEntry changed = getEntryById(change.getEntryId());
@@ -1471,6 +1511,32 @@ public class CmsSitemapController implements I_CmsSitemapController {
             CmsDetailPageInfo info = m_data.getDetailPageTable().get(id);
             m_allDetailPageInfos.put(id, info);
         }
+    }
+
+    /**
+     * Creates a new client sitemap entry bean to use for the RPC call which actually creates the entry on the server side.<p>
+     * 
+     * @param parent the parent entry 
+     * 
+     * @return the initialized client sitemap entry 
+     */
+    protected CmsClientSitemapEntry makeNewEntry(final CmsClientSitemapEntry parent) {
+
+        String urlName = ensureUniqueName(parent, NEW_ENTRY_NAME);
+        final CmsClientSitemapEntry newEntry = new CmsClientSitemapEntry();
+        //newEntry.setTitle(urlName);
+        newEntry.setName(urlName);
+        String sitePath = parent.getSitePath() + urlName + "/";
+        newEntry.setSitePath(sitePath);
+        newEntry.setVfsPath(null);
+        newEntry.setPosition(0);
+        newEntry.setNew(true);
+        newEntry.setInNavigation(true);
+        newEntry.setResourceTypeName("folder");
+        newEntry.getOwnProperties().put(
+            CmsClientProperty.PROPERTY_TITLE,
+            new CmsClientProperty(CmsClientProperty.PROPERTY_TITLE, NEW_ENTRY_NAME, NEW_ENTRY_NAME));
+        return newEntry;
     }
 
     /**

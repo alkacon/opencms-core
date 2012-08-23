@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.shared;
 
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -64,6 +65,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The sitemap context menu entries. */
     private List<CmsContextMenuEntryBean> m_contextMenuEntries;
+
+    /** A flag which controls whether a new folder should be created for subsitemaps. */
+    private boolean m_createNewFolderForSubsitemap;
 
     /** The default info bean for new elements. **/
     private CmsNewResourceInfo m_defaultNewElementInfo;
@@ -119,6 +123,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap root. */
     private CmsClientSitemapEntry m_root;
 
+    /** The list info beans for possible sitemap folder types. */
+    private List<CmsListInfoBean> m_sitemapFolderTypeInfos;
+
     /** The sitemap info. */
     private CmsSitemapInfo m_sitemapInfo;
 
@@ -159,8 +166,13 @@ public class CmsSitemapData implements IsSerializable {
      * @param resourceTypeInfos the resource type information for the detail pages  
      * @param returnCode return page code
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
+    <<<<<<< OURS
      * @param aliasImportUrl the URL of the JSP used to import aliases 
      * @param canEditAliases flag to indicate whether the current user can edit the alias table 
+    =======
+     * @param createNewFoldersForSubsitemaps flag to control whether new folders should be created for subsitemaps 
+     * @param subsitemapTypeInfos the type information beans for the available subsitemap folder types 
+    >>>>>>> THEIRS
      */
     public CmsSitemapData(
         Map<String, CmsClientTemplateBean> templates,
@@ -187,7 +199,9 @@ public class CmsSitemapData implements IsSerializable {
         String returnCode,
         boolean canEditDetailPages,
         String aliasImportUrl,
-        boolean canEditAliases) {
+        boolean canEditAliases,
+        boolean createNewFoldersForSubsitemaps,
+        List<CmsListInfoBean> subsitemapTypeInfos) {
 
         m_templates = templates;
         m_properties = properties;
@@ -214,6 +228,8 @@ public class CmsSitemapData implements IsSerializable {
         m_newNavigatioLevelElementInfo = newNavigationLevelElementInfo;
         m_aliasImportUrl = aliasImportUrl;
         m_canEditAliases = canEditAliases;
+        m_createNewFolderForSubsitemap = createNewFoldersForSubsitemaps;
+        m_sitemapFolderTypeInfos = subsitemapTypeInfos;
     }
 
     /**
@@ -448,6 +464,16 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Returns the list info beans for the available sitemap folder types.<p>
+     * 
+     * @return the list info beans for the available sitemap folder types 
+     */
+    public List<CmsListInfoBean> getSubsitemapFolderTypeInfos() {
+
+        return m_sitemapFolderTypeInfos;
+    }
+
+    /**
      * Returns the available templates.<p>
      *
      * @return the available templates
@@ -455,6 +481,16 @@ public class CmsSitemapData implements IsSerializable {
     public Map<String, CmsClientTemplateBean> getTemplates() {
 
         return m_templates;
+    }
+
+    /**
+     * Returns true if new folders should be created for subsitemaps.<p>
+     * 
+     * @return true if new folders should be created for subsitemaps 
+     */
+    public boolean isCreateNewFoldersForSubsitemaps() {
+
+        return m_createNewFolderForSubsitemap;
     }
 
     /**
@@ -486,4 +522,5 @@ public class CmsSitemapData implements IsSerializable {
 
         m_returnCode = returnCode;
     }
+
 }

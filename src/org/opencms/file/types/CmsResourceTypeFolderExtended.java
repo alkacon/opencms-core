@@ -46,9 +46,6 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     /** Configuration key for the optional folder class parameters. */
     public static final String CONFIGURATION_FOLDER_CLASS_PARAMS = "folder.class.params";
 
-    /** The type name for entry points. */
-    public static final String TYPE_ENTRY_POINT = "subsitemap";
-
     /** The configured folder class name for this folder type. */
     private String m_folderClassName;
 
