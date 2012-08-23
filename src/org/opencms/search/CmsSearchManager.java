@@ -1990,13 +1990,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             index.shutDown();
         }
 
-        if ((m_coreContainer != null) && (m_coreContainer.getCores() != null)) {
-            for (SolrCore core : m_coreContainer.getCores()) {
-                core.closeSearcher();
-                core.close();
-            }
+        if (m_coreContainer != null) {
+            m_coreContainer.shutdown();
         }
-        m_coreContainer.shutdown();
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
