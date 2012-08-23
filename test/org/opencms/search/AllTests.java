@@ -60,11 +60,11 @@ public final class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(TestCmsSearchUtils.class));
         suite.addTest(TestCmsSearch.suite());
+        suite.addTest(TestCmsSearchOffline.suite());
         suite.addTest(TestCmsSearchFields.suite());
         suite.addTest(TestCmsSearchInDocuments.suite());
         suite.addTest(TestCmsSearchAdvancedFeatures.suite());
         suite.addTest(TestCmsSearchSpecialFeatures.suite());
-        suite.addTest(TestCmsSearchOffline.suite());
         //$JUnit-END$
         return suite;
     }
