@@ -42,9 +42,11 @@ import org.opencms.util.CmsUUID;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.util.ClientUtils;
@@ -114,6 +116,18 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * @see org.opencms.search.I_CmsSearchDocument#addContentLocales(java.util.List)
+     */
+    public void addContentLocales(List<Locale> locales) {
+
+        if ((locales != null) && !locales.isEmpty()) {
+            for (Locale locale : locales) {
+                m_doc.addField(I_CmsSearchField.FIELD_CONTENT_LOCALES, locale.toString());
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.search.I_CmsSearchDocument#addDateField(java.lang.String, long, boolean)
      */
     public void addDateField(String name, long time, boolean analyzed) {
@@ -142,11 +156,11 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     /**
      * @see org.opencms.search.I_CmsSearchDocument#addResourceLocales(java.util.List)
      */
-    public void addResourceLocales(List<String> locales) {
+    public void addResourceLocales(List<Locale> locales) {
 
         if ((locales != null) && !locales.isEmpty()) {
-            for (String locale : locales) {
-                m_doc.addField(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locale);
+            for (Locale locale : locales) {
+                m_doc.addField(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locale.toString());
             }
         }
     }
@@ -265,6 +279,24 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         Object o = m_doc.getFieldValue(fieldName);
         if (o != null) {
             return o.toString();
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.search.I_CmsSearchDocument#getMultivaluedFieldAsStringList(java.lang.String)
+     */
+    public List<String> getMultivaluedFieldAsStringList(String fieldName) {
+
+        List<String> result = new ArrayList<String>();
+        Collection<Object> coll = m_doc.getFieldValues(fieldName);
+        if (coll != null) {
+            for (Object o : coll) {
+                if (o != null) {
+                    result.add(o.toString());
+                }
+            }
+            return result;
         }
         return null;
     }

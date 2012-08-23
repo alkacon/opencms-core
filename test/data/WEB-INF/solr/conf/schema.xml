@@ -229,6 +229,7 @@
    <field name="parent-folders"      type="string"       indexed="true"  stored="true" required="true" multiValued="true" />
    <field name="type"                type="string"       indexed="true"  stored="true"  required="true" />
    <field name="res_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
+   <field name="con_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
    <field name="contentdate"         type="date"         indexed="true"  stored="true"  required="true" />
    <field name="created"             type="date"         indexed="true"  stored="true"  required="true" />
    <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />

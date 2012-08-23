@@ -103,7 +103,7 @@ public final class AllSolrTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
         suite.addTest(TestSolrConfiguration.suite());
-        suite.addTest(TestSolrFieldMapping.suite());
+        suite.addTest(TestSolrFieldConfiguration.suite());
         suite.addTest(TestSolrIndexing.suite());
         suite.addTest(TestSolrSearch.suite());
         suite.addTest(TestSolrSearchAutoSuggeting.suite());

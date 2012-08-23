@@ -419,15 +419,14 @@ public class CmsSolrQuery extends SolrQuery {
     public void setLocales(List<Locale> locales) {
 
         if ((locales == null) || locales.isEmpty()) {
-            removeFilterQuery(I_CmsSearchField.FIELD_RESOURCE_LOCALES);
+            removeFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES);
         } else {
             List<String> localeStrings = new ArrayList<String>();
             for (Locale locale : locales) {
                 localeStrings.add(locale.toString());
-                addTextFields(locale);
             }
             String[] asArray = localeStrings.toArray(new String[0]);
-            addFilterQuery(I_CmsSearchField.FIELD_RESOURCE_LOCALES, asArray);
+            addFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES, asArray);
             m_locales = asArray;
         }
     }
@@ -479,12 +478,7 @@ public class CmsSolrQuery extends SolrQuery {
     public void setTexts(String... texts) {
 
         m_texts = texts;
-        String vals = CmsStringUtil.arrayAsString(texts, " ");
-        String query = "{!q.op=OR qf=text";
-        for (String textField : m_textFields) {
-            query += "qf=" + textField + " ";
-        }
-        query += "}" + vals;
+        String query = "{!q.op=AND qf=text}" + CmsStringUtil.arrayAsString(texts, " ");
         setQuery(query);
     }
 

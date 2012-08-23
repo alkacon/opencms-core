@@ -49,6 +49,8 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.common.SolrInputDocument;
@@ -59,6 +61,9 @@ import org.apache.solr.common.SolrInputDocument;
  * @since 8.5.0
  */
 public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
+
+    /** Pattern to determine the document locale. */
+    private static final Pattern LOCALE_SUFFIX_PATTERN = Pattern.compile("_([a-z]{2}(?:_[A-Z]{2})?)(?:\\.[^\\.]*)?$");
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrFieldConfiguration.class);
@@ -77,6 +82,56 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         super();
     }
 
+    /** 
+     * Returns the locale for the given root path of a resource, including optional country code.<p>
+     * 
+     * 
+     * @param rootPath the root path to get the locale for
+     * 
+     * @return the locale, or <code>null</code>
+     * 
+     * @see #getLocaleSuffix(String)
+     */
+    public static Locale getLocaleFromFileName(String rootPath) {
+
+        String suffix = getLocaleSuffix(CmsResource.getName(rootPath));
+        if (suffix != null) {
+            String laguageString = suffix.substring(0, 2);
+            return suffix.length() == 5 ? new Locale(laguageString, suffix.substring(3, 5)) : new Locale(laguageString);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the locale suffix for a given resource name.<p>
+     * 
+     * <b>Examples:</b>
+     * 
+     * <ul>
+     * <li><code>/sites/default/rabbit_en_EN.html -> Locale[en_EN]</code>
+     * <li><code>/sites/default/rabbit_en_EN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en_EN]</code>
+     * <li><code>/sites/default/rabbit_en.html&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
+     * <li><code>/sites/default/rabbit_en&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
+     * <li><code>/sites/default/rabbit_en.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
+     * <li><code>/sites/default/rabbit_enr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> null</code>
+     * <li><code>/sites/default/rabbit_en.tar.gz&nbsp;&nbsp;-> null</code>
+     * </ul>
+     * 
+     * @param resourcename the resource name to get the locale suffix for
+     * 
+     * @return the locale suffix if found, <code>null</code> otherwise
+     * 
+     * @see #LOCALE_SUFFIX_PATTERN
+     */
+    public static String getLocaleSuffix(String resourcename) {
+
+        Matcher matcher = LOCALE_SUFFIX_PATTERN.matcher(resourcename);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
     /**
      * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#createEmptyDocument(org.opencms.file.CmsResource)
      */
@@ -85,31 +140,6 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         CmsSolrDocument doc = new CmsSolrDocument(new SolrInputDocument());
         doc.setId(resource.getStructureId());
         return doc;
-    }
-
-    /**
-     * @see org.opencms.search.fields.A_CmsSearchFieldConfiguration#appendProperties(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
-     */
-    @Override
-    protected I_CmsSearchDocument appendProperties(
-        I_CmsSearchDocument document,
-        CmsObject cms,
-        CmsResource resource,
-        I_CmsExtractionResult extraction,
-        List<CmsProperty> properties,
-        List<CmsProperty> propertiesSearched) {
-
-        for (CmsProperty prop : properties) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
-                document.addSearchField(new CmsSolrField(
-                    prop.getName() + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES,
-                    null,
-                    null,
-                    null,
-                    I_CmsSearchField.BOOST_DEFAULT), prop.getValue());
-            }
-        }
-        return document;
     }
 
     /**
@@ -239,21 +269,65 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
 
+        // Add the resource locales
+        List<String> itemLocales = null;
+        List<Locale> resourceLocales = new ArrayList<Locale>();
         if ((extraction != null)
             && (extraction.getContentItems() != null)
             && (extraction.getContentItems().get(I_CmsSearchField.FIELD_RESOURCE_LOCALES) != null)) {
+            // XMl content or page
             String localesAsString = extraction.getContentItems().get(I_CmsSearchField.FIELD_RESOURCE_LOCALES);
-            document.addResourceLocales(CmsStringUtil.splitAsList(localesAsString, ' '));
-        } else {
-            List<String> localesAsList = new ArrayList<String>();
-            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
-            for (Locale locale : locales) {
-                localesAsList.add(locale.toString());
+            itemLocales = CmsStringUtil.splitAsList(localesAsString, ' ');
+            for (String locale : itemLocales) {
+                resourceLocales.add(new Locale(locale));
             }
-            document.addResourceLocales(localesAsList);
+        } else {
+            // For all other resources add all default locales
+            resourceLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
         }
+        document.addResourceLocales(resourceLocales);
 
-        return super.appendLocales(document, cms, resource, extraction, properties, propertiesSearched);
+        // Add the content locales
+        List<Locale> contentLocales = new ArrayList<Locale>();
+        if (itemLocales != null) {
+            // XMl content or page
+            contentLocales = resourceLocales;
+        } else {
+            // For all other try to determine the locales, first by file name, then by OpenCms default behavior
+            Locale fileNameLocale = getLocaleFromFileName(resource.getRootPath());
+            contentLocales.add(fileNameLocale);
+            if (fileNameLocale == null) {
+                contentLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+            }
+        }
+        document.addContentLocales(contentLocales);
+
+        return document;
+    }
+
+    /**
+     * @see org.opencms.search.fields.A_CmsSearchFieldConfiguration#appendProperties(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     */
+    @Override
+    protected I_CmsSearchDocument appendProperties(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extraction,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        for (CmsProperty prop : propertiesSearched) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
+                document.addSearchField(new CmsSolrField(
+                    prop.getName() + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES,
+                    null,
+                    null,
+                    null,
+                    I_CmsSearchField.BOOST_DEFAULT), prop.getValue());
+            }
+        }
+        return document;
     }
 
     /**

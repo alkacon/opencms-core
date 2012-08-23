@@ -39,8 +39,10 @@ import org.opencms.search.fields.I_CmsSearchField;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
@@ -140,6 +142,14 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * @see org.opencms.search.I_CmsSearchDocument#addContentLocales(java.util.List)
+     */
+    public void addContentLocales(List<Locale> locales) {
+
+        // Lucene documents are not localized by defualt: Nothing to do here
+    }
+
+    /**
      * @see org.opencms.search.I_CmsSearchDocument#addDateField(java.lang.String, long, boolean)
      */
     public void addDateField(String name, long date, boolean analyzed) {
@@ -181,7 +191,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     /**
      * @see org.opencms.search.I_CmsSearchDocument#addResourceLocales(java.util.List)
      */
-    public void addResourceLocales(List<String> locales) {
+    public void addResourceLocales(List<Locale> locales) {
 
         // A default lucene document has only one locale.
     }
@@ -268,6 +278,14 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
             return fieldValue.stringValue();
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.search.I_CmsSearchDocument#getMultivaluedFieldAsStringList(java.lang.String)
+     */
+    public List<String> getMultivaluedFieldAsStringList(String fieldName) {
+
+        return Collections.singletonList(getFieldValueAsString(fieldName));
     }
 
     /**

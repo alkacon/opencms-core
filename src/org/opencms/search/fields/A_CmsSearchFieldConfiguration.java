@@ -196,7 +196,6 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
         document = appendDates(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendLocales(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendProperties(document, cms, resource, extraction, properties, propertiesSearched);
-        // TODO: also append searched properties.
         document = appendCategories(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendFieldMappings(document, cms, resource, extraction, properties, propertiesSearched);
         document = setBoost(document, cms, resource, extraction, properties, propertiesSearched);
