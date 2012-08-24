@@ -307,7 +307,10 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             int rows = query.getRows().intValue() <= ROWS_MAX ? query.getRows().intValue() : ROWS_MAX;
             int start = query.getStart() != null ? query.getStart().intValue() : 0;
             int end = start + rows;
-            int page = Math.round(start / rows) + 1;
+            int page = 0;
+            if (rows > 0) {
+                page = Math.round(start / rows) + 1;
+            }
 
             // set the start to '0' and expand the rows before performing the query
             query.setStart(new Integer(0));
