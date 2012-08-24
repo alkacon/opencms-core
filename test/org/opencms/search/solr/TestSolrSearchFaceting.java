@@ -31,6 +31,7 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -66,7 +67,7 @@ public class TestSolrSearchFaceting extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrSearchFaceting.class.getName());
-        suite.addTest(new TestSolrSearchFaceting("testFaceting"));
+        suite.addTest(new TestSolrSearchFaceting("testFacetQueryCount"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -87,10 +88,53 @@ public class TestSolrSearchFaceting extends OpenCmsTestCase {
     }
 
     /**
-     * @throws Throwable
+     * This test demonstrates how to get the count of documents 
+     * that have a specific word (e.g. OpenCms) in a certain field.<p>
+     * 
+     * This will allow you to create 'facet-like' UI-Components that
+     * show the count of documents inside the search result containing
+     * a specific word.<p>
+     * 
+     * E.g. The word "OpenCms" was found '7' times in the field "text" and '5' times in the "title"
+     * 
+     * @throws Throwable if something goes wrong
      */
-    public void testFaceting() throws Throwable {
+    public void testFacetQueryCount() throws Throwable {
 
-        // TODO: implement
+        echo("Testing facet query count");
+
+        // creating the query: facet=true&facet.field=Title_exact&facet.mincount=1&facet.query=text:OpenCms&rows=0
+        CmsSolrQuery query = new CmsSolrQuery(getCmsObject());
+        // facet=true
+        query.setFacet(true);
+        // facet.field=Title_exact
+        query.addFacetField("Title_exact");
+        // facet.mincount=1
+        query.add("facet.mincount", "1");
+        // facet.query=text:OpenCms
+        query.addFacetQuery("text:OpenCms");
+        // facet.query=Title_prop:OpenCms
+        query.addFacetQuery("Title_prop:OpenCms");
+        // rows=0
+        query.setRows(new Integer(0));
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrResultList results = index.search(getCmsObject(), query);
+        long facetTextCount = results.getFacetQuery().get("text:OpenCms").intValue();
+        long facetTitleCount = results.getFacetQuery().get("Title_prop:OpenCms").intValue();
+        echo("Found '"
+            + results.getFacetField("Title_exact").getValueCount()
+            + "' facets for the field \"Title_exact\" and '"
+            + facetTextCount
+            + "' of them containing the word: \"OpenCms\" in the field 'text' and '"
+            + facetTitleCount
+            + "' of them containing the word \"OpenCms\" in the field 'Title_prop!'");
+
+        query = new CmsSolrQuery(getCmsObject(), "text:OpenCms");
+        results = index.search(getCmsObject(), query);
+        long numExpected = results.getNumFound();
+
+        assertEquals(numExpected, facetTextCount);
+        echo("Great Solr works fine!");
     }
 }
