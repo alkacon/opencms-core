@@ -104,7 +104,7 @@ public final class AllSolrTests {
         //$JUnit-BEGIN$
         // suite.addTest(TestSolrConfiguration.suite());
         suite.addTest(TestSolrFieldConfiguration.suite());
-        // suite.addTest(TestSolrIndexing.suite());
+        suite.addTest(TestSolrIndexing.suite());
         suite.addTest(TestSolrSearch.suite());
         // suite.addTest(TestSolrSearchAutoSuggeting.suite());
         // suite.addTest(TestSolrSearchFaceting.suite());

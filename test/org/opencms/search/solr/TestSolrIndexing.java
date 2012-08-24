@@ -31,8 +31,17 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
+import org.opencms.search.documents.CmsExtractionResultCache;
+import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -76,7 +85,7 @@ public class TestSolrIndexing extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/");
+                setupOpenCms("solrtest", "/");
             }
 
             @Override
@@ -92,6 +101,36 @@ public class TestSolrIndexing extends OpenCmsTestCase {
     /**
      * @throws Throwable
      */
+    public void testExtractionResults() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        CmsResource res = cms.createSibling(
+            "/xmlcontent/link_article_0001.html",
+            "/xmlcontent/link2_article_0001.html",
+            null);
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        I_CmsDocumentFactory factory = OpenCms.getSearchManager().getDocumentFactory(
+            CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
+            "text/html");
+        CmsExtractionResultCache cache = factory.getCache();
+        String cacheName = cache.getCacheName(res, Locale.ENGLISH, CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR);
+        CmsExtractionResult result = cache.getCacheObject(cacheName);
+        assertNotNull(result);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testIndexingPerformance() throws Throwable {
+
+        // TODO: implement
+    }
+
+    /**
+     * @throws Throwable
+     */
     public void testMultipleIndices() throws Throwable {
 
         // TODO: implement
@@ -101,14 +140,6 @@ public class TestSolrIndexing extends OpenCmsTestCase {
      * @throws Throwable
      */
     public void testMultipleLanguages() throws Throwable {
-
-        // TODO: implement
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public void testExtractionResults() throws Throwable {
 
         // TODO: implement
     }

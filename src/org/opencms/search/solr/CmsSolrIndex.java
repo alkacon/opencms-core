@@ -85,9 +85,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     /** The name for the default Solr offline index. */
     public static final String SOLR_OFFLINE_INDEX_NAME = "Solr Offline";
 
-    /** The solr document type name for xml-contents. */
-    public static final String TYPE_XMLCONTENT_SOLR = "xmlcontent-solr";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
 
@@ -165,7 +162,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         if ((res != null) && (getSources() != null)) {
             // the result can only be null or the type configured for the resource
             if (CmsResourceTypeXmlContent.isXmlContent(res) || CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
-                return OpenCms.getSearchManager().getDocumentFactory(TYPE_XMLCONTENT_SOLR, "text/html");
+                return OpenCms.getSearchManager().getDocumentFactory(
+                    CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
+                    "text/html");
             } else {
                 return super.getDocumentFactory(res);
             }

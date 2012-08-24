@@ -59,9 +59,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsVfsDocument.class);
 
-    /**
-     * Name of the documenttype.
-     */
+    /** Name of the document type. */
     protected String m_name;
 
     /** The cache used for storing extracted documents. */
@@ -123,7 +121,8 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                 // because the index will also store the content as a blob
                 cacheName = cache.getCacheName(
                     resource,
-                    isLocaleDependend() ? index.getLocaleForResource(cms, resource, null) : null);
+                    isLocaleDependend() ? index.getLocaleForResource(cms, resource, null) : null,
+                    getName());
                 content = cache.getCacheObject(cacheName);
             }
 
