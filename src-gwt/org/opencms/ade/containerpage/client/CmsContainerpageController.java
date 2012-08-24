@@ -30,6 +30,7 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsRemovedElementDeletionDialog;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
@@ -51,20 +52,13 @@ import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
-import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
@@ -86,9 +80,6 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -99,8 +90,6 @@ import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -496,61 +485,8 @@ public final class CmsContainerpageController {
      */
     protected static void askWhetherRemovedElementShouldBeDeleted(final CmsRemovedElementStatus status) {
 
-        CmsListInfoBean elementInfo = status.getElementInfo();
-
-        FlowPanel panel = new FlowPanel();
-        CmsListItemWidget infoBox = new CmsListItemWidget(elementInfo);
-        panel.add(infoBox);
-        CmsMessages m = org.opencms.ade.containerpage.client.Messages.get();
-
-        Label label = new Label(m.key(org.opencms.ade.containerpage.client.Messages.GUI_ASK_DELETE_REMOVED_ELEMENT_0));
-        //"After removing this element, there are no pages referencing it. Do you want to delete it from the OpenCms file system?");
-        label.getElement().getStyle().setPadding(16, Unit.PX);
-        panel.add(label);
-        final CmsPopup popup = new CmsPopup(
-            m.key(org.opencms.ade.containerpage.client.Messages.GUI_ASK_DELETE_REMOVED_ELEMENT_TITLE_0));
-        popup.setMainContent(panel);
-        CmsPushButton okButton = new CmsPushButton();
-        okButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_DELETE_0));
-        CmsPushButton cancelButton = new CmsPushButton();
-        cancelButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_CANCEL_0));
-        cancelButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent e) {
-
-                popup.hide();
-            }
-        });
-        okButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent e) {
-
-                CmsRpcAction<Void> deleteAction = new CmsRpcAction<Void>() {
-
-                    @Override
-                    public void execute() {
-
-                        start(200, true);
-                        CmsCoreProvider.getVfsService().deleteResource(status.getStructureId(), this);
-                    }
-
-                    @Override
-                    public void onResponse(Void result) {
-
-                        stop(true);
-                        popup.hide();
-                    }
-                };
-                deleteAction.execute();
-            }
-        });
-        okButton.setUseMinWidth(true);
-        cancelButton.setUseMinWidth(true);
-        okButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
-        popup.addButton(cancelButton);
-        popup.addButton(okButton);
-        popup.setWidth(550);
-        popup.center();
+        CmsRemovedElementDeletionDialog dialog = new CmsRemovedElementDeletionDialog(status);
+        dialog.center();
     }
 
     /**
