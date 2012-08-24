@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.widgetregistry.client;
 import com.alkacon.acacia.client.I_WidgetFactory;
 
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -102,10 +103,10 @@ public final class WidgetRegistry {
         for (CmsExternalWidgetConfiguration widgetConfiguration : externalWidgetConfigurations) {
             if (!m_widgetRegistry.containsKey(widgetConfiguration.getWidgetName())) {
                 for (String cssResource : widgetConfiguration.getCssResourceLinks()) {
-                    ensureStyleSheetIncluded(cssResource);
+                    CmsDomUtil.ensureStyleSheetIncluded(cssResource);
                 }
                 for (String javaScriptResource : widgetConfiguration.getJavaScriptResourceLinks()) {
-                    ensureJavaScriptIncluded(javaScriptResource);
+                    CmsDomUtil.ensureJavaScriptIncluded(javaScriptResource);
                 }
                 initCalls.add(widgetConfiguration.getInitCall());
             }
@@ -172,51 +173,6 @@ public final class WidgetRegistry {
                     + " to initialize editing widget."
         }
         return false;
-    }-*/;
-
-    /**
-     * Ensures a script tag is present within the window document context.<p>
-     * 
-     * @param javascriptLink the link to the java script resource
-     */
-    private native void ensureJavaScriptIncluded(String javascriptLink)/*-{
-        var scripts = $wnd.document.scripts;
-        for ( var i = 0; i < scripts.length; i++) {
-            if (scripts[i].src != null
-                    && scripts[i].src.indexOf(javascriptLink) >= 0) {
-                // script resource is present
-                return;
-            }
-        }
-        // append the script tag to the head element
-        var head = $wnd.document.getElementsByTagName("head")[0];
-        var scriptNode = $wnd.document.createElement('link');
-        scriptNode.type = 'text/javascript';
-        scriptNode.src = javascriptLink;
-        head.appendChild(scriptNode);
-    }-*/;
-
-    /**
-     * Checks the window.document for given style-sheet and includes it if required.<p>
-     * 
-     * @param styleSheetLink the style-sheet link
-     */
-    private native void ensureStyleSheetIncluded(String styleSheetLink)/*-{
-        var styles = $wnd.document.styleSheets;
-        for ( var i = 0; i < styles.length; i++) {
-            if (styles[i].href != null
-                    && styles[i].href.indexOf(styleSheetLink) >= 0) {
-                // style-sheet is present
-                return;
-            }
-        }
-        // include style-sheet into head
-        var headID = $wnd.document.getElementsByTagName("head")[0];
-        var cssNode = $wnd.document.createElement('link');
-        cssNode.type = 'text/css';
-        cssNode.rel = 'stylesheet';
-        cssNode.href = styleSheetLink;
-        headID.appendChild(cssNode);
     }-*/;
 
     /**

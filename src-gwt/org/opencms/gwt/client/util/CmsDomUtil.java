@@ -38,8 +38,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.core.client.ScriptInjector.FromUrl;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
@@ -670,22 +675,35 @@ public final class CmsDomUtil {
      * 
      * @param javascriptLink the link to the java script resource
      */
-    public static native void ensureJavaScriptIncluded(String javascriptLink)/*-{
-        var scripts = $wnd.document.scripts;
-        for ( var i = 0; i < scripts.length; i++) {
-            if (scripts[i].src != null
-                    && scripts[i].src.indexOf(javascriptLink) >= 0) {
-                // script resource is present
-                return;
-            }
+    public static void ensureJavaScriptIncluded(String javascriptLink) {
+
+        if (!isJavaScriptPresent(javascriptLink)) {
+            ScriptInjector.fromUrl(javascriptLink).inject();
         }
-        // append the script tag to the head element
-        var head = $wnd.document.getElementsByTagName("head")[0];
-        var scriptNode = $wnd.document.createElement('link');
-        scriptNode.type = 'text/javascript';
-        scriptNode.src = javascriptLink;
-        head.appendChild(scriptNode);
-    }-*/;
+    }
+
+    /**
+     * Ensures a script tag is present within the window document context.<p>
+     * 
+     * @param javascriptLink the link to the java script resource
+     * @param callback the callback to execute when the script is loaded
+     */
+    public static void ensureJavaScriptIncluded(String javascriptLink, final Callback<Void, Exception> callback) {
+
+        if (!isJavaScriptPresent(javascriptLink)) {
+            FromUrl injector = ScriptInjector.fromUrl(javascriptLink);
+            injector.setCallback(callback);
+            injector.inject();
+        } else {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                public void execute() {
+
+                    callback.onSuccess(null);
+                }
+            });
+        }
+    }
 
     /**
      * Triggers a mouse-out event for the given element.<p>
@@ -1340,6 +1358,25 @@ public final class CmsDomUtil {
 
         return (element.getOffsetHeight() > 0) || (element.getOffsetWidth() > 0);
     }
+
+    /**
+     * Checks whether a given script resource is present within the window context.<p>
+     * 
+     * @param javascriptLink the resource URL
+     * 
+     * @return <code>true</code> if the script resource is present within the window context
+     */
+    public static native boolean isJavaScriptPresent(String javascriptLink)/*-{
+        var scripts = $wnd.document.scripts;
+        for ( var i = 0; i < scripts.length; i++) {
+            if (scripts[i].src != null
+                    && scripts[i].src.indexOf(javascriptLink) >= 0) {
+                // script resource is present
+                return true;
+            }
+        }
+        return false;
+    }-*/;
 
     /**
      * Gives an element the overflow:auto property.<p>
