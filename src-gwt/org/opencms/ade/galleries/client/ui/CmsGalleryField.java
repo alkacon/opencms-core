@@ -351,7 +351,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
                     if ((croppingParameter != null) && (croppingParameter.isCropped() || croppingParameter.isScaled())) {
                         path += "?" + croppingParameter.toString();
                     }
-                    setFormValueAsString(path);
+                    setValue(path, true);
                     m_popup.hide();
                 }
             },
