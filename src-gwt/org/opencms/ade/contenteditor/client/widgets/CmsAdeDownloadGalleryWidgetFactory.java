@@ -59,7 +59,6 @@ public class CmsAdeDownloadGalleryWidgetFactory implements I_WidgetFactory, I_Cm
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        //  configuration += ";" + I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon();
         return new FormWidgetWrapper(new CmsGalleryWidget(
             I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon(),
             configuration));

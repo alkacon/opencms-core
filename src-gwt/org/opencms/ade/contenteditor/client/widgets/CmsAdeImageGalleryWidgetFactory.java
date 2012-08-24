@@ -59,7 +59,6 @@ public class CmsAdeImageGalleryWidgetFactory implements I_WidgetFactory, I_CmsHa
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        configuration += ";" + I_CmsImageBundle.INSTANCE.style().imageSearchIcon();
         return new FormWidgetWrapper(new CmsGalleryWidget(
             I_CmsImageBundle.INSTANCE.style().imageSearchIcon(),
             configuration));
