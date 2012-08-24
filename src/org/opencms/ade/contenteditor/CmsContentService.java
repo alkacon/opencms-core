@@ -199,7 +199,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
             m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
             m_registeredTypes = new HashMap<String, I_Type>();
-            readTypes(xmlContentDefinition, "", false);
+            readTypes(xmlContentDefinition, "");
             m_tabInfos = collectTabInfos(xmlContentDefinition);
         }
 
@@ -335,18 +335,26 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          * 
          * @param xmlContentDefinition the XML content definition
          * @param path the element path
-         * @param isChoiceType <code>true</code> when reading a choice type
          */
-        private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path, boolean isChoiceType) {
+        private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 
             String typeName = getTypeUri(xmlContentDefinition);
             if (m_registeredTypes.containsKey(typeName)) {
                 return;
             }
             Type type = new Type(typeName);
-            type.setIsChoice(isChoiceType);
+            type.setChoiceMaxOccurrence(xmlContentDefinition.getChoiceMaxOccurs());
             m_registeredTypes.put(typeName, type);
-
+            if (type.isChoice()) {
+                Type choiceType = new Type(typeName + "/" + Type.CHOICE_ATTRIBUTE_NAME);
+                m_registeredTypes.put(choiceType.getId(), choiceType);
+                type.addAttribute(
+                    Type.CHOICE_ATTRIBUTE_NAME,
+                    choiceType.getId(),
+                    1,
+                    xmlContentDefinition.getChoiceMaxOccurs());
+                type = choiceType;
+            }
             for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
 
                 String subTypeName = null;
@@ -364,7 +372,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 } else {
                     CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
                     subTypeName = getTypeUri(subTypeDefinition);
-                    readTypes(subTypeDefinition, childPath, subType.isChoiceType());
+                    readTypes(subTypeDefinition, childPath);
                 }
                 type.addAttribute(subAttributeName, subTypeName, subType.getMinOccurs(), subType.getMaxOccurs());
             }
@@ -691,33 +699,56 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String typeName,
         Map<String, I_Type> registeredTypes) {
 
-        Entity result = new Entity(entityId + parentPath, typeName);
+        Entity newEntity = new Entity(entityId + parentPath, typeName);
+        Entity result = newEntity;
+
         @SuppressWarnings("unchecked")
         List<Element> elements = element.elements();
         I_Type type = registeredTypes.get(typeName);
-        int counter = 1;
+        boolean isChoice = type.isChoice();
+        String choiceTypeName = null;
+        if (isChoice) {
+            choiceTypeName = type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME);
+            type = registeredTypes.get(type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME));
+        }
+        int counter = 0;
         CmsObject cms = getCmsObject();
         String previousName = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentPath)) {
+            parentPath += "/";
+        }
         for (Element child : elements) {
+            if (isChoice) {
+                result = new Entity(entityId + "/" + Type.CHOICE_ATTRIBUTE_NAME + "[" + counter + "]", choiceTypeName);
+                newEntity.addAttributeValue(Type.CHOICE_ATTRIBUTE_NAME, result);
+            }
             String attributeName = getAttributeName(child.getName(), typeName);
-            if (!attributeName.equals(previousName)) {
+            if (!isChoice && !attributeName.equals(previousName)) {
                 // reset the attribute counter for every attribute name
-                counter = 1;
+                counter = 0;
                 previousName = attributeName;
             }
             String subTypeName = type.getAttributeTypeName(attributeName);
-            String path = parentPath + "/" + child.getName() + "[" + counter + "]";
+
+            String path = parentPath + child.getName();
             if (registeredTypes.get(subTypeName).isSimpleType()) {
-                I_CmsXmlContentValue value = content.getValue(path, locale);
+                I_CmsXmlContentValue value = content.getValue(path, locale, counter);
                 result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
-                Entity subEntity = readEntity(content, child, locale, entityId, path, subTypeName, registeredTypes);
+                Entity subEntity = readEntity(
+                    content,
+                    child,
+                    locale,
+                    entityId,
+                    path + "[" + (counter + 1) + "]",
+                    subTypeName,
+                    registeredTypes);
                 result.addAttributeValue(attributeName, subEntity);
 
             }
             counter++;
         }
-        return result;
+        return newEntity;
     }
 
     /**
@@ -753,27 +784,53 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Locale contentLocale) {
 
         for (I_EntityAttribute attribute : entity.getAttributes()) {
-            String elementPath = parentPath + getElementName(attribute.getAttributeName());
-            if (attribute.isSimpleValue()) {
-                List<String> values = attribute.getSimpleValues();
-                for (int i = 0; i < values.size(); i++) {
-                    String value = values.get(i);
-                    I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
-                    if (field == null) {
-                        field = content.addValue(cms, elementPath, contentLocale, i);
+            if (Type.CHOICE_ATTRIBUTE_NAME.equals(attribute.getAttributeName())) {
+                List<I_Entity> choiceEntities = attribute.getComplexValues();
+                for (int i = 0; i < choiceEntities.size(); i++) {
+                    List<I_EntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
+                    // each choice entity may only have a single attribute with a single value
+                    assert (choiceAttributes.size() == 1) && choiceAttributes.get(0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
+                    I_EntityAttribute choiceAttribute = choiceAttributes.get(0);
+                    String elementPath = parentPath + getElementName(choiceAttribute.getAttributeName());
+                    if (choiceAttribute.isSimpleValue()) {
+                        String value = choiceAttribute.getSimpleValue();
+                        I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                        if (field == null) {
+                            field = content.addValue(cms, elementPath, contentLocale, i);
+                        }
+                        field.setStringValue(cms, value);
+                    } else {
+                        I_Entity child = choiceAttribute.getComplexValue();
+                        I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                        if (field == null) {
+                            field = content.addValue(cms, elementPath, contentLocale, i);
+                        }
+                        addEntityAttributes(cms, content, field.getPath() + "/", child, contentLocale);
                     }
-                    field.setStringValue(cms, value);
-
                 }
             } else {
-                List<I_Entity> entities = attribute.getComplexValues();
-                for (int i = 0; i < entities.size(); i++) {
-                    I_Entity child = entities.get(i);
-                    I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
-                    if (field == null) {
-                        field = content.addValue(cms, elementPath, contentLocale, i);
+                String elementPath = parentPath + getElementName(attribute.getAttributeName());
+                if (attribute.isSimpleValue()) {
+                    List<String> values = attribute.getSimpleValues();
+                    for (int i = 0; i < values.size(); i++) {
+                        String value = values.get(i);
+                        I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                        if (field == null) {
+                            field = content.addValue(cms, elementPath, contentLocale, i);
+                        }
+                        field.setStringValue(cms, value);
+
                     }
-                    addEntityAttributes(cms, content, field.getPath() + "/", child, contentLocale);
+                } else {
+                    List<I_Entity> entities = attribute.getComplexValues();
+                    for (int i = 0; i < entities.size(); i++) {
+                        I_Entity child = entities.get(i);
+                        I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                        if (field == null) {
+                            field = content.addValue(cms, elementPath, contentLocale, i);
+                        }
+                        addEntityAttributes(cms, content, field.getPath() + "/", child, contentLocale);
+                    }
                 }
             }
         }
