@@ -178,6 +178,7 @@ public class CmsSolrQuery extends SolrQuery {
         addField(SCORE_FIELD);
         setRows(new Integer(CmsSolrQuery.RESULT_COUNT));
         setFacetDateGab(FACET_DATE_GAB);
+        addTextFields("text");
 
         // set the query
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
@@ -418,12 +419,18 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public void setLocales(List<Locale> locales) {
 
+        m_textFields.clear();
         if ((locales == null) || locales.isEmpty()) {
-            removeFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES);
+            m_textFields.add("text");
+            if ((m_locales != null) && (m_locales.length > 0)) {
+                removeFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES);
+            }
+            m_locales = null;
         } else {
             List<String> localeStrings = new ArrayList<String>();
             for (Locale locale : locales) {
                 localeStrings.add(locale.toString());
+                m_textFields.add("text_" + locale);
             }
             String[] asArray = localeStrings.toArray(new String[0]);
             addFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES, asArray);
@@ -449,7 +456,9 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public void setSearchRoots(String... searchRoots) {
 
-        addFilterQuery(I_CmsSearchField.FIELD_PARENT_FOLDERS, searchRoots);
+        if ((searchRoots != null) && (searchRoots.length > 0)) {
+            addFilterQuery(I_CmsSearchField.FIELD_PARENT_FOLDERS, searchRoots);
+        }
         m_searchRoots = searchRoots;
     }
 
@@ -478,7 +487,12 @@ public class CmsSolrQuery extends SolrQuery {
     public void setTexts(String... texts) {
 
         m_texts = texts;
-        String query = "{!q.op=AND qf=text}" + CmsStringUtil.arrayAsString(texts, " ");
+        String vals = CmsStringUtil.arrayAsString(texts, " ");
+        String query = "{!q.op=OR ";
+        for (String textField : m_textFields) {
+            query += "qf=" + textField + " ";
+        }
+        query += "}" + vals;
         setQuery(query);
     }
 
@@ -486,8 +500,7 @@ public class CmsSolrQuery extends SolrQuery {
      * Adds a filter query.<p>
      * 
      * @param fieldName the field name
-     * @param all <code>true</code> to combins the given values with 
-     * logical 'AND', <code>false</code> for 'OR' combination
+     * @param all <code>true</code> to combine the given values with 'AND', <code>false</code> for 'OR'
      * @param vals the values
      */
     private void addFilterQuery(String fieldName, boolean all, String... vals) {

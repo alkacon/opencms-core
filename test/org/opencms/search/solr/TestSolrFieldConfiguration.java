@@ -84,7 +84,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrFieldConfiguration.class.getName());
         suite.addTest(new TestSolrFieldConfiguration("testAppinfoSolrField"));
-        suite.addTest(new TestSolrFieldConfiguration("testResourceContentLocaleField"));
+        suite.addTest(new TestSolrFieldConfiguration("tesContentLocalesField"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -107,19 +107,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     /**
      * Tests the locales stored in the index.<p>
      * 
-     * <ul>
-     * <li><code>/sites/default/rabbit_en_EN.html -> Locale[en_EN]</code>
-     * <li><code>/sites/default/rabbit_en_EN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en_EN]</code>
-     * <li><code>/sites/default/rabbit_en.html&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_en&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_en.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_enr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> null</code>
-     * <li><code>/sites/default/rabbit_en.tar.gz&nbsp;&nbsp;-> null</code>
-     * </ul>
-     * 
      * @throws Throwable if something goes wrong
      */
-    public void testResourceContentLocaleField() throws Throwable {
+    public void tesContentLocalesField() throws Throwable {
 
         Map<String, List<String>> filenames = new HashMap<String, List<String>>();
         filenames.put("rabbit_en_EN.html", Collections.singletonList("en_EN"));

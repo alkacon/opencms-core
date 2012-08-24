@@ -31,8 +31,16 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+
+import java.util.Collections;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -66,14 +74,14 @@ public class TestSolrSearchFulltextSearching extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrSearchFulltextSearching.class.getName());
-        suite.addTest(new TestSolrSearchFulltextSearching("testFullTextSearch"));
+        suite.addTest(new TestSolrSearchFulltextSearching("testLocaleRestriction"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
             protected void setUp() {
 
-                setupOpenCms("simpletest", "/");
+                setupOpenCms("solrtest", "/");
             }
 
             @Override
@@ -89,8 +97,81 @@ public class TestSolrSearchFulltextSearching extends OpenCmsTestCase {
     /**
      * @throws Throwable
      */
-    public void testFullTextSearch() throws Throwable {
+    public void testLocaleRestriction() throws Throwable {
 
-        // TODO: implement
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+
+        // use a folder that only contains GERMAN content @see manifest.xml -> locale poperty
+        String folderName = "/folder1/subfolder12/subsubfolder121/";
+
+        importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            folderName + "master.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.<CmsProperty> emptyList());
+
+        importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            folderName + "master_de.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.<CmsProperty> emptyList());
+
+        importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            folderName + "master_en.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.<CmsProperty> emptyList());
+
+        importTestResource(
+            cms,
+            "org/opencms/search/pdf-test-112.pdf",
+            folderName + "master_fr.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            Collections.<CmsProperty> emptyList());
+
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+
+        CmsSolrQuery query = new CmsSolrQuery();
+        query.setSearchRoots("/sites/default/folder1/subfolder12/subsubfolder121/");
+        query.setResourceTypes("binary");
+        CmsSolrResultList result = index.search(cms, query);
+        assertEquals(4, result.getNumFound());
+
+        cms.getRequestContext().setLocale(Locale.GERMAN);
+        query = new CmsSolrQuery(cms);
+        query.setTexts("Testfile", "Intranet");
+        result = index.search(cms, query);
+        assertEquals(2, result.getNumFound());
+
+        query = new CmsSolrQuery();
+        query.setLocales(Collections.singletonList(Locale.GERMAN));
+        query.setTexts("Testfile", "Intranet");
+        result = index.search(cms, query);
+        assertEquals(2, result.getNumFound());
+
+        query = new CmsSolrQuery();
+        query.setLocales(Collections.singletonList(Locale.ENGLISH));
+        query.setTexts("Testfile", "Intranet");
+        result = index.search(cms, query);
+        assertEquals(2, result.getNumFound());
+
+        query = new CmsSolrQuery();
+        query.setLocales(Collections.singletonList(Locale.FRENCH));
+        query.setTexts("Testfile", "Intranet");
+        result = index.search(cms, query);
+        assertEquals(1, result.getNumFound());
+
+        query = new CmsSolrQuery();
+        query.setLocales(null);
+        query.setTexts("Testfile", "Intranet");
+        result = index.search(cms, query);
+        assertEquals(4, result.getNumFound());
     }
 }

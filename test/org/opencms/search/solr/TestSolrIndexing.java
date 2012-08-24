@@ -69,6 +69,7 @@ public class TestSolrIndexing extends OpenCmsTestCase {
         suite.addTest(new TestSolrIndexing("testMultipleIndices"));
         suite.addTest(new TestSolrIndexing("testMultipleLanguages"));
         suite.addTest(new TestSolrIndexing("testExtractionResults"));
+        suite.addTest(new TestSolrIndexing("testIndexingPerformance"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
