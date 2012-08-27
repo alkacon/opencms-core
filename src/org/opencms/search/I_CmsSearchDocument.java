@@ -55,15 +55,6 @@ public interface I_CmsSearchDocument {
     static final String VFS_DOCUMENT_KEY_PREFIX = "VFS";
 
     /**
-     * Returns a list of Strings representing the values of an multi valued field.<p>
-     * 
-     * @param fieldName the name of the multi valued field to get the content of
-     * 
-     * @return the list of Strings, or <code>null</code>
-     */
-    public List<String> getMultivaluedFieldAsStringList(String fieldName);
-
-    /**
      * Adds the list of the given categories to this document.<p>
      * 
      * @param categories the categories to add
@@ -123,6 +114,16 @@ public interface I_CmsSearchDocument {
     void addSearchField(I_CmsSearchField field, String value);
 
     /**
+     * Adds the suffix field to the document. This field should contain the resource suffix. 
+     * 
+     * <b>Example</b><br/>
+     * <code>'html' for a file named 'article.html'</code>
+     * 
+     * @param suffix the suffix to add
+     */
+    void addSuffixField(String suffix);
+
+    /**
      * Adds the resource type to this document
      * @param paramString
      */
@@ -167,6 +168,15 @@ public interface I_CmsSearchDocument {
      * @return the String value or <code>null</code> if empty
      */
     String getFieldValueAsString(String fieldName);
+
+    /**
+     * Returns a list of Strings representing the values of an multi valued field.<p>
+     * 
+     * @param fieldName the name of the multi valued field to get the content of
+     * 
+     * @return the list of Strings, or <code>null</code>
+     */
+    List<String> getMultivaluedFieldAsStringList(String fieldName);
 
     /**
      * Returns the root path of the referenced VFS resource of this document.<p>

@@ -36,9 +36,12 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.documents.CmsDocumentLocaleDependency;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -97,8 +100,10 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
 
         String suffix = getLocaleSuffix(CmsResource.getName(rootPath));
         if (suffix != null) {
-            String laguageString = suffix.substring(0, 2);
-            return suffix.length() == 5 ? new Locale(laguageString, suffix.substring(3, 5)) : new Locale(laguageString);
+            String lang = suffix.substring(0, 2);
+            Locale locale = suffix.length() == 5 ? new Locale(lang, suffix.substring(3, 5)) : new Locale(lang);
+            Locale defLocale = CmsLocaleManager.getDefaultLocale();
+            return OpenCms.getLocaleManager().getDefaultLocales().contains(locale) ? locale : defLocale;
         }
         return null;
     }
@@ -286,7 +291,7 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
 
-        // Add the resource locales
+        // append the resource locales
         List<String> itemLocales = null;
         List<Locale> resourceLocales = new ArrayList<Locale>();
         if ((extraction != null)
@@ -304,7 +309,7 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         }
         document.addResourceLocales(resourceLocales);
 
-        // Add the content locales
+        // append the content locales
         List<Locale> contentLocales = new ArrayList<Locale>();
         if (itemLocales != null) {
             // XMl content or page
@@ -315,6 +320,15 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         }
         document.addContentLocales(contentLocales);
 
+        // append document dependencies if configured
+        if (hasLocaleDependencies()) {
+            CmsDocumentLocaleDependency mainDependency = CmsDocumentLocaleDependency.load(cms, resource);
+            if (mainDependency.getDependencies() != null) {
+                for (CmsDocumentLocaleDependency dep : mainDependency.getDependencies()) {
+                    ((CmsSolrDocument)document).addDocumentDependency(cms, dep);
+                }
+            }
+        }
         return document;
     }
 
@@ -409,5 +423,23 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
             contentLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
         }
         return contentLocales;
+    }
+
+    /**
+     * Returns <code>true</code> if at least one of the index sources uses a VFS indexer that is able
+     * to index locale dependent resources.<p>
+     * 
+     * TODO This should be improved somehow
+     * 
+     * @return <code>true</code> if this field configuration should resolve locale dependencies
+     */
+    private boolean hasLocaleDependencies() {
+
+        for (CmsSearchIndexSource source : getIndex().getSources()) {
+            if (source.getIndexer().isLocaleDependenciesEnable()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

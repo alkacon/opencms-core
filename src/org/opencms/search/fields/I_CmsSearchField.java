@@ -47,6 +47,9 @@ public interface I_CmsSearchField extends Serializable {
     /** Th default boost factor (1.0), used in case no boost has been set for a field. */
     public static final float BOOST_DEFAULT = 1.0f;
 
+    /** The JSON's representation of the dependent documents. */
+    public static final String FIELD_ = "languageVariant";
+
     /** Name of the field that contains the (optional) category of the document (hardcoded). */
     public static final String FIELD_CATEGORY = "category";
 
@@ -98,6 +101,9 @@ public interface I_CmsSearchField extends Serializable {
     /** Name of the field that usually contains the value of the "Keywords" property of the document (optional). */
     public static final String FIELD_KEYWORDS = "keywords";
 
+    /** The JSON's representation of the dependent documents. */
+    public static final String FIELD_LOCALIZED_ATTACHMENT = "localizedAttachment";
+
     /** 
      * Name of the field that usually combines all document "meta" information, 
      * that is the values of the "Title", "Keywords" and "Description" properties (optional).
@@ -127,6 +133,9 @@ public interface I_CmsSearchField extends Serializable {
 
     /** The name of the score field. */
     public static final String FIELD_SCORE = "score";
+
+    /** The JSON's representation of the dependent documents. */
+    public static final String FIELD_SIMPE_ATTACHMENT = "simpleAttachment";
 
     /** Name of the field that contains the file name suffix of the resource. */
     public static final String FIELD_SUFFIX = "suffix";

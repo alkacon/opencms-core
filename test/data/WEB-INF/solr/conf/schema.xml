@@ -223,21 +223,22 @@
  </types>
 
  <fields>
-   <field name="id"                  type="uuid"         indexed="true"  stored="true"  default="NEW" /> <!-- Unique indetifier. -->
-   <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
+   <field name="id"                  type="uuid"         indexed="true"  stored="true" default="NEW" /> <!-- Unique indetifier. -->
+   <field name="path"                type="string"       indexed="true"  stored="true" required="true" />
    <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="true" required="true" /><!-- is copied -->
    <field name="parent-folders"      type="string"       indexed="true"  stored="true" required="true" multiValued="true" />
-   <field name="type"                type="string"       indexed="true"  stored="true"  required="true" />
-   <field name="res_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
-   <field name="con_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
-   <field name="contentdate"         type="date"         indexed="true"  stored="true"  required="true" />
-   <field name="created"             type="date"         indexed="true"  stored="true"  required="true" />
-   <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />
-   <field name="expired"             type="date"         indexed="true"  stored="true"  />
-   <field name="relased"             type="date"         indexed="true"  stored="true"  />
+   <field name="type"                type="string"       indexed="true"  stored="true" required="true" />
+   <field name="suffix"              type="string"       indexed="true"  stored="true" />
+   <field name="res_locales"         type="string"       indexed="true"  stored="true" required="true" multiValued="true" />
+   <field name="con_locales"         type="string"       indexed="true"  stored="true" required="true" multiValued="true" />
+   <field name="contentdate"         type="date"         indexed="true"  stored="true" required="true" />
+   <field name="created"             type="date"         indexed="true"  stored="true" required="true" />
+   <field name="lastmodified"        type="date"         indexed="true"  stored="true" required="true" />
+   <field name="expired"             type="date"         indexed="true"  stored="true" />
+   <field name="relased"             type="date"         indexed="true"  stored="true" />
    <field name="content"             type="text_general" indexed="true"  stored="true" multiValued="true" compressed="true" />
-   <field name="contentblob"         type="binary"       indexed="false" stored="true"  compressed="true" />
-   <field name="category"            type="text_general" indexed="true"  stored="true"  multiValued="true" />
+   <field name="contentblob"         type="binary"       indexed="false" stored="true" compressed="true" />
+   <field name="category"            type="text_general" indexed="true"  stored="true" multiValued="true" />
    <field name="category_exact"      type="string"       indexed="true"  stored="true" multiValued="true" termVectors="true" /><!-- is copied -->
    <field name="text"                type="text_general" indexed="true"  stored="true" multiValued="true"/><!-- Catchall for general text fields -->
    <field name="text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
@@ -248,6 +249,10 @@
    <field name="text_hu"             type="text_hu"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
    <field name="text_it"             type="text_it"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
 
+   <field name="simpleAttachment"    type="string"       indexed="true"  stored="true" multiValued="true" />
+   <field name="localizedAttachment" type="string"       indexed="true"  stored="true" multiValued="true" />
+   <field name="languageVariant"     type="string"       indexed="true"  stored="true" multiValued="true" />
+   
    <!-- For test cases only -->
    <field name="test_text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
    <field name="test_text_de"             type="text_de"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->

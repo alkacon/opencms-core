@@ -31,11 +31,13 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.documents.CmsDocumentLocaleDependency;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsUUID;
 
@@ -137,6 +139,17 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         if (analyzed) {
             m_doc.addField(name + I_CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX, dateValue);
         }
+    }
+
+    /**
+     * Adds the given document dependency to this document.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param dep the dependency
+     */
+    public void addDocumentDependency(CmsObject cms, CmsDocumentLocaleDependency dep) {
+
+        m_doc.addField(dep.getType().toString(), dep.toJSON(cms, true).toString());
     }
 
     /**
