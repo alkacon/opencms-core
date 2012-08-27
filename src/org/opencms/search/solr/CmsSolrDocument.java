@@ -213,6 +213,14 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * @see org.opencms.search.I_CmsSearchDocument#addSuffixField(java.lang.String)
+     */
+    public void addSuffixField(String suffix) {
+
+        m_doc.addField(I_CmsSearchField.FIELD_SUFFIX, suffix);
+    }
+
+    /**
      * @see org.opencms.search.I_CmsSearchDocument#addTypeField(java.lang.String)
      */
     public void addTypeField(String type) {

@@ -74,6 +74,9 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
     /** The list of configured {@link I_CmsSearchField} instances. */
     private List<I_CmsSearchField> m_fields;
 
+    /** The current index. */
+    private A_CmsSearchIndex m_index;
+
     /** The name of the configuration. */
     private String m_name;
 
@@ -185,6 +188,8 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
         A_CmsSearchIndex index,
         I_CmsExtractionResult extraction) throws CmsException {
 
+        m_index = index;
+
         I_CmsSearchDocument document = createEmptyDocument(resource);
 
         List<CmsProperty> propertiesSearched = cms.readPropertyObjects(resource, true);
@@ -266,6 +271,16 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
     }
 
     /**
+     * Returns the index.<p>
+     *
+     * @return the index
+     */
+    public A_CmsSearchIndex getIndex() {
+
+        return m_index;
+    }
+
+    /**
      * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#getName()
      */
     public String getName() {
@@ -291,34 +306,21 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
     }
 
     /**
+     * Sets the index.<p>
+     *
+     * @param index the index to set
+     */
+    public void setIndex(A_CmsSearchIndex index) {
+
+        m_index = index;
+    }
+
+    /**
      * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#setName(java.lang.String)
      */
     public void setName(String name) {
 
         m_name = name;
-    }
-
-    /**
-     * Appends all direct properties, that are not empty or white space only to the document.<p>
-     *  
-     * @param document the document to extend
-     * @param cms the OpenCms context used for building the search index
-     * @param resource the resource that is indexed
-     * @param extraction the plain text extraction result from the resource
-     * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
-     * @return the document extended by resource category information
-     */
-    protected I_CmsSearchDocument appendProperties(
-        I_CmsSearchDocument document,
-        CmsObject cms,
-        CmsResource resource,
-        I_CmsExtractionResult extraction,
-        List<CmsProperty> properties,
-        List<CmsProperty> propertiesSearched) {
-
-        return document;
     }
 
     /**
@@ -537,6 +539,29 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
     }
 
     /**
+     * Appends all direct properties, that are not empty or white space only to the document.<p>
+     *  
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extraction the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by resource category information
+     */
+    protected I_CmsSearchDocument appendProperties(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extraction,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        return document;
+    }
+
+    /**
      * Extends the given document by a field that contains the resource type name.<p>
      * 
      * @param document the document to extend
@@ -558,12 +583,20 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) throws CmsLoaderException {
 
+        // add the resource type to the document
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
         String typeName = "VFS";
         if (type != null) {
             typeName = type.getTypeName();
         }
         document.addTypeField(typeName);
+
+        // add the file name suffix to the document
+        String resName = CmsResource.getName(resource.getRootPath());
+        int index = resName.lastIndexOf('.');
+        if (index != -1) {
+            document.addSuffixField(resName.substring(index));
+        }
 
         return document;
     }

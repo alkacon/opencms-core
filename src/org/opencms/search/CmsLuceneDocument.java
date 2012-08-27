@@ -213,6 +213,14 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * @see org.opencms.search.I_CmsSearchDocument#addSuffixField(java.lang.String)
+     */
+    public void addSuffixField(String suffix) {
+
+        m_doc.add(new Field(I_CmsSearchField.FIELD_SUFFIX, suffix, Field.Store.YES, Field.Index.NOT_ANALYZED));
+    }
+
+    /**
      * @see org.opencms.search.I_CmsSearchDocument#addTypeField(java.lang.String)
      */
     public void addTypeField(String typeName) {

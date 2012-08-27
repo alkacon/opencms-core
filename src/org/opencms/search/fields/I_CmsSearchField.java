@@ -56,6 +56,9 @@ public interface I_CmsSearchField extends Serializable {
     /** Name of the field that contains the complete extracted content of the document as serialized object (hardcoded). */
     public static final String FIELD_CONTENT_BLOB = "contentblob";
 
+    /** Name of the field that contains the locale of the document. */
+    public static final String FIELD_CONTENT_LOCALES = "con_locales";
+
     /** Name of the field that contains the document content date (hardcoded). */
     public static final String FIELD_DATE_CONTENT = "contentdate";
 
@@ -122,11 +125,11 @@ public interface I_CmsSearchField extends Serializable {
     /** Name of the field that contains the resource locales of the document. */
     public static final String FIELD_RESOURCE_LOCALES = "res_locales";
 
-    /** Name of the field that contains the locale of the document. */
-    public static final String FIELD_CONTENT_LOCALES = "con_locales";
-
     /** The name of the score field. */
     public static final String FIELD_SCORE = "score";
+
+    /** Name of the field that contains the file name suffix of the resource. */
+    public static final String FIELD_SUFFIX = "suffix";
 
     /** 
      * Name of the field that usually contains the value of the "Title" property of the document 
