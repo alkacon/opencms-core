@@ -48,8 +48,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.HashMultimap;
 
 /**
  * Validates relations of resources in the OpenCms VFS.<p>
@@ -249,20 +252,29 @@ public class CmsRelationSystemValidator {
 
     /**
      * Checks a link to a resource which has been deleted.<p>
+     * @param relation 
      * 
      * @param link the URI of the resource which has a link to the deleted resource  
      * @param fileLookup a lookup table of files to be published  
+     * @param relationTargets 
      * 
      * @return true if the resource which has a link to the deleted resource is also going to be deleted  
      */
-    protected boolean checkLinkForDeletedLinkTarget(String link, Map<String, CmsResource> fileLookup) {
+    protected boolean checkLinkForDeletedLinkTarget(
+        CmsRelation relation,
+        String link,
+        Map<String, CmsResource> fileLookup,
+        HashMultimap<String, String> relationTargets) {
 
         boolean isValidLink = false;
         // since we are going to delete the resource
         // check if the linked resource is also to be deleted
         if (fileLookup.containsKey(link)) {
             CmsResource offlineResource = fileLookup.get(link);
-            isValidLink = offlineResource.getState().isDeleted();
+            Set<String> relationTargetsForLink = relationTargets.get(link);
+            boolean hasNoRelations = !relationTargetsForLink.contains(relation.getTargetPath())
+                && !relationTargetsForLink.contains(relation.getTargetId().toString());
+            isValidLink = offlineResource.getState().isDeleted() || hasNoRelations;
         }
         return isValidLink;
     }
@@ -339,66 +351,6 @@ public class CmsRelationSystemValidator {
     }
 
     /**
-     * Checks whether publishing will not invalidate a link.<p>
-     * 
-     * @param dbc the current dbc
-     * @param resource the target resource of the link if it is going to be deleted, else the source of the link 
-     * @param relation the relation which should be checked 
-     * @param link the link URI 
-     * @param project the current project 
-     * @param fileLookup a lookup table which contains the files which are going to be published 
-     * 
-     * @return true if there will be no invalid link after publishing 
-     */
-    protected boolean checkLinkValid(
-        CmsDbContext dbc,
-        CmsResource resource,
-        CmsRelation relation,
-        String link,
-        CmsProject project,
-        Map<String, CmsResource> fileLookup) {
-
-        if (resource.getState().isDeleted()) {
-            return checkLinkForDeletedLinkTarget(link, fileLookup);
-        } else {
-            return checkLinkForNewOrChangedLinkSource(dbc, resource, relation, link, project, fileLookup);
-        }
-    }
-
-    /**
-     * Returns the list of link relations for a resource.<p>
-     * 
-     * If the resource is going to be deleted, the ingoing relations will be collected, else the outgoing relations.<p>
-     * 
-     * @param dbc the current database context 
-     * @param project the project to use 
-     * @param resource the resource for which the relations should be collected 
-     * 
-     * @return a list of relations 
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    protected List<CmsRelation> getLinkRelations(CmsDbContext dbc, CmsProject project, CmsResource resource)
-    throws CmsException {
-
-        List<CmsRelation> relations;
-        if (!resource.getState().isDeleted()) {
-            // search the target of links in the current (offline) project
-            relations = m_driverManager.getRelationsForResource(dbc, resource, CmsRelationFilter.TARGETS);
-        } else {
-            // search the source of links in the online project
-            CmsProject currentProject = dbc.currentProject();
-            dbc.getRequestContext().setCurrentProject(project);
-            try {
-                relations = m_driverManager.getRelationsForResource(dbc, resource, CmsRelationFilter.SOURCES);
-            } finally {
-                dbc.getRequestContext().setCurrentProject(currentProject);
-            }
-        }
-        return relations;
-    }
-
-    /**
      * Validates the links for the specified resource.<p>
      * 
      * @param dbc the database context
@@ -421,9 +373,28 @@ public class CmsRelationSystemValidator {
         Map<String, Boolean> validatedLinks = new HashMap<String, Boolean>();
 
         // get the relations
-        List<CmsRelation> relations = null;
+        List<CmsRelation> incomingRelationsOnline = new ArrayList<CmsRelation>();
+        List<CmsRelation> outgoingRelationsOffline = new ArrayList<CmsRelation>();
         try {
-            relations = getLinkRelations(dbc, project, resource);
+            if (!resource.getState().isDeleted()) {
+                // search the target of links in the current (offline) project
+                outgoingRelationsOffline = m_driverManager.getRelationsForResource(
+                    dbc,
+                    resource,
+                    CmsRelationFilter.TARGETS);
+            } else {
+                // search the source of links in the online project
+                CmsProject currentProject = dbc.currentProject();
+                dbc.getRequestContext().setCurrentProject(project);
+                try {
+                    incomingRelationsOnline = m_driverManager.getRelationsForResource(
+                        dbc,
+                        resource,
+                        CmsRelationFilter.SOURCES);
+                } finally {
+                    dbc.getRequestContext().setCurrentProject(currentProject);
+                }
+            }
         } catch (CmsException e) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resource), e);
             if (report != null) {
@@ -434,6 +405,17 @@ public class CmsRelationSystemValidator {
             return brokenRelations;
         }
 
+        List<CmsRelation> relations = new ArrayList<CmsRelation>();
+        relations.addAll(incomingRelationsOnline);
+        relations.addAll(outgoingRelationsOffline);
+        HashMultimap<String, String> outgoingRelationTargets = HashMultimap.create();
+        for (CmsRelation outRelation : outgoingRelationsOffline) {
+            String sourcePath = outRelation.getSourcePath();
+            String targetId = outRelation.getTargetId().toString();
+            String targetPath = outRelation.getTargetPath();
+            outgoingRelationTargets.put(sourcePath, targetId);
+            outgoingRelationTargets.put(sourcePath, targetPath);
+        }
         // check the relations
         boolean first = true;
         Iterator<CmsRelation> itRelations = relations.iterator();
@@ -457,7 +439,14 @@ public class CmsRelationSystemValidator {
                 }
                 continue;
             }
-            boolean isValidLink = checkLinkValid(dbc, resource, relation, link, project, fileLookup);
+            boolean result;
+            if (resource.getState().isDeleted()) {
+                result = checkLinkForDeletedLinkTarget(relation, link, fileLookup, outgoingRelationTargets);
+            } else {
+                result = checkLinkForNewOrChangedLinkSource(dbc, resource, relation, link, project, fileLookup);
+
+            }
+            boolean isValidLink = result;
             if (!isValidLink) {
                 if (first) {
                     if (report != null) {
