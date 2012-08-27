@@ -238,3 +238,7 @@
 @sprite div.tableGalleryIcon, span.tableGalleryIcon{
 	gwt-image: "tableGalleryIcon";
 }
+
+@sprite .infoBigIcon {
+	gwt-image: "informationBigImage";
+}

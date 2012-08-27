@@ -64,7 +64,8 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
          */
         public static String messageCancel() {
 
-            return org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_CANCEL_0);
+            return org.opencms.ade.containerpage.client.Messages.get().key(
+                org.opencms.ade.containerpage.client.Messages.GUI_KEEP_ELEMENT_0);
 
         }
 

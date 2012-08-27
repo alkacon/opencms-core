@@ -220,10 +220,46 @@ public interface I_CmsImageBundle extends ClientBundle {
         String deleteIcon();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String directoryIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String downloadGalleryIcon();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */
         String editIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String htmlGalleryIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String imageSearchIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String infoBigIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String linkGalleryIcon();
 
         /** Access method.<p>
          *
@@ -293,6 +329,12 @@ public interface I_CmsImageBundle extends ClientBundle {
         String searchIcon();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String tableGalleryIcon();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */
@@ -327,42 +369,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String warningIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String directoryIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String imageSearchIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String downloadGalleryIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String linkGalleryIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String htmlGalleryIcon();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String tableGalleryIcon();
     }
 
     /** The bundle instance. */
@@ -440,6 +446,22 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource dialogCloseImage();
 
     /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/filetypeNavlevelSmall.png")
+    ImageResource directorySmallImage();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/downloadGallery.png")
+    ImageResource downloadGalleryIcon();
+
+    /**
      * Image resource accessor.<p>
      *
      * @return an image resource
@@ -456,11 +478,27 @@ public interface I_CmsImageBundle extends ClientBundle {
     ImageResource groupImage();
 
     /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/htmlGallery.png")
+    ImageResource htmlGalleryIcon();
+
+    /**
      * Accessor for the icon resource bundle.<p>
      *
      * @return the icon resource bundle
      */
     I_CmsIconBundle icons();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/imageSearchIcon.png")
+    ImageResource imageSearchIcon();
 
     /**
      * Image resource accessor.<p>
@@ -479,6 +517,14 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Source("images/invalidElement.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource invalidElement();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/linkGallery.png")
+    ImageResource linkGalleryIcon();
 
     /**
      * Access method.<p>
@@ -607,6 +653,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      *
      * @return the image resource
      */
+    @Source("images/icons/tableGallery.png")
+    ImageResource tableGalleryIcon();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
     @Source("images/triangleDownImage.png")
     ImageResource triangleDownImage();
 
@@ -650,52 +704,4 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/warningSmallImage.png")
     ImageResource warningSmallImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/filetypeNavlevelSmall.png")
-    ImageResource directorySmallImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/imageSearchIcon.png")
-    ImageResource imageSearchIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/downloadGallery.png")
-    ImageResource downloadGalleryIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/linkGallery.png")
-    ImageResource linkGalleryIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/htmlGallery.png")
-    ImageResource htmlGalleryIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/tableGallery.png")
-    ImageResource tableGalleryIcon();
 }
