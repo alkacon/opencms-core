@@ -699,7 +699,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String typeName,
         Map<String, I_Type> registeredTypes) {
 
-        Entity newEntity = new Entity(entityId + parentPath, typeName);
+        String newEntityId = entityId + (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentPath) ? "/" + parentPath : "");
+        Entity newEntity = new Entity(newEntityId, typeName);
         Entity result = newEntity;
 
         @SuppressWarnings("unchecked")
