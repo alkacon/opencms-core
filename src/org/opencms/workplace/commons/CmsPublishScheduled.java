@@ -30,7 +30,6 @@ package org.opencms.workplace.commons;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsContextInfo;
@@ -265,8 +264,9 @@ public class CmsPublishScheduled extends CmsDialog {
         // the publish scheduled date in project name
         String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, getLocale());
         // the resource name to publish scheduled
-        String resName = CmsResource.getName(resource);
-        String projectName = key(Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2, new Object[] {resName, dateTime});
+        String projectName = key(Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2, new Object[] {
+            getCms().getRequestContext().addSiteRoot(resource),
+            dateTime});
         // the HTML encoding for slashes is necessary because of the slashes in english date time format
         // in project names slahes are not allowed, because these are separators for organizaional units
         projectName = projectName.replace("/", "&#47;");
@@ -293,7 +293,9 @@ public class CmsPublishScheduled extends CmsDialog {
         // prove is current lock from current but not in current project
         if ((lock != null)
             && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
-            && !lock.isOwnedInProjectBy(cms.getRequestContext().getCurrentUser(), cms.getRequestContext().getCurrentProject())) {
+            && !lock.isOwnedInProjectBy(
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject())) {
             // file is locked by current user but not in current project
             // change the lock from this file
             cms.changeLock(resource);
