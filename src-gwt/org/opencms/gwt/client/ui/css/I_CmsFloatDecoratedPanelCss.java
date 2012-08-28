@@ -46,6 +46,13 @@ public interface I_CmsFloatDecoratedPanelCss extends CssResource {
     String decorationBox();
 
     /**
+     * CSS class accessor.<P>
+     * 
+     * @return a CSS class
+     */
+    String decorationBoxSmall();
+
+    /**
      * CSS class accessor.<p>
      * 
      * @return a CSS class

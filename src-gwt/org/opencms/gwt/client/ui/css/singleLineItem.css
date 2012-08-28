@@ -2,6 +2,8 @@
 
 .primary, .floatBox, .floatDecoratedPanel {}
 
+.decorationBoxSmall{}
+
 li.singleLineItem div.decorationBox {
 	margin-top: 0px;
 }

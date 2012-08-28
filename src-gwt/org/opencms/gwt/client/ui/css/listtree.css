@@ -12,8 +12,8 @@
 }
 
 .listTreeItemOpener {
-	margin-left: 2px;
-	margin-right: 2px;
+	margin-left: 1px;
+	margin-right: 3px;
 	cursor: pointer;
 	outline: none;
 }
@@ -58,7 +58,7 @@ line-height:12px;
 
 .listTreeItemChildren {
 	list-style-type: none;
-	margin:0px 0px 0px 25px;
+	margin:0px 0px 0px 19px;
 	padding-left: 0px;
 }
 

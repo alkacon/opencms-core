@@ -31,8 +31,8 @@ import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.category.CmsDataValue;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
@@ -389,7 +389,6 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             categoryBean.getTitle(),
             categoryBean.getSubTitle(),
             categoryBean.getLockIconTitle());
-        categoryTreeItem.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryItem());
         categoryTreeItem.setTitle(categoryBean.getSubTitle());
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());

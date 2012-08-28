@@ -43,6 +43,20 @@ public interface I_CmsInputCss extends CssResource {
      */
     String alignBottom();
 
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String categoryItem();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String categoryScrollPanel();
+
     /** Access method.<p>
      * 
      * @return the CSS class name
@@ -82,7 +96,21 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String colorPicker();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String comboBoxOpener();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
+    String dataValue();
 
     /**
      * Css class reader.<p>
@@ -174,13 +202,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     String inputBoxFaider();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String vfsInputBoxFaider();
 
     /**
      * Css class reader.<p>
@@ -421,13 +442,6 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
-    String colorPicker();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
     String transparentSelectBox();
 
     /**
@@ -435,12 +449,12 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
-    String weakText();
+    String vfsInputBoxFaider();
 
     /**
      * Css class reader.<p>
      * 
      * @return the css class
      */
-    String categoryItem();
+    String weakText();
 }

@@ -63,13 +63,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsListItem extends Composite implements I_CmsListItem {
 
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    protected interface I_CmsSimpleListItemUiBinder extends UiBinder<CmsFlowPanel, CmsListItem> {
-        // GWT interface, nothing to do here
-    }
-
     /** The move handle. */
     public class MoveHandle extends CmsPushButton implements I_CmsDragHandle {
 
@@ -97,6 +90,13 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             return m_draggable;
         }
 
+    }
+
+    /**
+     * @see com.google.gwt.uibinder.client.UiBinder
+     */
+    protected interface I_CmsSimpleListItemUiBinder extends UiBinder<CmsFlowPanel, CmsListItem> {
+        // GWT interface, nothing to do here
     }
 
     /** The width of a checkbox. */
@@ -425,6 +425,18 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             parentList.changeId(this, id);
         }
         m_id = id;
+    }
+
+    /**
+     * Sets the decoration style to fit with the small view of list items.<p>
+     * 
+     * @param smallView true if the decoration has to fit with the small view of list items
+     */
+    public void setSmallView(boolean smallView) {
+
+        if (smallView) {
+            m_decoratedPanel.addDecorationBoxStyle(I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBoxSmall());
+        }
     }
 
     /**

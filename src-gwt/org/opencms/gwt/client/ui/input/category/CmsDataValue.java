@@ -25,11 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input;
-
-import com.alkacon.geranium.client.ui.I_Truncable;
+package org.opencms.gwt.client.ui.input.category;
 
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Float;
@@ -43,7 +42,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /***/
-public class CmsDataValue extends Composite implements I_Truncable {
+public class CmsDataValue extends Composite {
 
     /***/
     interface MyUiBinder extends UiBinder<Widget, CmsDataValue> {
@@ -77,10 +76,13 @@ public class CmsDataValue extends Composite implements I_Truncable {
      */
     public CmsDataValue(int width, int part, String... parameters) {
 
+        initWidget(uiBinder.createAndBindUi(this));
         m_width = width;
         m_part = part;
         m_parameters = parameters;
         generateDataValue();
+
+        addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().dataValue());
     }
 
     /**
@@ -113,6 +115,35 @@ public class CmsDataValue extends Composite implements I_Truncable {
     }
 
     /**
+     * Returns if the category matches the given filter.<p>
+     * 
+     * @param filter the filter to match
+     * @param param the search value
+     * @return <code>true</code> if the gallery matches the given filter.<p>
+     */
+    public boolean matchesFilter(String filter, int param) {
+
+        filter = filter.toLowerCase();
+        return m_parameters[param].toLowerCase().contains(filter);
+    }
+
+    /**
+     * Returns if the category matches the given filter.<p>
+     * 
+     * @param filter the filter to match
+     * @param priValue the first search value
+     * @param secValue the second search value
+     * 
+     * @return <code>true</code> if the gallery matches the given filter.<p>
+     */
+    public boolean matchesFilter(String filter, int priValue, int secValue) {
+
+        filter = filter.toLowerCase();
+        return m_parameters[priValue].toLowerCase().contains(filter)
+            || m_parameters[secValue].toLowerCase().contains(filter);
+    }
+
+    /**
      * Sets the color.<p>
      * 
      * @param color the color that should be set
@@ -140,11 +171,9 @@ public class CmsDataValue extends Composite implements I_Truncable {
         int width_label = (m_width / m_part);
         int width_tabel = (m_width - 30) - width_label;
         int cell_width = width_tabel / (m_parameters.length - 1);
-        initWidget(uiBinder.createAndBindUi(this));
 
         m_table.getElement().getStyle().setFloat(Float.RIGHT);
         m_table.getElement().getStyle().setWidth(width_tabel, Unit.PX);
-        m_table.getElement().getStyle().setMarginTop(-2, Unit.PX);
 
         m_label.getElement().setAttribute("style", "text-overflow:ellipsis; white-space: nowrap;");
         m_label.getElement().getStyle().setPaddingLeft(2, Unit.PX);
@@ -174,4 +203,5 @@ public class CmsDataValue extends Composite implements I_Truncable {
 
         }
     }
+
 }

@@ -1,8 +1,11 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmi="urn:import:org.opencms.gwt.client.ui.input">
+	
 	<ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_tab" styleName="{resources.tabbedPanelCss.tabPanel}">
 		<g:FlowPanel ui:field="m_options" addStyleNames="{galleryResources.galleryDialogCss.tabOptions}" />
