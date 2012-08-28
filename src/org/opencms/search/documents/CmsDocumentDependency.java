@@ -60,11 +60,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides the dependency information about one search result document, 
- * used to generate the list of LGT document search results.<p> 
+ * used to generate the list of document search results.<p> 
  * 
- * @author Alexander Kandzior
- * 
- * @version $Revision: 1.10 $
+ * @since 8.5.0
  */
 public final class CmsDocumentDependency {
 
