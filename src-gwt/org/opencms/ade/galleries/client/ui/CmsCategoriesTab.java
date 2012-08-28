@@ -33,14 +33,12 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
-import org.opencms.gwt.client.ui.input.CmsDataValue;
+import org.opencms.gwt.client.ui.input.category.CmsDataValue;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsIconUtil;
-import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -237,6 +235,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
                 // set the category list item and add to list 
                 CmsTreeItem listItem = new CmsTreeItem(false, checkBox, dataValue);
+                listItem.setSmallView(true);
                 listItem.setId(categoryBean.getPath());
                 addWidgetToList(listItem);
             }
@@ -337,12 +336,6 @@ public class CmsCategoriesTab extends A_CmsListTab {
      */
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
-        CmsListInfoBean categoryBean = new CmsListInfoBean(
-            category.getTitle(),
-            CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
-            ? category.getDescription()
-            : category.getPath(),
-            null);
         m_categories.put(category.getPath(), category);
         // set the list item widget
         CmsDataValue dataValue = new CmsDataValue(
@@ -352,7 +345,6 @@ public class CmsCategoriesTab extends A_CmsListTab {
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()
             : category.getPath());
-        dataValue.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryItem());
         // the checkbox
         CmsCheckBox checkBox = new CmsCheckBox();
         if ((selectedCategories != null) && selectedCategories.contains(category.getPath())) {
@@ -364,6 +356,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         dataValue.addButton(createSelectButton(selectionHandler));
         // set the category tree item and add to list 
         CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, dataValue);
+        treeItem.setSmallView(true);
         treeItem.setId(category.getPath());
         return treeItem;
     }
