@@ -146,7 +146,25 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsMessages messages,
         CmsResource resource) {
 
-        return super.getConfiguration();
+        String result = super.getConfiguration();
+        if (!result.contains(CONFIGURATION_CATEGORY + "=")) {
+            result = CONFIGURATION_CATEGORY + "=" + result;
+        }
+        CmsCategoryService catService = CmsCategoryService.getInstance();
+        List<String> categoriesList = catService.getCategoryRepositories(cms, resource.getRootPath());
+        Iterator<String> it = categoriesList.iterator();
+        String catList = "|CategoryList=";
+        int i = 0;
+        while (it.hasNext()) {
+            if (i > 0) {
+                catList += ",";
+            }
+            String rootPath = it.next();
+            catList += rootPath;
+            i++;
+        }
+
+        return result + catList;
     }
 
     /**
