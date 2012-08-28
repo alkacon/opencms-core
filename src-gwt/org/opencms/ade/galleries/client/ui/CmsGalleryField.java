@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -202,7 +203,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
      */
     public native void parseConfiguration(String configuration)/*-{
         var config;
-        if (JSON) {
+        if (typeof JSON != 'undefined') {
             config = JSON.parse(configuration);
         } else {
             config = eval("(" + configuration + ")");
@@ -391,7 +392,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
 
         setFaded((m_textbox.getValue().length() * 6.88) > m_textbox.getOffsetWidth());
         setTitle(m_textbox.getValue());
-        m_textbox.setCursorPos(0);
+        CmsDomUtil.setCaretPosition(m_textbox.getElement(), 0);
     }
 
     /**

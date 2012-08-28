@@ -1652,6 +1652,21 @@ public final class CmsDomUtil {
     }-*/;
 
     /**
+     * Sets the caret position within the given element without setting focus to the element.<p>
+     * Will currently not work in IE.<p>
+     * 
+     * @param elem the element
+     * @param position the caret position
+     */
+    public static native void setCaretPosition(Element elem, int position)/*-{
+        // would only work in firefox, all other browsers set focus to the given element
+        
+//        if (typeof elem.setSelectionRange != 'undefined') {
+//            elem.setSelectionRange(position, position);
+//        }
+    }-*/;
+
+    /**
      * Sets a CSS class to show or hide a given overlay. Will not add an overlay to the element.<p>
      * 
      * @param element the parent element of the overlay

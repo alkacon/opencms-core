@@ -32,6 +32,7 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
@@ -481,7 +482,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
             public void onBlur(BlurEvent event) {
 
                 // on focus lost add the fader to the textbox and set cursor to the text beginning.
-                m_openerWidget.setCursorPos(0);
+                CmsDomUtil.setCaretPosition(m_openerWidget.getElement(), 0);
                 m_panel.add(m_faidpanel);
                 m_openerWidget.getElement().setTitle(m_openerWidget.getText());
 

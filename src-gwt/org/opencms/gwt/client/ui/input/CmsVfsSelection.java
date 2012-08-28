@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsLinkBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -269,7 +270,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
                     m_textBoxContainer.add(m_faidpanel);
                     setTitle(m_textBox.getValue());
                 }
-                m_textBox.setCursorPos(0);
+                CmsDomUtil.setCaretPosition(m_textBox.getElement(), 0);
             }
         });
 
