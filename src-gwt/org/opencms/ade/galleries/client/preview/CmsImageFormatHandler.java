@@ -600,6 +600,9 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                             m_formatNames = CmsPreviewUtil.getFormatNames();
                         }
                     }
+                } else if (m_useFormats && (m_formatValues == null)) {
+                    m_formatNames = DEFAULT_FORMAT_NAMES;
+                    m_formatValues = DEFAULT_FORMAT_VALUES;
                 }
                 break;
             case ade:
