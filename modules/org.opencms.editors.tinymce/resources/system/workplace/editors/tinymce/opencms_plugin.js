@@ -123,13 +123,23 @@ function getDownloadSelectionPath() {
  * 
  * @return <code>String</code> the dialog URL
  */ 
+/**
+ * Returns the path to the gallery dialog with some request parameters for the dialog.<p>
+ * 
+ * @return <code>String</code> the dialog URL
+ */ 
 function createGalleryDialogUrl(path, typesParam, integrator) {
    var resParam = "";
-    var editFrame=findFrame(self, 'edit');
-   if (editFrame.editedResource != null) {
-      resParam = "&resource=" + editFrame.editedResource;
-   } else {
-      resParam = "&resource=" + editFrame.editform.editedResource;
+   var editFrame=window;
+   if (typeof _editResource!='undefined'){
+       resParam="&resource=" +_editResource;
+   }else{
+       editFrame=findFrame(self, 'edit');
+       if (editFrame.editedResource != null) {
+          resParam = "&resource=" + editFrame.editedResource;
+       } else {
+          resParam = "&resource=" + editFrame.editform.editedResource;
+       }
    }
    if (!integrator) {
       integrator = "/system/workplace/editors/tinymce/integrator.js";
@@ -140,10 +150,14 @@ function createGalleryDialogUrl(path, typesParam, integrator) {
    //debugParam="&gwt.codesvr=localhost:9997";
    // set the content locale
    var elementLanguage="${locale}";
-   try{
-       elementLanguage=editFrame.editform.document.forms['EDITOR']['elementlanguage'].value;
-   }catch(err){
-       // nothing to do
+   if (typeof _editLanguage!='undefined'){
+       elementLanguage=_editLanguage;
+   } else{
+       try{
+           elementLanguage=editFrame.editform.document.forms['EDITOR']['elementlanguage'].value;
+       }catch(err){
+           // nothing to do
+       }
    }
    var searchParam = "&types="+typesParam+"&currentelement="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
    return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?dialogmode=editor" + searchParam + resParam + integratorParam + debugParam;

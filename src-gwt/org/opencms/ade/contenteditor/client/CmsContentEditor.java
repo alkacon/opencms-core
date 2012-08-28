@@ -94,6 +94,9 @@ public final class CmsContentEditor {
     /** The editor base. */
     protected CmsEditorBase m_editor;
 
+    /** The on close call back. */
+    protected Command m_onClose;
+
     /** The edit tool-bar. */
     protected CmsToolbar m_toolbar;
 
@@ -138,9 +141,6 @@ public final class CmsContentEditor {
 
     /** The locale select box. */
     private CmsSelectBox m_localeSelect;
-
-    /** The on close call back. */
-    protected Command m_onClose;
 
     /** The open form button. */
     private CmsPushButton m_openFormButton;
@@ -275,6 +275,47 @@ public final class CmsContentEditor {
     }
 
     /**
+     * Closes the editor.<p>
+     */
+    protected void clearEditor() {
+
+        if (m_toolbar != null) {
+            m_toolbar.removeFromParent();
+            m_toolbar = null;
+        }
+        m_cancelButton = null;
+        m_localeSelect = null;
+        m_openFormButton = null;
+        m_saveButton = null;
+        m_entityId = null;
+        m_onClose = null;
+        m_locale = null;
+        if (m_basePanel != null) {
+            m_basePanel.removeFromParent();
+            m_basePanel = null;
+        }
+        m_changedEntityIds.clear();
+        m_registeredEntities.clear();
+        m_availableLocales.clear();
+        m_contentLocales.clear();
+        m_deletedEntities.clear();
+        m_title = null;
+        m_sitePath = null;
+        m_resourceTypeName = null;
+        if (m_resizeHandlerRegistration != null) {
+            m_resizeHandlerRegistration.removeHandler();
+            m_resizeHandlerRegistration = null;
+        }
+        if (m_closingHandlerRegistration != null) {
+            m_closingHandlerRegistration.removeHandler();
+            m_closingHandlerRegistration = null;
+        }
+        if (m_isStandAlone) {
+            closeEditorWidow();
+        }
+    }
+
+    /**
      * Adjusts the base panel height to the current window height.<p>
      */
     void adjustBasePanelHeight() {
@@ -351,18 +392,19 @@ public final class CmsContentEditor {
      * Initializes the editor.<p>
      * 
      * @param contentDefinition the content definition
-     * @param formParnet the inline form parent panel, used for inline editing only
+     * @param formParent the inline form parent panel, used for inline editing only
      * @param inline <code>true</code> to render the editor for inline editing
      */
-    void initEditor(CmsContentDefinition contentDefinition, I_InlineFormParent formParnet, boolean inline) {
+    void initEditor(CmsContentDefinition contentDefinition, I_InlineFormParent formParent, boolean inline) {
 
         m_locale = contentDefinition.getLocale();
         m_entityId = contentDefinition.getEntityId();
         initClosingHandler();
         setContentDefinition(contentDefinition);
         initToolbar();
-        if (inline && (formParnet != null)) {
-            m_editor.renderInlineEntity(m_entityId, formParnet);
+        if (inline && (formParent != null)) {
+            setNativeResourceInfo(m_sitePath, m_locale);
+            m_editor.renderInlineEntity(m_entityId, formParent);
         } else {
             initFormPanel();
             renderFormContent();
@@ -407,6 +449,7 @@ public final class CmsContentEditor {
     void renderFormContent() {
 
         initLocaleSelect();
+        setNativeResourceInfo(m_sitePath, m_locale);
         CmsInfoHeader header = new CmsInfoHeader(
             m_title,
             null,
@@ -516,47 +559,6 @@ public final class CmsContentEditor {
 
         if (m_entityId != null) {
             CmsCoreProvider.get().unlock(CmsContentDefinition.entityIdToUuid(m_entityId));
-        }
-    }
-
-    /**
-     * Closes the editor.<p>
-     */
-    protected void clearEditor() {
-
-        if (m_toolbar != null) {
-            m_toolbar.removeFromParent();
-            m_toolbar = null;
-        }
-        m_cancelButton = null;
-        m_localeSelect = null;
-        m_openFormButton = null;
-        m_saveButton = null;
-        m_entityId = null;
-        m_onClose = null;
-        m_locale = null;
-        if (m_basePanel != null) {
-            m_basePanel.removeFromParent();
-            m_basePanel = null;
-        }
-        m_changedEntityIds.clear();
-        m_registeredEntities.clear();
-        m_availableLocales.clear();
-        m_contentLocales.clear();
-        m_deletedEntities.clear();
-        m_title = null;
-        m_sitePath = null;
-        m_resourceTypeName = null;
-        if (m_resizeHandlerRegistration != null) {
-            m_resizeHandlerRegistration.removeHandler();
-            m_resizeHandlerRegistration = null;
-        }
-        if (m_closingHandlerRegistration != null) {
-            m_closingHandlerRegistration.removeHandler();
-            m_closingHandlerRegistration = null;
-        }
-        if (m_isStandAlone) {
-            closeEditorWidow();
         }
     }
 
@@ -738,6 +740,17 @@ public final class CmsContentEditor {
         m_toolbar.addLeft(m_openFormButton);
         RootPanel.get().add(m_toolbar);
     }
+
+    /**
+     * Sets the resource info to native window context variables.<p>
+     * 
+     * @param sitePath the site path
+     * @param locale the content locale
+     */
+    private native void setNativeResourceInfo(String sitePath, String locale)/*-{
+        $wnd._editResource = sitePath;
+        $wnd._editLanguage = locale;
+    }-*/;
 
     /**
      * Shows the locked resource error message.<p>
