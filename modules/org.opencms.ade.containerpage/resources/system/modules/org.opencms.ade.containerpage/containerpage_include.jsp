@@ -1,1 +1,2 @@
-<%= new org.opencms.ade.containerpage.CmsContainerpageActionElement(pageContext, request, response).exportAll() %>
+<%@page taglibs="cms" %><%= new org.opencms.ade.containerpage.CmsContainerpageActionElement(pageContext, request, response).exportAll() %>
+<script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
