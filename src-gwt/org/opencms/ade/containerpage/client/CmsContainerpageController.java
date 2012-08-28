@@ -59,7 +59,6 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
-import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -1207,14 +1206,12 @@ public final class CmsContainerpageController {
         if (m_lockStatus == LockStatus.failed) {
             return false;
         }
-        CmsLockInfo lockInfo = CmsCoreProvider.get().lockTempAndCheckModification(
-            CmsCoreProvider.get().getStructureId(),
-            m_data.getDateLastModified());
-        if (lockInfo.couldLock()) {
-            onLockSuccess(lockInfo);
+        String lockError = CmsCoreProvider.get().lockOrReturnError(CmsCoreProvider.get().getStructureId());
+        if (lockError == null) {
+            onLockSuccess();
             return true;
         } else {
-            onLockFail(lockInfo);
+            onLockFail(lockError);
             return false;
         }
     }
@@ -1222,23 +1219,31 @@ public final class CmsContainerpageController {
     /**
      * This method should be called when locking the page has failed.<p>
      * 
-     * @param lockInfo the locking information  
+     * @param lockError the locking information  
      */
-    public void onLockFail(CmsLockInfo lockInfo) {
+    public void onLockFail(String lockError) {
 
         m_lockStatus = LockStatus.failed;
-        m_handler.onLockFail(lockInfo);
+        m_handler.onLockFail(lockError);
     }
 
     /**
      * This method should be called when locking the page has succeeded.<p>
-     * 
-     * @param lockInfo the locking information 
+     *  
      */
-    public void onLockSuccess(CmsLockInfo lockInfo) {
+    public void onLockSuccess() {
 
         assert m_lockStatus == LockStatus.unknown;
         m_lockStatus = LockStatus.locked;
+    }
+
+    /**
+     * Handler which is executed when the window closes.<p>
+     */
+    public void onWindowClose() {
+
+        // causes synchronous RPC call 
+        CmsCoreProvider.get().unlock();
     }
 
     /**
@@ -1472,14 +1477,16 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
-                    setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
-                        org.opencms.gwt.client.Messages.GUI_SAVING_0));
-                    start(500, true);
-                    getContainerpageService().saveContainerpage(
-                        CmsCoreProvider.get().getStructureId(),
-                        getPageContent(),
-                        getLocale(),
-                        this);
+                    if (lockContainerpage()) {
+                        setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
+                            org.opencms.gwt.client.Messages.GUI_SAVING_0));
+                        start(500, true);
+                        getContainerpageService().saveContainerpage(
+                            CmsCoreProvider.get().getStructureId(),
+                            getPageContent(),
+                            getLocale(),
+                            this);
+                    }
                 }
 
                 /**

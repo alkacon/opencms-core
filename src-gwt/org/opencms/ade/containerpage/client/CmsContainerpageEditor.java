@@ -79,6 +79,9 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -438,6 +441,15 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_sitemap.addClickHandler(clickHandler);
         m_toolbar.addRight(m_sitemap);
 
+        Window.addCloseHandler(new CloseHandler<Window>() {
+
+            public void onClose(CloseEvent<Window> event) {
+
+                controller.onWindowClose();
+            }
+
+        });
+
         m_selectionButtonMenu = new CmsSelectionButtonMenu(m_selection, true, m_selection.getElement());
         m_selectionButtonMenu.setWidth(40);
         m_selectionButtonMenu.setHeight(40);
@@ -561,18 +573,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
+      $wnd.__openStacktraceDialog = function(event) {
+         event = (event) ? event : ((window.event) ? window.event : "");
+         var elem = (event.target) ? event.target : event.srcElement;
+         if (elem != null) {
+            var children = elem.getElementsByTagName("span");
+            if (children.length > 0) {
+               var title = children[0].getAttribute("title");
+               var content = children[0].innerHTML;
+               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
             }
-        }
+         }
+      }
     }-*/;
 
 }

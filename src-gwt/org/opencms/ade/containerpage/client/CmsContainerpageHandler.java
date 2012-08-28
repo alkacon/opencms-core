@@ -554,14 +554,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     /**
      * Should be called when locking the container page failed.<p>
      * 
-     * @param lockInfo the locking information  
+     * @param errorMessage the locking information  
      */
-    public void onLockFail(CmsLockInfo lockInfo) {
+    public void onLockFail(String errorMessage) {
 
-        String errorMessage = getLockErrorMessage(lockInfo);
-        String errorTitle = getLockErrorTitle(lockInfo);
         m_editor.disableEditing(errorMessage);
-        CmsAlertDialog alert = new CmsAlertDialog(errorTitle, errorMessage);
+        CmsAlertDialog alert = new CmsAlertDialog(
+            Messages.get().key(Messages.ERR_LOCK_TITLE_RESOURCE_LOCKED_0),
+            errorMessage);
         alert.center();
     }
 

@@ -438,9 +438,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         try {
-            ensureLock(structureId);
-        } catch (CmsException e) {
-            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            try {
+                ensureLock(structureId);
+            } catch (CmsException e) {
+                return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            }
         } catch (Throwable e) {
             error(e);
         }

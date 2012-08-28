@@ -3415,10 +3415,16 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.lockResource(dbc, resource, type);
         } catch (Exception e) {
-            dbc.report(
-                null,
-                Messages.get().container(Messages.ERR_LOCK_RESOURCE_2, context.getSitePath(resource), type.toString()),
-                e);
+            CmsMessageContainer messageContainer;
+            if (e instanceof CmsLockException) {
+                messageContainer = ((CmsLockException)e).getMessageContainer();
+            } else {
+                messageContainer = Messages.get().container(
+                    Messages.ERR_LOCK_RESOURCE_2,
+                    context.getSitePath(resource),
+                    type.toString());
+            }
+            dbc.report(null, messageContainer, e);
         } finally {
             dbc.clear();
         }

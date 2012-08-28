@@ -542,7 +542,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsContainerPageBean page = new CmsContainerPageBean(contentLocale, containerBeans);
             CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
             xmlCnt.save(cms, contentLocale, page);
-            tryUnlock(containerpage);
         } catch (Throwable e) {
             error(e);
         }

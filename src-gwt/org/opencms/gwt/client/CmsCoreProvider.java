@@ -340,6 +340,47 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
+     * Tries to lock a resource with a given structure id and returns an error if the locking fails.<p>
+     * 
+     * @param structureId the structure id of the resource to lock 
+     * 
+     * @return the error message or null if the locking succeeded 
+     */
+    public String lockOrReturnError(final CmsUUID structureId) {
+
+        CmsRpcAction<String> lockAction = new CmsRpcAction<String>() {
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+            */
+            @Override
+            public void execute() {
+
+                setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
+                start(200, false);
+                getService().lockTemp(structureId, this);
+            }
+
+            /**
+            * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+            */
+            @Override
+            public void onResponse(String result) {
+
+                stop(false);
+                if (result == null) {
+                    // ok
+                    return;
+                }
+                // unable to lock
+                final String text = Messages.get().key(Messages.GUI_LOCK_NOTIFICATION_2, structureId, result);
+                CmsNotification.get().sendDeferred(CmsNotification.Type.WARNING, text);
+            }
+        };
+        return lockAction.executeSync();
+    }
+
+    /**
      * Locks the given resource with a temporary lock, synchronously and additionally checking that 
      * the given resource has not been modified after the given timestamp.<p>
      * 
