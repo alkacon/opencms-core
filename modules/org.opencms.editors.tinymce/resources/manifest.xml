@@ -7501,6 +7501,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/skins/default/ui_contenteditor.css</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/skins/default/ui_contenteditor.css</destination>
+			<type>plain</type>
+			<uuidstructure>f3142b1b-f05f-11e1-b5f5-15b3be0b5948</uuidstructure>
+			<uuidresource>f3142b1c-f05f-11e1-b5f5-15b3be0b5948</uuidresource>
+			<datelastmodified>Mon, 27 Aug 2012 15:57:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 15:57:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ui_contenteditor]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/skins/default/ui_ocms.css</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tiny_mce/themes/advanced/skins/default/ui_ocms.css</destination>
 			<type>plain</type>
