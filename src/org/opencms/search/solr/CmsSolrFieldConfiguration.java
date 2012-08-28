@@ -36,12 +36,11 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.documents.CmsDocumentLocaleDependency;
+import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -100,10 +99,8 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
 
         String suffix = getLocaleSuffix(CmsResource.getName(rootPath));
         if (suffix != null) {
-            String lang = suffix.substring(0, 2);
-            Locale locale = suffix.length() == 5 ? new Locale(lang, suffix.substring(3, 5)) : new Locale(lang);
-            Locale defLocale = CmsLocaleManager.getDefaultLocale();
-            return OpenCms.getLocaleManager().getDefaultLocales().contains(locale) ? locale : defLocale;
+            String laguageString = suffix.substring(0, 2);
+            return suffix.length() == 5 ? new Locale(laguageString, suffix.substring(3, 5)) : new Locale(laguageString);
         }
         return null;
     }
@@ -322,12 +319,8 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
 
         // append document dependencies if configured
         if (hasLocaleDependencies()) {
-            CmsDocumentLocaleDependency mainDependency = CmsDocumentLocaleDependency.load(cms, resource);
-            if (mainDependency.getDependencies() != null) {
-                for (CmsDocumentLocaleDependency dep : mainDependency.getDependencies()) {
-                    ((CmsSolrDocument)document).addDocumentDependency(cms, dep);
-                }
-            }
+            CmsDocumentDependency dep = CmsDocumentDependency.load(cms, resource);
+            ((CmsSolrDocument)document).addDocumentDependency(cms, dep);
         }
         return document;
     }

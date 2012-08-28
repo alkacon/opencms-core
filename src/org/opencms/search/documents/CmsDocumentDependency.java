@@ -38,7 +38,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -47,23 +46,16 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -91,76 +83,6 @@ public final class CmsDocumentDependency {
         variant
     }
 
-    /**
-     * Comparator for locale sorted lists of dependencies.<p>
-     */
-    private static final class DepLocaleComparator implements Comparator<CmsDocumentDependency> {
-
-        /**
-         * Hides the public constructor.<p> 
-         */
-        DepLocaleComparator() {
-
-            // NOOP
-        }
-
-        /**
-         * Compares two dependencies by locale.<p>
-         * 
-         * @param d1 the first dependency to compare
-         * @param d2 the second dependency to compare
-         * 
-         * @return the comparison result based on the locales of the dependencies
-         * 
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        public int compare(CmsDocumentDependency d1, CmsDocumentDependency d2) {
-
-            return CmsLocaleComparator.getComparator().compare(d1.getLocale(), d2.getLocale());
-        }
-    }
-
-    /**
-     * Comparator for title sorted lists of dependencies.<p>
-     */
-    private static final class DepTitleComparator implements Comparator<CmsDocumentDependency> {
-
-        /**
-         * Hides the public constructor.<p> 
-         */
-        DepTitleComparator() {
-
-            // NOOP
-        }
-
-        /**
-         * Compares two dependencies by title.<p>
-         * 
-         * @param d1 the first dependency to compare
-         * @param d2 the second dependency to compare
-         * 
-         * @return the comparison result based on the titles of the dependencies
-         * 
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        public int compare(CmsDocumentDependency d1, CmsDocumentDependency d2) {
-
-            if ((d1.getTitle() != null) && (d2.getTitle() != null)) {
-                return d1.getTitle().compareTo(d2.getTitle());
-            }
-
-            if ((d1.getTitle() == null) && (d2.getTitle() == null)) {
-                return 0;
-            }
-
-            if (d1.getTitle() == null) {
-                return -1;
-            }
-
-            return 1;
-        }
-    }
-
     /** Pattern to determine the document locale. */
     public static final Pattern DOC_PATTERN_LOCALE = Pattern.compile("(.*)_([a-z]{2}(?:_[A-Z]{2})?)($|[$|\\.|_])");
 
@@ -169,12 +91,6 @@ public final class CmsDocumentDependency {
 
     /** Prefix for context attributes. */
     private static final String ATTR_DOC_DEPENDENCY = "CmsDocumentDependency.";
-
-    /** Static locale comparator. */
-    private static final Comparator<CmsDocumentDependency> COMPARATOR_LOCALE = new DepLocaleComparator();
-
-    /** Static title comparator. */
-    private static final Comparator<CmsDocumentDependency> COMPARATOR_TITLE = new DepTitleComparator();
 
     /** Field name in JSON. */
     private static final String JSON_ATTACHMENTS = "attachments";
@@ -207,46 +123,16 @@ public final class CmsDocumentDependency {
     private Integer m_attachmentNumber;
 
     /** The document attachments . */
-    private List<CmsDocumentDependency> m_attachments;
-
-    /** Information used for displaying the creation date of this document. */
-    private Date m_dateCreated;
-
-    /** Information used for displaying the expiration date of this document. */
-    private Date m_dateExpired;
-
-    /** Information used for displaying the last modification date of this document. */
-    private Date m_dateLastModified;
-
-    /** Information used for displaying the owner department of this document. */
-    private String m_department;
+    private List<CmsDocumentDependency> m_attachments = new ArrayList<CmsDocumentDependency>();
 
     /** The list of resources the main resource depends on, including the main resource itself. */
-    private List<CmsDocumentDependency> m_dependencies;
-
-    /** The attachment version number. */
-    private String m_documentId;
+    private List<CmsDocumentDependency> m_dependencies = new ArrayList<CmsDocumentDependency>();
 
     /** The file name of the document without attachment or locale suffixes. */
     private String m_documentName;
 
     /** The file suffix of the document. */
     private String m_documentSuffix;
-
-    /** Information used for displaying the format of this document. */
-    private String m_format;
-
-    /** Information used for displaying the home division of this document. */
-    private String m_homeDivisionOwner;
-
-    /** Information used for displaying the valid home division of this document. */
-    private String m_homeDivisionValidIn;
-
-    /** The list of additional language version locales. */
-    private Set<Locale> m_languageVersionLocales;
-
-    /** The language version dependencies. */
-    private List<CmsDocumentDependency> m_languageVersions;
 
     /** The locale of this document container. */
     private Locale m_locale;
@@ -257,14 +143,11 @@ public final class CmsDocumentDependency {
     /** The VFS resource for which the dependencies are calculated. */
     private CmsPublishedResource m_resource;
 
-    /** The root path of this document. */
-    private String m_rootPath;
-
-    /** Information used for displaying the title of this document. */
-    private String m_title;
-
     /** The dependency type for this dependency. */
     private DependencyType m_type;
+
+    /** The language version dependencies. */
+    private List<CmsDocumentDependency> m_variants = new ArrayList<CmsDocumentDependency>();
 
     /**
      * Creates a new dependency container for the given VFS resource.<p> 
@@ -287,12 +170,7 @@ public final class CmsDocumentDependency {
     private CmsDocumentDependency(CmsPublishedResource resource, String rootPath) {
 
         m_resource = resource;
-        m_rootPath = rootPath;
-
-        m_languageVersionLocales = new HashSet<Locale>();
-        m_dependencies = new ArrayList<CmsDocumentDependency>();
-
-        String docName = CmsResource.getName(m_rootPath);
+        String docName = CmsResource.getName(m_resource.getRootPath());
 
         // check if an attachment number is present
         Matcher matcher = DOC_PATTERN_NUMBER.matcher(docName);
@@ -317,13 +195,13 @@ public final class CmsDocumentDependency {
         setLocale(locale);
 
         // we must remove file suffixes like ".doc", ".pdf" etc. because attachments can have different types
-        int index = getRootPath().lastIndexOf('.');
+        int index = getResource().getRootPath().lastIndexOf('.');
         if (index != -1) {
             // store the suffix for comparison to decide if this is a main document or a variation later
-            setDocumentSuffix(getRootPath().substring(index));
+            setDocumentSuffix(getResource().getRootPath().substring(index));
         }
 
-        setDocumentName(CmsResource.getFolderPath(m_rootPath) + docName);
+        setDocumentName(CmsResource.getFolderPath(m_resource.getRootPath()) + docName);
     }
 
     /**
@@ -464,9 +342,6 @@ public final class CmsDocumentDependency {
      */
     public void addAttachment(CmsDocumentDependency dep) {
 
-        if (m_attachments == null) {
-            m_attachments = new ArrayList<CmsDocumentDependency>(4);
-        }
         // don't add attachment if this is a language version of an already existing attachment
         boolean exist = false;
         for (CmsDocumentDependency att : m_attachments) {
@@ -475,14 +350,14 @@ public final class CmsDocumentDependency {
                 if (m_locale.equals(dep.getLocale())) {
                     // if dependency has same locale as main document it is added as attachment 
                     // and gets the old attachment as a language-version with all previous language-versions  
-                    for (CmsDocumentDependency langAtt : att.getAllLanguageVersions()) {
-                        dep.addLanguageVersion(langAtt);
+                    for (CmsDocumentDependency langAtt : att.getVariants()) {
+                        dep.addVariant(langAtt);
                     }
-                    dep.addLanguageVersion(att);
+                    dep.addVariant(att);
                     m_attachments.remove(att);
                 } else {
                     exist = true;
-                    att.addLanguageVersion(dep);
+                    att.addVariant(dep);
                 }
                 break;
             }
@@ -512,34 +387,17 @@ public final class CmsDocumentDependency {
      * 
      * @param dep the language version document dependency to add
      */
-    public void addLanguageVersion(CmsDocumentDependency dep) {
-
-        if (m_languageVersions == null) {
-            m_languageVersions = new ArrayList<CmsDocumentDependency>(4);
-        }
+    public void addVariant(CmsDocumentDependency dep) {
 
         // check if already exists
-        for (CmsDocumentDependency lang : m_languageVersions) {
+        for (CmsDocumentDependency lang : m_variants) {
             if (lang.getLocale().equals(dep.getLocale())) {
                 return;
             }
         }
         dep.setType(DependencyType.variant);
-        m_languageVersions.add(dep);
+        m_variants.add(dep);
         addDependency(dep);
-        addLanguageVersionLocale(dep.getLocale());
-    }
-
-    /**
-     * Adds another dependency language version locale to this document.<p>
-     * 
-     * @param loc the dependency language version locale to add
-     */
-    public void addLanguageVersionLocale(Locale loc) {
-
-        if (!m_locale.equals(loc)) {
-            m_languageVersionLocales.add(loc);
-        }
     }
 
     /**
@@ -553,26 +411,10 @@ public final class CmsDocumentDependency {
         }
         if (obj instanceof CmsDocumentDependency) {
             CmsDocumentDependency other = (CmsDocumentDependency)obj;
-            return m_rootPath.equals(other.m_rootPath) && m_locale.equals(other.m_locale);
+            return m_resource.getRootPath().equals(other.getResource().getRootPath())
+                && m_locale.equals(other.m_locale);
         }
         return false;
-    }
-
-    /**
-     * Returns all language versions, including the language version of this document itself.<p>
-     *
-     * @return all language versions, including the language version of this document itself
-     */
-    public List<CmsDocumentDependency> getAllLanguageVersions() {
-
-        List<CmsDocumentDependency> langVersions = getLanguageVersions();
-        Set<CmsDocumentDependency> all = langVersions == null
-        ? new HashSet<CmsDocumentDependency>()
-        : new HashSet<CmsDocumentDependency>(langVersions);
-        all.add(this);
-        List<CmsDocumentDependency> result = new ArrayList<CmsDocumentDependency>(all);
-        Collections.sort(result, COMPARATOR_LOCALE);
-        return result;
     }
 
     /**
@@ -595,50 +437,7 @@ public final class CmsDocumentDependency {
      */
     public List<CmsDocumentDependency> getAttachments() {
 
-        if (m_attachments != null) {
-            Collections.sort(m_attachments, COMPARATOR_TITLE);
-        }
         return m_attachments;
-    }
-
-    /**
-     * Returns the the creation date of this document.<p>
-     *
-     * @return the the creation date of this document
-     */
-    public Date getDateCreated() {
-
-        return m_dateCreated;
-    }
-
-    /**
-     * Returns the the expiration date of this document.<p>
-     *
-     * @return the the expiration date of this document
-     */
-    public Date getDateExpired() {
-
-        return m_dateExpired;
-    }
-
-    /**
-     * Returns the last modification date of this document.<p>
-     *
-     * @return the last modification date of this document
-     */
-    public Date getDateLastModified() {
-
-        return m_dateLastModified;
-    }
-
-    /**
-     * Returns the the owner department of this document.<p>
-     *
-     * @return the the owner department of this document
-     */
-    public String getDepartment() {
-
-        return m_department;
     }
 
     /**
@@ -649,16 +448,6 @@ public final class CmsDocumentDependency {
     public List<CmsDocumentDependency> getDependencies() {
 
         return m_dependencies;
-    }
-
-    /**
-     * Returns the document id.<p>
-     *
-     * @return the document id
-     */
-    public String getDocumentId() {
-
-        return m_documentId;
     }
 
     /**
@@ -679,81 +468,6 @@ public final class CmsDocumentDependency {
     public String getDocumentSuffix() {
 
         return m_documentSuffix;
-    }
-
-    /**
-     * Returns the the format of this document.<p>
-     *
-     * @return the the format of this document
-     */
-    public String getFormat() {
-
-        return m_format;
-    }
-
-    /**
-     * Returns the the home division of this document.<p>
-     *
-     * @return the the home division of this document
-     */
-    public String getHomeDivisionOwner() {
-
-        return m_homeDivisionOwner;
-    }
-
-    /**
-     * Returns the the valid home division of this document.<p>
-     *
-     * @return the the valid home division of this document
-     */
-    public String getHomeDivisionValidIn() {
-
-        return m_homeDivisionValidIn;
-    }
-
-    /**
-     * Returns all valid languages for this document.<p>
-     * 
-     * Valid languages of a document are the language of the document itself,
-     * as returned by {@link #getLocale()}, plus all other languages 
-     * where this document must serve as default.<p>
-     * 
-     * @return all valid languages for the given LGT document root path
-     */
-    @SuppressWarnings("unchecked")
-    public List<Locale> getLanguagesValid() {
-
-        // check all additional locales for the resource
-        if (CmsLocaleManager.getDefaultLocale().equals(getLocale())
-            || !m_languageVersionLocales.contains(CmsLocaleManager.getDefaultLocale())) {
-            // this document is the default locale, return all missing locales
-            // OR this document does not exist in the default locale at all
-            return ListUtils.removeAll(OpenCms.getLocaleManager().getAvailableLocales(), m_languageVersionLocales);
-        }
-        // else - just return the single locale of the document
-        List<Locale> result = new ArrayList<Locale>();
-        result.add(getLocale());
-        return result;
-    }
-
-    /**
-     * Returns the other locales this document is available in, does not include the locale of the docuemnt itself.<p>
-     *
-     * @return the other locales this document is available in
-     */
-    public List<Locale> getLanguageVersionLocales() {
-
-        return new ArrayList<Locale>(m_languageVersionLocales);
-    }
-
-    /**
-     * Returns the language versions.<p>
-     *
-     * @return the language versions
-     */
-    public List<CmsDocumentDependency> getLanguageVersions() {
-
-        return m_languageVersions;
     }
 
     /**
@@ -787,36 +501,6 @@ public final class CmsDocumentDependency {
     }
 
     /**
-     * Returns the root path of this document.<p>
-     *
-     * @return the root path of this document
-     */
-    public String getRootPath() {
-
-        return m_rootPath;
-    }
-
-    /**
-     * Returns the structure id.<p>
-     * 
-     * @return the structure id
-     */
-    public CmsUUID getStructureId() {
-
-        return m_resource.getStructureId();
-    }
-
-    /**
-     * Returns the the title of this document.<p>
-     *
-     * @return the the title of this document
-     */
-    public String getTitle() {
-
-        return m_title;
-    }
-
-    /**
      * Returns the type.<p>
      *
      * @return the type
@@ -827,12 +511,22 @@ public final class CmsDocumentDependency {
     }
 
     /**
+     * Returns the variants.<p>
+     *
+     * @return the variants
+     */
+    public List<CmsDocumentDependency> getVariants() {
+
+        return m_variants;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
 
-        return m_rootPath.hashCode();
+        return getResource().hashCode();
     }
 
     /**
@@ -857,12 +551,12 @@ public final class CmsDocumentDependency {
         try {
             // read all resources in the parent folder of the published resource
             List<CmsResource> folderContent = cms.getResourcesInFolder(
-                CmsResource.getParentFolder(cms.getRequestContext().removeSiteRoot(getRootPath())),
+                CmsResource.getParentFolder(cms.getRequestContext().removeSiteRoot(getResource().getRootPath())),
                 CmsResourceFilter.DEFAULT);
             // now calculate the dependencies form the folder content that has been read
             readDependencies(cms, folderContent);
         } catch (CmsException e) {
-            LOG.error("Unable to read dependencies for " + getRootPath(), e);
+            LOG.error("Unable to read dependencies for " + getResource().getRootPath(), e);
         }
     }
 
@@ -884,7 +578,7 @@ public final class CmsDocumentDependency {
         while (i.hasNext()) {
             CmsResource r = i.next();
             // only add files and don't add the resource itself again
-            if (r.isFile() && !getRootPath().equals(r.getRootPath())) {
+            if (r.isFile() && !getResource().getRootPath().equals(r.getRootPath())) {
                 CmsPublishedResource pubRes = new CmsPublishedResource(
                     r,
                     getResource().getPublishTag(),
@@ -896,12 +590,12 @@ public final class CmsDocumentDependency {
                         if (dep.isAttachment()) {
                             if (getAttachmentNumber() == dep.getAttachmentNumber()) {
                                 // this must be a language version of this attachment document
-                                addLanguageVersion(dep);
+                                addVariant(dep);
                             } else {
                                 Integer attNum = new Integer(dep.getAttachmentNumber());
                                 CmsDocumentDependency att = attachments.get(attNum);
                                 if (att != null) {
-                                    att.addLanguageVersion(dep);
+                                    att.addVariant(dep);
                                 } else {
                                     attachments.put(attNum, dep);
                                 }
@@ -918,7 +612,7 @@ public final class CmsDocumentDependency {
                         } else if (CmsStringUtil.isEqual(getDocumentSuffix(), dep.getDocumentSuffix())) {
                             // if this is no attachment, and the file suffix is equal, 
                             // this must be a language version of the main document
-                            addLanguageVersion(dep);
+                            addVariant(dep);
                         }
                         // if the file suffix is NOT equal, this is a new main document
                     }
@@ -946,56 +640,6 @@ public final class CmsDocumentDependency {
     }
 
     /**
-     * Sets the the creation date of this document.<p>
-     *
-     * @param dateCreated the the creation date of this document to set
-     */
-    public void setDateCreated(Date dateCreated) {
-
-        m_dateCreated = dateCreated;
-    }
-
-    /**
-     * Sets the the expiration date of this document.<p>
-     *
-     * @param dateExpired the the expiration date of this document to set
-     */
-    public void setDateExpired(Date dateExpired) {
-
-        m_dateExpired = dateExpired;
-    }
-
-    /**
-     * Sets the last modification date of this document.<p>
-     *
-     * @param dateLastModified the last modification date of this document to set
-     */
-    public void setDateLastModified(Date dateLastModified) {
-
-        m_dateLastModified = dateLastModified;
-    }
-
-    /**
-     * Sets the the owner department of this document.<p>
-     *
-     * @param department the the owner department of this document to set
-     */
-    public void setDepartment(String department) {
-
-        m_department = department;
-    }
-
-    /**
-     * Sets the document id.<p>
-     *
-     * @param id the document id
-     */
-    public void setDocumentId(String id) {
-
-        m_documentId = id;
-    }
-
-    /**
      * Sets the file name of the document without attachment or locale suffixes.<p>
      *
      * @param documentName the file name of the document without attachment or locale suffixes
@@ -1013,36 +657,6 @@ public final class CmsDocumentDependency {
     public void setDocumentSuffix(String documentSuffix) {
 
         m_documentSuffix = documentSuffix;
-    }
-
-    /**
-     * Sets the the format of this document.<p>
-     *
-     * @param format the the format of this document to set
-     */
-    public void setFormat(String format) {
-
-        m_format = format;
-    }
-
-    /**
-     * Sets the the home division of this document.<p>
-     *
-     * @param homeDivisionOwner the the home division of this document to set
-     */
-    public void setHomeDivisionOwner(String homeDivisionOwner) {
-
-        m_homeDivisionOwner = homeDivisionOwner;
-    }
-
-    /**
-     * Sets the the valid home division of this document.<p>
-     *
-     * @param homeDivisionValidIn the the valid home division of this document to set
-     */
-    public void setHomeDivisionValidIn(String homeDivisionValidIn) {
-
-        m_homeDivisionValidIn = homeDivisionValidIn;
     }
 
     /**
@@ -1070,7 +684,7 @@ public final class CmsDocumentDependency {
         } else {
             // check if we find a better match for the main document locale
             if (mainDocument.getLocale().equals(getLocale())) {
-                mainDocument.addLanguageVersion(m_mainDocument);
+                mainDocument.addVariant(m_mainDocument);
                 // main document locale is the "best" one
                 m_mainDocument = mainDocument;
             } else {
@@ -1080,25 +694,15 @@ public final class CmsDocumentDependency {
                 if (pos1 > 0) {
                     int pos2 = locales.indexOf(mainDocument.getLocale());
                     if (pos2 < pos1) {
-                        mainDocument.addLanguageVersion(m_mainDocument);
+                        mainDocument.addVariant(m_mainDocument);
                         // locale is closer to the default
                         m_mainDocument = mainDocument;
                     }
                 } else {
-                    m_mainDocument.addLanguageVersion(mainDocument);
+                    m_mainDocument.addVariant(mainDocument);
                 }
             }
         }
-    }
-
-    /**
-     * Sets the the title of this document.<p>
-     *
-     * @param title the the title of this document to set
-     */
-    public void setTitle(String title) {
-
-        m_title = title;
     }
 
     /**
@@ -1122,7 +726,7 @@ public final class CmsDocumentDependency {
      */
     public void storeInContext(CmsObject cms) {
 
-        cms.getRequestContext().setAttribute(getAttributeKey(getRootPath()), this);
+        cms.getRequestContext().setAttribute(getAttributeKey(getResource().getRootPath()), this);
     }
 
     /**
@@ -1192,10 +796,10 @@ public final class CmsDocumentDependency {
             JSONObject jsonAttachment = new JSONObject();
 
             // id and path
-            jsonAttachment.put(JSON_UUID, getStructureId());
-            jsonAttachment.put(JSON_PATH, getRootPath());
+            jsonAttachment.put(JSON_UUID, getResource().getStructureId());
+            jsonAttachment.put(JSON_PATH, getResource().getRootPath());
 
-            CmsResource res = cms.readResource(getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = cms.readResource(getResource().getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
             Map<String, String> props = CmsProperty.toMap(cms.readPropertyObjects(res, false));
 
             // title
@@ -1209,7 +813,7 @@ public final class CmsDocumentDependency {
 
             if (includeLang) {
                 // get all language versions of the document
-                List<CmsDocumentDependency> langs = getLanguageVersions();
+                List<CmsDocumentDependency> langs = getVariants();
                 if (langs != null) {
                     JSONArray jsonLanguages = new JSONArray();
                     for (CmsDocumentDependency lang : langs) {

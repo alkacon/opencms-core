@@ -37,7 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.documents.CmsDocumentLocaleDependency;
+import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsUUID;
 
@@ -145,11 +145,14 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      * Adds the given document dependency to this document.<p>
      * 
      * @param cms the current CmsObject
-     * @param dep the dependency
+     * @param resDeps the dependency
      */
-    public void addDocumentDependency(CmsObject cms, CmsDocumentLocaleDependency dep) {
+    public void addDocumentDependency(CmsObject cms, CmsDocumentDependency resDeps) {
 
-        m_doc.addField(dep.getType().toString(), dep.toJSON(cms, true).toString());
+        m_doc.addField(I_CmsSearchField.FIELD_DEPENDENCY_TYPE, resDeps.getType());
+        for (CmsDocumentDependency dep : resDeps.getDependencies()) {
+            m_doc.addField("dep_" + dep.getType().toString(), dep.toJSON(cms, true).toString());
+        }
     }
 
     /**

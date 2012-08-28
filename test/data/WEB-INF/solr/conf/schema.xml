@@ -240,6 +240,7 @@
    <field name="contentblob"         type="binary"       indexed="false" stored="true" compressed="true" />
    <field name="category"            type="text_general" indexed="true"  stored="true" multiValued="true" />
    <field name="category_exact"      type="string"       indexed="true"  stored="true" multiValued="true" termVectors="true" /><!-- is copied -->
+   <field name="dependencyType"       type="string"       indexed="true" stored="true" />
    <field name="text"                type="text_general" indexed="true"  stored="true" multiValued="true"/><!-- Catchall for general text fields -->
    <field name="text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
    <field name="text_de"             type="text_de"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
@@ -249,15 +250,11 @@
    <field name="text_hu"             type="text_hu"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
    <field name="text_it"             type="text_it"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
 
-   <field name="simpleAttachment"    type="string"       indexed="true"  stored="true" multiValued="true" />
-   <field name="localizedAttachment" type="string"       indexed="true"  stored="true" multiValued="true" />
-   <field name="languageVariant"     type="string"       indexed="true"  stored="true" multiValued="true" />
-   
+   <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" />
+      
    <!-- For test cases only -->
    <field name="test_text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
    <field name="test_text_de"             type="text_de"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
-
-   <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" />
 
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="true"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
@@ -288,6 +285,7 @@
    <dynamicField name="attr_*"       type="text_general" indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="random_*"     type="random" />
    <dynamicField name="text_*"       type="text_general" indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
+   <dynamicField name="dep_*"        type="string"       indexed="false" stored="true" multiValued="true"/>
  </fields>
 
  <uniqueKey>id</uniqueKey>

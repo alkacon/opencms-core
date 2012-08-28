@@ -31,13 +31,15 @@
 
 package org.opencms.search;
 
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.documents.CmsDocumentLocaleDependency;
+import org.opencms.search.documents.CmsDocumentDependency;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,22 +54,57 @@ import org.apache.commons.logging.Log;
  * 
  * @since 8.5.0
  */
-public class CmsVfsIndexerLocaleDependent extends CmsVfsIndexer {
+public class CmsDependencyIndexer extends CmsVfsIndexer {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsVfsIndexerLocaleDependent.class);
+    private static final Log LOG = CmsLog.getLog(CmsDependencyIndexer.class);
 
     /**
-     * Loads or creates a dependency object for the given parameters.<p>
-     * 
-     * @param cms the current OpenCms user context
-     * @param res the VFS resource to get the dependency object for
-     * @param resources the resource folder data to check for dependencies
-     * 
-     * @return a dependency object for the given parameters
+     * @see org.opencms.search.CmsVfsIndexer#getUpdateData(org.opencms.search.CmsSearchIndexSource, java.util.List)
      */
-    public static CmsDocumentLocaleDependency load(CmsObject cms, CmsResource res, List<CmsResource> resources) {
+    @Override
+    public CmsSearchIndexUpdateData getUpdateData(
+        CmsSearchIndexSource source,
+        List<CmsPublishedResource> publishedResources) {
 
+        try {
+            // create a new update collection from this indexer and the given index source
+            CmsSearchIndexUpdateData result = new CmsSearchIndexUpdateData(source, this);
+            Iterator<CmsPublishedResource> i = publishedResources.iterator();
+            while (i.hasNext()) {
+                // check all published resources if they match this indexer / source
+                CmsPublishedResource pubRes = i.next();
+                // VFS resources will always have a structure id
+                if (!pubRes.getStructureId().isNullUUID() && pubRes.isFile()) {
+                    // use utility method from CmsProject to check if published resource is "inside" this index source
+                    if (CmsProject.isInsideProject(source.getResourcesNames(), pubRes.getRootPath())) {
+                        // the resource is "inside" this index source
+                        CmsPublishedResource pub = pubRes;
+                        // grab the dependencies of this resource
+                        CmsDocumentDependency dep = CmsDocumentDependency.load(m_cms, pub);
+                        List<CmsDocumentDependency> depsAvailable = dep.getDependencies();
+                        Iterator<CmsDocumentDependency> depIt = depsAvailable.iterator();
+                        do {
+                            // add the document to the search index update data
+                            addResourceToUpdateData(pub, result);
+                            if (!pub.getState().isDeleted()) {
+                                // don't need to store dependency info for deleted resources
+                                dep.storeInContext(m_cms);
+                            }
+                            if (depIt.hasNext()) {
+                                // add all dependent documents that are not already included in the original publish list
+                                pub = depIt.next().getResource();
+                            } else {
+                                dep = null;
+                            }
+                        } while (dep != null);
+                    }
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
         return null;
     }
 
@@ -78,6 +115,21 @@ public class CmsVfsIndexerLocaleDependent extends CmsVfsIndexer {
     public boolean isLocaleDependenciesEnable() {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.search.CmsVfsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.A_CmsSearchIndex)
+     */
+    @Override
+    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, A_CmsSearchIndex index) {
+
+        CmsDependencyIndexer indexer = new CmsDependencyIndexer();
+
+        indexer.m_cms = cms;
+        indexer.m_report = report;
+        indexer.m_index = index;
+
+        return indexer;
     }
 
     /**
@@ -121,7 +173,7 @@ public class CmsVfsIndexerLocaleDependent extends CmsVfsIndexer {
                 // iterate all resources found in the folder
                 for (CmsResource resource : resources) {
                     List<CmsResource> folderContent = folderLookupMap.get(CmsResource.getFolderPath(resource.getRootPath()));
-                    CmsDocumentLocaleDependency dep = CmsDocumentLocaleDependency.load(m_cms, resource, folderContent);
+                    CmsDocumentDependency dep = CmsDocumentDependency.load(m_cms, resource, folderContent);
                     dep.storeInContext(m_cms);
                     // now update all the resources individually
                     updateResource(writer, threadManager, resource);

@@ -298,7 +298,7 @@
       </indexsource>
       <indexsource>
         <name>solr_source</name>
-        <indexer class="org.opencms.search.CmsVfsIndexerLocaleDependent"/>
+        <indexer class="org.opencms.search.CmsDependencyIndexer"/>
         <resources>
           <resource>/sites/default/</resource>
         </resources>

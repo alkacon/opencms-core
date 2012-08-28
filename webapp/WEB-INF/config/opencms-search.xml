@@ -322,7 +322,7 @@
       </indexsource>
       <indexsource>
         <name>solr_source</name>
-        <indexer class="org.opencms.search.CmsVfsIndexer"/>
+        <indexer class="org.opencms.search.CmsDependencyIndexer"/>
         <resources>
           <resource>/sites/default/</resource>
         </resources>
