@@ -333,7 +333,26 @@ public class CmsCategoryTree extends Composite {
      */
     public List<String> getAllSelected() {
 
-        return m_selectedCategories;
+        List<String> result = new ArrayList<String>();
+        Iterator<Widget> it = m_scrollList.iterator();
+        while (it.hasNext()) {
+            CmsTreeItem test = (CmsTreeItem)it.next();
+            if (test.getCheckBox().isChecked()) {
+                result.add(test.getId());
+                selectedChildren(result, test);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the scrollpanel of this widget.<p>
+     * 
+     * @return CmsScrollPanel the scrollpanel of this widget
+     * */
+    public CmsScrollPanel getScrollPanel() {
+
+        return m_list;
     }
 
     /**
@@ -897,6 +916,22 @@ public class CmsCategoryTree extends Composite {
         }
 
         return test;
+    }
+
+    /**
+     * Helper function to sellected all selected values.<p>
+     * */
+    private void selectedChildren(List<String> result, CmsTreeItem item) {
+
+        Iterator<Widget> it = item.getChildren().iterator();
+        while (it.hasNext()) {
+            CmsTreeItem test = (CmsTreeItem)it.next();
+            if (test.getCheckBox().isChecked()) {
+                result.add(test.getId());
+                selectedChildren(result, test);
+            }
+        }
+
     }
 
 }

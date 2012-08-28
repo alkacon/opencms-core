@@ -156,7 +156,6 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         super();
         initWidget(m_panel);
         m_panel.add(m_scrollPanel);
-        m_scrollPanel.setResizable(true);
         m_scrollPanel.getElement().getStyle().setHeight(50, Unit.PX);
         m_scrollPanel.add(m_categories);
 

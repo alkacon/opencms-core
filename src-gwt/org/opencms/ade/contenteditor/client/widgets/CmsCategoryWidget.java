@@ -116,6 +116,9 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
+    /** Configuration parameter to set the 'selection type' parameter. */
+    private static final String CONFIGURATION_CATEGORYLIST = "CategoryList";
+
     /** Configuration parameter to set the default height. */
     private static final int DEFAULT_HEIGHT = 122;
 
@@ -125,13 +128,13 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** Category widget. */
     CmsCategoryField m_categoryField = new CmsCategoryField();
 
-    /***/
+    /** The priview handler. */
     protected HandlerRegistration m_previewHandlerRegistration;
 
-    /***/
+    /** The category field. */
     CmsCategoryTree m_cmsCategoryTree;
 
-    /***/
+    /** The popup panel. */
     CmsPopup m_cmsPopup;
 
     /** The x-coords of the popup. */
@@ -150,7 +153,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     private boolean m_active = true;
 
     /** String of the configured category folder. */
-    private String m_categoryFolder = "/sites/default/_categories/";
+    private String m_categoryFolder = "/";
 
     /** List off all categories. */
     private List<CmsCategoryTreeEntry> m_results = new ArrayList<CmsCategoryTreeEntry>();
@@ -161,15 +164,17 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     int m_height = DEFAULT_HEIGHT;
 
     /** The selection type parsed from configuration string. */
-    private String m_selectiontype = "multi";
+    private String m_selectiontype = "single";
 
     /** Is true if only one value is set in xml. */
     private boolean m_isSingelValue;
 
+    /** List of all possible category folder. */
+    private List<String> m_categoryList = new ArrayList<String>();
+
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD
-     * @param isSingelValue Is true if only one value is set in xml
      */
     public CmsCategoryWidget(String config) {
 
@@ -183,7 +188,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         }
 
         m_categoryField.getScrollPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().categoryPanel());
-
+        m_categoryField.getScrollPanel().setResizable(false);
         m_categoryField.addDomHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -303,7 +308,14 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
         String singelValue = "";
         m_selected.clear();
-        if (m_isSingelValue && !value.isEmpty() && !value.replace(m_categoryFolder, "").isEmpty()) {
+        if (m_isSingelValue && !value.isEmpty()) {
+            Iterator<String> it = m_categoryList.iterator();
+            while (it.hasNext()) {
+                String catRootPath = it.next();
+                if (value.contains(catRootPath)) {
+                    m_categoryFolder = catRootPath;
+                }
+            }
             value = value.replace(",", "");
             String childValue = value.replace(m_categoryFolder, "");
             singelValue = childValue;
@@ -341,19 +353,17 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             m_selected.clear();
             m_selected.add(singelValue);
         }
+
         if (!selected[0].isEmpty()) {
             int elementheight = (selected.length * 24) + 2;
-            if (elementheight < DEFAULT_HEIGHT) {
-                m_height = elementheight;
-            } else {
-                m_height = DEFAULT_HEIGHT;
-            }
+            m_height = elementheight;
 
             if (m_height > MAX_HEIGHT) {
                 m_height = MAX_HEIGHT;
+                m_categoryField.getScrollPanel().setResizable(true);
             }
         } else {
-            m_height = 26;
+            m_height = 24;
         }
         m_categoryField.setHeight(m_height);
     }
@@ -363,8 +373,10 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     protected void closePopup() {
 
-        m_previewHandlerRegistration.removeHandler();
-        m_previewHandlerRegistration = null;
+        if (m_previewHandlerRegistration != null) {
+            m_previewHandlerRegistration.removeHandler();
+            m_previewHandlerRegistration = null;
+        }
         String selected = "";
         if (m_isSingelValue) {
             selected = m_cmsCategoryTree.getSelected();
@@ -443,6 +455,20 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                     selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));
                 }
                 m_selectiontype = selectiontype;
+            }
+            int categoryListIndex = configuration.indexOf(CONFIGURATION_CATEGORYLIST);
+            if (categoryListIndex != -1) {
+                // selection type is given
+                String catList = configuration.substring(categoryListIndex + CONFIGURATION_CATEGORYLIST.length() + 1);
+                if (catList.indexOf("|") != -1) {
+                    // cut eventual following configuration values
+                    catList = catList.substring(0, catList.indexOf("|"));
+                }
+                String[] catArray = catList.split(",");
+                for (int i = 0; i < catArray.length; i++) {
+                    m_categoryList.add(catArray[i]);
+                }
+
             }
 
         }
