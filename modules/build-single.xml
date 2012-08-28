@@ -382,8 +382,30 @@
 		</if>
 
 	</target>
+	<target name="concat-scripts">
+		<if>
+					<isset property="module.scripts" />
+					<then>
+						<echo message="Generating script" />
+						<delete file="${module.input.res}/system/modules/${module.name}/resources/${module.name}.scripts.js" quiet="true" />
+						<for list="${module.scripts}" param="script-file">
+							<sequential>
+						<concat destfile="${module.input.res}/system/modules/${module.name}/resources/${module.name}.scripts.js" append="yes">
+						                 <string>
 
+</string>
+							<fileset dir="${module.input.res}/scripts" includes="@{script-file}"/>
+						</concat>
+								</sequential>
+							</for>
+					</then>
+			<else>
+				<echo message="Script property not set" />
+			</else>
+		</if>
+	</target>
 	<target name="compile-gwt" depends="init, builddeps, get-dependency-paths" description="Compiles GWT ${module.gwt} module">
+		
 		<if>
 			<isset property="module.gwt" />
 			<then>
@@ -454,7 +476,7 @@
 		</if>
 	</target>
 
-	<target name="compile" depends="compile-classes, compile-gwt" description="Compiles ${module.name} module classes and GWT classes" />
+	<target name="compile" depends="compile-classes, compile-gwt, concat-scripts" description="Compiles ${module.name} module classes and GWT classes" />
 
 	<target name="compile-classes" depends="init, builddeps, get-dependency-paths" description="Compiles ${module.name} module classes">
 		<if>
