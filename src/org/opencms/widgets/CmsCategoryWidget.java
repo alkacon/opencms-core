@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -41,6 +42,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.0.3 
  */
-public class CmsCategoryWidget extends A_CmsWidget {
+public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** Configuration parameter to set the category to display. */
     public static final String CONFIGURATION_CATEGORY = "category";
@@ -110,9 +112,6 @@ public class CmsCategoryWidget extends A_CmsWidget {
 
         // append category to configuration
         if (m_category != null) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
             result.append(CONFIGURATION_CATEGORY);
             result.append("=");
             result.append(m_category);
@@ -136,6 +135,27 @@ public class CmsCategoryWidget extends A_CmsWidget {
             result.append(m_property);
         }
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        return super.getConfiguration();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        // TODO: Auto-generated method stub
+        return null;
     }
 
     /**
@@ -266,16 +286,12 @@ public class CmsCategoryWidget extends A_CmsWidget {
                         Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                 }
                 result.append(">");
-                result.append(buildSelectBox(
-                    param.getId(),
-                    i,
-                    options,
-                    (selected != null ? CmsCategoryService.getInstance().readCategory(
-                        cms,
-                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
-                        referencePath).getId().toString() : ""),
-                    param.hasError(),
-                    (i == (level - baseLevel - 1))));
+                result.append(buildSelectBox(param.getId(), i, options, (selected != null
+                ? CmsCategoryService.getInstance().readCategory(
+                    cms,
+                    CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                    referencePath).getId().toString()
+                : ""), param.hasError(), (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
             }
             result.append("</td>");
@@ -283,6 +299,33 @@ public class CmsCategoryWidget extends A_CmsWidget {
             result.append(e.getLocalizedMessage());
         }
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        // TODO: Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        // TODO: Auto-generated method stub
+        return false;
     }
 
     /**
