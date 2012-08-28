@@ -32,7 +32,7 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsCategoryField;
-import org.opencms.gwt.client.ui.input.CmsCategoryTree;
+import org.opencms.gwt.client.ui.input.category.CmsCategoryTree;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.relations.CmsCategory;
 import org.opencms.util.CmsStringUtil;
@@ -48,6 +48,11 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -55,26 +60,85 @@ import com.google.gwt.user.client.ui.Composite;
  **/
 public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
+    /**
+     * Drag and drop event preview handler.<p>
+     * 
+     * To be used while dragging.<p>
+     */
+    protected class CloseEventPreviewHandler implements NativePreviewHandler {
+
+        /**
+         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+         */
+        public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+            Event nativeEvent = Event.as(event.getNativeEvent());
+            switch (DOM.eventGetType(nativeEvent)) {
+                case Event.ONMOUSEMOVE:
+                    break;
+                case Event.ONMOUSEUP:
+
+                    int x_coord = nativeEvent.getClientX();
+                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
+
+                    if (((x_coord > (m_xcoordspopup + 605)) || (x_coord < (m_xcoordspopup)))
+                        || ((y_coord > ((m_ycoordspopup + 390))) || (y_coord < ((m_ycoordspopup))))) {
+                        closePopup();
+                    }
+                    break;
+                case Event.ONKEYDOWN:
+                    break;
+                case Event.ONMOUSEWHEEL:
+                    int x_coords = nativeEvent.getClientX();
+                    int y_coords = (nativeEvent.getClientY() + Window.getScrollTop());
+
+                    if (((x_coords > (m_xcoordspopup + 605)) || (x_coords < (m_xcoordspopup)))
+                        || ((y_coords > ((m_ycoordspopup + 390))) || (y_coords < ((m_ycoordspopup))))) {
+                        closePopup();
+                    }
+                    break;
+                default:
+                    // do nothing
+            }
+        }
+
+    }
+
     /** Configuration parameter to set the category to display. */
-    public static final String CONFIGURATION_CATEGORY = "category";
+    private static final String CONFIGURATION_CATEGORY = "category";
 
     /** Configuration parameter to set the 'only leaf' flag parameter. */
-    public static final String CONFIGURATION_ONLYLEAFS = "onlyleafs";
+    private static final String CONFIGURATION_ONLYLEAFS = "onlyleafs";
 
     /** Configuration parameter to set the 'property' parameter. */
-    public static final String CONFIGURATION_PROPERTY = "property";
+    private static final String CONFIGURATION_PROPERTY = "property";
+
+    /** Configuration parameter to set the 'selection type' parameter. */
+    private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
     /** Configuration parameter to set the default height. */
-    private static final int DEFAULT_HEIGHT = 242;
+    private static final int DEFAULT_HEIGHT = 122;
+
+    /** Configuration parameter to set the maximal height. */
+    private static final int MAX_HEIGHT = 242;
 
     /** Category widget. */
     CmsCategoryField m_categoryField = new CmsCategoryField();
+
+    /***/
+    protected HandlerRegistration m_previewHandlerRegistration;
 
     /***/
     CmsCategoryTree m_cmsCategoryTree;
 
     /***/
     CmsPopup m_cmsPopup;
+
+    /** The x-coords of the popup. */
+    protected int m_xcoordspopup;
+
+    /** The y-coords of the popup. */
+    protected int m_ycoordspopup;
 
     /** List of all selected categories. */
     ArrayList<String> m_selected = new ArrayList<String>();
@@ -96,6 +160,9 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** Height of the display field. */
     int m_height = DEFAULT_HEIGHT;
 
+    /** The selection type parsed from configuration string. */
+    private String m_selectiontype = "multi";
+
     /** Is true if only one value is set in xml. */
     private boolean m_isSingelValue;
 
@@ -104,12 +171,16 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      * @param config The configuration string given from OpenCms XSD
      * @param isSingelValue Is true if only one value is set in xml
      */
-    public CmsCategoryWidget(String config, boolean isSingelValue) {
-
-        m_isSingelValue = isSingelValue;
+    public CmsCategoryWidget(String config) {
 
         //merge configuration string
         parseConfiguration(config);
+
+        if (m_selectiontype.equals("multi")) {
+            m_isSingelValue = false;
+        } else {
+            m_isSingelValue = true;
+        }
 
         m_categoryField.getScrollPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().categoryPanel());
 
@@ -230,12 +301,18 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
+        String singelValue = "";
         m_selected.clear();
         if (m_isSingelValue && !value.isEmpty() && !value.replace(m_categoryFolder, "").isEmpty()) {
             value = value.replace(",", "");
-            String parentValue = value.replace(m_categoryFolder, "");
-            parentValue = parentValue.substring(0, parentValue.indexOf("/") + 1);
-            value += "," + m_categoryFolder + parentValue;
+            String childValue = value.replace(m_categoryFolder, "");
+            singelValue = childValue;
+            String helpValue = childValue.substring(0, childValue.lastIndexOf("/"));
+            while (helpValue.indexOf("/") != -1) {
+                helpValue = helpValue.substring(0, helpValue.lastIndexOf("/") + 1);
+                value += "," + m_categoryFolder + helpValue;
+                helpValue = helpValue.substring(0, helpValue.lastIndexOf("/"));
+            }
         }
 
         String shortvalue = value.replaceAll(m_categoryFolder, "");
@@ -260,6 +337,10 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         if (fireEvents) {
             fireChangeEvent();
         }
+        if (m_isSingelValue) {
+            m_selected.clear();
+            m_selected.add(singelValue);
+        }
         if (!selected[0].isEmpty()) {
             int elementheight = (selected.length * 24) + 2;
             if (elementheight < DEFAULT_HEIGHT) {
@@ -267,6 +348,12 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             } else {
                 m_height = DEFAULT_HEIGHT;
             }
+
+            if (m_height > MAX_HEIGHT) {
+                m_height = MAX_HEIGHT;
+            }
+        } else {
+            m_height = 26;
         }
         m_categoryField.setHeight(m_height);
     }
@@ -276,12 +363,21 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     protected void closePopup() {
 
+        m_previewHandlerRegistration.removeHandler();
+        m_previewHandlerRegistration = null;
         String selected = "";
-        for (String s : m_cmsCategoryTree.getAllSelected()) {
-            selected += m_categoryFolder + s + ",";
+        if (m_isSingelValue) {
+            selected = m_cmsCategoryTree.getSelected();
+        } else {
+            for (String s : m_cmsCategoryTree.getAllSelected()) {
+                if (!s.isEmpty()) {
+                    selected += m_categoryFolder + s + ",";
+                }
+            }
         }
         setValue(selected);
         m_cmsPopup.hide();
+
     }
 
     /**
@@ -290,11 +386,13 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     protected void openPopup() {
 
         if (m_cmsPopup == null) {
+
             m_cmsPopup = new CmsPopup("Category");
             m_cmsPopup.setWidth(600);
-            m_cmsPopup.setHeight(350);
-            m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingelValue);
-            m_cmsPopup.add(m_cmsCategoryTree.getList());
+            m_cmsPopup.setHeight(386);
+            m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingelValue, m_categoryFolder);
+            m_cmsPopup.add(m_cmsCategoryTree);
+            m_cmsPopup.setModal(false);
             m_cmsPopup.addDialogClose(new Command() {
 
                 public void execute() {
@@ -303,12 +401,17 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                 }
             });
         }
+        if (m_previewHandlerRegistration != null) {
+            m_previewHandlerRegistration.removeHandler();
+        }
+        m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         List<String> selected = new ArrayList<String>();
         for (int i = 0; i < m_selectedArray.length; i++) {
             selected.add(m_selectedArray[i].toLowerCase());
         }
         m_cmsPopup.showRelativeTo(m_categoryField);
-
+        m_xcoordspopup = m_cmsPopup.getPopupLeft();
+        m_ycoordspopup = m_cmsPopup.getPopupTop();
     }
 
     /**
@@ -327,8 +430,21 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                     // cut eventual following configuration values
                     category = category.substring(0, category.indexOf('|'));
                 }
-                //m_categoryFolder = category;
+                m_categoryFolder = category;
             }
+            int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
+            if (selectiontypeIndex != -1) {
+                // selection type is given
+                String selectiontype = configuration.substring(selectiontypeIndex
+                    + CONFIGURATION_SELECTIONTYPE.length()
+                    + 1);
+                if (selectiontype.indexOf("|") != -1) {
+                    // cut eventual following configuration values
+                    selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));
+                }
+                m_selectiontype = selectiontype;
+            }
+
         }
     }
 
