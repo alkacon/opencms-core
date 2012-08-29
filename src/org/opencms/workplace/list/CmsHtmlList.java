@@ -502,6 +502,15 @@ public class CmsHtmlList {
             html.append("}\n");
             html.append("</style>");
         }
+        // avoiding the layout problem where, if some table cells contain a lot of text, 
+        // the right side of the table is cut off and can not be reached using the scroll bar.
+        html.append("<!--[if IE 7]>");
+        html.append("<style type='text/css'>");
+        html.append("table.list * { word-wrap: break-word !important; white-space: normal !important; }");
+        html.append("table.list { table-layout: fixed; }");
+        html.append("</style>");
+        html.append("<![endif]-->");
+
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
         html.append(m_metadata.htmlHeader(this));
         if (m_visibleItems.isEmpty()) {
@@ -1030,10 +1039,9 @@ public class CmsHtmlList {
                 m_name.key(getWp().getLocale()),
                 new Integer(getTotalSize())}));
         } else {
-            html.append(messages.key(Messages.GUI_LIST_PAGING_FILTER_TEXT_3, new Object[] {
-                m_name.key(getWp().getLocale()),
-                new Integer(getSize()),
-                new Integer(getTotalSize())}));
+            html.append(messages.key(
+                Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
+                new Object[] {m_name.key(getWp().getLocale()), new Integer(getSize()), new Integer(getTotalSize())}));
         }
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
@@ -1076,29 +1084,35 @@ public class CmsHtmlList {
             }
             if (getTotalNumberOfPages() > 1) {
                 if (isNotSearching) {
-                    html.append(messages.key(Messages.GUI_LIST_TITLE_TEXT_4, new Object[] {
-                        m_name.key(getWp().getLocale()),
-                        new Integer(displayedFrom()),
-                        new Integer(displayedTo()),
-                        new Integer(getTotalSize())}));
+                    html.append(messages.key(
+                        Messages.GUI_LIST_TITLE_TEXT_4,
+                        new Object[] {
+                            m_name.key(getWp().getLocale()),
+                            new Integer(displayedFrom()),
+                            new Integer(displayedTo()),
+                            new Integer(getTotalSize())}));
                 } else {
-                    html.append(messages.key(Messages.GUI_LIST_TITLE_FILTERED_TEXT_5, new Object[] {
-                        m_name.key(getWp().getLocale()),
-                        new Integer(displayedFrom()),
-                        new Integer(displayedTo()),
-                        new Integer(getSize()),
-                        new Integer(getTotalSize())}));
+                    html.append(messages.key(
+                        Messages.GUI_LIST_TITLE_FILTERED_TEXT_5,
+                        new Object[] {
+                            m_name.key(getWp().getLocale()),
+                            new Integer(displayedFrom()),
+                            new Integer(displayedTo()),
+                            new Integer(getSize()),
+                            new Integer(getTotalSize())}));
                 }
             } else {
                 if (isNotSearching) {
-                    html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_TEXT_2, new Object[] {
-                        m_name.key(getWp().getLocale()),
-                        new Integer(getTotalSize())}));
+                    html.append(messages.key(
+                        Messages.GUI_LIST_SINGLE_TITLE_TEXT_2,
+                        new Object[] {m_name.key(getWp().getLocale()), new Integer(getTotalSize())}));
                 } else {
-                    html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3, new Object[] {
-                        m_name.key(getWp().getLocale()),
-                        new Integer(getSize()),
-                        new Integer(getTotalSize())}));
+                    html.append(messages.key(
+                        Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3,
+                        new Object[] {
+                            m_name.key(getWp().getLocale()),
+                            new Integer(getSize()),
+                            new Integer(getTotalSize())}));
                 }
             }
             html.append("\n");
