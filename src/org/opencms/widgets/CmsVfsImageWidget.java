@@ -414,7 +414,9 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         Map<String, String> result = super.getGalleryOpenParams(cms, widgetDialog, param, resource, hashId);
         // the current element value will be read by java-script including the image input field and the scale input field
         StringBuffer currentElement = new StringBuffer("'+document.getElementById('");
-        currentElement.append(PREFIX_IMAGE).append(param.getId());
+        if (param != null) {
+            currentElement.append(PREFIX_IMAGE).append(param.getId());
+        }
         currentElement.append("').getAttribute('value')+'");
         // only try reading scale and format info if formats are used
         if (getWidgetConfiguration(cms, widgetDialog, param).isShowFormat()) {
