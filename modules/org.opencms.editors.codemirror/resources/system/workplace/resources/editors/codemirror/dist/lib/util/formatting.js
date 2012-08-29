@@ -98,6 +98,8 @@ CodeMirror.modeExtensions["javascript"] = {
   getNonBreakableBlocks: function (text) {
     var nonBreakableRegexes = [
         new RegExp("for\\s*?\\(([\\s\\S]*?)\\)"),
+        new RegExp("\\\\\"([\\s\\S]*?)(\\\\\"|$)"),
+        new RegExp("\\\\\'([\\s\\S]*?)(\\\\\'|$)"),
         new RegExp("'([\\s\\S]*?)('|$)"),
         new RegExp("\"([\\s\\S]*?)(\"|$)"),
         new RegExp("//.*([\r\n]|$)")
@@ -129,7 +131,7 @@ CodeMirror.modeExtensions["javascript"] = {
   autoFormatLineBreaks: function (text, startPos, endPos) {
     text = text.substring(startPos, endPos);
     var curPos = 0;
-    var reLinesSplitter = new RegExp("(;|\\{|\\})([^\r\n])", "g");
+    var reLinesSplitter = new RegExp("(;|\\{|\\})([^\r\n;])", "g");
     var nonBreakableBlocks = this.getNonBreakableBlocks(text);
     if (nonBreakableBlocks != null) {
       var res = "";

@@ -29,7 +29,7 @@
     if (!context) var context = [];
     context.push(tprop);
     
-    completionList = getCompletions(token, context); 
+    var completionList = getCompletions(token, context); 
     completionList = completionList.sort();
     //prevent autocomplete for last word, instead show dropdown with one word
     if(completionList.length == 1) {
@@ -43,7 +43,7 @@
   
   CodeMirror.pigHint = function(editor) {
     return scriptHint(editor, pigKeywordsU, function (e, cur) {return e.getTokenAt(cur);});
-  }
+  };
  
  function toTitleCase(str) {
     return str.replace(/(?:^|\s)\w/g, function(match) {

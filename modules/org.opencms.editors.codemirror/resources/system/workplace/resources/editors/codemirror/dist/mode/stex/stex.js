@@ -54,7 +54,7 @@ CodeMirror.defineMode("stex", function(cmCfg, modeCfg)
 	    };
 	    this.closeBracket = function(content) {
 	    };
-	}
+	};
     }
 
     var plugins = new Array();
@@ -178,5 +178,5 @@ CodeMirror.defineMode("stex", function(cmCfg, modeCfg)
  };
 });
 
-
 CodeMirror.defineMIME("text/x-stex", "stex");
+CodeMirror.defineMIME("text/x-latex", "stex");

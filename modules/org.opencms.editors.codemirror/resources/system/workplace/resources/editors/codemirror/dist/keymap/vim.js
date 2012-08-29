@@ -70,7 +70,7 @@
     for (var prop in o) if (o.hasOwnProperty(prop)) f(prop, o[prop]);
   }
   function iterList(l, f) {
-    for (var i in l) f(l[i]);
+    for (var i = 0; i < l.length; ++i) f(l[i]);
   }
   function toLetter(ch) {
     // T -> t, Shift-T -> T, '*' -> *, "Space" -> " "
@@ -224,6 +224,16 @@
     cm.setOption("keyMap", "vim-insert");
   }
 
+  function dialog(cm, text, shortText, f) {
+    if (cm.openDialog) cm.openDialog(text, f);
+    else f(prompt(shortText, ""));
+  }
+  function showAlert(cm, text) {
+    var esc = text.replace(/[<&]/, function(ch) { return ch == "<" ? "&lt;" : "&amp;"; });
+    if (cm.openDialog) cm.openDialog(esc + " <button type=button>OK</button>");
+    else alert(text);
+  }
+
   // main keymap
   var map = CodeMirror.keyMap.vim = {
     // Pipe (|); TODO: should be *screen* chars, so need a util function to turn tabs into spaces?
@@ -293,6 +303,16 @@
       count == "" ? cm.setCursor(cm.lineCount()) : cm.setCursor(parseInt(count, 10)-1);
       popCount();
       CodeMirror.commands.goLineStart(cm);
+    },
+    "':'": function(cm) {
+      var exModeDialog = ': <input type="text" style="width: 90%"/>';
+      dialog(cm, exModeDialog, ':', function(command) {
+        if (command.match(/^\d+$/)) {
+          cm.setCursor(command - 1, cm.getCursor().ch);
+        } else {
+          showAlert(cm, "Bad command: " + command);
+        }
+      });
     },
     nofallthrough: true, style: "fat-cursor"
   };
@@ -483,9 +503,9 @@
     setupPrefixBindingForKey(toCombo(ch));
     setupPrefixBindingForKey(toCombo(ch.toLowerCase()));
   }
-  iterList(SPECIAL_SYMBOLS, function (ch) {
-    setupPrefixBindingForKey(toCombo(ch));
-  });
+  for (var i = 0; i < SPECIAL_SYMBOLS.length; ++i) {
+    setupPrefixBindingForKey(toCombo(SPECIAL_SYMBOLS.charAt(i)));
+  }
   setupPrefixBindingForKey("Space");
 
   CodeMirror.keyMap["vim-prefix-y"] = {
