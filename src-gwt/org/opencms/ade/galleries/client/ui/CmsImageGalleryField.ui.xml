@@ -1,0 +1,69 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmi="urn:import:org.opencms.gwt.client.ui.input" 
+>
+	<ui:with field="layout" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+<ui:style>
+	div>div.faider{
+		right: 16px;
+		cursor: text;
+		top: 0px;
+		height: 18px;
+	}
+	.galleryField{
+		border: 1px solid #7788AA;
+		position:relative;
+		background: none repeat scroll 0 0 white;
+    	margin-left: 90px;
+    	margin-bottom: 5px;
+    	border-radius: 3px;
+    	width: auto;
+	}
+	.galleryField input {
+		border: none;
+		box-shadow: none;
+		border-radius: 3px;
+		width: 97%;
+		height: 18px;
+		font-size: 12px;
+		color: #222222;
+    	font-family: Verdana,Helvetica,Arial,sans-serif;
+	}
+	.opener{
+		position: absolute;
+		right: 3px;
+		top: 1px;
+	}
+	.imagePriview {
+		height: 110px;
+		width: 80px;
+		float: left;
+		border: 1px solid #7788AA;
+		border-radius: 3px;
+	}
+	.formats{
+	 	height: 18px;
+	 	width: auto;
+	 	margin-left: 90px;
+	 	margin-bottom: 5px;
+	}
+	
+	.descriptionField{
+		margin-left: 90px;
+	}
+	
+</ui:style>
+<g:FlowPanel>
+<g:SimplePanel ui:field="m_imageField"  addStyleNames="{style.imagePriview}"/>
+<g:FlowPanel styleName="{style.galleryField}">
+	<g:TextBox ui:field="m_textbox" />
+	<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.opener}"/>
+	<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.faider}" />
+</g:FlowPanel>
+<cmi:CmsSelectBox ui:field="m_formatSelection" addStyleNames="{style.formats}"/>
+<cmi:CmsTextArea  ui:field="m_descriptionArea" addStyleNames="{style.descriptionField}"/>
+</g:FlowPanel>
+</ui:UiBinder>

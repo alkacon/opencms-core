@@ -27,72 +27,55 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
-import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * A widget for selecting a resource from an ADE gallery dialog.<p>
  * 
  * @since 8.0.0
  */
-public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
+public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * The UI Binder interface for this widget.<p>
      */
-    protected interface I_CmsGalleryFieldUiBinder extends UiBinder<Panel, CmsGalleryField> {
+    protected interface I_CmsImageGalleryFieldUiBinder extends UiBinder<Panel, CmsImageGalleryField> {
         // binder interface
     }
 
     /** The widget type. */
-    public static final String WIDGET_TYPE = "gallery";
+    @SuppressWarnings("hiding")
+    public static final String WIDGET_TYPE = "imageGallery";
 
     /** The ui binder for this widget. */
-    private static I_CmsGalleryFieldUiBinder uibinder = GWT.create(I_CmsGalleryFieldUiBinder.class);
-
-    /** The fading element. */
-    @UiField
-    protected Label m_fader;
-
-    /** The button to to open the selection. */
-    @UiField
-    protected CmsPushButton m_opener;
-
-    /** The gallery pop-up. */
-    protected CmsPopup m_popup;
-
-    /** The textbox containing the currently selected path. */
-    @UiField
-    protected TextBox m_textbox;
+    private static I_CmsImageGalleryFieldUiBinder uibinder = GWT.create(I_CmsImageGalleryFieldUiBinder.class);
 
     /** The start gallery path. */
     private String m_galleryPath;
@@ -115,22 +98,32 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /** The use formats flag. */
     private boolean m_useFormats;
 
-    /**
-     * Default constructor.<p>
-     * */
-    public CmsGalleryField() {
+    /***/
+    @UiField
+    protected CmsTextArea m_descriptionArea;
 
-    }
+    /***/
+    @UiField
+    protected CmsSelectBox m_formatSelection;
 
     /** 
      * Constructs a new gallery widget.<p>
      * 
      * @param iconImage the icon image class 
      */
-    public CmsGalleryField(String iconImage) {
+    public CmsImageGalleryField(String iconImage) {
 
         initWidget(uibinder.createAndBindUi(this));
 
+        Map<String, String> selectItems = new HashMap<String, String>();
+        selectItems.put("value1", "Label1");
+        selectItems.put("value2", "Label2");
+
+        m_descriptionArea.getTextArea().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBox());
+        m_descriptionArea.getTextAreaContainer().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
+        m_descriptionArea.setRows(3);
+        m_descriptionArea.getTextAreaContainer().onResize();
+        m_formatSelection.setItems(selectItems);
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_opener.setImageClass(iconImage != null ? iconImage : I_CmsImageBundle.INSTANCE.style().directoryIcon());
     }
@@ -158,6 +151,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
+    @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
         return addHandler(handler, ValueChangeEvent.getType());
@@ -166,6 +160,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
+    @Override
     public String getApparentValue() {
 
         return getFormValueAsString();
@@ -174,6 +169,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
+    @Override
     public FieldType getFieldType() {
 
         return FieldType.STRING;
@@ -182,6 +178,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValue()
      */
+    @Override
     public Object getFormValue() {
 
         return m_textbox.getValue();
@@ -190,6 +187,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFormValueAsString()
      */
+    @Override
     public String getFormValueAsString() {
 
         return m_textbox.getValue();
@@ -198,153 +196,79 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#isEnabled()
      */
+    @Override
     public boolean isEnabled() {
 
         return m_textbox.isEnabled();
     }
 
     /**
-     * Parses the widget configuration.<p>
+     * On text box blur.<p>
+     * @param event the event
+     */
+    @Override
+    @UiHandler("m_textbox")
+    public void onBlur(BlurEvent event) {
+
+        setFaded((m_textbox.getValue().length() * 6.88) > m_textbox.getOffsetWidth());
+        setTitle(m_textbox.getValue());
+        CmsDomUtil.setCaretPosition(m_textbox.getElement(), 0);
+    }
+
+    /**
+     * On fader click.<p>
      * 
-     * @param configuration the widget configuration as a JSON string
+     * @param event the event
      */
-    public native void parseConfiguration(String configuration)/*-{
-        var config;
-        if (typeof JSON != 'undefined') {
-            config = JSON.parse(configuration);
-        } else {
-            config = eval("(" + configuration + ")");
-        }
-        if (config.types)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setTypes(Ljava/lang/String;)(config.types);
-        if (config.gallerypath)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
-        if (config.gallerytypes)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
-        if (config.referencepath)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setReferencePath(Ljava/lang/String;)(config.referencepath);
-        if (config.useFormats)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setUseFormats(Z)(config.useFormats);
-        if (config.imageFormats)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
-        if (config.imgaeFormatNames)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFromatNames.toString());
-    }-*/;
+    @Override
+    @UiHandler("m_fader")
+    public void onFaiderClick(ClickEvent event) {
 
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
-     */
-    public void reset() {
-
-        m_textbox.setValue("");
+        m_textbox.setFocus(true);
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
+     * On opener click.<p>
+     * 
+     * @param event the event
      */
-    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
+    @Override
+    @UiHandler("m_opener")
+    public void onOpenerClick(ClickEvent event) {
 
-        // do nothing 
+        openGalleryDialog();
+
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
+     * On text box value change.<p>
+     * 
+     * @param event the even
      */
-    public void setEnabled(boolean enabled) {
+    @Override
+    @UiHandler("m_textbox")
+    public void onTextboxChange(ValueChangeEvent<String> event) {
 
-        m_textbox.setEnabled(enabled);
+        ValueChangeEvent.fire(CmsImageGalleryField.this, getFormValueAsString());
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
+     * On text box click.<p>
+     * 
+     * @param event the event
      */
-    public void setErrorMessage(String errorMessage) {
+    @Override
+    @UiHandler("m_textbox")
+    public void onTextboxClick(ClickEvent event) {
 
-        // do nothing 
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
-     */
-    public void setFormValueAsString(String value) {
-
-        setValue(value, false);
-    }
-
-    /**
-     * Sets the galleryPath.<p>
-     *
-     * @param galleryPath the galleryPath to set
-     */
-    public void setGalleryPath(String galleryPath) {
-
-        m_galleryPath = galleryPath;
-    }
-
-    /**
-     * Sets the galleryTypes.<p>
-     *
-     * @param galleryTypes the galleryTypes to set
-     */
-    public void setGalleryTypes(String galleryTypes) {
-
-        m_galleryTypes = galleryTypes;
-    }
-
-    /**
-     * Sets the image format names.<p>
-     *
-     * @param imageFormatNames the image format names to set
-     */
-    public void setImageFormatNames(String imageFormatNames) {
-
-        m_imageFormatNames = imageFormatNames;
-    }
-
-    /**
-     * Sets the image formats.<p>
-     *
-     * @param imageFormats the image formats to set
-     */
-    public void setImageFormats(String imageFormats) {
-
-        m_imageFormats = imageFormats;
-    }
-
-    /**
-     * Sets the referencePath.<p>
-     *
-     * @param referencePath the referencePath to set
-     */
-    public void setReferencePath(String referencePath) {
-
-        m_referencePath = referencePath;
-    }
-
-    /**
-     * Sets the types.<p>
-     *
-     * @param types the types to set
-     */
-    public void setTypes(String types) {
-
-        m_types = types;
-    }
-
-    /**
-     * Sets the use image formats flag.<p>
-     *
-     * @param useFormats the use image formats flag to set
-     */
-    public void setUseFormats(boolean useFormats) {
-
-        m_useFormats = useFormats;
+        openGalleryDialog();
     }
 
     /**
      * Internal method which opens the gallery dialog.<p>
      */
-    protected void openGalleryDialog() {
+    @Override
+    public void openGalleryDialog() {
 
         if (m_popup == null) {
             m_popup = CmsGalleryFactory.createGalleryPopup(new I_CmsGalleryWidgetHandler() {
@@ -376,75 +300,68 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
-     * Sets the widget value.<p>
+     * Parses the widget configuration.<p>
      * 
-     * @param value the value to set
-     * @param fireEvent if the change event should be fired
+     * @param configuration the widget configuration as a JSON string
      */
-    protected void setValue(String value, boolean fireEvent) {
+    @Override
+    public native void parseConfiguration(String configuration)/*-{
+       var config;
+       if (typeof JSON != 'undefined') {
+       config = JSON.parse(configuration);
+       } else {
+       config = eval("(" + configuration + ")");
+       }
+       if (config.types)
+       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setTypes(Ljava/lang/String;)(config.types);
+       if (config.gallerypath)
+       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
+       if (config.gallerytypes)
+       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
+       if (config.referencepath)
+       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setReferencePath(Ljava/lang/String;)(config.referencepath);
+       if (config.useFormats)
+       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setUseFormats(Z)(config.useFormats);
+       if (config.imageFormats)
+       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
+       if (config.imgaeFormatNames)
+       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFromatNames.toString());
+       }-*/;
 
-        m_textbox.setValue(value);
-        if (fireEvent) {
-            ValueChangeEvent.fire(this, getFormValueAsString());
-        }
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
+     */
+    @Override
+    public void reset() {
+
+        m_textbox.setValue("");
     }
 
     /**
-     * On text box blur.<p>
-     * 
-     * @param event the event
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
-    @UiHandler("m_textbox")
-    void onBlur(BlurEvent event) {
+    @Override
+    public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
-        setFaded((m_textbox.getValue().length() * 6.88) > m_textbox.getOffsetWidth());
-        setTitle(m_textbox.getValue());
-        CmsDomUtil.setCaretPosition(m_textbox.getElement(), 0);
+        // do nothing 
     }
 
     /**
-     * On fader click.<p>
-     * 
-     * @param event the event
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setEnabled(boolean)
      */
-    @UiHandler("m_fader")
-    void onFaiderClick(ClickEvent event) {
+    @Override
+    public void setEnabled(boolean enabled) {
 
-        m_textbox.setFocus(true);
+        m_textbox.setEnabled(enabled);
     }
 
     /**
-     * On opener click.<p>
-     * 
-     * @param event the event
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setErrorMessage(java.lang.String)
      */
-    @UiHandler("m_opener")
-    void onOpenerClick(ClickEvent event) {
+    @Override
+    public void setErrorMessage(String errorMessage) {
 
-        openGalleryDialog();
-
-    }
-
-    /**
-     * On text box value change.<p>
-     * 
-     * @param event the even
-     */
-    @UiHandler("m_textbox")
-    void onTextboxChange(ValueChangeEvent<String> event) {
-
-        ValueChangeEvent.fire(CmsGalleryField.this, getFormValueAsString());
-    }
-
-    /**
-     * On text box click.<p>
-     * 
-     * @param event the event
-     */
-    @UiHandler("m_textbox")
-    void onTextboxClick(ClickEvent event) {
-
-        openGalleryDialog();
+        // do nothing 
     }
 
     /**
@@ -452,9 +369,111 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
      * 
      * @param faded <code>true</code> to show the fading element.<p>
      */
-    void setFaded(boolean faded) {
+    @Override
+    public void setFaded(boolean faded) {
 
         m_fader.setVisible(faded);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setFormValueAsString(java.lang.String)
+     */
+    @Override
+    public void setFormValueAsString(String value) {
+
+        setValue(value, false);
+    }
+
+    /**
+     * Sets the galleryPath.<p>
+     *
+     * @param galleryPath the galleryPath to set
+     */
+    @Override
+    public void setGalleryPath(String galleryPath) {
+
+        m_galleryPath = galleryPath;
+    }
+
+    /**
+     * Sets the galleryTypes.<p>
+     *
+     * @param galleryTypes the galleryTypes to set
+     */
+    @Override
+    public void setGalleryTypes(String galleryTypes) {
+
+        m_galleryTypes = galleryTypes;
+    }
+
+    /**
+     * Sets the image format names.<p>
+     *
+     * @param imageFormatNames the image format names to set
+     */
+    @Override
+    public void setImageFormatNames(String imageFormatNames) {
+
+        m_imageFormatNames = imageFormatNames;
+    }
+
+    /**
+     * Sets the image formats.<p>
+     *
+     * @param imageFormats the image formats to set
+     */
+    @Override
+    public void setImageFormats(String imageFormats) {
+
+        m_imageFormats = imageFormats;
+    }
+
+    /**
+     * Sets the referencePath.<p>
+     *
+     * @param referencePath the referencePath to set
+     */
+    @Override
+    public void setReferencePath(String referencePath) {
+
+        m_referencePath = referencePath;
+    }
+
+    /**
+     * Sets the types.<p>
+     *
+     * @param types the types to set
+     */
+    @Override
+    public void setTypes(String types) {
+
+        m_types = types;
+    }
+
+    /**
+     * Sets the use image formats flag.<p>
+     *
+     * @param useFormats the use image formats flag to set
+     */
+    @Override
+    public void setUseFormats(boolean useFormats) {
+
+        m_useFormats = useFormats;
+    }
+
+    /**
+     * Sets the widget value.<p>
+     * 
+     * @param value the value to set
+     * @param fireEvent if the change event should be fired
+     */
+    @Override
+    public void setValue(String value, boolean fireEvent) {
+
+        m_textbox.setValue(value);
+        if (fireEvent) {
+            ValueChangeEvent.fire(this, getFormValueAsString());
+        }
     }
 
 }
