@@ -60,8 +60,10 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        configuration += ";" + I_CmsImageBundle.INSTANCE.style().directoryIcon();
-        return new FormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.FILE_LINK));
+        return new FormWidgetWrapper(new CmsVfsWidget(
+            configuration,
+            CmsVfsSelection.FILE_LINK,
+            I_CmsImageBundle.INSTANCE.style().directoryIcon()));
     }
 
     /**
@@ -69,6 +71,9 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsVfsWidget(configuration, CmsVfsSelection.FILE_LINK);
+        return new CmsVfsWidget(
+            configuration,
+            CmsVfsSelection.FILE_LINK,
+            I_CmsImageBundle.INSTANCE.style().directoryIcon());
     }
 }

@@ -60,9 +60,10 @@ public class CmsDownloadGalleryWidgetFactory implements I_WidgetFactory, I_CmsHa
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        configuration += "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/Widgetdemo/wd_00024.html\"}";
-        configuration += ";" + I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon();
-        return new FormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.DOWNLOAD));
+        return new FormWidgetWrapper(new CmsVfsWidget(
+            configuration,
+            CmsVfsSelection.DOWNLOAD,
+            I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon()));
     }
 
     /**
@@ -70,6 +71,9 @@ public class CmsDownloadGalleryWidgetFactory implements I_WidgetFactory, I_CmsHa
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsVfsWidget(configuration, CmsVfsSelection.DOWNLOAD);
+        return new CmsVfsWidget(
+            configuration,
+            CmsVfsSelection.DOWNLOAD,
+            I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon());
     }
 }

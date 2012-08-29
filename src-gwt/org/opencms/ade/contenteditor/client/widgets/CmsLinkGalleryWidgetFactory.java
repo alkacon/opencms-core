@@ -61,9 +61,10 @@ public class CmsLinkGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasIni
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        configuration += "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/Widgetdemo/wd_00023.html\"}";
-        configuration += ";" + I_CmsImageBundle.INSTANCE.style().linkGalleryIcon();
-        return new FormWidgetWrapper(new CmsVfsWidget(configuration, CmsVfsSelection.LINK));
+        return new FormWidgetWrapper(new CmsVfsWidget(
+            configuration,
+            CmsVfsSelection.LINK,
+            I_CmsImageBundle.INSTANCE.style().linkGalleryIcon()));
     }
 
     /**
@@ -71,6 +72,9 @@ public class CmsLinkGalleryWidgetFactory implements I_WidgetFactory, I_CmsHasIni
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsVfsWidget(configuration, CmsVfsSelection.LINK);
+        return new CmsVfsWidget(
+            configuration,
+            CmsVfsSelection.LINK,
+            I_CmsImageBundle.INSTANCE.style().linkGalleryIcon());
     }
 }

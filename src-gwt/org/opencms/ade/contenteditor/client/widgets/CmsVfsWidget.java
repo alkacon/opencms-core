@@ -64,9 +64,10 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
      * @param config the configuration string given from OpenCms XSD
      * @param type the mode in witch the widget should be started
      */
-    public CmsVfsWidget(String config, String type) {
+    public CmsVfsWidget(String config, String type, String icon) {
 
         parseconfig(config);
+        m_imageClass = icon;
         m_linkSelect = new CmsVfsSelection(m_imageClass, type, m_config);
         m_linkSelect.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -173,9 +174,7 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
      * */
     private void parseconfig(String config) {
 
-        String[] configs = config.split(";");
-        m_imageClass = configs[configs.length - 1];
-        m_config = configs[0];
+        //TODO next time.
     }
 
 }

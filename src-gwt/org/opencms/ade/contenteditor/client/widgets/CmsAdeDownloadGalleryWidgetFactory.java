@@ -61,7 +61,8 @@ public class CmsAdeDownloadGalleryWidgetFactory implements I_WidgetFactory, I_Cm
 
         return new FormWidgetWrapper(new CmsGalleryWidget(
             I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon(),
-            configuration));
+            configuration,
+            false));
     }
 
     /**
@@ -69,6 +70,6 @@ public class CmsAdeDownloadGalleryWidgetFactory implements I_WidgetFactory, I_Cm
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsGalleryWidget(I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon(), configuration);
+        return new CmsGalleryWidget(I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon(), configuration, false);
     }
 }

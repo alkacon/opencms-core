@@ -31,6 +31,7 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.CmsGalleryField;
+import org.opencms.ade.galleries.client.ui.CmsImageGalleryField;
 
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -55,11 +56,16 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget {
      * @param iconImage the icon image class
      * @param config the widget configuration string
      */
-    public CmsGalleryWidget(String iconImage, String config) {
+    public CmsGalleryWidget(String iconImage, String config, boolean isImage) {
 
-        m_linkSelect = new CmsGalleryField(iconImage);
+        if (isImage) {
+            m_linkSelect = new CmsImageGalleryField(iconImage);
+        } else {
+            m_linkSelect = new CmsGalleryField(iconImage);
+            m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
+        }
         m_linkSelect.parseConfiguration(config);
-        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
+
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {

@@ -108,10 +108,10 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     private static final String CONFIGURATION_CATEGORY = "category";
 
     /** Configuration parameter to set the 'only leaf' flag parameter. */
-    private static final String CONFIGURATION_ONLYLEAFS = "onlyleafs";
+    //private static final String CONFIGURATION_ONLYLEAFS = "onlyleafs";
 
     /** Configuration parameter to set the 'property' parameter. */
-    private static final String CONFIGURATION_PROPERTY = "property";
+    //private static final String CONFIGURATION_PROPERTY = "property";
 
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
@@ -288,7 +288,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
         m_active = active;
         if (m_active) {
-            setValue(m_selectedValue);
+            setValue(m_selectedValue, true);
         }
     }
 
@@ -297,7 +297,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value) {
 
-        setValue(value, true);
+        setValue(value, false);
 
     }
 
@@ -309,6 +309,8 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         String singelValue = "";
         m_selected.clear();
         if (m_isSingelValue && !value.isEmpty()) {
+            value = value.replace(",", "");
+            singelValue = value;
             Iterator<String> it = m_categoryList.iterator();
             while (it.hasNext()) {
                 String catRootPath = it.next();
@@ -316,46 +318,40 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                     m_categoryFolder = catRootPath;
                 }
             }
-            value = value.replace(",", "");
-            String childValue = value.replace(m_categoryFolder, "");
-            singelValue = childValue;
-            String helpValue = childValue.substring(0, childValue.lastIndexOf("/"));
+            value = value.replace(m_categoryFolder, "");
+            singelValue = value;
+            String helpValue = value.substring(0, value.lastIndexOf("/"));
             while (helpValue.indexOf("/") != -1) {
                 helpValue = helpValue.substring(0, helpValue.lastIndexOf("/") + 1);
-                value += "," + m_categoryFolder + helpValue;
+                value += "," + helpValue;
                 helpValue = helpValue.substring(0, helpValue.lastIndexOf("/"));
             }
+        } else {
+            generateCategoryFolder(value.split(","));
         }
 
-        String shortvalue = value.replaceAll(m_categoryFolder, "");
-        m_selectedValue = shortvalue;
-        String[] selected = shortvalue.split(",");
-        m_selectedArray = selected;
+        m_selectedValue = value;
+        m_selectedArray = value.split(",");
+
         ArrayList<String> test = new ArrayList<String>();
-        for (int i = 0; i < selected.length; i++) {
-            m_selected.add(selected[i].replace(m_categoryFolder, ""));
-            test.add(selected[i].replace(m_categoryFolder, ""));
+        for (String selected : m_selectedArray) {
+            m_selected.add(selected);
+            test.add(selected);
         }
 
-        if (!selected[0].isEmpty()) {
+        if (!m_selectedArray[0].isEmpty()) {
             m_results = new ArrayList<CmsCategoryTreeEntry>();
             parseValues(test.toArray(new String[0]), null, 1);
             m_categoryField.buildCategoryTree(m_results, m_selected);
-        } else {
-            m_results = new ArrayList<CmsCategoryTreeEntry>();
-            m_categoryField.buildCategoryTree(m_results, m_selected);
         }
 
-        if (fireEvents) {
-            fireChangeEvent();
-        }
         if (m_isSingelValue) {
             m_selected.clear();
             m_selected.add(singelValue);
         }
 
-        if (!selected[0].isEmpty()) {
-            int elementheight = (selected.length * 24) + 2;
+        if (!m_selectedArray[0].isEmpty()) {
+            int elementheight = (m_selectedArray.length * 24) + 2;
             m_height = elementheight;
 
             if (m_height > MAX_HEIGHT) {
@@ -366,6 +362,10 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             m_height = 24;
         }
         m_categoryField.setHeight(m_height);
+
+        if (fireEvents) {
+            fireChangeEvent();
+        }
     }
 
     /**
@@ -379,15 +379,17 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         }
         String selected = "";
         if (m_isSingelValue) {
-            selected = m_cmsCategoryTree.getSelected();
+            String[] value = m_cmsCategoryTree.getSelected();
+            m_categoryFolder = value[1];
+            selected = value[0];
         } else {
             for (String s : m_cmsCategoryTree.getAllSelected()) {
                 if (!s.isEmpty()) {
-                    selected += m_categoryFolder + s + ",";
+                    selected += s + ",";
                 }
             }
         }
-        setValue(selected);
+        setValue(selected, true);
         m_cmsPopup.hide();
 
     }
@@ -424,6 +426,25 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         m_cmsPopup.showRelativeTo(m_categoryField);
         m_xcoordspopup = m_cmsPopup.getPopupLeft();
         m_ycoordspopup = m_cmsPopup.getPopupTop();
+    }
+
+    /**
+     * Creates the category folder.<p>
+     */
+    private void generateCategoryFolder(String[] values) {
+
+        String longestValue = "";
+        for (String value : values) {
+            if (value.length() > longestValue.length()) {
+                longestValue = value;
+            }
+        }
+        boolean categoryFolderFound = false;
+        while (!categoryFolderFound) {
+            String testvalue = longestValue.substring(0, values[0].indexOf("/"));
+
+        }
+
     }
 
     /**
@@ -483,7 +504,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
         for (int i = 0; i < values.length; i++) {
             String value = values[i];
-            if ((value.indexOf("/") == (value.length() - 1)) && (parent == null)) {
+            if ((level == 1) && (parent == null)) {
                 try {
                     String name = value.replace("/", "");
 
