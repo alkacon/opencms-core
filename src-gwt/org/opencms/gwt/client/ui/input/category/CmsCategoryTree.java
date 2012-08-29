@@ -185,7 +185,9 @@ public class CmsCategoryTree extends Composite {
             if (select) {
                 if (m_isSingleSelection) {
                     deselectAll(m_item.getId());
-                    m_singleResult = m_item.getId();
+                    CmsDataValue result = m_categories.get(m_item.getId());
+                    m_singleResult[0] = result.getParameter(1);
+                    m_singleResult[1] = result.getParameter(2);
                 } else {
                     Iterator<Widget> it = m_scrollList.iterator();
                     while (it.hasNext()) {
@@ -219,7 +221,7 @@ public class CmsCategoryTree extends Composite {
     protected Map<String, CmsDataValue> m_categories;
 
     /** Result string for single selection. */
-    protected String m_singleResult = "";
+    protected String m_singleResult[] = new String[2];
 
     /** List of categories. */
     protected CmsList<? extends I_CmsListItem> m_scrollList;
@@ -360,7 +362,7 @@ public class CmsCategoryTree extends Composite {
      * 
      * @return the last selected value
      */
-    public String getSelected() {
+    public String[] getSelected() {
 
         return m_singleResult;
     }
@@ -829,13 +831,8 @@ public class CmsCategoryTree extends Composite {
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
-        CmsDataValue dataValue = new CmsDataValue(
-            600,
-            3,
-            category.getTitle(),
-            CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
-            ? category.getDescription()
-            : category.getPath());
+        CmsDataValue dataValue = new CmsDataValue(600, 3, category.getTitle(), category.getPath(), "hide:"
+            + category.getBasePath());
         // add it to the list of all categories
         m_categories.put(category.getPath(), dataValue);
         // create the check box for this item 
@@ -850,7 +847,7 @@ public class CmsCategoryTree extends Composite {
         checkBox.addValueChangeHandler(new CheckBoxValueChangeHandler(treeItem));
         // set the right style for the small view
         treeItem.setSmallView(true);
-        treeItem.setId(category.getPath());
+        treeItem.setId(category.getBasePath());
         return treeItem;
     }
 
@@ -919,7 +916,9 @@ public class CmsCategoryTree extends Composite {
     }
 
     /**
-     * Helper function to sellected all selected values.<p>
+     * Helper function to selected all selected values.<p>
+     * @param result list of all selected values
+     * @param item the parent where the children have to be checked
      * */
     private void selectedChildren(List<String> result, CmsTreeItem item) {
 

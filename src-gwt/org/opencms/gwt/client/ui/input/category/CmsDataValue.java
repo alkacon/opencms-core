@@ -187,15 +187,20 @@ public class CmsDataValue extends Composite {
         for (String parameter : m_parameters) {
 
             if (i > 0) {
-                Label lable = new Label(parameter);
+                if (parameter.contains("hide:")) {
+                    m_parameters[i] = parameter.replace("hide:", "");
+                } else {
 
-                lable.getElement().setAttribute("style", "text-overflow:ellipsis; white-space: nowrap;");
-                lable.getElement().getStyle().setOverflow(Overflow.HIDDEN);
-                lable.getElement().getStyle().setWidth(cell_width, Unit.PX);
-                lable.setTitle(parameter);
+                    Label lable = new Label(parameter);
 
-                //m_table.insertCell(0, i);
-                m_table.setWidget(0, i - 1, lable);
+                    lable.getElement().setAttribute("style", "text-overflow:ellipsis; white-space: nowrap;");
+                    lable.getElement().getStyle().setOverflow(Overflow.HIDDEN);
+                    lable.getElement().getStyle().setWidth(cell_width, Unit.PX);
+                    lable.setTitle(parameter);
+
+                    //m_table.insertCell(0, i);
+                    m_table.setWidget(0, i - 1, lable);
+                }
             } else {
                 m_label.setText(parameter);
             }

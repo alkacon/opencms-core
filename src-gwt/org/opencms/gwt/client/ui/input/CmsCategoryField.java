@@ -382,12 +382,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             null);
         // set the list item widget
 
-        CmsDataValue categoryTreeItem = new CmsDataValue(
-            500,
-            4,
-            categoryBean.getTitle(),
-            categoryBean.getSubTitle(),
-            categoryBean.getLockIconTitle());
+        CmsDataValue categoryTreeItem = new CmsDataValue(500, 4, categoryBean.getTitle(), categoryBean.getSubTitle());
         categoryTreeItem.setTitle(categoryBean.getSubTitle());
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());
