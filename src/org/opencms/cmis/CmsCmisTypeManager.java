@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition;
@@ -86,11 +84,11 @@ public class CmsCmisTypeManager {
     /** The name of the propery containing the resource type name. */
     public static final String PROPERTY_RESOURCE_TYPE = PROPERTY_PREFIX_SPECIAL + "resource-type";
 
-    /** The delay between type refreshs. */
-    public static final long REFRESH_DELAY = 1000 * 60 * 10;
-
     /** CMIS type id for relationships. */
     public static final String RELATIONSHIP_TYPE_ID = BaseTypeId.CMIS_RELATIONSHIP.value();
+
+    /** Need to refresh property data after this time. */
+    public static final long UPDATE_INTERVAL = 1000 * 60 * 5;
 
     /** The logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsCmisTypeManager.class);
@@ -101,14 +99,14 @@ public class CmsCmisTypeManager {
     /** The namespace used for properties. */
     private static final String NAMESPACE = "http://opencms.org/opencms-cmis";
 
-    /** Timer used for refreshing the types/properties. */
-    protected Timer m_timer = new Timer(true);
-
     /** The admin CMS context. */
     private CmsObject m_adminCms;
 
     /** The list of OpenCms property definitions. */
     private List<CmsPropertyDefinition> m_cmsPropertyDefinitions;
+
+    /** The last update time. */
+    private long m_lastUpdate;
 
     /** The internal list of type definitions. */
     private List<TypeDefinitionContainer> m_typeList;
@@ -557,56 +555,13 @@ public class CmsCmisTypeManager {
     }
 
     /**
-     * Adds a type to collection with inheriting base type properties.
-     * 
-     * @param type the type definition to add
-     * 
-     * @return true if the type definition was added 
-     */
-    public boolean addType(TypeDefinition type) {
-
-        if (type == null) {
-            return false;
-        }
-
-        if (type.getBaseTypeId() == null) {
-            return false;
-        }
-
-        // find base type
-        TypeDefinition baseType = null;
-        if (type.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT) {
-            baseType = copyTypeDefintion(m_types.get(DOCUMENT_TYPE_ID).getTypeDefinition());
-        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_FOLDER) {
-            baseType = copyTypeDefintion(m_types.get(FOLDER_TYPE_ID).getTypeDefinition());
-        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_RELATIONSHIP) {
-            baseType = copyTypeDefintion(m_types.get(RELATIONSHIP_TYPE_ID).getTypeDefinition());
-        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_POLICY) {
-            baseType = copyTypeDefintion(m_types.get(POLICY_TYPE_ID).getTypeDefinition());
-        } else {
-            return false;
-        }
-
-        AbstractTypeDefinition newType = (AbstractTypeDefinition)copyTypeDefintion(type);
-
-        // copy property definition
-        for (PropertyDefinition<?> propDef : baseType.getPropertyDefinitions().values()) {
-            ((AbstractPropertyDefinition<?>)propDef).setIsInherited(Boolean.TRUE);
-            newType.addPropertyDefinition(propDef);
-        }
-
-        // add it
-        addTypeInternal(newType);
-        return true;
-    }
-
-    /**
      * Gets a list of names of OpenCms property definitions.<p>
      * 
      * @return the list of OpenCms property names 
      */
     public List<String> getCmsPropertyNames() {
 
+        refresh();
         List<String> result = new ArrayList<String>();
         for (CmsPropertyDefinition propDef : m_cmsPropertyDefinitions) {
             result.add(propDef.getName());
@@ -622,6 +577,7 @@ public class CmsCmisTypeManager {
      */
     public TypeDefinition getType(String typeId) {
 
+        refresh();
         TypeDefinitionContainer tc = m_types.get(typeId);
         if (tc == null) {
             return null;
@@ -644,6 +600,7 @@ public class CmsCmisTypeManager {
 
     String typeId, boolean includePropertyDefinitions, BigInteger maxItems, BigInteger skipCount) {
 
+        refresh();
         TypeDefinitionListImpl result = new TypeDefinitionListImpl(new ArrayList<TypeDefinition>());
 
         int skip = (skipCount == null ? 0 : skipCount.intValue());
@@ -710,6 +667,7 @@ public class CmsCmisTypeManager {
      */
     public TypeDefinition getTypeDefinition(String typeId) {
 
+        refresh();
         TypeDefinitionContainer tc = m_types.get(typeId);
         if (tc == null) {
             throw new CmisObjectNotFoundException("Type '" + typeId + "' is unknown!");
@@ -731,6 +689,7 @@ public class CmsCmisTypeManager {
 
     String typeId, BigInteger depth, boolean includePropertyDefinitions) {
 
+        refresh();
         List<TypeDefinitionContainer> result = new ArrayList<TypeDefinitionContainer>();
 
         // check depth
@@ -751,38 +710,6 @@ public class CmsCmisTypeManager {
         }
 
         return result;
-    }
-
-    /**
-     * Creates a CMIS relationship subtype for a given OpenCms relation type.<p>
-     * 
-     * @param relType the OpenCms relation type
-     */
-    protected void createRelationshipType(CmsRelationType relType) {
-
-        // relationship types
-        RelationshipTypeDefinitionImpl relationshipType = new RelationshipTypeDefinitionImpl();
-        relationshipType.setBaseTypeId(BaseTypeId.CMIS_RELATIONSHIP);
-        relationshipType.setParentTypeId(RELATIONSHIP_TYPE_ID);
-        relationshipType.setIsControllableAcl(Boolean.FALSE);
-        relationshipType.setIsControllablePolicy(Boolean.FALSE);
-        relationshipType.setIsCreatable(Boolean.valueOf(!relType.isDefinedInContent()));
-        relationshipType.setDescription(relType.getName());
-        relationshipType.setDisplayName(relType.getName());
-        relationshipType.setIsFileable(Boolean.FALSE);
-        relationshipType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
-        relationshipType.setLocalName(relType.getName());
-        relationshipType.setLocalNamespace(NAMESPACE);
-        relationshipType.setIsQueryable(Boolean.FALSE);
-        String id = "opencms:" + relType.getName().toUpperCase();
-        relationshipType.setQueryName(id);
-        relationshipType.setId(id);
-        List<String> typeList = new ArrayList<String>();
-        typeList.add("cmis:document");
-        typeList.add("cmis:folder");
-        relationshipType.setAllowedSourceTypes(typeList);
-        relationshipType.setAllowedTargetTypes(typeList);
-        addType(relationshipType);
     }
 
     /**
@@ -892,22 +819,7 @@ public class CmsCmisTypeManager {
         for (CmsRelationType relType : CmsRelationType.getAll()) {
             createRelationshipType(relType);
         }
-
-        m_timer.purge();
-        m_timer.schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-
-                try {
-                    setup();
-                } catch (CmsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-
-        }, REFRESH_DELAY, REFRESH_DELAY);
-
+        m_lastUpdate = System.currentTimeMillis();
     }
 
     /**
@@ -929,6 +841,50 @@ public class CmsCmisTypeManager {
             Updatability.ONCREATE,
             false,
             true));
+    }
+
+    /**
+     * Adds a type to collection with inheriting base type properties.
+     * 
+     * @param type the type definition to add
+     * 
+     * @return true if the type definition was added 
+     */
+    private boolean addType(TypeDefinition type) {
+
+        if (type == null) {
+            return false;
+        }
+
+        if (type.getBaseTypeId() == null) {
+            return false;
+        }
+
+        // find base type
+        TypeDefinition baseType = null;
+        if (type.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT) {
+            baseType = copyTypeDefintion(m_types.get(DOCUMENT_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_FOLDER) {
+            baseType = copyTypeDefintion(m_types.get(FOLDER_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_RELATIONSHIP) {
+            baseType = copyTypeDefintion(m_types.get(RELATIONSHIP_TYPE_ID).getTypeDefinition());
+        } else if (type.getBaseTypeId() == BaseTypeId.CMIS_POLICY) {
+            baseType = copyTypeDefintion(m_types.get(POLICY_TYPE_ID).getTypeDefinition());
+        } else {
+            return false;
+        }
+
+        AbstractTypeDefinition newType = (AbstractTypeDefinition)copyTypeDefintion(type);
+
+        // copy property definition
+        for (PropertyDefinition<?> propDef : baseType.getPropertyDefinitions().values()) {
+            ((AbstractPropertyDefinition<?>)propDef).setIsInherited(Boolean.TRUE);
+            newType.addPropertyDefinition(propDef);
+        }
+
+        // add it
+        addTypeInternal(newType);
+        return true;
     }
 
     /**
@@ -966,6 +922,38 @@ public class CmsCmisTypeManager {
     }
 
     /**
+     * Creates a CMIS relationship subtype for a given OpenCms relation type.<p>
+     * 
+     * @param relType the OpenCms relation type
+     */
+    private void createRelationshipType(CmsRelationType relType) {
+
+        // relationship types
+        RelationshipTypeDefinitionImpl relationshipType = new RelationshipTypeDefinitionImpl();
+        relationshipType.setBaseTypeId(BaseTypeId.CMIS_RELATIONSHIP);
+        relationshipType.setParentTypeId(RELATIONSHIP_TYPE_ID);
+        relationshipType.setIsControllableAcl(Boolean.FALSE);
+        relationshipType.setIsControllablePolicy(Boolean.FALSE);
+        relationshipType.setIsCreatable(Boolean.valueOf(!relType.isDefinedInContent()));
+        relationshipType.setDescription(relType.getName());
+        relationshipType.setDisplayName(relType.getName());
+        relationshipType.setIsFileable(Boolean.FALSE);
+        relationshipType.setIsIncludedInSupertypeQuery(Boolean.TRUE);
+        relationshipType.setLocalName(relType.getName());
+        relationshipType.setLocalNamespace(NAMESPACE);
+        relationshipType.setIsQueryable(Boolean.FALSE);
+        String id = "opencms:" + relType.getName().toUpperCase();
+        relationshipType.setQueryName(id);
+        relationshipType.setId(id);
+        List<String> typeList = new ArrayList<String>();
+        typeList.add("cmis:document");
+        typeList.add("cmis:folder");
+        relationshipType.setAllowedSourceTypes(typeList);
+        relationshipType.setAllowedTargetTypes(typeList);
+        addType(relationshipType);
+    }
+
+    /**
      * Collects the descendants of a type.<p>
      * 
      * @param depth the depth up to which the descendants should be collected 
@@ -999,6 +987,21 @@ public class CmsCmisTypeManager {
         }
 
         return result;
+    }
+
+    /** 
+     * Refreshes the internal data if the last update was longer ago than the udpate interval.<p>
+     */
+    private synchronized void refresh() {
+
+        try {
+            long now = System.currentTimeMillis();
+            if ((now - m_lastUpdate) > UPDATE_INTERVAL) {
+                setup();
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
 }
