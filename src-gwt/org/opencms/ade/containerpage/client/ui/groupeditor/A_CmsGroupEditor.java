@@ -466,21 +466,38 @@ public abstract class A_CmsGroupEditor extends Composite {
         m_editorDialog.setMainContent(m_dialogContent);
         // position dialog and show it
         if (m_groupContainerPosition != null) {
-            if (m_groupContainerPosition.getLeft() > 600) {
+            int lefthandSpace = m_groupContainerPosition.getLeft() - Window.getScrollLeft();
+            int righthandSpace = (Window.getClientWidth() + Window.getScrollLeft())
+                - (m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth());
+            int requiredWidth = 530;
+            int left = m_groupContainerPosition.getLeft();
+            if (requiredWidth > (righthandSpace + m_groupContainerPosition.getWidth())) {
+                left = (Window.getClientWidth() + Window.getScrollLeft()) - requiredWidth;
+            }
+            if (left < Window.getScrollLeft()) {
+                left = 0;
+            }
+            if (lefthandSpace > requiredWidth) {
                 // place left of the group container if there is enough space
                 m_editorDialog.setPopupPosition(
-                    m_groupContainerPosition.getLeft() - 530,
+                    m_groupContainerPosition.getLeft() - requiredWidth,
                     m_groupContainerPosition.getTop() - 1);
             } else if ((m_groupContainerPosition.getTop() - Window.getScrollTop()) > (contentHeight
                 + DIALOG_BASE_HEIGHT + 50)) {
                 // else place above if there is enough space
-                m_editorDialog.setPopupPosition(m_groupContainerPosition.getLeft(), m_groupContainerPosition.getTop()
+
+                m_editorDialog.setPopupPosition(left, m_groupContainerPosition.getTop()
                     - (contentHeight + DIALOG_BASE_HEIGHT));
-            } else {
-                // else on the right
+            } else if (righthandSpace > requiredWidth) {
+                // else on the right if there is enough space
                 m_editorDialog.setPopupPosition(
                     m_groupContainerPosition.getLeft() + m_groupContainerPosition.getWidth() + 20,
                     m_groupContainerPosition.getTop() - 1);
+            } else {
+                // last resort, place below
+                m_editorDialog.setPopupPosition(
+                    left,
+                    m_groupContainerPosition.getTop() + m_groupContainerPosition.getHeight() + 20);
             }
             m_editorDialog.show();
         } else {
