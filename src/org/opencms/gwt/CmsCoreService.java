@@ -238,7 +238,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 fromPath,
                 includeSubCats,
                 repositories);
-            result = buildCategoryTree(categories);
+            result = buildCategoryTree(cms, categories);
         } catch (Throwable e) {
             error(e);
         }
@@ -252,10 +252,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<CmsCategoryTreeEntry> result = null;
+        CmsObject cms = getCmsObject();
         try {
             // get the categories
-            List<CmsCategory> categories = catService.readCategories(getCmsObject(), "", true, sitePath);
-            result = buildCategoryTree(categories);
+            List<CmsCategory> categories = catService.readCategories(cms, "", true, sitePath);
+            result = buildCategoryTree(cms, categories);
         } catch (Throwable e) {
             error(e);
         }
@@ -699,17 +700,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /**
      * Builds the tree structure for the given categories.<p>
      * 
+     * @param cms the current cms context
      * @param categories the categories
      * 
      * @return the tree root element
      * 
      * @throws Exception if something goes wrong
      */
-    private List<CmsCategoryTreeEntry> buildCategoryTree(List<CmsCategory> categories) throws Exception {
+    private List<CmsCategoryTreeEntry> buildCategoryTree(CmsObject cms, List<CmsCategory> categories) throws Exception {
 
         List<CmsCategoryTreeEntry> result = new ArrayList<CmsCategoryTreeEntry>();
         for (CmsCategory category : categories) {
             CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
+            current.setSitePath(cms.getRequestContext().removeSiteRoot(category.getRootPath()));
             String parentPath = CmsResource.getParentFolder(current.getPath());
             CmsCategoryTreeEntry parent = null;
             parent = findCategory(result, parentPath);

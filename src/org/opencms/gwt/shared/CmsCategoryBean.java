@@ -53,8 +53,11 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
     /** The category path. */
     private String m_path;
 
-    /** The category's base path. */
+    /** The category's root path. */
     private String m_rootPath;
+
+    /** The category's site path. */
+    private String m_sitePath;
 
     /** The category title. */
     private String m_title;
@@ -89,6 +92,7 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
             categoryTreeEntry.getPath(),
             categoryTreeEntry.getBasePath(),
             categoryTreeEntry.getRootPath());
+        m_sitePath = categoryTreeEntry.getSitePath();
     }
 
     /**
@@ -170,6 +174,16 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
     }
 
     /**
+     * Returns the category site path.<p>
+     * 
+     * @return the category site path
+     */
+    public String getSitePath() {
+
+        return m_sitePath;
+    }
+
+    /**
      * Returns the title.<p>
      *
      * @return the title
@@ -210,6 +224,16 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
     public void setPath(String path) {
 
         m_path = path;
+    }
+
+    /**
+     * Sets the category site path.<p>
+     * 
+     * @param sitePath category site path
+     */
+    public void setSitePath(String sitePath) {
+
+        m_sitePath = sitePath;
     }
 
     /**
