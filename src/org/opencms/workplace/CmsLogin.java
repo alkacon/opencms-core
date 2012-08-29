@@ -1397,18 +1397,18 @@ public class CmsLogin extends CmsJspLoginBean {
     private String getDirectEditPath(CmsUserSettings userSettings) {
 
         if (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
-            String folder = userSettings.getStartFolder();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(getCmsObject().getRequestContext().getSiteRoot())
-                || getCmsObject().getRequestContext().getSiteRoot().equals("/")) {
-                folder = CmsStringUtil.joinPaths(userSettings.getStartSite(), folder);
-            }
+            String originalSiteRoot = getCmsObject().getRequestContext().getSiteRoot();
+
             try {
+                getCmsObject().getRequestContext().setSiteRoot(userSettings.getStartSite());
+                String folder = userSettings.getStartFolder();
                 CmsResource targetRes = getCmsObject().readDefaultFile(folder);
                 if (targetRes != null) {
-                    return targetRes.getRootPath();
+                    return getCmsObject().getSitePath(targetRes);
                 }
             } catch (Exception e) {
                 LOG.debug(e);
+                getCmsObject().getRequestContext().setSiteRoot(originalSiteRoot);
             }
         }
         return null;
