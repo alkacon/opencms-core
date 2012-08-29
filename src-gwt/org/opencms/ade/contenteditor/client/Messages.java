@@ -75,6 +75,9 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_SAVE_0 = "GUI_TOOLBAR_SAVE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_SHOW_HELP_0 = "GUI_TOOLBAR_SHOW_HELP_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
 

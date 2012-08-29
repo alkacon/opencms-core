@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
+import com.alkacon.acacia.client.HighlightingHandler;
 import com.alkacon.acacia.client.I_InlineFormParent;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.shared.TabInfo;
@@ -41,6 +42,7 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -129,6 +131,9 @@ public final class CmsContentEditor {
 
     /** The id of the edited entity. */
     private String m_entityId;
+
+    /** The hide help bubbles button. */
+    private CmsToggleButton m_hideHelpBubblesButton;
 
     /** Flag indicating the editor was opened as the stand alone version, not from within any other module. */
     private boolean m_isStandAlone;
@@ -403,6 +408,7 @@ public final class CmsContentEditor {
         setContentDefinition(contentDefinition);
         initToolbar();
         if (inline && (formParent != null)) {
+            m_hideHelpBubblesButton.setVisible(false);
             setNativeResourceInfo(m_sitePath, m_locale);
             m_editor.renderInlineEntity(m_entityId, formParent);
         } else {
@@ -738,7 +744,38 @@ public final class CmsContentEditor {
             }
         });
         m_toolbar.addLeft(m_openFormButton);
+        m_hideHelpBubblesButton = new CmsToggleButton();
+        m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_SHOW_HELP_0));
+        m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.EDIT.getIconClass());
+        m_hideHelpBubblesButton.setButtonStyle(ButtonStyle.IMAGE, null);
+        m_hideHelpBubblesButton.setSize(Size.big);
+
+        m_hideHelpBubblesButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                CmsToggleButton button = (CmsToggleButton)event.getSource();
+                hideHelpBubbles(button.isDown());
+            }
+        });
+        if (!CmsCoreProvider.get().isShowEditorHelp()) {
+            m_hideHelpBubblesButton.setDown(true);
+            HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), true);
+        }
+        m_toolbar.addLeft(m_hideHelpBubblesButton);
+
         RootPanel.get().add(m_toolbar);
+    }
+
+    /**
+     * Hides the editor help bubbles.<p>
+     * 
+     * @param hide <code>true</code> to hide the help bubbles
+     */
+    void hideHelpBubbles(boolean hide) {
+
+        m_editor.setShowEditorHelp(!hide);
+        HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), hide);
     }
 
     /**

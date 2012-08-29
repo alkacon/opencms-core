@@ -35,8 +35,10 @@ import com.alkacon.vie.shared.I_Entity;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,9 @@ import com.google.gwt.user.client.Command;
  * The content editor base.<p>
  */
 public class CmsEditorBase extends EditorBase {
+
+    /** The core RPC service instance. */
+    private I_CmsCoreServiceAsync m_coreSvc;
 
     /** The content service. */
     private I_CmsContentServiceAsync m_service;
@@ -276,6 +281,36 @@ public class CmsEditorBase extends EditorBase {
     }
 
     /**
+     * Sets the show editor help flag to the user session.<p>
+     * 
+     * @param show the show editor help flag
+     */
+    public void setShowEditorHelp(final boolean show) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                getCoreService().setShowEditorHelp(show, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                //nothing to do
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Removes the given entity from the entity VIE store.<p>
      * 
      * @param entityId the entity id
@@ -283,5 +318,18 @@ public class CmsEditorBase extends EditorBase {
     public void unregistereEntity(String entityId) {
 
         Vie.getInstance().removeEntity(entityId);
+    }
+
+    /**
+     * Returns the core RPC service.<p>
+     * 
+     * @return the core service
+     */
+    protected I_CmsCoreServiceAsync getCoreService() {
+
+        if (m_coreSvc == null) {
+            m_coreSvc = CmsCoreProvider.getService();
+        }
+        return m_coreSvc;
     }
 }

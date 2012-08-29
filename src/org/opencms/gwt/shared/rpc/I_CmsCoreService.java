@@ -208,11 +208,20 @@ public interface I_CmsCoreService extends RemoteService {
     void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean) throws CmsRpcException;
 
     /**
+     * Sets the show editor help flag.<p>
+     * 
+     * @param showHelp the show help flag
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void setShowEditorHelp(boolean showHelp) throws CmsRpcException;
+
+    /**
      * Writes the tool-bar visibility into the session cache.<p>
      * 
      * @param visible <code>true</code> if the tool-bar is visible
      * 
-     * @throws CmsRpcException
+     * @throws CmsRpcException if something goes wrong 
      */
     void setToolbarVisible(boolean visible) throws CmsRpcException;
 

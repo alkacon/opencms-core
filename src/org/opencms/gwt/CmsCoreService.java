@@ -487,6 +487,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsObject cms = getCmsObject();
         String navigationUri = cms.getRequestContext().getUri();
         boolean toolbarVisible = getSessionCache().isToolbarVisible();
+        boolean isShowHelp = getSessionCache().isShowEditorHelp();
 
         CmsUUID structureId = null;
 
@@ -522,6 +523,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             structureId,
             new HashMap<String, String>(OpenCms.getResourceManager().getExtensionMapping()),
             System.currentTimeMillis(),
+            isShowHelp,
             toolbarVisible,
             defaultWorkplaceLink,
             gwtBuildIds);
@@ -551,6 +553,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsResource resource = getCmsObject().readResource(sitePath);
             setAvailabilityInfo(resource, bean);
         } catch (CmsException e) {
+            error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setShowEditorHelp(boolean)
+     */
+    public void setShowEditorHelp(boolean visible) throws CmsRpcException {
+
+        try {
+            ensureSession();
+            getSessionCache().setShowEditorHelp(visible);
+        } catch (Throwable e) {
             error(e);
         }
     }

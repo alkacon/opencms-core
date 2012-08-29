@@ -51,6 +51,9 @@ public final class CmsADESessionCache {
     /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
 
+    /** The show editor help flag. */
+    private boolean m_isShowEditorHelp;
+
     /** The ADE recent list. */
     private List<CmsContainerElementBean> m_recentLists;
 
@@ -74,6 +77,7 @@ public final class CmsADESessionCache {
         List<CmsContainerElementBean> adeRecentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(
             maxElems));
         m_recentLists = Collections.synchronizedList(adeRecentList);
+        m_isShowEditorHelp = true;
     }
 
     /**
@@ -96,6 +100,16 @@ public final class CmsADESessionCache {
     public List<CmsContainerElementBean> getRecentList() {
 
         return m_recentLists;
+    }
+
+    /**
+     * Returns the show editor help flag.<p>
+     *
+     * @return the show editor help flag
+     */
+    public boolean isShowEditorHelp() {
+
+        return m_isShowEditorHelp;
     }
 
     /**
@@ -131,6 +145,16 @@ public final class CmsADESessionCache {
         for (CmsContainerElementBean element : m_recentLists) {
             setCacheContainerElement(element.editorHash(), element);
         }
+    }
+
+    /**
+     * Sets the show editor help flag.<p>
+     *
+     * @param isShowEditorHelp the show editor help flag to set
+     */
+    public void setShowEditorHelp(boolean isShowEditorHelp) {
+
+        m_isShowEditorHelp = isShowEditorHelp;
     }
 
     /**

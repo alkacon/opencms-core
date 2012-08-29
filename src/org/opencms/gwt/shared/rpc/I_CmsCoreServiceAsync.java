@@ -187,6 +187,14 @@ public interface I_CmsCoreServiceAsync {
     void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean, AsyncCallback<Void> callback);
 
     /**
+     * Sets the show editor help flag.<p>
+     * 
+     * @param showHelp the show help flag
+     * @param callback the asynchronous callback
+     */
+    void setShowEditorHelp(boolean showHelp, AsyncCallback<Void> callback);
+
+    /**
      * Writes the tool-bar visibility into the session cache.<p>
      * 
      * @param visible <code>true</code> if the tool-bar is visible
