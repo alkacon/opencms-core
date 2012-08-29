@@ -146,10 +146,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsMessages messages,
         CmsResource resource) {
 
-        String result = super.getConfiguration();
-        if (!result.contains(CONFIGURATION_CATEGORY + "=")) {
-            result = CONFIGURATION_CATEGORY + "=" + result;
-        }
+        String result = getConfiguration();
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<String> categoriesList = catService.getCategoryRepositories(cms, resource.getRootPath());
         Iterator<String> it = categoriesList.iterator();
@@ -304,12 +301,16 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                         Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                 }
                 result.append(">");
-                result.append(buildSelectBox(param.getId(), i, options, (selected != null
-                ? CmsCategoryService.getInstance().readCategory(
-                    cms,
-                    CmsResource.getPathPart(selected.getPath(), i + baseLevel),
-                    referencePath).getId().toString()
-                : ""), param.hasError(), (i == (level - baseLevel - 1))));
+                result.append(buildSelectBox(
+                    param.getId(),
+                    i,
+                    options,
+                    (selected != null ? CmsCategoryService.getInstance().readCategory(
+                        cms,
+                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                        referencePath).getId().toString() : ""),
+                    param.hasError(),
+                    (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
             }
             result.append("</td>");
