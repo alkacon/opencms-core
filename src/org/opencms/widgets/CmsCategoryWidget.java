@@ -71,6 +71,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     /** Configuration parameter to set the 'property' parameter. */
     public static final String CONFIGURATION_PROPERTY = "property";
 
+    /** Configuration parameter to set the 'selection type' parameter. */
+    private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCategoryWidget.class);
 
@@ -82,6 +85,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The property to read the starting category from. */
     private String m_property;
+
+    /** The selection type parsed from configuration string. */
+    private String m_selectiontype = "single";
 
     /**
      * Creates a new category widget.<p>
@@ -147,6 +153,15 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource) {
 
         String result = getConfiguration();
+        // append 'selection type' to configuration
+        if (m_selectiontype != null) {
+            if (result.length() > 0) {
+                result += "|";
+            }
+            result += CONFIGURATION_SELECTIONTYPE;
+            result += "=";
+            result += m_selectiontype;
+        }
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<String> categoriesList = catService.getCategoryRepositories(cms, resource.getRootPath());
         Iterator<String> it = categoriesList.iterator();
@@ -301,16 +316,12 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                         Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                 }
                 result.append(">");
-                result.append(buildSelectBox(
-                    param.getId(),
-                    i,
-                    options,
-                    (selected != null ? CmsCategoryService.getInstance().readCategory(
-                        cms,
-                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
-                        referencePath).getId().toString() : ""),
-                    param.hasError(),
-                    (i == (level - baseLevel - 1))));
+                result.append(buildSelectBox(param.getId(), i, options, (selected != null
+                ? CmsCategoryService.getInstance().readCategory(
+                    cms,
+                    CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                    referencePath).getId().toString()
+                : ""), param.hasError(), (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
             }
             result.append("</td>");
@@ -403,6 +414,18 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                     property = property.substring(0, property.indexOf('|'));
                 }
                 m_property = property;
+            }
+            int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
+            if (selectiontypeIndex != -1) {
+                // selection type is given
+                String selectiontype = configuration.substring(selectiontypeIndex
+                    + CONFIGURATION_SELECTIONTYPE.length()
+                    + 1);
+                if (selectiontype.indexOf("|") != -1) {
+                    // cut eventual following configuration values
+                    selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));
+                }
+                m_selectiontype = selectiontype;
             }
         }
         super.setConfiguration(configuration);
