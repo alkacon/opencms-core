@@ -1244,11 +1244,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             for (CmsResource resourceForUrlNameMapping : urlNameMappingResources) {
                 if (!CmsResource.isTemporaryFileName(resourceForUrlNameMapping.getRootPath())) {
                     I_CmsFileNameGenerator nameGen = OpenCms.getResourceManager().getNameGenerator();
-                    Iterator<String> nameSeq = nameGen.getUrlNameSequence(value.getStringValue(cms));
-                    cms.writeUrlNameMapping(
-                        nameSeq,
-                        resourceForUrlNameMapping.getStructureId(),
-                        value.getLocale().toString());
+                    String mappedName = value.getStringValue(cms);
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(mappedName)) {
+                        mappedName = mappedName.trim();
+                        Iterator<String> nameSeq = nameGen.getUrlNameSequence(mappedName);
+                        cms.writeUrlNameMapping(
+                            nameSeq,
+                            resourceForUrlNameMapping.getStructureId(),
+                            value.getLocale().toString());
+                    }
                 }
             }
         }
@@ -2483,8 +2487,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 CmsCategoryService.getInstance().readCategory(cms, catPath, refPath);
                 if (((CmsCategoryWidget)widget).isOnlyLeafs()) {
                     if (!CmsCategoryService.getInstance().readCategories(cms, catPath, false, refPath).isEmpty()) {
-                        errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
+                        errorHandler.addError(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
                     }
                 }
             }
@@ -2494,8 +2499,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-            errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
+            errorHandler.addError(
+                value,
+                Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
         } catch (CmsException e) {
             // unexpected error
             if (LOG.isErrorEnabled()) {
@@ -2550,15 +2556,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 if (!res.isReleased(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
+                        errorHandler.addWarning(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
                     }
                     return true;
                 } else if (res.isExpired(time)) {
                     if (errorHandler != null) {
                         // generate warning message
-                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
-                            Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
+                        errorHandler.addWarning(
+                            value,
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
                     }
                     return true;
                 }
@@ -2566,8 +2576,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         } catch (CmsException e) {
             if (errorHandler != null) {
                 // generate error message
-                errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
-                    Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
+                errorHandler.addError(
+                    value,
+                    Messages.get().getBundle(value.getLocale()).key(Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
             }
             return true;
         }
