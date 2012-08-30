@@ -40,6 +40,8 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -148,6 +150,15 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     /** The error display for this widget. */
     private CmsErrorWidget m_error = new CmsErrorWidget();
 
+    /** The side path of the last added category. */
+    private String m_singelSidePath = "";
+
+    /** Count the numbers of values shown. */
+    private int m_valuesSet = 0;
+
+    /** The sife pathes of all added categories. */
+    private List<String> m_allSidePath = new ArrayList<String>();
+
     /**
      * Categoryfield widgets for ADE forms.<p>
      */
@@ -187,6 +198,8 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      */
     public void buildCategoryTree(List<CmsCategoryTreeEntry> treeEntries, List<String> selectedCategories) {
 
+        m_valuesSet = 0;
+        m_allSidePath.clear();
         m_categories.removeFromParent();
         m_categories.clear();
 
@@ -196,6 +209,9 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 // set the category tree item and add to list 
                 CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
                 if (treeItem.isOpen()) {
+                    m_singelSidePath = category.getSitePath();
+                    m_allSidePath.add(category.getSitePath());
+                    m_valuesSet++;
                     addChildren(treeItem, category.getChildren(), selectedCategories);
                 }
 
@@ -204,6 +220,16 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         m_scrollPanel.add(m_categories);
         m_scrollPanel.onResize();
 
+    }
+
+    /**
+     * Returns the site path of all shown categories.<p>
+     * 
+     * @return the site path of all shown categories
+     */
+    public List<String> getAllSitePath() {
+
+        return m_allSidePath;
     }
 
     /**
@@ -249,6 +275,25 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     public CmsScrollPanel getScrollPanel() {
 
         return m_scrollPanel;
+    }
+
+    /**
+     * Returns the site path of the last category.<p>
+     * 
+     * @return the site path of the last category
+     */
+    public String getSingelSitePath() {
+
+        return m_singelSidePath;
+    }
+
+    /**
+     * Returns the count of values set to show.<p>
+     * @return the count of values set to show
+     */
+    public int getValuesSet() {
+
+        return m_valuesSet;
     }
 
     /**
@@ -355,7 +400,18 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             for (CmsCategoryTreeEntry child : children) {
                 // set the category tree item and add to parent tree item
                 CmsTreeItem treeItem = buildTreeItem(child, selectedCategories);
-                if ((selectedCategories != null) && selectedCategories.contains(child.getPath())) {
+                boolean isPartofPath = false;
+                Iterator<String> it = selectedCategories.iterator();
+                while (it.hasNext()) {
+                    String path = it.next();
+                    if (path.contains(child.getPath())) {
+                        isPartofPath = true;
+                    }
+                }
+                if (isPartofPath) {
+                    m_singelSidePath = child.getSitePath();
+                    m_allSidePath.add(child.getSitePath());
+                    m_valuesSet++;
                     addChildren(treeItem, child.getChildren(), selectedCategories);
                     parent.addChild(treeItem);
                 }
@@ -386,7 +442,15 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         categoryTreeItem.setTitle(categoryBean.getSubTitle());
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());
-        if ((selectedCategories != null) && selectedCategories.contains(category.getPath())) {
+        boolean isPartofPath = false;
+        Iterator<String> it = selectedCategories.iterator();
+        while (it.hasNext()) {
+            String path = it.next();
+            if (path.contains(category.getPath())) {
+                isPartofPath = true;
+            }
+        }
+        if (isPartofPath) {
             m_categories.add(treeItem);
             treeItem.setOpen(true);
         }

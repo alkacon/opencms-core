@@ -55,6 +55,7 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget {
      * 
      * @param iconImage the icon image class
      * @param config the widget configuration string
+     * @param isImage 
      */
     public CmsGalleryWidget(String iconImage, String config, boolean isImage) {
 

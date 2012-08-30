@@ -28,9 +28,6 @@
 package org.opencms.gwt.client.ui.input.category;
 
 import org.opencms.ade.galleries.client.Messages;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
-import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
@@ -69,6 +66,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
@@ -79,6 +77,37 @@ import com.google.gwt.user.client.ui.Widget;
  * Builds the category tree.<p>
  * */
 public class CmsCategoryTree extends Composite {
+
+    /** Sorting parameters. */
+    public enum SortParams implements IsSerializable {
+
+        /** Date last modified ascending. */
+        dateLastModified_asc,
+
+        /** Date last modified descending. */
+        dateLastModified_desc,
+
+        /** Resource path ascending sorting. */
+        path_asc,
+
+        /** Resource path descending sorting.*/
+        path_desc,
+
+        /** Title ascending sorting. */
+        title_asc,
+
+        /** Title descending sorting. */
+        title_desc,
+
+        /** Tree.*/
+        tree,
+
+        /** Resource type ascending sorting. */
+        type_asc,
+
+        /** Resource type descending sorting. */
+        type_desc;
+    }
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -185,9 +214,7 @@ public class CmsCategoryTree extends Composite {
             if (select) {
                 if (m_isSingleSelection) {
                     deselectAll(m_item.getId());
-                    CmsDataValue result = m_categories.get(m_item.getId());
-                    m_singleResult[0] = result.getParameter(1);
-                    m_singleResult[1] = result.getParameter(2);
+                    m_singleResult = m_item.getId();
                 } else {
                     Iterator<Widget> it = m_scrollList.iterator();
                     while (it.hasNext()) {
@@ -221,16 +248,13 @@ public class CmsCategoryTree extends Composite {
     protected Map<String, CmsDataValue> m_categories;
 
     /** Result string for single selection. */
-    protected String m_singleResult[] = new String[2];
+    protected String m_singleResult = "";
 
     /** List of categories. */
     protected CmsList<? extends I_CmsListItem> m_scrollList;
 
     /** List of categories selected from the server. */
     protected List<CmsCategoryTreeEntry> m_resultList;
-
-    /** Folder where the categories are taken from. */
-    private String m_categoryFolder;
 
     /** List of all selected categories. */
     protected List<String> m_selectedCategories;
@@ -288,20 +312,24 @@ public class CmsCategoryTree extends Composite {
      * @param selectedCategories A list of all selected categories
      * @param height The height of this widget 
      * @param isSingleValue Sets the modes of this widget
-     * @param categoryFolder Sets the folder where the categories are take from
+     * @param resultList 
      * */
-    public CmsCategoryTree(List<String> selectedCategories, int height, boolean isSingleValue, String categoryFolder) {
+    public CmsCategoryTree(
+        List<String> selectedCategories,
+        int height,
+        boolean isSingleValue,
+        List<CmsCategoryTreeEntry> resultList) {
 
         this();
         m_isSingleSelection = isSingleValue;
-        m_categoryFolder = categoryFolder;
         addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryItem());
         m_list.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryScrollPanel());
         m_selectedCategories = selectedCategories;
         m_scrollList = createScrollList();
         m_list.setHeight(height + "px");
-        genearteList();
+        m_resultList = resultList;
         m_list.add(m_scrollList);
+        updateContentTree(resultList, m_selectedCategories);
         init();
     }
 
@@ -318,9 +346,16 @@ public class CmsCategoryTree extends Composite {
             for (CmsCategoryTreeEntry child : children) {
                 // set the category tree item and add to parent tree item
                 CmsTreeItem treeItem = buildTreeItem(child, selectedCategories);
+
                 if ((selectedCategories != null) && selectedCategories.contains(child.getPath())) {
                     parent.setOpen(true);
                     openParents(parent);
+
+                }
+                if (m_isSingleSelection) {
+                    if (treeItem.getCheckBox().isChecked()) {
+                        parent.getCheckBox().setChecked(false);
+                    }
                 }
                 parent.addChild(treeItem);
                 addChildren(treeItem, child.getChildren(), selectedCategories);
@@ -362,9 +397,11 @@ public class CmsCategoryTree extends Composite {
      * 
      * @return the last selected value
      */
-    public String[] getSelected() {
+    public List<String> getSelected() {
 
-        return m_singleResult;
+        List<String> result = new ArrayList<String>();
+        result.add(m_singleResult);
+        return result;
     }
 
     /**
@@ -410,7 +447,15 @@ public class CmsCategoryTree extends Composite {
                 m_categories.put(dataValue.getParameter(1), dataValue);
                 // the checkbox
                 CmsCheckBox checkBox = new CmsCheckBox();
-                if ((selectedCategories != null) && selectedCategories.contains(dataValue.getParameter(1))) {
+                boolean isPartofPath = false;
+                Iterator<String> it = selectedCategories.iterator();
+                while (it.hasNext()) {
+                    String path = it.next();
+                    if (path.contains(dataValue.getParameter(1))) {
+                        isPartofPath = true;
+                    }
+                }
+                if (isPartofPath) {
                     checkBox.setChecked(true);
                 }
 
@@ -642,28 +687,11 @@ public class CmsCategoryTree extends Composite {
      */
     protected List<CmsDataValue> getFilteredCategories(String filter) {
 
-        int param = 0;
-
-        SortParams sort = SortParams.valueOf(m_event.getValue());
-        switch (sort) {
-            case path_asc:
-            case path_desc:
-                param = 1;
-                break;
-            case title_asc:
-            case title_desc:
-                param = 0;
-                break;
-            default:
-                break;
-
-        }
-
         List<CmsDataValue> result = new ArrayList<CmsDataValue>();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
             result = new ArrayList<CmsDataValue>();
             for (CmsDataValue category : m_categories.values()) {
-                if (category.matchesFilter(filter, param)) {
+                if (category.matchesFilter(filter, 0, 1)) {
                     result.add(category);
                 }
             }
@@ -821,6 +849,53 @@ public class CmsCategoryTree extends Composite {
     }
 
     /**
+     * Select a singel value and all parents.<p>
+     * @param item 
+     * @param path The path of the Item that should be selected
+     * @param result 
+     * @return true if this CmsTreeItem is selected or one of it´s children
+     */
+    protected boolean selectAllParents(CmsTreeItem item, String path, List<String> result) {
+
+        // if this is a list view
+        if (m_listView) {
+            // check if the path contains the item path
+            if (path.contains(item.getId())) {
+                // add it to the list of selected categories
+                if (!result.contains(item.getId())) {
+                    result.add(item.getId());
+                }
+                return true;
+            }
+
+        }
+        // if this is a tree view
+        else {
+            // check if the pach contains the item path
+            if (item.getId().equals(path)) {
+                // add it to the list of selected categories
+                if (!result.contains(item.getId())) {
+                    result.add(item.getId());
+                }
+                return true;
+            } else {
+                // iterate about all children of this item
+                Iterator<Widget> it = item.getChildren().iterator();
+                while (it.hasNext()) {
+                    if (selectAllParents((CmsTreeItem)it.next(), path, result)) {
+                        if (!result.contains(item.getId())) {
+                            result.add(item.getId());
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Builds a tree item for the given category.<p>
      * 
      * @param category the category
@@ -831,14 +906,21 @@ public class CmsCategoryTree extends Composite {
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
-        CmsDataValue dataValue = new CmsDataValue(600, 3, category.getTitle(), category.getPath(), "hide:"
-            + category.getBasePath());
+        CmsDataValue dataValue = new CmsDataValue(600, 3, category.getTitle(), category.getPath());
         // add it to the list of all categories
         m_categories.put(category.getPath(), dataValue);
         // create the check box for this item 
         CmsCheckBox checkBox = new CmsCheckBox();
         // if it has to be selected, select it 
-        if ((selectedCategories != null) && selectedCategories.contains(category.getPath())) {
+        boolean isPartofPath = false;
+        Iterator<String> it = selectedCategories.iterator();
+        while (it.hasNext()) {
+            String path = it.next();
+            if (path.contains(category.getPath())) {
+                isPartofPath = true;
+            }
+        }
+        if (isPartofPath) {
             checkBox.setChecked(true);
         }
         // bild the CmsTreeItem out of the widget and the check box
@@ -847,45 +929,8 @@ public class CmsCategoryTree extends Composite {
         checkBox.addValueChangeHandler(new CheckBoxValueChangeHandler(treeItem));
         // set the right style for the small view
         treeItem.setSmallView(true);
-        treeItem.setId(category.getBasePath());
+        treeItem.setId(category.getPath());
         return treeItem;
-    }
-
-    /**
-     * Generate the a list of all categories and display them.<p>
-     */
-    private void genearteList() {
-
-        // generate a list of all configured categories.
-        final List<String> categories = new ArrayList<String>();
-        categories.add(m_categoryFolder + "/");
-
-        // start request 
-        CmsRpcAction<List<CmsCategoryTreeEntry>> action = new CmsRpcAction<List<CmsCategoryTreeEntry>>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            public void execute() {
-
-                CmsCoreProvider.getService().getCategories("/", true, categories, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(List<CmsCategoryTreeEntry> result) {
-
-                // copy the result to the global variable. 
-                m_resultList = result;
-                // start to generate the tree view.
-                updateContentTree(result, m_selectedCategories);
-            }
-
-        };
-        action.execute();
     }
 
     /**

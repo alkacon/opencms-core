@@ -27,17 +27,20 @@
 
 package org.opencms.gwt.client.ui.input.category;
 
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.gwt.client.ui.input.category.CmsCategoryTree.SortParams;
 
 import java.util.Comparator;
 
 /***/
 class CmsCategoryComperator implements Comparator<CmsDataValue> {
 
+    /**The parameter string. */
     private String m_param;
 
     /**
+     * Default Constructor.<p>
      * 
+     * @param param the parameter string
      */
     public CmsCategoryComperator(String param) {
 

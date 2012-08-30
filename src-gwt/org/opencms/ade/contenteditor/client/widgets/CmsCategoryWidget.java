@@ -30,11 +30,12 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsCategoryField;
 import org.opencms.gwt.client.ui.input.category.CmsCategoryTree;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
-import org.opencms.relations.CmsCategory;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -126,7 +127,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     private static final int MAX_HEIGHT = 242;
 
     /** Category widget. */
-    CmsCategoryField m_categoryField = new CmsCategoryField();
+    protected CmsCategoryField m_categoryField = new CmsCategoryField();
 
     /** The priview handler. */
     protected HandlerRegistration m_previewHandlerRegistration;
@@ -144,7 +145,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     protected int m_ycoordspopup;
 
     /** List of all selected categories. */
-    ArrayList<String> m_selected = new ArrayList<String>();
+    List<String> m_selected = new ArrayList<String>();
 
     /** Map of selected Values in relation to the select level. */
     String m_selectedValue;
@@ -154,11 +155,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
     /** String of the configured category folder. */
     private String m_categoryFolder = "/";
-
-    /** List off all categories. */
-    private List<CmsCategoryTreeEntry> m_results = new ArrayList<CmsCategoryTreeEntry>();
-    /***/
-    private String[] m_selectedArray;
 
     /** Height of the display field. */
     int m_height = DEFAULT_HEIGHT;
@@ -171,6 +167,9 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
     /** List of all possible category folder. */
     private List<String> m_categoryList = new ArrayList<String>();
+
+    /** List of all category folder. */
+    protected List<CmsCategoryTreeEntry> m_resultList;
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -186,7 +185,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         } else {
             m_isSingelValue = true;
         }
-
+        genearteList();
         m_categoryField.getScrollPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().categoryPanel());
         m_categoryField.getScrollPanel().setResizable(false);
         m_categoryField.addDomHandler(new ClickHandler() {
@@ -234,27 +233,18 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public String getValue() {
 
-        Iterator<String> i = m_selected.iterator();
         String result = "";
         int y = 0;
         if (m_isSingelValue) {
-            int max_length = 0;
-            while (i.hasNext()) {
-                String value = i.next();
-                if (value.split("/").length > max_length) {
-                    max_length = value.split("/").length;
-                    result = m_categoryFolder + value;
-                }
-
-            }
-
+            result = m_categoryField.getSingelSitePath();
         } else {
+            Iterator<String> i = m_categoryField.getAllSitePath().iterator();
             while (i.hasNext()) {
                 if (y != 0) {
                     result += ",";
 
                 }
-                result += m_categoryFolder + i.next();
+                result += i.next();
                 y++;
             }
         }
@@ -306,63 +296,14 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        String singelValue = "";
-        m_selected.clear();
-        if (m_isSingelValue && !value.isEmpty()) {
-            value = value.replace(",", "");
-            singelValue = value;
-            Iterator<String> it = m_categoryList.iterator();
-            while (it.hasNext()) {
-                String catRootPath = it.next();
-                if (value.contains(catRootPath)) {
-                    m_categoryFolder = catRootPath;
-                }
-            }
-            value = value.replace(m_categoryFolder, "");
-            singelValue = value;
-            String helpValue = value.substring(0, value.lastIndexOf("/"));
-            while (helpValue.indexOf("/") != -1) {
-                helpValue = helpValue.substring(0, helpValue.lastIndexOf("/") + 1);
-                value += "," + helpValue;
-                helpValue = helpValue.substring(0, helpValue.lastIndexOf("/"));
+        String[] selectedArray = value.split(",");
+        if (value.indexOf(",") > -1) {
+            for (String values : selectedArray) {
+                m_selected.add(values);
             }
         } else {
-            generateCategoryFolder(value.split(","));
+            m_selected.add(value);
         }
-
-        m_selectedValue = value;
-        m_selectedArray = value.split(",");
-
-        ArrayList<String> test = new ArrayList<String>();
-        for (String selected : m_selectedArray) {
-            m_selected.add(selected);
-            test.add(selected);
-        }
-
-        if (!m_selectedArray[0].isEmpty()) {
-            m_results = new ArrayList<CmsCategoryTreeEntry>();
-            parseValues(test.toArray(new String[0]), null, 1);
-            m_categoryField.buildCategoryTree(m_results, m_selected);
-        }
-
-        if (m_isSingelValue) {
-            m_selected.clear();
-            m_selected.add(singelValue);
-        }
-
-        if (!m_selectedArray[0].isEmpty()) {
-            int elementheight = (m_selectedArray.length * 24) + 2;
-            m_height = elementheight;
-
-            if (m_height > MAX_HEIGHT) {
-                m_height = MAX_HEIGHT;
-                m_categoryField.getScrollPanel().setResizable(true);
-            }
-        } else {
-            m_height = 24;
-        }
-        m_categoryField.setHeight(m_height);
-
         if (fireEvents) {
             fireChangeEvent();
         }
@@ -373,24 +314,23 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     protected void closePopup() {
 
+        List<String> result;
+
         if (m_previewHandlerRegistration != null) {
             m_previewHandlerRegistration.removeHandler();
             m_previewHandlerRegistration = null;
         }
-        String selected = "";
         if (m_isSingelValue) {
-            String[] value = m_cmsCategoryTree.getSelected();
-            m_categoryFolder = value[1];
-            selected = value[0];
+            result = m_cmsCategoryTree.getSelected();
         } else {
-            for (String s : m_cmsCategoryTree.getAllSelected()) {
-                if (!s.isEmpty()) {
-                    selected += s + ",";
-                }
-            }
+            result = m_cmsCategoryTree.getAllSelected();
         }
-        setValue(selected, true);
+        m_selected.clear();
+        m_selected = result;
+        m_categoryField.buildCategoryTree(m_resultList, m_selected);
+        setheight();
         m_cmsPopup.hide();
+        fireChangeEvent();
 
     }
 
@@ -404,7 +344,9 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             m_cmsPopup = new CmsPopup("Category");
             m_cmsPopup.setWidth(600);
             m_cmsPopup.setHeight(386);
-            m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingelValue, m_categoryFolder);
+            List<String> selected = new ArrayList<String>();
+            selected = m_selected;
+            m_cmsCategoryTree = new CmsCategoryTree(selected, 300, m_isSingelValue, m_resultList);
             m_cmsPopup.add(m_cmsCategoryTree);
             m_cmsPopup.setModal(false);
             m_cmsPopup.addDialogClose(new Command() {
@@ -419,32 +361,67 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             m_previewHandlerRegistration.removeHandler();
         }
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
-        List<String> selected = new ArrayList<String>();
-        for (int i = 0; i < m_selectedArray.length; i++) {
-            selected.add(m_selectedArray[i].toLowerCase());
-        }
         m_cmsPopup.showRelativeTo(m_categoryField);
         m_xcoordspopup = m_cmsPopup.getPopupLeft();
         m_ycoordspopup = m_cmsPopup.getPopupTop();
     }
 
     /**
-     * Creates the category folder.<p>
-     */
-    private void generateCategoryFolder(String[] values) {
+     * Generates the right height for the view.<p>
+     * */
+    protected void setheight() {
 
-        String longestValue = "";
-        for (String value : values) {
-            if (value.length() > longestValue.length()) {
-                longestValue = value;
+        if (m_categoryField.getValuesSet() > 0) {
+            int elementheight = (m_categoryField.getValuesSet() * 24) + 2;
+            m_height = elementheight;
+
+            if (m_height > MAX_HEIGHT) {
+                m_height = MAX_HEIGHT;
+                m_categoryField.getScrollPanel().setResizable(true);
             }
+        } else {
+            m_height = 24;
         }
-        boolean categoryFolderFound = false;
-        while (!categoryFolderFound) {
-            String testvalue = longestValue.substring(0, values[0].indexOf("/"));
+        m_categoryField.setHeight(m_height);
 
-        }
+    }
 
+    /**
+     * Generate the a list of all categories and display them.<p>
+     */
+    private void genearteList() {
+
+        // generate a list of all configured categories.
+        final List<String> categories = m_categoryList;
+
+        // start request 
+        CmsRpcAction<List<CmsCategoryTreeEntry>> action = new CmsRpcAction<List<CmsCategoryTreeEntry>>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            public void execute() {
+
+                CmsCoreProvider.getService().getCategories("/", true, categories, this);
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(List<CmsCategoryTreeEntry> result) {
+
+                // copy the result to the global variable. 
+                m_resultList = result;
+                // start to generate the tree view. 
+                m_categoryField.buildCategoryTree(m_resultList, m_selected);
+                setheight();
+
+            }
+
+        };
+        action.execute();
     }
 
     /**
@@ -492,57 +469,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
             }
 
-        }
-    }
-
-    /**
-     * @param values 
-     * @param parent 
-     * @param level 
-     */
-    private void parseValues(String[] values, CmsCategoryTreeEntry parent, int level) {
-
-        for (int i = 0; i < values.length; i++) {
-            String value = values[i];
-            if ((level == 1) && (parent == null)) {
-                try {
-                    String name = value.replace("/", "");
-
-                    CmsCategory category = new CmsCategory(null, m_categoryFolder + value, name, null, m_categoryFolder);
-                    CmsCategoryTreeEntry categoryEntry = new CmsCategoryTreeEntry(category);
-                    m_results.add(categoryEntry);
-                    List<String> test = new ArrayList<String>();
-                    for (int y = 0; y < values.length; y++) {
-                        if (!values[i].equals(values[y])) {
-                            test.add(values[y]);
-                        }
-                    }
-                    parseValues(test.toArray(new String[0]), categoryEntry, level + 1);
-                } catch (Exception e) {
-                    //TODO nothing
-                }
-            } else if (parent != null) {
-
-                if (value.contains(parent.getPath()) && (value.split("/").length == level)) {
-                    CmsCategory category;
-                    try {
-                        String name = value.replace(parent.getPath(), "").replace("/", "");
-                        category = new CmsCategory(null, m_categoryFolder + value, name, null, m_categoryFolder);
-                        CmsCategoryTreeEntry categoryEntry = new CmsCategoryTreeEntry(category);
-                        parent.addChild(categoryEntry);
-                        List<String> test = new ArrayList<String>();
-                        for (int y = 0; y < values.length; y++) {
-                            if (!values[i].equals(values[y])) {
-                                test.add(values[y]);
-                            }
-                        }
-                        parseValues(test.toArray(new String[0]), categoryEntry, level + 1);
-                    } catch (Exception e) {
-                        //TODO nothing
-                    }
-
-                }
-            }
         }
     }
 }
