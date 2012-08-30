@@ -68,8 +68,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -152,9 +150,6 @@ public final class CmsContentEditor {
 
     /** The registered entity id's. */
     private Set<String> m_registeredEntities;
-
-    /** The resize handler registration. */
-    private HandlerRegistration m_resizeHandlerRegistration;
 
     /** The resource type name. */
     private String m_resourceTypeName;
@@ -307,30 +302,15 @@ public final class CmsContentEditor {
         m_title = null;
         m_sitePath = null;
         m_resourceTypeName = null;
-        if (m_resizeHandlerRegistration != null) {
-            m_resizeHandlerRegistration.removeHandler();
-            m_resizeHandlerRegistration = null;
-        }
         if (m_closingHandlerRegistration != null) {
             m_closingHandlerRegistration.removeHandler();
             m_closingHandlerRegistration = null;
         }
         if (m_isStandAlone) {
             closeEditorWidow();
+        } else {
+            RootPanel.getBodyElement().getStyle().clearOverflow();
         }
-    }
-
-    /**
-     * Adjusts the base panel height to the current window height.<p>
-     */
-    void adjustBasePanelHeight() {
-
-        int windowHeight = Window.getClientHeight();
-        int bodyHeight = RootPanel.getBodyElement().getOffsetHeight();
-        m_basePanel.getElement().getStyle().setProperty(
-            "minHeight",
-            windowHeight > bodyHeight ? windowHeight : bodyHeight,
-            Unit.PX);
     }
 
     /**
@@ -429,14 +409,16 @@ public final class CmsContentEditor {
         if (m_isStandAlone) {
             RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().standAloneEditor());
         } else {
-            adjustBasePanelHeight();
-            m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
-
-                public void onResize(ResizeEvent event) {
-
-                    adjustBasePanelHeight();
-                }
-            });
+            RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().integratedEditor());
+            //            adjustBasePanelHeight();
+            //            
+            //            m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
+            //
+            //                public void onResize(ResizeEvent event) {
+            //
+            //                    adjustBasePanelHeight();
+            //                }
+            //            });
         }
     }
 

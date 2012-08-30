@@ -4,7 +4,7 @@
 .toolbarReset, .toolbarPublish, .toolbarClipboard,  .toolbarSave, .toolbarContext{}
 
 body.forceScrollbar{
-	overflow-y: scroll !important;
+	overflow-y: scroll;
 }
 
 .menuTabContainer{

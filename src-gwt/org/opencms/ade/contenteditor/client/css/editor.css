@@ -1,6 +1,6 @@
 @sprite body.standAloneEditor{
 	gwt-image: "backgrounds.sitemapBackground";
-	overflow-y: scroll;
+	overflow: hidden;
 	height: 100%;
 	width: 100%;
 	margin: 0;
@@ -9,7 +9,10 @@
 
 body.standAloneEditor div.basePanel{
 	background-image: none;
-	position: relative;
+}
+
+body.integratedEditor{
+	overflow: hidden !important;
 }
 
 @sprite .basePanel{
@@ -18,9 +21,10 @@ body.standAloneEditor div.basePanel{
 	font-size: value("constants.css.fontSize");
 	position: absolute;
 	margin: 0;
-	overflow: hidden;
-	padding: 45px 0px 0px 0px;
-	top:0;
+	bottom: 0;
+    overflow-y: scroll;
+    top: 35px;
+	padding: 20px 0px 0px 0px;
 	left:0;
 	right:0;
 	z-index: value("constants.css.zIndexPopup");

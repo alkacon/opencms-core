@@ -86,7 +86,6 @@ import java.util.Set;
 
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -616,7 +615,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         RootPanel.getBodyElement().getStyle().clearOverflowY();
                     }
                 };
-                RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
+                //       RootPanel.getBodyElement().getStyle().setOverflowY(Overflow.SCROLL);
                 disableToolbarButtons();
                 deactivateCurrentButton();
                 element.removeEditorClickHandler();
