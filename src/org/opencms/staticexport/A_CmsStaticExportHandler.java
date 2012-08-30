@@ -32,12 +32,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -416,6 +418,10 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
 
                 List<File> detailPageFiles = getDetailPageFiles(cms, res, vfsName);
                 purgeFiles(detailPageFiles, vfsName, scrubbedFiles);
+
+                List<File> referencingContainerPages = getContainerPagesToPurge(cms, res.getStructureId());
+                purgeFiles(referencingContainerPages, vfsName, scrubbedFiles);
+
                 // purge all sitemap references in case of a container page
                 //                List<File> relSitemapFiles = getRelatedSitemapFiles(cms, res, vfsName);
                 //                purgeFiles(relSitemapFiles, vfsName, scrubbedFiles);
@@ -465,6 +471,54 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     Messages.get().getBundle().key(Messages.LOG_FILE_DELETION_FAILED_1, getRfsName(file, vfsName)),
                     t);
             }
+        }
+    }
+
+    /**
+     * Gets the exported container pages that should be purged when the content with the given id is published.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param targetId the structure id of the published content 
+     * 
+     * @return the list of files to purge
+     */
+    private List<File> getContainerPagesToPurge(CmsObject cms, CmsUUID targetId) {
+
+        try {
+            List<File> purgePages = new ArrayList<File>();
+            List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsToStructureId(targetId));
+            for (CmsRelation relation : relations) {
+                CmsResource source = null;
+                try {
+                    source = relation.getSource(cms, CmsResourceFilter.ALL);
+                } catch (CmsPermissionViolationException e) {
+                    // export user can't read the file 
+                    continue;
+                }
+                if (CmsResourceTypeXmlContainerPage.isContainerPage(source)) {
+
+                    // purge pages directly containing the content 
+
+                    String vfsName = source.getRootPath();
+                    String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+                    String exportPath = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
+                        vfsName));
+                    String rfsExportFileName = exportPath
+                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length());
+                    File file = new File(rfsExportFileName);
+                    purgePages.add(file);
+                } else if (OpenCms.getResourceManager().getResourceType(source.getTypeId()).getTypeName().equals(
+                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
+
+                    // purge pages containing group containers containing the content
+
+                    purgePages.addAll(getContainerPagesToPurge(cms, source.getStructureId()));
+                }
+            }
+            return purgePages;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return Collections.emptyList();
         }
     }
 
