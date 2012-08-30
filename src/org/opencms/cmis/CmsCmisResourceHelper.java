@@ -581,7 +581,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 objectInfo.setFileName(resource.getName());
                 addPropertyId(tm, result, typeId, filter, PropertyIds.CONTENT_STREAM_ID, null);
             }
-
+            // normal OpenCms properties 
             List<CmsProperty> props = cms.readPropertyObjects(resource, false);
             Set<String> propertiesToAdd = new LinkedHashSet<String>(m_repository.getTypeManager().getCmsPropertyNames());
             for (CmsProperty prop : props) {
@@ -597,6 +597,25 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             for (String propName : propertiesToAdd) {
                 addPropertyString(tm, result, typeId, filter, CmsCmisTypeManager.PROPERTY_PREFIX + propName, null);
             }
+
+            // inherited OpenCms properties 
+            List<CmsProperty> inheritedProps = cms.readPropertyObjects(resource, true);
+            Set<String> inheritedPropertiesToAdd = new LinkedHashSet<String>(
+                m_repository.getTypeManager().getCmsPropertyNames());
+            for (CmsProperty prop : inheritedProps) {
+                addPropertyString(
+                    tm,
+                    result,
+                    typeId,
+                    filter,
+                    CmsCmisTypeManager.INHERITED_PREFIX + prop.getName(),
+                    prop.getValue());
+                inheritedPropertiesToAdd.remove(prop.getName());
+            }
+            for (String propName : inheritedPropertiesToAdd) {
+                addPropertyString(tm, result, typeId, filter, CmsCmisTypeManager.INHERITED_PREFIX + propName, null);
+            }
+
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
             addPropertyString(
                 tm,

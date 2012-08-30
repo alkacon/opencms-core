@@ -72,6 +72,9 @@ public class CmsCmisTypeManager {
     /** CMIS type id for folders. */
     public static final String FOLDER_TYPE_ID = BaseTypeId.CMIS_FOLDER.value();
 
+    /** Prefix for inherited properties. */
+    public static final String INHERITED_PREFIX = "opencms-inherited:";
+
     /** CMIS type id for policies. */
     public static final String POLICY_TYPE_ID = BaseTypeId.CMIS_POLICY.value();
 
@@ -831,6 +834,16 @@ public class CmsCmisTypeManager {
 
         for (CmsPropertyDefinition propDef : m_cmsPropertyDefinitions) {
             type.addPropertyDefinition(createOpenCmsPropertyDefinition(propDef));
+            type.addPropertyDefinition(createPropDef(
+                INHERITED_PREFIX + propDef.getName(),
+                propDef.getName(),
+                propDef.getName(),
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
+
         }
         type.addPropertyDefinition(createPropDef(
             PROPERTY_RESOURCE_TYPE,
