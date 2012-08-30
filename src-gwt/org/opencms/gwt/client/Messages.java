@@ -285,6 +285,11 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
 
+    public static final String GUI_POPUP_BLOCKED_0 = "GUI_POPUP_BLOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_POPUP_BLOCKED_TITLE_0 = "GUI_POPUP_BLOCKED_TITLE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTIES_0 = "GUI_PROPERTIES_0";
 

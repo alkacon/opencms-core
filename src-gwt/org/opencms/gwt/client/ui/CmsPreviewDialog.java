@@ -107,7 +107,7 @@ public final class CmsPreviewDialog extends CmsPopup {
     public static void showPreviewForResource(CmsPreviewInfo previewInfo) {
 
         if (previewInfo.isNewWindowRequired()) {
-            Window.open(previewInfo.getPreviewUrl(), CmsDomUtil.Target.BLANK.getRepresentation(), "");
+            CmsDomUtil.openWindow(previewInfo.getPreviewUrl(), CmsDomUtil.Target.BLANK.getRepresentation(), "");
         } else {
 
             String caption = generateCaption(previewInfo);

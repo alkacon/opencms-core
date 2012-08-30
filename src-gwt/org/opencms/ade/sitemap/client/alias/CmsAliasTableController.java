@@ -33,6 +33,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasInitialFetchResult;
@@ -48,8 +49,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.gwt.user.client.Window;
 
 /**
  * This is the controller class for the alias editor which is responsible for reacting to edit operations on the client 
@@ -143,7 +142,7 @@ public class CmsAliasTableController {
      */
     public void download() {
 
-        Window.open(m_downloadUrl + "?site=" + m_siteRoot, "_blank", "");
+        CmsDomUtil.openWindow(m_downloadUrl + "?site=" + m_siteRoot, "_blank", "");
     }
 
     /**

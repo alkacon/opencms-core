@@ -291,21 +291,24 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
      * @param selectorUrl the URL to the link selector popup
      */
     protected native void openSelector(String selectorUrl)/*-{
-        var newwin = $wnd
-                .open(
-                        selectorUrl,
-                        "file_selector",
-                        "toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=300,height=450");
-        if (newwin != null) {
-            if (newwin.opener == null) {
-                newwin.opener = $wnd.self;
-            }
-        }
-        newwin.focus();
-        var self = this;
-        $wnd.setFormValue = function(fileName) {
-            self.@org.opencms.gwt.client.ui.input.CmsVfsLinkWidget::setFormValueAsString(Ljava/lang/String;)(fileName);
-        }
+      var newwin = $wnd
+            .open(
+                  selectorUrl,
+                  "file_selector",
+                  "toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=300,height=450");
+      if (newwin != null) {
+         if (newwin.opener == null) {
+            newwin.opener = $wnd.self;
+         }
+      } else {
+         @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
+         return;
+      }
+      newwin.focus();
+      var self = this;
+      $wnd.setFormValue = function(fileName) {
+         self.@org.opencms.gwt.client.ui.input.CmsVfsLinkWidget::setFormValueAsString(Ljava/lang/String;)(fileName);
+      }
     }-*/;
 
 }
