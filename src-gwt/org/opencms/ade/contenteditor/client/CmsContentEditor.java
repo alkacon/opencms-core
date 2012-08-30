@@ -309,7 +309,7 @@ public final class CmsContentEditor {
         if (m_isStandAlone) {
             closeEditorWidow();
         } else {
-            RootPanel.getBodyElement().getStyle().clearOverflow();
+            RootPanel.getBodyElement().removeClassName(I_CmsLayoutBundle.INSTANCE.editorCss().integratedEditor());
         }
     }
 
@@ -410,15 +410,6 @@ public final class CmsContentEditor {
             RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().standAloneEditor());
         } else {
             RootPanel.getBodyElement().addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().integratedEditor());
-            //            adjustBasePanelHeight();
-            //            
-            //            m_resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
-            //
-            //                public void onResize(ResizeEvent event) {
-            //
-            //                    adjustBasePanelHeight();
-            //                }
-            //            });
         }
     }
 
