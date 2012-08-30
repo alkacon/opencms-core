@@ -32,9 +32,9 @@ import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 
+import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.user.client.Element;
 
@@ -60,7 +60,7 @@ public class CmsAdeDownloadGalleryWidgetFactory implements I_WidgetFactory, I_Cm
     public I_FormEditWidget createFormWidget(String configuration) {
 
         return new FormWidgetWrapper(new CmsGalleryWidget(
-            I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon(),
+            Messages.get().key(Messages.GUI_DOWNLOAD_GALLERY_OPEN_0),
             configuration,
             false));
     }
@@ -70,6 +70,6 @@ public class CmsAdeDownloadGalleryWidgetFactory implements I_WidgetFactory, I_Cm
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsGalleryWidget(I_CmsImageBundle.INSTANCE.style().downloadGalleryIcon(), configuration, false);
+        return new CmsGalleryWidget(Messages.get().key(Messages.GUI_DOWNLOAD_GALLERY_OPEN_0), configuration, false);
     }
 }

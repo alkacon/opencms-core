@@ -22,8 +22,12 @@
 	    color: #222222;
 	    height: 18px;
 	    padding: 0;
-	    display: block;
-	    margin: 0px 20px 0px 4px;
+	    width:100%;
+	    margin:0px;
+	}
+	div.inputContainer{
+		margin: 0px 20px 0px 4px;
+		padding: 0px;
 	}
 	div.galleryField input:focus{
 		box-shadow: none;
@@ -36,7 +40,9 @@
 	}
 </ui:style>
 <g:HTMLPanel styleName="{style.galleryField}" addStyleNames="{main.generalCss.cornerAll}">
-	<g:TextBox ui:field="m_textbox" />
+	<div class="{style.inputContainer}">
+		<g:TextBox ui:field="m_textbox" />
+	</div>
 	<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.opener}"/>
 	<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.faider}" />
 </g:HTMLPanel>

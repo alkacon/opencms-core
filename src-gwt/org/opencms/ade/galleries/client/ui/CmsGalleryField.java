@@ -272,6 +272,16 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * Sets the gallery opener button title.<p>
+     * 
+     * @param openerTitle the gallery opener button title
+     */
+    public void setGalleryOpenerTitle(String openerTitle) {
+
+        m_opener.setTitle(openerTitle);
+    }
+
+    /**
      * Sets the galleryPath.<p>
      *
      * @param galleryPath the galleryPath to set
@@ -434,17 +444,6 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     void onTextboxChange(ValueChangeEvent<String> event) {
 
         ValueChangeEvent.fire(CmsGalleryField.this, getFormValueAsString());
-    }
-
-    /**
-     * On text box click.<p>
-     * 
-     * @param event the event
-     */
-    @UiHandler("m_textbox")
-    void onTextboxClick(ClickEvent event) {
-
-        openGalleryDialog();
     }
 
     /**

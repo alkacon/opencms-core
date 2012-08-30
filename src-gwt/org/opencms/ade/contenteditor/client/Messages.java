@@ -40,6 +40,12 @@ public final class Messages {
     public static final String ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0 = "ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DOWNLOAD_GALLERY_OPEN_0 = "GUI_DOWNLOAD_GALLERY_OPEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_GALLERY_OPEN_0 = "GUI_IMAGE_GALLERY_OPEN_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCALE_DIALOG_CANCEL_0 = "GUI_LOCALE_DIALOG_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */

@@ -53,20 +53,21 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget {
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * 
-     * @param iconImage the icon image class
+     * @param openerTitle the gallery opener title
      * @param config the widget configuration string
      * @param isImage 
      */
-    public CmsGalleryWidget(String iconImage, String config, boolean isImage) {
+    public CmsGalleryWidget(String openerTitle, String config, boolean isImage) {
 
         if (isImage) {
-            m_linkSelect = new CmsImageGalleryField(iconImage);
+            m_linkSelect = new CmsImageGalleryField();
         } else {
-            m_linkSelect = new CmsGalleryField(iconImage);
+            m_linkSelect = new CmsGalleryField();
             m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
         }
         m_linkSelect.parseConfiguration(config);
-
+        m_linkSelect.setGalleryOpenerTitle(openerTitle);
+        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
