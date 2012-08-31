@@ -61,8 +61,10 @@ import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
@@ -76,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Builds the category tree.<p>
  * */
-public class CmsCategoryTree extends Composite {
+public class CmsCategoryTree extends Composite implements HasValueChangeHandlers<List<String>> {
 
     /** Sorting parameters. */
     public enum SortParams implements IsSerializable {
@@ -122,7 +124,7 @@ public class CmsCategoryTree extends Composite {
     private class CategoryValueChangeHandler implements ValueChangeHandler<String> {
 
         /**
-         * 
+         * Default Constructor.<p>
          */
         public CategoryValueChangeHandler() {
 
@@ -137,14 +139,6 @@ public class CmsCategoryTree extends Composite {
          */
         public void onValueChange(ValueChangeEvent<String> event) {
 
-            // depending on the sort value the tab may or may not have the quick filter ability
-            if (hasQuickFilter()) {
-                if (m_quickSearch == null) {
-                    createQuickBox();
-                }
-            } else {
-                removeQuickBox();
-            }
             cancelQuickFilterTimer();
             if (event.getSource() == m_sortSelectBox) {
 
@@ -171,6 +165,10 @@ public class CmsCategoryTree extends Composite {
                 }
             }
             if ((event.getSource() == m_quickSearch)) {
+                if (!m_listView) {
+                    m_listView = true;
+                    m_sortSelectBox.setFormValueAsString(SortParams.title_asc.name());
+                }
                 if (hasQuickFilter()) {
 
                     if ((CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue()) || (event.getValue().length() >= 3))) {
@@ -230,7 +228,57 @@ public class CmsCategoryTree extends Composite {
                     deselectParent(m_item);
                 }
             }
+            fireValueChange();
+        }
 
+    }
+
+    /**
+     * Inner class for check box handler.<p>
+     */
+    private class DataValueClickHander implements ClickHandler {
+
+        /** The TreeItem. */
+        private CmsTreeItem m_item;
+
+        /** Constructor to set the right CmsTreeItem for this handler.<p>
+         * 
+         * @param item the CmsTreeItem of this Handler
+         */
+        public DataValueClickHander(CmsTreeItem item) {
+
+            m_item = item;
+        }
+
+        /**
+         * Is triggered if the DataValue widget is clicked.<p>
+         * If its check box was selected the click will deselect this box otherwise it will select it.
+         * 
+         * @param event The event that is triggered
+         * */
+        public void onClick(ClickEvent event) {
+
+            if (!m_item.getCheckBox().isChecked()) {
+                if (m_isSingleSelection) {
+                    deselectAll(m_item.getId());
+                    m_singleResult = m_item.getId();
+                } else {
+                    Iterator<Widget> it = m_scrollList.iterator();
+                    while (it.hasNext()) {
+                        selectAllParents((CmsTreeItem)it.next(), m_item.getId());
+
+                    }
+                }
+            } else {
+                if (m_isSingleSelection) {
+                    deselectAll("");
+                } else {
+                    deselect(m_item, "");
+                    deselectParent(m_item);
+                }
+            }
+            m_item.getCheckBox().setChecked(!m_item.getCheckBox().isChecked());
+            fireValueChange();
         }
 
     }
@@ -325,6 +373,10 @@ public class CmsCategoryTree extends Composite {
         addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryItem());
         m_list.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryScrollPanel());
         m_selectedCategories = selectedCategories;
+        Iterator<String> it = selectedCategories.iterator();
+        while (it.hasNext()) {
+            m_singleResult = it.next();
+        }
         m_scrollList = createScrollList();
         m_list.setHeight(height + "px");
         m_resultList = resultList;
@@ -361,6 +413,22 @@ public class CmsCategoryTree extends Composite {
                 addChildren(treeItem, child.getChildren(), selectedCategories);
             }
         }
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<List<String>> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * Represents a value change event.<p>
+     */
+    public void fireValueChange() {
+
+        ValueChangeEvent.fire(this, getAllSelected());
     }
 
     /**
@@ -546,55 +614,42 @@ public class CmsCategoryTree extends Composite {
      */
     protected void createQuickBox() {
 
-        if (hasQuickFilter()) {
-            m_quickSearch = new CmsTextBox();
-            // m_quickFilter.setVisible(hasQuickFilter());
-            m_quickSearch.getElement().getStyle().setFloat(Float.RIGHT);
-            m_quickSearch.getTextBoxContainer().getElement().getStyle().setHeight(18, Unit.PX);
-            m_quickSearch.getTextBox().getElement().getStyle().setMarginTop(2, Unit.PX);
+        m_quickSearch = new CmsTextBox();
+        // m_quickFilter.setVisible(hasQuickFilter());
+        m_quickSearch.getElement().getStyle().setFloat(Float.RIGHT);
+        m_quickSearch.getTextBoxContainer().getElement().getStyle().setHeight(18, Unit.PX);
+        m_quickSearch.getTextBox().getElement().getStyle().setMarginTop(2, Unit.PX);
 
-            m_quickSearch.setTriggerChangeOnKeyPress(true);
-            m_quickSearch.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
-            m_quickSearch.setGhostModeClear(true);
-            m_options.insert(m_quickSearch, 0);
-            m_searchButton = new CmsPushButton();
-            m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
-            m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-            m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
-            m_options.insert(m_searchButton, 0);
-            m_quickSearch.addValueChangeHandler(new CategoryValueChangeHandler());
-            if (hasQuickFilter()) {
-                m_filterTimer = new Timer() {
+        m_quickSearch.setTriggerChangeOnKeyPress(true);
+        m_quickSearch.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
+        m_quickSearch.setGhostModeClear(true);
+        m_options.insert(m_quickSearch, 0);
+        m_searchButton = new CmsPushButton();
+        m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
+        m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        m_options.insert(m_searchButton, 0);
+        m_quickSearch.addValueChangeHandler(new CategoryValueChangeHandler());
 
-                    @Override
-                    public void run() {
+        m_filterTimer = new Timer() {
 
-                        quickSearch();
-                    }
-                };
-                m_searchButton.setTitle(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0));
+            @Override
+            public void run() {
+
+                quickSearch();
+
             }
-            /* m_quickSearch.addKeyPressHandler(new KeyPressHandler() {
+        };
+        m_searchButton.setTitle(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0));
 
-                 public void onKeyPress(KeyPressEvent event) {
+        m_searchButton.addClickHandler(new ClickHandler() {
 
-                     if (m_quickSearch.getFormValueAsString().length() > 3) {
-                         quickSearch();
-                     }
-                     if (m_quickSearch.getFormValueAsString().length() == 0) {
-                         quickSearch();
-                     }
-                 }
-             }); */
-            m_searchButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
 
-                public void onClick(ClickEvent arg0) {
-
-                    quickSearch();
-                }
-            });
-            m_searchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
-        }
+                quickSearch();
+            }
+        });
+        m_searchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
     }
 
     /**
@@ -906,7 +961,12 @@ public class CmsCategoryTree extends Composite {
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
-        CmsDataValue dataValue = new CmsDataValue(600, 3, category.getTitle(), category.getPath());
+        CmsDataValue dataValue = new CmsDataValue(
+            600,
+            3,
+            I_CmsImageBundle.INSTANCE.icons().deleteIconActive().getName(),
+            category.getTitle(),
+            category.getPath());
         // add it to the list of all categories
         m_categories.put(category.getPath(), dataValue);
         // create the check box for this item 
@@ -926,6 +986,8 @@ public class CmsCategoryTree extends Composite {
         // bild the CmsTreeItem out of the widget and the check box
         CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, dataValue);
         // abb the handler to the check box
+        dataValue.addDomHandler(new DataValueClickHander(treeItem), ClickEvent.getType());
+
         checkBox.addValueChangeHandler(new CheckBoxValueChangeHandler(treeItem));
         // set the right style for the small view
         treeItem.setSmallView(true);

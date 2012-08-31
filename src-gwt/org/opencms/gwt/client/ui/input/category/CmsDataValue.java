@@ -39,47 +39,64 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/***/
+/**
+ * Widget to generate an single row of values.<p> 
+ * 
+ * */
 public class CmsDataValue extends Composite {
 
-    /***/
-    interface MyUiBinder extends UiBinder<Widget, CmsDataValue> {
-        //TODO
+    /**
+     * @see com.google.gwt.uibinder.client.UiBinder
+     */
+    interface I_CmsDataValueUiBinder extends UiBinder<Widget, CmsDataValue> {
+        // GWT interface, nothing to do here
     }
 
-    /***/
-    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+    /** The ui-binder instance for this class. */
+    private static I_CmsDataValueUiBinder uiBinder = GWT.create(I_CmsDataValueUiBinder.class);
 
-    /***/
+    /** The label field. */
     @UiField
     Label m_label;
 
-    /***/
+    /**The table. */
     @UiField
     FlexTable m_table;
 
-    /***/
+    /**The image panel. */
+    @UiField
+    SimplePanel m_imagePanel;
+
+    /** The width of this widget. */
     private int m_width;
-    /***/
+
+    /** The part of the width that should be used for the label. */
     private int m_part;
-    /***/
+
+    /** The values that should be shown in this widget. The first value is used for the label*/
     private String[] m_parameters;
 
+    /** The css string for the image that is shown in front of the label. */
+    private String m_image;
+
     /**
-     * 
+     * Constructor to generate the DataValueWidget with image.<p>
      *
-     * @param width 
-     * @param part 
-     * @param parameters 
+     * @param width the width of this widget.
+     * @param part the part of the width that should be used for the label
+     * @param parameters the values that should be shown in this widget. The first value is used for the label
+     * @param image the css string for the image that is shown in front of the label 
      */
-    public CmsDataValue(int width, int part, String... parameters) {
+    public CmsDataValue(int width, int part, String image, String... parameters) {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_width = width;
         m_part = part;
         m_parameters = parameters;
+        m_image = image;
         generateDataValue();
 
         addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().dataValue());
@@ -154,23 +171,18 @@ public class CmsDataValue extends Composite {
     }
 
     /**
-     * @see com.alkacon.geranium.client.ui.I_Truncable#truncate(java.lang.String, int)
-     */
-    public void truncate(String textMetricsKey, int clientWidth) {
-
-        m_width = clientWidth;
-        generateDataValue();
-
-    }
-
-    /**
-     * 
+     * Generates the widget an adds all parameter to the right place.<p>
      */
     private void generateDataValue() {
 
         int width_label = (m_width / m_part);
         int width_tabel = (m_width - 30) - width_label;
-        int cell_width = width_tabel / (m_parameters.length - 1);
+        int cell_width;
+        if (m_parameters.length > 1) {
+            cell_width = width_tabel / (m_parameters.length - 1);
+        } else {
+            cell_width = width_tabel;
+        }
 
         m_table.getElement().getStyle().setFloat(Float.RIGHT);
         m_table.getElement().getStyle().setWidth(width_tabel, Unit.PX);
@@ -181,6 +193,11 @@ public class CmsDataValue extends Composite {
         m_label.getElement().getStyle().setPaddingRight(10, Unit.PX);
         m_label.getElement().getStyle().setPaddingBottom(2, Unit.PX);
         m_label.getElement().getStyle().setOverflow(Overflow.HIDDEN);
+        if (m_image == null) {
+            m_imagePanel.removeFromParent();
+        } else {
+            m_imagePanel.setStyleName(m_image);
+        }
 
         m_table.insertRow(0);
         int i = 0;
@@ -198,7 +215,6 @@ public class CmsDataValue extends Composite {
                     lable.getElement().getStyle().setWidth(cell_width, Unit.PX);
                     lable.setTitle(parameter);
 
-                    //m_table.insertCell(0, i);
                     m_table.setWidget(0, i - 1, lable);
                 }
             } else {

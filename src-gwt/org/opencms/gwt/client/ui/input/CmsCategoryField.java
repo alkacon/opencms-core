@@ -154,13 +154,13 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     private String m_singelSidePath = "";
 
     /** Count the numbers of values shown. */
-    private int m_valuesSet = 0;
+    private int m_valuesSet;
 
     /** The sife pathes of all added categories. */
     private List<String> m_allSidePath = new ArrayList<String>();
 
     /**
-     * Categoryfield widgets for ADE forms.<p>
+     * Category field widgets for ADE forms.<p>
      */
     public CmsCategoryField() {
 
@@ -193,8 +193,10 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     }
 
     /**
-     * @param treeEntries
-     * @param selectedCategories
+     * Builds and shows the category tree.<p>
+     * 
+     * @param treeEntries List of category entries
+     * @param selectedCategories a list of all selected categories
      */
     public void buildCategoryTree(List<CmsCategoryTreeEntry> treeEntries, List<String> selectedCategories) {
 
@@ -438,7 +440,12 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             null);
         // set the list item widget
 
-        CmsDataValue categoryTreeItem = new CmsDataValue(500, 4, categoryBean.getTitle(), categoryBean.getSubTitle());
+        CmsDataValue categoryTreeItem = new CmsDataValue(
+            500,
+            4,
+            null,
+            categoryBean.getTitle(),
+            categoryBean.getSubTitle());
         categoryTreeItem.setTitle(categoryBean.getSubTitle());
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());

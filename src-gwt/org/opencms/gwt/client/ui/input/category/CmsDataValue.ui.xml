@@ -3,6 +3,7 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:FlowPanel ui:field="m_inputRow">
 		<g:FlexTable ui:field="m_table"/>
-		<g:Label ui:field="m_label"/>	
+		<g:Label ui:field="m_label"/>
+		<g:SimplePanel ui:field="m_imagePanel" />	
 	</g:FlowPanel>	
 </ui:UiBinder> 
