@@ -94,6 +94,9 @@ public final class Messages {
     public static final String GUI_CANT_LOAD_TREE_1 = "GUI_CANT_LOAD_TREE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_0 = "GUI_CATEGORIES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -274,6 +277,9 @@ public final class Messages {
     public static final String GUI_NO_DESCIPTION_0 = "GUI_NO_DESCIPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTHING_CHANGED_0 = "GUI_NOTHING_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_OK_0 = "GUI_OK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -285,6 +291,7 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_POPUP_BLOCKED_0 = "GUI_POPUP_BLOCKED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -346,6 +353,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESET_0 = "GUI_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_LOCKED_0 = "GUI_RESOURCE_LOCKED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_STATE_0 = "GUI_RESOURCE_STATE_0";

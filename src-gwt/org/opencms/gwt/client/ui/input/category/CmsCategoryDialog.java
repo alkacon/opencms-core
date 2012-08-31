@@ -85,7 +85,7 @@ public class CmsCategoryDialog extends CmsPopup {
      */
     public CmsCategoryDialog(CmsUUID structureId, Command onSave) {
 
-        super("Categories");
+        super(Messages.get().key(Messages.GUI_CATEGORIES_0));
         m_structureId = structureId;
         m_onSave = onSave;
         setGlassEnabled(true);
@@ -124,7 +124,7 @@ public class CmsCategoryDialog extends CmsPopup {
             }
         });
         addButton(m_saveButton);
-        m_saveButton.disable("Initializing ...");
+        m_saveButton.disable(Messages.get().key(Messages.GUI_LOADING_0));
     }
 
     /**
@@ -155,10 +155,10 @@ public class CmsCategoryDialog extends CmsPopup {
             || lock.equals(LockIcon.NONE)
             || lock.equals(LockIcon.OPEN)
             || lock.equals(LockIcon.SHARED_OPEN)) {
-            m_saveButton.disable("Nothing changed");
+            m_saveButton.disable(Messages.get().key(Messages.GUI_NOTHING_CHANGED_0));
         } else {
-            m_categoryTree.disable("Resource is locked.");
-            m_saveButton.disable("Resource is locked.");
+            m_categoryTree.disable(Messages.get().key(Messages.GUI_RESOURCE_LOCKED_0));
+            m_saveButton.disable(Messages.get().key(Messages.GUI_RESOURCE_LOCKED_0));
         }
         if (isShowing()) {
             center();
