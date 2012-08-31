@@ -116,13 +116,6 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /** The use formats flag. */
     private boolean m_useFormats;
 
-    /**
-     * Default constructor.<p>
-     * */
-    public CmsGalleryField() {
-
-    }
-
     /** 
      * Constructs a new gallery widget.<p>
      */

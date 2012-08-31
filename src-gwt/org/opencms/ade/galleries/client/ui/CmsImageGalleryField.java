@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -108,10 +109,8 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /** 
      * Constructs a new gallery widget.<p>
-     * 
-     * @param iconImage the icon image class 
      */
-    public CmsImageGalleryField(String iconImage) {
+    public CmsImageGalleryField() {
 
         initWidget(uibinder.createAndBindUi(this));
 
@@ -125,7 +124,20 @@ public class CmsImageGalleryField extends CmsGalleryField {
         m_descriptionArea.getTextAreaContainer().onResize();
         m_formatSelection.setItems(selectItems);
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_opener.setImageClass(iconImage != null ? iconImage : I_CmsImageBundle.INSTANCE.style().directoryIcon());
+        m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+    }
+
+    /** 
+     * Constructs a new gallery widget.<p>
+     * 
+     * @param iconImage the icon image class 
+     */
+    public CmsImageGalleryField(String iconImage) {
+
+        this();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconImage)) {
+            m_opener.setImageClass(iconImage);
+        }
     }
 
     /**
@@ -250,18 +262,6 @@ public class CmsImageGalleryField extends CmsGalleryField {
     public void onTextboxChange(ValueChangeEvent<String> event) {
 
         ValueChangeEvent.fire(CmsImageGalleryField.this, getFormValueAsString());
-    }
-
-    /**
-     * On text box click.<p>
-     * 
-     * @param event the event
-     */
-    @Override
-    @UiHandler("m_textbox")
-    public void onTextboxClick(ClickEvent event) {
-
-        openGalleryDialog();
     }
 
     /**
