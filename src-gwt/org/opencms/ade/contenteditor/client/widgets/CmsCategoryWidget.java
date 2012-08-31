@@ -153,9 +153,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** Value of the activation. */
     private boolean m_active = true;
 
-    /** String of the configured category folder. */
-    private String m_categoryFolder = "/";
-
     /** Height of the display field. */
     int m_height = DEFAULT_HEIGHT;
 
@@ -277,9 +274,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         }
 
         m_active = active;
-        if (m_active) {
-            setValue(m_selectedValue, true);
-        }
     }
 
     /**
@@ -310,7 +304,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * 
+     * Is called to close the popup and show the new values.<p>
      */
     protected void closePopup() {
 
@@ -335,7 +329,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * 
+     * Is called to open the popup.<p>
      */
     protected void openPopup() {
 
@@ -440,7 +434,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                     // cut eventual following configuration values
                     category = category.substring(0, category.indexOf('|'));
                 }
-                m_categoryFolder = category;
             }
             int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
             if (selectiontypeIndex != -1) {
