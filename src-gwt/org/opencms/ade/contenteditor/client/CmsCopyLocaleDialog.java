@@ -125,6 +125,7 @@ public class CmsCopyLocaleDialog extends CmsPopup {
         }
         m_okButton = new CmsPushButton();
         m_okButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
+        m_okButton.setUseMinWidth(true);
         m_okButton.setText(Messages.get().key(Messages.GUI_LOCALE_DIALOG_OK_0));
         m_okButton.disable(Messages.get().key(Messages.GUI_LOCALE_DIALOG_NO_LANGUAGE_SELECTED_0));
         m_okButton.addClickHandler(new ClickHandler() {
@@ -144,6 +145,7 @@ public class CmsCopyLocaleDialog extends CmsPopup {
                 hide();
             }
         });
+        cancelButton.setUseMinWidth(true);
         main.add(fieldset);
         setMainContent(main);
         addButton(cancelButton);
