@@ -83,7 +83,6 @@ public final class CmsRename implements I_CmsHasContextMenuCommand, I_CmsContext
      */
     public String getCommandIconClass() {
 
-        //TODO: use a better icon 
         return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().rename();
     }
 

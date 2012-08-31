@@ -6,8 +6,8 @@
 	<ui:with field="layout" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 <ui:style>
-	div>div.faider{
-		right: 16px;
+	div>div.fader{
+		right: 20px;
 		cursor: text;
 		top: 0px;
 	}
@@ -36,7 +36,7 @@
 	.opener{
 		position: absolute;
 		right: 3px;
-		top: 1px;
+		top: 0px;
 	}
 </ui:style>
 <g:HTMLPanel styleName="{style.galleryField}" addStyleNames="{main.generalCss.cornerAll}">
@@ -44,6 +44,6 @@
 		<g:TextBox ui:field="m_textbox" />
 	</div>
 	<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.opener}"/>
-	<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.faider}" />
+	<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.fader}" />
 </g:HTMLPanel>
 </ui:UiBinder>

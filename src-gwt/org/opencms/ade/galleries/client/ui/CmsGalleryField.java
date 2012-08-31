@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -124,15 +125,25 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
 
     /** 
      * Constructs a new gallery widget.<p>
+     */
+    public CmsGalleryField() {
+
+        initWidget(uibinder.createAndBindUi(this));
+        m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+    }
+
+    /** 
+     * Constructs a new gallery widget.<p>
      * 
      * @param iconImage the icon image class 
      */
     public CmsGalleryField(String iconImage) {
 
-        initWidget(uibinder.createAndBindUi(this));
-
-        m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_opener.setImageClass(iconImage != null ? iconImage : I_CmsImageBundle.INSTANCE.style().directoryIcon());
+        this();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconImage)) {
+            m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+        }
     }
 
     /**
