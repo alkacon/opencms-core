@@ -692,18 +692,6 @@ public final class CmsContentEditor {
         });
         m_saveButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
         m_toolbar.addLeft(m_saveButton);
-        m_cancelButton = createButton(
-            Messages.get().key(Messages.GUI_TOOLBAR_RESET_0),
-            I_CmsButton.ButtonData.RESET.getIconClass());
-        m_cancelButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                cancelEdit();
-
-            }
-        });
-        m_toolbar.addRight(m_cancelButton);
 
         m_openFormButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_OPEN_FORM_0),
@@ -717,12 +705,12 @@ public final class CmsContentEditor {
             }
         });
         m_toolbar.addLeft(m_openFormButton);
+
         m_hideHelpBubblesButton = new CmsToggleButton();
         m_hideHelpBubblesButton.setTitle(I_CmsButton.ButtonData.TOGGLE_HELP.getTitle());
         m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.TOGGLE_HELP.getIconClass());
         m_hideHelpBubblesButton.setButtonStyle(ButtonStyle.IMAGE, null);
         m_hideHelpBubblesButton.setSize(Size.big);
-
         m_hideHelpBubblesButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -735,8 +723,20 @@ public final class CmsContentEditor {
             m_hideHelpBubblesButton.setDown(true);
             HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), true);
         }
-        m_toolbar.addLeft(m_hideHelpBubblesButton);
+        m_toolbar.addRight(m_hideHelpBubblesButton);
 
+        m_cancelButton = createButton(
+            Messages.get().key(Messages.GUI_TOOLBAR_RESET_0),
+            I_CmsButton.ButtonData.RESET.getIconClass());
+        m_cancelButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                cancelEdit();
+
+            }
+        });
+        m_toolbar.addRight(m_cancelButton);
         RootPanel.get().add(m_toolbar);
     }
 

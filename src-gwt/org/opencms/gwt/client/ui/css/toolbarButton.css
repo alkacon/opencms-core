@@ -146,10 +146,10 @@
 	gwt-image: "showSmallElementsIconDeactivated";
 }
 
-@sprite .cmsState-up-disabled .toolbarToggleHelp, .cmsState-down-disabled .toolbarToggleHelp{
+@sprite .cmsState-up-disabled .toolbarToggleHelp, .cmsState-down-disabled .toolbarToggleHelp, .cmsState-down-hovering .toolbarToggleHelp, .cmsState-down .toolbarToggleHelp{
 	gwt-image: "toggleHelpBigIconDeactivated";
 }
-@sprite .cmsState-up .toolbarToggleHelp, .cmsState-up-hovering .toolbarToggleHelp, .cmsState-down-hovering .toolbarToggleHelp, .cmsState-down .toolbarToggleHelp{
+@sprite .cmsState-up .toolbarToggleHelp, .cmsState-up-hovering .toolbarToggleHelp{
     gwt-image: "toggleHelpBigIconActive";
 }
 
