@@ -5,7 +5,7 @@
 		<class>
 			<name>org.opencms.workplace.editors.CmsXmlContentEditorTypeMatcher</name>
 			<mapto>xmlcontent</mapto>
-			<ranking>10</ranking>
+			<ranking>20</ranking>
 		</class>	
 	</resourcetypes>
 	<useragents>
