@@ -69,6 +69,12 @@ public interface I_CmsToolbarButtonLayoutBundle extends I_CmsBigIconBundle {
          * 
          * @return the CSS class name
          */
+        String toolbarCopyLocale();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String toolbarDelete();
 
         /** Access method.<p>
@@ -148,6 +154,12 @@ public interface I_CmsToolbarButtonLayoutBundle extends I_CmsBigIconBundle {
          * @return the CSS class name
          */
         String toolbarSitemap();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String toolbarToggleHelp();
     }
 
     /** The bundle instance. */

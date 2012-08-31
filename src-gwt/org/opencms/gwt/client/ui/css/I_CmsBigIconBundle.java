@@ -97,6 +97,20 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
+    @Source("images/icons/big/copyLocaleBigIconActive.png")
+    ImageResource copyLocaleBigIconActive();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
+    @Source("images/icons/big/copyLocaleBigIconDeactivated.png")
+    ImageResource copyLocaleBigIconDeactivated();
+
+    /** 
+     * Access method.<p>
+     * @return an image resource
+     */
     @Source("images/icons/big/deleteBigIconActive.png")
     ImageResource deleteBigIconActive();
 
@@ -359,6 +373,22 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      */
     @Source("images/icons/big/stateSecureBigIcon.png")
     ImageResource stateSecureBigIcon();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/toggleHelpBigIconActive.png")
+    ImageResource toggleHelpBigIconActive();
+
+    /** 
+     * Access method.<p>
+     * 
+     * @return an image resource
+     */
+    @Source("images/icons/big/toggleHelpBigIconDeactivated.png")
+    ImageResource toggleHelpBigIconDeactivated();
 
     /** 
      * Access method.<p>

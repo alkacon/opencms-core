@@ -97,6 +97,9 @@ public interface I_CmsButton {
         CONTEXT(BUTTON_CSS.toolbarContext(), Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0)),
 
         /** Toolbar button. */
+        COPY_LOCALE(BUTTON_CSS.toolbarCopyLocale(), Messages.get().key(Messages.GUI_TOOLBAR_COPY_LOCALE_0)),
+
+        /** Toolbar button. */
         DELETE(BUTTON_CSS.toolbarDelete(), Messages.get().key(Messages.GUI_TOOLBAR_DELETE_0)),
 
         /** Toolbar button. */
@@ -139,7 +142,10 @@ public interface I_CmsButton {
         SHOWSMALL(BUTTON_CSS.toolbarShowSmall(), Messages.get().key(Messages.GUI_TOOLBAR_SHOWSMALL_0)),
 
         /** Toolbar button. */
-        SITEMAP(BUTTON_CSS.toolbarSitemap(), Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0));
+        SITEMAP(BUTTON_CSS.toolbarSitemap(), Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
+
+        /** Toolbar button. */
+        TOGGLE_HELP(BUTTON_CSS.toolbarToggleHelp(), Messages.get().key(Messages.GUI_TOOLBAR_TOGGLE_HELP_0));
 
         /** The icon class name. */
         private String m_iconClass;

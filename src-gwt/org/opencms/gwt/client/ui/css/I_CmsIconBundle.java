@@ -262,6 +262,22 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
+    @Source("images/icons/popupIconActive.png")
+    ImageResource popupIconActive();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/popupIconDeactivated.png")
+    ImageResource popupIconDeactivated();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
     @Source("images/icons/previewIconActive.png")
     ImageResource previewIconActive();
 

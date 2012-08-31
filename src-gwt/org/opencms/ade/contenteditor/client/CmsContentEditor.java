@@ -626,8 +626,8 @@ public final class CmsContentEditor {
         }
         if (m_copyLocaleButton == null) {
             m_copyLocaleButton = createButton(
-                Messages.get().key(Messages.GUI_TOOLBAR_COPY_LOCALE_0),
-                I_CmsButton.ButtonData.ADD.getIconClass());
+                I_CmsButton.ButtonData.COPY_LOCALE.getTitle(),
+                I_CmsButton.ButtonData.COPY_LOCALE.getIconClass());
             m_copyLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -718,8 +718,8 @@ public final class CmsContentEditor {
         });
         m_toolbar.addLeft(m_openFormButton);
         m_hideHelpBubblesButton = new CmsToggleButton();
-        m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_SHOW_HELP_0));
-        m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.EDIT.getIconClass());
+        m_hideHelpBubblesButton.setTitle(I_CmsButton.ButtonData.TOGGLE_HELP.getTitle());
+        m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.TOGGLE_HELP.getIconClass());
         m_hideHelpBubblesButton.setButtonStyle(ButtonStyle.IMAGE, null);
         m_hideHelpBubblesButton.setSize(Size.big);
 

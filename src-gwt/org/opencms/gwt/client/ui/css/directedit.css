@@ -1,26 +1,18 @@
-
+@external cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
 .directEditButtons{
 	position: absolute;
 	text-align: right;
 }
-
-@external cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
-
 .directEditButtons .cmsState{
 	display: inline-block;
 }
 
-.cmsState-down-hovering{}
-.cmsState-down{}
-.cmsState-down-disabled{}
-.cmsState-up-disabled{}
-.cmsState-up{}
-.cmsState-up-hovering{}
-.cmsHovering{}
-.optionBar{}
-
-.classicDirectEdit {} 
+/** Unused classes. */
+.cmsHovering, .classicDirectEdit, .toolbarCopyLocale, .toolbarToggleHelp, .toolbarShowSmall, .toolbarSave,
+.toolbarProperties, .toolbarContext, .toolbarClipboard, .toolbarReset, .toolbarMove, .toolbarSelection,
+.toolbarAdd, .toolbarEdit, .toolbarSitemap, .toolbarDelete, .toolbarRemove, .toolbarNew,.toolbarPublish,
+.toolbarBack, .toolbarRefresh, .showButtons {}
 
 
 div.optionBar{
@@ -64,11 +56,6 @@ div.optionBar div, div.optionBar span {
 	max-width: none;
 }
 
-.toolbarSave, .toolbarProperties, .toolbarContext, .toolbarClipboard, .toolbarReset, .toolbarMove, .toolbarSelection,
-.toolbarAdd, .toolbarEdit, .toolbarSitemap, .toolbarDelete, .toolbarRemove, .toolbarNew,.toolbarPublish, .toolbarBack,
-.toolbarRefresh{}
-
-
 @sprite .toolbarSelection .optionBar.cmsHovering{
 	gwt-image: "backgrounds.softBackground";
 	height: auto;
@@ -87,9 +74,6 @@ div.optionBar div, div.optionBar span {
 .hideButtons .optionBar { 
 	display: none !important;
 }
-
-.showButtons {
-} 
 
 @if user.agent ie6 {
 	.toolbarRemove .optionBar .toolbarRemove, 
@@ -172,8 +156,3 @@ div.optionBar div, div.optionBar span {
 @sprite .optionBar .cmsState-up .toolbarSelection, .optionBar .cmsState-up-disabled .toolbarSelection, .optionBar .cmsState-down-disabled .toolbarSelection {
     gwt-image: "coreImages.icons.selectionIconDeactivated";
 }
-
-.toolbarShowSmall{}
-
-
-

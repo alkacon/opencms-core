@@ -40,6 +40,13 @@
     gwt-image: "menuBigIconActive";
 }
 
+@sprite .cmsState-up-disabled .toolbarCopyLocale, .cmsState-down-disabled .toolbarCopyLocale{
+	gwt-image: "copyLocaleBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarCopyLocale, .cmsState-up-hovering .toolbarCopyLocale, .cmsState-down-hovering .toolbarCopyLocale, .cmsState-down .toolbarCopyLocale{
+    gwt-image: "copyLocaleBigIconActive";
+}
+
 @sprite .cmsState-up-disabled .toolbarClipboard, .cmsState-down-disabled .toolbarClipboard{
 	gwt-image: "clipboardBigIconDeactivated";
 }
@@ -139,6 +146,12 @@
 	gwt-image: "showSmallElementsIconDeactivated";
 }
 
+@sprite .cmsState-up-disabled .toolbarToggleHelp, .cmsState-down-disabled .toolbarToggleHelp{
+	gwt-image: "toggleHelpBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarToggleHelp, .cmsState-up-hovering .toolbarToggleHelp, .cmsState-down-hovering .toolbarToggleHelp, .cmsState-down .toolbarToggleHelp{
+    gwt-image: "toggleHelpBigIconActive";
+}
 
 
 .cmsState-up .toolbarDelete, .cmsState-up-hovering .toolbarDelete, .cmsState-down-hovering .toolbarDelete, .cmsState-down .toolbarDelete, .cmsState-up-disabled .toolbarDelete, .cmsState-down-disabled .toolbarDelete{

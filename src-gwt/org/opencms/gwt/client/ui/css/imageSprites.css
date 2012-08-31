@@ -71,6 +71,17 @@
     vertical-align: middle;
 }
 
+@sprite .cmsState-down .popupIcon, .cmsState-up-hovering .popupIcon, .cmsState-down-hovering .popupIcon{
+    gwt-image: "icons.popupIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .popupIcon, .cmsState-up-disabled .popupIcon, .cmsState-down-disabled .popupIcon{
+    gwt-image: "icons.popupIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
+
 
 @sprite .cmsState-down .propertyIcon, .cmsState-up-hovering .propertyIcon, .cmsState-down-hovering .propertyIcon{
     gwt-image: "icons.propertyIconActive";
