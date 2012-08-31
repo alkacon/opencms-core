@@ -117,6 +117,13 @@ public interface I_CmsInputCss extends CssResource {
      * 
      * @return the css class
      */
+    String disabled();
+
+    /**
+     * Css class reader.<p>
+     * 
+     * @return the css class
+     */
     String error();
 
     /**

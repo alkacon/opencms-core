@@ -327,6 +327,10 @@ div.selectBoxOpener {
 	background-color: value("constants.css.backgroundColorDialog"); 
 }
 
+.disabled .dataValue{
+	cursor: default;
+}
+
 .categoryItem{
 	margin-top: 6px;
 	

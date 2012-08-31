@@ -258,33 +258,38 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
          * */
         public void onClick(ClickEvent event) {
 
-            if (!m_item.getCheckBox().isChecked()) {
-                if (m_isSingleSelection) {
-                    deselectAll(m_item.getId());
-                    m_singleResult = m_item.getId();
-                } else {
-                    Iterator<Widget> it = m_scrollList.iterator();
-                    while (it.hasNext()) {
-                        selectAllParents((CmsTreeItem)it.next(), m_item.getId());
+            if (isEnabled()) {
+                if (!m_item.getCheckBox().isChecked()) {
+                    if (m_isSingleSelection) {
+                        deselectAll(m_item.getId());
+                        m_singleResult = m_item.getId();
+                    } else {
+                        Iterator<Widget> it = m_scrollList.iterator();
+                        while (it.hasNext()) {
+                            selectAllParents((CmsTreeItem)it.next(), m_item.getId());
 
+                        }
+                    }
+                } else {
+                    if (m_isSingleSelection) {
+                        deselectAll("");
+                    } else {
+                        deselect(m_item, "");
+                        deselectParent(m_item);
                     }
                 }
-            } else {
-                if (m_isSingleSelection) {
-                    deselectAll("");
-                } else {
-                    deselect(m_item, "");
-                    deselectParent(m_item);
-                }
+                m_item.getCheckBox().setChecked(!m_item.getCheckBox().isChecked());
+                fireValueChange();
             }
-            m_item.getCheckBox().setChecked(!m_item.getCheckBox().isChecked());
-            fireValueChange();
         }
 
     }
 
     /** The css bundle used for this widget. */
     protected static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
+
+    /** The filtering delay. */
+    private static final int FILTER_DELAY = 100;
 
     /** Text metrics key. */
     private static final String TM_GALLERY_SORT = "gallerySort";
@@ -295,26 +300,42 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     /** Map of categories. */
     protected Map<String, CmsDataValue> m_categories;
 
-    /** Result string for single selection. */
-    protected String m_singleResult = "";
+    /** The event at the moment. */
+    protected ValueChangeEvent<String> m_event;
 
-    /** List of categories. */
-    protected CmsList<? extends I_CmsListItem> m_scrollList;
+    /** A label for displaying additional information about the tab. */
+    protected HasText m_infoLabel;
 
-    /** List of categories selected from the server. */
-    protected List<CmsCategoryTreeEntry> m_resultList;
+    /** Vale to store the widget mode. True means the single selection. */
+    protected boolean m_isSingleSelection;
 
-    /** List of all selected categories. */
-    protected List<String> m_selectedCategories;
+    /** Vale to store the view mode. True means the list view. */
+    protected boolean m_listView;
+
+    /** The option panel. */
+    @UiField
+    protected FlowPanel m_options;
 
     /** The quick search box. */
     protected CmsTextBox m_quickSearch;
 
+    /** List of categories selected from the server. */
+    protected List<CmsCategoryTreeEntry> m_resultList;
+
+    /** List of categories. */
+    protected CmsList<CmsTreeItem> m_scrollList;
+
     /** The quick search button. */
     protected CmsPushButton m_searchButton;
 
-    /** The filtering delay. */
-    private static final int FILTER_DELAY = 100;
+    /** List of all selected categories. */
+    protected List<String> m_selectedCategories;
+
+    /** Result string for single selection. */
+    protected String m_singleResult = "";
+
+    /** The select box to change the sort order. */
+    protected CmsSelectBox m_sortSelectBox;
 
     /** The scroll panel. */
     @UiField
@@ -324,27 +345,14 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     @UiField
     FlowPanel m_tab;
 
-    /** The option panel. */
-    @UiField
-    protected FlowPanel m_options;
-
-    /** A label for displaying additional information about the tab. */
-    protected HasText m_infoLabel;
-
-    /** The select box to change the sort order. */
-    protected CmsSelectBox m_sortSelectBox;
-
-    /** Vale to store the widget mode. True means the single selection. */
-    protected boolean m_isSingleSelection;
-
-    /** Vale to store the view mode. True means the list view. */
-    protected boolean m_listView;
-
-    /** The event at the moment. */
-    protected ValueChangeEvent<String> m_event;
+    /** The disable reason, will be displayed as check box title. */
+    private String m_disabledReason;
 
     /** The quick filter timer. */
     private Timer m_filterTimer;
+
+    /** The category selection enabled flag. */
+    private boolean m_isEnalbled;
 
     /**
      * Default Constructor.<p>
@@ -353,6 +361,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
         uiBinder.createAndBindUi(this);
         initWidget(uiBinder.createAndBindUi(this));
+        m_isEnalbled = true;
     }
 
     /**
@@ -424,6 +433,35 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     }
 
     /**
+     * Disabled the category selection.<p>
+     * 
+     * @param disabledReason the disable reason, will be displayed as check box title
+     */
+    public void disable(String disabledReason) {
+
+        if (m_isEnalbled
+            || (CmsStringUtil.isNotEmptyOrWhitespaceOnly(disabledReason) && !disabledReason.equals(m_disabledReason))) {
+            m_isEnalbled = false;
+            m_disabledReason = disabledReason;
+            m_scrollList.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().disabled());
+            setListEnabled(m_scrollList, false, disabledReason);
+        }
+    }
+
+    /**
+     * Enables the category selection.<p>
+     */
+    public void enable() {
+
+        if (!m_isEnalbled) {
+            m_isEnalbled = true;
+            m_disabledReason = null;
+            m_scrollList.removeStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().disabled());
+            setListEnabled(m_scrollList, true, null);
+        }
+    }
+
+    /**
      * Represents a value change event.<p>
      */
     public void fireValueChange() {
@@ -470,6 +508,16 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         List<String> result = new ArrayList<String>();
         result.add(m_singleResult);
         return result;
+    }
+
+    /**
+     * Returns if the category selection is enabled.<p>
+     * 
+     * @return <code>true</code> if the category selection is enabled
+     */
+    public boolean isEnabled() {
+
+        return m_isEnalbled;
     }
 
     /**
@@ -526,7 +574,9 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
                 if (isPartofPath) {
                     checkBox.setChecked(true);
                 }
-
+                if (!isEnabled()) {
+                    checkBox.disable(m_disabledReason);
+                }
                 // set the category list item and add to list 
                 CmsTreeItem listItem = new CmsTreeItem(false, checkBox, dataValue);
                 checkBox.addValueChangeHandler(new CheckBoxValueChangeHandler(listItem));
@@ -657,9 +707,9 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
      * 
      * @return the newly created list widget 
      */
-    protected CmsList<? extends I_CmsListItem> createScrollList() {
+    protected CmsList<CmsTreeItem> createScrollList() {
 
-        return new CmsList<I_CmsListItem>();
+        return new CmsList<CmsTreeItem>();
     }
 
     /**
@@ -983,6 +1033,9 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         if (isPartofPath) {
             checkBox.setChecked(true);
         }
+        if (!isEnabled()) {
+            checkBox.disable(m_disabledReason);
+        }
         // bild the CmsTreeItem out of the widget and the check box
         CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, dataValue);
         // abb the handler to the check box
@@ -1038,6 +1091,26 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
             }
         }
 
+    }
+
+    /**
+     * Sets the given tree list enabled/disabled.<p>
+     * 
+     * @param list the list of tree items
+     * @param enabled <code>true</code> to enable
+     * @param disabledReason the disable reason, will be displayed as check box title
+     */
+    private void setListEnabled(CmsList<? extends I_CmsListItem> list, boolean enabled, String disabledReason) {
+
+        for (Widget child : list) {
+            CmsTreeItem treeItem = (CmsTreeItem)child;
+            if (enabled) {
+                treeItem.getCheckBox().enable();
+            } else {
+                treeItem.getCheckBox().disable(disabledReason);
+            }
+            setListEnabled(treeItem.getChildren(), enabled, disabledReason);
+        }
     }
 
 }
