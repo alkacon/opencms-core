@@ -49,7 +49,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.repository.CmsRepositoryFilter;
+import org.opencms.search.CmsSearchException;
+import org.opencms.search.solr.CmsSolrIndex;
+import org.opencms.search.solr.CmsSolrQuery;
+import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -176,11 +181,17 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     /** The project parameter name. */
     public static final String PARAM_PROJECT = "project";
 
+    /** The property parameter name. */
+    public static final String PARAM_PROPERTY = "property";
+
     /** The rendition parameter name. */
     public static final String PARAM_RENDITION = "rendition";
 
     /** The logger instance for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsCmisRepository.class);
+
+    /** The index parameter name. */
+    private static final String PARAM_INDEX = "index";
 
     /** The internal admin CMS context. */
     private CmsObject m_adminCms;
@@ -194,6 +205,9 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     /** The repository id. */
     private String m_id;
 
+    /** The name of the SOLR index to use for querying. */
+    private String m_indexName;
+
     /**
      * Readonly flag to prevent write operations on the repository.<p>
      */
@@ -204,6 +218,9 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /** The project of the repository. */
     private CmsProject m_project;
+
+    /** List of dynamic property providers. */
+    private List<I_CmsPropertyProvider> m_propertyProviders = new ArrayList<I_CmsPropertyProvider>();
 
     /** The relation object helper. */
     private CmsCmisRelationHelper m_relationHelper = new CmsCmisRelationHelper(this);
@@ -355,6 +372,18 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
             cms.unlockResource(targetResource);
             boolean wasLocked = ensureLock(cms, targetResource);
             cms.writePropertyObjects(targetResource, cmsProperties);
+            for (String key : properties.keySet()) {
+                if (key.startsWith(CmsCmisTypeManager.PROPERTY_PREFIX_DYNAMIC)) {
+                    I_CmsPropertyProvider provider = getTypeManager().getPropertyProvider(key);
+                    try {
+                        String value = (String)(properties.get(key).getFirstValue());
+                        provider.setPropertyValue(cms, targetResource, value);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+
             if (wasLocked) {
                 cms.unlockResource(targetResource);
             }
@@ -1028,7 +1057,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         capabilities.setSupportsVersionSpecificFiling(Boolean.FALSE);
         capabilities.setIsPwcSearchable(Boolean.FALSE);
         capabilities.setIsPwcUpdatable(Boolean.FALSE);
-        capabilities.setCapabilityQuery(CapabilityQuery.NONE);
+        capabilities.setCapabilityQuery(getIndex() != null ? CapabilityQuery.FULLTEXTONLY : CapabilityQuery.NONE);
         capabilities.setCapabilityChanges(CapabilityChanges.NONE);
         capabilities.setCapabilityContentStreamUpdates(CapabilityContentStreamUpdates.ANYTIME);
         capabilities.setSupportsGetDescendants(Boolean.TRUE);
@@ -1126,6 +1155,20 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+        List<String> propertyProviderClasses = m_parameterConfiguration.getList(
+            PARAM_PROPERTY,
+            Collections.<String> emptyList());
+        for (String className : propertyProviderClasses) {
+            try {
+                I_CmsPropertyProvider provider = (I_CmsPropertyProvider)(Class.forName(className).newInstance());
+                m_propertyProviders.add(provider);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        m_indexName = m_parameterConfiguration.getString(PARAM_INDEX, null);
+
     }
 
     /**
@@ -1134,7 +1177,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     public void initializeCms(CmsObject cms) throws CmsException {
 
         m_adminCms = cms;
-        m_typeManager = CmsCmisTypeManager.getDefaultInstance(m_adminCms);
+        m_typeManager = new CmsCmisTypeManager(cms, m_propertyProviders);
         String projectName = m_parameterConfiguration.getString(PARAM_PROJECT, CmsProject.ONLINE_PROJECT_NAME);
         CmsResource root = m_adminCms.readResource("/");
         CmsObject offlineCms = OpenCms.initCmsObject(m_adminCms);
@@ -1177,6 +1220,63 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         } catch (CmsException e) {
             handleCmsException(e);
         }
+    }
+
+    /**
+     * @see org.opencms.cmis.I_CmsCmisRepository#query(org.opencms.cmis.CmsCmisCallContext, java.lang.String, boolean, boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger)
+     */
+    @Override
+    public synchronized ObjectList query(
+        CmsCmisCallContext context,
+        String statement,
+        boolean searchAllVersions,
+        boolean includeAllowableActions,
+        IncludeRelationships includeRelationships,
+        String renditionFilter,
+        BigInteger maxItems,
+        BigInteger skipCount) {
+
+        try {
+            CmsObject cms = getCmsObject(context);
+            CmsSolrIndex index = getIndex();
+            CmsCmisResourceHelper helper = getResourceHelper();
+
+            // split filter
+            Set<String> filterCollection = null;
+            // skip and max
+            int skip = (skipCount == null ? 0 : skipCount.intValue());
+            if (skip < 0) {
+                skip = 0;
+            }
+
+            int max = (maxItems == null ? Integer.MAX_VALUE : maxItems.intValue());
+            if (max < 0) {
+                max = Integer.MAX_VALUE;
+            }
+            CmsSolrResultList results = solrSearch(cms, index, statement, skip, max);
+            ObjectListImpl resultObjectList = new ObjectListImpl();
+            List<ObjectData> objectDataList = new ArrayList<ObjectData>();
+            resultObjectList.setObjects(objectDataList);
+            for (CmsResource resource : results) {
+                // build and add child object
+                objectDataList.add(helper.collectObjectData(
+                    context,
+                    cms,
+                    resource,
+                    filterCollection,
+                    renditionFilter,
+                    includeAllowableActions,
+                    false,
+                    includeRelationships));
+            }
+            resultObjectList.setHasMoreItems(Boolean.valueOf(!results.isEmpty()));
+            resultObjectList.setNumItems(BigInteger.valueOf(results.getVisibleHitCount()));
+            return resultObjectList;
+        } catch (CmsException e) {
+            handleCmsException(e);
+            return null;
+        }
+
     }
 
     /**
@@ -1264,6 +1364,18 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
                     String newPath = CmsStringUtil.joinPaths(parentFolder, newName);
                     cms.moveResource(resource.getRootPath(), newPath);
                     resource = cms.readResource(resource.getStructureId());
+                }
+
+                for (String key : properties.getProperties().keySet()) {
+                    if (key.startsWith(CmsCmisTypeManager.PROPERTY_PREFIX_DYNAMIC)) {
+                        I_CmsPropertyProvider provider = getTypeManager().getPropertyProvider(key);
+                        try {
+                            String value = (String)(properties.getProperties().get(key).getFirstValue());
+                            provider.setPropertyValue(cms, resource, value);
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
                 }
             } finally {
                 if (wasLocked) {
@@ -1433,6 +1545,28 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     }
 
     /**
+     * Helper method for executing a query.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param index the index to use for the query 
+     * @param query the query to perform 
+     * @param start the start offset 
+     * @param rows the number of results to return 
+     * 
+     * @return the list of search results 
+     * @throws CmsSearchException if something goes wrong 
+     */
+    CmsSolrResultList solrSearch(CmsObject cms, CmsSolrIndex index, String query, int start, int rows)
+    throws CmsSearchException {
+
+        CmsSolrQuery q = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(query));
+        q.setStart(new Integer(start));
+        q.setRows(new Integer(rows));
+        CmsSolrResultList resultPage = index.search(cms, q);
+        return resultPage;
+    }
+
+    /**
      * Helper method to collect the descendants of a given folder.<p>
      *  
      * @param context the call context 
@@ -1512,6 +1646,21 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         } catch (CmsException e) {
             handleCmsException(e);
         }
+    }
+
+    /**
+     * Gets the index to use for queries.<p>
+     * 
+     * @return the index to use for queries 
+     */
+    private CmsSolrIndex getIndex() {
+
+        boolean online = m_adminCms.getRequestContext().getCurrentProject().isOnlineProject();
+        String indexName = m_indexName != null ? m_indexName : (online ? null : CmsSolrIndex.SOLR_OFFLINE_INDEX_NAME);
+        if (indexName == null) {
+            return null;
+        }
+        return OpenCms.getSearchManager().getIndexSolr(indexName);
     }
 
     /**

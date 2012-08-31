@@ -96,6 +96,39 @@ public final class CmsCmisUtil {
     }
 
     /**
+     * Helper method to add the dynamic properties for a resource.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param typeManager the type manager instance 
+     * @param props the properties to which the dynamic properties should be added 
+     * @param typeId the type id 
+     * @param resource the resource 
+     * @param filter the property filter 
+     */
+    public static void addDynamicProperties(
+        CmsObject cms,
+        CmsCmisTypeManager typeManager,
+        PropertiesImpl props,
+        String typeId,
+        CmsResource resource,
+        Set<String> filter) {
+
+        List<I_CmsPropertyProvider> providers = typeManager.getPropertyProviders();
+        for (I_CmsPropertyProvider provider : providers) {
+            String propertyName = CmsCmisTypeManager.PROPERTY_PREFIX_DYNAMIC + provider.getName();
+            if (!checkAddProperty(typeManager, props, typeId, filter, propertyName)) {
+                continue;
+            }
+            try {
+                String value = provider.getPropertyValue(cms, resource);
+                addPropertyString(typeManager, props, typeId, filter, propertyName, value);
+            } catch (Throwable t) {
+                addPropertyString(typeManager, props, typeId, filter, propertyName, null);
+            }
+        }
+    }
+
+    /**
      * Adds bigint property to a PropertiesImpl.<p>
      * 
      * 

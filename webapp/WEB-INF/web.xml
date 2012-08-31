@@ -91,7 +91,7 @@
 	
 	<servlet-mapping>
 		<servlet-name>cmisatom</servlet-name>
-		<url-pattern>/atom/*</url-pattern>
+		<url-pattern>/cmisatom/*</url-pattern>
 	</servlet-mapping>	
 	<!-- *************************** end of CMIS configuration ******************************** -->
 

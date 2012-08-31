@@ -27,6 +27,7 @@ import org.opencms.relations.CmsRelationType;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,9 @@ public class CmsCmisTypeManager {
     /** The prefix used for normal OpenCms resource properties. */
     public static final String PROPERTY_PREFIX = "opencms:";
 
+    /** Prefix for dynamic properties. */
+    public static final String PROPERTY_PREFIX_DYNAMIC = "opencms-dynamic:";
+
     /** The prefix for special properties. */
     public static final String PROPERTY_PREFIX_SPECIAL = "opencms-special:";
 
@@ -96,9 +100,6 @@ public class CmsCmisTypeManager {
     /** The logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsCmisTypeManager.class);
 
-    /** The default instance of this class. */
-    private static CmsCmisTypeManager defaultInstance;
-
     /** The namespace used for properties. */
     private static final String NAMESPACE = "http://opencms.org/opencms-cmis";
 
@@ -111,6 +112,9 @@ public class CmsCmisTypeManager {
     /** The last update time. */
     private long m_lastUpdate;
 
+    /** List of dynamic property providers. */
+    private List<I_CmsPropertyProvider> m_propertyProviders = new ArrayList<I_CmsPropertyProvider>();
+
     /** The internal list of type definitions. */
     private List<TypeDefinitionContainer> m_typeList;
 
@@ -121,30 +125,16 @@ public class CmsCmisTypeManager {
      * Creates a new type manager instance.<p>
      * 
      * @param adminCms a CMS context with admin privileges 
+     * @param propertyProviders list which will be filled with property providers 
      * 
      * @throws CmsException if something goes wrong 
      */
-    public CmsCmisTypeManager(CmsObject adminCms)
+    public CmsCmisTypeManager(CmsObject adminCms, List<I_CmsPropertyProvider> propertyProviders)
     throws CmsException {
 
         m_adminCms = adminCms;
+        m_propertyProviders = propertyProviders;
         setup();
-    }
-
-    /**
-     * Returns the default instance of the type manager.<p>
-     * 
-     * @param adminCms the CMS object used for initializing the type manager 
-     * 
-     * @return the default instance
-     * @throws CmsException if something goes wrong 
-     */
-    static CmsCmisTypeManager getDefaultInstance(CmsObject adminCms) throws CmsException {
-
-        if (defaultInstance == null) {
-            defaultInstance = new CmsCmisTypeManager(adminCms);
-        }
-        return defaultInstance;
     }
 
     /**
@@ -572,6 +562,36 @@ public class CmsCmisTypeManager {
         return result;
     }
 
+    /** 
+     * Gets the property provider for a given key.<p>
+     * 
+     * @param key the property nme 
+     * 
+     * @return the property provider for the given name, or null if there isn't any 
+     */
+    public I_CmsPropertyProvider getPropertyProvider(String key) {
+
+        if (key.startsWith(PROPERTY_PREFIX_DYNAMIC)) {
+            key = key.substring(PROPERTY_PREFIX_DYNAMIC.length());
+        }
+        for (I_CmsPropertyProvider provider : m_propertyProviders) {
+            if (provider.getName().equals(key)) {
+                return provider;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the list of all property providers.<p>
+     * 
+     * @return the list of property providers 
+     */
+    public List<I_CmsPropertyProvider> getPropertyProviders() {
+
+        return Collections.unmodifiableList(m_propertyProviders);
+    }
+
     /**
      * Gets a type definition by id.<p>
      * 
@@ -766,6 +786,7 @@ public class CmsCmisTypeManager {
         addBasePropertyDefinitions(folderType);
         addFolderPropertyDefinitions(folderType);
         addCmsPropertyDefinitions(folderType);
+        addProviderPropertyDefinitions(folderType);
 
         addTypeInternal(folderType);
 
@@ -792,6 +813,7 @@ public class CmsCmisTypeManager {
         addBasePropertyDefinitions(documentType);
         addDocumentPropertyDefinitions(documentType);
         addCmsPropertyDefinitions(documentType);
+        addProviderPropertyDefinitions(documentType);
 
         addTypeInternal(documentType);
 
@@ -854,6 +876,26 @@ public class CmsCmisTypeManager {
             Updatability.ONCREATE,
             false,
             true));
+    }
+
+    /**
+     * Helper method for adding property definitions for the dynamic properties.<p>
+     * 
+     * @param type the type definition to which the properties should be added 
+     */
+    private void addProviderPropertyDefinitions(AbstractTypeDefinition type) {
+
+        for (I_CmsPropertyProvider provider : m_propertyProviders) {
+            type.addPropertyDefinition(createPropDef(
+                PROPERTY_PREFIX_DYNAMIC + provider.getName(),
+                provider.getName(),
+                provider.getName(),
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                provider.isWritable() ? Updatability.READWRITE : Updatability.READONLY,
+                false,
+                false));
+        }
     }
 
     /**

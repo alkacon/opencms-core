@@ -624,7 +624,9 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 filter,
                 CmsCmisTypeManager.PROPERTY_RESOURCE_TYPE,
                 resType.getTypeName());
+            CmsCmisUtil.addDynamicProperties(cms, m_repository.getTypeManager(), result, typeId, resource, filter);
             return result;
+
         } catch (Exception e) {
             if (e instanceof CmisBaseException) {
                 throw (CmisBaseException)e;
