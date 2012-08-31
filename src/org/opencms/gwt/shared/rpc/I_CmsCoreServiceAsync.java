@@ -34,6 +34,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -84,6 +85,14 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the async callback
      */
     void getCategoriesForSitePath(String sitePath, AsyncCallback<List<CmsCategoryTreeEntry>> callback);
+
+    /**
+     * Returns the category information for the given resource.<p>
+     * 
+     * @param structureId the resource structure id
+     * @param callback the callback which receives the result
+     */
+    void getCategoryInfo(CmsUUID structureId, AsyncCallback<CmsResourceCategoryInfo> callback);
 
     /**
      * Returns a list of menu entry beans for the context menu.<p>
@@ -185,6 +194,15 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the asynchronous callback
      */
     void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean, AsyncCallback<Void> callback);
+
+    /**
+     * Sets the categories of the given resource. Will remove all other categories.<p>
+     * 
+     * @param structureId the resource structure id
+     * @param categories the categories to set
+     * @param callback the callback which receives the result
+     */
+    void setResourceCategories(CmsUUID structureId, List<String> categories, AsyncCallback<Void> callback);
 
     /**
      * Sets the show editor help flag.<p>

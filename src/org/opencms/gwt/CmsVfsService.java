@@ -212,6 +212,58 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget} including the lock state.<p>
+     * 
+     * @param cms the CMS context
+     * @param resource the resource to get the page info for
+     * 
+     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * 
+     * @throws CmsLoaderException if the resource type could not be found
+     * @throws CmsException if something else goes wrong 
+     */
+    public static CmsListInfoBean getPageInfoWithLock(CmsObject cms, CmsResource resource)
+    throws CmsLoaderException, CmsException {
+
+        CmsListInfoBean result = getPageInfo(cms, resource);
+        CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
+        CmsLock lock = resourceUtil.getLock();
+        LockIcon icon = LockIcon.NONE;
+        String iconTitle = null;
+        CmsLockType lockType = lock.getType();
+        if (!lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+            if ((lockType == CmsLockType.EXCLUSIVE)
+                || (lockType == CmsLockType.INHERITED)
+                || (lockType == CmsLockType.TEMPORARY)) {
+                icon = LockIcon.CLOSED;
+            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
+                icon = LockIcon.SHARED_CLOSED;
+            }
+        } else {
+            if ((lockType == CmsLockType.EXCLUSIVE)
+                || (lockType == CmsLockType.INHERITED)
+                || (lockType == CmsLockType.TEMPORARY)) {
+                icon = LockIcon.OPEN;
+            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
+                icon = LockIcon.SHARED_OPEN;
+            }
+        }
+        if ((lock.getUserId() != null) && !lock.getUserId().isNullUUID()) {
+            CmsUser lockOwner = cms.readUser(lock.getUserId());
+            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
+            result.addAdditionalInfo(
+                Messages.get().getBundle().key(Messages.GUI_LOCKED_OWNER_0),
+                lockOwner.getFullName());
+        }
+        result.setLockIcon(icon);
+        result.setLockIconTitle(iconTitle);
+        if (icon != LockIcon.NONE) {
+            result.setTitle(result.getTitle() + " (" + iconTitle + ")");
+        }
+        return result;
+    }
+
+    /**
      * Returns a new configured service instance.<p>
      * 
      * @param request the current request
@@ -406,16 +458,17 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public CmsLockReportInfo getLockReportInfo(CmsUUID structureId) throws CmsRpcException {
 
         CmsLockReportInfo result = null;
+        CmsObject cms = getCmsObject();
         try {
-            CmsResource resource = getCmsObject().readResource(structureId);
+            CmsResource resource = cms.readResource(structureId);
             List<CmsListInfoBean> lockedInfos = new ArrayList<CmsListInfoBean>();
-            List<CmsResource> lockedResources = getCmsObject().getBlockingLockedResources(resource);
+            List<CmsResource> lockedResources = cms.getBlockingLockedResources(resource);
             if (lockedResources != null) {
                 for (CmsResource lockedResource : lockedResources) {
-                    lockedInfos.add(getPageInfoWithLock(lockedResource));
+                    lockedInfos.add(getPageInfoWithLock(cms, lockedResource));
                 }
             }
-            result = new CmsLockReportInfo(getPageInfoWithLock(resource), lockedInfos);
+            result = new CmsLockReportInfo(getPageInfoWithLock(cms, resource), lockedInfos);
         } catch (CmsException e) {
             error(e);
         }
@@ -1155,56 +1208,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         return getPageInfo(cms, res);
-    }
-
-    /**
-     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget} including the lock state.<p>
-     * 
-     * @param resource the resource to get the page info for
-     * 
-     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
-     * 
-     * @throws CmsLoaderException if the resource type could not be found
-     * @throws CmsException if something else goes wrong 
-     */
-    private CmsListInfoBean getPageInfoWithLock(CmsResource resource) throws CmsLoaderException, CmsException {
-
-        CmsListInfoBean result = getPageInfo(resource);
-        CmsResourceUtil resourceUtil = new CmsResourceUtil(getCmsObject(), resource);
-        CmsLock lock = resourceUtil.getLock();
-        LockIcon icon = LockIcon.NONE;
-        String iconTitle = null;
-        CmsLockType lockType = lock.getType();
-        if (!lock.isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())) {
-            if ((lockType == CmsLockType.EXCLUSIVE)
-                || (lockType == CmsLockType.INHERITED)
-                || (lockType == CmsLockType.TEMPORARY)) {
-                icon = LockIcon.CLOSED;
-            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
-                icon = LockIcon.SHARED_CLOSED;
-            }
-        } else {
-            if ((lockType == CmsLockType.EXCLUSIVE)
-                || (lockType == CmsLockType.INHERITED)
-                || (lockType == CmsLockType.TEMPORARY)) {
-                icon = LockIcon.OPEN;
-            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
-                icon = LockIcon.SHARED_OPEN;
-            }
-        }
-        if ((lock.getUserId() != null) && !lock.getUserId().isNullUUID()) {
-            CmsUser lockOwner = getCmsObject().readUser(lock.getUserId());
-            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
-            result.addAdditionalInfo(
-                Messages.get().getBundle().key(Messages.GUI_LOCKED_OWNER_0),
-                lockOwner.getFullName());
-        }
-        result.setLockIcon(icon);
-        result.setLockIconTitle(iconTitle);
-        if (icon != LockIcon.NONE) {
-            result.setTitle(result.getTitle() + " (" + iconTitle + ")");
-        }
-        return result;
     }
 
     /**

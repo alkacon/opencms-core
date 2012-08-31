@@ -266,6 +266,9 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
 							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" 
+							rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"  rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport"

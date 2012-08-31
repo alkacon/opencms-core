@@ -43,6 +43,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -261,6 +262,31 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategoryInfo(org.opencms.util.CmsUUID)
+     */
+    public CmsResourceCategoryInfo getCategoryInfo(CmsUUID structureId) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsCategoryService catService = CmsCategoryService.getInstance();
+        try {
+            CmsResource resource = cms.readResource(structureId);
+            List<CmsCategory> categories = catService.readResourceCategories(cms, resource);
+            List<String> currentCategories = new ArrayList<String>();
+            for (CmsCategory category : categories) {
+                currentCategories.add(category.getPath());
+            }
+            return new CmsResourceCategoryInfo(
+                structureId,
+                CmsVfsService.getPageInfoWithLock(cms, resource),
+                currentCategories,
+                getCategories(null, true, Collections.singletonList(cms.getSitePath(resource))));
+        } catch (CmsException e) {
+            error(e);
+        }
+        return null;
     }
 
     /**
@@ -555,6 +581,34 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             setAvailabilityInfo(resource, bean);
         } catch (CmsException e) {
             error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#setResourceCategories(org.opencms.util.CmsUUID, java.util.List)
+     */
+    public void setResourceCategories(CmsUUID structureId, List<String> categories) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsCategoryService catService = CmsCategoryService.getInstance();
+        try {
+            CmsResource resource = cms.readResource(structureId);
+            ensureLock(resource);
+            String sitePath = cms.getSitePath(resource);
+            List<CmsCategory> previousCategories = catService.readResourceCategories(cms, resource);
+            for (CmsCategory category : previousCategories) {
+                if (categories.contains(category.getPath())) {
+                    categories.remove(category.getPath());
+                } else {
+                    catService.removeResourceFromCategory(cms, sitePath, category);
+                }
+            }
+            for (String path : categories) {
+                catService.addResourceToCategory(cms, sitePath, path);
+            }
+            tryUnlock(resource);
+        } catch (Throwable t) {
+            error(t);
         }
     }
 

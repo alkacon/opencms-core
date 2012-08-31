@@ -35,6 +35,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
+import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -89,6 +90,17 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     List<CmsCategoryTreeEntry> getCategoriesForSitePath(String sitePath) throws CmsRpcException;
+
+    /**
+     * Returns the category information for the given resource.<p>
+     * 
+     * @param structureId the resource structure id
+     * 
+     * @return the category information
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsResourceCategoryInfo getCategoryInfo(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Returns the context menu entries for the given URI.<p>
@@ -206,6 +218,16 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if the RPC call goes wrong 
      */
     void setAvailabilityInfo(String vfsPath, CmsAvailabilityInfoBean bean) throws CmsRpcException;
+
+    /**
+     * Sets the categories of the given resource. Will remove all other categories.<p>
+     * 
+     * @param structureId the resource structure id
+     * @param categories the categories to set
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    void setResourceCategories(CmsUUID structureId, List<String> categories) throws CmsRpcException;
 
     /**
      * Sets the show editor help flag.<p>
