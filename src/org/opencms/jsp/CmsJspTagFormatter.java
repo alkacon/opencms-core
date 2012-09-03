@@ -72,6 +72,9 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
     /** Reference to the currently selected locale. */
     private Locale m_locale;
 
+    /** Optional name for the attribute that provides direct access to the RDFA map. */
+    private String m_rdfa;
+
     /** Optional name for the attribute that provides direct access to the content value map. */
     private String m_value;
 
@@ -131,6 +134,16 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
+     * Returns the name for the optional attribute that provides direct access to the RDFA map.<p>
+     * 
+     * @return the name for the optional attribute that provides direct access to the RDFA map
+     */
+    public String getRdfa() {
+
+        return m_rdfa;
+    }
+
+    /**
      * Returns the name for the optional attribute that provides direct access to the content value map.<p>
      * 
      * @return the name for the optional attribute that provides direct access to the content value map
@@ -164,6 +177,20 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
             m_locale = null;
         } else {
             m_locale = CmsLocaleManager.getLocale(locale);
+        }
+    }
+
+    /**
+     * Sets the name for the optional attribute that provides direct access to the RDFA map.<p>
+     * 
+     * @param rdfa the name for the optional attribute that provides direct access to the RDFA map
+     */
+    public void setRdfa(String rdfa) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rdfa)) {
+            m_rdfa = rdfa.trim();
+        } else {
+            m_rdfa = rdfa;
         }
     }
 
@@ -214,6 +241,11 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
             if (m_value != null) {
                 // if the optional "val" parameter has been set, store the value map of the content in the page context scope
                 storeAttribute(getVal(), bean.getValue());
+            }
+
+            if (m_rdfa != null) {
+                // if the optional "rdfa" parameter has been set, store the rdfa map of the content in the page context scope
+                storeAttribute(getRdfa(), bean.getRdfa());
             }
 
         } catch (CmsException e) {

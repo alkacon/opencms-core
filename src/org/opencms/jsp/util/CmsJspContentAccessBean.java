@@ -146,6 +146,29 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Provides a Map which lets the user access the RDFA tags for all values in the selected locale in an XML content, 
+     * the input is assumed to be a String that represents a Locale.<p>
+     */
+    public class CmsLocaleRdfaTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            Locale locale = CmsLocaleManager.getLocale(String.valueOf(input));
+            Map<String, String> result;
+            if (getRawContent().hasLocale(locale)) {
+                result = CmsCollectionsGenericWrapper.createLazyMap(new CmsRdfaTransformer(locale));
+            } else {
+                // return a map that always returns an empty string
+                result = CmsConstantMap.CONSTANT_EMPTY_STRING_MAP;
+            }
+            return result;
+        }
+    }
+
+    /**
      * Provides a Map which lets the user access sub value Lists from the selected locale in an XML content, 
      * the input is assumed to be a String that represents a Locale.<p>
      */
@@ -208,6 +231,35 @@ public class CmsJspContentAccessBean {
                 result = CONSTANT_NULL_VALUE_WRAPPER_MAP;
             }
             return result;
+        }
+    }
+
+    /**
+     * Provides a Map which lets the user access the RDFA tag for a value in an XML content, 
+     * the input is assumed to be a String that represents an xpath in the XML content.<p>
+     */
+    public class CmsRdfaTransformer implements Transformer {
+
+        /** The selected locale. */
+        private Locale m_selectedLocale;
+
+        /**
+         * Constructor with a locale.<p>
+         * 
+         * @param locale the locale to use
+         */
+        public CmsRdfaTransformer(Locale locale) {
+
+            m_selectedLocale = locale;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            CmsJspContentAccessValueWrapper wrapper = getLocaleValue().get(m_selectedLocale).get(input);
+            return wrapper.getRdfaAttr();
         }
     }
 
@@ -333,6 +385,9 @@ public class CmsJspContentAccessBean {
 
     /** The lazy initialized with the locale names. */
     private Map<String, List<String>> m_localeNames;
+
+    /** Lazy initialized map of RDFA maps by locale. */
+    private Map<String, Map<String, String>> m_localeRdfa;
 
     /** The lazy initialized with the locale sub value lists. */
     private Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> m_localeSubValueList;
@@ -582,6 +637,19 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Returns the map of RDFA maps by locale.<p>
+     *  
+     * @return the map of RDFA maps by locale
+     */
+    public Map<String, Map<String, String>> getLocaleRdfa() {
+
+        if (m_localeRdfa == null) {
+            m_localeRdfa = CmsCollectionsGenericWrapper.createLazyMap(new CmsLocaleRdfaTransformer());
+        }
+        return m_localeRdfa;
+    }
+
+    /**
      * Returns a lazy initialized Map that provides a Map that provides Lists of direct sub values 
      * from the XML content in the selected locale.<p>
      * 
@@ -712,6 +780,16 @@ public class CmsJspContentAccessBean {
             }
         }
         return m_content;
+    }
+
+    /**
+     * Returns RDFA by value name map.<p>
+     * 
+     * @return RDFA by value name map
+     */
+    public Map<String, String> getRdfa() {
+
+        return getLocaleRdfa().get(m_locale);
     }
 
     /**

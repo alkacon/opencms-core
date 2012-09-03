@@ -59,6 +59,9 @@ public class CmsConstantMap<K, V> implements Map<K, V> {
     public static final Map<String, List<CmsJspContentAccessValueWrapper>> CONSTANT_EMPTY_LIST_MAP = new CmsConstantMap<String, List<CmsJspContentAccessValueWrapper>>(
         Collections.EMPTY_LIST);
 
+    /** Constant Map that always returns an empty list. */
+    public static final Map<String, String> CONSTANT_EMPTY_STRING_MAP = new CmsConstantMap<String, String>("".intern());
+
     /** The constant Object this map always returns. */
     private V m_constant;
 

@@ -758,6 +758,11 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
         <attribute>
+            <name>rdfa</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
         	<name>locale</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
