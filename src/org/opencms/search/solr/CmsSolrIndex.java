@@ -32,10 +32,12 @@
 package org.opencms.search.solr;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -49,6 +51,7 @@ import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -82,8 +85,8 @@ import org.apache.solr.response.SolrQueryResponse;
  */
 public class CmsSolrIndex extends A_CmsSearchIndex {
 
-    /** The name for the default Solr offline index. */
-    public static final String SOLR_OFFLINE_INDEX_NAME = "Solr Offline";
+    /** Constant for additional parameter to set the post processor class name. */
+    public static final String POST_PROCESSOR = CmsSolrIndex.class.getName() + ".postProcessor";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
@@ -122,12 +125,46 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
+     * @see org.opencms.search.A_CmsSearchIndex#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void addConfigurationParameter(String key, String value) {
+
+        if (POST_PROCESSOR.equals(key)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                try {
+                    setPostProcessor((I_CmsSolrPostSearchProcessor)Class.forName(value).newInstance());
+                } catch (Exception e) {
+                    CmsException ex = new CmsException(Messages.get().container(
+                        Messages.ERR_POST_PROCESSOR_CLASS_NOT_EXIST_1,
+                        value), e);
+                    LOG.error(ex.getMessage(), ex);
+                }
+            }
+        }
+        super.addConfigurationParameter(key, value);
+    }
+
+    /**
      * @see org.opencms.search.A_CmsSearchIndex#createIndexWriter(boolean, org.opencms.report.I_CmsReport)
      */
     @Override
     public I_CmsIndexWriter createIndexWriter(boolean create, I_CmsReport report) {
 
         return new CmsSolrIndexWriter(m_solr, this);
+    }
+
+    /**
+     * @see org.opencms.search.A_CmsSearchIndex#getConfiguration()
+     */
+    @Override
+    public CmsParameterConfiguration getConfiguration() {
+
+        CmsParameterConfiguration result = super.getConfiguration();
+        if (getPostProcessor() != null) {
+            result.put(POST_PROCESSOR, getPostProcessor().getClass().getName());
+        }
+        return result;
     }
 
     /**

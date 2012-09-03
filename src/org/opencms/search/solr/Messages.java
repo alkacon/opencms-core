@@ -50,6 +50,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SOLR_SCHEMA_XML_NOT_FOUND_1 = "ERR_SOLR_SCHEMA_XML_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_POST_PROCESSOR_CLASS_NOT_EXIST_1 = "ERR_POST_PROCESSOR_CLASS_NOT_EXIST_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_RESULT_ITERATION_FAILED_0 = "LOG_RESULT_ITERATION_FAILED_0";
 
     /** Name of the used resource bundle. */
