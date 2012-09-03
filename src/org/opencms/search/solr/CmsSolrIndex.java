@@ -276,6 +276,23 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
+     * Default search method.<p>
+     * 
+     * @param cms the current CMS object 
+     * @param query the query
+     * 
+     * @return the results
+     * 
+     * @throws CmsSearchException if something goes wrong
+     * 
+     * @see #search(CmsObject, SolrQuery, boolean)
+     */
+    public synchronized CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
+
+        return search(cms, query, false);
+    }
+
+    /**
      * <h4>Performs a search on the Solr index</h4>
      * 
      * Returns a list of 'OpenCms resource documents' 
@@ -311,6 +328,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * 
      * @param cms the CMS object
      * @param query the Solr query can also be a {@link CmsSolrQuery}
+     * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * 
      * @return the list of found documents
      * 
@@ -321,7 +339,8 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * @see org.opencms.search.I_CmsSearchDocument
      * @see org.opencms.search.solr.CmsSolrQuery
      */
-    public synchronized CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
+    public synchronized CmsSolrResultList search(CmsObject cms, SolrQuery query, boolean ignoreMaxRows)
+    throws CmsSearchException {
 
         LOG.debug("### START SRARCH (time in ms) ###");
         int previousPriority = Thread.currentThread().getPriority();
@@ -341,7 +360,10 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             SolrDocumentList solrDocumentList = new SolrDocumentList();
 
             // Initialize rows, offset, end and the current page.
-            int rows = query.getRows().intValue() <= ROWS_MAX ? query.getRows().intValue() : ROWS_MAX;
+            int rows = query.getRows().intValue();
+            if (!ignoreMaxRows && (rows > ROWS_MAX)) {
+                rows = ROWS_MAX;
+            }
             int start = query.getStart() != null ? query.getStart().intValue() : 0;
             int end = start + rows;
             int page = 0;

@@ -205,9 +205,6 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
                         }
                     } else {
                         // this is not a localized content field, just perform the regular mapping 
-                        // with a faked request context's locale in order to retrieve localized field values
-                        //                        CmsObject clone = OpenCms.initCmsObject(cms);
-                        //                        clone.getRequestContext().setLocale(field.getLocale());
                         mapResult = mapping.getStringValue(
                             cms,
                             resource,
