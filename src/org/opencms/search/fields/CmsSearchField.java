@@ -93,6 +93,9 @@ public class CmsSearchField extends A_CmsSearchField {
     /** Indicates if the content of this field should be tokenized. */
     private boolean m_tokenized;
 
+    /** The type used to convert a field to a Solr field. */
+    private String m_type;
+
     /**
      * Creates a new search field configuration.<p>
      */
@@ -296,6 +299,16 @@ public class CmsSearchField extends A_CmsSearchField {
 
         // The default implementation of Lucene Fields is not localized yet
         return null;
+    }
+
+    /**
+     * Returns the type.<p>
+     *
+     * @return the type
+     */
+    public String getType() {
+
+        return m_type;
     }
 
     /**
@@ -625,5 +638,15 @@ public class CmsSearchField extends A_CmsSearchField {
     public void setTokenized(boolean tokenized) {
 
         m_tokenized = tokenized;
+    }
+
+    /**
+     * Sets the type.<p>
+     *
+     * @param type the type to set
+     */
+    public void setType(String type) {
+
+        m_type = type;
     }
 }

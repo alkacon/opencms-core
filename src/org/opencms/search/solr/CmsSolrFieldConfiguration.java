@@ -43,6 +43,7 @@ import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchField;
@@ -252,9 +253,7 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         if (!m_initialized) {
             // we need a lazy initialization here, because the OpenCms locale manager
             // has not been finally initialized when the search field configuration is created
-            addContentFields();
-            addAdditionalFields();
-            m_initialized = true;
+            init();
         }
 
         if ((extractionResult != null) && (extractionResult.getMappingFields() != null)) {
@@ -396,6 +395,20 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
     }
 
     /**
+     * Converts and adds the Lucene fields configured in <code>opencms-search.xml</code>.<p>
+     */
+    private void addLuceneFields() {
+
+        List<I_CmsSearchField> fieldsToAdd = new ArrayList<I_CmsSearchField>();
+        for (I_CmsSearchField field : getFields()) {
+            if (field instanceof CmsSearchField) {
+                fieldsToAdd.add(new CmsSolrField((CmsSearchField)field));
+            }
+        }
+        addFields(fieldsToAdd);
+    }
+
+    /**
      * Retrieves the locales for an content, that is whether an XML content nor an XML page.<p>
      *  
      * @param cms the current CmsObject
@@ -431,5 +444,16 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
             }
         }
         return false;
+    }
+
+    /**
+     * Initializes the Solr field configuration.<p>
+     */
+    private void init() {
+
+        addContentFields();
+        addAdditionalFields();
+        addLuceneFields();
+        m_initialized = true;
     }
 }

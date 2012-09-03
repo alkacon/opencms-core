@@ -335,6 +335,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(xPath, 0, A_BOOST);
         digester.addCallMethod(xPath, "setDefaultValue", 1);
         digester.addCallParam(xPath, 0, A_DEFAULT);
+        digester.addCallMethod(xPath, "setType", 1);
+        digester.addCallParam(xPath, 0, A_TYPE);
         digester.addSetNext(xPath, "addField");
 
         xPath = xPath + "/" + N_MAPPING;
@@ -579,6 +581,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                 }
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDefaultValue())) {
                     fieldElement.addAttribute(A_DEFAULT, field.getDefaultValue());
+                }
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getType())) {
+                    fieldElement.addAttribute(A_TYPE, field.getType());
                 }
                 if (field.getAnalyzer() != null) {
                     String className = field.getAnalyzer().getClass().getName();
