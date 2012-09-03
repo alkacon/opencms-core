@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui.input.category;
 
-import org.opencms.ade.galleries.client.Messages;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
@@ -818,11 +817,11 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     protected LinkedHashMap<String, String> getSortList() {
 
         LinkedHashMap<String, String> list = new LinkedHashMap<String, String>();
-        list.put(SortParams.tree.name(), "TREE");
-        list.put(SortParams.title_asc.name(), "Titel ASC");
-        list.put(SortParams.title_desc.name(), "Titel DECS");
-        list.put(SortParams.path_asc.name(), "Path ASC");
-        list.put(SortParams.path_desc.name(), "Path DECS");
+        list.put(SortParams.tree.name(), Messages.get().key(Messages.GUI_SORT_LABEL_HIERARCHIC_0));
+        list.put(SortParams.title_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_ASC_0));
+        list.put(SortParams.title_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_DECS_0));
+        list.put(SortParams.path_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_PATH_ASC_0));
+        list.put(SortParams.path_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_PATH_DESC_0));
 
         return list;
     }
@@ -1011,12 +1010,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
-        CmsDataValue dataValue = new CmsDataValue(
-            600,
-            3,
-            I_CmsImageBundle.INSTANCE.icons().deleteIconActive().getName(),
-            category.getTitle(),
-            category.getPath());
+        CmsDataValue dataValue = new CmsDataValue(600, 3, null, category.getTitle(), category.getPath());
         // add it to the list of all categories
         m_categories.put(category.getPath(), dataValue);
         // create the check box for this item 
