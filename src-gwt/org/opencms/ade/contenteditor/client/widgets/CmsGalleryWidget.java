@@ -58,6 +58,7 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget {
      * @param isImage 
      */
     public CmsGalleryWidget(String openerTitle, String config, boolean isImage) {
+
         if (isImage) {
             m_linkSelect = new CmsImageGalleryField();
         } else {

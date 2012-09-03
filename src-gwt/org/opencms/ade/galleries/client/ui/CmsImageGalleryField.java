@@ -112,8 +112,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
      */
     public CmsImageGalleryField() {
 
-        initWidget(uibinder.createAndBindUi(this));
-
+        uibinder.createAndBindUi(this);
         Map<String, String> selectItems = new HashMap<String, String>();
         selectItems.put("value1", "Label1");
         selectItems.put("value2", "Label2");
@@ -125,6 +124,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
         m_formatSelection.setItems(selectItems);
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+        initWidget(this);
     }
 
     /** 
