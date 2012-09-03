@@ -266,19 +266,24 @@
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
 							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" 
+							rule="ade-undochanges"/>
 						<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" 
 							rule="containerpage"/>
-						<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"  rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_SEO_0" 
+							name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"  
+							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport"
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
+						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" 
+							name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
 							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
