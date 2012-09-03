@@ -62,6 +62,9 @@ import java.util.Set;
  */
 public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
+    /** The solr document type name for xml-contents. */
+    public static final String TYPE_XMLCONTENT_SOLR = "xmlcontent-solr";
+
     /**
      * Public constructor.<p>
      * 

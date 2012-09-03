@@ -84,7 +84,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrFieldConfiguration.class.getName());
         suite.addTest(new TestSolrFieldConfiguration("testAppinfoSolrField"));
-        suite.addTest(new TestSolrFieldConfiguration("testResourceContentLocaleField"));
+        suite.addTest(new TestSolrFieldConfiguration("testContentLocalesField"));
+        suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -105,31 +106,77 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the locales stored in the index.<p>
      * 
-     * <ul>
-     * <li><code>/sites/default/rabbit_en_EN.html -> Locale[en_EN]</code>
-     * <li><code>/sites/default/rabbit_en_EN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en_EN]</code>
-     * <li><code>/sites/default/rabbit_en.html&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_en&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_en.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Locale[en]</code>
-     * <li><code>/sites/default/rabbit_enr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> null</code>
-     * <li><code>/sites/default/rabbit_en.tar.gz&nbsp;&nbsp;-> null</code>
-     * </ul>
+     * @throws Throwable
+     */
+    public void testLocaleDependenciesField() throws Throwable {
+
+        Map<String, List<String>> filenames = new HashMap<String, List<String>>();
+        filenames.put("search_rabbit.pdf", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit_de.pdf", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit_de_001.pdf", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit_de_002.pdf", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit_de_003.pdf", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit_de_004.pdf", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit_0001.pdf", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit_0002.pdf", Collections.singletonList("de_DE"));
+        filenames.put("search_rabbit_0003.pdf", Collections.singletonList("de_DE"));
+
+        filenames.put("search_rabbit_en.pdf", Collections.singletonList("en_EN"));
+        filenames.put("search_rabbit_en_001.pdf", Collections.singletonList("en_EN"));
+        filenames.put("search_rabbit_en_002.pdf", Collections.singletonList("en_EN"));
+        filenames.put("search_rabbit_en_003.pdf", Collections.singletonList("en_EN"));
+        filenames.put("search_rabbit_en_004.pdf", Collections.singletonList("en_EN"));
+
+        // create test folder
+        String folderName = "/filenameTest2/";
+        CmsObject cms = getCmsObject();
+        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
+        cms.unlockResource(folderName);
+        for (String filename : filenames.keySet()) {
+            // create master resource
+            importTestResource(
+                cms,
+                "org/opencms/search/pdf-test-112.pdf",
+                folderName + filename,
+                CmsResourceTypeBinary.getStaticTypeId(),
+                Collections.<CmsProperty> emptyList());
+        }
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrQuery query = new CmsSolrQuery();
+        query.setSearchRoots(cms.getRequestContext().addSiteRoot(folderName));
+        CmsSolrResultList results = index.search(cms, query);
+        AllSolrTests.printResults(cms, results, false);
+        // assertEquals(10, results.getNumFound());
+
+        for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
+            String absoluteFileName = cms.getRequestContext().addSiteRoot(folderName + filename.getKey());
+            query = new CmsSolrQuery();
+            query.addFilterQuery("path:" + absoluteFileName);
+            results = index.search(cms, query);
+        }
+    }
+
+    /**
+     * Tests the locales stored in the index.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testResourceContentLocaleField() throws Throwable {
+    public void testContentLocalesField() throws Throwable {
 
         Map<String, List<String>> filenames = new HashMap<String, List<String>>();
-        filenames.put("rabbit_en_EN.html", Collections.singletonList("en_EN"));
-        filenames.put("rabbit_en_EN", Collections.singletonList("en_EN"));
+        filenames.put("rabbit_en_GB.html", Collections.singletonList("en_GB"));
+        filenames.put("rabbit_en_GB", Collections.singletonList("en_GB"));
         filenames.put("rabbit_en.html", Collections.singletonList("en"));
         filenames.put("rabbit_en", Collections.singletonList("en"));
         filenames.put("rabbit_en.", Collections.singletonList("en"));
         filenames.put("rabbit_enr", Arrays.asList(new String[] {"en", "de"}));
         filenames.put("rabbit_en.tar.gz", Arrays.asList(new String[] {"en", "de"}));
-        filenames.put("rabbit_de_en_EN.html", Collections.singletonList("en_EN"));
+        filenames.put("rabbit_de_en_GB.html", Collections.singletonList("en_GB"));
         filenames.put("rabbit_de_DE_EN_DE_en.html", Collections.singletonList("en"));
         filenames.put("rabbit_de_DE_EN_en_DE.html", Collections.singletonList("en_DE"));
 
@@ -166,9 +213,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
             assertEquals(1, results.size());
             CmsSearchResource res = results.get(0);
             List<String> fieldLocales = res.getMultivaluedField(I_CmsSearchField.FIELD_CONTENT_LOCALES);
-            assertTrue((fieldLocales.size() == filename.getValue().size())
-                && fieldLocales.containsAll(filename.getValue())
-                && filename.getValue().containsAll(fieldLocales));
+            assertTrue(fieldLocales.size() == filename.getValue().size());
+            assertTrue(fieldLocales.containsAll(filename.getValue()));
+            assertTrue(filename.getValue().containsAll(fieldLocales));
         }
 
         query = new CmsSolrQuery();

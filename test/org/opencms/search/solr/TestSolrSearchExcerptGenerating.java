@@ -43,14 +43,14 @@ import junit.framework.TestSuite;
  * 
  * @since 8.5.0
  */
-public class TestSolrSearchExcertGenerating extends OpenCmsTestCase {
+public class TestSolrSearchExcerptGenerating extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
-    public TestSolrSearchExcertGenerating(String arg0) {
+    public TestSolrSearchExcerptGenerating(String arg0) {
 
         super(arg0);
     }
@@ -65,8 +65,8 @@ public class TestSolrSearchExcertGenerating extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
-        suite.setName(TestSolrSearchExcertGenerating.class.getName());
-        suite.addTest(new TestSolrSearchExcertGenerating("testExcerpt"));
+        suite.setName(TestSolrSearchExcerptGenerating.class.getName());
+        suite.addTest(new TestSolrSearchExcerptGenerating("testExcerpt"));
 
         TestSetup wrapper = new TestSetup(suite) {
 

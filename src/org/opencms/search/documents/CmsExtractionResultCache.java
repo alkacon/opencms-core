@@ -105,9 +105,11 @@ public class CmsExtractionResultCache {
                                 count++;
                             } catch (Exception e) {
                                 if (LOG.isWarnEnabled()) {
-                                    LOG.warn(Messages.get().getBundle().key(
-                                        Messages.LOG_EXCERPT_CACHE_DELETE_ERROR_1,
-                                        f.getAbsolutePath()), e);
+                                    LOG.warn(
+                                        Messages.get().getBundle().key(
+                                            Messages.LOG_EXCERPT_CACHE_DELETE_ERROR_1,
+                                            f.getAbsolutePath()),
+                                        e);
                                 }
                             }
                         }
@@ -124,16 +126,22 @@ public class CmsExtractionResultCache {
      * 
      * @param resource the VFS resource to generate the cache name for
      * @param locale the locale to generate the cache name for (may be <code>null</code>)
+     * @param docTypeName the name of the search document type
      * 
      * @return the RFS name to use for caching the given VFS resource with parameters 
      */
-    public String getCacheName(CmsResource resource, Locale locale) {
+    public String getCacheName(CmsResource resource, Locale locale, String docTypeName) {
 
         // create a StringBuffer for the result
         StringBuffer buf = new StringBuffer(m_rfsRepository.length() + 36);
         buf.append(m_rfsRepository);
         buf.append('/');
         buf.append(resource.getResourceId().toString());
+
+        if (docTypeName != null) {
+            buf.append('_');
+            buf.append(docTypeName);
+        }
 
         // check if parameters are provided, if so add them as well
         if (locale != null) {

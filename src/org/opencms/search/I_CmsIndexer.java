@@ -68,6 +68,13 @@ public interface I_CmsIndexer {
     throws CmsIndexException;
 
     /**
+     * Returns <code>true</code> if this VFS indexer is able to resolve locale dependencies between documents.<p>
+     * 
+     * @return <code>true</code> if this VFS indexer is able to resolve locale dependencies between documents
+     */
+    boolean isLocaleDependenciesEnable();
+
+    /**
      * Creates and initializes a new instance of this indexer implementation.<p>
      * 
      * @param cms the OpenCms user context to use when reading resources from the VFS during indexing

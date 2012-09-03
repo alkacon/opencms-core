@@ -7,9 +7,12 @@ import org.opencms.search.I_CmsSearchDocument;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.util.NamedList;
@@ -144,6 +147,81 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     public int getEnd() {
 
         return m_end;
+    }
+
+    /**
+     * Delegator.<p>
+     * 
+     * @param name the name
+     * 
+     * @return the facet field
+     */
+    public FacetField getFacetDate(String name) {
+
+        return m_queryResponse.getFacetDate(name);
+    }
+
+    /**
+     * Delegator.<p>
+     * 
+     * @return the list of faceted date fields
+     */
+    public List<FacetField> getFacetDates() {
+
+        return m_queryResponse.getFacetDates();
+    }
+
+    /**
+     * Delegator.<p>
+     * 
+     * @param name the name
+     * 
+     * @return the facet field
+     */
+    public FacetField getFacetField(String name) {
+
+        return m_queryResponse.getFacetField(name);
+    }
+
+    /**
+     * Delegator.<p>
+     * 
+     * @return the list of faceted fields
+     */
+    public List<FacetField> getFacetFields() {
+
+        return m_queryResponse.getFacetFields();
+    }
+
+    /**
+     * Delegator.<p>
+     * 
+     * @return the facet query
+     */
+    public Map<String, Integer> getFacetQuery() {
+
+        return m_queryResponse.getFacetQuery();
+    }
+
+    /**
+     * Delegator.<p>
+     * 
+     * @return the list of facet ranges
+     */
+    @SuppressWarnings("rawtypes")
+    public List<RangeFacet> getFacetRanges() {
+
+        return m_queryResponse.getFacetRanges();
+    }
+
+    /**
+     * Delegator.<p>
+     * 
+     * @return the limiting facets
+     */
+    public List<FacetField> getLimitingFacets() {
+
+        return m_queryResponse.getLimitingFacets();
     }
 
     /**

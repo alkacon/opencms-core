@@ -151,6 +151,16 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
+     * The default indexer is not able to resolve locale dependencies between documents.<p>
+     * 
+     * @see org.opencms.search.I_CmsIndexer#isLocaleDependenciesEnable()
+     */
+    public boolean isLocaleDependenciesEnable() {
+
+        return false;
+    }
+
+    /**
      * @see org.opencms.search.I_CmsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.A_CmsSearchIndex)
      */
     public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, A_CmsSearchIndex index) {

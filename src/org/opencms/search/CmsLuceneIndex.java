@@ -1156,7 +1156,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
 
         TermsFilter filter = null;
         if ((startTime != Long.MIN_VALUE) || (endTime != Long.MAX_VALUE)) {
-            // a date range has been set for this LGT document search
+            // a date range has been set for this document search
             if (startTime == Long.MIN_VALUE) {
                 // default start will always be "yyyy1231" in order to reduce term size                    
                 Calendar cal = Calendar.getInstance(OpenCms.getLocaleManager().getTimeZone());

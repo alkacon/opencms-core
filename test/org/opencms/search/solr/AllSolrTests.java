@@ -102,21 +102,21 @@ public final class AllSolrTests {
         TestSuite suite = new TestSuite("Tests for package " + AllSolrTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestSolrConfiguration.suite());
+        // suite.addTest(TestSolrConfiguration.suite());
         suite.addTest(TestSolrFieldConfiguration.suite());
         suite.addTest(TestSolrIndexing.suite());
         suite.addTest(TestSolrSearch.suite());
-        suite.addTest(TestSolrSearchAutoSuggeting.suite());
-        suite.addTest(TestSolrSearchFaceting.suite());
+        // suite.addTest(TestSolrSearchAutoSuggeting.suite());
+        // suite.addTest(TestSolrSearchFaceting.suite());
         suite.addTest(TestSolrSearchFulltextSearching.suite());
-        suite.addTest(TestSolrSearchHighlighting.suite());
-        suite.addTest(TestSolrSearchMLTQuerying.suite());
-        suite.addTest(TestSolrSearchPaging.suite());
+        // suite.addTest(TestSolrSearchHighlighting.suite());
+        // suite.addTest(TestSolrSearchMLTQuerying.suite());
+        // suite.addTest(TestSolrSearchPaging.suite());
         suite.addTest(TestSolrSearchPermissionHandling.suite());
-        suite.addTest(TestSolrSearchRanging.suite());
-        suite.addTest(TestSolrSearchSorting.suite());
-        suite.addTest(TestSolrSearchSpellchecking.suite());
-        suite.addTest(TestSolrSearchExcertGenerating.suite());
+        // suite.addTest(TestSolrSearchRanging.suite());
+        // suite.addTest(TestSolrSearchSorting.suite());
+        // suite.addTest(TestSolrSearchSpellchecking.suite());
+        // suite.addTest(TestSolrSearchExcerptGenerating.suite());
         //$JUnit-END$
         return suite;
     }
