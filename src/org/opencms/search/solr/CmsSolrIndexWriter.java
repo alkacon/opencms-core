@@ -38,14 +38,10 @@ import org.opencms.search.Messages;
 import org.opencms.search.fields.I_CmsSearchField;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.request.AbstractUpdateRequest;
-import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.common.SolrInputDocument;
 
 /**
@@ -172,30 +168,12 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     rootPath,
                     m_index.getName(),
                     m_index.getPath()));
-                SolrInputDocument doc = (SolrInputDocument)document.getDocument();
-                List<SolrInputDocument> docs = new ArrayList<SolrInputDocument>(1);
-                docs.add(doc);
-                updateSolrDocuments(docs);
+                try {
+                    m_server.add((SolrInputDocument)document.getDocument());
+                } catch (SolrServerException e) {
+                    throw new IOException(e.getLocalizedMessage(), e);
+                }
             }
-        }
-    }
-
-    /**
-     * Updates the list of given documents.<p>
-     * 
-     * @param docs the documents to update
-     * 
-     * @throws IOException if something goes wrong
-     */
-    private void updateSolrDocuments(List<SolrInputDocument> docs) throws IOException {
-
-        UpdateRequest req = new UpdateRequest();
-        req.setAction(AbstractUpdateRequest.ACTION.COMMIT, false, false);
-        req.add(docs);
-        try {
-            req.process(m_server);
-        } catch (SolrServerException e) {
-            throw new IOException(e.getLocalizedMessage(), e);
         }
     }
 }
