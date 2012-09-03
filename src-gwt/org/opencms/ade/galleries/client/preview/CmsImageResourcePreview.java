@@ -326,7 +326,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
         CmsImageInfoBean imageInfo = getImageInfo(resourcePath);
         CmsImageFormatHandler formatHandler = new CmsImageFormatHandler(
             getGalleryMode(),
-            m_handler.getGalleryDialog(),
+            getGalleryDialog(),
             resourcePath,
             imageInfo.getHeight(),
             imageInfo.getWidth());
