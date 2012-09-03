@@ -250,6 +250,7 @@
 	analyzer CDATA #IMPLIED
 	boost CDATA #IMPLIED
 	default CDATA #IMPLIED
+	type CDATA #IMPLIED
 >
 
 <!--

@@ -59,8 +59,8 @@ public class CmsSolrQuery extends SolrQuery {
     /** The default query. */
     public static final String DEFAULT_QUERY = "*:*";
 
-    /** The default facet date gab. */
-    public static final String FACET_DATE_GAB = "+1DAY";
+    /** The default facet date gap. */
+    public static final String FACET_DATE_GAP = "+1DAY";
 
     /** The query type. */
     public static final String QUERY_TYPE = "dismax";
@@ -156,7 +156,7 @@ public class CmsSolrQuery extends SolrQuery {
      * <li>{@link #QUERY_TYPE}
      * <li>{@link #SCORE_FIELD}
      * <li>{@link #RESULT_COUNT}
-     * <li>{@link #FACET_DATE_GAB}
+     * <li>{@link #FACET_DATE_GAP}
      * <li>{@link I_CmsSearchField#FIELD_PREFIX_TEXT}<code>_&lt;DEFAULT_LOCALE&gt;</code>
      * </ul>
      * 
@@ -177,7 +177,7 @@ public class CmsSolrQuery extends SolrQuery {
         setQueryType(QUERY_TYPE);
         addField(SCORE_FIELD);
         setRows(new Integer(CmsSolrQuery.RESULT_COUNT));
-        setFacetDateGab(FACET_DATE_GAB);
+        setFacetDateGab(FACET_DATE_GAP);
         addTextFields("text");
 
         // set the query

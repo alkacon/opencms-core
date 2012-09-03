@@ -573,10 +573,8 @@
       -->
     <listener event="newSearcher" class="solr.QuerySenderListener">
       <arr name="queries">
-        <!--
-           <lst><str name="q">solr</str><str name="sort">price asc</str></lst>
-           <lst><str name="q">rocks</str><str name="sort">weight asc</str></lst>
-          -->
+        <lst><str name="q">OpenCms</str><str name="sort">path asc</str></lst>
+        <lst><str name="q">Alkacon</str><str name="sort">Title_prop asc</str></lst>
       </arr>
     </listener>
     <listener event="firstSearcher" class="solr.QuerySenderListener">

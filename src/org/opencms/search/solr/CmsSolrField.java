@@ -33,6 +33,8 @@ package org.opencms.search.solr;
 
 import org.opencms.main.OpenCms;
 import org.opencms.search.fields.A_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.I_CmsSearchFieldMapping;
 
 import java.util.List;
 import java.util.Locale;
@@ -75,6 +77,35 @@ public class CmsSolrField extends A_CmsSearchField {
         m_targetField = targetField;
         m_copyFields = copyFields;
         m_locale = locale;
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param luceneField
+     */
+    public CmsSolrField(CmsSearchField luceneField) {
+
+        super();
+        String name = luceneField.getName();
+        IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
+        if (schema.hasExplicitField(name)) {
+            // take the lucene field name for Solr
+        } else if ((luceneField.getType() != null)
+            && schema.isDynamicField(luceneField.getName() + "_" + luceneField.getType())) {
+            // try to use the specified type attribute as dynamic field suffix
+            name = luceneField.getName() + "_" + luceneField.getType();
+        } else {
+            // fallback create a general_text field
+            name = luceneField.getName() + "_txt";
+        }
+        setName(name);
+        setBoost(luceneField.getBoost());
+        setDefaultValue(luceneField.getDefaultValue());
+
+        for (I_CmsSearchFieldMapping mapping : luceneField.getMappings()) {
+            addMapping(mapping);
+        }
     }
 
     /**
