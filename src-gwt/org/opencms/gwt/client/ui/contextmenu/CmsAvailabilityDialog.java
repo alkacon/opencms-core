@@ -168,11 +168,6 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
                 }
             }
 
-            public String getCommandIconClass() {
-
-                return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().availability();
-            }
-
             public A_CmsContextMenuItem getItemWidget(
                 CmsUUID structureId,
                 I_CmsContextMenuHandler handler,

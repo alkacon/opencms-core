@@ -30,7 +30,6 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * The context menu entry for "bumping" a detail page, i.e. making it the default detail page for its type.<p>
@@ -47,8 +46,6 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsBumpDetailPageMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        //setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoPage());
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().bump());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_MAKE_DEFAULT_0));
         setActive(true);
     }

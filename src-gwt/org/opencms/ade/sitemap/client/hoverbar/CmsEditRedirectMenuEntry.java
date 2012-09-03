@@ -33,7 +33,6 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu new entry.<p>
@@ -50,7 +49,6 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsEditRedirectMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().newElement());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_EDIT_REDIRECT_0));
         setActive(true);
     }

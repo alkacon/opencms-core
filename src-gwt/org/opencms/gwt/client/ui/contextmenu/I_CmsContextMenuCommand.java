@@ -47,13 +47,6 @@ public interface I_CmsContextMenuCommand {
     void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean);
 
     /**
-     * Returns the icon class for this command.<p>
-     * 
-     * @return the icon class for this command
-     */
-    String getCommandIconClass();
-
-    /**
      * Returns the special menu item widget for this command.<p>
      * 
      * @param structureId the structure id of the resource

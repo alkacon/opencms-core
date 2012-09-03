@@ -46,9 +46,6 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     /** The hoverbar. */
     private CmsSitemapHoverbar m_hoverbar;
 
-    /** The image class. */
-    private String m_imageClass;
-
     /** Flag to indicate if this menu entry is active. */
     private boolean m_isActive;
 
@@ -75,22 +72,6 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     public A_CmsContextMenuItem generateMenuItem() {
 
         return new CmsContextMenuItem(this);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getImageClass()
-     */
-    public String getImageClass() {
-
-        return m_imageClass;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getImagePath()
-     */
-    public String getImagePath() {
-
-        return null;
     }
 
     /**
@@ -190,16 +171,6 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     public void setDisabledReason(String reason) {
 
         m_disabledReason = reason;
-    }
-
-    /**
-     * Sets the image class for the icon in front of the label.<p>
-     * 
-     * @param imageClass the image class
-     */
-    public void setImageClass(String imageClass) {
-
-        m_imageClass = imageClass;
     }
 
     /**

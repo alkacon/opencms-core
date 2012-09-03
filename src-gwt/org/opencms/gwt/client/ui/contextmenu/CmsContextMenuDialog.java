@@ -111,15 +111,6 @@ public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getCommandIconClass()
-     */
-    public String getCommandIconClass() {
-
-        //TODO: use better icon
-        return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().edit();
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getItemWidget(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
      */
     public A_CmsContextMenuItem getItemWidget(

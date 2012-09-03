@@ -46,9 +46,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     /** The context menu handler. */
     private I_CmsContextMenuHandler m_handler;
 
-    /** The CSS image class for the icon in front of the label of this entry. */
-    private String m_imageClass;
-
     /** The command for this entry. */
     private I_CmsContextMenuCommand m_menuCommand;
 
@@ -68,9 +65,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     public CmsContextMenuEntry(I_CmsContextMenuHandler handler, CmsUUID structureId, I_CmsContextMenuCommand menuCommand) {
 
         m_menuCommand = menuCommand;
-        if (m_menuCommand != null) {
-            setImageClass(m_menuCommand.getCommandIconClass());
-        }
         m_handler = handler;
         m_structureId = structureId;
     }
@@ -105,24 +99,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     public CmsContextMenuEntryBean getBean() {
 
         return m_bean;
-    }
-
-    /**
-     * Returns the imageClass.<p>
-     *
-     * @return the imageClass
-     */
-    public String getImageClass() {
-
-        return m_imageClass;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#getImagePath()
-     */
-    public String getImagePath() {
-
-        return m_bean.getImagePath();
     }
 
     /**
@@ -208,16 +184,6 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     public void setBean(CmsContextMenuEntryBean bean) {
 
         m_bean = bean;
-    }
-
-    /**
-     * Sets the imageClass.<p>
-     *
-     * @param imageClass the imageClass to set
-     */
-    public void setImageClass(String imageClass) {
-
-        m_imageClass = imageClass;
     }
 
     /**

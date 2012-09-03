@@ -30,7 +30,6 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsLockReportDialog;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.user.client.Command;
 
@@ -49,7 +48,6 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsLockReportMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().lock());
         setLabel("Lock Report");
         setActive(true);
 

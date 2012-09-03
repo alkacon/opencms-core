@@ -31,25 +31,18 @@ div.cmsMenuBar { /* the outer menu bar */
 	background-position: 50% 50%;
 	height: auto;
 }
-.cmsMenuBar .cmsMenuItem.disabled { /* menu item disabled */
+.cmsMenuBar .cmsMenuItem.disabled, .cmsMenuBar .cmsMenuItem.disabled .label, .cmsMenuBar .cmsMenuItem.disabled .html-face { /* menu item disabled */
 	color: value("constants.css.textColorDisabled");
 	cursor: default;
 }
-.cmsMenuBar .cmsMenuItem .image { /* image for a menu item */
-	float: left;
-	margin: 3px 0px 0px 2px;
-	height: 16px;
-	width: 16px;
-	overflow: hidden;
-}
 .cmsMenuBar .cmsMenuItem .label, .cmsMenuBar .cmsMenuItem .html-face { /* menu item label */
-	padding: 4px 4px 4px 0px;
+	padding: 4px;
 	
 	font-size: value("constants.css.fontSizeBig");
 	text-align: left;
 }
 .cmsMenuBar .cmsMenuItem .label{
-	margin: 0px 0px 0px 26px;
+	margin: 0px;
 }
 
 .cmsMenuBar .cmsMenuItem .html-face {
@@ -81,25 +74,6 @@ div.menuInfoLabel {
 	padding: 4px;
 	cursor: default;
 }
-
-.cmsMenuBar .cmsMenuItem .itemIcon {
-	float: left;
-	margin-top: 1px;
-}
-@if user.agent ie6 {
-	.cmsMenuBar .cmsMenuItem.disabled .itemIcon {
-		filter: literal("alpha(opacity = 50)");
-	}
-} @elif user.agent ie8 {
-	.cmsMenuBar .cmsMenuItem.disabled .itemIcon {
-		-ms-filter: "alpha(opacity = 50)";
-	}
-} @else {
-	.cmsMenuBar .cmsMenuItem.disabled .itemIcon {
-        opacity: 0.5;
-	}
-}
-
 
 @if user.agent ie6 { /* IE6 HACK for the separator */
 	.cmsMenuBar .menuItemSeparator {

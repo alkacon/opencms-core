@@ -36,7 +36,6 @@ import org.opencms.gwt.client.ui.A_CmsListItemSelectDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -88,7 +87,6 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsSubSitemapMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().subSitemap());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_SUBSITEMAP_0));
         setActive(true);
     }

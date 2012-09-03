@@ -30,7 +30,6 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu show in navigation entry.<p>
@@ -47,7 +46,6 @@ public class CmsShowMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsShowMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().hideShowInNavigation());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_SHOW_0));
         setActive(true);
     }

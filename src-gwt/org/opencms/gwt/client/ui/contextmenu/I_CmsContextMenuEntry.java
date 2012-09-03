@@ -49,20 +49,6 @@ public interface I_CmsContextMenuEntry {
     void execute();
 
     /**
-     * Returns the image class for the icon in front of the label.<p>
-     *
-     * @return the image class
-     */
-    String getImageClass();
-
-    /**
-     * Returns the image path for the icon in front of the label.<p>
-     *
-     * @return the image path
-     */
-    String getImagePath();
-
-    /**
      * Returns the JSP path for the command generation.<p>
      *
      * @return the JSP path

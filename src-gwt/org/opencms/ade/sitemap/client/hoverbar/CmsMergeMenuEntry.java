@@ -33,7 +33,6 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu merge entry.<p>
@@ -50,7 +49,6 @@ public class CmsMergeMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsMergeMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().mergeSitemap());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_MERGE_SUB_0));
         setActive(true);
     }

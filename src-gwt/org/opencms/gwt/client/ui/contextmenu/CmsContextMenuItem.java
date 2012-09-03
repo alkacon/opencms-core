@@ -112,22 +112,6 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
                 + I_CmsImageBundle.INSTANCE.style().triangleRight());
             html.append("\"></div>");
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_entry.getImageClass())) {
-            // if an image class is set to the menu item show the image in front of the text
-            html.append("<div class=\"");
-            html.append(m_entry.getImageClass());
-            html.append(" " + I_CmsLayoutBundle.INSTANCE.contextmenuCss().itemIcon());
-            html.append("\"></div>");
-        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_entry.getImagePath())) {
-            // if an image path is set to the menu item show the image in front of the text
-            html.append("<div class=\"");
-            html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().image());
-            html.append(" " + I_CmsLayoutBundle.INSTANCE.contextmenuCss().itemIcon());
-            html.append("\" ");
-            html.append("style=\"background: transparent url('" + m_entry.getImagePath() + "') no-repeat scroll 0 0\"");
-            html.append("\"");
-            html.append("></div>");
-        }
         // add the text to the item
         html.append("<div class=\"");
         html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().label());

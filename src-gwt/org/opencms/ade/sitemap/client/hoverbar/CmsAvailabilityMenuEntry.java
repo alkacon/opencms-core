@@ -32,7 +32,6 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -53,7 +52,6 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsAvailabilityMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().availability());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_AVAILABILITY_0));
         setActive(true);
     }

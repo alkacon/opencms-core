@@ -28,7 +28,6 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu delete entry.<p>
@@ -45,7 +44,6 @@ public class CmsGotoMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsGotoMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoPage());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
         setActive(true);
         setVisible(true);

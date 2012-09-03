@@ -104,7 +104,6 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();
 
         I_CmsImageBundle.INSTANCE.style().ensureInjected();
-        I_CmsImageBundle.INSTANCE.contextMenuIcons().ensureInjected();
 
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
         I_CmsCellTableResources.INSTANCE.cellTableStyle().ensureInjected();

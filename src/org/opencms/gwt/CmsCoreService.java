@@ -1234,19 +1234,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
                 // get the name of the item and set it to the bean
                 bean.setName(item.getName());
-
-                // get the image-URI and set it to the bean
-                String imagePath = item.getIcon();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imagePath)) {
-                    if (item.getIcon().startsWith("/")) {
-                        imagePath = OpenCms.getLinkManager().substituteLink(getCmsObject(), item.getIcon());
-                    } else {
-                        imagePath = OpenCms.getLinkManager().substituteLink(
-                            getCmsObject(),
-                            CmsWorkplace.PATH_WORKPLACE + item.getIcon());
-                    }
-                }
-                bean.setImagePath(imagePath);
             }
 
             if (item.isParentItem()) {

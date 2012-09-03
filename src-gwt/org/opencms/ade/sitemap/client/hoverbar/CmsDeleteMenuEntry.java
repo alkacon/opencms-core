@@ -32,7 +32,6 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu delete entry.<p>
@@ -49,7 +48,6 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsDeleteMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().delete());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_DELETE_0));
         setActive(true);
     }

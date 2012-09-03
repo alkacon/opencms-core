@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui.contextmenu;
 
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.replace.CmsReplaceHandler;
@@ -67,7 +66,6 @@ public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextM
         });
         CmsUploadButton button = new CmsUploadButton(m_replaceHandler);
         button.setText(getText());
-        button.setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().replace());
         initWidget(button);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuItem());
         addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().uploadButton());
@@ -86,11 +84,6 @@ public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextM
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
                 // nothing to do, will be handled by the widget
-            }
-
-            public String getCommandIconClass() {
-
-                return null;
             }
 
             public A_CmsContextMenuItem getItemWidget(

@@ -29,7 +29,6 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu goto parent sitemap entry.<p>
@@ -46,7 +45,6 @@ public class CmsParentSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsParentSitemapMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoParent());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_PARENT_0));
         setActive(true);
     }

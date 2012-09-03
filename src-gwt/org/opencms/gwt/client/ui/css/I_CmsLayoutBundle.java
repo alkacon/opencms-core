@@ -254,13 +254,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String itemIcon();
-
-        /** 
-         * Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String menuInfoLabel();
 
         /** 
@@ -303,13 +296,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String disabled();
-
-        /** 
-         * Access method.<p>
-         *   
-         * @return the CSS class name
-         */
-        String image();
 
         /** 
          * Access method.<p>

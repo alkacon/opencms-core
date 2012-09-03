@@ -39,7 +39,6 @@ import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
@@ -64,7 +63,6 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsEditMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().properties());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_EDIT_0));
         setActive(true);
     }

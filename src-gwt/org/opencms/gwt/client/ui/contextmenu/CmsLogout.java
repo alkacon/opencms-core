@@ -83,11 +83,6 @@ public final class CmsLogout implements I_CmsHasContextMenuCommand {
                 dialog.center();
             }
 
-            public String getCommandIconClass() {
-
-                return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().logout();
-            }
-
             public A_CmsContextMenuItem getItemWidget(
                 CmsUUID structureId,
                 I_CmsContextMenuHandler handler,

@@ -64,11 +64,6 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
                 openWorkplace(structureId);
             }
 
-            public String getCommandIconClass() {
-
-                return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().workplace();
-            }
-
             public A_CmsContextMenuItem getItemWidget(
                 CmsUUID structureId,
                 I_CmsContextMenuHandler handler,
@@ -130,25 +125,25 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
      */
     protected static native void openWorkplace(String path, int winWidth, int winHeight, int winLeft, int winTop) /*-{
 
-      if ($wnd.opener && $wnd.opener != self) {
-         $wnd.opener.location.href = path;
-         $wnd.opener.focus();
-      } else {
-         var openerStr = 'width='
-               + winWidth
-               + ',height='
-               + winHeight
-               + ',left='
-               + winLeft
-               + ',top='
-               + winTop
-               + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
-         var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-         if (deWindow) {
-            deWindow.focus();
-         } else {
-            @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
-         }
-      }
+        if ($wnd.opener && $wnd.opener != self) {
+            $wnd.opener.location.href = path;
+            $wnd.opener.focus();
+        } else {
+            var openerStr = 'width='
+                    + winWidth
+                    + ',height='
+                    + winHeight
+                    + ',left='
+                    + winLeft
+                    + ',top='
+                    + winTop
+                    + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
+            var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
+            if (deWindow) {
+                deWindow.focus();
+            } else {
+                @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
+            }
+        }
     }-*/;
 }

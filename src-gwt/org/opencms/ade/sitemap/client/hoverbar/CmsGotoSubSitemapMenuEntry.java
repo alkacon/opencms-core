@@ -30,7 +30,6 @@ package org.opencms.ade.sitemap.client.hoverbar;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu goto sub sitemap entry.<p>
@@ -47,7 +46,6 @@ public class CmsGotoSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsGotoSubSitemapMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoSub());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0));
         setActive(true);
     }

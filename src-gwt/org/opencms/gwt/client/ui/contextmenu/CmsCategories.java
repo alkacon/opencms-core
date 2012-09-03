@@ -73,14 +73,6 @@ public final class CmsCategories implements I_CmsHasContextMenuCommand, I_CmsCon
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getCommandIconClass()
-     */
-    public String getCommandIconClass() {
-
-        return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().rename();
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getItemWidget(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
      */
     public A_CmsContextMenuItem getItemWidget(

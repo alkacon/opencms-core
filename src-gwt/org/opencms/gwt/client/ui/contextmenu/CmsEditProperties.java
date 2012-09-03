@@ -71,11 +71,6 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                 }
             }
 
-            public String getCommandIconClass() {
-
-                return org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.contextMenuIcons().properties();
-            }
-
             public A_CmsContextMenuItem getItemWidget(
                 CmsUUID structureId,
                 I_CmsContextMenuHandler handler,

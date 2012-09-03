@@ -71,14 +71,6 @@ public final class CmsRestore implements I_CmsHasContextMenuCommand, I_CmsContex
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getCommandIconClass()
-     */
-    public String getCommandIconClass() {
-
-        return null;
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getItemWidget(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
      */
     public A_CmsContextMenuItem getItemWidget(

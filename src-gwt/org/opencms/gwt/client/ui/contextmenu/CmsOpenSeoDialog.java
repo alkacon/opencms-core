@@ -31,7 +31,6 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.seo.CmsSeoOptionsDialog;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -124,14 +123,6 @@ public class CmsOpenSeoDialog implements I_CmsHasContextMenuCommand, I_CmsContex
             };
             action.execute();
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getCommandIconClass()
-     */
-    public String getCommandIconClass() {
-
-        return I_CmsImageBundle.INSTANCE.contextMenuIcons().seo();
     }
 
     /**

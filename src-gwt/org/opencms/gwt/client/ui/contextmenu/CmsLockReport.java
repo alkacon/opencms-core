@@ -29,7 +29,6 @@ package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.ui.CmsLockReportDialog;
 import org.opencms.gwt.client.ui.I_CmsToolbarHandler;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
@@ -73,14 +72,6 @@ public class CmsLockReport implements I_CmsHasContextMenuCommand, I_CmsContextMe
                 onUnlock();
             }
         });
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getCommandIconClass()
-     */
-    public String getCommandIconClass() {
-
-        return I_CmsImageBundle.INSTANCE.contextMenuIcons().lock();
     }
 
     /**

@@ -41,9 +41,6 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     /** Signals if the menu entry is active. */
     private boolean m_active;
 
-    /** Stores the image path for the icon in front of the label. */
-    private String m_imagePath;
-
     /** Stores the JSP path for the JSP that is called by the command. */
     private String m_jspPath;
 
@@ -81,7 +78,6 @@ public class CmsContextMenuEntryBean implements IsSerializable {
      * 
      * @param active signals if this menu entry is active
      * @param visible signals if this menu entry is visible
-     * @param imagePath the image path for the icon in front of the label
      * @param jspPath the JSP path for the command 
      * @param label the label for the menu entry
      * @param name the name for the menu entry
@@ -92,7 +88,6 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     public CmsContextMenuEntryBean(
         boolean active,
         boolean visible,
-        String imagePath,
         String jspPath,
         String label,
         String name,
@@ -102,23 +97,12 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
         m_active = active;
         m_visible = visible;
-        m_imagePath = imagePath;
         m_jspPath = jspPath;
         m_label = label;
         m_name = name;
         m_reason = reason;
         m_separator = separator;
         m_subMenu = subMenu;
-    }
-
-    /**
-     * Returns the image path of the menu entry.<p>
-     * 
-     * @return the image path
-     */
-    public String getImagePath() {
-
-        return m_imagePath;
     }
 
     /**
@@ -229,16 +213,6 @@ public class CmsContextMenuEntryBean implements IsSerializable {
     public void setActive(boolean active) {
 
         m_active = active;
-    }
-
-    /**
-     * Sets the imagePath.<p>
-     *
-     * @param imagePath the imagePath to set
-     */
-    public void setImagePath(String imagePath) {
-
-        m_imagePath = imagePath;
     }
 
     /**

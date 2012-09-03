@@ -28,7 +28,6 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu update sitemap entry.<p>
@@ -44,9 +43,7 @@ public class CmsRefreshMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public CmsRefreshMenuEntry(CmsSitemapHoverbar hoverbar) {
 
-        // TODO: Auto-generated constructor stub
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().refresh());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_REFRESH_0));
         setActive(true);
     }

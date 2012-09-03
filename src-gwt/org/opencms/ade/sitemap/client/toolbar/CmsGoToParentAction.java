@@ -34,7 +34,6 @@ import org.opencms.gwt.client.ui.contextmenu.A_CmsContextMenuItem;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -61,14 +60,6 @@ public class CmsGoToParentAction implements I_CmsHasContextMenuCommand, I_CmsCon
     public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
         CmsSitemapView.getInstance().getController().gotoParentSitemap();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#getCommandIconClass()
-     */
-    public String getCommandIconClass() {
-
-        return I_CmsImageBundle.INSTANCE.contextMenuIcons().gotoParent();
     }
 
     /**

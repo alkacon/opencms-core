@@ -27,8 +27,6 @@
 
 package org.opencms.gwt.client.ui.css;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsContextmenuItemCss;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -44,138 +42,6 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
  * @since 8.0.0
  */
 public interface I_CmsImageBundle extends ClientBundle {
-
-    /** The context menu item CSS classes. */
-    @Shared
-    public interface I_CmsContextMenuIcons extends I_CmsContextmenuItemCss {
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String availability();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String bump();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String delete();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String edit();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String gotoPage();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String gotoParent();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String gotoSub();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String hideShowInNavigation();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String lock();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String logout();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String mergeSitemap();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String move();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String newElement();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String properties();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String refresh();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String remove();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String rename();
-
-        /** Access method.<p>
-        *
-        * @return the CSS class name
-        */
-        String replace();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String seo();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String subSitemap();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String workplace();
-
-    }
 
     /** Bundles the image sprite CSS classes. */
     @Shared
@@ -418,14 +284,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/closeImage.png")
     ImageResource closeImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the button CSS
-     */
-    @Source("contextMenuIcons.css")
-    I_CmsContextMenuIcons contextMenuIcons();
 
     /**
      * Image resource accessor.<p>

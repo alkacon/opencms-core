@@ -31,7 +31,6 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 
 /**
  * Sitemap context menu new entry.<p>
@@ -48,7 +47,6 @@ public class CmsNewMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsNewMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setImageClass(I_CmsImageBundle.INSTANCE.contextMenuIcons().newElement());
         setLabel(Messages.get().key(Messages.GUI_HOVERBAR_NEW_0));
         setActive(true);
     }
