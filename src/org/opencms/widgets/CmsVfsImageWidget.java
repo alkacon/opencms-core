@@ -419,12 +419,14 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         }
         currentElement.append("').getAttribute('value')+'");
         // only try reading scale and format info if formats are used
-        if (getWidgetConfiguration(cms, widgetDialog, param).isShowFormat()) {
-            currentElement.append("%3F__scale%3D'+document.getElementById('");
-            currentElement.append(PREFIX_SCALE).append(param.getId()).append("').getAttribute('value')+'");
-            currentElement.append("%26__formatName%3D'+escape(document.getElementById('").append(PREFIX_FORMAT).append(
-                param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(param.getId()).append(
-                "').selectedIndex].value)+'");
+        if (param != null) {
+            if (getWidgetConfiguration(cms, widgetDialog, param).isShowFormat()) {
+                currentElement.append("%3F__scale%3D'+document.getElementById('");
+                currentElement.append(PREFIX_SCALE).append(param.getId()).append("').getAttribute('value')+'");
+                currentElement.append("%26__formatName%3D'+escape(document.getElementById('").append(PREFIX_FORMAT).append(
+                    param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(param.getId()).append(
+                    "').selectedIndex].value)+'");
+            }
         }
         result.put(I_CmsGalleryProviderConstants.ReqParam.currentelement.name(), currentElement.toString());
         return result;
