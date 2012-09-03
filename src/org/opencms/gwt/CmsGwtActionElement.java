@@ -177,7 +177,11 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         wrapScript(sb);
         sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(iconCssClassPrefix)).append(
             "\");\n</style>\n");
+        // append the workplace locale information
         sb.append("<meta name=\"gwt:property\" content=\"locale=").append(wpLocale).append("\" />\n");
+        // TODO: remove when GWT is compatible to IE10
+        // append meta tag to set the IE10 to IE9 compatibility mode
+        sb.append("<meta name=\"X-UA-Compatible\" content=\"IE=9; chrome=1\">");
         return sb.toString();
     }
 

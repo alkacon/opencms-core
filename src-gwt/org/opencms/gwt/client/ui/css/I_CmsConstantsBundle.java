@@ -347,6 +347,20 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * 
          * @return the CSS constant value
          */
+        String gradientFormDialogColor();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
+        String gradientFormDialogIE9();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS constant value
+         */
         String lineHeight();
 
         /** 
