@@ -33,7 +33,6 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
-import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -122,9 +121,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
             public void onBlur(BlurEvent event) {
 
                 m_mainPanel.add(m_fadePanel);
-                CmsDomUtil.setCaretPosition(m_textbox.getElement(), 0);
                 setTitle(m_textbox.getText());
-
             }
         });
         initWidget(m_mainPanel);

@@ -36,14 +36,25 @@ import com.google.gwt.user.client.Element;
 /**
  * A helpful class to set transparencies in browsers GWT supports.<p>
  */
-class CmsTransparencyImpl {
+final class CmsTransparencyImpl {
+
+    // TODO: check if this is really necessary. Try Element.getStyle().setOpacity(...) instead.
+
+    /**
+     * Hiding constructor.<p>
+     */
+    private CmsTransparencyImpl() {
+
+        // nothing to do
+    }
 
     /** Caches the original DXImageTransform.Microsoft.AlphaImageLoader settings for IE6. */
     private static Map<Element, String> map = new HashMap<Element, String>();
 
     /**
-     * Get IE version (provided by Microsoft)
-     * @return rv
+     * Get IE version (provided by Microsoft).<p>
+     * 
+     * @return browser version
      */
     public static native float getIEVersion() /*-{
         var rv = -1;
@@ -57,6 +68,7 @@ class CmsTransparencyImpl {
     }-*/;
 
     /** Given a DOM element, set the transparency value, with 100 being fully opaque and 0 being fully transparent.<p>
+     * 
      * @param elem A com.google.gwt.user.client.Element object
      * @param alpha An alpha value
      */

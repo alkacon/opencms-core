@@ -39,7 +39,6 @@ import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
-import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -224,7 +223,6 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
         setFaded((m_textbox.getValue().length() * 6.88) > m_textbox.getOffsetWidth());
         setTitle(m_textbox.getValue());
-        CmsDomUtil.setCaretPosition(m_textbox.getElement(), 0);
     }
 
     /**
