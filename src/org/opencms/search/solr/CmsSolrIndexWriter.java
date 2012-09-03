@@ -169,7 +169,8 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     m_index.getName(),
                     m_index.getPath()));
                 try {
-                    m_server.add((SolrInputDocument)document.getDocument());
+                    // commit the document within the next 20 seconds
+                    m_server.add((SolrInputDocument)document.getDocument(), 20000);
                 } catch (SolrServerException e) {
                     throw new IOException(e.getLocalizedMessage(), e);
                 }
