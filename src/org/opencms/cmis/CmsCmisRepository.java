@@ -1166,9 +1166,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-
         m_indexName = m_parameterConfiguration.getString(PARAM_INDEX, null);
-
     }
 
     /**
@@ -1562,7 +1560,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         CmsSolrQuery q = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(query));
         q.setStart(new Integer(start));
         q.setRows(new Integer(rows));
-        CmsSolrResultList resultPage = index.search(cms, q);
+        CmsSolrResultList resultPage = index.search(cms, q, true);
         return resultPage;
     }
 
@@ -1655,8 +1653,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
      */
     private CmsSolrIndex getIndex() {
 
-        boolean online = m_adminCms.getRequestContext().getCurrentProject().isOnlineProject();
-        String indexName = m_indexName != null ? m_indexName : (online ? null : CmsSolrIndex.SOLR_OFFLINE_INDEX_NAME);
+        String indexName = m_indexName;
         if (indexName == null) {
             return null;
         }
