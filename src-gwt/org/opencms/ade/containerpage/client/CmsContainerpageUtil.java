@@ -37,10 +37,13 @@ import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -353,10 +356,13 @@ public class CmsContainerpageUtil {
 
                 public void onClick(ClickEvent event) {
 
+                    CmsEditableData editableData = new CmsEditableData();
+                    editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+                    editableData.setStructureId(new CmsUUID(
+                        CmsContainerpageController.getServerId(containerElement.getClientId())));
+                    editableData.setSitePath(containerElement.getSitePath());
                     CmsDomUtil.ensureMouseOut((Widget)event.getSource());
-                    getController().getContentEditorHandler().openDialog(
-                        containerElement.getClientId(),
-                        containerElement.getSitePath());
+                    getController().getContentEditorHandler().openDialog(editableData, false, null);
                 }
             });
         } else {

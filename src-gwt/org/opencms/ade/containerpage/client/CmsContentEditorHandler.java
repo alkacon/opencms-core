@@ -27,12 +27,17 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.contenteditor.client.CmsContentEditor;
+import org.opencms.ade.contenteditor.client.CmsEditorBase;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.util.CmsUUID;
+
+import com.google.gwt.user.client.Command;
 
 /**
  * The container-page editor implementation of the XML content editor handler.<p>
@@ -72,7 +77,49 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             m_handler.reloadElements(m_currentElementId);
         }
         m_handler.addToRecent(m_currentElementId);
+        m_handler.enableToolbarButtons();
+        m_handler.activateSelection();
         m_currentElementId = null;
+    }
+
+    /**
+     * Opens the XML content editor.<p>
+     * 
+     * @param element the container element widget
+     * @param inline <code>true</code> to open the in-line editor for the given element if available
+     */
+    public void openDialog(final CmsContainerPageElementPanel element, boolean inline) {
+
+        m_handler.disableToolbarButtons();
+        m_handler.deactivateCurrentButton();
+        m_currentElementId = element.getId();
+        if (m_handler.m_controller.getData().isUseClassicEditor()) {
+            CmsEditableData editableData = new CmsEditableData();
+            editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+            editableData.setStructureId(new CmsUUID(CmsContainerpageController.getServerId(m_currentElementId)));
+            editableData.setSitePath(element.getSitePath());
+            CmsContentEditorDialog.get().openEditDialog(editableData, false, this);
+        } else {
+            Command onClose = new Command() {
+
+                public void execute() {
+
+                    onClose(element.getSitePath(), false);
+                }
+            };
+            if (inline && CmsEditorBase.hasEditable(element.getElement())) {
+                CmsContentEditor.getInstance().openInlineEditor(
+                    new CmsUUID(CmsContainerpageController.getServerId(getCurrentElementId())),
+                    CmsCoreProvider.get().getLocale(),
+                    element,
+                    onClose);
+            } else {
+                CmsContentEditor.getInstance().openFormEditor(
+                    CmsCoreProvider.get().getLocale(),
+                    CmsContainerpageController.getServerId(getCurrentElementId()),
+                    onClose);
+            }
+        }
     }
 
     /**
@@ -82,30 +129,39 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * @param isNew <code>true</code> if a new resource should be created
      * @param dependingElementId the id of a depending element
      */
-    public void openDialog(I_CmsEditableData editableData, boolean isNew, String dependingElementId) {
+    public void openDialog(final I_CmsEditableData editableData, final boolean isNew, String dependingElementId) {
 
+        m_handler.disableToolbarButtons();
+        m_handler.deactivateCurrentButton();
         if (editableData.getStructureId() != null) {
             m_currentElementId = editableData.getStructureId().toString();
         } else {
             m_currentElementId = null;
         }
         m_dependingElementId = dependingElementId;
-        CmsContentEditorDialog.get().openEditDialog(editableData, isNew, this);
+        if (m_handler.m_controller.getData().isUseClassicEditor()) {
+            CmsContentEditorDialog.get().openEditDialog(editableData, isNew, this);
+        } else {
+            CmsContentEditor.getInstance().openFormEditor(
+                CmsCoreProvider.get().getLocale(),
+                CmsContainerpageController.getServerId(getCurrentElementId()),
+                new Command() {
+
+                    public void execute() {
+
+                        onClose(editableData.getSitePath(), isNew);
+                    }
+                });
+        }
     }
 
     /**
-     * Opens the XML content editor.<p>
-     * 
-     * @param elementId the element id
-     * @param sitePath the element site-path
+     * Returns the currently edited element's id.<p>
+     *
+     * @return the currently edited element's id
      */
-    public void openDialog(String elementId, String sitePath) {
+    protected String getCurrentElementId() {
 
-        m_currentElementId = elementId;
-        CmsEditableData editableData = new CmsEditableData();
-        editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-        editableData.setStructureId(new CmsUUID(CmsContainerpageController.getServerId(m_currentElementId)));
-        editableData.setSitePath(sitePath);
-        CmsContentEditorDialog.get().openEditDialog(editableData, false, this);
+        return m_currentElementId;
     }
 }
