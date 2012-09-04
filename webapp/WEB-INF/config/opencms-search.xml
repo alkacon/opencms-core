@@ -224,9 +224,9 @@
         </sources>
       </index>
       <index class="org.opencms.search.solr.CmsSolrIndex">
-        <name>Solr Offline</name>
-        <rebuild>offline</rebuild>
-        <project>Offline</project>
+        <name>Solr Online</name>
+        <rebuild>auto</rebuild>
+        <project>Online</project>
         <locale>all</locale>
         <configuration>solr_fields</configuration>
         <sources>
@@ -334,7 +334,6 @@
           <name>pdf</name>
           <name>rtf</name>
           <name>html</name>
-          <name>image</name>
           <name>generic</name>
           <name>msoffice-ole2</name>
           <name>msoffice-ooxml</name>

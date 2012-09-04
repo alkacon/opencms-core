@@ -37,7 +37,6 @@ import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,18 +82,11 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
                 String message = Messages.get().getBundle().key(Messages.GUI_SOLR_NOT_LOGGED_IN_0);
                 res.getWriter().println(ERROR_HTML.replace("$content$", message));
             } else {
-                CmsSolrIndex index = null;
                 Map<String, String[]> params = CmsRequestUtil.createParameterMap(req.getParameterMap());
                 String indexName = params.get("core") != null ? params.get("core")[0] : (params.get("index") != null
                 ? params.get("index")[0]
                 : null);
-                index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
-                if (index == null) {
-                    List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
-                    if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
-                        index = solrs.get(0);
-                    }
-                }
+                CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(params);
                 if (index != null) {
                     CmsSolrQuery query = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(req.getParameterMap()));
                     index.writeResponse(res, index.search(cms, query));

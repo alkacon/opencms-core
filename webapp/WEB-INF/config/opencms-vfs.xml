@@ -108,6 +108,7 @@
 				<collector class="org.opencms.file.collectors.CmsCategoryResourceCollector" order="140" />
 				<collector class="org.opencms.file.collectors.CmsSubscriptionCollector" order="150" />
 				<collector class="org.opencms.file.collectors.CmsChangedResourceCollector" order="160" />
+				<collector class="org.opencms.file.collectors.CmsSolrCollector" order="170" />
 			</collectors>		
 			<mimetypes>
 			    <mimetype extension=".ez" type="application/andrew-inset" />
