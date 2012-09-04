@@ -1202,6 +1202,31 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Returns the Solr index configured with the parameters name.
+     * The parameters must contain a key/value pair with an existing 
+     * Solr index, otherwise <code>null</code> is returned.<p>
+     * 
+     * @param params the parameter map
+     * 
+     * @return the best matching Solr index
+     */
+    public CmsSolrIndex getIndexSolr(Map<String, String[]> params) {
+
+        CmsSolrIndex index = null;
+        String indexName = params.get("core") != null ? params.get("core")[0] : (params.get("index") != null
+        ? params.get("index")[0]
+        : null);
+        index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
+        if (index == null) {
+            List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
+            if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
+                index = solrs.get(0);
+            }
+        }
+        return index;
+    }
+
+    /**
      * Returns the Solr index configured with the given name.<p>
      * The index must exist, otherwise <code>null</code> is returned.
      * 
