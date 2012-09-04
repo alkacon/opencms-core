@@ -1,9 +1,9 @@
 @external gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanelTabs, gwt-TabLayoutPanelContent, gwt-TabLayoutPanelTab-selected, gwt-TabLayoutPanelTabInner; 
 
-/*TODO: remove if not used within gallery preview*/
 .gwt-TabLayoutPanel .internal-tabbed {
 }
-.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
+	border-bottom: 1px solid value("constants.css.borderColor");
 }
 .gwt-TabLayoutPanel .tabPanel {
 }
@@ -141,19 +141,6 @@
 	color: value("constants.css.textColorDisabledButton") !important;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 .classicTabs.gwt-TabLayoutPanel {
 	display:block;
     background:value("constants.css.backgroundColorMenu") none repeat scroll 0 0;   
@@ -184,7 +171,6 @@
 	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	height: auto;
-	margin:0 0 -2px 2px;
 	padding:0;		
 	border:1px solid value("constants.css.borderColor");	
 	border-bottom: none;
@@ -195,7 +181,15 @@
 	border-top-left-radius: value("constants.css.borderRadius");
 	border-top-right-radius: value("constants.css.borderRadius");
 }
-
+@if user.agent safari {
+	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+		margin:0 0 0 2px;
+	}
+} @else {
+	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+		margin:0 0 -2px 2px;
+	}
+}
 @sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
 	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
@@ -208,6 +202,8 @@
 	cursor: default;
 	font-size:value("constants.css.fontSize");
 	font-family: value("constants.css.fontFamily");
+	margin-bottom: -3px;
+	padding-bottom: 1px;
 }
 
 .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab .gwt-TabLayoutPanelTabInner {
