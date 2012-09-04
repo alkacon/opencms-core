@@ -7,6 +7,7 @@ input.textBox {
 	width: 98%;
 	background: transparent;
 	padding: 0px;
+	margin: 0px;
 	border-radius: value("constants.css.borderRadius");
 	color: value("constants.css.textColor");
 	line-height: value("constants.css.lineHeight");
