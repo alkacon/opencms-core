@@ -440,21 +440,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/codemirror/dist/.gitignore</source>
-			<destination>system/workplace/resources/editors/codemirror/dist/.gitignore</destination>
-			<type>plain</type>
-			<uuidstructure>6c7eab37-f1b9-11e1-82ea-f34ad62d517e</uuidstructure>
-			<uuidresource>6c7eab38-f1b9-11e1-82ea-f34ad62d517e</uuidresource>
-			<datelastmodified>Wed, 29 Aug 2012 09:10:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Aug 2012 09:10:48 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/editors/codemirror/dist/.travis.yml</source>
 			<destination>system/workplace/resources/editors/codemirror/dist/.travis.yml</destination>
 			<type>plain</type>
