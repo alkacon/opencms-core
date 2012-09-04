@@ -414,7 +414,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         try {
             String openPath = getRequest().getParameter(CmsCoreData.PARAM_PATH);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(openPath)) {
+            if (!isValidOpenPath(cms, openPath)) {
                 // if no path is supplied, start from root
                 openPath = "/";
             }
@@ -501,7 +501,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
             List<String> allPropNames = getPropertyNames(cms);
             String returnCode = getRequest().getParameter(CmsCoreData.PARAM_RETURNCODE);
-
+            if (!isValidReturnCode(returnCode)) {
+                returnCode = null;
+            }
             cms.getRequestContext().getSiteRoot();
             String aliasImportUrl = OpenCms.getLinkManager().substituteLinkForRootPath(cms, ALIAS_IMPORT_PATH);
             boolean canEditAliases = OpenCms.getAliasManager().hasPermissionsForMassEdit(cms, siteRoot);
@@ -2001,6 +2003,50 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private boolean isSubSitemap(CmsJspNavElement navElement) {
 
         return CmsResourceTypeFolderSubSitemap.isSubSitemap(navElement.getResource());
+    }
+
+    /**
+     * Checks if the given open path is valid.<p>
+     * 
+     * @param cms the cms context
+     * @param openPath the open path
+     * 
+     * @return <code>true</code> if the given open path is valid
+     */
+    private boolean isValidOpenPath(CmsObject cms, String openPath) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(openPath)) {
+            return false;
+        }
+        if (!cms.existsResource(openPath)) {
+            // in case of a detail-page check the parent folder
+            String parent = CmsResource.getParentFolder(openPath);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(parent) || !cms.existsResource(parent)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns if the given return code is valid.<p>
+     * 
+     * @param returnCode the return code to check
+     * 
+     * @return <code>true</code> if the return code is valid
+     */
+    private boolean isValidReturnCode(String returnCode) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(returnCode)) {
+            return false;
+        }
+        int pos = returnCode.indexOf(":");
+        if (pos > 0) {
+            return CmsUUID.isValidUUID(returnCode.substring(0, pos))
+                && CmsUUID.isValidUUID(returnCode.substring(pos + 1));
+        } else {
+            return CmsUUID.isValidUUID(returnCode);
+        }
     }
 
     /**
