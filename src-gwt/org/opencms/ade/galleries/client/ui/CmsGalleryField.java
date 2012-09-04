@@ -230,7 +230,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
             this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setUseFormats(Z)(config.useFormats);
         if (config.imageFormats)
             this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
-        if (config.imgaeFormatNames)
+        if (config.imageFormatNames)
             this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFromatNames.toString());
     }-*/;
 

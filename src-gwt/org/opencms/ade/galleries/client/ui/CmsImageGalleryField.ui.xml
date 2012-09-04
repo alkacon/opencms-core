@@ -8,7 +8,7 @@
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 <ui:style>
 	div>div.faider{
-		right: 16px;
+		right: 19px;
 		cursor: text;
 		top: 0px;
 		height: 18px;
