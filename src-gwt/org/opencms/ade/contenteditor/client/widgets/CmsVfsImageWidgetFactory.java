@@ -59,10 +59,9 @@ public class CmsVfsImageWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new CmsGalleryWidget(
+        return new FormWidgetWrapper(new CmsImageGalleryWidget(
             I_CmsImageBundle.INSTANCE.style().imageSearchIcon(),
-            configuration,
-            true));
+            configuration));
     }
 
     /**
@@ -70,6 +69,6 @@ public class CmsVfsImageWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsGalleryWidget(I_CmsImageBundle.INSTANCE.style().imageSearchIcon(), configuration, true);
+        return new CmsImageGalleryWidget(I_CmsImageBundle.INSTANCE.style().imageSearchIcon(), configuration);
     }
 }

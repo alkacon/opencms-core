@@ -61,8 +61,7 @@ public class CmsAdeImageGalleryWidgetFactory implements I_WidgetFactory, I_CmsHa
 
         return new FormWidgetWrapper(new CmsGalleryWidget(
             Messages.get().key(Messages.GUI_IMAGE_GALLERY_OPEN_0),
-            configuration,
-            false));
+            configuration));
     }
 
     /**
@@ -70,6 +69,6 @@ public class CmsAdeImageGalleryWidgetFactory implements I_WidgetFactory, I_CmsHa
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsGalleryWidget(Messages.get().key(Messages.GUI_IMAGE_GALLERY_OPEN_0), configuration, false);
+        return new CmsGalleryWidget(Messages.get().key(Messages.GUI_IMAGE_GALLERY_OPEN_0), configuration);
     }
 }

@@ -29,8 +29,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
-import org.opencms.ade.galleries.client.ui.CmsGalleryField;
+import org.opencms.ade.galleries.client.ui.CmsImageGalleryField;
 
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -41,27 +40,25 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  *
  * */
-public class CmsGalleryWidget extends Composite implements I_EditWidget {
+public class CmsImageGalleryWidget extends Composite implements I_EditWidget {
 
     /** Value of the activation. */
     private boolean m_active = true;
 
     /** The link selector. */
-    private CmsGalleryField m_linkSelect;
+    private CmsImageGalleryField m_linkSelect;
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * 
      * @param openerTitle the gallery opener title
-     * @param config the widget configuration string
+     * @param config the widget configuration string 
      */
-    public CmsGalleryWidget(String openerTitle, String config) {
+    public CmsImageGalleryWidget(String openerTitle, String config) {
 
-        m_linkSelect = new CmsGalleryField();
-        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
+        m_linkSelect = new CmsImageGalleryField();
         m_linkSelect.parseConfiguration(config);
         m_linkSelect.setGalleryOpenerTitle(openerTitle);
-        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
