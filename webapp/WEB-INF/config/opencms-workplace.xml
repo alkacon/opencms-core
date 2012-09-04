@@ -854,7 +854,7 @@
     	    <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
     	</menurule>
     	<menurule name="ade-undochanges">
-    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerPageInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNotDeletedNoAl" />
