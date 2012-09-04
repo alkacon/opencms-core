@@ -211,4 +211,9 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
 
         return TYPE_PATTERN.matcher(value).matches();
     }
+    
+    @Override
+    public String getPlainText(CmsObject cms) {
+    	return String.valueOf(getBooleanValue());
+    }
 }
