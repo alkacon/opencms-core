@@ -151,6 +151,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
                 switch (sort) {
                     case tree:
                         m_listView = false;
+                        m_quickSearch.setFormValueAsString("");
                         updateContentTree(m_resultList, m_selectedCategories);
                         break;
                     default:
@@ -170,7 +171,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
                 }
                 if (hasQuickFilter()) {
 
-                    if ((CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue()) || (event.getValue().length() >= 3))) {
+                    if ((CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue()) || (event.getValue().length() >= 2))) {
                         // only act if filter length is at least 3 characters or empty
                         scheduleQuickFilterTimer();
                     }

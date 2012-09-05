@@ -49,7 +49,9 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -62,7 +64,7 @@ import com.google.gwt.user.client.ui.TextArea;
  * @since 8.0.0
  * 
  */
-public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasInit {
+public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
@@ -195,11 +197,11 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     }
 
     /**
-     * @param handler
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
-    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        m_textArea.addValueChangeHandler(handler);
+        return m_textArea.addValueChangeHandler(handler);
     }
 
     /**
@@ -341,6 +343,21 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
 
         m_defaultRows = rows;
         double height_scroll = (rows * 17.95) + 8;
+        m_textArea.setVisibleLines(rows);
+        m_textAreaContainer.setHeight(height_scroll + "px");
+        m_textAreaContainer.setDefaultHeight(height_scroll);
+        m_textAreaContainer.onResize();
+    }
+
+    /**
+     * Sets the height of this textarea. Especial for the image Gallery.<p>
+     * 
+     * @param rows the value of rows should be shown
+     */
+    public void setRowsGallery(int rows) {
+
+        m_defaultRows = rows;
+        double height_scroll = (rows * 17.95) + 8 + 5;
         m_textArea.setVisibleLines(rows);
         m_textAreaContainer.setHeight(height_scroll + "px");
         m_textAreaContainer.setDefaultHeight(height_scroll);
