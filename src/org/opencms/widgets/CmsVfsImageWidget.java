@@ -423,7 +423,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
             if (getWidgetConfiguration(cms, widgetDialog, param).isShowFormat()) {
                 currentElement.append("%3F__scale%3D'+document.getElementById('");
                 currentElement.append(PREFIX_SCALE).append(param.getId()).append("').getAttribute('value')+'");
-                currentElement.append("%26__formatName%3D'+escape(document.getElementById('").append(PREFIX_FORMAT).append(
+                currentElement.append("%26format%3D'+escape(document.getElementById('").append(PREFIX_FORMAT).append(
                     param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(param.getId()).append(
                     "').selectedIndex].value)+'");
             }
