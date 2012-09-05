@@ -46,6 +46,7 @@ textarea.textAreaBox {
 	resize: none;
 	overflow: hidden;
 	font-family: value("constants.css.fontFamily");
+	padding: 0 0 0 3px;
 }
 
 .colorpickerpopup > div.popupContent > div {
@@ -282,8 +283,19 @@ div.colorPicker{
 
 /** Checkbox styles*/
 
+.checkBoxStyle.inActive div.label{
+	color: #000000;
+}
+.checkBoxStyle:hover.inActive div.label{
+	color: #000000;
+}
+
+.checkBoxStyle:hover div.label {
+	color: #445577;
+}
+
 .checkBoxStyle div.label{
-	margin: 4px 3px 2px 20px;
+		margin: 4px 3px 2px 20px;
 }
 .checkBoxStyle .widget{
 	position: absolute;
