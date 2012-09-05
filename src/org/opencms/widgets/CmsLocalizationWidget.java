@@ -35,8 +35,8 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsMacroResolver;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
-import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.Iterator;
 import java.util.List;
@@ -113,7 +113,7 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
      */
     public String getConfiguration(
         CmsObject cms,
-        I_CmsXmlSchemaType schemaType,
+        A_CmsXmlContentValue schemaType,
         CmsMessages messages,
         CmsResource resource) {
 
@@ -233,16 +233,16 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
      * Initializes the localized bundle to get the value from, the optional key name and the optional locale.<p>
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param param the widget parameter to generate the widget for
+     * @param schemaType the widget parameter to generate the widget for
      */
-    protected void initConfiguration(CmsObject cms, I_CmsWidgetParameter param) {
+    protected void initConfiguration(CmsObject cms, A_CmsXmlContentValue schemaType) {
 
         // set the default bundle key
-        m_bundleKey = param.getName();
+        m_bundleKey = schemaType.getName();
         // set the default locale for XML contents
         m_locale = cms.getRequestContext().getLocale();
         try {
-            I_CmsXmlContentValue value = (I_CmsXmlContentValue)param;
+            I_CmsXmlContentValue value = schemaType;
             m_locale = value.getLocale();
         } catch (Exception e) {
             // ignore, this is no XML content
@@ -276,16 +276,16 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
      * Initializes the localized bundle to get the value from, the optional key name and the optional locale.<p>
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param schemaType the widget parameter to generate the widget for
+     * @param param the widget parameter to generate the widget for
      */
-    protected void initConfiguration(CmsObject cms, I_CmsXmlSchemaType schemaType) {
+    protected void initConfiguration(CmsObject cms, I_CmsWidgetParameter param) {
 
         // set the default bundle key
-        m_bundleKey = schemaType.getName();
+        m_bundleKey = param.getName();
         // set the default locale for XML contents
         m_locale = cms.getRequestContext().getLocale();
         try {
-            I_CmsXmlContentValue value = (I_CmsXmlContentValue)schemaType;
+            I_CmsXmlContentValue value = (I_CmsXmlContentValue)param;
             m_locale = value.getLocale();
         } catch (Exception e) {
             // ignore, this is no XML content

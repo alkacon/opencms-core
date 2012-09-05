@@ -28,8 +28,11 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +46,7 @@ import java.util.List;
  * 
  * @see org.opencms.widgets.CmsSelectWidgetOption
  */
-public abstract class A_CmsSelectWidget extends A_CmsWidget {
+public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** Configuration parameter to set the height from the select widget in pixel. */
     public static final String CONFIGURATION_HEIGHT = "height";
@@ -116,6 +119,83 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
             return super.getConfiguration();
         }
         return CmsSelectWidgetOption.createConfigurationString(m_selectOptions);
+    }
+
+    /**
+     * Returns the configuration string for the ADE content editor widget.<p>
+     * 
+     * @param cms the OpenCms context
+     * @param schemaType the schema type
+     * @param messages the messages
+     * @param resource the edited resource
+     * 
+     * @return the configuration string
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        A_CmsXmlContentValue schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        String result = "";
+        CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(schemaType.getLocale(), messages);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, schemaType);
+        Iterator<CmsSelectWidgetOption> it = options.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            CmsSelectWidgetOption option = it.next();
+            if (i > 0) {
+                result += "|";
+            }
+            result += option.toString();
+            i++;
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of CSS resources required by the widget.<p>
+     * 
+     * @param cms the current OpenCms context
+     * 
+     * @return the required CSS resource links
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * Returns the java script initialization call.<p>
+     * 
+     * @return the java script initialization call
+     */
+    public String getInitCall() {
+
+        return null;
+    }
+
+    /**
+     * Returns a list of java script resources required by the widget.<p>
+     * 
+     * @param cms the current OpenCms context
+     * 
+     * @return the required java script resource links
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * Returns if this is an internal widget.<p>
+     * Only widgets belonging to the OpenCms core should be marked as internal.<p>
+     * 
+     * @return <code>true</code> if this is an internal widget
+     */
+    public boolean isInternal() {
+
+        return false;
     }
 
     /**

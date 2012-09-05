@@ -41,8 +41,8 @@ import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
-import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -148,7 +148,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public String getConfiguration(
         CmsObject cms,
-        I_CmsXmlSchemaType schemaType,
+        A_CmsXmlContentValue schemaType,
         CmsMessages messages,
         CmsResource resource) {
 

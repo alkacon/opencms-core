@@ -31,7 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.xml.types.I_CmsXmlSchemaType;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class CmsInputWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public String getConfiguration(
         CmsObject cms,
-        I_CmsXmlSchemaType schemaType,
+        A_CmsXmlContentValue schemaType,
         CmsMessages messages,
         CmsResource resource) {
 

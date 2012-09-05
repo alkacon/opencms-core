@@ -28,9 +28,11 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +42,131 @@ import java.util.Set;
  * @since 6.0.0 
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
+
+    /** Inner class to generate the I_CmsWidgetDialog. */
+    public class CmsDummyWidgetDialog implements I_CmsWidgetDialog {
+
+        /** The massage of this widget. */
+        private CmsMessages m_message;
+
+        /** The locale of this widget. */
+        private Locale m_locale;
+
+        /** Constructor.<p> 
+         * @param locale the locale of the dialog
+         * @param message the message of the dialog
+         */
+        public CmsDummyWidgetDialog(Locale locale, CmsMessages message) {
+
+            m_locale = locale;
+            m_message = message;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#button(java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
+         */
+        public String button(String href, String target, String image, String label, int type) {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#buttonBar(int)
+         */
+        public String buttonBar(int segment) {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#buttonBarHorizontalLine()
+         */
+        public String buttonBarHorizontalLine() {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#buttonBarSeparator(int, int)
+         */
+        public String buttonBarSeparator(int leftPixel, int rightPixel) {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#buttonBarSpacer(int)
+         */
+        public String buttonBarSpacer(int width) {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#buttonBarStartTab(int, int)
+         */
+        public String buttonBarStartTab(int leftPixel, int rightPixel) {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#dialogHorizontalSpacer(int)
+         */
+        public String dialogHorizontalSpacer(int width) {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#getButtonStyle()
+         */
+        public int getButtonStyle() {
+
+            return 0;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#getHelpMessageIds()
+         */
+        public Set<String> getHelpMessageIds() {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#getLocale()
+         */
+        public Locale getLocale() {
+
+            return m_locale;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#getMessages()
+         */
+        public CmsMessages getMessages() {
+
+            return m_message;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#getUserAgent()
+         */
+        public String getUserAgent() {
+
+            return null;
+        }
+
+        /**
+         * @see org.opencms.widgets.I_CmsWidgetDialog#useNewStyle()
+         */
+        public boolean useNewStyle() {
+
+            return false;
+        }
+
+    }
 
     /** Postfix for melp message locale. */
     public static final String HELP_POSTFIX = ".help";

@@ -35,7 +35,7 @@ import org.opencms.json.JSONArray;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
-import org.opencms.xml.types.I_CmsXmlSchemaType;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
      */
     public String getConfiguration(
         CmsObject cms,
-        I_CmsXmlSchemaType schemaType,
+        A_CmsXmlContentValue schemaType,
         CmsMessages messages,
         CmsResource resource) {
 
