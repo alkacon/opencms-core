@@ -74,8 +74,79 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new HalloWidget(element);
+        return new HalloWidget(element, generateOptionsForHallo(configuration));
     }
+
+    /**
+     * Generates the hallo editor options according to the configuration.<p>
+     * 
+     * @param configuration the widget configuration
+     * 
+     * @return the hallo options
+     */
+    private native JavaScriptObject generateOptionsForHallo(String configuration)/*-{
+        var options = null;
+        try {
+            var config = (typeof $wnd.JSON != 'undefined')
+                    && $wnd.JSON.parse(configuration)
+                    || eval('(' + configuration + ')');
+            options = {};
+            if (config.toolbar_items) {
+                for ( var i = 0; i < config.toolbar_items.length; i++) {
+                    var item = config.toolbar_items[i];
+                    if (item == 'justify') {
+                        options.justify = true;
+                    }
+                    if (item == 'unorderedlist') {
+                        if (!options.lists) {
+                            options.lists = {};
+                        }
+                        options.lists.unordered = true;
+                    }
+                    if (item == 'orderedlist') {
+                        if (!options.lists) {
+                            options.lists = {};
+                        }
+                        options.lists.ordered = true;
+                    }
+                    if (item == 'bold') {
+                        if (!options.format) {
+                            options.format = {};
+                        }
+                        options.format.bold = true;
+                    }
+                    if (item == 'italic') {
+                        if (!options.format) {
+                            options.format = {};
+                        }
+                        options.format.italic = true;
+                    }
+                    if (item == 'underline') {
+                        if (!options.format) {
+                            options.format = {};
+                        }
+                        options.format.underline = true;
+                    }
+                    if (item == 'strikethrough') {
+                        if (!options.format) {
+                            options.format = {};
+                        }
+                        options.format.strikeThrough = true;
+                    }
+                    if (item == 'formatselect' && !config.block_formats) {
+                        options.block = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                                'p', 'pre', 'address' ];
+                    }
+                }
+            }
+            if (config.block_formats) {
+                options.block = config.block_formats.split(",");
+            }
+        } catch (e) {
+            // nothing to do
+        }
+        return options;
+    }-*/;
 
     /**
      * Generates the tinyMCE editor options according to the configuration.<p>
@@ -88,7 +159,8 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
         var options = null;
         try {
-            var config = $wnd.JSON && $wnd.JSON.parse(configuration)
+            var config = (typeof $wnd.JSON != 'undefined')
+                    && $wnd.JSON.parse(configuration)
                     || eval('(' + configuration + ')');
             options = {
                 skin_variant : 'contenteditor'
@@ -100,7 +172,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                 options.content_css = config.content_css;
             }
             if (config.block_formats) {
-                options.theme_advanced_blockformats = config.block_format;
+                options.theme_advanced_blockformats = config.block_formats;
             }
             if (config.style_formats) {
                 options.style_formats = config.styleFormats;
