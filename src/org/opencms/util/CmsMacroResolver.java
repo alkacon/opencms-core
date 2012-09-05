@@ -143,6 +143,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** The prefix indicating that the key represents a HTTP request parameter. */
     public static final String KEY_REQUEST_PARAM = "param.";
 
+    /** Key used to specify the request site root as macro value. */
+    public static final String KEY_REQUEST_SITEROOT = "request.siteroot";
+
     /** Key used to specify the request uri as macro value. */
     public static final String KEY_REQUEST_URI = "request.uri";
 
@@ -719,6 +722,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (CmsMacroResolver.KEY_CURRENT_USER_LASTLOGIN.equals(macro) && (m_messages != null)) {
                 // the key is the current users last login timestamp
                 return m_messages.getDateTime(m_cms.getRequestContext().getCurrentUser().getLastlogin());
+            }
+
+            if (CmsMacroResolver.KEY_REQUEST_SITEROOT.equals(macro)) {
+                // the key is the currently requested site root
+                return m_cms.getRequestContext().getSiteRoot();
             }
 
             if (CmsMacroResolver.KEY_REQUEST_URI.equals(macro)) {
