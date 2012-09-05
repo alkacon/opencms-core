@@ -27,7 +27,6 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
@@ -38,6 +37,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
@@ -171,13 +171,14 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
         initWidget(uibinder.createAndBindUi(this));
 
-        m_descriptionArea.getTextArea().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBox());
-        m_descriptionArea.getTextAreaContainer().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
+        m_descriptionArea.getTextArea().setStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().textAreaBox());
+        m_descriptionArea.getTextAreaContainer().addStyleName(
+            I_CmsLayoutBundle.INSTANCE.globalWidgetCss().textAreaBoxPanel());
         m_descriptionArea.setRows(3);
         m_descriptionArea.getTextAreaContainer().onResize();
 
-        m_formatSelection.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_formatSelection.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPopup());
+        m_formatSelection.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxSelected());
+        m_formatSelection.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
 
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
@@ -600,7 +601,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         int indexofformat = value.indexOf(PARAMETER_FORMAT);
         if (indexofformat > -1) {
             int hasmoreValues = value.lastIndexOf("&");
-            if (hasmoreValues > indexofscale) {
+            if (hasmoreValues > indexofformat) {
                 m_selectedFormat = value.substring(indexofformat, value.indexOf(PARAMETER_DESC)).replace(
                     PARAMETER_FORMAT,
                     "");
