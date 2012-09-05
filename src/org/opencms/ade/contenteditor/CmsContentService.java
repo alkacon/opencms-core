@@ -69,6 +69,7 @@ import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -280,7 +281,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
          * 
          * @return the attribute configuration
          */
-        private AttributeConfiguration readConfiguration(I_CmsXmlSchemaType schemaType, String path) {
+        private AttributeConfiguration readConfiguration(A_CmsXmlContentValue schemaType, String path) {
 
             AttributeConfiguration result = null;
             String widgetName = null;
@@ -360,7 +361,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 String subTypeName = null;
                 String childPath = path + "/" + subType.getName();
                 String subAttributeName = getAttributeName(subType.getName(), typeName);
-                AttributeConfiguration config = readConfiguration(subType, childPath);
+                AttributeConfiguration config = readConfiguration((A_CmsXmlContentValue)subType, childPath);
                 if (config != null) {
                     m_attributeConfigurations.put(subAttributeName, config);
                 }
@@ -467,11 +468,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-            definition = readContentDefinition(
-                resource,
-                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
-                contentLocale,
-                false);
+            definition = readContentDefinition(resource, CmsContentDefinition.uuidToEntityId(
+                structureId,
+                contentLocale.toString()), contentLocale, false);
         } catch (Exception e) {
             error(e);
         }
@@ -488,11 +487,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-            definition = readContentDefinition(
-                resource,
-                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
-                contentLocale,
-                true);
+            definition = readContentDefinition(resource, CmsContentDefinition.uuidToEntityId(
+                structureId,
+                contentLocale.toString()), contentLocale, true);
         } catch (Exception e) {
             error(e);
         }
