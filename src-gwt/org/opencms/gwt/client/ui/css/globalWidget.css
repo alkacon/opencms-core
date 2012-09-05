@@ -1,0 +1,33 @@
+@external html-face, popup,popupContent, colorPicker, textboxGhostMode, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+
+
+div.selectBoxSelected {
+	border: 1px solid #7788AA  /*value("constants.css.borderColor")*/;
+}
+
+.selectBoxPopup {
+	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
+}
+
+
+
+textarea.textAreaBox {
+	background: none repeat scroll 0 0 transparent;
+	display: block;
+	color: value("constants.css.textColor");
+	box-shadow: none;
+	width: 99%;
+	border: none;
+	resize: none;
+	overflow: hidden;
+	font-family: value("constants.css.fontFamily");
+	padding: 0 0 0 3px;
+}
+
+
+div.textAreaBoxPanel{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+}
+

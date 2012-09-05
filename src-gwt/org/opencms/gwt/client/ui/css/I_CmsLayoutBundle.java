@@ -191,6 +191,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String openVfsButton();
+
+        /**
+         *  Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String red();
 
         /** 
@@ -220,13 +227,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String yellow();
-
-        /**
-         *  Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String openVfsButton();
     }
 
     /** The content editor dialog CSS. */
@@ -722,6 +722,40 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String truncatingLabel();
+    }
+
+    /** The global widget CSS class. */
+    @Shared
+    public interface I_CmsGlobalWidgetCss extends CssResource {
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String selectBoxPopup();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String selectBoxSelected();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String textAreaBox();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String textAreaBoxPanel();
+
     }
 
     /** Header CSS. */
@@ -1982,6 +2016,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("general.css")
     I_CmsGeneralCss generalCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the upload button CSS
+     */
+    @Source("globalWidget.css")
+    I_CmsGlobalWidgetCss globalWidgetCss();
 
     /**
      * Access method.<p>
