@@ -1190,7 +1190,7 @@
       },
       populateToolbar: function(toolbar) {
         var buttonset, contentId, target;
-        buttonset = jQuery("<span class=\"" + this.widgetName + "\"></span>");
+        buttonset = jQuery("<span class=\"" + this.widgetName + " ui-buttonset\"></span>");
         contentId = "" + this.options.uuid + "-" + this.widgetName + "-data";
         target = this._prepareDropdown(contentId);
         buttonset.append(target);
