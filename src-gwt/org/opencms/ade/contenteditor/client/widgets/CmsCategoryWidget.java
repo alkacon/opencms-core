@@ -121,7 +121,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     private static final String CONFIGURATION_CATEGORYLIST = "CategoryList";
 
     /** Configuration parameter to set the default height. */
-    private static final int DEFAULT_HEIGHT = 122;
+    private static final int DEFAULT_HEIGHT = 18;
 
     /** Configuration parameter to set the maximal height. */
     private static final int MAX_HEIGHT = 242;
@@ -374,7 +374,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                 m_categoryField.getScrollPanel().setResizable(true);
             }
         } else {
-            m_height = 24;
+            m_height = DEFAULT_HEIGHT;
         }
         m_categoryField.setHeight(m_height);
 

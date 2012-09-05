@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client.widgets;
 
+import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -48,7 +49,7 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
     private boolean m_active = true;
 
     /** The checkbox of this widget. */
-    private CmsCheckBox m_checkbox = new CmsCheckBox();
+    protected CmsCheckBox m_checkbox = new CmsCheckBox();
 
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
@@ -67,6 +68,11 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
 
             public void onValueChange(ValueChangeEvent<Boolean> event) {
 
+                if (Boolean.parseBoolean(m_checkbox.getFormValueAsString())) {
+                    getParent().getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+                } else {
+                    getParent().getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
+                }
                 fireChangeEvent();
 
             }
@@ -159,6 +165,11 @@ public class CmsCheckboxWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
+        if (Boolean.parseBoolean(value)) {
+            getParent().getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+        } else {
+            getParent().getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
+        }
         m_checkbox.setFormValueAsString(value);
         if (fireEvents) {
             fireChangeEvent();
