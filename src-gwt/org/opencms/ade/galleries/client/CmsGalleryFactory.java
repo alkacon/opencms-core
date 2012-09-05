@@ -28,13 +28,10 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.client.ui.CmsGalleryPopup;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Factory class to create gallery dialog with or without parameter.<p>
@@ -93,7 +90,7 @@ public final class CmsGalleryFactory {
      * 
      * @return the generated pop-up
      */
-    public static CmsPopup createGalleryPopup(
+    public static CmsGalleryPopup createGalleryPopup(
         I_CmsGalleryWidgetHandler handler,
         String referencePath,
         String galleryPath,
@@ -104,15 +101,8 @@ public final class CmsGalleryFactory {
         String imageFormats,
         String imageFormatNames) {
 
-        CmsPopup popup = new CmsPopup(650);
-        popup.setGlassEnabled(true);
-        popup.catchNotifications();
-        popup.removePadding();
-        SimplePanel container = new SimplePanel();
-        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(null, popup);
-        new CmsGalleryController(
-            new CmsGalleryControllerHandler(galleryDialog),
-            GalleryMode.widget,
+        return new CmsGalleryPopup(
+            handler,
             referencePath,
             galleryPath,
             currentElement,
@@ -121,10 +111,5 @@ public final class CmsGalleryFactory {
             useFormats,
             imageFormats,
             imageFormatNames);
-        galleryDialog.setWidgetHandler(handler);
-        container.setWidget(galleryDialog);
-        popup.setMainContent(container);
-        popup.addDialogClose(null);
-        return popup;
     }
 }

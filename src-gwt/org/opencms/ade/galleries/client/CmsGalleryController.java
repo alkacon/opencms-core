@@ -781,6 +781,42 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Searches for a specific element and opens it's preview if found.<p>
+     * 
+     * @param path the element path
+     */
+    public void searchElement(String path) {
+
+        m_dialogBean.setCurrentElement(path);
+        m_dialogBean.setStartTab(GalleryTabId.cms_tab_results);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
+            CmsRpcAction<CmsGallerySearchBean> searchAction = new CmsRpcAction<CmsGallerySearchBean>() {
+
+                @Override
+                public void execute() {
+
+                    start(0, true);
+                    getGalleryService().getSearch(m_dialogBean, this);
+                }
+
+                @Override
+                protected void onResponse(CmsGallerySearchBean result) {
+
+                    stop(false);
+                    m_searchObject = result;
+                    m_handler.m_galleryDialog.selectTab(GalleryTabId.cms_tab_results, false);
+                    m_handler.onResultTabSelection(m_searchObject);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchObject.getResourcePath())
+                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchObject.getResourceType())) {
+                        openPreview(m_searchObject.getResourcePath(), m_searchObject.getResourceType());
+                    }
+                }
+            };
+            searchAction.execute();
+        }
+    }
+
+    /**
      * Selects the given resource and sets its path into the xml-content field or editor link.<p>
      * 
      * @param resourcePath the resource path

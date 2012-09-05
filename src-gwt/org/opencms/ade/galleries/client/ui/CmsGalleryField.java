@@ -31,7 +31,6 @@ import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -39,6 +38,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -88,7 +88,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     protected CmsPushButton m_opener;
 
     /** The gallery pop-up. */
-    protected CmsPopup m_popup;
+    protected CmsGalleryPopup m_popup;
 
     /** The textbox containing the currently selected path. */
     @UiField
@@ -213,8 +213,8 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
      */
     public native void parseConfiguration(String configuration)/*-{
         var config;
-        if (typeof JSON != 'undefined') {
-            config = JSON.parse(configuration);
+        if (typeof $wnd.JSON != 'undefined') {
+            config = $wnd.JSON.parse(configuration);
         } else {
             config = eval("(" + configuration + ")");
         }
@@ -231,7 +231,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
         if (config.imageFormats)
             this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
         if (config.imageFormatNames)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFromatNames.toString());
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFormatNames.toString());
     }-*/;
 
     /**
@@ -384,8 +384,10 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
                 m_useFormats,
                 m_imageFormats,
                 m_imageFormatNames);
+            m_popup.center();
+        } else {
+            m_popup.searchElement(getFormValueAsString());
         }
-        m_popup.center();
     }
 
     /**
@@ -433,8 +435,8 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     @UiHandler("m_opener")
     void onOpenerClick(ClickEvent event) {
 
+        CmsDomUtil.ensureMouseOut(m_opener);
         openGalleryDialog();
-
     }
 
     /**
