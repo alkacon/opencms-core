@@ -32,7 +32,6 @@ import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -87,16 +86,55 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     public static final String WIDGET_TYPE = "imageGallery";
 
     /** Parameter to split or generate the value string. */
-    private static final String PARAMETER_SCALE = "?__scale=";
+    private static final String PARAMETER_DESC = "&description=";
 
     /** Parameter to split or generate the value string. */
     private static final String PARAMETER_FORMAT = "&format=";
 
     /** Parameter to split or generate the value string. */
-    private static final String PARAMETER_DESC = "&description=";
+    private static final String PARAMETER_SCALE = "?__scale=";
 
     /** The ui binder for this widget. */
     private static I_CmsImageGalleryFieldUiBinder uibinder = GWT.create(I_CmsImageGalleryFieldUiBinder.class);
+
+    /** The scale parameters from popup. */
+    protected CmsCroppingParamBean m_croppingParam;
+
+    /** The text area. */
+    @UiField
+    protected CmsTextArea m_descriptionArea;
+
+    /** The fading element. */
+    @UiField
+    protected Label m_fader;
+
+    /** The select box. */
+    @UiField
+    protected CmsSelectBox m_formatSelection;
+
+    /**The image priview field. */
+    @UiField
+    protected SimplePanel m_imageField;
+
+    /** The button to to open the selection. */
+    @UiField
+    protected CmsPushButton m_opener;
+
+    /** The gallery pop-up. */
+    protected CmsGalleryPopup m_popup;
+
+    /** The textbox containing the currently selected path. */
+    @UiField
+    protected TextBox m_textbox;
+
+    /** Map of values for the Formats selection box. */
+    Map<String, String> m_formats = new LinkedHashMap<String, String>();
+
+    /** The image container. */
+    Image m_image = new Image();
+
+    /** The description value. */
+    private String m_description;
 
     /** The start gallery path. */
     private String m_galleryPath;
@@ -113,56 +151,17 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** The reference path, for example the site path of the edited resource. */
     private String m_referencePath;
 
+    /** The scale values. */
+    private String m_scaleValue;
+
+    /** The selected format. */
+    private String m_selectedFormat;
+
     /** The resource types. */
     private String m_types;
 
     /** The use formats flag. */
     private boolean m_useFormats;
-
-    /** The text area. */
-    @UiField
-    protected CmsTextArea m_descriptionArea;
-
-    /** The select box. */
-    @UiField
-    protected CmsSelectBox m_formatSelection;
-
-    /** The fading element. */
-    @UiField
-    protected Label m_fader;
-
-    /**The image priview field. */
-    @UiField
-    protected SimplePanel m_imageField;
-
-    /** The button to to open the selection. */
-    @UiField
-    protected CmsPushButton m_opener;
-
-    /** The gallery pop-up. */
-    protected CmsPopup m_popup;
-
-    /** The textbox containing the currently selected path. */
-    @UiField
-    protected TextBox m_textbox;
-
-    /** Map of values for the Formats selection box. */
-    Map<String, String> m_formats = new LinkedHashMap<String, String>();
-
-    /** The selected format. */
-    private String m_selectedFormat;
-
-    /** The scale values. */
-    private String m_scaleValue;
-
-    /** The description value. */
-    private String m_description;
-
-    /** The image container. */
-    Image m_image = new Image();
-
-    /** The scale parameters from popup. */
-    protected CmsCroppingParamBean m_croppingParam;
 
     /** 
      * Constructs a new gallery widget.<p>
@@ -349,27 +348,35 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void openGalleryDialog() {
 
-        m_popup = CmsGalleryFactory.createGalleryPopup(new I_CmsGalleryWidgetHandler() {
+        if (m_popup == null) {
+            m_popup = CmsGalleryFactory.createGalleryPopup(
+                new I_CmsGalleryWidgetHandler() {
 
-            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+                    public void setWidgetValue(
+                        String resourcePath,
+                        CmsUUID structureId,
+                        CmsCroppingParamBean croppingParameter) {
 
-                m_croppingParam = new CmsCroppingParamBean(croppingParameter);
-                String path = resourcePath + "?";
-                path += croppingParameter.toString();
-                path += PARAMETER_FORMAT + croppingParameter.getFormatName();
-                setValue(path, true);
-                m_popup.hide();
-            }
-        },
-            m_referencePath,
-            m_galleryPath,
-            getFormValueAsString(),
-            m_types,
-            m_galleryTypes,
-            m_useFormats,
-            m_imageFormats,
-            m_imageFormatNames);
-        m_popup.center();
+                        m_croppingParam = new CmsCroppingParamBean(croppingParameter);
+                        String path = resourcePath + "?";
+                        path += croppingParameter.toString();
+                        path += PARAMETER_FORMAT + croppingParameter.getFormatName();
+                        setValue(path, true);
+                        m_popup.hide();
+                    }
+                },
+                m_referencePath,
+                m_galleryPath,
+                getFormValueAsString(),
+                m_types,
+                m_galleryTypes,
+                m_useFormats,
+                m_imageFormats,
+                m_imageFormatNames);
+            m_popup.center();
+        } else {
+            m_popup.searchElement(getFormValueAsString());
+        }
     }
 
     /**
