@@ -258,7 +258,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // check if either the current site or the target site does have a secure server configured
             if (targetSite.hasSecureServer() || currentSite.hasSecureServer()) {
 
-                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+                    && !OpenCms.getSiteManager().startsWithShared(vfsName)) {
                     // don't make a secure connection to the "/system" folder (why ?)
                     int linkType = -1;
                     try {
