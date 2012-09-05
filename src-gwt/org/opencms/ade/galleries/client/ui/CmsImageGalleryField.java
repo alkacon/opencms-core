@@ -31,6 +31,7 @@ import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -49,18 +50,22 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -80,6 +85,15 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /** The widget type. */
     public static final String WIDGET_TYPE = "imageGallery";
+
+    /** Parameter to split or generate the value string. */
+    private static final String PARAMETER_SCALE = "?__scale=";
+
+    /** Parameter to split or generate the value string. */
+    private static final String PARAMETER_FORMAT = "&format=";
+
+    /** Parameter to split or generate the value string. */
+    private static final String PARAMETER_DESC = "&description=";
 
     /** The ui binder for this widget. */
     private static I_CmsImageGalleryFieldUiBinder uibinder = GWT.create(I_CmsImageGalleryFieldUiBinder.class);
@@ -105,17 +119,21 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** The use formats flag. */
     private boolean m_useFormats;
 
-    /***/
+    /** The text area. */
     @UiField
     protected CmsTextArea m_descriptionArea;
 
-    /***/
+    /** The select box. */
     @UiField
     protected CmsSelectBox m_formatSelection;
 
     /** The fading element. */
     @UiField
     protected Label m_fader;
+
+    /**The image priview field. */
+    @UiField
+    protected SimplePanel m_imageField;
 
     /** The button to to open the selection. */
     @UiField
@@ -131,6 +149,21 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /** Map of values for the Formats selection box. */
     Map<String, String> m_formats = new LinkedHashMap<String, String>();
 
+    /** The selected format. */
+    private String m_selectedFormat;
+
+    /** The scale values. */
+    private String m_scaleValue;
+
+    /** The description value. */
+    private String m_description;
+
+    /** The image container. */
+    Image m_image = new Image();
+
+    /** The scale parameters from popup. */
+    protected CmsCroppingParamBean m_croppingParam;
+
     /** 
      * Constructs a new gallery widget.<p>
      */
@@ -142,8 +175,14 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         m_descriptionArea.getTextAreaContainer().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
         m_descriptionArea.setRows(3);
         m_descriptionArea.getTextAreaContainer().onResize();
+
+        m_formatSelection.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
+        m_formatSelection.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPopup());
+
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
+
+        m_imageField.add(m_image);
     }
 
     /** 
@@ -187,35 +226,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
         return addHandler(handler, ValueChangeEvent.getType());
     }
 
-    /***/
-    public void generatesFormatSelection() {
-
-        String[] name;
-        String[] value;
-        if (m_useFormats) {
-            String[] formats = m_imageFormatNames.split(",");
-            name = new String[formats.length];
-            for (int i = 0; i < formats.length; i++) {
-                name[i] = formats[i].split(":")[1];
-            }
-            value = m_imageFormats.split(",");
-            if (value.length == name.length) {
-                for (int i = 0; i < name.length; i++) {
-                    m_formats.put(value[i], name[i]);
-                }
-            } else if (value.length > name.length) {
-                for (int i = 0; i < name.length; i++) {
-                    m_formats.put(value[i], name[i]);
-                }
-            } else if (value.length < name.length) {
-                for (int i = 0; i < value.length; i++) {
-                    m_formats.put(value[i], name[i]);
-                }
-            }
-            m_formatSelection.setItems(m_formats);
-        }
-    }
-
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
@@ -245,7 +255,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public String getFormValueAsString() {
 
-        return m_textbox.getValue();
+        String result = m_textbox.getValue();
+        result += PARAMETER_SCALE + m_scaleValue;
+        if (m_useFormats) {
+            result += PARAMETER_FORMAT + m_formatSelection.getFormValueAsString();
+            m_selectedFormat = m_formatSelection.getFormValueAsString();
+        }
+        result += PARAMETER_DESC + URL.encode(m_descriptionArea.getFormValueAsString());
+        m_description = m_descriptionArea.getFormValueAsString();
+
+        return result;
     }
 
     /**
@@ -292,6 +311,28 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
+     * On select box value change.<p>
+     * 
+     * @param event the even
+     */
+    @UiHandler("m_formatSelection")
+    public void onSelectBoxChange(ValueChangeEvent<String> event) {
+
+        ValueChangeEvent.fire(CmsImageGalleryField.this, getFormValueAsString());
+    }
+
+    /**
+     * On textarea box value change.<p>
+     * 
+     * @param event the even
+     */
+    @UiHandler("m_descriptionArea")
+    public void onTextAreaBoxChange(ValueChangeEvent<String> event) {
+
+        ValueChangeEvent.fire(CmsImageGalleryField.this, getFormValueAsString());
+    }
+
+    /**
      * On text box value change.<p>
      * 
      * @param event the even
@@ -307,32 +348,26 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void openGalleryDialog() {
 
-        if (m_popup == null) {
-            m_popup = CmsGalleryFactory.createGalleryPopup(new I_CmsGalleryWidgetHandler() {
+        m_popup = CmsGalleryFactory.createGalleryPopup(new I_CmsGalleryWidgetHandler() {
 
-                public void setWidgetValue(
-                    String resourcePath,
-                    CmsUUID structureId,
-                    CmsCroppingParamBean croppingParameter) {
+            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
 
-                    String path = resourcePath;
-                    // in case of an image check the cropping parameter
-                    if ((croppingParameter != null) && (croppingParameter.isCropped() || croppingParameter.isScaled())) {
-                        path += "?" + croppingParameter.toString();
-                    }
-                    setValue(path, true);
-                    m_popup.hide();
-                }
-            },
-                m_referencePath,
-                m_galleryPath,
-                getFormValueAsString(),
-                m_types,
-                m_galleryTypes,
-                m_useFormats,
-                m_imageFormats,
-                m_imageFormatNames);
-        }
+                m_croppingParam = new CmsCroppingParamBean(croppingParameter);
+                String path = resourcePath + "?";
+                path += croppingParameter.toString();
+                path += PARAMETER_FORMAT + croppingParameter.getFormatName();
+                setValue(path, true);
+                m_popup.hide();
+            }
+        },
+            m_referencePath,
+            m_galleryPath,
+            getFormValueAsString(),
+            m_types,
+            m_galleryTypes,
+            m_useFormats,
+            m_imageFormats,
+            m_imageFormatNames);
         m_popup.center();
     }
 
@@ -342,35 +377,35 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * @param configuration the widget configuration as a JSON string
      */
     public native void parseConfiguration(String configuration)/*-{
-       var config;
-       if (typeof JSON != 'undefined') {
-       config = JSON.parse(configuration);
-       } else {
-       config = eval("(" + configuration + ")");
-       }
-       if (config.types){
-       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setTypes(Ljava/lang/String;)(config.types);
-       }
-       if (config.gallerypath){
-       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
-       }
-       if (config.gallerytypes){
-       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
-       }
-       if (config.referencepath){
-       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setReferencePath(Ljava/lang/String;)(config.referencepath);
-       }
-       if (config.useFormats){
-       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setUseFormats(Z)(config.useFormats);
-       }
-       if (config.imageFormats){
-       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
-       }
-       if (config.imageFormatNames){
-       this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFormatNames.toString());
-       }
-       
-       }-*/;
+                                                               var config;
+                                                               if (typeof JSON != 'undefined') {
+                                                               config = JSON.parse(configuration);
+                                                               } else {
+                                                               config = eval("(" + configuration + ")");
+                                                               }
+                                                               if (config.types){
+                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setTypes(Ljava/lang/String;)(config.types);
+                                                               }
+                                                               if (config.gallerypath){
+                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
+                                                               }
+                                                               if (config.gallerytypes){
+                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
+                                                               }
+                                                               if (config.referencepath){
+                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setReferencePath(Ljava/lang/String;)(config.referencepath);
+                                                               }
+                                                               if (config.useFormats){
+                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setUseFormats(Z)(config.useFormats);
+                                                               }
+                                                               if (config.imageFormats){
+                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
+                                                               }
+                                                               if (config.imageFormatNames){
+                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFormatNames.toString());
+                                                               }
+                                                               
+                                                               }-*/;
 
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
@@ -511,10 +546,85 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      */
     public void setValue(String value, boolean fireEvent) {
 
+        value = splitValue(value);
         m_textbox.setValue(value);
         if (fireEvent) {
             ValueChangeEvent.fire(this, getFormValueAsString());
         }
+    }
+
+    /***/
+    private void generatesFormatSelection() {
+
+        if (m_useFormats) {
+            String[] formats = m_imageFormatNames.split(",");
+            for (int i = 0; i < formats.length; i++) {
+                m_formats.put(formats[i].split(":")[0], formats[i].split(":")[1]);
+            }
+            m_formatSelection.setItems(m_formats);
+        } else {
+            m_formatSelection.removeFromParent();
+            m_descriptionArea.setRowsGallery(4);
+        }
+    }
+
+    /**
+     * Splits the value in all it´s informations.<p>
+     * First part is the URL of the image. The second one describes the scale of this image.<p>
+     * The last one sets the selected format.<p>
+     * 
+     * @param value that should be split
+     * @return the URL of the image without any parameters
+     */
+
+    private String splitValue(String value) {
+
+        m_croppingParam = CmsCroppingParamBean.parseImagePath(value);
+        int indexofscale = value.indexOf(PARAMETER_SCALE);
+        if (indexofscale > -1) {
+            String scal = "";
+            int hasmoreValues = value.lastIndexOf("&");
+            if (hasmoreValues > indexofscale) {
+
+                scal = value.substring(indexofscale, value.indexOf("&")).replace(PARAMETER_SCALE, "");
+
+            } else {
+                scal = value.substring(indexofscale).replace(PARAMETER_SCALE, "");
+            }
+            if (!scal.equals(m_scaleValue)) {
+                m_scaleValue = scal;
+            }
+            value = value.replace(PARAMETER_SCALE + m_scaleValue, "");
+
+        }
+        int indexofformat = value.indexOf(PARAMETER_FORMAT);
+        if (indexofformat > -1) {
+            int hasmoreValues = value.lastIndexOf("&");
+            if (hasmoreValues > indexofscale) {
+                m_selectedFormat = value.substring(indexofformat, value.indexOf(PARAMETER_DESC)).replace(
+                    PARAMETER_FORMAT,
+                    "");
+            } else {
+                m_selectedFormat = value.substring(indexofformat).replace(PARAMETER_FORMAT, "");
+            }
+            value = value.replace(PARAMETER_FORMAT + m_selectedFormat, "");
+            m_formatSelection.selectValue(m_selectedFormat);
+        }
+        int indexofdescritption = value.indexOf(PARAMETER_DESC);
+        if (indexofdescritption > -1) {
+            m_description = value.substring(indexofdescritption).replace(PARAMETER_DESC, "");
+            value = value.replace(PARAMETER_DESC + m_description, "");
+            m_description = URL.decode(m_description);
+            m_descriptionArea.setFormValueAsString(m_description);
+        }
+        if (!value.isEmpty()) {
+            String imageLink = CmsCoreProvider.get().link(value);
+            CmsCroppingParamBean restricted = m_croppingParam.getRestrictedSizeParam(110, 80);
+            m_image.setUrl(imageLink + "?" + restricted);
+            m_image.getElement().getStyle().setMarginTop((110 - restricted.getTargetHeight()) / 2, Unit.PX);
+        }
+        return value;
+
     }
 
 }
