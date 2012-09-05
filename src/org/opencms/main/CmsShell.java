@@ -809,7 +809,7 @@ public class CmsShell {
                 StringReader reader = new StringReader(line);
                 StreamTokenizer st = new StreamTokenizer(reader);
                 st.eolIsSignificant(true);
-
+                st.wordChars('*', '*');
                 // put all tokens into a List
                 List<String> parameters = new ArrayList<String>();
                 while (st.nextToken() != StreamTokenizer.TT_EOF) {

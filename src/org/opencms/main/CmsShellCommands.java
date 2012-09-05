@@ -345,6 +345,32 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Deletes a resource.<p>
+     * 
+     * @param name the name of the resource to delete 
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void deleteResource(String name) throws Exception {
+
+        m_cms.lockResource(name);
+        m_cms.deleteResource(name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+    }
+
+    /** 
+     * Deletes a resource together with its siblings.<p>
+     * 
+     * @param name the name of the resource to delete 
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void deleteResourceWithSiblings(String name) throws Exception {
+
+        m_cms.lockResource(name);
+        m_cms.deleteResource(name, CmsResource.DELETE_REMOVE_SIBLINGS);
+    }
+
+    /**
      * Turns the echo status for the shell on or off.<p>
      *
      * @param echo if "on", echo is turned on, otherwise echo is turned off
