@@ -35,11 +35,11 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsCategoryDialogCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
-import org.opencms.gwt.client.ui.input.category.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.category.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.util.CmsStringUtil;
@@ -286,7 +286,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     }
 
     /** The css bundle used for this widget. */
-    protected static final I_CmsGalleryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.galleryDialogCss();
+    protected static final I_CmsCategoryDialogCss DIALOG_CSS = I_CmsLayoutBundle.INSTANCE.categoryDialogCss();
 
     /** The filtering delay. */
     private static final int FILTER_DELAY = 100;

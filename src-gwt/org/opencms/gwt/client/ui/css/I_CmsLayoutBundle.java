@@ -229,6 +229,166 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String yellow();
     }
 
+    /** The category CSS. */
+    interface I_CmsCategoryDialogCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String criteriaList();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String editorGallery();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String galleryBody();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String hasButton();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String infoLabel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listIcon();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String listOnlyTab();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String noParamsMessage();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String paramsText();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String parentPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String quickFilterBox();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String resultTabUpload();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabBorderLayer();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabDesMargin();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabInputLeft();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabInputRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabInputWide();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabLabelLeft();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabLabelRight();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabRow();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String searchTabRowRightAlign();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String selectboxWidth();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String showParams();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String showPreview();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String tabOptions();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String tabParamsPanel();
+    }
+
     /** The content editor dialog CSS. */
     interface I_CmsContentEditorCss extends CssResource {
 
@@ -1921,6 +2081,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("button.css")
     I_CmsButtonCss buttonCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the gallery dialog CSS
+     */
+    @Source("categorydialog.css")
+    I_CmsCategoryDialogCss categoryDialogCss();
 
     /**
      * The CSS constants bundle.<p>

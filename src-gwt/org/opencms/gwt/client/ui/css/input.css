@@ -267,7 +267,7 @@ div.selectorPopup, .selectorPopup * {
 div.selectBoxCell, div.selectorPopup div.selectBoxSelector div.selectBoxCell{
 	color: value("constants.css.textColor");
 	background-color: value("constants.css.backgroundColorDialog");
-	padding: 0 5px;
+	padding: 1px 5px;
 	cursor: pointer;
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
