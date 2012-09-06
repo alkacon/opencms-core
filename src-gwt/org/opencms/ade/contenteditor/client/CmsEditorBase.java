@@ -87,13 +87,24 @@ public class CmsEditorBase extends EditorBase {
      * Sets all annotated child elements editable.<p>
      * 
      * @param element the element
+     * @param editable <code>true</code> to enable editing
+     * 
+     * @return <code>true</code> if the element had editable elements 
      */
-    public static void setEditable(Element element) {
+    public static boolean setEditable(Element element, boolean editable) {
 
         List<Element> children = Vie.getInstance().select("[property^=\"opencms://\"]", element);
-        for (Element child : children) {
-            child.setAttribute("contentEditable", "true");
+        if (children.size() > 0) {
+            for (Element child : children) {
+                if (editable) {
+                    child.setAttribute("contentEditable", "true");
+                } else {
+                    child.removeAttribute("contentEditable");
+                }
+            }
+            return true;
         }
+        return false;
     }
 
     /**
