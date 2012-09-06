@@ -404,6 +404,7 @@ public final class CmsContentEditor {
 
         m_openFormButton.getElement().getStyle().setDisplay(Display.NONE);
         m_basePanel = new FlowPanel();
+        m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
         // insert base panel before the tool bar to keep the tool bar visible 
         RootPanel.get().insert(m_basePanel, RootPanel.get().getWidgetIndex(m_toolbar));
         if (m_isStandAlone) {
@@ -436,13 +437,12 @@ public final class CmsContentEditor {
             m_locale,
             CmsIconUtil.getResourceIconClasses(m_resourceTypeName, m_sitePath, false));
         m_basePanel.add(header);
-        m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
         SimplePanel content = new SimplePanel();
         content.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().contentPanel());
         content.addStyleName(I_LayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);
 
-        m_editor.renderEntityForm(m_entityId, m_tabInfos, content);
+        m_editor.renderEntityForm(m_entityId, m_tabInfos, content, m_basePanel.getElement());
     }
 
     /**
