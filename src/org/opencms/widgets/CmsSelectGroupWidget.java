@@ -160,15 +160,6 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getWidgetName()
-     */
-    @Override
-    public String getWidgetName() {
-
-        return CmsSelectGroupWidget.class.getName();
-    }
-
-    /**
      * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
      */
     @Override

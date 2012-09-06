@@ -106,15 +106,6 @@ public class CmsTypeComboWidget extends CmsComboWidget {
     }
 
     /**
-     * @see org.opencms.widgets.CmsComboWidget#getWidgetName()
-     */
-    @Override
-    public String getWidgetName() {
-
-        return CmsTypeComboWidget.class.getName();
-    }
-
-    /**
      * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
      */
     @Override
