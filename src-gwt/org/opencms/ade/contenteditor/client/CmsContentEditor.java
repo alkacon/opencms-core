@@ -61,7 +61,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -402,7 +401,8 @@ public final class CmsContentEditor {
      */
     void initFormPanel() {
 
-        m_openFormButton.getElement().getStyle().setDisplay(Display.NONE);
+        m_openFormButton.setVisible(false);
+        m_hideHelpBubblesButton.setVisible(true);
         m_basePanel = new FlowPanel();
         m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
         // insert base panel before the tool bar to keep the tool bar visible 
