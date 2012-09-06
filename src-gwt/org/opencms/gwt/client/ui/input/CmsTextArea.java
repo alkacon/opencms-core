@@ -335,6 +335,18 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
     }
 
     /**
+     * Sets the name of the input field.<p>
+     * 
+     * @param name of the input field
+     * 
+     * */
+    public void setName(String name) {
+
+        m_textArea.setName(name);
+
+    }
+
+    /**
      * Sets the height of this textarea.<p>
      * 
      * @param rows the value of rows should be shown

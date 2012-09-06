@@ -474,6 +474,17 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * Sets the name of the input field.<p>
+     * 
+     * @param name of the input field
+     * */
+    public void setName(String name) {
+
+        m_textBox.setName(name);
+
+    }
+
+    /**
      * Sets the text in the text area.<p>
      * 
      * @param text the new text

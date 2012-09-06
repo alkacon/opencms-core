@@ -686,6 +686,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Sets the name of the input box.
+     * 
+     * @param name of the input box
+     * */
+    public void setName(String name) {
+
+        m_textbox.setName(name);
+    }
+
+    /**
      * Sets the preventShowError.<p>
      *
      * @param preventShowError the preventShowError to set

@@ -85,6 +85,36 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
 
     /**
+     * Drag and drop event preview handler.<p>
+     * 
+     * To be used while dragging.<p>
+     */
+    protected class CloseEventPreviewHandler implements NativePreviewHandler {
+
+        /**
+         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+         */
+        public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+            Event nativeEvent = Event.as(event.getNativeEvent());
+            switch (DOM.eventGetType(nativeEvent)) {
+                case Event.ONMOUSEMOVE:
+                    break;
+                case Event.ONMOUSEUP:
+                    break;
+                case Event.ONKEYDOWN:
+                    break;
+                case Event.ONMOUSEWHEEL:
+                    hidePopup();
+                    break;
+                default:
+                    // do nothing
+            }
+        }
+
+    }
+
+    /**
      * This inner class implements the handler for the date box widget.<p>
      */
     protected class CmsDateBoxHandler
@@ -512,6 +542,17 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
+     * Sets the name of the input field.<p>
+     * 
+     * @param name of the input field
+     */
+    public void setName(String name) {
+
+        m_time.setName(name);
+
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     public void setValue(Date value) {
@@ -551,6 +592,22 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
         ValueChangeEvent.<Date> fireIfNotEqual(this, m_oldValue, CalendarUtil.copyDate(newValue));
         m_oldValue = newValue;
+    }
+
+    /**
+     * Hides the date time popup.<p>
+     */
+    protected void hidePopup() {
+
+        if (CmsDateConverter.validateTime(getTimeText())) {
+            // before hiding the date picker remove the date box popup from the auto hide partners of the parent popup
+            if (m_autoHideParent != null) {
+                m_autoHideParent.removeAutoHidePartner(getElement());
+            }
+            m_popup.hide();
+            m_previewHandlerRegistration.removeHandler();
+            m_previewHandlerRegistration = null;
+        }
     }
 
     /**
@@ -769,22 +826,6 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     }
 
     /**
-     * Hides the date time popup.<p>
-     */
-    protected void hidePopup() {
-
-        if (CmsDateConverter.validateTime(getTimeText())) {
-            // before hiding the date picker remove the date box popup from the auto hide partners of the parent popup
-            if (m_autoHideParent != null) {
-                m_autoHideParent.removeAutoHidePartner(getElement());
-            }
-            m_popup.hide();
-            m_previewHandlerRegistration.removeHandler();
-            m_previewHandlerRegistration = null;
-        }
-    }
-
-    /**
      * Checks if the String in the time input field is a valid time format.<p>
      * 
      * @return <code>true</code> if the String in the time input field is a valid time format
@@ -857,35 +898,5 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         setPickerValue(date, false);
         m_time.setErrorMessage(null);
         fireChange(getValue());
-    }
-
-    /**
-     * Drag and drop event preview handler.<p>
-     * 
-     * To be used while dragging.<p>
-     */
-    protected class CloseEventPreviewHandler implements NativePreviewHandler {
-
-        /**
-         * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
-         */
-        public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-            Event nativeEvent = Event.as(event.getNativeEvent());
-            switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-                    break;
-                case Event.ONKEYDOWN:
-                    break;
-                case Event.ONMOUSEWHEEL:
-                    hidePopup();
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-
     }
 }

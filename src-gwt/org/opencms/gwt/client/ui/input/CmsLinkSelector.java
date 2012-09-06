@@ -340,6 +340,17 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * Sets the name of the input field.<p>
+     * 
+     * @param name of the input field
+     * */
+    public void setName(String name) {
+
+        m_textbox.setName(name);
+
+    }
+
+    /**
      * Creates the URL for the gallery dialog IFrame.<p>
      * 
      * @return the URL for the gallery dialog IFrame 

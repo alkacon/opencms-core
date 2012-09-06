@@ -157,6 +157,15 @@ public class CmsMultiCheckboxWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
+     */
+    public void setName(String name) {
+
+        // no input field so nothing to do
+
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     public void setValue(String value) {
@@ -200,4 +209,5 @@ public class CmsMultiCheckboxWidget extends Composite implements I_EditWidget {
         m_selected = m_selected.substring(0, m_selected.lastIndexOf("|"));
         return result;
     }
+
 }

@@ -517,6 +517,18 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
+     * Sets the name of the input field.<p>
+     * 
+     * @param name of the input field
+     * */
+    public void setName(String name) {
+
+        m_textbox.setName(name);
+        m_descriptionArea.setName(name + "_TextArea");
+
+    }
+
+    /**
      * Sets the referencePath.<p>
      *
      * @param referencePath the referencePath to set

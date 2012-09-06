@@ -243,6 +243,15 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
+     */
+    public void setName(String name) {
+
+        m_textbox.setName(name);
+
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
      */
     @Override
