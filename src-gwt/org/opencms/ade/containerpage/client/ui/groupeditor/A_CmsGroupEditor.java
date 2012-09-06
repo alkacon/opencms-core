@@ -54,6 +54,7 @@ import java.util.Set;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -215,6 +216,16 @@ public abstract class A_CmsGroupEditor extends Composite {
     }
 
     /**
+     * Returns the group container widget.<p>
+     * 
+     * @return the group container widget
+     */
+    public CmsGroupContainerElementPanel getGroupContainerWidget() {
+
+        return m_groupContainer;
+    }
+
+    /**
      * Returns the the container page handler.<p>
      *
      * @return the the container page handler
@@ -222,6 +233,22 @@ public abstract class A_CmsGroupEditor extends Composite {
     public CmsContainerpageHandler getHandler() {
 
         return m_handler;
+    }
+
+    /**
+     * Hides the editor pop-up. Use during inline editing.<p>
+     */
+    public void hidePopup() {
+
+        m_editorDialog.getElement().getStyle().setDisplay(Display.NONE);
+    }
+
+    /**
+     * Shows the editor pop-up.<p>
+     */
+    public void showPopup() {
+
+        m_editorDialog.getElement().getStyle().clearDisplay();
     }
 
     /**
@@ -344,6 +371,13 @@ public abstract class A_CmsGroupEditor extends Composite {
         }
         clearInstance();
         this.removeFromParent();
+        if (!m_controller.getData().isUseClassicEditor()) {
+            for (Widget element : m_groupContainer) {
+                if (element instanceof CmsContainerPageElementPanel) {
+                    ((CmsContainerPageElementPanel)element).removeInlineEditor();
+                }
+            }
+        }
     }
 
     /**
@@ -425,16 +459,6 @@ public abstract class A_CmsGroupEditor extends Composite {
     }
 
     /**
-     * Returns the group container widget.<p>
-     * 
-     * @return the group container widget
-     */
-    protected CmsGroupContainerElementPanel getGroupContainerWidget() {
-
-        return m_groupContainer;
-    }
-
-    /**
      * Returns the group container widget index position.<p>
      * 
      * @return the index position
@@ -503,6 +527,13 @@ public abstract class A_CmsGroupEditor extends Composite {
         } else {
             // should never happen
             m_editorDialog.center();
+        }
+        if (!m_controller.getData().isUseClassicEditor()) {
+            for (Widget element : m_groupContainer) {
+                if (element instanceof CmsContainerPageElementPanel) {
+                    ((CmsContainerPageElementPanel)element).initInlinetEditor(m_controller);
+                }
+            }
         }
     }
 
