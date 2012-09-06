@@ -19,7 +19,7 @@ body.integratedEditor{
 	gwt-image: "backgrounds.sitemapBackground";
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
-	position: absolute;
+	position: fixed;
 	margin: 0;
 	bottom: 0;
     overflow-y: scroll;
