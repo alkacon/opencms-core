@@ -294,6 +294,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 widgetConfig = widget.getConfiguration();
                 if (widget instanceof I_CmsADEWidget) {
                     I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
+                    widgetName = adeWidget.getWidgetName();
                     widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file);
                     if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
                         CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
