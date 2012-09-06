@@ -34,6 +34,8 @@ import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -41,6 +43,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -55,6 +59,12 @@ import com.google.gwt.user.client.ui.TextBox;
  *  
  * */
 public class CmsTextboxWidget extends Composite implements I_EditWidget {
+
+    /** The value changed handler initialized flag. */
+    private boolean m_valueChangeHandlerInitialized;
+
+    /** The previous value. */
+    private String m_previousValue;
 
     /** The layout bundle. */
     protected static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
@@ -140,6 +150,31 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
+        // Initialization code
+        if (!m_valueChangeHandlerInitialized) {
+            m_valueChangeHandlerInitialized = true;
+            addDomHandler(new KeyPressHandler() {
+
+                public void onKeyPress(KeyPressEvent event) {
+
+                    // schedule the change event, so the key press can take effect
+                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                        public void execute() {
+
+                            fireValueChange(false);
+                        }
+                    });
+                }
+            }, KeyPressEvent.getType());
+            addDomHandler(new BlurHandler() {
+
+                public void onBlur(BlurEvent event) {
+
+                    fireValueChange(false);
+                }
+            }, BlurEvent.getType());
+        }
         return addHandler(handler, ValueChangeEvent.getType());
     }
 
@@ -237,9 +272,23 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
 
         // set the saved value to the textArea
         m_textbox.setText(value);
-
+        m_previousValue = value;
         if (fireEvents) {
             fireChangeEvent();
+        }
+    }
+
+    /**
+     * Fires the value change event, if the value has changed.<p>
+     * 
+     * @param force <code>true</code> to force firing the event, not regarding an actually changed value 
+     */
+    protected void fireValueChange(boolean force) {
+
+        String currentValue = getValue();
+        if (force || !currentValue.equals(m_previousValue)) {
+            m_previousValue = currentValue;
+            ValueChangeEvent.fire(this, currentValue);
         }
     }
 
