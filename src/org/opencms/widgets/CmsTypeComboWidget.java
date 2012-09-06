@@ -33,7 +33,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.types.I_CmsXmlSchemaType;
+import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +44,7 @@ import com.google.common.base.Joiner;
 /**
  * A widget for selecting resource types which are direct editable.
  */
-public class CmsTypeComboWidget extends CmsComboWidget implements I_CmsADEWidget {
+public class CmsTypeComboWidget extends CmsComboWidget {
 
     /**
      * Default constructor.<p>
@@ -66,11 +66,12 @@ public class CmsTypeComboWidget extends CmsComboWidget implements I_CmsADEWidget
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
      */
+    @Override
     public String getConfiguration(
         CmsObject cms,
-        I_CmsXmlSchemaType schemaType,
+        A_CmsXmlContentValue schemaType,
         CmsMessages messages,
         CmsResource resource) {
 
@@ -80,6 +81,7 @@ public class CmsTypeComboWidget extends CmsComboWidget implements I_CmsADEWidget
     /**
      * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
      */
+    @Override
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
@@ -88,6 +90,7 @@ public class CmsTypeComboWidget extends CmsComboWidget implements I_CmsADEWidget
     /**
      * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
      */
+    @Override
     public String getInitCall() {
 
         return null;
@@ -96,14 +99,25 @@ public class CmsTypeComboWidget extends CmsComboWidget implements I_CmsADEWidget
     /**
      * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
      */
+    @Override
     public List<String> getJavaScriptResourceLinks(CmsObject cms) {
 
         return null;
     }
 
     /**
+     * @see org.opencms.widgets.CmsComboWidget#getWidgetName()
+     */
+    @Override
+    public String getWidgetName() {
+
+        return CmsTypeComboWidget.class.getName();
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
      */
+    @Override
     public boolean isInternal() {
 
         return true;

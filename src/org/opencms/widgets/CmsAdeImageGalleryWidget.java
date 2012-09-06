@@ -78,6 +78,15 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getWidgetName()
+     */
+    @Override
+    public String getWidgetName() {
+
+        return CmsAdeImageGalleryWidget.class.getName();
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
     public I_CmsWidget newInstance() {
@@ -106,21 +115,6 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getWidgetConfiguration(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    @Override
-    protected CmsVfsImageWidgetConfiguration getWidgetConfiguration(
-        CmsObject cms,
-        CmsMessages messages,
-        I_CmsWidgetParameter param) {
-
-        if (m_widgetConfiguration == null) {
-            m_widgetConfiguration = new CmsVfsImageWidgetConfiguration(cms, messages, param, getConfiguration());
-        }
-        return m_widgetConfiguration;
-    }
-
-    /**
      * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryTypes()
      */
     @Override
@@ -144,5 +138,20 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
         sb.append("', '").append(id);
         sb.append("'); return false;");
         return sb.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getWidgetConfiguration(org.opencms.file.CmsObject, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    @Override
+    protected CmsVfsImageWidgetConfiguration getWidgetConfiguration(
+        CmsObject cms,
+        CmsMessages messages,
+        I_CmsWidgetParameter param) {
+
+        if (m_widgetConfiguration == null) {
+            m_widgetConfiguration = new CmsVfsImageWidgetConfiguration(cms, messages, param, getConfiguration());
+        }
+        return m_widgetConfiguration;
     }
 }

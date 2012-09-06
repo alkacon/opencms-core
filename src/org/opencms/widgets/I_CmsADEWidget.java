@@ -40,6 +40,13 @@ import java.util.List;
 public interface I_CmsADEWidget extends I_CmsWidget {
 
     /**
+     * Returns the class name of the widget.<p>
+     * 
+     * @return the class name
+     */
+    String getWidgetName();
+
+    /**
      * Returns the configuration string for the ADE content editor widget.<p>
      * 
      * @param cms the OpenCms context

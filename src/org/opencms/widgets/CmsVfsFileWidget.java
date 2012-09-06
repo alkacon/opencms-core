@@ -28,16 +28,21 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.types.A_CmsXmlContentValue;
+
+import java.util.List;
 
 /**
  * Provides a OpenCms VFS file selection widget, for use on a widget dialog.<p>
  * 
  * @since 6.0.0 
  */
-public class CmsVfsFileWidget extends A_CmsWidget {
+public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** Configuration parameter to set the flag to include files in popup resource tree. */
     public static final String CONFIGURATION_EXCLUDEFILES = "excludefiles";
@@ -173,6 +178,26 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        A_CmsXmlContentValue schemaType,
+        CmsMessages messages,
+        CmsResource resource) {
+
+        return getConfiguration();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     @Override
@@ -274,6 +299,22 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
      * Returns the start site root shown by the widget when first displayed.<p>
      *
      * If <code>null</code> is returned, the dialog will display the current site of 
@@ -284,6 +325,22 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     public String getStartSite() {
 
         return m_startSite;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getWidgetName()
+     */
+    public String getWidgetName() {
+
+        return CmsVfsFileWidget.class.getName();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        return false;
     }
 
     /**

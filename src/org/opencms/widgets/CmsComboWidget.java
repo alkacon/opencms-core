@@ -222,6 +222,15 @@ public class CmsComboWidget extends A_CmsSelectWidget {
     }
 
     /**
+     * @see org.opencms.widgets.A_CmsSelectWidget#getWidgetName()
+     */
+    @Override
+    public String getWidgetName() {
+
+        return CmsComboWidget.class.getName();
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
     public I_CmsWidget newInstance() {

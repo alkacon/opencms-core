@@ -188,6 +188,14 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getWidgetName()
+     */
+    public String getWidgetName() {
+
+        return A_CmsSelectWidget.class.getName();
+    }
+
+    /**
      * Returns if this is an internal widget.<p>
      * Only widgets belonging to the OpenCms core should be marked as internal.<p>
      * 
@@ -339,4 +347,5 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
         m_selectOptions = new ArrayList<CmsSelectWidgetOption>();
         m_selectOptions.addAll(selectOptions);
     }
+
 }
