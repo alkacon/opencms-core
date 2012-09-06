@@ -35,7 +35,10 @@ import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -65,6 +68,36 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
     /** Default value of rows to be shown. */
     private static final int DEFAULT_ROWS_SHOWN = 10;
+
+    /** Optional shortcut default marker. */
+    private static final String DEFAULT_MARKER = "*";
+
+    /** Delimiter between option sets. */
+    private static final String INPUT_DELIMITER = "|";
+
+    /** Key prefix for the 'default'. */
+    private static final String KEY_DEFAULT = "default='true'";
+
+    /** Empty String to replaces unnecessary keys. */
+    private static final String KEY_EMPTY = "";
+
+    /** Key prefix for the 'help' text. */
+    private static final String KEY_HELP = "help='";
+
+    /** Key prefix for the 'option' text. */
+    private static final String KEY_OPTION = "option='";
+
+    /** Short key prefix for the 'option' text. */
+    private static final String KEY_SHORT_OPTION = ":";
+
+    /** Key suffix for the 'default' , 'help', 'option' text with following entrances.*/
+    private static final String KEY_SUFFIX = "' ";
+
+    /** Key suffix for the 'default' , 'help', 'option' text without following entrances.*/
+    private static final String KEY_SUFFIX_SHORT = "'";
+
+    /** Key prefix for the 'value'. */
+    private static final String KEY_VALUE = "value='";
 
     /** The main panel of this widget. */
     FlowPanel m_panel = new FlowPanel();
@@ -249,36 +282,144 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
         // generate an empty list off radio button.
         List<CmsRadioButton> result = new ArrayList<CmsRadioButton>();
-        // split the configuration string by using the separator "|". 
-        String[] labels = config.split("\\|");
-        // iterate about all parts of the splitted configuration.
+
+        //split the configuration in single strings to handle every string single. 
+        String[] labels = config.split("\\" + INPUT_DELIMITER);
+
+        int selected = -1;
+
+        //declare some string arrays with the same size of labels.
+        String[] value = new String[labels.length];
+        String[] options = new String[labels.length];
+        String[] help = new String[labels.length];
+
+        //declare a Map to handle the single values of the configuration. 
+        HashMap<String, String> values = new LinkedHashMap<String, String>();
+
         for (int i = 0; i < labels.length; i++) {
+            //check if there are one or more parameters set in this substring.
+            boolean test_default = (labels[i].indexOf(KEY_DEFAULT) >= 0);
+            boolean test_value = labels[i].indexOf(KEY_VALUE) >= 0;
+            boolean test_option = labels[i].indexOf(KEY_OPTION) >= 0;
+            boolean test_short_option = labels[i].indexOf(KEY_SHORT_OPTION) >= 0;
+            boolean test_help = labels[i].indexOf(KEY_HELP) >= 0;
+            try {
+                //check if there is a default value set.
+                if ((labels[i].indexOf(DEFAULT_MARKER) >= 0) || test_default) {
+                    //remember the position in the array.
+                    selected = i;
+                    //remove the declaration parameters.
+                    labels[i] = labels[i].replace(DEFAULT_MARKER, KEY_EMPTY);
+                    labels[i] = labels[i].replace(KEY_DEFAULT, KEY_EMPTY);
+                }
+                //check for values (e.g.:"value='XvalueX' ") set in configuration.
+                if (test_value) {
+                    String sub = KEY_EMPTY;
+                    //check there are more parameters set, separated with space.
+                    if (labels[i].indexOf(KEY_SUFFIX) >= 0) {
+                        //create substring e.g.:"value='XvalueX".
+                        sub = labels[i].substring(labels[i].indexOf(KEY_VALUE), labels[i].indexOf(KEY_SUFFIX));
+                    }
+                    //if there are no more parameters set.
+                    else {
+                        //create substring e.g.:"value='XvalueX".
+                        sub = labels[i].substring(labels[i].indexOf(KEY_VALUE), labels[i].length() - 1);
+                    }
+                    //transfer the extracted value to the value array.
+                    value[i] = sub.replace(KEY_VALUE, KEY_EMPTY);
+                    //remove the parameter within the value.
+                    labels[i] = labels[i].replace(KEY_VALUE + value[i] + KEY_SUFFIX_SHORT, KEY_EMPTY);
+                }
+                //no value parameter is set.
+                else {
+                    //check there are more parameters set.
+                    if (test_short_option) {
+                        //transfer the separated value to the value array. 
+                        value[i] = labels[i].substring(0, labels[i].indexOf(KEY_SHORT_OPTION));
+                    }
+                    //no parameters set.
+                    else {
+                        //transfer the value set in configuration untreated to the value array.
+                        value[i] = labels[i];
+                    }
+                }
+                //check for options(e.g.:"option='XvalueX' ") set in configuration.
+                if (test_option) {
+                    String sub = KEY_EMPTY;
+                    //check there are more parameters set, separated with space.
+                    if (labels[i].indexOf(KEY_SUFFIX) >= 0) {
+                        //create substring e.g.:"option='XvalueX".
+                        sub = labels[i].substring(labels[i].indexOf(KEY_OPTION), labels[i].indexOf(KEY_SUFFIX));
+                    }
+                    //if there are no more parameters set.
+                    else {
+                        //create substring e.g.:"option='XvalueX".
+                        sub = labels[i].substring(
+                            labels[i].indexOf(KEY_OPTION),
+                            labels[i].lastIndexOf(KEY_SUFFIX_SHORT));
+                    }
+                    //transfer the extracted value to the option array.
+                    options[i] = sub.replace(KEY_OPTION, KEY_EMPTY);
+                    //remove the parameter within the value.
+                    labels[i] = labels[i].replace(KEY_OPTION + options[i] + KEY_SUFFIX_SHORT, KEY_EMPTY);
+                }
+                //check if there is a short form (e.g.:":XvalueX") of the option set in configuration.
+                else if (test_short_option) {
+                    //transfer the extracted value to the option array.
+                    options[i] = labels[i].substring(labels[i].indexOf(KEY_SHORT_OPTION) + 1);
+                }
+                //there are no options set in configuration. 
+                else {
+                    //option value is the same like the name value so the name value is transfered to the option array.
+                    options[i] = value[i];
+                }
+                //check for help set in configuration.
+                if (test_help) {
+                    String sub = KEY_EMPTY;
+                    //check there are more parameters set, separated with space.
+                    if (labels[i].indexOf(KEY_SUFFIX) >= 0) {
+                        sub = labels[i].substring(labels[i].indexOf(KEY_HELP), labels[i].indexOf(KEY_SUFFIX));
+                    }
+                    //if there are no more parameters set.
+                    else {
+                        sub = labels[i].substring(labels[i].indexOf(KEY_HELP), labels[i].indexOf(KEY_SUFFIX_SHORT));
+                    }
+                    //transfer the extracted value to the help array.
+                    help[i] = sub.replace(KEY_HELP, KEY_EMPTY);
+                    //remove the parameter within the value.
+                    labels[i] = labels[i].replace(KEY_HELP + help[i] + KEY_SUFFIX_SHORT, KEY_EMPTY);
+
+                }
+                //copy value and option to the Map.
+                values.put(options[i], value[i]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        int j = 0;
+        for (Map.Entry<String, String> entry : values.entrySet()) {
             // create a new radio button with the given name and label.
-            CmsRadioButton radiobutton = new CmsRadioButton(labels[i], labels[i]);
+            CmsRadioButton radiobutton = new CmsRadioButton(entry.getKey(), entry.getValue());
             // add click handler.
             radiobutton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
 
                     fireChangeEvent();
-
                 }
             });
             // add this radio button to the group
             radiobutton.setGroup(m_group);
             // check if this value is default set.
-            if (labels[i].indexOf("*") >= 0) {
-                // rename the radio button.
-                radiobutton.setName(labels[i].replace("*", ""));
-                radiobutton.setText(labels[i].replace("*", ""));
-                // set this radio button checked. 
+            if (j == selected) {
                 radiobutton.setChecked(true);
                 m_defaultCheckBox = radiobutton;
             }
             // add this radio button to the list.
             result.add(radiobutton);
+            j++;
         }
-        // return the list of radio button. 
         return result;
     }
 }
