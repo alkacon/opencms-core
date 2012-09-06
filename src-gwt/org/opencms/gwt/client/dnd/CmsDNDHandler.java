@@ -282,6 +282,9 @@ public class CmsDNDHandler implements MouseDownHandler {
     /** Flag if automatic scrolling is enabled. */
     private boolean m_scrollEnabled = true;
 
+    /** The scroll parent. */
+    private Element m_scrollElement;
+
     /** Scroll timer. */
     private Timer m_scrollTimer;
 
@@ -607,6 +610,16 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Sets the scroll element in case not the window but another element needs scrolling.<p>
+     * 
+     * @param scrollElement the scroll element
+     */
+    public void setScrollElement(Element scrollElement) {
+
+        m_scrollElement = scrollElement;
+    }
+
+    /**
      * Sets the start position.<p>
      * In case of a canceled drag and drop and enabled animation, 
      * the draggable helper element will be reverted to the start position.<p>
@@ -849,30 +862,56 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     private Direction getScrollDirection(int offset) {
 
-        Element body = RootPanel.getBodyElement();
-        int windowHeight = Window.getClientHeight();
-        int bodyHeight = body.getClientHeight();
-        if (windowHeight < bodyHeight) {
-            if (((windowHeight - m_clientY) < offset) && (Window.getScrollTop() < (bodyHeight - windowHeight))) {
-                return Direction.down;
+        if (m_scrollElement == null) {
+            Element body = RootPanel.getBodyElement();
+            int windowHeight = Window.getClientHeight();
+            int bodyHeight = body.getClientHeight();
+            if (windowHeight < bodyHeight) {
+                if (((windowHeight - m_clientY) < offset) && (Window.getScrollTop() < (bodyHeight - windowHeight))) {
+                    return Direction.down;
+                }
+                if ((m_clientY < offset) && (Window.getScrollTop() > 0)) {
+                    return Direction.up;
+                }
             }
-            if ((m_clientY < offset) && (Window.getScrollTop() > 0)) {
-                return Direction.up;
-            }
-        }
 
-        int windowWidth = Window.getClientWidth();
-        int bodyWidth = body.getClientWidth();
-        if (windowWidth < bodyWidth) {
-            if (((windowWidth - m_clientX) < offset) && (Window.getScrollLeft() < (bodyWidth - windowWidth))) {
-                return Direction.right;
+            int windowWidth = Window.getClientWidth();
+            int bodyWidth = body.getClientWidth();
+            if (windowWidth < bodyWidth) {
+                if (((windowWidth - m_clientX) < offset) && (Window.getScrollLeft() < (bodyWidth - windowWidth))) {
+                    return Direction.right;
+                }
+                if ((m_clientX < offset) && (Window.getScrollLeft() > 0)) {
+                    return Direction.left;
+                }
             }
-            if ((m_clientX < offset) && (Window.getScrollLeft() > 0)) {
-                return Direction.left;
-            }
-        }
 
-        return null;
+            return null;
+        } else {
+            int outerHeight = m_scrollElement.getClientHeight();
+            int innerHeight = m_scrollElement.getScrollHeight();
+            if (outerHeight < innerHeight) {
+                if ((((outerHeight + m_scrollElement.getAbsoluteTop()) - m_clientY) < offset)
+                    && (m_scrollElement.getScrollTop() < (innerHeight - outerHeight))) {
+                    return Direction.down;
+                }
+                if (((m_clientY - m_scrollElement.getAbsoluteTop()) < offset) && (m_scrollElement.getScrollTop() > 0)) {
+                    return Direction.up;
+                }
+            }
+            int outerWidth = m_scrollElement.getClientWidth();
+            int innerWidth = m_scrollElement.getScrollWidth();
+            if (outerWidth < innerWidth) {
+                if ((((outerWidth + m_scrollElement.getAbsoluteLeft()) - m_clientX) < offset)
+                    && (m_scrollElement.getScrollLeft() < (innerWidth - outerWidth))) {
+                    return Direction.right;
+                }
+                if (((m_clientX - m_scrollElement.getAbsoluteLeft()) < offset) && (m_scrollElement.getScrollLeft() > 0)) {
+                    return Direction.left;
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -887,7 +926,9 @@ public class CmsDNDHandler implements MouseDownHandler {
                 clearScrollTimer();
             }
             if ((direction != null) && (m_scrollTimer == null)) {
-                m_scrollTimer = new CmsScrollTimer(RootPanel.getBodyElement(), 20, direction);
+                m_scrollTimer = new CmsScrollTimer(m_scrollElement != null
+                ? m_scrollElement
+                : RootPanel.getBodyElement(), 20, direction);
                 m_scrollTimer.scheduleRepeating(10);
             }
 
