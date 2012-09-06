@@ -106,8 +106,10 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
      * @param groupContainer the group container
      * @param controller the container page controller
      * @param handler the container page handler
+     * 
+     * @return the editor instance 
      */
-    public static void openGroupcontainerEditor(
+    public static CmsGroupContainerEditor openGroupcontainerEditor(
         CmsGroupContainerElementPanel groupContainer,
         CmsContainerpageController controller,
         CmsContainerpageHandler handler) {
@@ -116,13 +118,13 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
         if (INSTANCE != null) {
             CmsDebugLog.getInstance().printLine("group-container editor already open");
         } else {
-            if (controller.startEditingGroupcontainer(groupContainer)) {
-                INSTANCE = new CmsGroupContainerEditor(groupContainer, controller, handler);
-                RootPanel.get().add(INSTANCE);
-                INSTANCE.openDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
-                INSTANCE.getGroupContainerWidget().refreshHighlighting();
-            }
+            INSTANCE = new CmsGroupContainerEditor(groupContainer, controller, handler);
+            RootPanel.get().add(INSTANCE);
+            INSTANCE.openDialog(Messages.get().key(Messages.GUI_GROUPCONTAINER_CAPTION_0));
+            INSTANCE.getGroupContainerWidget().refreshHighlighting();
+
         }
+        return INSTANCE;
     }
 
     /**

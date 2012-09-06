@@ -29,8 +29,6 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
-import org.opencms.ade.containerpage.client.ui.groupeditor.CmsGroupContainerEditor;
-import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
@@ -598,7 +596,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (CmsDomUtil.hasClass(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER, element.getElement())) {
             openGroupEditor((CmsGroupContainerElementPanel)element);
         } else {
-            element.removeEditorClickHandler();
+            m_controller.setContentEditing(true);
+            m_controller.disableInlineEditing(element);
             m_controller.getContentEditorHandler().openDialog(element, inline);
             element.removeHighlighting();
         }
@@ -979,11 +978,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     private void openGroupEditor(CmsGroupContainerElementPanel groupContainer) {
 
-        if (groupContainer.isGroupContainer()) {
-            CmsGroupContainerEditor.openGroupcontainerEditor(groupContainer, m_controller, this);
-        } else if (groupContainer.isInheritContainer()) {
-            CmsInheritanceContainerEditor.openInheritanceContainerEditor(groupContainer, m_controller, this);
-        }
+        m_controller.startEditingGroupcontainer(groupContainer, groupContainer.isGroupContainer());
     }
 
     /**

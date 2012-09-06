@@ -421,10 +421,11 @@ public class CmsContainerpageUtil {
             elementData.hasViewPermission(),
             elementData.isReleasedAndNotExpired());
         addOptionBar(dragElement);
+        boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
         // only enable inline editing for the new content editor
-        if (!m_controller.getData().isUseClassicEditor()
-            && CmsStringUtil.isEmptyOrWhitespaceOnly(elementData.getNoEditReason())) {
-            dragElement.initContentEditor(m_controller);
+        // also ignore group container sub-elements unless group editing
+        if (!m_controller.getData().isUseClassicEditor() && (!isSubElement || m_controller.isGroupcontainerEditing())) {
+            dragElement.initInlinetEditor(m_controller);
         }
         return dragElement;
     }

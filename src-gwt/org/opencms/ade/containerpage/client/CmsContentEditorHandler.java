@@ -79,6 +79,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         m_handler.addToRecent(m_currentElementId);
         m_handler.enableToolbarButtons();
         m_handler.activateSelection();
+        m_handler.m_controller.setContentEditing(false);
+        m_handler.m_controller.reInitInlineEditing();
         m_currentElementId = null;
     }
 

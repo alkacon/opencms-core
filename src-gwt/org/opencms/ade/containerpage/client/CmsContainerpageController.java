@@ -33,6 +33,8 @@ import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsRemovedElementDeletionDialog;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.client.ui.groupeditor.A_CmsGroupEditor;
+import org.opencms.ade.containerpage.client.ui.groupeditor.CmsGroupContainerEditor;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
@@ -404,8 +406,11 @@ public final class CmsContainerpageController {
     /** The drag and drop handler. */
     private CmsDNDHandler m_dndHandler;
 
-    /** The currently edited group-container element. */
-    private CmsGroupContainerElementPanel m_editingGroupcontainer;
+    /** The currently editing group-container editor. */
+    private A_CmsGroupEditor m_groupEditor;
+
+    /** Flag indicating that a content element is being edited. */
+    private boolean m_isContentEditing;
 
     /** The lock error message. */
     private String m_lockErrorMessage;
@@ -647,6 +652,30 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Disables the inline editing for all content elements but the given one.<p>
+     * 
+     * @param notThisOne the content element not to disable
+     */
+    public void disableInlineEditing(CmsContainerPageElementPanel notThisOne) {
+
+        if (isGroupcontainerEditing()) {
+            for (Widget element : m_groupEditor.getGroupContainerWidget()) {
+                if ((element instanceof CmsContainerPageElementPanel) && (element != notThisOne)) {
+                    ((CmsContainerPageElementPanel)element).removeInlineEditor();
+                }
+            }
+        } else {
+            for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+                for (Widget element : container) {
+                    if ((element instanceof CmsContainerPageElementPanel) && (element != notThisOne)) {
+                        ((CmsContainerPageElementPanel)element).removeInlineEditor();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Enables the favorites editing drag and drop controller.<p>
      * 
      * @param enable if <code>true</code> favorites editing will enabled, otherwise disabled
@@ -679,7 +708,7 @@ public final class CmsContainerpageController {
             result.addAll(it.next().getAllDragElements());
         }
         if (isGroupcontainerEditing()) {
-            Iterator<Widget> itSub = m_editingGroupcontainer.iterator();
+            Iterator<Widget> itSub = m_groupEditor.getGroupContainerWidget().iterator();
             while (itSub.hasNext()) {
                 Widget w = itSub.next();
                 if (w instanceof org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel) {
@@ -856,7 +885,7 @@ public final class CmsContainerpageController {
      */
     public CmsGroupContainerElementPanel getGroupcontainer() {
 
-        return m_editingGroupcontainer;
+        return m_groupEditor.getGroupContainerWidget();
     }
 
     /**
@@ -866,8 +895,8 @@ public final class CmsContainerpageController {
      */
     public String getGroupcontainerId() {
 
-        if (m_editingGroupcontainer != null) {
-            return m_editingGroupcontainer.getContainerId();
+        if (m_groupEditor != null) {
+            return m_groupEditor.getGroupContainerWidget().getContainerId();
         }
         return null;
     }
@@ -1056,6 +1085,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the flag indicating that a content element is being edited.<p>
+     *
+     * @return the flag indicating that a content element is being edited
+     */
+    public boolean isContentEditing() {
+
+        return m_isContentEditing;
+    }
+
+    /**
      * Checks if the page editing features should be disabled.<p>
      * 
      * @return true if the page editing features should be disabled 
@@ -1072,7 +1111,7 @@ public final class CmsContainerpageController {
      */
     public boolean isGroupcontainerEditing() {
 
-        return m_editingGroupcontainer != null;
+        return m_groupEditor != null;
     }
 
     /**
@@ -1244,6 +1283,31 @@ public final class CmsContainerpageController {
 
         // causes synchronous RPC call 
         CmsCoreProvider.get().unlock();
+    }
+
+    /**
+     * Re-initializes the inline editing.<p>
+     */
+    public void reInitInlineEditing() {
+
+        if (getData().isUseClassicEditor()) {
+            return;
+        }
+        if (isGroupcontainerEditing()) {
+            for (Widget element : m_groupEditor.getGroupContainerWidget()) {
+                if ((element instanceof CmsContainerPageElementPanel)) {
+                    ((CmsContainerPageElementPanel)element).initInlinetEditor(this);
+                }
+            }
+        } else {
+            for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+                for (Widget element : container) {
+                    if (element instanceof CmsContainerPageElementPanel) {
+                        ((CmsContainerPageElementPanel)element).initInlinetEditor(this);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -1643,6 +1707,23 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Sets the flag indicating that a content element is being edited.<p>
+     *
+     * @param isContentEditing the flag indicating that a content element is being edited
+     */
+    public void setContentEditing(boolean isContentEditing) {
+
+        if (m_groupEditor != null) {
+            if (isContentEditing) {
+                m_groupEditor.hidePopup();
+            } else {
+                m_groupEditor.showPopup();
+            }
+        }
+        m_isContentEditing = isContentEditing;
+    }
+
+    /**
      * Sets the DND controller.<p>
      * 
      * @param dnd the new DND controller 
@@ -1703,18 +1784,24 @@ public final class CmsContainerpageController {
     /**
      * Tells the controller that group-container editing has started.<p>
      * 
-     * @param groupContainer the group-container
-     * 
-     * @return <code>true</code> if group-container resource was locked and can be edited
+     * @param groupContainer the group container
+     * @param isElementGroup <code>true</code> if the group container is an element group and not an inheritance group
      */
-    public boolean startEditingGroupcontainer(CmsGroupContainerElementPanel groupContainer) {
+    public void startEditingGroupcontainer(CmsGroupContainerElementPanel groupContainer, boolean isElementGroup) {
 
-        if (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getStructureId())) {
-            m_editingGroupcontainer = groupContainer;
-            return true;
+        if ((m_groupEditor == null)
+            && (groupContainer.isNew() || CmsCoreProvider.get().lock(groupContainer.getStructureId()))) {
+            if (isElementGroup) {
+                m_groupEditor = CmsGroupContainerEditor.openGroupcontainerEditor(groupContainer, this, m_handler);
+            } else {
+                m_groupEditor = CmsInheritanceContainerEditor.openInheritanceContainerEditor(
+                    groupContainer,
+                    this,
+                    m_handler);
+            }
+            return;
         }
         CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_NOTIFICATION_UNABLE_TO_LOCK_0));
-        return false;
     }
 
     /**
@@ -1722,7 +1809,7 @@ public final class CmsContainerpageController {
      */
     public void stopEditingGroupcontainer() {
 
-        m_editingGroupcontainer = null;
+        m_groupEditor = null;
     }
 
     /** 

@@ -156,8 +156,10 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
      * @param groupContainer the group-container
      * @param controller the container-page controller
      * @param handler the container-page handler
+     * 
+     * @return the editor instance 
      */
-    public static void openInheritanceContainerEditor(
+    public static CmsInheritanceContainerEditor openInheritanceContainerEditor(
         CmsGroupContainerElementPanel groupContainer,
         CmsContainerpageController controller,
         CmsContainerpageHandler handler) {
@@ -166,13 +168,13 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         if (INSTANCE != null) {
             CmsDebugLog.getInstance().printLine("group-container editor already open");
         } else {
-            if (controller.startEditingGroupcontainer(groupContainer)) {
-                INSTANCE = new CmsInheritanceContainerEditor(groupContainer, controller, handler);
-                RootPanel.get().add(INSTANCE);
-                INSTANCE.openDialog(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_CAPTION_0));
-                groupContainer.refreshHighlighting();
-            }
+            INSTANCE = new CmsInheritanceContainerEditor(groupContainer, controller, handler);
+            RootPanel.get().add(INSTANCE);
+            INSTANCE.openDialog(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_CAPTION_0));
+            groupContainer.refreshHighlighting();
+
         }
+        return INSTANCE;
     }
 
     /**

@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -366,19 +367,25 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * 
      * @param controller the container page controller instance
      */
-    public void initContentEditor(final CmsContainerpageController controller) {
+    public void initInlinetEditor(final CmsContainerpageController controller) {
 
-        if (CmsEditorBase.hasEditable(getElement())) {
-            CmsEditorBase.setEditable(getElement());
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_noEditReason) && CmsEditorBase.setEditable(getElement(), true)) {
+            if (m_editorClickHandlerRegistration != null) {
+                m_editorClickHandlerRegistration.removeHandler();
+            }
             m_editorClickHandlerRegistration = addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
 
+                    // if another content is already being edited, don't start another editor
+                    if (controller.isContentEditing()) {
+                        return;
+                    }
                     Element target = event.getNativeEvent().getEventTarget().cast();
                     while ((target != null) && (target != getElement())) {
                         if ("true".equals(target.getAttribute("contentEditable"))) {
                             controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this, true);
-                            removeEditorClickHandler();
+                            removeInlineEditor();
                             break;
                         } else {
                             target = target.getParentElement();
@@ -429,9 +436,10 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     /**
      * Removes the editor click handler.<p>
      */
-    public void removeEditorClickHandler() {
+    public void removeInlineEditor() {
 
         if (m_editorClickHandlerRegistration != null) {
+            CmsEditorBase.setEditable(getElement(), false);
             m_editorClickHandlerRegistration.removeHandler();
             m_editorClickHandlerRegistration = null;
         }
