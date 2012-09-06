@@ -143,6 +143,9 @@ public class CmsScrollPanel extends ScrollPanel {
     /** The button to resize the scrolling panel. */
     private ResizeButton m_resize;
 
+    /** Saves if the scrolling panel has the resize button. */
+    private boolean m_isResize;
+
     /**
      * Constructor.<p>
      * 
@@ -209,7 +212,7 @@ public class CmsScrollPanel extends ScrollPanel {
      */
     public void setResizable(boolean resize) {
 
-        if (m_resize != null) {
+        if (resize != m_isResize) {
             if (resize) {
                 getElement().appendChild(m_resize.getElement());
                 adopt(m_resize);
@@ -228,6 +231,7 @@ public class CmsScrollPanel extends ScrollPanel {
             } else {
                 m_resize.removeFromParent();
             }
+            m_isResize = resize;
         }
     }
 
@@ -250,7 +254,9 @@ public class CmsScrollPanel extends ScrollPanel {
     protected void onAttach() {
 
         super.onAttach();
-        m_resize.onAttach();
+        if (m_isResize) {
+            m_resize.onAttach();
+        }
 
     }
 
@@ -261,7 +267,9 @@ public class CmsScrollPanel extends ScrollPanel {
     protected void onDetach() {
 
         super.onDetach();
-        m_resize.onDetach();
+        if (m_isResize) {
+            m_resize.onDetach();
+        }
     }
 
     /**
