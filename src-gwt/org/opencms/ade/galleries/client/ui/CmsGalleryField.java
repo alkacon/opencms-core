@@ -224,8 +224,8 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
             this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
         if (config.gallerytypes)
             this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
-        if (config.referencepath)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setReferencePath(Ljava/lang/String;)(config.referencepath);
+        if (config.resource)
+            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setReferencePath(Ljava/lang/String;)(config.resource);
         if (config.useFormats)
             this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setUseFormats(Z)(config.useFormats);
         if (config.imageFormats)
