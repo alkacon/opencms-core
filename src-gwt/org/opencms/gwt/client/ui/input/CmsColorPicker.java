@@ -42,6 +42,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
@@ -49,10 +51,10 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -78,18 +80,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
             Event nativeEvent = Event.as(event.getNativeEvent());
             switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-
-                    int x_coord = nativeEvent.getClientX();
-                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
-
-                    if (((x_coord > (m_xcoordspopup + 450)) || (x_coord < (m_xcoordspopup)))
-                        || ((y_coord > ((m_ycoordspopup + 280))) || (y_coord < ((m_ycoordspopup))))) {
-                        closePopup();
-                    }
-                    break;
                 case Event.ONKEYDOWN:
                     break;
                 case Event.ONMOUSEWHEEL:
@@ -431,11 +421,20 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
         m_popup.setWidth(450);
         m_popup.setHeight(280);
+        m_popup.setAutoHideEnabled(true);
+        m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                closePopup();
+
+            }
+        });
         m_popup.addDialogClose(new Command() {
 
             public void execute() {
 
-                closePopup();
+                // nothing to do all will be done in onClose();
 
             }
         });

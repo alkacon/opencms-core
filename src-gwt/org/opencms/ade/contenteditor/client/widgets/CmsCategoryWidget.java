@@ -45,6 +45,8 @@ import java.util.List;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -55,6 +57,7 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides a standard HTML form category widget, for use on a widget dialog.<p>
@@ -75,20 +78,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
             Event nativeEvent = Event.as(event.getNativeEvent());
             switch (DOM.eventGetType(nativeEvent)) {
-                case Event.ONMOUSEMOVE:
-                    break;
-                case Event.ONMOUSEUP:
-
-                    int x_coord = nativeEvent.getClientX();
-                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
-
-                    if (((x_coord > (m_xcoordspopup + 605)) || (x_coord < (m_xcoordspopup)))
-                        || ((y_coord > ((m_ycoordspopup + 390))) || (y_coord < ((m_ycoordspopup))))) {
-                        closePopup();
-                    }
-                    break;
-                case Event.ONKEYDOWN:
-                    break;
                 case Event.ONMOUSEWHEEL:
                     int x_coords = nativeEvent.getClientX();
                     int y_coords = (nativeEvent.getClientY() + Window.getScrollTop());
@@ -174,6 +163,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
      */
     public CmsCategoryWidget(String config) {
 
+        initWidget(m_categoryField);
         //merge configuration string
         parseConfiguration(config);
 
@@ -184,7 +174,6 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         }
         genearteList();
         m_categoryField.getScrollPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().categoryPanel());
-        m_categoryField.getScrollPanel().setResizable(false);
         m_categoryField.addDomHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -197,7 +186,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
             }
         }, ClickEvent.getType());
-        initWidget(m_categoryField);
+
     }
 
     /**
@@ -351,11 +340,20 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             m_cmsCategoryTree = new CmsCategoryTree(selected, 300, m_isSingelValue, m_resultList);
             m_cmsPopup.add(m_cmsCategoryTree);
             m_cmsPopup.setModal(false);
+            m_cmsPopup.setAutoHideEnabled(true);
+            m_cmsPopup.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                public void onClose(CloseEvent<PopupPanel> event) {
+
+                    closePopup();
+
+                }
+            });
             m_cmsPopup.addDialogClose(new Command() {
 
                 public void execute() {
 
-                    closePopup();
+                    // do nothing all will done in onClose();
                 }
             });
         }
@@ -374,18 +372,21 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     protected void setheight() {
 
         if (m_categoryField.getValuesSet() > 0) {
-            int elementheight = (m_categoryField.getValuesSet() * 24) + 2;
-            m_height = elementheight;
+            m_height = (m_categoryField.getValuesSet() * 24) + 2;
 
             if (m_height > MAX_HEIGHT) {
                 m_height = MAX_HEIGHT;
                 m_categoryField.getScrollPanel().setResizable(true);
+            } else {
+                m_categoryField.getScrollPanel().setResizable(false);
             }
         } else {
             m_height = DEFAULT_HEIGHT;
-        }
-        m_categoryField.setHeight(m_height);
 
+            m_categoryField.getScrollPanel().setResizable(false);
+        }
+
+        m_categoryField.setHeight(m_height);
     }
 
     /**
