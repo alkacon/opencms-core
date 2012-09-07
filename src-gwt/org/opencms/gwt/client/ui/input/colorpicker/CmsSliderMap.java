@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui.input.colorpicker;
 
-import org.opencms.gwt.client.ui.input.colorpicker.css.I_CmsColorSelectorCss;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.BorderStyle;
@@ -76,7 +76,7 @@ public final class CmsSliderMap extends HTML {
         getElement().appendChild(m_colorOverlay.getElement());
         getElement().appendChild(m_slider.getElement());
 
-        addStyleName(I_CmsColorSelectorCss.INSTANCE.colorPickerCss().sliderMap());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().sliderMap());
         getElement().getStyle().setBorderColor("black");
         getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
         getElement().getStyle().setBorderWidth(1, Unit.PX);
@@ -91,12 +91,12 @@ public final class CmsSliderMap extends HTML {
     public void onAttach() {
 
         super.onAttach();
-        m_colorUnderlay.addStyleName(I_CmsColorSelectorCss.INSTANCE.colorPickerCss().sliderMapUnderlay());
+        m_colorUnderlay.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().sliderMapUnderlay());
         m_colorUnderlay.getElement().getStyle().setPosition(Position.RELATIVE);
-        m_colorOverlay.addStyleName(I_CmsColorSelectorCss.INSTANCE.colorPickerCss().sliderMapOverlay());
+        m_colorOverlay.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().sliderMapOverlay());
         m_colorOverlay.getElement().getStyle().setPosition(Position.RELATIVE);
         m_colorOverlay.getElement().getStyle().setTop(-258, Unit.PX);
-        m_slider.addStyleName(I_CmsColorSelectorCss.INSTANCE.colorPickerCss().sliderMapSlider());
+        m_slider.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().sliderMapSlider());
         m_slider.getElement().getStyle().setPosition(Position.ABSOLUTE);
         setOverlayOpacity(100);
     }
@@ -123,8 +123,8 @@ public final class CmsSliderMap extends HTML {
                 if (m_capturedMouse) {
                     DOM.eventPreventDefault(event);
 
-                    float x = ((event.getClientX() - (m_colorUnderlay.getAbsoluteLeft() + 1)) + Window.getScrollLeft());
-                    float y = ((event.getClientY() - (m_colorUnderlay.getAbsoluteTop() + 1)) + Window.getScrollTop());
+                    float x = ((event.getClientX() - (m_colorUnderlay.getAbsoluteLeft())) + Window.getScrollLeft());
+                    float y = ((event.getClientY() - (m_colorUnderlay.getAbsoluteTop())) + Window.getScrollTop());
 
                     if (m_parent != null) {
                         m_parent.onMapSelected(x, y);
@@ -241,8 +241,8 @@ public final class CmsSliderMap extends HTML {
         if (y < 0) {
             y = 0;
         }
-        x += 4;
-        y += 4;
+        x -= 7;
+        y -= 7;
         m_slider.getElement().getStyle().setLeft(x, Unit.PX);
         m_slider.getElement().getStyle().setTop(y, Unit.PX);
     }

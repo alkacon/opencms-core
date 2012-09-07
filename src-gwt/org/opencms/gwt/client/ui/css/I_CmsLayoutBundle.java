@@ -389,6 +389,46 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String tabParamsPanel();
     }
 
+    /** THe color selector CSS classes.  */
+    public interface I_CmsColorSelector extends CssResource {
+
+        /** 
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String sliderMap();
+
+        /** 
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String sliderMapOverlay();
+
+        /** 
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String sliderMapSlider();
+
+        /** 
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String sliderMapUnderlay();
+
+        /** 
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String tableField();
+
+    }
+
     /** The content editor dialog CSS. */
     interface I_CmsContentEditorCss extends CssResource {
 
@@ -2089,6 +2129,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("categorydialog.css")
     I_CmsCategoryDialogCss categoryDialogCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the gallery dialog CSS
+     */
+    @Source("colorSelector.css")
+    I_CmsColorSelector colorSelectorCss();
 
     /**
      * The CSS constants bundle.<p>

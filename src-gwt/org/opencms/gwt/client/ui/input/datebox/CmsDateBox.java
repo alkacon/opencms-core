@@ -605,7 +605,9 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
                 m_autoHideParent.removeAutoHidePartner(getElement());
             }
             m_popup.hide();
-            m_previewHandlerRegistration.removeHandler();
+            if (m_previewHandlerRegistration != null) {
+                m_previewHandlerRegistration.removeHandler();
+            }
             m_previewHandlerRegistration = null;
         }
     }

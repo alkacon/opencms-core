@@ -31,6 +31,7 @@ import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
@@ -374,9 +375,11 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
      */
     protected void closePopup() {
 
-        m_previewHandlerRegistration.removeHandler();
+        if (m_previewHandlerRegistration != null) {
+            m_previewHandlerRegistration.removeHandler();
+        }
         m_previewHandlerRegistration = null;
-        org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector picker = (org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector)m_popup.getWidget(0);
+        CmsColorSelector picker = (CmsColorSelector)m_popup.getWidget(0);
         m_colorValue = "#" + picker.getHexColor();
         if (checkvalue()) {
             m_popup.hide();
@@ -444,18 +447,19 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         }
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         m_popup.showRelativeTo(m_colorField);
-        if (m_popup.getWidgetCount() == 0) {
-            m_popup.setModal(false);
 
-            org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector picker = new org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector();
-            try {
-                picker.setHex(m_textboxColorValue.getText().replace("#", ""));
-            } catch (Exception e) {
-                // TODO: Auto-generated catch block
-                e.printStackTrace();
-            }
-            m_popup.add(picker);
+        m_popup.setModal(false);
+        if (m_popup.getWidgetCount() != 0) {
+            m_popup.remove(m_popup.getWidget(0));
         }
+        CmsColorSelector picker = new CmsColorSelector();
+        try {
+            picker.setHex(m_textboxColorValue.getText().replace("#", ""));
+        } catch (Exception e) {
+            // TODO: Auto-generated catch block
+        }
+        m_popup.add(picker);
+
         m_xcoordspopup = m_popup.getPopupLeft();
         m_ycoordspopup = m_popup.getPopupTop();
 

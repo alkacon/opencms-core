@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.input.colorpicker;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsRadioButton;
 import org.opencms.gwt.client.ui.input.CmsRadioButtonGroup;
 
@@ -170,42 +171,55 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
         m_tbHue.setVisibleLength(6);
         m_tbHue.addKeyPressHandler(this);
         m_tbHue.addChangeHandler(this);
+        m_tbHue.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().tableField());
+
         m_tbSaturation = new TextBox();
         m_tbSaturation.setText(new Integer(m_saturation).toString());
         m_tbSaturation.setMaxLength(3);
         m_tbSaturation.setVisibleLength(6);
         m_tbSaturation.addKeyPressHandler(this);
         m_tbSaturation.addChangeHandler(this);
+        m_tbSaturation.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().tableField());
+
         m_tbBrightness = new TextBox();
         m_tbBrightness.setText(new Integer(m_brightness).toString());
         m_tbBrightness.setMaxLength(3);
         m_tbBrightness.setVisibleLength(6);
         m_tbBrightness.addKeyPressHandler(this);
         m_tbBrightness.addChangeHandler(this);
+        m_tbBrightness.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().tableField());
+
         m_tbRed = new TextBox();
         m_tbRed.setText(new Integer(m_red).toString());
         m_tbRed.setMaxLength(3);
         m_tbRed.setVisibleLength(6);
         m_tbRed.addKeyPressHandler(this);
         m_tbRed.addChangeHandler(this);
+        m_tbRed.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().tableField());
+
         m_tbGreen = new TextBox();
         m_tbGreen.setText(new Integer(m_green).toString());
         m_tbGreen.setMaxLength(3);
         m_tbGreen.setVisibleLength(6);
         m_tbGreen.addKeyPressHandler(this);
         m_tbGreen.addChangeHandler(this);
+        m_tbGreen.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().tableField());
+
         m_tbBlue = new TextBox();
         m_tbBlue.setText(new Integer(m_blue).toString());
         m_tbBlue.setMaxLength(3);
         m_tbBlue.setVisibleLength(6);
         m_tbBlue.addKeyPressHandler(this);
         m_tbBlue.addChangeHandler(this);
+        m_tbBlue.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().tableField());
+
         m_tbHexColor = new TextBox();
         m_tbHexColor.setText(m_stcolor);
         m_tbHexColor.setMaxLength(6);
         m_tbHexColor.setVisibleLength(6);
         m_tbHexColor.addKeyPressHandler(this);
         m_tbHexColor.addChangeHandler(this);
+        m_tbHexColor.addStyleName(I_CmsLayoutBundle.INSTANCE.colorSelectorCss().tableField());
 
         // Put together the FlexTable
         table.setWidget(0, 1, m_colorpreview);

@@ -1,3 +1,0 @@
-<module rename-to='client'>
-  <inherits name='com.google.gwt.user.User'/>
-</module>
