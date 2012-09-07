@@ -105,6 +105,9 @@ public interface I_CmsButton {
         /** Toolbar button. */
         EDIT(BUTTON_CSS.toolbarEdit(), Messages.get().key(Messages.GUI_TOOLBAR_EDIT_0)),
 
+        /** Toolbar button. */
+        INFO(BUTTON_CSS.toolbarInfo(), Messages.get().key(Messages.GUI_TOOLBAR_INFO_0)),
+
         /** Inherited element button. */
         INHERITED(BUTTON_CSS.toolbarInherited(), "Inherited"),
 

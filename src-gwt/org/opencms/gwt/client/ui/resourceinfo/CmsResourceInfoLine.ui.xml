@@ -1,0 +1,31 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:local="urn:import:org.opencms.gwt.client.ui.resourceinfo"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	>
+	<ui:with field="m" type="org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoMessages" />
+	<ui:style>
+		.mainTable {
+			table-layout: fixed !important; 
+		}
+		
+		.mainTable .firstColumn {
+			width: 175px !important;
+		}
+		
+		.mainTable .secondColumn {
+			width: 300px !important; 
+		}
+		 
+	</ui:style>
+	<g:HTMLPanel>
+		<table class="{style.mainTable}">
+		<tr>
+			<td class="{style.firstColumn}" ><g:InlineLabel ui:field="m_label" /></td>
+			<td class="{style.secondColumn}"><g:HTML ui:field="m_content"/></td>
+		</tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 

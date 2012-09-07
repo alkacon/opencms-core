@@ -271,7 +271,9 @@
 			<entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage"/>
 			<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog" rule="containerpage"/>
 			<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage"/>
+			<entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0"  name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"  rule="containerpage" />
 			<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage"/>
+
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -381,7 +383,9 @@
 			<entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsReplace" rule="containerpage"/>
 			<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog" rule="containerpage"/>
 			<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage"/>
+		    <entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0"  name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"  rule="containerpage" />
 			<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage"/>
+
           </contextmenu>
         </editoptions>
         <iconrules>
@@ -657,6 +661,7 @@
 			<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges"/>
 			<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog" rule="containerpage"/>
 			<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage"/>
+			<entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0"  name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"  rule="containerpage" />
 			<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage"/>
           </contextmenu>
         </editoptions>

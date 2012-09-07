@@ -88,6 +88,8 @@
     display: inline-block;
     vertical-align: middle;
 }
+
+
 @sprite .cmsState-up .propertyIcon, .cmsState-up-disabled .propertyIcon, .cmsState-down-disabled .propertyIcon{
     gwt-image: "icons.propertyIconDeactivated";
     display: inline-block;

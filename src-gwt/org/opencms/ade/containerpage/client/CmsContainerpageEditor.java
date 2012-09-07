@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.client.ui.CmsSelectionButtonMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarRemoveButton;
@@ -122,6 +123,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** Edit button. */
     private CmsToolbarEditButton m_edit;
+
+    /** Info button. */
+    private CmsToolbarInfoButton m_info;
 
     /** Move button. */
     private CmsToolbarMoveButton m_move;
@@ -420,6 +424,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_remove = new CmsToolbarRemoveButton(containerpageHandler);
 
         m_properties = new CmsToolbarSettingsButton(containerpageHandler);
+        m_info = new CmsToolbarInfoButton(containerpageHandler);
 
         m_clipboard = new CmsToolbarClipboardMenu(containerpageHandler);
         m_clipboard.addClickHandler(clickHandler);
@@ -497,6 +502,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_edit,
             m_remove,
             m_properties,
+            m_info,
             m_addToFavorites);
         controller.init(containerpageHandler, dndHandler, contentEditorHandler, containerpageUtil);
 

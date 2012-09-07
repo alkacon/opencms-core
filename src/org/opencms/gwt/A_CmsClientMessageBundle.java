@@ -31,11 +31,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsResourceBundleLoader;
+import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -52,6 +54,9 @@ import org.apache.commons.logging.Log;
  * @since 8.0.0
  */
 public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBundle {
+
+    /** Prefix for imported message values. */
+    public static final String IMPORT_PREFIX = "@@import:";
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(A_CmsClientMessageBundle.class);
@@ -74,14 +79,6 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     }
 
     /**
-     * @see org.opencms.gwt.I_CmsClientMessageBundle#export(java.lang.String)
-     */
-    public String export(String localeName) {
-
-        return export(CmsLocaleManager.getLocale(localeName));
-    }
-
-    /**
      * @see org.opencms.gwt.I_CmsClientMessageBundle#export(java.util.Locale)
      */
     public String export(Locale locale) {
@@ -92,7 +89,15 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
             Enumeration<String> bundleKeys = resourceBundle.getKeys();
             while (bundleKeys.hasMoreElements()) {
                 String bundleKey = bundleKeys.nextElement();
-                keys.put(bundleKey, resourceBundle.getString(bundleKey));
+                String value = resourceBundle.getString(bundleKey);
+                if (value.startsWith(IMPORT_PREFIX)) {
+                    String importKey = value.replace(IMPORT_PREFIX, "");
+                    String importedValue = importMessage(importKey, locale);
+                    if (importedValue != null) {
+                        value = importedValue;
+                    }
+                }
+                keys.put(bundleKey, value);
             }
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
@@ -104,6 +109,14 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
             }
         }
         return getBundleName().replace('.', '_') + "=" + keys.toString() + ";";
+    }
+
+    /**
+     * @see org.opencms.gwt.I_CmsClientMessageBundle#export(java.lang.String)
+     */
+    public String export(String localeName) {
+
+        return export(CmsLocaleManager.getLocale(localeName));
     }
 
     /**
@@ -120,5 +133,32 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     public Class<?> getClientImpl() throws Exception {
 
         return Class.forName(getClass().getPackage().getName() + ".client.Messages");
+    }
+
+    /**
+     * Imports a message from another bundle.<p>
+     * 
+     * @param key a key of the form classname#MESSAGE_FIELD_NAME 
+     * @param locale the locale for which to import the message
+     *  
+     * @return the imported message string 
+     */
+    public String importMessage(String key, Locale locale) {
+
+        key = key.trim();
+        String[] tokens = key.split("#");
+        if (tokens.length != 2) {
+            return null;
+        }
+        String className = tokens[0];
+        String messageName = tokens[1];
+        try {
+            Method messagesGet = Class.forName(className).getMethod("get");
+            I_CmsMessageBundle bundle = (I_CmsMessageBundle)(messagesGet.invoke(null));
+            return bundle.getBundle(locale).key(messageName);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 }

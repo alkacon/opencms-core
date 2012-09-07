@@ -190,6 +190,22 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
+    @Source("images/icons/infoIconActive.png")
+    ImageResource infoIconActive();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/infoIconDeactivated.png")
+    ImageResource infoIconDeactivated();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
     @Source("images/icons/inheritedIcon.png")
     ImageResource inheritedIcon();
 
@@ -290,10 +306,10 @@ public interface I_CmsIconBundle extends ClientBundle {
     ImageResource previewIconDeactivated();
 
     /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
+    * Access method.<p>
+    *
+    * @return the image resource
+    */
     @Source("images/icons/propertyIconActive.png")
     ImageResource propertyIconActive();
 

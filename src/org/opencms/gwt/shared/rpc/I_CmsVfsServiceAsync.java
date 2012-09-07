@@ -35,6 +35,7 @@ import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
+import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -185,6 +186,14 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the callback for the result 
      */
     void getRenameInfo(CmsUUID structureId, AsyncCallback<CmsRenameInfoBean> callback);
+
+    /**
+     * Gets status information for a single resource.<p>
+     * 
+     * @param structureId the structure id of the resource 
+     * @param callback the callback for the results 
+     */
+    void getResourceStatus(CmsUUID structureId, AsyncCallback<CmsResourceStatusBean> callback);
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>

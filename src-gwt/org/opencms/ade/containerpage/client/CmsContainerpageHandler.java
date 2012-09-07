@@ -58,6 +58,7 @@ import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
+import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
@@ -761,6 +762,17 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void setEnlargeSmallElements(boolean enabled) {
 
         m_editor.setEnlargeSmallElements(enabled);
+    }
+
+    /**
+     * Shows resource information for a given element.<p>
+     * 
+     * @param element the element for which to show the information 
+     */
+    public void showElementInfo(CmsContainerPageElementPanel element) {
+
+        CmsUUID structureId = element.getStructureId();
+        CmsResourceInfoDialog.load(structureId);
     }
 
     /**

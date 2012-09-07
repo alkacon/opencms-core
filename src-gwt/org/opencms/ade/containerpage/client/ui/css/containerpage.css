@@ -275,6 +275,19 @@ div.groupcontainerPlaceholder{
     gwt-image: "images.propertyIconDeactivated";
 }
 
+@sprite .optionBar .cmsState-up-hovering .toolbarInfo, .optionBar .cmsState-down-hovering .toolbarInfo, .optionBar .cmsState-down .toolbarInfo {
+    gwt-image: "images.infoIconActive";
+}
+
+@sprite .optionBar .cmsState-up .toolbarInfo, .optionBar .cmsState-up-disabled .toolbarInfo, .optionBar .cmsState-down-disabled .toolbarInfo {
+    gwt-image: "images.infoIconDeactivated";
+}
+
+
+
+
+
+
 @sprite .optionBar .cmsState-up-hovering .toolbarInherited, .optionBar .cmsState-down-hovering .toolbarInherited, .optionBar .cmsState-down .toolbarInherited {
     gwt-image: "images.subSitemapIcon";
 }

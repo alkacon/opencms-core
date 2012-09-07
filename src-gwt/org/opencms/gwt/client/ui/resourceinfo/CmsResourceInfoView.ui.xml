@@ -1,0 +1,41 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:local="urn:import:org.opencms.gwt.client.ui.resourceinfo"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	>
+	<ui:with field="m" type="org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoMessages" />
+	<ui:style>
+		.fieldset {
+			margin-top: 15px;
+			margin-bottom: 5px;  
+		} 
+		
+		.line {
+			margin-top:5px;
+			margin-bottom: 5px;
+		} 
+		
+	</ui:style>
+	<g:FlowPanel>
+		<g:SimplePanel ui:field="m_infoBoxContainer"></g:SimplePanel>
+		<cms:CmsFieldSet legend="{m.messageFieldsetTitle}" addStyleNames="{style.fieldset}">
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_navText" label="{m.messageLabelNavText}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_title" label="{m.messageLabelTitle}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_resourceType" label="{m.messageLabelType}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_size" label="{m.messageLabelSize}" />
+			<local:CmsResourceInfoLine useHtml="true" addStyleNames="{style.line}" ui:field="m_state" label="{m.messageLabelState}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_dateCreated" label="{m.messageLabelDateCreated}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_userCreated" label="{m.messageLabelUserCreated}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_dateLastModified" label="{m.messageLabelDateModified}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_userLastModified" label="{m.messageLabelUserModified}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_lastProject" label="{m.messageLabelLastProject}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_lockState" label="{m.messageLabelLockState}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_permissions" label="{m.messageLabelPermissions}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_dateReleased" label="{m.messageLabelDateReleased}" />
+			<local:CmsResourceInfoLine addStyleNames="{style.line}" ui:field="m_dateExpired" label="{m.messageLabelDateExpired}" />
+			<local:CmsResourceInfoLine useHtml="true" addStyleNames="{style.line}" ui:field="m_locales" label="{m.messageLabelLocales}" />
+		</cms:CmsFieldSet>
+	</g:FlowPanel>
+</ui:UiBinder> 

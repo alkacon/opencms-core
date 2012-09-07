@@ -36,6 +36,7 @@ import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
+import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsRestoreInfoBean;
 import org.opencms.gwt.shared.CmsVfsEntryBean;
 import org.opencms.gwt.shared.alias.CmsAliasBean;
@@ -228,6 +229,16 @@ public interface I_CmsVfsService extends RemoteService {
     CmsRenameInfoBean getRenameInfo(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Gets a bean containing status information for a given resource.<p>
+     * 
+     * @param structureId the structure id of a resource 
+     * @return the resource status
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsResourceStatusBean getResourceStatus(CmsUUID structureId) throws CmsRpcException;
+
+    /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>
      * 
      * @param structureId the structure id of the resource 
@@ -242,7 +253,7 @@ public interface I_CmsVfsService extends RemoteService {
      * 
      * @return a list of root entries
      * 
-     * @throws CmsRpcException if something goes wrong 
+     * @throws CmsRpcException if something goes wrong  
      */
     List<CmsVfsEntryBean> getRootEntries() throws CmsRpcException;
 
