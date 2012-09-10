@@ -1,0 +1,25 @@
+.sliderMap {
+	border: 1px solid black;
+	height: 256px;
+	width: 256px;
+	position: relative;
+}
+.sliderMapUnderlay{
+	position:relative;
+}
+
+.sliderMapOverlay {
+	position: relative;
+	top: -258px;
+}
+
+.sliderMapSlider {
+	position: absolute;
+	top: 7px;
+	left: 7px;
+}
+
+.tableField {
+	border-radius: 3px;
+	border: 1px solid #7788AA;
+}
