@@ -86,6 +86,9 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /** A flag which indicates whether the inheritance configuration needs to be updated. */
     private boolean m_changedInheritanceInfo;
+   
+    /** Flag which indicates whether the settings of an inheritance group element have been edited. */ 
+    private boolean m_editedSettings;
 
     /** The description input. */
     private CmsTextBox m_inputDescription;
@@ -175,6 +178,14 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
         }
         return INSTANCE;
+    }
+
+    /**
+     * Method which should be called after the settings of an element in the inheritance containerhave been edited.<p>
+     */
+    public void onSettingsEdited() {
+
+        m_editedSettings = true;
     }
 
     /**
@@ -371,6 +382,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         List<CmsContainerElement> elements = new ArrayList<CmsContainerElement>();
         boolean moved = m_moveHandler.isDropped();
         m_changedInheritanceInfo |= moved;
+        m_changedInheritanceInfo |= m_editedSettings;
         for (Widget widget : getGroupContainerWidget()) {
             if (widget instanceof CmsContainerPageElementPanel) {
                 CmsContainerPageElementPanel elementWidget = (CmsContainerPageElementPanel)widget;

@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
+import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.publish.client.CmsPublishDialog;
@@ -241,6 +242,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         Map<String, String> fieldValues,
                         Set<String> editedFields) {
 
+                        if (CmsInheritanceContainerEditor.getInstance() != null) {
+                            CmsInheritanceContainerEditor.getInstance().onSettingsEdited();
+                        }
                         m_controller.reloadElementWithSettings(
                             elementWidget,
                             elementBean.getClientId(),
