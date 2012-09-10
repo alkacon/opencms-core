@@ -226,6 +226,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /** The close command. */
     protected Command m_closeCommand;
 
+    /** Flag which indicates whether the notification widget has already been installed. */
+    protected boolean m_notificationWidgetInstalled;
+
     /** The window width. */
     protected int m_windowWidth;
 
@@ -466,20 +469,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void catchNotifications() {
 
-        if (m_catchNotifications) {
-            // Calling this method more than once should have no effect
-            return;
-        }
         m_catchNotifications = true;
         if (isShowing()) {
-            // remember current notification widget
-            m_parentNotificationWidget = CmsNotification.get().getWidget();
-            // create our own notification overlay
-            if (m_ownNotificationWidget == null) {
-                m_ownNotificationWidget = createDialogNotificationWidget();
-            }
-            add(m_ownNotificationWidget);
-            CmsNotification.get().setWidget(m_ownNotificationWidget);
+            installNotificationWidget();
         }
         if (m_closingHandlerRegistration == null) {
             // when closing the dialog
@@ -1196,6 +1188,25 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         // Adopt.
         adopt(child);
+    }
+
+    /** 
+     * Sets the notification widget.<p>
+     */
+    protected void installNotificationWidget() {
+
+        if (m_notificationWidgetInstalled) {
+            return;
+        }
+        // remember current notification widget
+        m_parentNotificationWidget = CmsNotification.get().getWidget();
+        // create our own notification overlay
+        if (m_ownNotificationWidget == null) {
+            m_ownNotificationWidget = createDialogNotificationWidget();
+        }
+        add(m_ownNotificationWidget);
+        CmsNotification.get().setWidget(m_ownNotificationWidget);
+        m_notificationWidgetInstalled = true;
     }
 
     /**
