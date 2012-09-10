@@ -509,8 +509,10 @@ public class CmsSolrQuery extends SolrQuery {
             setHighlightSimplePost(m_highlightInfo.getSimplePost());
             setHighlightSimplePre(m_highlightInfo.getSimplePre());
             setHighlightSnippets(m_highlightInfo.getSnippets());
-            for (String field : m_highlightInfo.getFields()) {
-                addHighlightField(field);
+            if ((m_highlightInfo.getFields() != null) && (m_highlightInfo.getFields().length > 0)) {
+                for (String field : m_highlightInfo.getFields()) {
+                    addHighlightField(field);
+                }
             }
         }
     }
