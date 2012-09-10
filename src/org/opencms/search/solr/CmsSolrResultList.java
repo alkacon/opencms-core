@@ -376,7 +376,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         // perform the highlighting
         if ((header != null) && ((hli != null) && hli.isHighlighting())) {
             header.add(HighlightParams.HIGHLIGHT, "on");
-            header.add(HighlightParams.FIELDS, CmsStringUtil.arrayAsString(hli.getFields(), ","));
+            if (hli.getFields() != null) {
+                header.add(HighlightParams.FIELDS, CmsStringUtil.arrayAsString(hli.getFields(), ","));
+            }
             header.add(HighlightParams.FRAGSIZE, new Integer(hli.getFragSize()));
             header.add(HighlightParams.FIELD_MATCH, new Boolean(hli.getReqFieldMatch()));
             header.add(HighlightParams.SIMPLE_POST, hli.getSimplePost());
