@@ -47,6 +47,7 @@ import java.util.Map;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.common.params.CommonParams;
+import org.apache.solr.common.params.HighlightParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
 
 /**
@@ -55,6 +56,226 @@ import org.apache.solr.common.params.ModifiableSolrParams;
  * @since 8.5.0
  */
 public class CmsSolrQuery extends SolrQuery {
+
+    /**
+     * A helper bean to store and restore the highlight query parameter information.<p>
+     */
+    public class HighlightInfo {
+
+        /** {@link HighlightParams#FIELDS} */
+        private String[] m_fields;
+
+        /** {@link HighlightParams#FRAGSIZE} */
+        private int m_fragSize;
+
+        /** Signals whether highlighting is on or not. */
+        private boolean m_highlighting;
+
+        /** {@link HighlightParams#FIELD_MATCH} */
+        private boolean m_reqFieldMatch;
+
+        /** {@link HighlightParams#SIMPLE_POST} */
+        private String m_simplePost;
+
+        /** {@link HighlightParams#SIMPLE_PRE} */
+        private String m_simplePre;
+
+        /** {@link HighlightParams#SNIPPETS} */
+        private int m_snippets;
+
+        /**
+         * Default constructor.<p>
+         */
+        public HighlightInfo() {
+
+            // noop
+        }
+
+        /**
+         * Public constructor.<p>
+         * 
+         * @param highlighting
+         * @param reqFieldMatch 
+         * @param fields
+         * @param fragSize
+         * @param simplePost
+         * @param simplePre
+         * @param snippets
+         */
+        public HighlightInfo(
+            boolean highlighting,
+            boolean reqFieldMatch,
+            String[] fields,
+            int fragSize,
+            String simplePost,
+            String simplePre,
+            int snippets) {
+
+            m_highlighting = highlighting;
+            m_reqFieldMatch = reqFieldMatch;
+            m_fields = fields;
+            m_fragSize = fragSize;
+            m_simplePost = simplePost;
+            m_simplePre = simplePre;
+            m_snippets = snippets;
+        }
+
+        /**
+         * Public constructor using the OpenCms Solr query as input base.<p>
+         * 
+         * @param cmsSolrQuery the OpenCms Solr query
+         */
+        public HighlightInfo(CmsSolrQuery cmsSolrQuery) {
+
+            m_highlighting = getHighlight();
+            m_reqFieldMatch = getHighlightRequireFieldMatch();
+            m_fields = getHighlightFields();
+            m_fragSize = getHighlightFragsize();
+            m_simplePost = getHighlightSimplePost();
+            m_simplePre = getHighlightSimplePre();
+            m_snippets = getHighlightSnippets();
+        }
+
+        /**
+         * Returns the fields.<p>
+         *
+         * @return the fields
+         */
+        public String[] getFields() {
+
+            return m_fields;
+        }
+
+        /**
+         * Returns the fragSize.<p>
+         *
+         * @return the fragSize
+         */
+        public int getFragSize() {
+
+            return m_fragSize;
+        }
+
+        /**
+         * Returns the reqFieldMatch.<p>
+         *
+         * @return the reqFieldMatch
+         */
+        public boolean getReqFieldMatch() {
+
+            return m_reqFieldMatch;
+        }
+
+        /**
+         * Returns the simplePost.<p>
+         *
+         * @return the simplePost
+         */
+        public String getSimplePost() {
+
+            return m_simplePost;
+        }
+
+        /**
+         * Returns the simplePre.<p>
+         *
+         * @return the simplePre
+         */
+        public String getSimplePre() {
+
+            return m_simplePre;
+        }
+
+        /**
+         * Returns the snippets.<p>
+         *
+         * @return the snippets
+         */
+        public int getSnippets() {
+
+            return m_snippets;
+        }
+
+        /**
+         * Returns the highlighting.<p>
+         *
+         * @return the highlighting
+         */
+        public boolean isHighlighting() {
+
+            return m_highlighting;
+        }
+
+        /**
+         * Sets the fields.<p>
+         *
+         * @param fields the fields to set
+         */
+        public void setFields(String[] fields) {
+
+            m_fields = fields;
+        }
+
+        /**
+         * Sets the fragSize.<p>
+         *
+         * @param fragSize the fragSize to set
+         */
+        public void setFragSize(int fragSize) {
+
+            m_fragSize = fragSize;
+        }
+
+        /**
+         * Sets the highlighting.<p>
+         *
+         * @param highlighting the highlighting to set
+         */
+        public void setHighlighting(boolean highlighting) {
+
+            m_highlighting = highlighting;
+        }
+
+        /**
+         * Sets the reqFieldMatch.<p>
+         *
+         * @param reqFieldMatch the reqFieldMatch to set
+         */
+        public void setReqFieldMatch(boolean reqFieldMatch) {
+
+            m_reqFieldMatch = reqFieldMatch;
+        }
+
+        /**
+         * Sets the simplePost.<p>
+         *
+         * @param simplePost the simplePost to set
+         */
+        public void setSimplePost(String simplePost) {
+
+            m_simplePost = simplePost;
+        }
+
+        /**
+         * Sets the simplePre.<p>
+         *
+         * @param simplePre the simplePre to set
+         */
+        public void setSimplePre(String simplePre) {
+
+            m_simplePre = simplePre;
+        }
+
+        /**
+         * Sets the snippets.<p>
+         *
+         * @param snippets the snippets to set
+         */
+        public void setSnippets(int snippets) {
+
+            m_snippets = snippets;
+        }
+    }
 
     /** The default query. */
     public static final String DEFAULT_QUERY = "*:*";
@@ -85,6 +306,9 @@ public class CmsSolrQuery extends SolrQuery {
 
     /** The filter queries that are currently used for this query. */
     private Map<String, String> m_filterQueries = new HashMap<String, String>();
+
+    /** The highlight info for this query. */
+    private HighlightInfo m_highlightInfo;
 
     /** The list of locales to search in. */
     private String[] m_locales;
@@ -207,6 +431,9 @@ public class CmsSolrQuery extends SolrQuery {
             addParameterMap(parameters);
         }
 
+        m_highlightInfo = new HighlightInfo(this);
+        setHighlight(false);
+
         // ensure the query returns at least the 'path' and the type 'field'
         ensureReturnFields();
     }
@@ -260,6 +487,24 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
+     * Sets and applies the given highlight info.<p>
+     */
+    public void applyHighlightInfo() {
+
+        if ((m_highlightInfo != null) && m_highlightInfo.isHighlighting()) {
+            setHighlight(m_highlightInfo.isHighlighting());
+            setHighlightFragsize(m_highlightInfo.getFragSize());
+            setHighlightRequireFieldMatch(m_highlightInfo.getReqFieldMatch());
+            setHighlightSimplePost(m_highlightInfo.getSimplePost());
+            setHighlightSimplePre(m_highlightInfo.getSimplePre());
+            setHighlightSnippets(m_highlightInfo.getSnippets());
+            for (String field : m_highlightInfo.getFields()) {
+                addHighlightField(field);
+            }
+        }
+    }
+
+    /**
      * Returns the categories.<p>
      *
      * @return the categories
@@ -287,6 +532,16 @@ public class CmsSolrQuery extends SolrQuery {
     public String getFacetDateGab() {
 
         return m_facetDateGab;
+    }
+
+    /**
+     * Returns the highlighInfo.<p>
+     *
+     * @return the highlighInfo
+     */
+    public HighlightInfo getHighlighInfo() {
+
+        return m_highlightInfo;
     }
 
     /**
