@@ -345,18 +345,18 @@ div.colorPicker{
 
 
 .entity .checkBoxStyle .widget{
-	top: 5px;
+	top: 9px;
 }
 .entity .entity .checkBoxStyle .widget{
-	top: 6px;
+	top: 10px;
 }
 
 .entity .entity .entity .checkBoxStyle .widget{
-	top: 3px;
+	top: 8px;
 }
 
 .entity .entity .entity .entity .checkBoxStyle .widget{
-	top: 4px;
+	top: 7px;
 }
 
 /** The "drag helper" parameters. */
