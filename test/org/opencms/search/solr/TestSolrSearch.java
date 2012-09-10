@@ -55,7 +55,6 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.schema.DateField;
 
@@ -541,7 +540,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // second run use Title sort order
         String lastTitle = null;
-        SolrQuery q = new SolrQuery(query);
+        CmsSolrQuery q = new CmsSolrQuery(null, query);
         q.addSortField("title-key", ORDER.asc);
         q.addSortField("score", ORDER.asc);
         results = index.search(getCmsObject(), q.getQuery());
@@ -559,7 +558,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // third run use date last modified
         long lastTime = 0;
-        q = new SolrQuery(query);
+        q = new CmsSolrQuery(null, query);
         q.setQueryType("dismax");
         q.addField("*,score");
         q.setRows(new Integer(100));
