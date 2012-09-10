@@ -579,8 +579,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     protected void removeDecorationWidget(Widget widget, int width) {
 
-        if (widget != null) {
-            m_decorationWidgets.remove(widget);
+        if ((widget != null) && m_decorationWidgets.remove(widget)) {
             m_decorationWidth -= width;
             initContent();
         }
