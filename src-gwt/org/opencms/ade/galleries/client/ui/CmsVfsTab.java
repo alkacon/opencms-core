@@ -200,6 +200,13 @@ public class CmsVfsTab extends A_CmsListTab {
         checkbox.addClickHandler(selectionHandler);
         dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
         dataValue.addButton(createSelectButton(selectionHandler));
+        if (getTabHandler().hasSelectResource()) {
+            dataValue.addButton(createSelectResourceButton(
+                vfsEntry.getSitePath(),
+                vfsEntry.getStructureId(),
+                vfsEntry.getDisplayName(),
+                "folder"));
+        }
         m_entryMap.put(result, vfsEntry);
         m_itemsByPath.put(vfsEntry.getSitePath(), result);
         result.setLeafStyle(false);

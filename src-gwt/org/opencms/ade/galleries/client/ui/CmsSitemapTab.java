@@ -140,11 +140,16 @@ public class CmsSitemapTab extends A_CmsListTab {
         dataValue.setUnselectable();
 
         CmsLazyTreeItem result = new CmsLazyTreeItem(dataValue, true);
-
-        //  dataValue.addButton(createSelectButton(selectionHandler));
+        if (getTabHandler().hasSelectResource()) {
+            dataValue.addButton(createSelectResourceButton(
+                sitemapEntry.getSitePath(),
+                sitemapEntry.getStructureId(),
+                sitemapEntry.getDisplayName(),
+                sitemapEntry.getType()));
+        }
         m_entryMap.put(result, sitemapEntry);
         //      m_itemsByPath.put(sitemapEntry.getSitePath(), result);
-        result.setLeafStyle(false);
+        result.setLeafStyle(!sitemapEntry.isFolder());
         result.setSmallView(true);
         if (sitemapEntry.hasChildren()) {
             for (CmsSitemapEntryBean child : sitemapEntry.getChildren()) {

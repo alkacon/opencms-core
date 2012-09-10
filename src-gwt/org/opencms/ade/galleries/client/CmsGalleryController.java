@@ -593,6 +593,17 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns if folders should be selectable.<p>
+     * 
+     * @return <code>true</code> if folders should be selectable
+     */
+    public boolean hasSelectFolder() {
+
+        // TODO: this needs to be an configured option
+        return true;
+    }
+
+    /**
      * Returns if resource entries in the search result are selectable.<p>
      * 
      * @return if resource entries in the search result are selectable

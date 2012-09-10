@@ -45,6 +45,7 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.LinkedHashMap;
 
@@ -150,6 +151,56 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * Special click handler to use with select button.<p>
+     */
+    protected class SelectHandler implements ClickHandler, DoubleClickHandler {
+
+        /** The id of the selected item. */
+        private String m_resourcePath;
+
+        /** The resource type of the selected item. */
+        private String m_resourceType;
+
+        /** The structure id. */
+        private CmsUUID m_structureId;
+
+        /** The resource title. */
+        private String m_title;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param resourcePath the item resource path 
+         * @param structureId the structure id
+         * @param title the resource title
+         * @param resourceType the item resource type
+         */
+        public SelectHandler(String resourcePath, CmsUUID structureId, String title, String resourceType) {
+
+            m_resourcePath = resourcePath;
+            m_structureId = structureId;
+            m_resourceType = resourceType;
+            m_title = title;
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+         */
+        public void onClick(ClickEvent event) {
+
+            getTabHandler().selectResource(m_resourcePath, m_structureId, m_title, m_resourceType);
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.DoubleClickHandler#onDoubleClick(com.google.gwt.event.dom.client.DoubleClickEvent)
+         */
+        public void onDoubleClick(DoubleClickEvent event) {
+
+            getTabHandler().selectResource(m_resourcePath, m_structureId, m_title, m_resourceType);
+        }
+    }
+
+    /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
     interface I_CmsListTabUiBinder extends UiBinder<Widget, A_CmsListTab> {
@@ -223,6 +274,30 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         initWidget(uiBinder.createAndBindUi(this));
         m_scrollList = createScrollList();
         m_list.add(m_scrollList);
+    }
+
+    /**
+     * Creates a button widget to select the specified resource.<p>
+     * 
+     * @param resourcePath the item resource path 
+     * @param structureId the structure id
+     * @param title the resource title
+     * @param resourceType the item resource type
+     * 
+     * @return the initialized select resource button
+     */
+    protected CmsPushButton createSelectResourceButton(
+        String resourcePath,
+        CmsUUID structureId,
+        String title,
+        String resourceType) {
+
+        CmsPushButton result = new CmsPushButton();
+        result.setImageClass(I_CmsImageBundle.INSTANCE.style().checkIcon());
+        result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        result.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
+        result.addClickHandler(new SelectHandler(resourcePath, structureId, title, resourceType));
+        return result;
     }
 
     /**

@@ -78,6 +78,16 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Returns if this tab should offer select resource buttons.<p>
+     * 
+     * @return <code>true</code> if this tab should offer select resource buttons
+     */
+    public boolean hasSelectResource() {
+
+        return m_controller.hasSelectFolder();
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.A_CmsTabHandler#onSelection()
      */
     @Override

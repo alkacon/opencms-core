@@ -71,6 +71,16 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Returns if this tab should offer select resource buttons.<p>
+     * 
+     * @return <code>true</code> if this tab should offer select resource buttons
+     */
+    public boolean hasSelectResource() {
+
+        return m_controller.hasSelectFolder();
+    }
+
+    /**
      * This method is called when a folder is selected or deselected in the VFS tab.<p>
      * 
      * @param folder the folder which is selected or deselected 
@@ -114,5 +124,4 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
         m_controller.removeFolderParam(paramKey);
     }
-
 }

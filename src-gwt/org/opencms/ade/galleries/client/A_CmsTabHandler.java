@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -112,6 +113,19 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
      * @param paramKey the parameter key
      */
     public abstract void removeParam(String paramKey);
+
+    /**
+     * Selects the given resource and sets its path into the xml-content field or editor link.<p>
+     * 
+     * @param resourcePath the item resource path 
+     * @param structureId the structure id
+     * @param title the resource title
+     * @param resourceType the item resource type
+     */
+    public void selectResource(String resourcePath, CmsUUID structureId, String title, String resourceType) {
+
+        m_controller.selectResource(resourcePath, structureId, title, resourceType);
+    }
 
     /**
      * Selects the result tab.<p>
