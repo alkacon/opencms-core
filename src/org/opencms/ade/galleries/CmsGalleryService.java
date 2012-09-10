@@ -443,7 +443,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             List<CmsVfsEntryBean> result = new ArrayList<CmsVfsEntryBean>();
             for (CmsResource res : resources) {
                 String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                result.add(new CmsVfsEntryBean(cms.getSitePath(res), title, false, isEditable(cms, res)));
+                result.add(new CmsVfsEntryBean(cms.getSitePath(res), res.getStructureId(), title, false, isEditable(
+                    cms,
+                    res)));
             }
             return result;
         } catch (Throwable e) {
@@ -1012,19 +1014,22 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         List<CmsVfsEntryBean> rootFolders = new ArrayList<CmsVfsEntryBean>();
         CmsObject cms = getCmsObject();
         try {
+            CmsResource rootFolderResource = getCmsObject().readResource("/");
             String title = cms.readPropertyObject("/", CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-            rootFolders.add(new CmsVfsEntryBean("/", title, true, isEditable(
+            rootFolders.add(new CmsVfsEntryBean("/", rootFolderResource.getStructureId(), title, true, isEditable(
                 getCmsObject(),
-                getCmsObject().readResource("/"))));
+                rootFolderResource)));
             String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
             if (sharedFolder != null) {
                 String sharedFolderTitle = org.opencms.workplace.Messages.get().getBundle().key(
                     org.opencms.workplace.Messages.GUI_SHARED_TITLE_0);
+                CmsResource sharedFolderRes = getCmsObject().readResource(sharedFolder);
                 CmsVfsEntryBean sharedFolderBean = new CmsVfsEntryBean(
                     sharedFolder,
+                    sharedFolderRes.getStructureId(),
                     sharedFolderTitle,
                     true,
-                    isEditable(getCmsObject(), getCmsObject().readResource(sharedFolder)));
+                    isEditable(getCmsObject(), sharedFolderRes));
                 rootFolders.add(sharedFolderBean);
             }
 

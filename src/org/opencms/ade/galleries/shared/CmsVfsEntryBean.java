@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries.shared;
 
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -45,6 +46,19 @@ public class CmsVfsEntryBean implements IsSerializable {
     /** The site path of this VFS entry. */
     private String m_sitePath;
 
+    /** The structure id. */
+    private CmsUUID m_structureId;
+
+    /**
+     * Returns the structure id.<p>
+     *
+     * @return the structure id
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
+    }
+
     /** The folder title. */
     private String m_title;
 
@@ -52,13 +66,15 @@ public class CmsVfsEntryBean implements IsSerializable {
      * Creates a new VFS entry bean.<p>
      * 
      * @param sitePath the site path
+     * @param structureId the structure id
      * @param title the folder title
      * @param isRoot flag indicating whether this is entry should be displayed at the top level of the tree
      * @param editable <code>true</code> if the user has write permissions to the folder
      */
-    public CmsVfsEntryBean(String sitePath, String title, boolean isRoot, boolean editable) {
+    public CmsVfsEntryBean(String sitePath, CmsUUID structureId, String title, boolean isRoot, boolean editable) {
 
         m_sitePath = sitePath;
+        m_structureId = structureId;
         m_isRoot = isRoot;
         m_editable = editable;
         m_title = title;
