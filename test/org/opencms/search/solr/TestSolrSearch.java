@@ -269,6 +269,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query = "q=+text:>>SearchEgg1<< +parent-folders:/folder1/";
         results = index.search(getCmsObject(), query);
         assertEquals(0, results.size());
+
+        OpenCms.getSearchManager().removeSearchIndex(index);
     }
 
     /**
@@ -281,14 +283,9 @@ public class TestSolrSearch extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching with limiting to time ranges");
 
-        // TODO There should be a way to limit searches by time ranges in Solr too.
-        //        CmsLuceneIndex index = OpenCms.getSearchManager().getIndexLucene(AllTests.SOLR_OFFLINE);
-        //        index.addConfigurationParameter(A_CmsSearchIndex.TIME_RANGE, "true");
-        //        assertTrue("Index '" + AllTests.SOLR_OFFLINE + "' not checking time range as expected", index.isCheckingTimeRange());
-
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
-        String query = "q=+text:OpenCms";
-        List<CmsSearchResource> results = index.search(getCmsObject(), query);
+        String query = "?rows=50&q=+text:OpenCms";
+        CmsSolrResultList results = index.search(getCmsObject(), query);
         int orgCount = results.size();
 
         // check min date created
@@ -309,18 +306,19 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // check max date created
         String maxDate = DateField.formatExternal(new Date(stamp.getTime() - 1000));
-        query = "q=+text:OpenCms  +created:[* TO " + maxDate + "]";
+        query = "?rows=50&q=+text:OpenCms  +created:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount, results.size());
 
-        query = "q=+text:OpenCms  +created:[* TO NOW]";
+        query = "?rows=50&q=+text:OpenCms  +created:[* TO NOW]";
         results = index.search(getCmsObject(), query);
+        AllSolrTests.printResults(cms, results, false);
         assertEquals(orgCount + 1, results.size());
 
         // check min date last modified
         stamp = new Date();
         date = DateField.formatExternal(stamp);
-        query = "q=+text:OpenCms +lastmodified:[" + date + " TO NOW]";
+        query = "?rows=50&q=+text:OpenCms +lastmodified:[" + date + " TO NOW]";
         results = index.search(getCmsObject(), query);
         assertEquals(0, results.size());
 
@@ -337,11 +335,11 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // check max date last modified
         maxDate = DateField.formatExternal(new Date(stamp.getTime() - 1000));
-        query = "q=+text:OpenCms +lastmodified:[* TO " + maxDate + "]";
+        query = "?rows=50&q=+text:OpenCms +lastmodified:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount, results.size());
 
-        query = "q=+text:OpenCms +lastmodified:[* TO NOW]";
+        query = "?rows=50&q=+text:OpenCms +lastmodified:[* TO NOW]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount + 1, results.size());
     }
@@ -356,12 +354,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching with optimized limiting to time ranges");
 
-        // TODO There should be a way to limit searches by time ranges in Solr too.        
-        //      CmsLuceneIndex index = OpenCms.getSearchManager().getIndexLucene(AllTests.SOLR_OFFLINE);
-        //      index.addConfigurationParameter(A_CmsSearchIndex.TIME_RANGE, "false");
-        //      assertFalse("Index '" + AllTests.SOLR_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
-
-        String query = "q=+text:OpenCms";
+        String query = "?rows=50&q=+text:OpenCms";
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
         List<CmsSearchResource> results = index.search(getCmsObject(), query);
         int orgCount = results.size();
@@ -369,7 +362,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         // check min date created
         Date stamp = new Date();
         String date = DateField.formatExternal(new Date(stamp.getTime() - 20000));
-        query = "q=+text:OpenCms +created:[" + date + " TO NOW]";
+        query = "?rows=50&q=+text:OpenCms +created:[" + date + " TO NOW]";
         results = index.search(getCmsObject(), query);
         // we must find one match because of the previous time range test
         assertEquals(1, results.size());
@@ -386,13 +379,13 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // check max date created (must move back one day because of granularity level in optimized date range search)
         String maxDate = DateField.formatExternal(new Date(stamp.getTime() - (1000 * 60 * 60 * 24)));
-        query = "q=+text:OpenCms +created:[* TO " + maxDate + "]";
+        query = "?rows=50&q=+text:OpenCms +created:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         // we will find one result less then before because of the previous date range rest
         assertEquals(orgCount - 1, results.size());
 
         maxDate = DateField.formatExternal(new Date());
-        query = "q=+text:OpenCms +created:[* TO " + maxDate + "]";
+        query = "?rows=50&q=+text:OpenCms +created:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount + 1, results.size());
 
@@ -402,7 +395,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // move to tomorrow because of granularity level in optimized date search
         String minDate = DateField.formatExternal(new Date(newStamp.getTime() + (1000 * 60 * 60 * 24)));
-        query = "q=+text:OpenCms +lastmodified:[ " + minDate + " TO NOW]";
+        query = "?rows=50&q=+text:OpenCms +lastmodified:[ " + minDate + " TO NOW]";
         results = index.search(getCmsObject(), query);
         assertEquals(0, results.size());
 
@@ -414,18 +407,18 @@ public class TestSolrSearch extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms, report);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        query = "q=+text:OpenCms +lastmodified:[" + date + " TO NOW]";
+        query = "?rows=50&q=+text:OpenCms +lastmodified:[" + date + " TO NOW]";
         results = index.search(getCmsObject(), query);
         // TODO This test finds two results for Lucene, but it should only be one
         // TODO This variant is correct for Solr
         assertEquals(1, results.size());
 
         maxDate = DateField.formatExternal(new Date(newStamp.getTime() - (1000 * 60 * 60 * 24)));
-        query = "q=+text:OpenCms +lastmodified:[* TO " + maxDate + "]";
+        query = "?rows=50&q=+text:OpenCms +lastmodified:[* TO " + maxDate + "]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount - 1, results.size());
 
-        query = "q=+text:OpenCms +lastmodified:[* TO NOW]";
+        query = "?rows=50&q=+text:OpenCms +lastmodified:[* TO NOW]";
         results = index.search(getCmsObject(), query);
         assertEquals(orgCount + 1, results.size());
     }
@@ -453,7 +446,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         int[] expected = new int[] {7, 4, 1, 5, 8, 11, 12};
 
         for (int i = 0; i < expected.length; i++) {
-            String query = "q=+text:OpenCms AND (";
+            String query = "?rows=50&q=+text:OpenCms AND (";
             int expect = expected[i];
             String[] rootList = roots[i];
             for (int j = 0; j < rootList.length; j++) {
