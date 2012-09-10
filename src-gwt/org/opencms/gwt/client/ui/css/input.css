@@ -13,6 +13,7 @@ input.textBox {
 	line-height: value("constants.css.lineHeight");
 	font-size: value("constants.css.fontSize");
 	box-shadow:none;
+	outline: none;
 }
 input.textBox:focus{
 	box-shadow:none;
@@ -316,10 +317,8 @@ div.selectBoxOpener {
 	border: 1px solid #7788AA;
 	border-radius: 3px;
 	margin: 0 2px;
-}
-
-.dataValue {
 	cursor: pointer;
+	position: relative;
 }
 
 .categoryScrollPanel{
