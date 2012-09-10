@@ -261,6 +261,7 @@
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
    <dynamicField name="*_s"          type="string"       indexed="true"  stored="true"/>
    <dynamicField name="*_l"          type="long"         indexed="true"  stored="true"/>
+   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" multiValued="true" termVectors="on" termPositions="on" termOffsets="on" maxChars="1000" />
    <dynamicField name="*_t"          type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_txt"        type="text_general" indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_en"         type="text_en"      indexed="true"  stored="true" multiValued="true" />
@@ -305,5 +306,6 @@
  <copyField source="*_prop"    dest="text" />
  <copyField source="content"   dest="text" />
  <copyField source="category"  dest="text" />
+ <copyField source="category"  dest="category_exact" />
 
 </schema>
