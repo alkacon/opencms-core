@@ -79,7 +79,7 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
     private Map<String, INFO> m_infosByName = new HashMap<String, INFO>();
 
     /** Static counter used for generating ids. */
-    private static long idCounter = 0;
+    private static long idCounter;
 
     /**
      * Constructor.<p>

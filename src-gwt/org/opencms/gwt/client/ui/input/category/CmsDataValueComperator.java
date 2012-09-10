@@ -27,25 +27,29 @@
 
 package org.opencms.gwt.client.ui.input.category;
 
-import org.opencms.gwt.client.ui.input.category.CmsCategoryTree.SortParams;
-
 import java.util.Comparator;
 
-/***/
-class CmsCategoryComperator implements Comparator<CmsDataValue> {
+/**
+ * Data value comparator.<p> 
+ */
+class CmsDataValueComperator implements Comparator<CmsDataValue> {
 
-    /**The parameter string. */
-    private String m_param;
+    /** The parameter index to compare. */
+    private int m_paramIndex;
+
+    /** Flag to indicate sorting ascending or descending. */
+    private boolean m_ascending;
 
     /**
      * Default Constructor.<p>
      * 
-     * @param param the parameter string
+     * @param paramIndex the parameter index to compare
+     * @param ascending the sort order
      */
-    public CmsCategoryComperator(String param) {
+    public CmsDataValueComperator(int paramIndex, boolean ascending) {
 
-        m_param = param;
-
+        m_paramIndex = paramIndex;
+        m_ascending = ascending;
     }
 
     /**
@@ -54,27 +58,19 @@ class CmsCategoryComperator implements Comparator<CmsDataValue> {
     public int compare(CmsDataValue o1, CmsDataValue o2) {
 
         int result = 0;
-        SortParams sort = SortParams.valueOf(m_param);
-        switch (sort) {
-            case title_asc:
-                result = o1.getLabel().compareTo(o2.getLabel());
-                break;
-            case title_desc:
-                result = o1.getLabel().compareTo(o2.getLabel());
-                result = -result;
-                break;
-            case path_asc:
-                result = o1.getParameter(1).compareTo(o2.getParameter(1));
-                break;
-            case path_desc:
-                result = o1.getParameter(1).compareTo(o2.getParameter(1));
-                result = -result;
-                break;
-            default:
-                // not supported
-                return 0;
-
+        String val1, val2;
+        if (m_paramIndex == 0) {
+            val1 = o1.getLabel();
+            val2 = o2.getLabel();
+        } else {
+            val1 = o1.getParameter(m_paramIndex);
+            val2 = o2.getParameter(m_paramIndex);
         }
-        return result;
+        if (val1 != null) {
+            result = val1.compareTo(val2);
+        } else if (val2 != null) {
+            result = 1;
+        }
+        return m_ascending ? result : -result;
     }
 }

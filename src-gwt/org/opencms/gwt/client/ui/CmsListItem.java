@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.category.CmsDataValue;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Collections;
@@ -44,13 +45,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -92,21 +91,11 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     }
 
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    protected interface I_CmsSimpleListItemUiBinder extends UiBinder<CmsFlowPanel, CmsListItem> {
-        // GWT interface, nothing to do here
-    }
-
     /** The width of a checkbox. */
     private static final int CHECKBOX_WIDTH = 20;
 
     /** The CSS bundle used for this widget. */
     private static final I_CmsListItemCss CSS = I_CmsLayoutBundle.INSTANCE.listItemCss();
-
-    /** The ui-binder instance for this class. */
-    private static I_CmsSimpleListItemUiBinder uiBinder = GWT.create(I_CmsSimpleListItemUiBinder.class);
 
     /** The checkbox of this list item, or null if there is no checkbox. */
     protected CmsCheckBox m_checkbox;
@@ -144,12 +133,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** The move handle. */
     private MoveHandle m_moveHandle;
 
+    /** Indicating this box has a reduced height. */
+    private boolean m_smallView;
+
     /** 
      * Default constructor.<p>
      */
     public CmsListItem() {
 
-        m_panel = uiBinder.createAndBindUi(this);
+        m_panel = new CmsFlowPanel("li");
+        m_panel.setStyleName(I_CmsLayoutBundle.INSTANCE.listTreeCss().listTreeItem());
         initWidget(m_panel);
     }
 
@@ -300,6 +293,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
+     * Returns the main widget.<p>
+     * 
+     * @return the main widget
+     */
+    public Widget getMainWidget() {
+
+        return m_mainWidget;
+    }
+
+    /**
      * Returns the move handle.<p>
      * 
      * @return the move handle
@@ -434,7 +437,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     public void setSmallView(boolean smallView) {
 
-        if (smallView) {
+        m_smallView = smallView;
+        if (m_smallView) {
             m_decoratedPanel.addDecorationBoxStyle(I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBoxSmall());
         }
     }
@@ -444,13 +448,18 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     public void truncate(String textMetricsPrefix, int widgetWidth) {
 
+        boolean hasDataValue = m_mainWidget instanceof CmsDataValue;
         for (Widget widget : m_panel) {
             if (!(widget instanceof I_CmsTruncable)) {
                 continue;
             }
             int width = widgetWidth - 4; // just to be on the safe side
             if (widget instanceof CmsList<?>) {
-                width -= 25; // 25px left margin
+                if (hasDataValue) {
+                    width = widgetWidth;
+                } else {
+                    width -= 25; // 25px left margin
+                }
             }
             ((I_CmsTruncable)widget).truncate(textMetricsPrefix, width);
         }
@@ -535,6 +544,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         }
         m_decoratedPanel = new CmsSimpleDecoratedPanel(m_decorationWidth, m_mainWidget, m_decorationWidgets);
         m_panel.insert(m_decoratedPanel, 0);
+        setSmallView(m_smallView);
     }
 
     /**
@@ -559,6 +569,21 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         addMainWidget(mainWidget);
         initContent();
+    }
+
+    /**
+     * Removes a decoration widget.<p>
+     * 
+     * @param widget the widget to remove
+     * @param width the widget width
+     */
+    protected void removeDecorationWidget(Widget widget, int width) {
+
+        if (widget != null) {
+            m_decorationWidgets.remove(widget);
+            m_decorationWidth -= width;
+            initContent();
+        }
     }
 
     /**

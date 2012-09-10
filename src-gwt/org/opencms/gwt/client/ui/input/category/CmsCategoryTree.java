@@ -127,8 +127,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
          */
         public CategoryValueChangeHandler() {
 
-            // TODO: Auto-generated constructor stub
-
+            // nothing to do
         }
 
         /**
@@ -141,28 +140,14 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
             cancelQuickFilterTimer();
             if (event.getSource() == m_sortSelectBox) {
 
-                List<CmsDataValue> categories = new ArrayList<CmsDataValue>();
-                Iterator<CmsDataValue> it = m_categories.values().iterator();
+                List<CmsTreeItem> categories = new ArrayList<CmsTreeItem>();
+                Iterator<CmsTreeItem> it = m_categories.values().iterator();
                 while (it.hasNext()) {
                     categories.add(it.next());
                 }
                 m_event = event;
                 SortParams sort = SortParams.valueOf(event.getValue());
-                switch (sort) {
-                    case tree:
-                        m_listView = false;
-                        m_quickSearch.setFormValueAsString("");
-                        updateContentTree(m_resultList, m_selectedCategories);
-                        break;
-                    default:
-                        m_listView = true;
-                        categories = getFilteredCategories(hasQuickFilter()
-                        ? m_quickSearch.getFormValueAsString()
-                        : null);
-                        Collections.sort(categories, new CmsCategoryComperator(event.getValue()));
-                        updateContentList(categories, m_selectedCategories);
-                        break;
-                }
+                sort(categories, sort);
             }
             if ((event.getSource() == m_quickSearch)) {
                 if (!m_listView) {
@@ -298,7 +283,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     private static I_CmsCategoryTreeUiBinder uiBinder = GWT.create(I_CmsCategoryTreeUiBinder.class);
 
     /** Map of categories. */
-    protected Map<String, CmsDataValue> m_categories;
+    protected Map<String, CmsTreeItem> m_categories;
 
     /** The event at the moment. */
     protected ValueChangeEvent<String> m_event;
@@ -550,45 +535,25 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
      * @param categoriesBeans the updates list of categories tree item beans
      * @param selectedCategories the categories to select in the list by update
      */
-    public void updateContentList(List<CmsDataValue> categoriesBeans, List<String> selectedCategories) {
+    public void updateContentList(List<CmsTreeItem> categoriesBeans, List<String> selectedCategories) {
 
         m_scrollList.clearList();
         // clearList();
         if (m_categories == null) {
-            m_categories = new HashMap<String, CmsDataValue>();
+            m_categories = new HashMap<String, CmsTreeItem>();
         }
         if ((categoriesBeans != null) && !categoriesBeans.isEmpty()) {
-            for (CmsDataValue dataValue : categoriesBeans) {
-
-                m_categories.put(dataValue.getParameter(1), dataValue);
-                // the checkbox
-                CmsCheckBox checkBox = new CmsCheckBox();
-                boolean isPartofPath = false;
-                Iterator<String> it = selectedCategories.iterator();
-                while (it.hasNext()) {
-                    String path = it.next();
-                    if (path.contains(dataValue.getParameter(1))) {
-                        isPartofPath = true;
-                    }
-                }
-                if (isPartofPath) {
-                    checkBox.setChecked(true);
-                }
-                if (!isEnabled()) {
-                    checkBox.disable(m_disabledReason);
-                }
-                // set the category list item and add to list 
-                CmsTreeItem listItem = new CmsTreeItem(false, checkBox, dataValue);
-                checkBox.addValueChangeHandler(new CheckBoxValueChangeHandler(listItem));
-                listItem.setSmallView(true);
-                listItem.setId(dataValue.getParameter(1));
-                addWidgetToList(listItem);
+            for (CmsTreeItem dataValue : categoriesBeans) {
+                dataValue.removeOpener();
+                m_categories.put(((CmsDataValue)dataValue.getMainWidget()).getParameter(1), dataValue);
+                m_scrollList.add(dataValue);
                 CmsScrollPanel scrollparent = (CmsScrollPanel)m_scrollList.getParent();
                 scrollparent.onResize();
             }
         } else {
             showIsEmptyLabel();
         }
+        scheduleResize();
     }
 
     /**
@@ -601,38 +566,21 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
         m_scrollList.clearList();
         if (m_categories == null) {
-            m_categories = new HashMap<String, CmsDataValue>();
+            m_categories = new HashMap<String, CmsTreeItem>();
         }
         if ((treeEntries != null) && !treeEntries.isEmpty()) {
             // add the first level and children
             for (CmsCategoryTreeEntry category : treeEntries) {
                 // set the category tree item and add to list 
                 CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
-                addWidgetToList(treeItem);
+                m_scrollList.add(treeItem);
                 addChildren(treeItem, category.getChildren(), selectedCategories);
                 treeItem.setOpen(true);
             }
         } else {
             showIsEmptyLabel();
         }
-
-    }
-
-    /**
-     * Add a list item widget to the list panel.<p>
-     * 
-     * @param listItem the list item to add
-     */
-    protected void addWidgetToList(Widget listItem) {
-
-        m_scrollList.add(listItem);
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            public void execute() {
-
-                m_list.onResize();
-            }
-        });
+        scheduleResize();
     }
 
     /**
@@ -790,18 +738,18 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
      * 
      * @return the filtered category beans 
      */
-    protected List<CmsDataValue> getFilteredCategories(String filter) {
+    protected List<CmsTreeItem> getFilteredCategories(String filter) {
 
-        List<CmsDataValue> result = new ArrayList<CmsDataValue>();
+        List<CmsTreeItem> result = new ArrayList<CmsTreeItem>();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter)) {
-            result = new ArrayList<CmsDataValue>();
-            for (CmsDataValue category : m_categories.values()) {
-                if (category.matchesFilter(filter, 0, 1)) {
+            result = new ArrayList<CmsTreeItem>();
+            for (CmsTreeItem category : m_categories.values()) {
+                if (((CmsDataValue)category.getMainWidget()).matchesFilter(filter, 0, 1)) {
                     result.add(category);
                 }
             }
         } else {
-            Iterator<CmsDataValue> it = m_categories.values().iterator();
+            Iterator<CmsTreeItem> it = m_categories.values().iterator();
             while (it.hasNext()) {
                 result.add(it.next());
             }
@@ -871,11 +819,10 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
      */
     protected void quickSearch() {
 
-        List<CmsDataValue> categories = new ArrayList<CmsDataValue>();
+        List<CmsTreeItem> categories = new ArrayList<CmsTreeItem>();
         if ((m_quickSearch != null)) {
             categories = getFilteredCategories(hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
-            Collections.sort(categories, new CmsCategoryComperator(m_event.getValue()));
-            updateContentList(categories, m_selectedCategories);
+            sort(categories, SortParams.valueOf(m_event.getValue()));
         }
     }
 
@@ -1001,6 +948,47 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     }
 
     /**
+     * Sorts a list of tree items according to the sort parameter.<p>
+     * 
+     * @param items the items to sort
+     * @param sort the sort parameter
+     */
+    protected void sort(List<CmsTreeItem> items, SortParams sort) {
+
+        int sortParam = -1;
+        boolean ascending = true;
+        switch (sort) {
+            case tree:
+                m_listView = false;
+                m_quickSearch.setFormValueAsString("");
+                updateContentTree(m_resultList, m_selectedCategories);
+                break;
+            case title_asc:
+                sortParam = 0;
+                break;
+            case title_desc:
+                sortParam = 0;
+                ascending = false;
+                break;
+            case path_asc:
+                sortParam = 1;
+                break;
+            case path_desc:
+                sortParam = 1;
+                ascending = false;
+                break;
+            default:
+                break;
+        }
+        if (sortParam != -1) {
+            m_listView = true;
+            items = getFilteredCategories(hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
+            Collections.sort(items, new CmsListItemDataComparator(sortParam, ascending));
+            updateContentList(items, m_selectedCategories);
+        }
+    }
+
+    /**
      * Builds a tree item for the given category.<p>
      * 
      * @param category the category
@@ -1012,8 +1000,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
         // generate the widget that should be shown in the list
         CmsDataValue dataValue = new CmsDataValue(600, 3, null, category.getTitle(), category.getPath());
-        // add it to the list of all categories
-        m_categories.put(category.getPath(), dataValue);
+
         // create the check box for this item 
         CmsCheckBox checkBox = new CmsCheckBox();
         // if it has to be selected, select it 
@@ -1040,6 +1027,8 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         // set the right style for the small view
         treeItem.setSmallView(true);
         treeItem.setId(category.getPath());
+        // add it to the list of all categories
+        m_categories.put(category.getPath(), treeItem);
         return treeItem;
     }
 
@@ -1068,6 +1057,20 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         }
 
         return test;
+    }
+
+    /**
+     * Schedules the execution of onResize deferred.<p>
+     */
+    private void scheduleResize() {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                m_list.onResize();
+            }
+        });
     }
 
     /**

@@ -139,9 +139,9 @@ public class CmsTreeItem extends CmsListItem {
     /**
      * Creates a new tree item with a 24px wide icon.<p>
      *  
-     * @param showOpeners
-     * @param mainWidget
-     * @param icon
+     * @param showOpeners if <code>true</code>, show open/close icons 
+     * @param mainWidget the main widget
+     * @param icon the icon style name
      */
     public CmsTreeItem(boolean showOpeners, Widget mainWidget, String icon) {
 
@@ -381,19 +381,6 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
-     */
-    @Override
-    public void onDragCancel() {
-
-        CmsTreeItem parent = getParentItem();
-        if (parent != null) {
-            parent.insertChild(this, parent.getItemPosition(this));
-        }
-        super.onDragCancel();
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.CmsListItem#getParentTarget()
      */
     @Override
@@ -484,6 +471,19 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#onDragCancel()
+     */
+    @Override
+    public void onDragCancel() {
+
+        CmsTreeItem parent = getParentItem();
+        if (parent != null) {
+            parent.insertChild(this, parent.getItemPosition(this));
+        }
+        super.onDragCancel();
+    }
+
+    /**
      * Removes an item from the list.<p>
      * 
      * @param item the item to remove
@@ -554,6 +554,14 @@ public class CmsTreeItem extends CmsListItem {
     public CmsTreeItem removeChild(String itemId) {
 
         return removeChild(m_children.getItem(itemId));
+    }
+
+    /**
+     * Removes the opener widget.<p>
+     */
+    public void removeOpener() {
+
+        removeDecorationWidget(m_opener, OPENER_WIDTH);
     }
 
     /**
