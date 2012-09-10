@@ -32,6 +32,7 @@ import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
 import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
+import org.opencms.ade.galleries.client.CmsSitemapTabHandler;
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
@@ -131,6 +132,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The show preview button. */
     private CmsPushButton m_showPreview;
+
+    /** The sitemap tab. */
+    private CmsSitemapTab m_sitemapTab;
 
     /** The types tab. */
     private CmsTypesTab m_typesTab;
@@ -294,6 +298,11 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_vfsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_vfsTab, Messages.get().key(Messages.GUI_TAB_TITLE_VFS_0));
                     break;
+                case cms_tab_sitemap:
+                    m_sitemapTab = new CmsSitemapTab(new CmsSitemapTabHandler(controller));
+                    m_sitemapTab.setTabTextAccessor(getTabTextAccessor(i));
+                    m_tabbedPanel.add(m_sitemapTab, "Sitemap");
+                    break;
                 default:
                     break;
             }
@@ -405,6 +414,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public CmsSearchTab getSearchTab() {
 
         return m_searchTab;
+    }
+
+    /**
+     * Returns the sitemap tab.<p>
+     *
+     * @return the sitemap tab
+     */
+    public CmsSitemapTab getSitemapTab() {
+
+        return m_sitemapTab;
     }
 
     /**

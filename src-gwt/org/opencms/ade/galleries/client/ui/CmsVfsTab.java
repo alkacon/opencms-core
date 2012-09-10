@@ -33,15 +33,15 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.ui.input.category.CmsDataValue;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
 import org.opencms.gwt.shared.CmsIconUtil;
-import org.opencms.gwt.shared.CmsListInfoBean;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -91,7 +92,7 @@ public class CmsVfsTab extends A_CmsListTab {
     }
 
     /** Text metrics key. */
-    private static final String TM_CATEGORY_TAB = "VfsTab";
+    private static final String TM_VFS_TAB = "VfsTab";
 
     /** A map from tree items to the corresponding data beans. */
     protected IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean> m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean>();
@@ -110,7 +111,7 @@ public class CmsVfsTab extends A_CmsListTab {
     public CmsVfsTab(CmsVfsTabHandler tabHandler) {
 
         super(GalleryTabId.cms_tab_vfstree);
-        m_scrollList.truncate(TM_CATEGORY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
+        m_scrollList.truncate(TM_VFS_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_tabHandler = tabHandler;
         addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().listOnlyTab());
         init();
@@ -167,7 +168,6 @@ public class CmsVfsTab extends A_CmsListTab {
 
         clearList();
         m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean>();
-
     }
 
     /**
@@ -179,26 +179,31 @@ public class CmsVfsTab extends A_CmsListTab {
      */
     protected CmsLazyTreeItem createItem(final CmsVfsEntryBean vfsEntry) {
 
-        CmsListInfoBean info = new CmsListInfoBean();
-        info.setTitle(vfsEntry.getDisplayName());
-        info.setSubTitle(vfsEntry.getSitePath());
-        // info.setSubTitle("...");
-        CmsListItemWidget liWidget = new CmsListItemWidget(info);
-        liWidget.setUnselectable();
-        liWidget.setIcon(CmsIconUtil.getResourceIconClasses("folder", false));
+        String name = CmsResource.getName(vfsEntry.getSitePath());
+        if (name.endsWith("/")) {
+            name = name.substring(0, name.length() - 1);
+        }
+        CmsDataValue dataValue = new CmsDataValue(
+            600,
+            3,
+            CmsIconUtil.getResourceIconClasses("folder", true),
+            name,
+            vfsEntry.getDisplayName());
+        dataValue.setUnselectable();
         if (vfsEntry.isEditable()) {
-            liWidget.addButton(createUploadButtonForTarget(vfsEntry.getSitePath()));
+            dataValue.addButton(createUploadButtonForTarget(vfsEntry.getSitePath()));
         }
 
         final CmsCheckBox checkbox = new CmsCheckBox();
-        CmsLazyTreeItem result = new CmsLazyTreeItem(checkbox, liWidget, true);
+        CmsLazyTreeItem result = new CmsLazyTreeItem(checkbox, dataValue, true);
         SelectionHandler selectionHandler = new SelectionHandler(vfsEntry, checkbox);
         checkbox.addClickHandler(selectionHandler);
-        liWidget.addDoubleClickHandler(selectionHandler);
-        liWidget.addButton(createSelectButton(selectionHandler));
+        dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
+        dataValue.addButton(createSelectButton(selectionHandler));
         m_entryMap.put(result, vfsEntry);
         m_itemsByPath.put(vfsEntry.getSitePath(), result);
         result.setLeafStyle(false);
+        result.setSmallView(true);
         return result;
 
     }
@@ -239,7 +244,6 @@ public class CmsVfsTab extends A_CmsListTab {
                             target.addChild(item);
                         }
                         target.onFinishLoading();
-                        // 
                     }
                 };
 
@@ -265,15 +269,5 @@ public class CmsVfsTab extends A_CmsListTab {
     protected CmsVfsTabHandler getTabHandler() {
 
         return m_tabHandler;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#hasQuickFilter()
-     */
-    @Override
-    protected boolean hasQuickFilter() {
-
-        // quick filter not available for this tab
-        return false;
     }
 }

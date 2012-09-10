@@ -47,7 +47,6 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
      */
     public CmsVfsTabHandler(CmsGalleryController controller) {
 
-        // TODO: Auto-generated constructor stub
         super(controller);
     }
 

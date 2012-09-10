@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
@@ -515,6 +516,40 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public String getStartLocale() {
 
         return m_dialogBean.getLocale();
+    }
+
+    /**
+     * Loads the sub entries for the given path.<p>
+     * 
+     * @param path the site path
+     * @param siteRoot the site root, if requesting from another site
+     * @param isRoot <code>true</code> if the requested entry is the root entry
+     * @param callback the callback to execute with the result
+     */
+    public void getSubEntries(
+        final String path,
+        final String siteRoot,
+        final boolean isRoot,
+        final AsyncCallback<List<CmsSitemapEntryBean>> callback) {
+
+        CmsRpcAction<List<CmsSitemapEntryBean>> action = new CmsRpcAction<List<CmsSitemapEntryBean>>() {
+
+            @Override
+            public void execute() {
+
+                start(0, false);
+                getGalleryService().getSubEntries(path, siteRoot, isRoot, this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsSitemapEntryBean> result) {
+
+                stop(false);
+                callback.onSuccess(result);
+            }
+
+        };
+        action.execute();
     }
 
     /**

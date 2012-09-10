@@ -139,16 +139,6 @@ public class CmsResultListItem extends CmsListItem {
         return result;
     }
 
-    //    /**
-    //     * Adds the delete button click handler.<p>
-    //     * 
-    //     * @param handler the click handler
-    //     */
-    //    public void addDeleteClickHandler(ClickHandler handler) {
-    //
-    //        m_deleteButton.addClickHandler(handler);
-    //    }
-
     /**
      * Adds a double click event handler.<p>
      * 

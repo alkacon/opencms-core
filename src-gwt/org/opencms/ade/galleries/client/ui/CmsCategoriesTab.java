@@ -95,7 +95,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
     }
 
     /** The category icon CSS classes. */
-    private static final String CATEGORY_ICON_CLASSES = CmsIconUtil.getResourceIconClasses("folder", false);
+    private static final String CATEGORY_ICON_CLASSES = CmsIconUtil.getResourceIconClasses("folder", true);
 
     /** Text metrics key. */
     private static final String TM_CATEGORY_TAB = "CategoryTab";
@@ -221,6 +221,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 CmsDataValue dataValue = new CmsDataValue(
                     600,
                     3,
+                    CATEGORY_ICON_CLASSES,
                     categoryBean.getTitle(),
                     CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryBean.getDescription())
                     ? categoryBean.getDescription()
@@ -233,6 +234,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 SelectionHandler selectionHandler = new SelectionHandler(categoryBean.getPath(), checkBox);
                 checkBox.addClickHandler(selectionHandler);
                 dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
+                dataValue.setUnselectable();
                 // set the category list item and add to list 
                 CmsTreeItem listItem = new CmsTreeItem(false, checkBox, dataValue);
                 listItem.setSmallView(true);
@@ -341,10 +343,12 @@ public class CmsCategoriesTab extends A_CmsListTab {
         CmsDataValue dataValue = new CmsDataValue(
             600,
             3,
+            CATEGORY_ICON_CLASSES,
             category.getTitle(),
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()
             : category.getPath());
+
         // the checkbox
         CmsCheckBox checkBox = new CmsCheckBox();
         if ((selectedCategories != null) && selectedCategories.contains(category.getPath())) {
@@ -354,6 +358,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         checkBox.addClickHandler(selectionHandler);
         dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
         dataValue.addButton(createSelectButton(selectionHandler));
+        dataValue.setUnselectable();
         // set the category tree item and add to list 
         CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, dataValue);
         treeItem.setSmallView(true);
