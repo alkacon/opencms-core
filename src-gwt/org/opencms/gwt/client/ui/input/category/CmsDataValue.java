@@ -27,13 +27,12 @@
 
 package org.opencms.gwt.client.ui.input.category;
 
-import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Float;
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -46,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Widget to generate an single row of values.<p> 
  * 
  * */
-public class CmsDataValue extends Composite {
+public class CmsDataValue extends Composite implements I_CmsTruncable {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -55,32 +54,68 @@ public class CmsDataValue extends Composite {
         // GWT interface, nothing to do here
     }
 
+    /** Internal CSS style interface. */
+    interface I_Style extends CssResource {
+
+        /**
+         * Returns the CSS style name.<p>
+         * 
+         * @return the CSS style name
+         */
+        String icon();
+
+        /**
+         * Returns the CSS style name.<p>
+         * 
+         * @return the CSS style name
+         */
+        String label();
+
+        /**
+         * Returns the CSS style name.<p>
+         * 
+         * @return the CSS style name
+         */
+        String parameter();
+
+        /**
+         * Returns the CSS style name.<p>
+         * 
+         * @return the CSS style name
+         */
+        String table();
+    }
+
     /** The ui-binder instance for this class. */
     private static I_CmsDataValueUiBinder uiBinder = GWT.create(I_CmsDataValueUiBinder.class);
-
-    /** The label field. */
-    @UiField
-    Label m_label;
-
-    /**The table. */
-    @UiField
-    FlexTable m_table;
 
     /**The image panel. */
     @UiField
     SimplePanel m_imagePanel;
 
-    /** The width of this widget. */
-    private int m_width;
+    /** The label field. */
+    @UiField
+    Label m_label;
 
-    /** The part of the width that should be used for the label. */
-    private int m_part;
+    /** The CSS bundle instance. */
+    @UiField
+    I_Style m_style;
+
+    /**The table. */
+    @UiField
+    FlexTable m_table;
+
+    /** The css string for the image that is shown in front of the label. */
+    private String m_image;
 
     /** The values that should be shown in this widget. The first value is used for the label*/
     private String[] m_parameters;
 
-    /** The css string for the image that is shown in front of the label. */
-    private String m_image;
+    /** The part of the width that should be used for the label. */
+    private int m_part;
+
+    /** The width of this widget. */
+    private int m_width;
 
     /**
      * Constructor to generate the DataValueWidget with image.<p>
@@ -93,13 +128,19 @@ public class CmsDataValue extends Composite {
     public CmsDataValue(int width, int part, String image, String... parameters) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_width = width;
         m_part = part;
         m_parameters = parameters;
         m_image = image;
         generateDataValue();
+        setWidth(width);
+    }
 
-        addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().dataValue());
+    /**
+     * Makes the content of the list info box unselectable.<p>
+     */
+    public void setUnselectable() {
+
+        getWidget().addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().unselectable());
     }
 
     /**
@@ -107,7 +148,7 @@ public class CmsDataValue extends Composite {
      * 
      * @param button the button that should be added
      * */
-    public void addButton(CmsPushButton button) {
+    public void addButton(Widget button) {
 
         m_table.setWidget(0, m_table.getCellCount(0), button);
     }
@@ -171,34 +212,23 @@ public class CmsDataValue extends Composite {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        setWidth(clientWidth);
+    }
+
+    /**
      * Generates the widget an adds all parameter to the right place.<p>
      */
     private void generateDataValue() {
 
-        int width_label = (m_width / m_part);
-        int width_tabel = (m_width - 30) - width_label;
-        int cell_width;
-        if (m_parameters.length > 1) {
-            cell_width = width_tabel / (m_parameters.length - 1);
-        } else {
-            cell_width = width_tabel;
-        }
-
-        m_table.getElement().getStyle().setFloat(Float.RIGHT);
-        m_table.getElement().getStyle().setWidth(width_tabel, Unit.PX);
-
-        m_label.getElement().setAttribute("style", "text-overflow:ellipsis; white-space: nowrap;");
-        m_label.getElement().getStyle().setPaddingLeft(2, Unit.PX);
-        m_label.getElement().getStyle().setPaddingTop(2, Unit.PX);
-        m_label.getElement().getStyle().setPaddingRight(10, Unit.PX);
-        m_label.getElement().getStyle().setPaddingBottom(2, Unit.PX);
-        m_label.getElement().getStyle().setOverflow(Overflow.HIDDEN);
         if (m_image == null) {
             m_imagePanel.removeFromParent();
         } else {
-            m_imagePanel.setStyleName(m_image);
+            m_imagePanel.addStyleName(m_image);
         }
-
         m_table.insertRow(0);
         int i = 0;
         for (String parameter : m_parameters) {
@@ -208,21 +238,30 @@ public class CmsDataValue extends Composite {
                     m_parameters[i] = parameter.replace("hide:", "");
                 } else {
 
-                    Label lable = new Label(parameter);
-
-                    lable.getElement().setAttribute("style", "text-overflow:ellipsis; white-space: nowrap;");
-                    lable.getElement().getStyle().setOverflow(Overflow.HIDDEN);
-                    lable.getElement().getStyle().setWidth(cell_width, Unit.PX);
-                    lable.setTitle(parameter);
-
-                    m_table.setWidget(0, i - 1, lable);
+                    Label label = new Label(parameter);
+                    label.setStyleName(m_style.parameter());
+                    label.setTitle(parameter);
+                    m_table.setWidget(0, i - 1, label);
                 }
             } else {
                 m_label.setText(parameter);
+                m_label.setTitle(parameter);
             }
             i++;
-
         }
+    }
+
+    /**
+     * Sets the widget width.<p>
+     * 
+     * @param width the widget width
+     */
+    private void setWidth(int width) {
+
+        m_width = width;
+        int width_label = (m_width / m_part);
+        int width_table = (m_width - 30) - width_label;
+        m_table.getElement().getStyle().setWidth(width_table, Unit.PX);
     }
 
 }
