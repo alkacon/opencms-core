@@ -1244,10 +1244,14 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     void clearNotifications() {
 
-        // restore the previous notification widget
-        CmsNotification.get().setWidget(m_parentNotificationWidget);
-        // remove the overlay notification widget
-        remove(m_ownNotificationWidget);
+        if (m_parentNotificationWidget != null) {
+            // restore the previous notification widget
+            CmsNotification.get().setWidget(m_parentNotificationWidget);
+        }
+        if (m_ownNotificationWidget != null) {
+            // remove the overlay notification widget
+            remove(m_ownNotificationWidget);
+        }
     }
 
     /**
