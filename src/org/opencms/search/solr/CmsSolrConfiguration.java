@@ -65,8 +65,18 @@ public class CmsSolrConfiguration {
     /** The system property name for the Solr home directory. */
     public static final String SOLR_HOME_PROPERTY = "solr.solr.home";
 
+    /** 
+     * The default max time in ms before a commit will happen (10 seconds by default).<p>
+     * 
+     * Can be configured in 'opencms-search.xml'.<p> 
+     */
+    public static final long SOLR_DEFAULT_COMMIT_MS = 10000;
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrConfiguration.class);
+
+    /** Max time (in ms) before a commit will happen. */
+    private long m_commitMs = SOLR_DEFAULT_COMMIT_MS;
 
     /** Signals whether the server is enabled or disabled. */
     private boolean m_enabled;
@@ -140,6 +150,16 @@ public class CmsSolrConfiguration {
     public String getServerUrl() {
 
         return m_serverUrl;
+    }
+
+    /**
+     * Returns the max time (in ms) before a commit will happen.<p>
+     * 
+     * @return the max time (in ms) before a commit will happen
+     */
+    public long getSolrCommitMs() {
+
+        return m_commitMs;
     }
 
     /**
@@ -272,6 +292,16 @@ public class CmsSolrConfiguration {
     public void setServerUrl(String url) {
 
         m_serverUrl = url;
+    }
+
+    /**
+     * Sets the max time (in ms) before a commit will happen.<p>
+     * 
+     * @param time the time as long value
+     */
+    public void setSolrCommitMs(String time) {
+
+        m_commitMs = new Long(time).longValue();
     }
 
     /**

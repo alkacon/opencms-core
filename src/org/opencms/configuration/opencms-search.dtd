@@ -32,7 +32,8 @@
 -->
 <!ELEMENT solr (
 	home?,
-	configfile?
+	configfile?,
+	commitWithinMs?
 )>
 <!ATTLIST solr
 	enabled (true|false|TRUE|FALSE) #REQUIRED
@@ -40,6 +41,7 @@
 >
 <!ELEMENT home (#PCDATA)>
 <!ELEMENT configfile (#PCDATA)>
+<!ELEMENT commitWithinMs (#PCDATA)>
 
 <!--
 # the size of the search result LFU map.
