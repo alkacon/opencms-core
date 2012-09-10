@@ -360,7 +360,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             SolrDocumentList solrDocumentList = new SolrDocumentList();
 
             // Initialize rows, offset, end and the current page.
-            int rows = query.getRows().intValue();
+            int rows = query.getRows() != null ? query.getRows().intValue() : CmsSolrQuery.DEFAULT_ROWS;
             if (!ignoreMaxRows && (rows > ROWS_MAX)) {
                 rows = ROWS_MAX;
             }

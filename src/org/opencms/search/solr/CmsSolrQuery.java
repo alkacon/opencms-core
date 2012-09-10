@@ -280,8 +280,18 @@ public class CmsSolrQuery extends SolrQuery {
     /** The default query. */
     public static final String DEFAULT_QUERY = "*:*";
 
+    /** The default search result count. */
+    public static final int DEFAULT_ROWS = 10;
+
     /** The default facet date gap. */
     public static final String FACET_DATE_GAP = "+1DAY";
+
+    /** A constant to add the score field to the result documents. */
+    public static final String MINIMUM_FIELDS = I_CmsSearchField.FIELD_PATH
+        + ","
+        + I_CmsSearchField.FIELD_TYPE
+        + ","
+        + I_CmsSearchField.FIELD_ID;
 
     /** The query type. */
     public static final String QUERY_TYPE = "dismax";
@@ -379,6 +389,7 @@ public class CmsSolrQuery extends SolrQuery {
      * <li>{@link #DEFAULT_QUERY}
      * <li>{@link #QUERY_TYPE}
      * <li>{@link #SCORE_FIELD}
+     * <li>{@link #DEFAULT_ROWS}
      * <li>{@link #RESULT_COUNT}
      * <li>{@link #FACET_DATE_GAP}
      * <li>{@link I_CmsSearchField#FIELD_PREFIX_TEXT}<code>_&lt;DEFAULT_LOCALE&gt;</code>
@@ -400,7 +411,7 @@ public class CmsSolrQuery extends SolrQuery {
         // set the defaults
         setQueryType(QUERY_TYPE);
         addField(SCORE_FIELD);
-        setRows(new Integer(CmsSolrQuery.RESULT_COUNT));
+        setRows(new Integer(CmsSolrQuery.DEFAULT_ROWS));
         setFacetDateGab(FACET_DATE_GAP);
         addTextFields("text");
 
@@ -853,6 +864,8 @@ public class CmsSolrQuery extends SolrQuery {
                 result.addAll(list);
             }
             setParam(CommonParams.FL, CmsStringUtil.arrayAsString(result.toArray(new String[0]), ","));
+        } else {
+            setParam(CommonParams.FL, MINIMUM_FIELDS);
         }
     }
 }
