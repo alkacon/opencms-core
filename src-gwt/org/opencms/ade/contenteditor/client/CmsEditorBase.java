@@ -39,6 +39,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,27 @@ public class CmsEditorBase extends EditorBase {
 
         List<Element> children = Vie.getInstance().find("[property^=\"opencms://\"]", element);
         return (children != null) && !children.isEmpty();
+    }
+
+    /**
+     * Replaces the id's within about attributes of the given element and all it's children.<p>
+     * 
+     * @param element the element
+     * @param oldId the old id
+     * @param newId the new id
+     */
+    public static void replaceResourceIds(Element element, String oldId, String newId) {
+
+        String about = element.getAttribute("about");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(about)) {
+            about = about.replace(oldId, newId);
+            element.setAttribute("about", about);
+        }
+        Element child = element.getFirstChildElement();
+        while (child != null) {
+            replaceResourceIds(child, oldId, newId);
+            child = child.getNextSiblingElement();
+        }
     }
 
     /**

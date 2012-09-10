@@ -47,6 +47,7 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
+import org.opencms.ade.contenteditor.client.CmsEditorBase;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
@@ -1981,8 +1982,14 @@ public final class CmsContainerpageController {
         boolean inline) {
 
         element.setNewType(null);
+        if (inline) {
+            String oldId = CmsUUID.getNullUUID().toString();
+            String newId = getServerId(newElementData.getClientId());
+            CmsEditorBase.replaceResourceIds(element.getElement(), oldId, newId);
+        }
         element.setId(newElementData.getClientId());
         element.setSitePath(newElementData.getSitePath());
+
         setPageChanged();
         getHandler().hidePageOverlay();
         getHandler().openEditorForElement(element, inline);
