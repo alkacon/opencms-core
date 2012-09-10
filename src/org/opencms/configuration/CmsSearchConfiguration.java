@@ -69,9 +69,6 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     /** The "boost" attribute. */
     public static final String A_BOOST = "boost";
 
-    /** The Solr server URL attribute, set if embedded = false. */
-    public static final String A_SERVER_URL = "serverUrl";
-
     /** The "displayName" attribute. */
     public static final String A_DISPLAY = "display";
 
@@ -80,6 +77,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
     /** The "index" attribute. */
     public static final String A_INDEX = "index";
+
+    /** The Solr server URL attribute, set if embedded = false. */
+    public static final String A_SERVER_URL = "serverUrl";
 
     /** The "store" attribute. */
     public static final String A_STORE = "store";
@@ -98,6 +98,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
     /** Node name constant. */
     public static final String N_CLASS = "class";
+
+    /** Node name constant. */
+    public static final String N_COMMIT_MS = "commitWithinMs";
 
     /** Node name constant. */
     public static final String N_CONFIG_FILE = "configfile";
@@ -270,6 +273,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(xPath, 0, A_SERVER_URL);
         digester.addCallMethod(xPath + "/" + N_HOME, "setHomeFolderPath", 0);
         digester.addCallMethod(xPath + "/" + N_CONFIG_FILE, "setSolrFileName", 0);
+        digester.addCallMethod(xPath + "/" + N_COMMIT_MS, "setSolrCommitMs", 0);
         digester.addSetNext(xPath, "setSolrServerConfiguration");
 
         // document type rule
@@ -388,6 +392,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             if (conf.getSolrFileName() != null) {
                 solr.addElement(N_CONFIG_FILE).addText(conf.getSolrFileName());
             }
+            solr.addElement(N_COMMIT_MS).addText(String.valueOf(conf.getSolrCommitMs()));
         }
 
         // add <directory> element

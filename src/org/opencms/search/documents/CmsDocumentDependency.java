@@ -554,7 +554,7 @@ public final class CmsDocumentDependency {
             // now calculate the dependencies form the folder content that has been read
             readDependencies(cms, folderContent);
         } catch (CmsException e) {
-            LOG.error("Unable to read dependencies for " + getResource().getRootPath(), e);
+            LOG.warn("Unable to read dependencies for " + getResource().getRootPath(), e);
         }
     }
 

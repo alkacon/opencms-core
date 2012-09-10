@@ -266,7 +266,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * #################<br>
      * </code><p>
      * 
-     * @Deprecated Use {@link #search(CmsObject, SolrQuery)} or {@link #search(CmsObject, String)} instead
+     * @Deprecated Use {@link #search(CmsObject, CmsSolrQuery)} or {@link #search(CmsObject, String)} instead
      */
     @Override
     @Deprecated
@@ -285,9 +285,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * 
      * @throws CmsSearchException if something goes wrong
      * 
-     * @see #search(CmsObject, SolrQuery, boolean)
+     * @see #search(CmsObject, CmsSolrQuery, boolean)
      */
-    public synchronized CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
+    public synchronized CmsSolrResultList search(CmsObject cms, CmsSolrQuery query) throws CmsSearchException {
 
         return search(cms, query, false);
     }
@@ -339,7 +339,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * @see org.opencms.search.I_CmsSearchDocument
      * @see org.opencms.search.solr.CmsSolrQuery
      */
-    public synchronized CmsSolrResultList search(CmsObject cms, SolrQuery query, boolean ignoreMaxRows)
+    public synchronized CmsSolrResultList search(CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
 
         LOG.debug("### START SRARCH (time in ms) ###");
@@ -360,7 +360,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             SolrDocumentList solrDocumentList = new SolrDocumentList();
 
             // Initialize rows, offset, end and the current page.
-            int rows = query.getRows().intValue();
+            int rows = query.getRows() != null ? query.getRows().intValue() : CmsSolrQuery.DEFAULT_ROWS;
             if (!ignoreMaxRows && (rows > ROWS_MAX)) {
                 rows = ROWS_MAX;
             }
@@ -457,7 +457,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * 
      * @throws CmsSearchException if something goes wrong
      * 
-     * @see CmsSolrIndex#search(CmsObject, SolrQuery)
+     * @see CmsSolrIndex#search(CmsObject, CmsSolrQuery)
      */
     public CmsSolrResultList search(CmsObject cms, String solrQuery) throws CmsSearchException {
 
@@ -489,8 +489,8 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         if (m_solr instanceof EmbeddedSolrServer) {
 
             SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-            SolrQueryResponse queryResponse = result.getSolrQueryResponse();
             SolrQueryRequest queryRequest = result.getSolrQueryRequest();
+            SolrQueryResponse queryResponse = result.getSolrQueryResponse();
             QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
 
             final String ct = responseWriter.getContentType(queryRequest, queryResponse);

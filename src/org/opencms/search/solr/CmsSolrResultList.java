@@ -2,24 +2,42 @@
 package org.opencms.search.solr;
 
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.solr.CmsSolrQuery.HighlightInfo;
+import org.opencms.util.CmsStringUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.lucene.index.Term;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.CommonParams;
+import org.apache.solr.common.params.HighlightParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.SolrCore;
+import org.apache.solr.handler.component.ResponseBuilder;
+import org.apache.solr.handler.component.SearchComponent;
 import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
+import org.apache.solr.schema.SchemaField;
+import org.apache.solr.search.DocList;
+import org.apache.solr.search.DocListAndSet;
+import org.apache.solr.search.DocSlice;
+import org.apache.solr.search.QParser;
 
 /**
  * Encapsulates a list of 'OpenCms resource documents' ({@link CmsSearchResource}).<p>
@@ -37,6 +55,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     /** The name for the parameters key of the response header. */
     private static final String HEADER_PARAMS_NAME = "params";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSolrResultList.class);
+
     /** The name of the key that is used for the result documents inside the Solr query response. */
     private static final String QUERY_RESPONSE_NAME = "response";
 
@@ -53,7 +74,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     private int m_page;
 
     /** The original Solr query. */
-    private SolrQuery m_query;
+    private CmsSolrQuery m_query;
 
     /** The original query response. */
     private QueryResponse m_queryResponse;
@@ -95,7 +116,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     @SuppressWarnings("unchecked")
     public CmsSolrResultList(
         final SolrCore core,
-        SolrQuery query,
+        CmsSolrQuery query,
         QueryResponse queryResponse,
         SolrDocumentList resultDocuments,
         List<CmsSearchResource> resourceDocumentList,
@@ -118,6 +139,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         m_visibleHitCount = visibleHitCount;
 
         m_query = query;
+        m_query.applyHighlightInfo();
 
         m_resultDocuments = resultDocuments;
         m_resultDocuments.setStart(start);
@@ -135,7 +157,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         addAll(resourceDocumentList);
 
         if (core != null) {
-            initSolrResponse(core);
+            initSolrReqRes(core, query.getHighlighInfo());
         }
     }
 
@@ -328,24 +350,78 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
      * Initializes the Solr query response.<p>
      * 
      * @param core the core to use
+     * @param hli the highlight info
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void initSolrResponse(final SolrCore core) {
+    private void initSolrReqRes(final SolrCore core, final HighlightInfo hli) {
 
         // create and initialize the solr response
         m_solrQueryResponse = new SolrQueryResponse();
         m_solrQueryResponse.setAllValues(m_queryResponse.getResponse());
         m_solrQueryResponse.setEndTime(m_queryResponse.getQTime());
         int paramsIndex = m_queryResponse.getResponseHeader().indexOf(HEADER_PARAMS_NAME, 0);
+        NamedList header = null;
         Object o = m_queryResponse.getResponseHeader().getVal(paramsIndex);
         if (o instanceof NamedList) {
-            NamedList header = (NamedList)o;
+            header = (NamedList)o;
             header.setVal(header.indexOf(CommonParams.ROWS, 0), m_rows);
             header.setVal(header.indexOf(CommonParams.START, 0), getStart());
         }
 
         // create and initialize the solr request
         m_solrQueryRequest = new LocalSolrQueryRequest(core, m_queryResponse.getResponseHeader());
+        // set the OpenCms Solr query as parameters to the request 
         m_solrQueryRequest.setParams(m_query);
+
+        // perform the highlighting
+        if ((header != null) && hli.isHighlighting()) {
+            header.add(HighlightParams.HIGHLIGHT, "on");
+            header.add(HighlightParams.FIELDS, CmsStringUtil.arrayAsString(hli.getFields(), ","));
+            header.add(HighlightParams.FRAGSIZE, new Integer(hli.getFragSize()));
+            header.add(HighlightParams.FIELD_MATCH, new Boolean(hli.getReqFieldMatch()));
+            header.add(HighlightParams.SIMPLE_POST, hli.getSimplePost());
+            header.add(HighlightParams.SIMPLE_PRE, hli.getSimplePre());
+            header.add(HighlightParams.SNIPPETS, new Integer(hli.getSnippets()));
+            SearchComponent highlightComponenet = core.getSearchComponent("highlight");
+            ResponseBuilder rb = new ResponseBuilder(
+                m_solrQueryRequest,
+                m_solrQueryResponse,
+                Collections.singletonList(highlightComponenet));
+            try {
+                rb.doHighlights = true;
+                DocListAndSet res = new DocListAndSet();
+                res.docList = solrDocumentListToDocList(m_resultDocuments);
+                rb.setResults(res);
+                rb.setQuery(QParser.getParser(getQuery().getQuery(), null, m_solrQueryRequest).getQuery());
+                rb.setQueryString(getQuery().getQuery());
+                highlightComponenet.process(rb);
+            } catch (Exception e) {
+                LOG.error(e);
+            }
+        }
+    }
+
+    /**
+     * Converts a List of Solr documents into a DocList based on lucene internal ids.<p>
+     * 
+     * @param list the list of Solr documents to convert
+     * 
+     * @return the doc list with Lucene ids
+     * 
+     * @throws IOException if something goes wrong
+     */
+    private DocList solrDocumentListToDocList(SolrDocumentList list) throws IOException {
+
+        SchemaField idField = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema().getUniqueKeyField();
+
+        int[] luceneIds = new int[m_rows.intValue()];
+        int docs = 0;
+        for (SolrDocument doc : list) {
+            String idString = (String)doc.getFirstValue(I_CmsSearchField.FIELD_ID);
+            int id = m_solrQueryRequest.getSearcher().getFirstMatch(
+                new Term(idField.getName(), idField.getType().toInternal(idString)));
+            luceneIds[docs++] = id;
+        }
+        return new DocSlice(0, docs, luceneIds, null, docs, 0);
     }
 }

@@ -2,7 +2,9 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-search.dtd">
 <opencms>
   <search>
-  	<solr enabled="true"/>
+  	<solr enabled="true">
+      <commitWithinMs>10000</commitWithinMs>
+  	</solr>
     <directory>index</directory>
     <timeout>60000</timeout>
     <offlineUpdateFrequency>30000</offlineUpdateFrequency>

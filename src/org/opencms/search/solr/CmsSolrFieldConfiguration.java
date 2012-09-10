@@ -51,6 +51,7 @@ import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -384,9 +385,12 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
             I_CmsSearchField.FIELD_CONTENT));
         addField(solrField);
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
-            solrField = new CmsSolrField(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                I_CmsSearchField.FIELD_CONTENT,
-                locale), null, locale, null, I_CmsSearchField.BOOST_DEFAULT);
+            solrField = new CmsSolrField(
+                A_CmsSearchFieldConfiguration.getLocaleExtendedName(I_CmsSearchField.FIELD_CONTENT, locale),
+                Collections.singletonList(locale.toString() + "_excerpt"),
+                locale,
+                null,
+                I_CmsSearchField.BOOST_DEFAULT);
             solrField.addMapping(new CmsSearchFieldMapping(
                 CmsSearchFieldMappingType.CONTENT,
                 I_CmsSearchField.FIELD_CONTENT));

@@ -32,6 +32,7 @@
 package org.opencms.search.solr;
 
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.Messages;
@@ -169,8 +170,8 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     m_index.getName(),
                     m_index.getPath()));
                 try {
-                    // commit the document within the next 20 seconds
-                    m_server.add((SolrInputDocument)document.getDocument(), 20000);
+                    int commitMs = new Long(OpenCms.getSearchManager().getSolrServerConfiguration().getSolrCommitMs()).intValue();
+                    m_server.add((SolrInputDocument)document.getDocument(), commitMs);
                 } catch (SolrServerException e) {
                     throw new IOException(e.getLocalizedMessage(), e);
                 }

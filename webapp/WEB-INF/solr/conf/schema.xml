@@ -252,6 +252,7 @@
    
    <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" />
 
+   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" multiValued="true" termVectors="on" termPositions="on" termOffsets="on" maxChars="1000" />
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
@@ -301,5 +302,6 @@
  <copyField source="*_prop"    dest="text" />
  <copyField source="content"   dest="text" />
  <copyField source="category"  dest="text" />
+ <copyField source="category"  dest="category_exact" />
 
 </schema>
