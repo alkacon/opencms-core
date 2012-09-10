@@ -37,6 +37,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -56,6 +57,13 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
 
     /** Internal CSS style interface. */
     interface I_Style extends CssResource {
+
+        /**
+         * Returns the CSS style name.<p>
+         * 
+         * @return the CSS style name
+         */
+        String buttonPanel();
 
         /**
          * Returns the CSS style name.<p>
@@ -101,9 +109,13 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
     @UiField
     I_Style m_style;
 
-    /**The table. */
+    /** The table. */
     @UiField
     FlexTable m_table;
+
+    /** The button panel. */
+    @UiField
+    FlowPanel m_buttonPanel;
 
     /** The css string for the image that is shown in front of the label. */
     private String m_image;
@@ -136,21 +148,15 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
     }
 
     /**
-     * Makes the content of the list info box unselectable.<p>
-     */
-    public void setUnselectable() {
-
-        getWidget().addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().unselectable());
-    }
-
-    /**
-     * Adds a single button to the view.
+     * Adds buttons to the view.
      * 
-     * @param button the button that should be added
+     * @param buttons the buttons that should be added
      * */
-    public void addButton(Widget button) {
+    public void addButton(Widget... buttons) {
 
-        m_table.setWidget(0, m_table.getCellCount(0), button);
+        for (Widget button : buttons) {
+            m_buttonPanel.add(button);
+        }
     }
 
     /**
@@ -209,6 +215,14 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
     public void setColor(String color) {
 
         m_label.getElement().getStyle().setColor(color);
+    }
+
+    /**
+     * Makes the content of the list info box unselectable.<p>
+     */
+    public void setUnselectable() {
+
+        getWidget().addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().unselectable());
     }
 
     /**
