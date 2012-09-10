@@ -47,6 +47,7 @@ textarea.textAreaBox {
 	overflow: hidden;
 	font-family: value("constants.css.fontFamily");
 	padding: 0 0 0 3px;
+	outline:none;
 }
 
 .colorpickerpopup > div.popupContent > div {
@@ -76,6 +77,7 @@ div.galleryWidget input{
 	color: value("constants.css.textColor");
 	height: 18px;
 	font-size: 12px;
+	outline:none;
 }
 
 div.vfsInputBox{
@@ -98,6 +100,7 @@ div.vfsInputBox input{
 	font-size: 12px;
 	box-shadow: none;
 	padding: 0px 0px;
+	outline:none;
 }
 
 input.textBox{
@@ -112,6 +115,7 @@ input.textBox{
 	padding: 0px 4px;
 	height: 18px;
 	font-size: 12px;
+	outline:none;
 }
 
 .passwordTextBox{
@@ -132,6 +136,7 @@ input.textBox{
 	font-size: 12px;
 	width:100%;
 	padding: 0;
+	outline:none;
 }
 
 .calendarStyle input {
@@ -140,10 +145,12 @@ input.textBox{
 	font-size: 12px;
 	padding-top:2px;
 	font-style:normal;
+	outline: none;
 }
 div.calendarStyle input.textboxGhostMode{
 	color: #7788AA;
 	font-style:normal;
+	outline: none;
 }
 
 
@@ -195,6 +202,7 @@ input.comboBoxInput {
     width: 97.6%;
     font-size: 12px;
     padding-top: 1px;
+    outline:none;
 }
 
 .radioButtonlabel,
@@ -260,6 +268,7 @@ div.radioButtonlabel.cmsState-down-disabled{
     height: 16px;
     padding: 0;
     width: 100%;
+    outline:none;
 }
 
 div.colorPicker{
