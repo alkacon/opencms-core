@@ -51,8 +51,8 @@ public interface I_CmsGalleryProviderConstants {
         GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
 
         /** The widget mode. */
-        widget(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,
-        GalleryTabId.cms_tab_search);
+        widget(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_sitemap,
+        GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search);
 
         /** The configuration. */
         private GalleryTabId[] m_tabs;
@@ -95,6 +95,9 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The id for search tab. */
         cms_tab_search,
+
+        /** The id for sitemap tab. */
+        cms_tab_sitemap,
 
         /** The id for types tab. */
         cms_tab_types,

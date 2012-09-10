@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
@@ -99,6 +100,16 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the callback
      */
     void getSearch(CmsGallerySearchBean searchObj, AsyncCallback<CmsGallerySearchBean> callback);
+
+    /**
+     * Returns the sub entries to the given sitemap path.<p>
+     * 
+     * @param path the site path
+     * @param siteRoot the site root
+     * @param isRoot <code>true</code> if the requested entry is the root entry
+     * @param callback the asynchronous callback 
+     */
+    void getSubEntries(String path, String siteRoot, boolean isRoot, AsyncCallback<List<CmsSitemapEntryBean>> callback);
 
     /**
      * Gets the sub-folders of a folder.<p>

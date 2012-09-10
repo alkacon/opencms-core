@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.CmsRpcException;
@@ -110,6 +111,19 @@ public interface I_CmsGalleryService extends RemoteService {
      * @throws CmsRpcException is something goes wrong
      */
     CmsGallerySearchBean getSearch(CmsGallerySearchBean searchObj) throws CmsRpcException;
+
+    /**
+     * Returns the sub entries to the given sitemap path.<p>
+     * 
+     * @param path the site path
+     * @param siteRoot the site root
+     * @param isRoot <code>true</code> if the requested entry is the root entry
+     * 
+     * @return the sub entries
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    List<CmsSitemapEntryBean> getSubEntries(String path, String siteRoot, boolean isRoot) throws CmsRpcException;
 
     /**
      * Gets the sub-folders of a folder.<p>

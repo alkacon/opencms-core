@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
+import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -52,6 +53,9 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.jsp.CmsJspNavBuilder;
+import org.opencms.jsp.CmsJspNavBuilder.Visibility;
+import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
@@ -392,6 +396,43 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubEntries(java.lang.String, java.lang.String, boolean)
+     */
+    public List<CmsSitemapEntryBean> getSubEntries(String path, String siteRoot, boolean isRoot) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)) {
+                cms = OpenCms.initCmsObject(cms);
+                cms.getRequestContext().setSiteRoot(siteRoot);
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+                path = "/";
+            }
+            CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
+            List<CmsSitemapEntryBean> result = new ArrayList<CmsSitemapEntryBean>();
+            for (CmsJspNavElement navElement : navBuilder.getNavigationForFolder(
+                path,
+                Visibility.all,
+                CmsResourceFilter.ONLY_VISIBLE)) {
+                if (navElement.isInNavigation()) {
+                    result.add(prepareSitemapEntry(cms, navElement, false));
+                }
+            }
+            if (isRoot) {
+                CmsJspNavElement navElement = navBuilder.getNavigationForResource(path, CmsResourceFilter.ONLY_VISIBLE);
+                CmsSitemapEntryBean root = prepareSitemapEntry(cms, navElement, isRoot);
+                root.setChildren(result);
+                return Collections.singletonList(root);
+            }
+            return result;
+        } catch (Throwable e) {
+            error(e);
+        }
+        return null;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubFolders(java.lang.String)
      */
     public List<CmsVfsEntryBean> getSubFolders(String path) throws CmsRpcException {
@@ -408,7 +449,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } catch (Throwable e) {
             error(e);
         }
-        assert false : "should never be executed";
         return null;
     }
 
@@ -1128,6 +1168,40 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
 
         return params;
+    }
+
+    /**
+     * Prepares a sitemap entry bean from the given navigation element.<p>
+     * 
+     * @param cms the cms context
+     * @param navElement the navigation element
+     * @param isRoot <code>true</code> if this is a site root entry
+     * 
+     * @return the sitemap entry
+     * 
+     * @throws CmsException if something goes wrong reading types and resources
+     */
+    private CmsSitemapEntryBean prepareSitemapEntry(CmsObject cms, CmsJspNavElement navElement, boolean isRoot)
+    throws CmsException {
+
+        CmsResource ownResource = navElement.getResource();
+        CmsResource defaultFileResource = null;
+        if (ownResource.isFolder() && !navElement.isNavigationLevel()) {
+            defaultFileResource = cms.readDefaultFile(ownResource, CmsResourceFilter.ONLY_VISIBLE);
+        }
+        String type;
+        if (defaultFileResource != null) {
+            type = OpenCms.getResourceManager().getResourceType(defaultFileResource.getTypeId()).getTypeName();
+        } else {
+            type = OpenCms.getResourceManager().getResourceType(ownResource.getTypeId()).getTypeName();
+        }
+        return new CmsSitemapEntryBean(
+            navElement.getResourceName(),
+            ownResource.getStructureId(),
+            navElement.getNavText(),
+            type,
+            ownResource.isFolder(),
+            isRoot);
     }
 
     /**
