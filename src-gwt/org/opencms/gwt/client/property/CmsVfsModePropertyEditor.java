@@ -242,7 +242,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
             widget.setHeight((newHeight - 45) + "px");
             widget.onResize();
-            dialog.center();
+            //dialog.center();
         }
     }
 

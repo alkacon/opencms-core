@@ -228,9 +228,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                                 true);
                             propChanges.add(titleMod);
                         }
-                        controller.editAndChangeName(editEntry, urlName, propChanges, true, CmsReloadMode.none);
+                        controller.editAndChangeName(editEntry, urlName, propChanges, true, CmsReloadMode.reloadEntry);
                     } else {
-                        controller.edit(editEntry, propChanges, CmsReloadMode.none);
+                        controller.edit(editEntry, propChanges, CmsReloadMode.reloadEntry);
                     }
                 }
                 titleLabel.setVisible(true);
