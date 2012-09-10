@@ -469,9 +469,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-            definition = readContentDefinition(resource, CmsContentDefinition.uuidToEntityId(
-                structureId,
-                contentLocale.toString()), contentLocale, false);
+            definition = readContentDefinition(
+                resource,
+                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
+                contentLocale,
+                false);
         } catch (Exception e) {
             error(e);
         }
@@ -488,9 +490,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-            definition = readContentDefinition(resource, CmsContentDefinition.uuidToEntityId(
-                structureId,
-                contentLocale.toString()), contentLocale, true);
+            definition = readContentDefinition(
+                resource,
+                CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
+                contentLocale,
+                true);
         } catch (Exception e) {
             error(e);
         }
@@ -706,9 +710,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         I_Type type = registeredTypes.get(typeName);
         boolean isChoice = type.isChoice();
         String choiceTypeName = null;
+        // just needed for choice attributes
+        Map<String, Integer> attributeCounter = null;
         if (isChoice) {
             choiceTypeName = type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME);
             type = registeredTypes.get(type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME));
+            attributeCounter = new HashMap<String, Integer>();
         }
         int counter = 0;
         CmsObject cms = getCmsObject();
@@ -717,16 +724,36 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             parentPath += "/";
         }
         for (Element child : elements) {
-            if (isChoice) {
-                result = new Entity(entityId + "/" + Type.CHOICE_ATTRIBUTE_NAME + "[" + counter + "]", choiceTypeName);
-                newEntity.addAttributeValue(Type.CHOICE_ATTRIBUTE_NAME, result);
-            }
             String attributeName = getAttributeName(child.getName(), typeName);
-            if (!isChoice && !attributeName.equals(previousName)) {
+            if (isChoice && (attributeCounter != null)) {
+                if (!attributeName.equals(previousName)) {
+                    if (attributeCounter.get(attributeName) != null) {
+                        counter = attributeCounter.get(attributeName).intValue();
+                    } else {
+                        counter = 0;
+                    }
+                    previousName = attributeName;
+                }
+                attributeCounter.put(attributeName, Integer.valueOf(counter + 1));
+            } else if (!attributeName.equals(previousName)) {
+
                 // reset the attribute counter for every attribute name
                 counter = 0;
+
                 previousName = attributeName;
             }
+            if (isChoice) {
+                result = new Entity(newEntityId
+                    + "/"
+                    + Type.CHOICE_ATTRIBUTE_NAME
+                    + "_"
+                    + child.getName()
+                    + "["
+                    + counter
+                    + "]", choiceTypeName);
+                newEntity.addAttributeValue(Type.CHOICE_ATTRIBUTE_NAME, result);
+            }
+
             String subTypeName = type.getAttributeTypeName(attributeName);
 
             String path = parentPath + child.getName();
