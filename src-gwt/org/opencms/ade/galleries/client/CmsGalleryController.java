@@ -1045,12 +1045,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             @Override
             public void execute() {
 
+                start(200, true);
                 getGalleryService().updateIndex(this);
             }
 
             @Override
             protected void onResponse(Void result) {
 
+                stop(false);
                 updateResultsTab(false);
                 m_handler.hideShowPreviewButton(true);
             }

@@ -466,6 +466,10 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      */
     public void catchNotifications() {
 
+        if (m_catchNotifications) {
+            // Calling this method more than once should have no effect
+            return;
+        }
         m_catchNotifications = true;
         if (isShowing()) {
             // remember current notification widget
@@ -481,7 +485,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             // when closing the dialog
             m_closingHandlerRegistration = addCloseHandler(new CloseHandler<PopupPanel>() {
 
-                /**
+                /** 
                  * @see CloseHandler#onClose(CloseEvent)
                  */
                 public void onClose(CloseEvent<PopupPanel> event) {

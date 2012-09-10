@@ -41,10 +41,13 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.ui.CmsDialogNotificationWidget;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+import org.opencms.gwt.client.ui.I_CmsNotificationWidget;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -68,6 +71,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Provides the method for the gallery dialog.<p>
@@ -188,6 +192,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_parentPanel.add(m_showPreview);
         // All composites must call initWidget() in their constructors.
         initWidget(m_parentPanel);
+        ensureNotifications();
         addResizeHandler(this);
     }
 
@@ -599,6 +604,19 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public void setWidgetHandler(I_CmsGalleryWidgetHandler widgetHandler) {
 
         m_widgetHandler = widgetHandler;
+    }
+
+    /**
+     * Make sure a notification widget is installed.<p>
+     */
+    protected void ensureNotifications() {
+
+        I_CmsNotificationWidget oldWidget = CmsNotification.get().getWidget();
+        if (oldWidget == null) {
+            CmsDialogNotificationWidget newWidget = new CmsDialogNotificationWidget();
+            CmsNotification.get().setWidget(newWidget);
+            RootPanel.get().add(newWidget);
+        }
     }
 
     /**
