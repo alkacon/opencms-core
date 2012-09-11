@@ -92,11 +92,11 @@ div.hoverbar{
 
 
 @sprite .cmsState-up-disabled .toolbarUndo, .cmsState-down-disabled .toolbarUndo{
-	gwt-image: "bigIcons.undoBigIconDeactivated";
+	gwt-image: "bigIcons.replaceBigIconDeactivated";
 }
 @sprite .cmsState-up .toolbarUndo{
-	gwt-image: "bigIcons.undoBigIconDeactivated";
+	gwt-image: "bigIcons.replaceBigIconDeactivated";
 }
 @sprite .cmsState-up-hovering .toolbarUndo, .cmsState-down-hovering .toolbarUndo, .cmsState-down .toolbarUndo{
-    gwt-image: "bigIcons.undoBigIconActive";
+    gwt-image: "bigIcons.replaceBigIconActive";
 }
