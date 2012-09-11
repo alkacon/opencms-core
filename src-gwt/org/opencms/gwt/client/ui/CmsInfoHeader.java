@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -87,6 +88,9 @@ public class CmsInfoHeader extends Composite {
     public CmsInfoHeader(String title, String description, String path, String locale, String typeIcon) {
 
         initWidget(uiBinder.createAndBindUi(this));
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+            title = Messages.get().key(Messages.GUI_NO_TITLE_0);
+        }
         m_title.setInnerText(title);
         m_description.setInnerText(description);
         m_siteHost.setInnerText(path);
