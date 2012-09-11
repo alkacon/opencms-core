@@ -1586,6 +1586,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                             delEntry.setOwnProperties(getClientProperties(cms, res, false));
                             delEntry.setName(res.getName());
                             delEntry.setVfsPath(cms.getSitePath(res));
+                            delEntry.setResourceTypeName(OpenCms.getResourceManager().getResourceType(res).getTypeName());
                             delEntry.setEntryType(res.isFolder() ? EntryType.folder : isRedirectType(res.getTypeId())
                             ? EntryType.redirect
                             : EntryType.leaf);

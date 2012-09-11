@@ -150,6 +150,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
+    @Source("images/icons/showPageIcon.png")
+    ImageResource showPageIcon();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
     @Source("images/icons/gotoParentIcon.png")
     ImageResource gotoParentIcon();
 

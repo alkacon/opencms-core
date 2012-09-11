@@ -179,12 +179,15 @@ public class CmsToolbarClipboardView {
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
         infoBean.setSubTitle(entry.getSitePath());
+        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+        ? entry.getDefaultFileType()
+        : entry.getResourceTypeName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
         CmsListItem listItem = new CmsClipboardDeletedItem(itemWidget, entry);
         CmsPushButton button = new CmsPushButton();
-        button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().toolbarUndo());
+        button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().undelete());
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_UNDELETE_0));
         button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         button.addClickHandler(new ClickHandler() {
@@ -217,12 +220,15 @@ public class CmsToolbarClipboardView {
         infoBean.setSubTitle(entry.getSitePath());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
+        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+        ? entry.getDefaultFileType()
+        : entry.getResourceTypeName());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
 
         final CmsListItem listItem = new CmsListItem(itemWidget);
 
         CmsPushButton button = new CmsPushButton();
-        button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGoto());
+        button.setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().showPage());
         button.setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
         button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         button.addClickHandler(new ClickHandler() {

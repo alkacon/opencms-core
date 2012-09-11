@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.client.ui.css;
 
 import org.opencms.gwt.client.ui.css.I_CmsBigIconBundle;
+import org.opencms.gwt.client.ui.css.I_CmsIconBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsDragCss;
 
 import com.google.gwt.core.client.GWT;
@@ -97,7 +98,14 @@ public interface I_CmsImageBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
-        String toolbarUndo();
+        String showPage();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String undelete();
     }
 
     /** The bundle instance. */
@@ -109,6 +117,13 @@ public interface I_CmsImageBundle extends ClientBundle {
      * @return the image bundle instance for big icons 
      */
     I_CmsBigIconBundle bigIcons();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the image bundle instance for icons 
+     */
+    I_CmsIconBundle icons();
 
     /**
      * Access method.<p>

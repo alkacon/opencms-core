@@ -77,10 +77,10 @@ div.hoverbar{
 }
 
 @sprite .cmsState-up-hovering .hoverbarGoto, .cmsState-down-hovering .hoverbarGoto, .cmsState-down .hoverbarGoto, .context .hoverbarGoto{
-    gwt-image: "bigIcons.gotoPageBigIconActive";
+    gwt-image: "icons.gotoPageIcon";
 }
 @sprite .cmsState-up .hoverbarGoto, .cmsState-up-disabled .hoverbarGoto, .cmsState-down-disabled .hoverbarGoto{
-    gwt-image: "bigIcons.gotoBigIconDeactivated";
+    gwt-image: "icons.gotoPageIcon";
 }
 
 @sprite .cmsState-up-hovering .hoverbarMove, .cmsState-down-hovering .hoverbarMove, .cmsState-down .hoverbarMove{
@@ -91,12 +91,18 @@ div.hoverbar{
 }
 
 
-@sprite .cmsState-up-disabled .toolbarUndo, .cmsState-down-disabled .toolbarUndo{
-	gwt-image: "bigIcons.replaceBigIconDeactivated";
+@sprite .cmsState-up-disabled .showPage, .cmsState-down-disabled .showPage, .cmsState-up .showPage{
+	gwt-image: "icons.showPageIcon";
 }
-@sprite .cmsState-up .toolbarUndo{
-	gwt-image: "bigIcons.replaceBigIconDeactivated";
+
+@sprite .cmsState-up-hovering .showPage, .cmsState-down-hovering .showPage, .cmsState-down .showPage{
+    gwt-image: "icons.showPageIcon";
 }
-@sprite .cmsState-up-hovering .toolbarUndo, .cmsState-down-hovering .toolbarUndo, .cmsState-down .toolbarUndo{
-    gwt-image: "bigIcons.replaceBigIconActive";
+
+@sprite .cmsState-up-disabled .undelete, .cmsState-down-disabled .undelete, .cmsState-up .undelete{
+	gwt-image: "icons.replaceIcon";
+}
+
+@sprite .cmsState-up-hovering .undelete, .cmsState-down-hovering .undelete, .cmsState-down .undelete{
+    gwt-image: "icons.replaceIcon";
 }
