@@ -725,6 +725,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         for (Element child : elements) {
             String attributeName = getAttributeName(child.getName(), typeName);
+            String subTypeName = type.getAttributeTypeName(attributeName);
+            if (registeredTypes.get(subTypeName) == null) {
+                // in case there is no type configured for this element, the schema may have changed, skip the element
+                continue;
+            }
             if (isChoice && (attributeCounter != null)) {
                 if (!attributeName.equals(previousName)) {
                     if (attributeCounter.get(attributeName) != null) {
@@ -753,9 +758,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     + "]", choiceTypeName);
                 newEntity.addAttributeValue(Type.CHOICE_ATTRIBUTE_NAME, result);
             }
-
-            String subTypeName = type.getAttributeTypeName(attributeName);
-
             String path = parentPath + child.getName();
             if (registeredTypes.get(subTypeName).isSimpleType()) {
                 I_CmsXmlContentValue value = content.getValue(path, locale, counter);
