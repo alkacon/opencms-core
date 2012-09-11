@@ -47,6 +47,7 @@ import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -155,6 +156,9 @@ public final class CmsContentEditor {
 
     /** The save button. */
     private CmsPushButton m_saveButton;
+
+    /** The save and exit button. */
+    private CmsPushButton m_saveExitButton;
 
     /** The resource site path. */
     private String m_sitePath;
@@ -373,6 +377,17 @@ public final class CmsContentEditor {
     }
 
     /**
+     * Hides the editor help bubbles.<p>
+     * 
+     * @param hide <code>true</code> to hide the help bubbles
+     */
+    void hideHelpBubbles(boolean hide) {
+
+        m_editor.setShowEditorHelp(!hide);
+        HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), hide);
+    }
+
+    /**
      * Initializes the editor.<p>
      * 
      * @param contentDefinition the content definition
@@ -450,6 +465,20 @@ public final class CmsContentEditor {
      */
     void save() {
 
+        m_editor.saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, false, new Command() {
+
+            public void execute() {
+
+                setUnchanged();
+            }
+        });
+    }
+
+    /**
+     * Saves the content and closes the editor.<p> 
+     */
+    void saveAndExit() {
+
         m_editor.saveAndDeleteEntities(m_changedEntityIds, m_deletedEntities, true, new Command() {
 
             public void execute() {
@@ -460,7 +489,6 @@ public final class CmsContentEditor {
                 clearEditor();
             }
         });
-
     }
 
     /**
@@ -469,6 +497,7 @@ public final class CmsContentEditor {
     void setChanged() {
 
         m_saveButton.enable();
+        m_saveExitButton.enable();
         m_changedEntityIds.add(m_entityId);
         m_deletedEntities.remove(m_entityId);
     }
@@ -494,6 +523,17 @@ public final class CmsContentEditor {
                 setChanged();
             }
         });
+    }
+
+    /**
+     * Call after save.<p>
+     */
+    void setUnchanged() {
+
+        m_changedEntityIds.clear();
+        m_deletedEntities.clear();
+        m_saveButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
+        m_saveExitButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
     }
 
     /**
@@ -613,7 +653,7 @@ public final class CmsContentEditor {
         if (m_deleteLocaleButton == null) {
             m_deleteLocaleButton = createButton(
                 Messages.get().key(Messages.GUI_TOOLBAR_DELETE_LOCALE_0),
-                I_CmsButton.ButtonData.DELETE.getIconClass());
+                I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarDeleteLocale());
             m_deleteLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -680,6 +720,18 @@ public final class CmsContentEditor {
     private void initToolbar() {
 
         m_toolbar = new CmsToolbar();
+        m_saveExitButton = createButton(
+            "Save and exit",
+            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSaveExit());
+        m_saveExitButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                saveAndExit();
+            }
+        });
+        m_saveExitButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
+        m_toolbar.addLeft(m_saveExitButton);
         m_saveButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0),
             I_CmsButton.ButtonData.SAVE.getIconClass());
@@ -716,11 +768,11 @@ public final class CmsContentEditor {
             public void onClick(ClickEvent event) {
 
                 CmsToggleButton button = (CmsToggleButton)event.getSource();
-                hideHelpBubbles(button.isDown());
+                hideHelpBubbles(!button.isDown());
             }
         });
         if (!CmsCoreProvider.get().isShowEditorHelp()) {
-            m_hideHelpBubblesButton.setDown(true);
+            m_hideHelpBubblesButton.setDown(false);
             HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), true);
         }
         m_toolbar.addRight(m_hideHelpBubblesButton);
@@ -738,17 +790,6 @@ public final class CmsContentEditor {
         });
         m_toolbar.addRight(m_cancelButton);
         RootPanel.get().add(m_toolbar);
-    }
-
-    /**
-     * Hides the editor help bubbles.<p>
-     * 
-     * @param hide <code>true</code> to hide the help bubbles
-     */
-    void hideHelpBubbles(boolean hide) {
-
-        m_editor.setShowEditorHelp(!hide);
-        HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), hide);
     }
 
     /**
