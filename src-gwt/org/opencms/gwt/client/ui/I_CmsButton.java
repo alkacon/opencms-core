@@ -30,7 +30,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsToolbarButtonCss;
+import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle.I_CmsExtendedToolbarButtonCss;
 
 /**
  * Interface to hold button related enumerations. To be used with {@link org.opencms.gwt.client.ui.CmsPushButton}
@@ -283,5 +283,5 @@ public interface I_CmsButton {
     }
 
     /** The CSS bundle for the toolbar buttons. */
-    I_CmsToolbarButtonCss BUTTON_CSS = I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss();
+    I_CmsExtendedToolbarButtonCss BUTTON_CSS = I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss();
 }

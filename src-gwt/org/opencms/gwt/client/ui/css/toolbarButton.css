@@ -61,6 +61,13 @@
     gwt-image: "deleteBigIconActive";
 }
 
+@sprite .cmsState-up-disabled .toolbarDeleteLocale, .cmsState-down-disabled .toolbarDeleteLocale{
+	gwt-image: "deleteLocaleBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarDeleteLocale, .cmsState-up-hovering .toolbarDeleteLocale, .cmsState-down-hovering .toolbarDeleteLocale, .cmsState-down .toolbarDeleteLocale{
+    gwt-image: "deleteLocaleBigIconActive";
+}
+
 @sprite .cmsState-up-disabled .toolbarReset, .cmsState-down-disabled .toolbarReset{
 	gwt-image: "resetBigIconDeactivated";
 }
@@ -101,6 +108,13 @@
 }
 @sprite .cmsState-up .toolbarSave, .cmsState-up-hovering .toolbarSave, .cmsState-down-hovering .toolbarSave, .cmsState-down .toolbarSave{
     gwt-image: "saveBigIconActive";
+}
+
+@sprite .cmsState-up-disabled .toolbarSaveExit, .cmsState-down-disabled .toolbarSaveExit{
+	gwt-image: "saveExitBigIconDeactivated";
+}
+@sprite .cmsState-up .toolbarSaveExit, .cmsState-up-hovering .toolbarSaveExit, .cmsState-down-hovering .toolbarSaveExit, .cmsState-down .toolbarSaveExit{
+    gwt-image: "saveExitBigIconActive";
 }
 
 @sprite .cmsState-up-disabled .toolbarSitemap, .cmsState-down-disabled .toolbarSitemap{

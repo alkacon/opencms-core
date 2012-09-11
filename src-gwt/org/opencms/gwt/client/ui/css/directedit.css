@@ -9,10 +9,7 @@
 }
 
 /** Unused classes. */
-.cmsHovering, .classicDirectEdit, .toolbarCopyLocale, .toolbarToggleHelp, .toolbarShowSmall, .toolbarSave,
-.toolbarProperties, .toolbarContext, .toolbarClipboard, .toolbarReset, .toolbarMove, .toolbarSelection,
-.toolbarAdd, .toolbarEdit, .toolbarSitemap, .toolbarDelete, .toolbarRemove, .toolbarNew,.toolbarPublish,
-.toolbarBack, .toolbarRefresh, .showButtons {}
+.toolbarAdd, .toolbarInfo, .showButtons {} 
 
 
 div.optionBar{
@@ -156,5 +153,3 @@ div.optionBar div, div.optionBar span {
 @sprite .optionBar .cmsState-up .toolbarSelection, .optionBar .cmsState-up-disabled .toolbarSelection, .optionBar .cmsState-down-disabled .toolbarSelection {
     gwt-image: "coreImages.icons.selectionIconDeactivated";
 }
-
-.toolbarInfo {} 
