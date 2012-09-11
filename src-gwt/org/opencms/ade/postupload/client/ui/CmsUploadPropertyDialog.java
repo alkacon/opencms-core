@@ -229,7 +229,7 @@ public class CmsUploadPropertyDialog {
      */
     public void updateHeight() {
 
-        int height = m_dialogContent.getOffsetHeight() + 70;
+        int height = m_dialogContent.getOffsetHeight() + 76;
         CmsUploadPropertyDialog.this.setHeight(height);
     }
 
