@@ -99,13 +99,14 @@ public class TestSolrSearchPermissionHandling extends OpenCmsTestCase {
 
         CmsSolrQuery squery = new CmsSolrQuery(getCmsObject());
         squery.setSearchRoots("/sites/default/");
+        squery.setRows(new Integer(100));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
         AllSolrTests.printResults(getCmsObject(), results, true);
         assertEquals(53, results.getNumFound());
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test1"));
         results = index.search(cms, squery);
-        AllSolrTests.printResults(cms, results, true);
+        AllSolrTests.printResults(cms, results, false);
         assertEquals(47, results.getNumFound());
 
         cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
