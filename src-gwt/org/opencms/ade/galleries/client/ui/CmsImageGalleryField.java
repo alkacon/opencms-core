@@ -637,11 +637,20 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
             m_description = URL.decode(m_description);
             m_descriptionArea.setFormValueAsString(m_description);
         }
+        if (value.indexOf("?") > -1) {
+            value = value.replaceAll("?", "");
+        }
         if (!value.isEmpty()) {
             String imageLink = CmsCoreProvider.get().link(value);
-            CmsCroppingParamBean restricted = m_croppingParam.getRestrictedSizeParam(110, 80);
-            m_image.setUrl(imageLink + "?" + restricted);
-            m_image.getElement().getStyle().setMarginTop((110 - restricted.getTargetHeight()) / 2, Unit.PX);
+            CmsCroppingParamBean restricted;
+            if (m_croppingParam.getFormatName() == null) {
+                m_image.setUrl(imageLink + "?__scale=w:80,h:110,t:1,c:white,r:2");
+            } else {
+                restricted = m_croppingParam.getRestrictedSizeParam(110, 80);
+                m_image.setUrl(imageLink + "?" + restricted);
+                m_image.getElement().getStyle().setMarginTop((110 - restricted.getTargetHeight()) / 2, Unit.PX);
+            }
+
         }
         return value;
 

@@ -42,6 +42,7 @@
 		width: 80px;
 		float: left;
 		border-radius: 3px;
+		overflow: hidden;
 	}
 	.formats{
 	 	height: 18px;
