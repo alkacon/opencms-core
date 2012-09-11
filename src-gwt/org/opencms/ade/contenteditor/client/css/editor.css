@@ -7,6 +7,13 @@
 	padding: 0;
 }
 
+@url editCursorGifUrl editCursorGif;
+@url editCursorIcoUrl editCursorIco;
+
+.inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
+	cursor: editCursorGifUrl, editCursorIcoUrl, crosshair;
+}
+
 body.standAloneEditor div.basePanel{
 	background-image: none;
 }

@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.css.I_CmsFloatDecoratedPanelCss;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.DataResource;
 
 /**
  * Content editor CSS resources bundle.<p>
@@ -216,6 +217,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String inlineEditable();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String integratedEditor();
 
         /** Access method.<p>
@@ -227,6 +234,22 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
     /** The bundle instance. */
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
+
+    /** 
+     * Returns the edit cursor icon resource.<p>
+     * 
+     * @return the edit cursor icon
+     */
+    @Source("editCursor.gif")
+    DataResource editCursorGif();
+
+    /** 
+     * Returns the edit cursor icon resource.<p>
+     * 
+     * @return the edit cursor icon
+     */
+    @Source("editCursor.ico")
+    DataResource editCursorIco();
 
     /**
      * Access method.<p>

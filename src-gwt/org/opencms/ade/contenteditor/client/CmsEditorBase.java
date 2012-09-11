@@ -32,6 +32,7 @@ import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.vie.client.Vie;
 import com.alkacon.vie.shared.I_Entity;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
@@ -115,13 +116,16 @@ public class CmsEditorBase extends EditorBase {
      */
     public static boolean setEditable(Element element, boolean editable) {
 
+        I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         List<Element> children = Vie.getInstance().select("[property^=\"opencms://\"]", element);
         if (children.size() > 0) {
             for (Element child : children) {
                 if (editable) {
                     child.setAttribute("contentEditable", "true");
+                    child.addClassName(I_CmsLayoutBundle.INSTANCE.editorCss().inlineEditable());
                 } else {
                     child.removeAttribute("contentEditable");
+                    child.removeClassName(I_CmsLayoutBundle.INSTANCE.editorCss().inlineEditable());
                 }
             }
             return true;
