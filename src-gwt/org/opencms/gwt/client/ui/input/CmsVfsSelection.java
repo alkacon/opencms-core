@@ -55,7 +55,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -89,13 +88,6 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
                 case Event.ONMOUSEUP:
                     break;
                 case Event.ONMOUSEDOWN:
-                    int x_coord = nativeEvent.getClientX();
-                    int y_coord = (nativeEvent.getClientY() + Window.getScrollTop());
-
-                    if (((x_coord > (m_xcoordspopup + 715)) || (x_coord < (m_xcoordspopup)))
-                        || ((y_coord > ((m_ycoordspopup + 530))) || (y_coord < ((m_ycoordspopup - m_textBox.getOffsetHeight()))))) {
-                        close();
-                    }
                     break;
                 case Event.ONKEYUP:
                     if (m_textBox.getValue().length() > 0) {
@@ -144,6 +136,12 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
 
     /** The filelink mode of this widget. */
     public static final String FILE_LINK = "file_link";
+
+    /** The pricipal mode of this widget. */
+    public static final String PRINCIPAL = "principal";
+
+    /** The OrgUnit mode of this widget. */
+    public static final String ORGUNIT = "orgunit";
 
     /** The html mode of this widget. */
     public static final String HTML = "html";
@@ -515,23 +513,15 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     protected String buildGalleryUrl() {
 
         String basePath = "";
-        if (m_type.equals(LINK) || m_type.equals(DOWNLOAD) || m_type.equals(HTML) || m_type.equals(TABLE)) {
-            if (m_type.equals(DOWNLOAD)) {
-                basePath = "system/workplace/galleries/downloadgallery/index.jsp?dialogmode=widget&fieldid="
-                    + m_id
-                    + "&params={\"startupfolder\":null,\"startuptype\":null,\"editedresource\":\"/widget-demo/.content/WidgetdemoOverview/wo_00001.html\"}";
-            } else if (m_type.equals(LINK)) {
-                basePath = "/system/workplace/galleries/linkgallery/index.jsp?dialogmode=widget&fieldid="
-                    + m_id
-                    + "&params={\"startupfolder\":null,\"startuptype\":null,\"editedresource\":\"/widget-demo/.content/WidgetdemoOverview/wo_00001.html\"}";
+        if (m_type.equals(LINK) || m_type.equals(HTML) || m_type.equals(TABLE) || m_type.equals(PRINCIPAL)) {
+            if (m_type.equals(LINK)) {
+                basePath = "/system/workplace/galleries/linkgallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
             } else if (m_type.equals(HTML)) {
-                basePath = "/system/workplace/galleries/htmlgallery/index.jsp?dialogmode=widget&fieldid="
-                    + m_id
-                    + "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/WidgetdemoOverview/wo_00001.html\"}";
+                basePath = "/system/workplace/galleries/htmlgallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
             } else if (m_type.equals(TABLE)) {
-                basePath = "/system/workplace/galleries/tablegallery/index.jsp?dialogmode=widget&fieldid="
-                    + m_id
-                    + "&params={\"startupfolder\":\"null\",\"startuptype\":\"null\",\"editedresource\":\"/widget-demo/.content/WidgetdemoOverview/wo_00001.html\"}";
+                basePath = "/system/workplace/galleries/tablegallery/index.jsp?dialogmode=widget&fieldid=" + m_id;
+            } else if (m_type.equals(PRINCIPAL)) {
+                basePath = "/system/workplace/commons/principal_selection.jsp?dialogmode=widget&fieldid=" + m_id;
             } else {
                 basePath = "/system/workplace/galleries/" + m_type + "gallery/index.jsp";
             }
@@ -544,18 +534,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         if (pathparameter.indexOf("/") > -1) {
             basePath += "&currentelement=" + pathparameter;
         }
-        if (m_type.equals(TABLE)) {
-            basePath += m_config;
-        }
-        if (m_type.equals(IMAGE_LINK)) {
-            basePath += m_config;
-        }
-        if (m_type.equals(DOWNLOAD_LINK)) {
-            basePath += m_config;
-        }
-        if (m_type.equals(LINK)) {
-            basePath += "&params={\"startupfolder\":/,\"startuptype\":null}";
-        }
+        basePath += m_config;
+
         //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary  
         return CmsCoreProvider.get().link(basePath);
     }
@@ -612,6 +592,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
                 m_popup.getFrame().setSize("705px", "640px");
             } else if (m_type.equals(TABLE)) {
                 m_popup.getFrame().setSize("705px", "640px");
+            } else if (m_type.equals(PRINCIPAL)) {
+                m_popup.getFrame().setSize("705px", "320px");
             } else {
                 m_popup.getFrame().setSize("705px", "485px");
             }
@@ -627,6 +609,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
         } else {
             m_popup.getFrame().setUrl(buildGalleryUrl());
         }
+        m_popup.setAutoHideEnabled(true);
         m_popup.showRelativeTo(m_textBox);
         if (m_previewHandlerRegistration == null) {
             m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
