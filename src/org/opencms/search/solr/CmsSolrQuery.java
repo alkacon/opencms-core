@@ -177,6 +177,20 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
+     * Creates a {@link CmsSolrQuery} based on a request parameter map as argument.<p>
+     * 
+     * Use this constructor in order to let OpenCms behave identical to standard {@link HttpSolrServer}
+     * 
+     * @param params the request parameter map
+     */
+    public CmsSolrQuery(Map<String, String[]> params) {
+
+        addField(SCORE_FIELD);
+        addParameterMap(params);
+        ensureReturnFields();
+    }
+
+    /**
      * Creates a new {@link CmsSolrQuery} and initializes its members with the defaults.<p>
      * 
      * <b>Please note</b>: at least the one of the parameters query or parameters must not be <code>null</code>
@@ -241,20 +255,6 @@ public class CmsSolrQuery extends SolrQuery {
         }
 
         // ensure the query returns at least the 'path' and the type 'field'
-        ensureReturnFields();
-    }
-
-    /**
-     * Creates a {@link CmsSolrQuery} based on a request parameter map as argument.<p>
-     * 
-     * Use this constructor in order to let OpenCms behave identical to standard {@link HttpSolrServer}
-     * 
-     * @param params the request parameter map
-     */
-    public CmsSolrQuery(Map<String, String[]> params) {
-
-        addField(SCORE_FIELD);
-        addParameterMap(params);
         ensureReturnFields();
     }
 
