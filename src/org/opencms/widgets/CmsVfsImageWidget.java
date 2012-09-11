@@ -331,6 +331,15 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getWidgetName()
+     */
+    @Override
+    public String getWidgetName() {
+
+        return CmsVfsImageWidget.class.getName();
+    }
+
+    /**
      * @see org.opencms.widgets.A_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override

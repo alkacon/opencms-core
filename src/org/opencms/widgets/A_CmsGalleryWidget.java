@@ -32,6 +32,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
@@ -79,8 +81,17 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
             messages,
             null,
             getConfiguration());
-        String result = config.getConfigString();
-        return result;
+        JSONObject linkGalleryInfo = new JSONObject();
+        try {
+            linkGalleryInfo.put("startupfolder", config.getStartup());
+            linkGalleryInfo.put("startuptype", config.getType());
+            linkGalleryInfo.put("editedresource", resource.getRootPath());
+        } catch (JSONException e) {
+            // TODO: Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return "&params=" + linkGalleryInfo.toString();
     }
 
     /**
