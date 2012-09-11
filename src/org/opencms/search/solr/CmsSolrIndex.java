@@ -327,7 +327,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * requested to be displayed, what causes a incorrect hit count.<p>
      * 
      * @param cms the CMS object
-     * @param query the Solr query can also be a {@link CmsSolrQuery}
+     * @param initQuery the Solr query can also be a {@link CmsSolrQuery}
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * 
      * @return the list of found documents
@@ -339,12 +339,16 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * @see org.opencms.search.I_CmsSearchDocument
      * @see org.opencms.search.solr.CmsSolrQuery
      */
-    public synchronized CmsSolrResultList search(CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
+    public synchronized CmsSolrResultList search(CmsObject cms, CmsSolrQuery initQuery, boolean ignoreMaxRows)
     throws CmsSearchException {
 
         LOG.debug("### START SRARCH (time in ms) ###");
         int previousPriority = Thread.currentThread().getPriority();
         long startTime = System.currentTimeMillis();
+
+        CmsSolrQuery query = new CmsSolrQuery(cms, initQuery);
+        query.setHighlight(false);
+
         try {
 
             // initialize the search context
@@ -421,7 +425,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             // create and return the result
             return new CmsSolrResultList(
                 core,
-                query,
+                initQuery,
                 queryResponse,
                 solrDocumentList,
                 resourceDocumentList,
