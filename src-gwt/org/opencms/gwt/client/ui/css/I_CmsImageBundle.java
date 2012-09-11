@@ -54,13 +54,6 @@ public interface I_CmsImageBundle extends ClientBundle {
          */
         String addIcon();
 
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String changeOrderIcon();
-
         /** Access method.<p>
         *
         * @return the CSS class name

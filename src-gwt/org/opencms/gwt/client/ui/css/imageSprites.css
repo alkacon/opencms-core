@@ -40,16 +40,7 @@
     display: inline-block;
     vertical-align: middle;
 }
-@sprite .cmsState-down .changeOrderIcon, .cmsState-up-hovering .changeOrderIcon, .cmsState-down-hovering .changeOrderIcon{
-    gwt-image: "icons.changeOrderIconActive";
-    display: inline-block;
-    vertical-align: middle;
-}
-@sprite .cmsState-up .changeOrderIcon, .cmsState-up-disabled .changeOrderIcon, .cmsState-down-disabled .changeOrderIcon{
-    gwt-image: "icons.changeOrderIconDeactivated";
-    display: inline-block;
-    vertical-align: middle;
-}
+
 @sprite .cmsState-down .removeIcon, .cmsState-up-hovering .removeIcon, .cmsState-down-hovering .removeIcon{
     gwt-image: "icons.removeIconActive";
     display: inline-block;

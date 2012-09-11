@@ -78,22 +78,6 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/icons/changeOrderIconActive.png")
-    ImageResource changeOrderIconActive();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/changeOrderIconDeactivated.png")
-    ImageResource changeOrderIconDeactivated();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/icons/checkIconActive.png")
     ImageResource checkIconActive();
 

@@ -204,21 +204,6 @@ public class CmsMenuListItem extends CmsListItem {
     }
 
     /**
-     * Sets the icon style.<p>
-     * 
-     * @param imageClass the image class to set
-     * @param title the title (tool-tip) to set
-     */
-    protected void setMoveIconStyle(String imageClass, String title) {
-
-        if (getMoveHandle() instanceof CmsPushButton) {
-            CmsPushButton button = (CmsPushButton)getMoveHandle();
-            button.setImageClass(imageClass);
-            button.setTitle(title);
-        }
-    }
-
-    /**
      * Removes all styling done during drag and drop.<p>
      */
     private void clearDrag() {

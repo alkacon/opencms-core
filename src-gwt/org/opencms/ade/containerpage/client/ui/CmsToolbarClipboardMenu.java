@@ -35,7 +35,6 @@ import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.ArrayList;
@@ -177,9 +176,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         while (it.hasNext()) {
 
             CmsMenuListItem element = (CmsMenuListItem)it.next();
-            element.setMoveIconStyle(
-                I_CmsImageBundle.INSTANCE.style().changeOrderIcon(),
-                Messages.get().key(Messages.GUI_BUTTON_CHANGE_ORDER_TEXT_0));
             element.hideEditButton();
             element.showRemoveButton();
         }
@@ -230,9 +226,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
                 CmsMenuListItem element = (CmsMenuListItem)it.next();
                 element.hideRemoveButton();
                 element.showEditButton();
-                element.setMoveIconStyle(
-                    I_CmsImageBundle.INSTANCE.style().moveIcon(),
-                    org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TOOLBAR_MOVE_TO_0));
                 clientIds.add(element.getId());
             } catch (ClassCastException e) {
                 CmsDebugLog.getInstance().printLine("Could not cast widget");
