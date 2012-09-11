@@ -28,6 +28,7 @@
 package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.test.OpenCmsTestProperties;
@@ -132,6 +133,7 @@ public final class AllSolrTests {
         System.out.println("Found: " + results.getNumFound());
         System.out.println("Start: " + results.getStart());
         System.out.println("Max Score: " + results.getMaxScore());
+        System.out.println("Query: " + CmsEncoder.decode(results.getQuery().toString()));
         System.out.println("——————————–");
     }
 

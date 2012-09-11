@@ -3,7 +3,7 @@
 <opencms>
   <search>
   	<solr enabled="true">
-      <commitWithinMs>10000</commitWithinMs>
+      <commitWithinMs>-1</commitWithinMs>
   	</solr>
     <directory>index</directory>
     <timeout>60000</timeout>

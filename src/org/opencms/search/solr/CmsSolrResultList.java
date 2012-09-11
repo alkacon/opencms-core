@@ -7,7 +7,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.fields.I_CmsSearchField;
-import org.opencms.search.solr.CmsSolrQuery.HighlightInfo;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -139,7 +138,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         m_visibleHitCount = visibleHitCount;
 
         m_query = query;
-        m_query.applyHighlightInfo();
+        // m_query.applyHighlightInfo();
 
         m_resultDocuments = resultDocuments;
         m_resultDocuments.setStart(start);
@@ -157,7 +156,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         addAll(resourceDocumentList);
 
         if (core != null) {
-            initSolrReqRes(core, query.getHighlighInfo());
+            initSolrReqRes(core);
         }
     }
 
@@ -350,10 +349,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
      * Initializes the Solr query response.<p>
      * 
      * @param core the core to use
-     * @param hli the highlight info
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void initSolrReqRes(final SolrCore core, final HighlightInfo hli) {
+    private void initSolrReqRes(final SolrCore core) {
 
         // create and initialize the solr response
         m_solrQueryResponse = new SolrQueryResponse();
@@ -374,15 +372,30 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         m_solrQueryRequest.setParams(m_query);
 
         // perform the highlighting
-        if ((header != null) && ((hli != null) && hli.isHighlighting())) {
+        SearchComponent highlightComponenet = core.getSearchComponent("highlight");
+        if ((header != null) && (m_query.getHighlight()) && (highlightComponenet != null)) {
             header.add(HighlightParams.HIGHLIGHT, "on");
-            header.add(HighlightParams.FIELDS, CmsStringUtil.arrayAsString(hli.getFields(), ","));
-            header.add(HighlightParams.FRAGSIZE, new Integer(hli.getFragSize()));
-            header.add(HighlightParams.FIELD_MATCH, new Boolean(hli.getReqFieldMatch()));
-            header.add(HighlightParams.SIMPLE_POST, hli.getSimplePost());
-            header.add(HighlightParams.SIMPLE_PRE, hli.getSimplePre());
-            header.add(HighlightParams.SNIPPETS, new Integer(hli.getSnippets()));
-            SearchComponent highlightComponenet = core.getSearchComponent("highlight");
+            if ((m_query.getHighlightFields() != null) && (m_query.getHighlightFields().length > 0)) {
+                header.add(HighlightParams.FIELDS, CmsStringUtil.arrayAsString(m_query.getHighlightFields(), ","));
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_query.getHighlightFormatter())) {
+                header.add(HighlightParams.FORMATTER, m_query.getHighlightFormatter());
+            }
+            if (m_query.getHighlightFragsize() != 100) {
+                header.add(HighlightParams.FRAGSIZE, new Integer(m_query.getHighlightFragsize()));
+            }
+            if (m_query.getHighlightRequireFieldMatch()) {
+                header.add(HighlightParams.FIELD_MATCH, new Boolean(m_query.getHighlightRequireFieldMatch()));
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_query.getHighlightSimplePost())) {
+                header.add(HighlightParams.SIMPLE_POST, m_query.getHighlightSimplePost());
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_query.getHighlightSimplePre())) {
+                header.add(HighlightParams.SIMPLE_PRE, m_query.getHighlightSimplePre());
+            }
+            if (m_query.getHighlightSnippets() != 1) {
+                header.add(HighlightParams.SNIPPETS, new Integer(m_query.getHighlightSnippets()));
+            }
             ResponseBuilder rb = new ResponseBuilder(
                 m_solrQueryRequest,
                 m_solrQueryResponse,
@@ -394,6 +407,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
                 rb.setResults(res);
                 rb.setQuery(QParser.getParser(getQuery().getQuery(), null, m_solrQueryRequest).getQuery());
                 rb.setQueryString(getQuery().getQuery());
+                highlightComponenet.prepare(rb);
                 highlightComponenet.process(rb);
             } catch (Exception e) {
                 LOG.error(e);
