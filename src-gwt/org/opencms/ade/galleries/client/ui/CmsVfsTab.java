@@ -32,6 +32,7 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsList;
@@ -183,12 +184,9 @@ public class CmsVfsTab extends A_CmsListTab {
         if (name.endsWith("/")) {
             name = name.substring(0, name.length() - 1);
         }
-        CmsDataValue dataValue = new CmsDataValue(
-            600,
-            3,
-            CmsIconUtil.getResourceIconClasses("folder", true),
-            name,
-            vfsEntry.getDisplayName());
+        CmsDataValue dataValue = new CmsDataValue(600, 3, CmsIconUtil.getResourceIconClasses(
+            I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER,
+            true), name, vfsEntry.getDisplayName());
         dataValue.setUnselectable();
         if (vfsEntry.isEditable()) {
             dataValue.addButton(createUploadButtonForTarget(vfsEntry.getSitePath()));
@@ -205,7 +203,7 @@ public class CmsVfsTab extends A_CmsListTab {
                 vfsEntry.getSitePath(),
                 vfsEntry.getStructureId(),
                 vfsEntry.getDisplayName(),
-                "folder"));
+                I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER));
         }
         m_entryMap.put(result, vfsEntry);
         m_itemsByPath.put(vfsEntry.getSitePath(), result);

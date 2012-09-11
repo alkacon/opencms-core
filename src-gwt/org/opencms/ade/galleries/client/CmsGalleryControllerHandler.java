@@ -147,16 +147,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     }
 
     /**
-     * Removes a parameter from the search tab.<p>
-     * 
-     * @param type the parameter type 
-     */
-    public void onRemoveSearchParam(ParamType type) {
-
-        m_galleryDialog.getSearchTab().removeParameter(type);
-    }
-
-    /**
      * Deletes the html content of the galleries parameter and removes the style.<p>
      * 
      * @param galleries the galleries to remove from selection
@@ -228,7 +218,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             panel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryDialogCss().editorGallery());
         }
 
-        m_galleryDialog.fillTabs(m_mode.getTabs(), controller);
+        m_galleryDialog.fillTabs(controller);
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
             Collections.sort(dialogBean.getGalleries(), new CmsComparatorTitle(true));
             setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
@@ -271,6 +261,16 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
                 });
             }
         }
+    }
+
+    /**
+     * Removes a parameter from the search tab.<p>
+     * 
+     * @param type the parameter type 
+     */
+    public void onRemoveSearchParam(ParamType type) {
+
+        m_galleryDialog.getSearchTab().removeParameter(type);
     }
 
     /**

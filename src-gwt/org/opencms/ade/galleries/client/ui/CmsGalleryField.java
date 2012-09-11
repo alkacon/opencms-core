@@ -27,9 +27,9 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
@@ -106,8 +106,20 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /** The image formats. */
     private String m_imageFormats;
 
+    /** Flag indicating files should be selectable, VFS widget only. */
+    private boolean m_isIncludeFiles;
+
+    /** Flag indicating site selector should be visible, VFS widget only. */
+    private boolean m_isShowSiteSelector;
+
+    /** Flag indicating wither the field is used as a file widget. */
+    private boolean m_isVfsWidget;
+
     /** The reference path, for example the site path of the edited resource. */
     private String m_referencePath;
+
+    /** The start site. */
+    private String m_startSite;
 
     /** The resource types. */
     private String m_types;
@@ -218,20 +230,28 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
         } else {
             config = eval("(" + configuration + ")");
         }
+        var types = null;
+        var gallerypath = null;
+        var gallerytypes = null;
+        var referencepath = null;
+        var useformats = false;
+        var imageformats = null;
+        var imageformatnames = null;
         if (config.types)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setTypes(Ljava/lang/String;)(config.types);
+            types = config.types;
         if (config.gallerypath)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
+            gallerypath = config.gallerypath;
         if (config.gallerytypes)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
+            gallerytypes = config.gallerytypes;
         if (config.resource)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setReferencePath(Ljava/lang/String;)(config.resource);
+            referencepath = config.resource;
         if (config.useFormats)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setUseFormats(Z)(config.useFormats);
+            useformats = config.useFormats;
         if (config.imageFormats)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
+            imageformats = config.imageFormats.toString();
         if (config.imageFormatNames)
-            this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFormatNames.toString());
+            imageformatnames = config.imageFormatNames.toString();
+        this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setConfiguration(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;)(referencepath,gallerypath,types,gallerytypes,useformats,imageformats,imageformatnames);
     }-*/;
 
     /**
@@ -248,6 +268,35 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
         // do nothing 
+    }
+
+    /**
+     * Sets the configuration of the gallery field.<p>
+     * 
+     * @param referencePath the reference path, for example the resource being edited
+     * @param galleryPath the startup gallery
+     * @param resourceTypes the resource types (comma separated list)
+     * @param galleryTypes the gallery types (comma separated list)
+     * @param useFormats the use image formats flag
+     * @param imageFormats the image formats (comma separated list)
+     * @param imageFormatNames the image format names (comma separated list)
+     */
+    public void setConfiguration(
+        String referencePath,
+        String galleryPath,
+        String resourceTypes,
+        String galleryTypes,
+        boolean useFormats,
+        String imageFormats,
+        String imageFormatNames) {
+
+        m_referencePath = referencePath;
+        m_galleryPath = galleryPath;
+        m_types = resourceTypes;
+        m_galleryTypes = galleryTypes;
+        m_useFormats = useFormats;
+        m_imageFormats = imageFormats;
+        m_imageFormatNames = imageFormatNames;
     }
 
     /**
@@ -285,46 +334,6 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
-     * Sets the galleryPath.<p>
-     *
-     * @param galleryPath the galleryPath to set
-     */
-    public void setGalleryPath(String galleryPath) {
-
-        m_galleryPath = galleryPath;
-    }
-
-    /**
-     * Sets the galleryTypes.<p>
-     *
-     * @param galleryTypes the galleryTypes to set
-     */
-    public void setGalleryTypes(String galleryTypes) {
-
-        m_galleryTypes = galleryTypes;
-    }
-
-    /**
-     * Sets the image format names.<p>
-     *
-     * @param imageFormatNames the image format names to set
-     */
-    public void setImageFormatNames(String imageFormatNames) {
-
-        m_imageFormatNames = imageFormatNames;
-    }
-
-    /**
-     * Sets the image formats.<p>
-     *
-     * @param imageFormats the image formats to set
-     */
-    public void setImageFormats(String imageFormats) {
-
-        m_imageFormats = imageFormats;
-    }
-
-    /**
      * Sets the name of the input field.<p>
      * 
      * @param name of the input field
@@ -336,33 +345,27 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
-     * Sets the referencePath.<p>
-     *
-     * @param referencePath the referencePath to set
+     * Sets the widget configuration when used as VFS file widget.<p>
+     * 
+     * @param includeFiles <code>true</code> if files should be selectable
+     * @param showSiteSelector <code>true</code> if the site selector should be visible
+     * @param startSite the start site
+     * @param referencePath the reference path
+     * @param types the resource types (comma separated list)
      */
-    public void setReferencePath(String referencePath) {
+    public void setVfsConfiguration(
+        boolean includeFiles,
+        boolean showSiteSelector,
+        String startSite,
+        String referencePath,
+        String types) {
 
+        m_isVfsWidget = true;
+        m_isIncludeFiles = includeFiles;
+        m_isShowSiteSelector = showSiteSelector;
+        m_startSite = startSite;
         m_referencePath = referencePath;
-    }
-
-    /**
-     * Sets the types.<p>
-     *
-     * @param types the types to set
-     */
-    public void setTypes(String types) {
-
         m_types = types;
-    }
-
-    /**
-     * Sets the use image formats flag.<p>
-     *
-     * @param useFormats the use image formats flag to set
-     */
-    public void setUseFormats(boolean useFormats) {
-
-        m_useFormats = useFormats;
     }
 
     /**
@@ -371,30 +374,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     protected void openGalleryDialog() {
 
         if (m_popup == null) {
-            m_popup = CmsGalleryFactory.createGalleryPopup(new I_CmsGalleryWidgetHandler() {
-
-                public void setWidgetValue(
-                    String resourcePath,
-                    CmsUUID structureId,
-                    CmsCroppingParamBean croppingParameter) {
-
-                    String path = resourcePath;
-                    // in case of an image check the cropping parameter
-                    if ((croppingParameter != null) && (croppingParameter.isCropped() || croppingParameter.isScaled())) {
-                        path += "?" + croppingParameter.toString();
-                    }
-                    setValue(path, true);
-                    m_popup.hide();
-                }
-            },
-                m_referencePath,
-                m_galleryPath,
-                getFormValueAsString(),
-                m_types,
-                m_galleryTypes,
-                m_useFormats,
-                m_imageFormats,
-                m_imageFormatNames);
+            m_popup = createPopup();
             m_popup.center();
         } else {
             m_popup.searchElement(getFormValueAsString());
@@ -469,6 +449,55 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     void setFaded(boolean faded) {
 
         m_fader.setVisible(faded);
+    }
+
+    /**
+     * Creates the gallery pop-up.<p>
+     * 
+     * @return the gallery pop-up
+     */
+    private CmsGalleryPopup createPopup() {
+
+        I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
+
+            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+
+                String path = resourcePath;
+                // in case of an image check the cropping parameter
+                if ((croppingParameter != null) && (croppingParameter.isCropped() || croppingParameter.isScaled())) {
+                    path += "?" + croppingParameter.toString();
+                }
+                setValue(path, true);
+                m_popup.hide();
+            }
+        };
+        if (m_isVfsWidget) {
+
+            GalleryTabId[] tabIds = null;
+            if (m_isIncludeFiles) {
+                tabIds = new GalleryTabId[] {
+                    GalleryTabId.cms_tab_galleries,
+                    GalleryTabId.cms_tab_vfstree,
+                    GalleryTabId.cms_tab_sitemap,
+                    GalleryTabId.cms_tab_categories,
+                    GalleryTabId.cms_tab_search,
+                    GalleryTabId.cms_tab_results};
+            } else {
+                tabIds = new GalleryTabId[] {GalleryTabId.cms_tab_vfstree};
+            }
+            return new CmsGalleryPopup(handler, m_referencePath, getFormValueAsString(), m_types, tabIds);
+        } else {
+            return new CmsGalleryPopup(
+                handler,
+                m_referencePath,
+                m_galleryPath,
+                getFormValueAsString(),
+                m_types,
+                m_galleryTypes,
+                m_useFormats,
+                m_imageFormats,
+                m_imageFormatNames);
+        }
     }
 
 }

@@ -258,12 +258,12 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /**
      * Fill the tabs with the content provided from the info bean. <p>
      * 
-     * @param tabIds the tabs to show 
      * @param controller the reference to the gallery controller
      */
-    public void fillTabs(GalleryTabId[] tabIds, CmsGalleryController controller) {
+    public void fillTabs(CmsGalleryController controller) {
 
         m_controller = controller;
+        GalleryTabId[] tabIds = m_controller.getTabIds();
         int i;
         for (i = 0; i < tabIds.length; i++) {
             switch (tabIds[i]) {
@@ -303,15 +303,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_sitemapTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_sitemapTab, "Sitemap");
                     break;
+                case cms_tab_results:
+                    m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dndHandler);
+                    m_resultsTab.setTabTextAccessor(getTabTextAccessor(i));
+                    m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
+                    disableSearchTab();
+                    break;
                 default:
                     break;
             }
         }
-        m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dndHandler);
-        m_resultsTab.setTabTextAccessor(getTabTextAccessor(i));
-        m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
-        disableSearchTab();
-
         m_tabbedPanel.addBeforeSelectionHandler(this);
         m_tabbedPanel.addSelectionHandler(this);
     }

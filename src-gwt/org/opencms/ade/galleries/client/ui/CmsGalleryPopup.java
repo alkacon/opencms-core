@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsGalleryControllerHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPopup;
 
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -40,8 +41,39 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class CmsGalleryPopup extends CmsPopup {
 
+    /** The main panel. */
+    private SimplePanel m_container;
+
     /** The gallery controller. */
     private CmsGalleryController m_controller;
+
+    /**
+     * 
+     * @param handler the widget handler, used to set the widgets value
+     * @param referencePath the reference path, for example the resource being edited
+     * @param currentElement the currently selected resource
+     * @param resourceTypes the resource types (comma separated list)
+     * @param tabIds the tabs to use
+     */
+    public CmsGalleryPopup(
+        I_CmsGalleryWidgetHandler handler,
+        String referencePath,
+        String currentElement,
+        String resourceTypes,
+        GalleryTabId... tabIds) {
+
+        this();
+        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(null, this);
+        m_controller = new CmsGalleryController(
+            new CmsGalleryControllerHandler(galleryDialog),
+            GalleryMode.widget,
+            referencePath,
+            currentElement,
+            resourceTypes,
+            tabIds);
+        galleryDialog.setWidgetHandler(handler);
+        m_container.setWidget(galleryDialog);
+    }
 
     /**
      * Constructor.<p>
@@ -67,11 +99,7 @@ public class CmsGalleryPopup extends CmsPopup {
         String imageFormats,
         String imageFormatNames) {
 
-        super(650);
-        setGlassEnabled(true);
-        catchNotifications();
-        removePadding();
-        SimplePanel container = new SimplePanel();
+        this();
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(null, this);
         m_controller = new CmsGalleryController(
             new CmsGalleryControllerHandler(galleryDialog),
@@ -85,8 +113,20 @@ public class CmsGalleryPopup extends CmsPopup {
             imageFormats,
             imageFormatNames);
         galleryDialog.setWidgetHandler(handler);
-        container.setWidget(galleryDialog);
-        setMainContent(container);
+        m_container.setWidget(galleryDialog);
+    }
+
+    /**
+     * Constructor.<p>
+     */
+    private CmsGalleryPopup() {
+
+        super(650);
+        setGlassEnabled(true);
+        catchNotifications();
+        removePadding();
+        m_container = new SimplePanel();
+        setMainContent(m_container);
         addDialogClose(null);
     }
 

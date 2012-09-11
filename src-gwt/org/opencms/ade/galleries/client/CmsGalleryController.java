@@ -124,6 +124,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /** If <code>true</code> the search object is changed <code>false</code> otherwise.  */
     private boolean m_searchObjectChanged = true;
 
+    /** The configured tabs. */
+    private GalleryTabId[] m_tabIds;
+
     /** The vfs service. */
     private I_CmsVfsServiceAsync m_vfsService;
 
@@ -162,6 +165,28 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (m_dialogBean != null) {
             m_handler.onInitialSearch(m_searchObject, m_dialogBean, this);
         }
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param handler the controller handler 
+     * @param galleryMode the gallery mode
+     * @param referencePath the reference path
+     * @param currentElement the current element
+     * @param resourceTypes the available resource types (comma separated list)
+     * @param tabIds the tabs to use
+     */
+    public CmsGalleryController(
+        CmsGalleryControllerHandler handler,
+        GalleryMode galleryMode,
+        String referencePath,
+        String currentElement,
+        String resourceTypes,
+        GalleryTabId... tabIds) {
+
+        this(handler, galleryMode, referencePath, null, currentElement, resourceTypes, null, false, null, null);
+        m_tabIds = tabIds;
     }
 
     /**
@@ -581,6 +606,20 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns the configured tab id's.<p>
+     * 
+     * @return the configured tab id's
+     */
+    public GalleryTabId[] getTabIds() {
+
+        if (m_tabIds == null) {
+            return m_dialogMode.getTabs();
+        } else {
+            return m_tabIds;
+        }
+    }
+
+    /**
      * Returns if a preview is available for the given resource type.<p>
      * 
      * @param resourceType the requested resource type
@@ -599,8 +638,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     public boolean hasSelectFolder() {
 
-        // TODO: this needs to be an configured option
-        return true;
+        if (hasSelectResource()) {
+            for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
+                if (type.getType().contains(I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

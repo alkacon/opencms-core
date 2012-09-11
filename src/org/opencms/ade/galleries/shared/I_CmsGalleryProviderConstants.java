@@ -41,18 +41,19 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The advanced direct edit mode. */
         ade(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories,
-        GalleryTabId.cms_tab_search),
+        GalleryTabId.cms_tab_search, GalleryTabId.cms_tab_results),
 
         /** The FCKEditor mode. */
-        editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
+        editor(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search,
+        GalleryTabId.cms_tab_results),
 
         /** The explorer mode. */
         view(GalleryTabId.cms_tab_types, GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree,
-        GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search),
+        GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search, GalleryTabId.cms_tab_results),
 
         /** The widget mode. */
-        widget(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_sitemap,
-        GalleryTabId.cms_tab_categories, GalleryTabId.cms_tab_search);
+        widget(GalleryTabId.cms_tab_galleries, GalleryTabId.cms_tab_vfstree, GalleryTabId.cms_tab_categories,
+        GalleryTabId.cms_tab_search, GalleryTabId.cms_tab_results);
 
         /** The configuration. */
         private GalleryTabId[] m_tabs;
@@ -67,9 +68,9 @@ public interface I_CmsGalleryProviderConstants {
         }
 
         /** 
-         * Returns the name.<p>
+         * Returns the configured tabs.<p>
          * 
-         * @return the name
+         * @return the configured tabs
          */
         public GalleryTabId[] getTabs() {
 
@@ -229,6 +230,9 @@ public interface I_CmsGalleryProviderConstants {
 
     /** The key for the flag which controls whether the select button should be shown. */
     String KEY_SHOW_SELECT = "showSelect";
+
+    /** The folder resource type name. */
+    String RESOURCE_TYPE_FOLDER = "folder";
 
     /** Path to the host page. */
     String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";

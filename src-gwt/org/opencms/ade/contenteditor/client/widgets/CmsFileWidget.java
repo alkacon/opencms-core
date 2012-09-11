@@ -30,8 +30,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.CmsVfsSelection;
-import org.opencms.gwt.client.ui.input.CmsVfsSelector;
+import org.opencms.ade.galleries.client.ui.CmsGalleryField;
 
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -42,35 +41,43 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  *
  * */
-public class CmsVfsWidget extends Composite implements I_EditWidget {
-
-    /** The popup to select a file. */
-    protected CmsVfsSelector m_selector = new CmsVfsSelector();
+public class CmsFileWidget extends Composite implements I_EditWidget {
 
     /** Value of the activation. */
     private boolean m_active = true;
 
-    /***/
-    private String m_config = "";
-
-    /** The icon string. */
-    private String m_imageClass = "";
+    /** If files should selectable. */
+    private boolean m_includeFiles;
 
     /** The link selector. */
-    private CmsVfsSelection m_linkSelect;
+    private CmsGalleryField m_linkSelect;
+
+    /** The reference path. */
+    private String m_referencePath;
+
+    /** If the site selector should be visible. */
+    private boolean m_showSiteSelector;
+
+    /** The start site. */
+    private String m_startSite;
+
+    /** The resource types. */
+    private String m_types;
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
-     * @param config the configuration string given from OpenCms XSD
-     * @param type the mode in witch the widget should be started
-     * @param icon the icon image CSS class
+     * 
+     * @param openerTitle the gallery opener title
+     * @param config the widget configuration string
      */
-    public CmsVfsWidget(String config, String type, String icon) {
+    public CmsFileWidget(String openerTitle, String config) {
 
-        parseconfig(config);
-        m_imageClass = icon;
-        m_linkSelect = new CmsVfsSelection(m_imageClass, type, m_config);
-        m_linkSelect.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
+        m_linkSelect = new CmsGalleryField();
+        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
+        parseConfiguration(config);
+        m_linkSelect.setVfsConfiguration(m_includeFiles, m_showSiteSelector, m_startSite, m_referencePath, m_types);
+        m_linkSelect.setGalleryOpenerTitle(openerTitle);
+        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -179,12 +186,24 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
     }
 
     /**
-     * Parse the given configuration string.<p>
-     * @param config the given configuration string
-     * */
-    private void parseconfig(String config) {
-
-        //TODO next time.
-    }
-
+     * Parses the configuration.<p>
+     * 
+     * @param configuration the widget configuration
+     */
+    private native void parseConfiguration(String configuration)/*-{
+        var config;
+        if (typeof $wnd.JSON != 'undefined') {
+            config = $wnd.JSON.parse(configuration);
+        } else {
+            config = eval("(" + configuration + ")");
+        }
+        if (config.includefiles)
+            this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_includeFiles = config.includefiles;
+        if (config.showsiteselector)
+            this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_showSiteSelector = config.showsiteselector;
+        if (config.startsite)
+            this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_startSite = config.startsite;
+        if (config.referencepath)
+            this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_referencePath = config.referencepath;
+    }-*/;
 }

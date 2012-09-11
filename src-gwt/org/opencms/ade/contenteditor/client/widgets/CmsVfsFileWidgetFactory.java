@@ -34,8 +34,6 @@ import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.ui.input.CmsVfsSelection;
 
 import com.google.gwt.user.client.Element;
 
@@ -60,10 +58,7 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new CmsVfsWidget(
-            configuration,
-            CmsVfsSelection.FILE_LINK,
-            I_CmsImageBundle.INSTANCE.style().directoryIcon()));
+        return new FormWidgetWrapper(new CmsFileWidget("Select file", configuration));
     }
 
     /**
@@ -71,9 +66,6 @@ public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_EditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsVfsWidget(
-            configuration,
-            CmsVfsSelection.FILE_LINK,
-            I_CmsImageBundle.INSTANCE.style().directoryIcon());
+        return new CmsFileWidget("Select file", configuration);
     }
 }

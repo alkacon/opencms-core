@@ -30,6 +30,8 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -186,7 +188,17 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsMessages messages,
         CmsResource resource) {
 
-        return getConfiguration();
+        JSONObject config = new JSONObject();
+        try {
+            config.put(CONFIGURATION_STARTSITE, m_startSite);
+            config.put(CONFIGURATION_INCLUDEFILES, m_includeFiles);
+            config.put(CONFIGURATION_SHOWSITESELECTOR, m_showSiteSelector);
+            config.put("referencepath", cms.getSitePath(resource));
+        } catch (JSONException e) {
+            // TODO: Auto-generated catch block
+            e.printStackTrace();
+        }
+        return config.toString();
     }
 
     /**

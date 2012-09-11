@@ -36,7 +36,7 @@
 	.opener{
 		position: absolute;
 		right: 3px;
-		top: 0px;
+		top: 1px;
 	}
 </ui:style>
 <g:HTMLPanel styleName="{style.galleryField}" addStyleNames="{main.generalCss.cornerAll}">
