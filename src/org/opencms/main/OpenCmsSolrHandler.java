@@ -1,4 +1,4 @@
-/*
+                                                        /*
  * File   : $Source$
  * Date   : $Date$
  * Version: $Revision$
@@ -34,7 +34,9 @@ package org.opencms.main;
 import org.opencms.file.CmsObject;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.Map;
@@ -49,6 +51,8 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * Usage example:<p>
  * <code>http://localhost:8080/opencms/opencms/handleSolrSelect?fq=parent-folders:/sites/+type=v8article&fl=path&rows=10&sort=path%20asc</code>
+ * 
+ * @since 8.5.0
  */
 public class OpenCmsSolrHandler implements I_CmsRequestHandler {
 
@@ -62,13 +66,36 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
     private final static String[] HANDLER_NAMES = new String[] {"SolrSelect"};
 
     /**
+     * Returns the requested URI.<p>
+     * 
+     * @param req the servlet request
+     * @param cms the CmsObject
+     * 
+     * @return the requested URI
+     */
+    private static final String getRequestUri(HttpServletRequest req, CmsObject cms) {
+    	
+    	String baseUri = req.getParameter("baseUri");
+    	if (CmsStringUtil.isEmptyOrWhitespaceOnly(baseUri)) {
+    		String referer = req.getHeader("referer");
+    		CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
+    		String prefix = site.getServerPrefix(cms, "/") + OpenCms.getSystemInfo().getOpenCmsContext();
+            if (referer != null && referer.startsWith(prefix)) {
+                // cut off the server prefix
+            	baseUri =  referer.substring(prefix.length());
+            }
+    	}
+    	return baseUri;
+    }
+
+    /**
      * @see org.opencms.main.I_CmsRequestHandler#getHandlerNames()
      */
     public String[] getHandlerNames() {
 
         return HANDLER_NAMES;
     }
-
+    
     /**
      * @see org.opencms.main.I_CmsRequestHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
      */
@@ -82,6 +109,10 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
                 String message = Messages.get().getBundle().key(Messages.GUI_SOLR_NOT_LOGGED_IN_0);
                 res.getWriter().println(ERROR_HTML.replace("$content$", message));
             } else {
+            	String baseUri = getRequestUri(req, cms);
+            	if (baseUri != null) {
+            		cms.getRequestContext().setUri(baseUri);
+            	}
                 Map<String, String[]> params = CmsRequestUtil.createParameterMap(req.getParameterMap());
                 String indexName = params.get("core") != null ? params.get("core")[0] : (params.get("index") != null
                 ? params.get("index")[0]
