@@ -31,6 +31,10 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
+import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsLuceneIndex;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -71,6 +75,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         suite.addTest(new TestSolrConfiguration("testMandantoryFields"));
         suite.addTest(new TestSolrConfiguration("testDynamicFields"));
         suite.addTest(new TestSolrConfiguration("testDefaultFields"));
+        suite.addTest(new TestSolrConfiguration("testCmsSolrPostProcessor"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -78,6 +83,15 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/");
+                // disable all lucene indexes
+                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+                    if (!indexName.equalsIgnoreCase(AllSolrTests.SOLR_ONLINE)) {
+                        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                        if (index instanceof CmsLuceneIndex) {
+                            index.setEnabled(false);
+                        }
+                    }
+                }
             }
 
             @Override
@@ -88,6 +102,27 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests the CmsSearch with folder names with upper case letters.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testCmsSolrPostProcessor() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing Solr link processor");
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        // String query = "+text:Alkacon +text:OpenCms +text:Text +parent-folders:/sites/default/types/*";
+        String query = "q=+text:>>SearchEgg1<<";
+        CmsSolrResultList results = index.search(cms, query);
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", results.get(0).getRootPath());
+
+        String link = results.get(0).getDocument().getFieldValueAsString("link");
+        assertEquals("/data/opencms/xmlcontent/article_0001.html", link);
     }
 
     /**

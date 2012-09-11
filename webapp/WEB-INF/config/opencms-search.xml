@@ -234,6 +234,7 @@
         <sources>
           <source>solr_source</source>
         </sources>
+        <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
       </index>
       <index>
         <name>German online help</name>

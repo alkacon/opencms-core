@@ -226,7 +226,8 @@
         <configuration>solr_fields</configuration> 
         <sources>
           <source>solr_source</source>
-        </sources>   
+        </sources>
+        <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>   
       </index>
       <!-- 
 # Excluded for the default test cases in order to speed up testing

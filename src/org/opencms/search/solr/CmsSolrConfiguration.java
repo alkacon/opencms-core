@@ -59,18 +59,18 @@ public class CmsSolrConfiguration {
     /** The Solr configuration file name. */
     public static final String SOLR_CONFIG_FILE = "solr.xml";
 
-    /** The default name of the Solr home directory. */
-    public static final String SOLR_HOME_DEFAULT = "solr" + File.separatorChar;
-
-    /** The system property name for the Solr home directory. */
-    public static final String SOLR_HOME_PROPERTY = "solr.solr.home";
-
     /** 
      * The default max time in ms before a commit will happen (10 seconds by default).<p>
      * 
      * Can be configured in 'opencms-search.xml'.<p> 
      */
     public static final long SOLR_DEFAULT_COMMIT_MS = 10000;
+
+    /** The default name of the Solr home directory. */
+    public static final String SOLR_HOME_DEFAULT = "solr" + File.separatorChar;
+
+    /** The system property name for the Solr home directory. */
+    public static final String SOLR_HOME_PROPERTY = "solr.solr.home";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrConfiguration.class);

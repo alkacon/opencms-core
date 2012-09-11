@@ -65,23 +65,6 @@ public class CmsSolrField extends A_CmsSearchField {
     /**
      * Public constructor.<p>
      * 
-     * @param targetField the target field name
-     * @param copyFields the field names to copy this field's value to
-     * @param locale the locale
-     * @param defaultValue the default value
-     * @param boost the boost factor
-     */
-    public CmsSolrField(String targetField, List<String> copyFields, Locale locale, String defaultValue, float boost) {
-
-        super(targetField, defaultValue, boost);
-        m_targetField = targetField;
-        m_copyFields = copyFields;
-        m_locale = locale;
-    }
-
-    /**
-     * Public constructor.<p>
-     * 
      * @param luceneField
      */
     public CmsSolrField(CmsSearchField luceneField) {
@@ -106,6 +89,23 @@ public class CmsSolrField extends A_CmsSearchField {
         for (I_CmsSearchFieldMapping mapping : luceneField.getMappings()) {
             addMapping(mapping);
         }
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param targetField the target field name
+     * @param copyFields the field names to copy this field's value to
+     * @param locale the locale
+     * @param defaultValue the default value
+     * @param boost the boost factor
+     */
+    public CmsSolrField(String targetField, List<String> copyFields, Locale locale, String defaultValue, float boost) {
+
+        super(targetField, defaultValue, boost);
+        m_targetField = targetField;
+        m_copyFields = copyFields;
+        m_locale = locale;
     }
 
     /**
