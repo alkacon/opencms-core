@@ -347,6 +347,8 @@ public final class CmsContentEditor {
                 m_changedEntityIds.add(targetId);
                 m_contentLocales.add(targetLocale);
                 m_deletedEntities.remove(targetId);
+                m_saveButton.enable();
+                m_saveExitButton.enable();
             }
         }
         initLocaleSelect();
