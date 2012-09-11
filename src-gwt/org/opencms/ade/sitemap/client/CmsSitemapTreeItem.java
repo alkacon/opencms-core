@@ -715,7 +715,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public void updateSitePath(String sitePath) {
 
         String newSubTitle = getDisplayedUrl(sitePath);
-
+        removeInvalidChildren();
         getListItemWidget().setSubtitleLabel(newSubTitle);
         String name = getName(sitePath);
         setId(name);
@@ -723,23 +723,23 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         if (getLoadState() == LoadState.LOADED) {
             for (int i = 0; i < getChildCount(); i++) {
                 CmsSitemapTreeItem item = (CmsSitemapTreeItem)getChild(i);
-                if (item != null) {
+                if ((item != null)
+                    && (CmsSitemapView.getInstance().getController().getEntryById(item.getEntryId()) != null)) {
                     String path = CmsStringUtil.joinPaths(sitePath, CmsResource.getName(item.getSitePath()));
                     item.updateSitePath(path);
                 }
             }
         }
         getListItemWidget().updateTruncation();
-
     }
 
     /**
-     * Helper method for adding the marker widget.<p>
-     * 
-     * @param text the text for the marker widget 
-     * 
-     * @return the new marker widget 
-     */
+    * Helper method for adding the marker widget.<p>
+    * 
+    * @param text the text for the marker widget 
+    * 
+    * @return the new marker widget 
+    */
     protected Widget addMarker(String text) {
 
         Label label = new Label(text);
@@ -772,10 +772,12 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     protected void onChangeChildren() {
 
         super.onChangeChildren();
+
         if (m_openerForNonNavigationStyle == null) {
             // happens when initializing
             return;
         }
+        removeInvalidChildren();
         Iterator<Widget> childIt = m_children.iterator();
         while (childIt.hasNext()) {
             Widget childWidget = childIt.next();
@@ -788,6 +790,26 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             }
         }
         m_openerForNonNavigationStyle.setValue(CSS.notInNavigationEntry());
+    }
+
+    /**
+    * Helper method to remove invalid children that don't have a corresponding CmsSitemapClientEntry.
+    */
+    protected void removeInvalidChildren() {
+
+        if (getLoadState() == LoadState.LOADED) {
+            List<CmsSitemapTreeItem> toDelete = new ArrayList<CmsSitemapTreeItem>();
+            for (int i = 0; i < getChildCount(); i++) {
+                CmsSitemapTreeItem item = (CmsSitemapTreeItem)getChild(i);
+                CmsUUID id = item.getEntryId();
+                if ((id != null) && (CmsSitemapView.getInstance().getController().getEntryById(id) == null)) {
+                    toDelete.add(item);
+                }
+            }
+            for (CmsSitemapTreeItem deleteItem : toDelete) {
+                m_children.removeItem(deleteItem);
+            }
+        }
     }
 
     /**
