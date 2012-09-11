@@ -63,12 +63,16 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config the configuration string given from OpenCms XSD
      * @param type the mode in witch the widget should be started
+<<<<<<< OURS
      * @param icon the icon image CSS class
+=======
+     * @param icon the icon of the widget 
+>>>>>>> THEIRS
      */
     public CmsVfsWidget(String config, String type, String icon) {
 
-        parseconfig(config);
         m_imageClass = icon;
+        m_config = config;
         m_linkSelect = new CmsVfsSelection(m_imageClass, type, m_config);
         m_linkSelect.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
