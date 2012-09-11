@@ -70,6 +70,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.FastWriter;
 import org.apache.solr.core.SolrCore;
@@ -86,7 +87,7 @@ import org.apache.solr.response.SolrQueryResponse;
 public class CmsSolrIndex extends A_CmsSearchIndex {
 
     /** Constant for additional parameter to set the post processor class name. */
-    public static final String POST_PROCESSOR = CmsSolrIndex.class.getName() + ".postProcessor";
+    public static final String POST_PROCESSOR = "search.solr.postProcessor";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
@@ -391,7 +392,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                 try {
                     SolrDocument doc = queryResponse.getResults().get(i);
-                    I_CmsSearchDocument searchDoc = new CmsSolrDocument(doc);
+                    CmsSolrDocument searchDoc = new CmsSolrDocument(doc);
                     if (needsPermissionCheck(searchDoc)) {
                         // only if the document is an OpenCms internal resource perform the permission check
                         CmsResource resource = getResource(searchCms, searchDoc);
@@ -399,7 +400,10 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                             // permission check performed successfully: the user has read permissions!
                             if (cnt >= start) {
                                 if (m_postProcessor != null) {
-                                    doc = m_postProcessor.process(searchCms, resource, doc);
+                                    doc = m_postProcessor.process(
+                                        searchCms,
+                                        resource,
+                                        (SolrInputDocument)searchDoc.getDocument());
                                 }
                                 resourceDocumentList.add(new CmsSearchResource(resource, searchDoc));
                                 solrDocumentList.add(doc);

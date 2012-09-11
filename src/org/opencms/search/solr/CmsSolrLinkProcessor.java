@@ -33,30 +33,22 @@ package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
 
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 
 /**
- * The post document processor can be used in order to
- * manipulate search results after the OpenCms permission
- * check has been done.<p>
- * 
- * NOTE: Currently it is only possible to use this interface 
- * if you run an embedded Solr server instance.<p>
- * 
- * @since 8.5.0
+ * This Solr post processor generates for each found document the corresponding link and
+ * adds this link into the resulting document as field.<p>
  */
-public interface I_CmsSolrPostSearchProcessor {
+public class CmsSolrLinkProcessor implements I_CmsSolrPostSearchProcessor {
 
-    /**
-     * Performs the post processing.<p>
-     * 
-     * @param searchCms the CMS object
-     * @param resource the resource for the found document
-     * @param document the document itself
-     * 
-     * @return the manipulated Solr document
-     */
-    SolrDocument process(CmsObject searchCms, CmsResource resource, SolrInputDocument document);
+    public SolrDocument process(CmsObject searchCms, CmsResource resource, SolrInputDocument document) {
+
+        document.addField("link", OpenCms.getLinkManager().substituteLink(searchCms, resource));
+        return ClientUtils.toSolrDocument(document);
+    }
+
 }
