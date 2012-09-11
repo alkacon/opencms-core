@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui.input.colorpicker;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Position;
@@ -172,8 +171,8 @@ public final class CmsSliderBar extends HTML {
             case Event.ONMOUSEMOVE:
                 if (m_capturedMouse) {
                     DOM.eventPreventDefault(event);
-
-                    int y = (event.getClientY() - getAbsoluteTop()) + Window.getScrollTop();
+                    double abolut_top = getAbsoluteTop();
+                    int y = ((event.getClientY() - (int)abolut_top) + Window.getScrollTop());
                     setSliderPosition(y);
                     if (m_parent != null) {
                         m_parent.onBarSelected(y);
