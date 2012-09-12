@@ -25,9 +25,6 @@ div.previewDialog {
 	max-height: none;
 	min-width: 0;
 	max-width: none;
-	overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 .hidePreview .previewDialog{
 	display: none;
@@ -109,6 +106,12 @@ table.infoTable{
 	border: none;
 	padding: 3px;
 	clear: both;
+}
+
+table.infoTable div{
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 table.infoTable tr, table.infoTable td{
