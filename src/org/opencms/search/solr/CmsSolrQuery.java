@@ -153,6 +153,9 @@ public class CmsSolrQuery {
     /** The of sort fields (key = field name, value = sort order), if empty the Solr default is taken (by score). */
     private Map<String, ORDER> m_sortFields = new LinkedHashMap<String, SolrQuery.ORDER>();
 
+    /** The offset for the found docuements. */
+    private Integer m_start = new Integer(0);
+
     /** Signals whether this is a structure query or not. */
     private boolean m_structureQuery;
 
@@ -306,6 +309,16 @@ public class CmsSolrQuery {
     public Map<String, ORDER> getSortFields() {
 
         return m_sortFields;
+    }
+
+    /**
+     * Returns the start.<p>
+     *
+     * @return the start
+     */
+    public Integer getStart() {
+
+        return m_start;
     }
 
     /**
@@ -489,6 +502,16 @@ public class CmsSolrQuery {
     }
 
     /**
+     * Sets the start.<p>
+     *
+     * @param start the start to set
+     */
+    public void setStart(Integer start) {
+
+        m_start = start;
+    }
+
+    /**
      * Sets the structureQuery.<p>
      *
      * @param structureQuery the structureQuery to set
@@ -513,9 +536,9 @@ public class CmsSolrQuery {
      *
      * @param textSearchFields the textSearchFields to set
      */
-    public void setTextSearchFields(String... textSearchFields) {
+    public void setTextSearchFields(List<String> textSearchFields) {
 
-        m_textSearchFields = Arrays.asList(textSearchFields);
+        m_textSearchFields = textSearchFields;
     }
 
     /**
@@ -523,9 +546,9 @@ public class CmsSolrQuery {
      *
      * @param textSearchFields the textSearchFields to set
      */
-    public void setTextSearchFields(List<String> textSearchFields) {
+    public void setTextSearchFields(String... textSearchFields) {
 
-        m_textSearchFields = textSearchFields;
+        m_textSearchFields = Arrays.asList(textSearchFields);
     }
 
     /**
@@ -547,6 +570,9 @@ public class CmsSolrQuery {
         }
         m_solrQuery.setQueryType(m_queryType);
         m_solrQuery.setRows(m_rows);
+        if ((m_start != null) && (m_start.intValue() != 0)) {
+            m_solrQuery.setStart(m_start);
+        }
 
         // set the values from the members
         if ((m_sortFields != null) && !m_sortFields.isEmpty()) {
