@@ -347,8 +347,7 @@ public final class CmsContentEditor {
                 m_changedEntityIds.add(targetId);
                 m_contentLocales.add(targetLocale);
                 m_deletedEntities.remove(targetId);
-                m_saveButton.enable();
-                m_saveExitButton.enable();
+                enableSave();
             }
         }
         initLocaleSelect();
@@ -367,7 +366,7 @@ public final class CmsContentEditor {
             m_changedEntityIds.remove(m_entityId);
             m_deletedEntities.add(m_entityId);
             m_editor.unregistereEntity(m_entityId);
-            m_saveButton.enable();
+            enableSave();
             String nextLocale = null;
             if (m_registeredEntities.isEmpty()) {
                 nextLocale = m_contentLocales.iterator().next();
@@ -498,8 +497,7 @@ public final class CmsContentEditor {
      */
     void setChanged() {
 
-        m_saveButton.enable();
-        m_saveExitButton.enable();
+        enableSave();
         m_changedEntityIds.add(m_entityId);
         m_deletedEntities.remove(m_entityId);
     }
@@ -613,6 +611,15 @@ public final class CmsContentEditor {
         result.setButtonStyle(ButtonStyle.IMAGE, null);
         result.setSize(Size.big);
         return result;
+    }
+
+    /**
+     * Enables the save buttons.<p>
+     */
+    private void enableSave() {
+
+        m_saveButton.enable();
+        m_saveExitButton.enable();
     }
 
     /**
