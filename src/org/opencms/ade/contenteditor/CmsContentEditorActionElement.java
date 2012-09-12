@@ -106,6 +106,8 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         String backlink = getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(backlink)) {
             backlink = link(CmsFrameset.JSP_WORKPLACE_URI);
+        } else {
+            backlink = link(backlink);
         }
         sb.append(I_CmsContentService.PARAM_BACKLINK).append("='").append(backlink).append("';\n");
         wrapScript(sb);
