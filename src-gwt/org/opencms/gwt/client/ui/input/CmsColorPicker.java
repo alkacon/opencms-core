@@ -123,7 +123,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     private Panel m_panel = new FlowPanel();
 
     /** The internal textbox used by this widget to display the color value. */
-    private TextBox m_textboxColorValue = new TextBox();
+    protected TextBox m_textboxColorValue = new TextBox();
 
     /**
      * Text area widgets for ADE forms.<p>
@@ -143,7 +143,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
             public void onBlur(BlurEvent event) {
 
-                checkvalue();
+                checkvalue(m_textboxColorValue.getValue());
 
             }
         });
@@ -318,9 +318,8 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            m_colorValue = (strValue);
             if (strValue.length() > 0) {
-                checkvalue();
+                checkvalue(strValue);
             }
         }
 
@@ -357,14 +356,16 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Validates the inputed color value.
+     * @param colorvalue the value of the color
      * @return true if the inputed color value is valid
      */
-    protected boolean checkvalue() {
+    protected boolean checkvalue(String colorvalue) {
 
-        boolean valid = validateColorValue(m_colorValue);
+        boolean valid = validateColorValue(colorvalue);
         if (valid) {
             m_textboxColorValue.setValue(m_colorValue, true);
-            m_colorField.getElement().getStyle().setBackgroundColor(m_colorValue);
+            m_colorField.getElement().getStyle().setBackgroundColor(colorvalue);
+            m_colorValue = colorvalue;
         }
         return valid;
     }
@@ -380,8 +381,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         }
         m_previewHandlerRegistration = null;
         CmsColorSelector picker = (CmsColorSelector)m_popup.getWidget(0);
-        m_colorValue = "#" + picker.getHexColor();
-        if (checkvalue()) {
+        if (checkvalue("#" + picker.getHexColor())) {
             m_popup.hide();
         }
 

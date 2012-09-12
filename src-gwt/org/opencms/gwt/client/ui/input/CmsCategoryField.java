@@ -212,7 +212,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
                 if (treeItem.isOpen()) {
                     m_singelSidePath = category.getSitePath();
-                    m_allSidePath.add(category.getSitePath());
+                    m_allSidePath.add(category.getRootPath());
                     m_valuesSet++;
                     addChildren(treeItem, category.getChildren(), selectedCategories);
                 }
@@ -412,7 +412,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 }
                 if (isPartofPath) {
                     m_singelSidePath = child.getSitePath();
-                    m_allSidePath.add(child.getSitePath());
+                    m_allSidePath.add(child.getRootPath());
                     m_valuesSet++;
                     addChildren(treeItem, child.getChildren(), selectedCategories);
                     parent.addChild(treeItem);
