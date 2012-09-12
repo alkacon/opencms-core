@@ -134,15 +134,13 @@ public interface I_CmsSearchField extends Serializable {
     /** The name of the score field. */
     String FIELD_SCORE = "score";
 
+    /** Name of the field that contains the searched property value of 'search.exclude'. */
+    String FIELD_SEARCH_EXCLUDE = "search_exclude";
+
     /** Name of the field that contains the file name suffix of the resource. */
     String FIELD_SUFFIX = "suffix";
 
-    /** 
-     * Name of the field that usually contains the value of the "Title" property of the document 
-     * as a keyword used for sorting and also for retrieving the title text (optional).
-     * 
-     * Please note: This field should NOT be used for searching. Use {@link #FIELD_TITLE_UNSTORED} instead.<p>
-     */
+    /** Name of the field that contains the general text of a resource and also serves as prefix. */
     String FIELD_TEXT = "text";
 
     /** 

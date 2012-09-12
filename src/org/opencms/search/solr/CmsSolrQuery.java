@@ -104,7 +104,7 @@ public class CmsSolrQuery {
         + I_CmsSearchField.FIELD_DESCRIPTION
         + ","
         + CmsPropertyDefinition.PROPERTY_TITLE
-        + "_prop"
+        + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES
         + ","
         + I_CmsSearchField.FIELD_RESOURCE_LOCALES
         + ","
