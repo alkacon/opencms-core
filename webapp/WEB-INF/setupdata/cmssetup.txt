@@ -55,7 +55,8 @@ publishProjectAndWait
 # Create the default "Offline" project
 createDefaultProject "Offline" "The Offline Project"
 
-# Import the modules that have been selected in the setup wizard
+# Import the modules that have been selected in the setup wizard to the default site
+setSiteRoot "/sites/default/"
 importModulesFromSetupBean
 
 # Rebuild search indexes
