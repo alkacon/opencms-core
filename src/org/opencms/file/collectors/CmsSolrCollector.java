@@ -31,6 +31,7 @@
 
 package org.opencms.file.collectors;
 
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -58,6 +59,9 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     /** Array list for fast collector name lookup. */
     private static final List<String> COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
 
+    /** The folder path to create the "create link" for. */
+    private static final String PARAM_CREATE_PATH = "createPath=";
+
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
@@ -69,17 +73,55 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getCreateLink(CmsObject cms, String collectorName, String param) {
+    public String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsException {
 
-        return null;
+        collectorName = collectorName == null ? COLLECTORS[1] : collectorName;
+        switch (COLLECTORS_LIST.indexOf(collectorName)) {
+            case 0: // byQuery
+            case 1: // byContext
+                return getCreateInFolder(cms, param);
+            default:
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
+        }
     }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getCreateParam(CmsObject cms, String collectorName, String param) {
+    public String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsDataAccessException {
 
-        return null;
+        collectorName = collectorName == null ? COLLECTORS[1] : collectorName;
+        switch (COLLECTORS_LIST.indexOf(collectorName)) {
+            case 0: // byQuery
+            case 1: // byContext
+                String solrParams = null;
+                if (param.indexOf('|') > 0) {
+                    solrParams = param.substring(0, param.indexOf('|'));
+                    Map<String, String[]> pm = CmsRequestUtil.createParameterMap(solrParams);
+                    CmsSolrQuery q = new CmsSolrQuery(pm);
+                    String type = (q.getResourceTypes() != null) && (q.getResourceTypes().length == 1)
+                    ? q.getResourceTypes()[0]
+                    : null;
+                    String rows = q.getRows().toString();
+                    int lastPipe = param.lastIndexOf('|');
+                    if (lastPipe > 0) {
+                        int idx = param.indexOf(PARAM_CREATE_PATH, lastPipe);
+                        if (idx > 0) {
+                            String path = param.substring(idx + PARAM_CREATE_PATH.length());
+                            if ((type != null) && (rows != null) && (path != null)) {
+                                return path + "|" + type + "|" + rows;
+                            }
+                        }
+                    }
+                }
+                return null;
+            default:
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
+        }
     }
 
     /**
@@ -87,8 +129,10 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
      */
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String param) throws CmsException {
 
-        // if action is not set use default
         collectorName = collectorName == null ? COLLECTORS[1] : collectorName;
+        if (param.indexOf('|') > 0) {
+            param = param.substring(0, param.indexOf('|'));
+        }
         Map<String, String[]> pm = CmsRequestUtil.createParameterMap(param);
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(pm);
         CmsSolrQuery q = COLLECTORS_LIST.indexOf(collectorName) == 0 ? new CmsSolrQuery(pm) : new CmsSolrQuery(cms, pm);
