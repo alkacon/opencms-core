@@ -252,8 +252,7 @@
         <locale>all</locale>
         <configuration>gallery_fields</configuration>
         <sources>
-          <source>gallery_source</source>
-          <source>gallery_modules_source</source>
+        	<source>gallery_source_all</source>
         </sources>
         <param name="org.opencms.search.CmsSearchIndex.extractContent">false</param>
       </index>
@@ -290,6 +289,8 @@
           <name>xmlpage</name>
         </documenttypes-indexed>
       </indexsource>
+      
+      
       <indexsource>
         <name>gallery_source</name>
         <indexer class="org.opencms.search.CmsVfsIndexer"/>
@@ -341,6 +342,29 @@
           <name>msoffice-ole2</name>
           <name>msoffice-ooxml</name>
           <name>openoffice</name>
+        </documenttypes-indexed>
+      </indexsource>
+      <indexsource>
+        <name>gallery_source_all</name>
+        <indexer class="org.opencms.search.CmsVfsIndexer" />
+        <resources>
+          <resource>/</resource>
+        </resources>
+        <documenttypes-indexed>
+          <name>generic</name>
+          <name>xmlpage-galleries</name>
+          <name>xmlcontent-galleries</name>
+          <name>jsp</name>
+          <name>text</name>
+          <name>pdf</name>
+          <name>rtf</name>
+          <name>html</name>
+          <name>image</name>
+          <name>generic</name>
+          <name>msoffice-ole2</name>
+          <name>msoffice-ooxml</name>
+          <name>openoffice</name>
+          <name>containerpage</name>
         </documenttypes-indexed>
       </indexsource>
     </indexsources>
