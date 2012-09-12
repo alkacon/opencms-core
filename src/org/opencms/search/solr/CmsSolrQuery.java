@@ -389,6 +389,16 @@ public class CmsSolrQuery {
     }
 
     /**
+     * Sets the locales.<p>
+     *
+     * @param locales the locales to set
+     */
+    public void setLocales(Locale... locales) {
+
+        m_locales = Arrays.asList(locales);
+    }
+
+    /**
      * Sets the queryString.<p>
      *
      * @param queryString the queryString to set
@@ -503,6 +513,16 @@ public class CmsSolrQuery {
      *
      * @param textSearchFields the textSearchFields to set
      */
+    public void setTextSearchFields(String... textSearchFields) {
+
+        m_textSearchFields = Arrays.asList(textSearchFields);
+    }
+
+    /**
+     * Sets the textSearchFields.<p>
+     *
+     * @param textSearchFields the textSearchFields to set
+     */
     public void setTextSearchFields(List<String> textSearchFields) {
 
         m_textSearchFields = textSearchFields;
@@ -549,7 +569,7 @@ public class CmsSolrQuery {
         }
 
         // overwrite already set values with values from query String
-        if ((m_queryParameters != null) && m_queryParameters.isEmpty()) {
+        if ((m_queryParameters != null) && !m_queryParameters.isEmpty()) {
             for (Map.Entry<String, String[]> entry : m_queryParameters.entrySet()) {
                 if (!entry.getKey().equals(CommonParams.FQ)) {
                     // add or replace all parameters from the query String
@@ -638,7 +658,7 @@ public class CmsSolrQuery {
     private void addLocales(List<Locale> locales) {
 
         m_locales = locales;
-        m_textSearchFields.clear();
+        m_textSearchFields = new ArrayList<String>();
         if ((locales == null) || locales.isEmpty()) {
             m_textSearchFields.add(I_CmsSearchField.FIELD_TEXT);
             if (m_solrQuery.getFilterQueries() != null) {
@@ -744,11 +764,10 @@ public class CmsSolrQuery {
                 String commasep = field.replaceAll(" ", ",");
                 List<String> list = CmsStringUtil.splitAsList(commasep, ',');
                 if (!list.contains("*")) {
-                    if (!list.contains(I_CmsSearchField.FIELD_PATH)) {
-                        list.add(I_CmsSearchField.FIELD_PATH);
-                    }
-                    if (!list.contains(I_CmsSearchField.FIELD_TYPE)) {
-                        list.add(I_CmsSearchField.FIELD_TYPE);
+                    for (String reqField : CmsStringUtil.splitAsList(MINIMUM_FIELDS, ",")) {
+                        if (!list.contains(reqField)) {
+                            list.add(reqField);
+                        }
                     }
                 }
                 result.addAll(list);

@@ -45,97 +45,97 @@ import org.apache.lucene.document.Fieldable;
 public interface I_CmsSearchField extends Serializable {
 
     /** Th default boost factor (1.0), used in case no boost has been set for a field. */
-    public static final float BOOST_DEFAULT = 1.0f;
+    float BOOST_DEFAULT = 1.0f;
 
     /** Name of the field that contains the (optional) category of the document (hardcoded). */
-    public static final String FIELD_CATEGORY = "category";
+    String FIELD_CATEGORY = "category";
 
     /** Name of the field that usually contains the complete content of the document (optional). */
-    public static final String FIELD_CONTENT = "content";
+    String FIELD_CONTENT = "content";
 
     /** Name of the field that contains the complete extracted content of the document as serialized object (hardcoded). */
-    public static final String FIELD_CONTENT_BLOB = "contentblob";
+    String FIELD_CONTENT_BLOB = "contentblob";
 
     /** Name of the field that contains the locale of the document. */
-    public static final String FIELD_CONTENT_LOCALES = "con_locales";
+    String FIELD_CONTENT_LOCALES = "con_locales";
 
     /** Name of the field that contains the document content date (hardcoded). */
-    public static final String FIELD_DATE_CONTENT = "contentdate";
+    String FIELD_DATE_CONTENT = "contentdate";
 
     /** Name of the field that contains the document creation date (hardcoded). */
-    public static final String FIELD_DATE_CREATED = "created";
+    String FIELD_DATE_CREATED = "created";
 
     /** Name of the field that contains the document creation date for fast lookup (hardcoded). */
-    public static final String FIELD_DATE_CREATED_LOOKUP = "created_lookup";
+    String FIELD_DATE_CREATED_LOOKUP = "created_lookup";
 
     /** The field name for the expiration date. */
-    public static final String FIELD_DATE_EXPIRED = "expired";
+    String FIELD_DATE_EXPIRED = "expired";
 
     /** Name of the field that contains the document last modification date (hardcoded). */
-    public static final String FIELD_DATE_LASTMODIFIED = "lastmodified";
+    String FIELD_DATE_LASTMODIFIED = "lastmodified";
 
     /** Name of the field that contains the document last modification date for fast lookup (hardcoded). */
-    public static final String FIELD_DATE_LASTMODIFIED_LOOKUP = "lastmodified_lookup";
+    String FIELD_DATE_LASTMODIFIED_LOOKUP = "lastmodified_lookup";
 
     /** The lookup suffix for date fields. */
-    public static final String FIELD_DATE_LOOKUP_SUFFIX = "_lookup";
+    String FIELD_DATE_LOOKUP_SUFFIX = "_lookup";
 
     /** The field name for the release date. */
-    public static final String FIELD_DATE_RELEASED = "relased";
+    String FIELD_DATE_RELEASED = "relased";
 
     /** The dependency type. */
-    public static final String FIELD_DEPENDENCY_TYPE = "dependencyType";
+    String FIELD_DEPENDENCY_TYPE = "dependencyType";
 
     /** Name of the field that usually contains the value of the "Description" property of the document (optional). */
-    public static final String FIELD_DESCRIPTION = "description";
+    String FIELD_DESCRIPTION = "description";
 
     /** Name of the dynamic exact field. */
-    public static final String FIELD_DYNAMIC_EXACT = "_exact";
+    String FIELD_DYNAMIC_EXACT = "_exact";
 
     /** Name of the dynamic property field. */
-    public static final String FIELD_DYNAMIC_PROPERTIES = "_prop";
+    String FIELD_DYNAMIC_PROPERTIES = "_prop";
 
     /** Name of the field that contains the documents structure id. */
-    public static final String FIELD_ID = "id";
+    String FIELD_ID = "id";
 
     /** Name of the field that usually contains the value of the "Keywords" property of the document (optional). */
-    public static final String FIELD_KEYWORDS = "keywords";
+    String FIELD_KEYWORDS = "keywords";
 
     /** 
      * Name of the field that usually combines all document "meta" information, 
      * that is the values of the "Title", "Keywords" and "Description" properties (optional).
      */
-    public static final String FIELD_META = "meta";
+    String FIELD_META = "meta";
 
     /** Name of the field that contains all VFS parent folders of a document (hardcoded). */
-    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
+    String FIELD_PARENT_FOLDERS = "parent-folders";
 
     /** Name of the field that contains the document root path in the VFS (hardcoded). */
-    public static final String FIELD_PATH = "path";
+    String FIELD_PATH = "path";
 
     /** The prefix used to store dependency fields. */
-    public static final String FIELD_PREFIX_DEPENDENCY = "dep_";
+    String FIELD_PREFIX_DEPENDENCY = "dep_";
 
     /** The prefix for dynamic fields. */
-    public static final String FIELD_PREFIX_DYNAMIC = "*_";
+    String FIELD_PREFIX_DYNAMIC = "*_";
 
     /** The default text field prefix. */
-    public static final String FIELD_PREFIX_TEXT = "text_";
+    String FIELD_PREFIX_TEXT = "text_";
 
     /** 
      * Name of the field that contains the (optional) document priority, 
      * which can be used to boost the document in the result list (hardcoded). 
      */
-    public static final String FIELD_PRIORITY = "priority";
+    String FIELD_PRIORITY = "priority";
 
     /** Name of the field that contains the resource locales of the document. */
-    public static final String FIELD_RESOURCE_LOCALES = "res_locales";
+    String FIELD_RESOURCE_LOCALES = "res_locales";
 
     /** The name of the score field. */
-    public static final String FIELD_SCORE = "score";
+    String FIELD_SCORE = "score";
 
     /** Name of the field that contains the file name suffix of the resource. */
-    public static final String FIELD_SUFFIX = "suffix";
+    String FIELD_SUFFIX = "suffix";
 
     /** 
      * Name of the field that usually contains the value of the "Title" property of the document 
@@ -143,16 +143,24 @@ public interface I_CmsSearchField extends Serializable {
      * 
      * Please note: This field should NOT be used for searching. Use {@link #FIELD_TITLE_UNSTORED} instead.<p>
      */
-    public static final String FIELD_TITLE = "title-key";
+    String FIELD_TEXT = "text";
+
+    /** 
+     * Name of the field that usually contains the value of the "Title" property of the document 
+     * as a keyword used for sorting and also for retrieving the title text (optional).
+     * 
+     * Please note: This field should NOT be used for searching. Use {@link #FIELD_TITLE_UNSTORED} instead.<p>
+     */
+    String FIELD_TITLE = "title-key";
 
     /** 
      * Name of the field that usually contains the value of the "Title" property of the document 
      * in an analyzed form used for searching in the title (optional).
      */
-    public static final String FIELD_TITLE_UNSTORED = "title";
+    String FIELD_TITLE_UNSTORED = "title";
 
     /** Name of the field that contains the type of the document. */
-    public static final String FIELD_TYPE = "type";
+    String FIELD_TYPE = "type";
 
     /**
      * Adds a new field mapping to the internal list of mappings.<p>

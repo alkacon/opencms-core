@@ -72,7 +72,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     private int m_page;
 
     /** The original Solr query. */
-    private CmsSolrQuery m_query;
+    private SolrQuery m_query;
 
     /** The original query response. */
     private QueryResponse m_queryResponse;
@@ -114,7 +114,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     @SuppressWarnings("unchecked")
     public CmsSolrResultList(
         final SolrCore core,
-        CmsSolrQuery query,
+        SolrQuery query,
         QueryResponse queryResponse,
         SolrDocumentList resultDocuments,
         List<CmsSearchResource> resourceDocumentList,
@@ -367,7 +367,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
         // create and initialize the solr request
         m_solrQueryRequest = new LocalSolrQueryRequest(core, m_queryResponse.getResponseHeader());
-        // set the OpenCms Solr query as parameters to the request 
+        // set the OpenCms Solr query as parameters to the request
         m_solrQueryRequest.setParams(m_query);
 
         // perform the highlighting
@@ -377,8 +377,11 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
             if ((m_query.getHighlightFields() != null) && (m_query.getHighlightFields().length > 0)) {
                 header.add(HighlightParams.FIELDS, CmsStringUtil.arrayAsString(m_query.getHighlightFields(), ","));
             }
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_query.getHighlightFormatter())) {
-                header.add(HighlightParams.FORMATTER, m_query.getHighlightFormatter());
+            String formatter = m_query.getParams(HighlightParams.FORMATTER) != null
+            ? m_query.getParams(HighlightParams.FORMATTER)[0]
+            : null;
+            if (formatter != null) {
+                header.add(HighlightParams.FORMATTER, formatter);
             }
             if (m_query.getHighlightFragsize() != 100) {
                 header.add(HighlightParams.FRAGSIZE, new Integer(m_query.getHighlightFragsize()));

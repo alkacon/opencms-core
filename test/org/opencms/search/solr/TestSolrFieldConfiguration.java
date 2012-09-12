@@ -41,6 +41,7 @@ import org.opencms.search.CmsSearchResource;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsRequestUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,6 +54,7 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrInputDocument;
 
 /**
@@ -148,16 +150,16 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
-        query.setSearchRoots(cms.getRequestContext().addSiteRoot(folderName));
-        CmsSolrResultList results = index.search(cms, query);
+        query.setSearchRoots(Collections.singletonList(cms.getRequestContext().addSiteRoot(folderName)));
+        CmsSolrResultList results = index.search(cms, query, false);
         AllSolrTests.printResults(cms, results, false);
         // assertEquals(10, results.getNumFound());
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
             String absoluteFileName = cms.getRequestContext().addSiteRoot(folderName + filename.getKey());
-            query = new CmsSolrQuery();
-            query.addFilterQuery("path:" + absoluteFileName);
-            results = index.search(cms, query);
+            SolrQuery squery = new CmsSolrQuery().toQuery();
+            squery.addFilterQuery("path:" + absoluteFileName);
+            results = index.search(cms, squery);
         }
     }
 
@@ -207,9 +209,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
             String absoluteFileName = cms.getRequestContext().addSiteRoot(folderName + filename.getKey());
-            query = new CmsSolrQuery();
-            query.addFilterQuery("path:" + absoluteFileName);
-            results = index.search(cms, query);
+            SolrQuery squery = new CmsSolrQuery().toQuery();
+            squery.addFilterQuery("path:" + absoluteFileName);
+            results = index.search(cms, squery);
             assertEquals(1, results.size());
             CmsSearchResource res = results.get(0);
             List<String> fieldLocales = res.getMultivaluedField(I_CmsSearchField.FIELD_CONTENT_LOCALES);
@@ -218,9 +220,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
             assertTrue(filename.getValue().containsAll(fieldLocales));
         }
 
-        query = new CmsSolrQuery();
-        query.addFilterQuery("path:" + "/sites/default/xmlcontent/article_0004.html");
-        results = index.search(cms, query);
+        SolrQuery squery = new CmsSolrQuery().toQuery();
+        squery.addFilterQuery("path:" + "/sites/default/xmlcontent/article_0004.html");
+        results = index.search(cms, squery);
         assertEquals(1, results.size());
         CmsSearchResource res = results.get(0);
         List<String> fieldLocales = res.getMultivaluedField(I_CmsSearchField.FIELD_CONTENT_LOCALES);
@@ -238,7 +240,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     public void testAppinfoSolrField() throws Throwable {
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
-        CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), "path:/sites/default/xmlcontent/article_0001.html");
+        CmsSolrQuery squery = new CmsSolrQuery(
+            null,
+            CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0001.html"));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
         /////////////////

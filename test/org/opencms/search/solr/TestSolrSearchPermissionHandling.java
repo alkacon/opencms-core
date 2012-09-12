@@ -97,7 +97,7 @@ public class TestSolrSearchPermissionHandling extends OpenCmsTestCase {
         echo("Testing search for permission check by comparing result counts");
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
 
-        CmsSolrQuery squery = new CmsSolrQuery(getCmsObject());
+        CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), null);
         squery.setSearchRoots("/sites/default/");
         squery.setRows(new Integer(100));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
