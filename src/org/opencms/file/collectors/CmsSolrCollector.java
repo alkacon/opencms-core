@@ -35,7 +35,7 @@ import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.util.CmsRequestUtil;
@@ -99,10 +99,9 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
                 String solrParams = null;
                 if (param.indexOf('|') > 0) {
                     solrParams = param.substring(0, param.indexOf('|'));
-                    Map<String, String[]> pm = CmsRequestUtil.createParameterMap(solrParams);
-                    CmsSolrQuery q = new CmsSolrQuery(pm);
-                    String type = (q.getResourceTypes() != null) && (q.getResourceTypes().length == 1)
-                    ? q.getResourceTypes()[0]
+                    CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrParams));
+                    String type = (q.getResourceTypes() != null) && (q.getResourceTypes().size() == 1)
+                    ? q.getResourceTypes().get(0)
                     : null;
                     String rows = q.getRows().toString();
                     int lastPipe = param.lastIndexOf('|');
@@ -127,15 +126,15 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param) throws CmsException {
+    public List<CmsResource> getResults(CmsObject cms, String name, String param) throws CmsException {
 
-        collectorName = collectorName == null ? COLLECTORS[1] : collectorName;
+        name = name == null ? COLLECTORS[1] : name;
         if (param.indexOf('|') > 0) {
             param = param.substring(0, param.indexOf('|'));
         }
         Map<String, String[]> pm = CmsRequestUtil.createParameterMap(param);
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(pm);
-        CmsSolrQuery q = COLLECTORS_LIST.indexOf(collectorName) == 0 ? new CmsSolrQuery(pm) : new CmsSolrQuery(cms, pm);
+        CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
+        CmsSolrQuery q = COLLECTORS_LIST.indexOf(name) == 0 ? new CmsSolrQuery(null, pm) : new CmsSolrQuery(cms, pm);
         return new ArrayList<CmsResource>(index.search(cms, q));
     }
 }

@@ -140,6 +140,9 @@ public interface I_CmsSearchField extends Serializable {
     /** Name of the field that contains the file name suffix of the resource. */
     String FIELD_SUFFIX = "suffix";
 
+    /** Name of the field that contains the general text of a resource and also serves as prefix. */
+    String FIELD_TEXT = "text";
+
     /** 
      * Name of the field that usually contains the value of the "Title" property of the document 
      * as a keyword used for sorting and also for retrieving the title text (optional).

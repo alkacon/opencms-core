@@ -34,10 +34,13 @@ package org.opencms.search.solr;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsRequestUtil;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.apache.solr.client.solrj.SolrQuery;
 
 /**
  * Tests the Solr faceting capabilities.<p>
@@ -104,7 +107,7 @@ public class TestSolrSearchFaceting extends OpenCmsTestCase {
         echo("Testing facet query count");
 
         // creating the query: facet=true&facet.field=Title_exact&facet.mincount=1&facet.query=text:OpenCms&rows=0
-        CmsSolrQuery query = new CmsSolrQuery(getCmsObject());
+        SolrQuery query = new CmsSolrQuery(getCmsObject(), null).toQuery();
         // facet=true
         query.setFacet(true);
         // facet.field=Title_exact
@@ -130,7 +133,7 @@ public class TestSolrSearchFaceting extends OpenCmsTestCase {
             + facetTitleCount
             + "' of them containing the word \"OpenCms\" in the field 'Title_prop!'");
 
-        query = new CmsSolrQuery(getCmsObject(), "text:OpenCms");
+        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("text:OpenCms")).toQuery();
         results = index.search(getCmsObject(), query);
         long numExpected = results.getNumFound();
 

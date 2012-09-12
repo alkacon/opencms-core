@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.site.CmsSite;
@@ -56,17 +57,17 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class OpenCmsSolrHandler implements I_CmsRequestHandler {
 
-    /** A constant for the HTTP 'referer'. */
-    protected static final String HEADER_REFERER_KEY = "referer";
+    /** A constant for the optional 'baseUri' parameter. */
+    public static final String PARAM_BASE_URI = "baseUri";
 
     /** A constant for the optional 'core' parameter. */
-    protected static final String PARAM_BASE_CORE = "core";
+    public static final String PARAM_CORE = "core";
 
     /** A constant for the optional 'index' parameter. */
-    protected static final String PARAM_BASE_INDEX = "index";
+    public static final String PARAM_INDEX = "index";
 
-    /** A constant for the optional 'baseUri' parameter. */
-    protected static final String PARAM_BASE_URI = "baseUri";
+    /** A constant for the HTTP 'referer'. */
+    protected static final String HEADER_REFERER_KEY = "referer";
 
     /** 
      * A constant for all handler names that are implemented by this class.<p>
@@ -122,10 +123,11 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
                     cms.getRequestContext().setUri(baseUri);
                 }
                 Map<String, String[]> params = CmsRequestUtil.createParameterMap(req.getParameterMap());
-                String indexName = params.get(PARAM_BASE_CORE) != null
-                ? params.get(PARAM_BASE_CORE)[0]
-                : (params.get(PARAM_BASE_INDEX) != null ? params.get(PARAM_BASE_INDEX)[0] : null);
-                CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(params);
+                String indexName = params.get(PARAM_CORE) != null
+                ? params.get(PARAM_CORE)[0]
+                : (params.get(PARAM_INDEX) != null ? params.get(PARAM_INDEX)[0] : null);
+                OpenCms.getSearchManager();
+                CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, params);
                 if (index != null) {
                     CmsSolrQuery query = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(req.getParameterMap()));
                     index.writeResponse(res, index.search(cms, query));

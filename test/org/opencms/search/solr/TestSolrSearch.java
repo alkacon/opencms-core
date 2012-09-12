@@ -42,14 +42,17 @@ import org.opencms.search.CmsSearchResource;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -137,7 +140,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery();
-        squery.setTexts("Alkacon", "OpenCms", "Text");
+        squery.setText("Alkacon OpenCms Text");
         squery.setSearchRoots("/sites/default/types/");
         List<CmsSearchResource> results = index.search(cms, squery);
 
@@ -533,10 +536,12 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // second run use Title sort order
         String lastTitle = null;
-        CmsSolrQuery q = new CmsSolrQuery(null, query);
-        q.addSortField("title-key", ORDER.asc);
-        q.addSortField("score", ORDER.asc);
-        results = index.search(getCmsObject(), q.getQuery());
+        CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
+        Map<String, ORDER> orders = new LinkedHashMap<String, ORDER>();
+        orders.put("Title_prop", ORDER.asc);
+        orders.put("score", ORDER.asc);
+        q.setSortFields(orders);
+        results = index.search(getCmsObject(), q);
         System.out.println("Result sorted by title:");
         AllSolrTests.printResults(getCmsObject(), results, false);
         Iterator<CmsSearchResource> i = results.iterator();
@@ -551,11 +556,11 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         // third run use date last modified
         long lastTime = 0;
-        q = new CmsSolrQuery(null, query);
-        q.setQueryType("dismax");
-        q.addField("*,score");
+        q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
         q.setRows(new Integer(100));
-        q.addSortField("lastmodified", ORDER.desc);
+        orders = new LinkedHashMap<String, ORDER>();
+        orders.put("lastmodified", ORDER.desc);
+        q.setSortFields(orders);
         results = index.search(getCmsObject(), q);
         System.out.println("Result sorted by date last modified:");
         AllSolrTests.printResults(getCmsObject(), results, false);
@@ -602,7 +607,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
-        query.setTexts("Testfile", "Struktur");
+        query.setText("Testfile Struktur");
         if (folderName != null) {
             query.setSearchRoots(cms.getRequestContext().addSiteRoot(folderName));
         }

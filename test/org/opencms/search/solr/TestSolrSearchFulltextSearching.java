@@ -38,8 +38,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsRequestUtil;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import junit.extensions.TestSetup;
@@ -74,14 +76,16 @@ public class TestSolrSearchFulltextSearching extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         suite.setName(TestSolrSearchFulltextSearching.class.getName());
-        suite.addTest(new TestSolrSearchFulltextSearching("testLocaleRestriction"));
+        // suite.addTest(new TestSolrSearchFulltextSearching("testLocaleRestriction"));
+        suite.addTest(new TestSolrSearchFulltextSearching("testSolrQueryDefaults"));
+        suite.addTest(new TestSolrSearchFulltextSearching("testSolrQueryParameterStrength"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
             @Override
             protected void setUp() {
 
-                setupOpenCms("solrtest", "/");
+                setupOpenCms("systemtest", "/");
             }
 
             @Override
@@ -145,33 +149,99 @@ public class TestSolrSearchFulltextSearching extends OpenCmsTestCase {
         assertEquals(4, result.getNumFound());
 
         cms.getRequestContext().setLocale(Locale.GERMAN);
-        query = new CmsSolrQuery(cms);
-        query.setTexts("Testfile", "Intranet");
+        query = new CmsSolrQuery(cms, null);
+        query.setText("Testfile Intranet");
         result = index.search(cms, query);
         assertEquals(2, result.getNumFound());
 
         query = new CmsSolrQuery();
         query.setLocales(Collections.singletonList(Locale.GERMAN));
-        query.setTexts("Testfile", "Intranet");
+        query.setText("Testfile Intranet");
         result = index.search(cms, query);
         assertEquals(2, result.getNumFound());
 
         query = new CmsSolrQuery();
         query.setLocales(Collections.singletonList(Locale.ENGLISH));
-        query.setTexts("Testfile", "Intranet");
+        query.setText("Testfile Intranet");
         result = index.search(cms, query);
         assertEquals(2, result.getNumFound());
 
         query = new CmsSolrQuery();
         query.setLocales(Collections.singletonList(Locale.FRENCH));
-        query.setTexts("Testfile", "Intranet");
+        query.setText("Testfile Intranet");
         result = index.search(cms, query);
         assertEquals(1, result.getNumFound());
 
         query = new CmsSolrQuery();
-        query.setLocales(null);
-        query.setTexts("Testfile", "Intranet");
+        List<Locale> l = Collections.emptyList();
+        query.setLocales(l);
+        query.setText("Testfile Intranet");
         result = index.search(cms, query);
         assertEquals(4, result.getNumFound());
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testSolrQueryDefaults() throws Throwable {
+
+        // test default query
+        String defaultQuery = "q=*:*&fl=*,score&qt=dismax&rows=10";
+        CmsSolrQuery query = new CmsSolrQuery();
+        assertEquals(defaultQuery, query.toString());
+
+        // test creating default query by String
+        query = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(defaultQuery));
+        assertEquals(defaultQuery, query.toString());
+
+        // test creating default query by String
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=dismax&rows=10&fq=con_locales:en&fq=parent-folders:/sites/default/";
+        query = new CmsSolrQuery(getCmsObject(), null);
+        assertEquals(defaultContextQuery, query.toString());
+
+        // test creating default context query by String
+        query = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(defaultContextQuery));
+        assertEquals(defaultContextQuery, query.toString());
+
+        // test creating default context query by context and String
+        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap(defaultContextQuery));
+        assertEquals(defaultContextQuery, query.toString());
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public void testSolrQueryParameterStrength() throws Throwable {
+
+        String defaultContextQuery = "q=*:*&fl=*,score&qt=dismax&rows=10&fq=con_locales:en&fq=parent-folders:/sites/default/";
+        String modifiedContextQuery = "q=*:*&fl=*,score&qt=dismax&rows=10&fq=con_locales:en&fq=parent-folders:/";
+        String modifiedLocales = "q=*:*&fl=*,score&qt=dismax&rows=10&fq=con_locales:(de OR fr)&fq=parent-folders:/";
+
+        // members should be stronger than request context
+        CmsSolrQuery query = new CmsSolrQuery(getCmsObject(), null);
+        assertEquals(defaultContextQuery, query.toString());
+        query.setSearchRoots("/");
+        assertEquals(modifiedContextQuery, query.toString());
+        query.setLocales(Locale.GERMAN, Locale.FRENCH, Locale.ENGLISH);
+        query.setLocales(Locale.GERMAN, Locale.FRENCH);
+        assertEquals(modifiedLocales, query.toString());
+
+        // parameters should be stronger than request context
+        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("fq=parent-folders:/"));
+        assertEquals(modifiedContextQuery, query.toString());
+
+        // parameters should be stronger than request context and members
+        query = new CmsSolrQuery(
+            getCmsObject(),
+            CmsRequestUtil.createParameterMap("q=test&fq=parent-folders:/&fq=con_locales:fr&fl=content_fr&rows=50&qt=dismax&fq=type:v8news"));
+        query.setText("test");
+        query.setTextSearchFields("pla");
+        query.setLocales(Locale.GERMAN);
+        query.setFields("pla,plub");
+        query.setRows(new Integer(1000));
+        query.setQueryType("lucene");
+        query.setResourceTypes("article");
+        String ex = "q=test&fl=content_fr,path,type,id&qt=dismax&rows=50&fq=parent-folders:/&fq=con_locales:fr&fq=type:v8news";
+        assertEquals(ex, query.toString());
     }
 }

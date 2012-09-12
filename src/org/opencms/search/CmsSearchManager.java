@@ -42,6 +42,7 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsSolrHandler;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
@@ -713,6 +714,44 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Returns the Solr index configured with the parameters name.
+     * The parameters must contain a key/value pair with an existing 
+     * Solr index, otherwise <code>null</code> is returned.<p>
+     * 
+     * @param cms the current context
+     * @param params the parameter map
+     * 
+     * @return the best matching Solr index
+     */
+    public static final CmsSolrIndex getIndexSolr(CmsObject cms, Map<String, String[]> params) {
+
+        String indexName = null;
+        CmsSolrIndex index = null;
+        // try to get the index name from the parameters: 'core' or 'index'
+        if (params != null) {
+            indexName = params.get(OpenCmsSolrHandler.PARAM_CORE) != null
+            ? params.get(OpenCmsSolrHandler.PARAM_CORE)[0]
+            : (params.get(OpenCmsSolrHandler.PARAM_INDEX) != null
+            ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0]
+            : null);
+        }
+        // if no parameter is specified try to use the default online/offline indexes by context
+        indexName = (indexName == null) && cms.getRequestContext().getCurrentProject().isOnlineProject()
+        ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+        : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
+        // try to get the index
+        index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
+        if (index == null) {
+            // index not found -> try to get the first configured Solr index from the config
+            List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
+            if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
+                index = solrs.get(0);
+            }
+        }
+        return index;
+    }
+
+    /**
      * Returns <code>true</code> if the index for the given name is a Lucene index, <code>false</code> otherwise.<p>
      * 
      * @param indexName the name of the index to check
@@ -1216,31 +1255,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         return indexNames;
-    }
-
-    /**
-     * Returns the Solr index configured with the parameters name.
-     * The parameters must contain a key/value pair with an existing 
-     * Solr index, otherwise <code>null</code> is returned.<p>
-     * 
-     * @param params the parameter map
-     * 
-     * @return the best matching Solr index
-     */
-    public CmsSolrIndex getIndexSolr(Map<String, String[]> params) {
-
-        CmsSolrIndex index = null;
-        String indexName = params.get("core") != null ? params.get("core")[0] : (params.get("index") != null
-        ? params.get("index")[0]
-        : null);
-        index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
-        if (index == null) {
-            List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
-            if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
-                index = solrs.get(0);
-            }
-        }
-        return index;
     }
 
     /**

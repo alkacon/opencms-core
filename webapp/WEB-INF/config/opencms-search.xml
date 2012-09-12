@@ -236,6 +236,17 @@
         </sources>
         <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
       </index>
+      <index class="org.opencms.search.solr.CmsSolrIndex">
+        <name>Solr Offline</name>
+        <rebuild>offline</rebuild>
+        <project>Offline</project>
+        <locale>all</locale>
+        <configuration>solr_fields</configuration>
+        <sources>
+          <source>solr_source</source>
+        </sources>
+        <param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
+      </index>
       <index>
         <name>German online help</name>
         <rebuild>auto</rebuild>
@@ -328,7 +339,9 @@
         <name>solr_source</name>
         <indexer class="org.opencms.search.CmsDependencyIndexer"/>
         <resources>
-          <resource>/sites/default/</resource>
+          <resource>/sites/</resource>
+          <resource>/shared/</resource>
+          <resource>/system/galleries/</resource>
         </resources>
         <documenttypes-indexed>
           <name>xmlcontent-solr</name>

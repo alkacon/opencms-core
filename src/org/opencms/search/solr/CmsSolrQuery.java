@@ -6,7 +6,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2008 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,40 +32,44 @@
 package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsPair;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.common.params.CommonParams;
-import org.apache.solr.common.params.HighlightParams;
-import org.apache.solr.common.params.ModifiableSolrParams;
 
 /**
- * A Solr query that holds the OpenCms specific search query parameters.<p>
- * 
- * @since 8.5.0
+ * A Solr search query.<p>
  */
-public class CmsSolrQuery extends SolrQuery {
+public class CmsSolrQuery {
+
+    /** A constant to add the score field to the result documents. */
+    public static final String ALL_RETURN_FIELDS = "*,score";
+
+    /** The default facet date gap. */
+    public static final String DEFAULT_FACET_DATE_GAP = "+1DAY";
 
     /** The default query. */
     public static final String DEFAULT_QUERY = "*:*";
 
+    /** The query type. */
+    public static final String DEFAULT_QUERY_TYPE = "dismax";
+
     /** The default search result count. */
     public static final int DEFAULT_ROWS = 10;
-
-    /** The default facet date gap. */
-    public static final String FACET_DATE_GAP = "+1DAY";
 
     /** A constant to add the score field to the result documents. */
     public static final String MINIMUM_FIELDS = I_CmsSearchField.FIELD_PATH
@@ -74,221 +78,114 @@ public class CmsSolrQuery extends SolrQuery {
         + ","
         + I_CmsSearchField.FIELD_ID;
 
-    /** The query type. */
-    public static final String QUERY_TYPE = "dismax";
-
-    /** The default search result count. */
-    public static final int RESULT_COUNT = 100;
-
     /** A constant to add the score field to the result documents. */
-    public static final String SCORE_FIELD = "*,score";
+    public static final String STRUCTURE_FIELDS = I_CmsSearchField.FIELD_PATH
+        + ","
+        + I_CmsSearchField.FIELD_TYPE
+        + ","
+        + I_CmsSearchField.FIELD_ID
+        + ","
+        + I_CmsSearchField.FIELD_CATEGORY
+        + ","
+        + I_CmsSearchField.FIELD_DATE_CONTENT
+        + ","
+        + I_CmsSearchField.FIELD_DATE_CREATED
+        + ","
+        + I_CmsSearchField.FIELD_DATE_EXPIRED
+        + ","
+        + I_CmsSearchField.FIELD_DATE_LASTMODIFIED
+        + ","
+        + I_CmsSearchField.FIELD_DATE_RELEASED
+        + ","
+        + I_CmsSearchField.FIELD_SUFFIX
+        + ","
+        + I_CmsSearchField.FIELD_DEPENDENCY_TYPE
+        + ","
+        + I_CmsSearchField.FIELD_DESCRIPTION
+        + ","
+        + CmsPropertyDefinition.PROPERTY_TITLE
+        + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+        + ","
+        + I_CmsSearchField.FIELD_RESOURCE_LOCALES
+        + ","
+        + I_CmsSearchField.FIELD_CONTENT_LOCALES
+        + ","
+        + I_CmsSearchField.FIELD_SCORE
+        + ","
+        + I_CmsSearchField.FIELD_PARENT_FOLDERS;
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -3775730785338262128L;
-
-    /** The list of categories to search for. */
-    private String[] m_categories;
+    /** The categories. */
+    private List<String> m_categories = new ArrayList<String>();
 
     /** A map of date ranges (key = field name, value = Pair<start, end>). */
-    private Map<String, CmsPair<Date, Date>> m_dateRanges;
+    private Map<String, CmsPair<Date, Date>> m_dateRanges = new HashMap<String, CmsPair<Date, Date>>();
 
-    /** The facet date gab to use for date facets. */
-    private String m_facetDateGab;
+    /** The facet date gap to use for date facets. */
+    private String m_facetDateGap = DEFAULT_FACET_DATE_GAP;
 
-    /** The filter queries that are currently used for this query. */
-    private Map<String, String> m_filterQueries = new HashMap<String, String>();
+    /** The return fields.  */
+    private String m_fields = ALL_RETURN_FIELDS;
 
     /** The locales to search for. */
-    private List<Locale> m_locales;
+    private List<Locale> m_locales = new ArrayList<Locale>();
 
-    /** The list of locales to search in. */
-    private String[] m_localesArray;
+    /** The parameters given by the 'query string'.  */
+    private Map<String, String[]> m_queryParameters = new HashMap<String, String[]>();
 
-    /** The query parameters. */
-    private Map<String, String[]> m_parameters;
+    /** The query String. */
+    private String m_queryString = DEFAULT_QUERY;
+
+    /** The query type. */
+    private String m_queryType = DEFAULT_QUERY_TYPE;
 
     /** The list of resource types to search for. */
-    private String[] m_resourceTypes;
+    private List<String> m_resourceTypes = new ArrayList<String>();
 
-    /** VFS paths that should be considered for searching. */
-    private String[] m_searchRoots;
+    /** The count of documents returned. */
+    private Integer m_rows = new Integer(DEFAULT_ROWS);
+
+    /** The absolute VFS paths that should be considered for searching. */
+    private List<String> m_searchRoots = new ArrayList<String>();
+
+    /** The Solr query. */
+    private SolrQuery m_solrQuery = new SolrQuery();
 
     /** The of sort fields (key = field name, value = sort order), if empty the Solr default is taken (by score). */
-    private Map<String, ORDER> m_sortFieldsMap;
+    private Map<String, ORDER> m_sortFields = new LinkedHashMap<String, SolrQuery.ORDER>();
+
+    /** Signals whether this is a structure query or not. */
+    private boolean m_structureQuery;
+
+    /** The text to search for. */
+    private String m_text;
 
     /** The name of the field to search the text in. */
-    private List<String> m_textFields = new ArrayList<String>();
-
-    /** The text search. */
-    private String[] m_texts;
+    private List<String> m_textSearchFields = new ArrayList<String>();
 
     /**
-     * Creates a empty Solr query that only has the minimum query parameters set to perform a OpenCms search query.<p>
+     * Default constructor.<p>
      */
     public CmsSolrQuery() {
 
-        this(null, null, null, null, null);
+        // noop
     }
 
     /**
-     * Creates a query.<p>
+     * Public constructor.<p>
      * 
-     * @param cms the current CmsObject
+     * @param cms the current OpenCms context
+     * @param queryParams the Solr query parameters
      */
-    public CmsSolrQuery(CmsObject cms) {
+    public CmsSolrQuery(CmsObject cms, Map<String, String[]> queryParams) {
 
-        this(cms, null, null, null, null);
-    }
-
-    /**
-     * Creates a clone for the given query.<p>
-     * 
-     * @param cms the OpenCms context
-     * 
-     * @param query the query
-     */
-    public CmsSolrQuery(CmsObject cms, CmsSolrQuery query) {
-
-        this(null, null, CmsRequestUtil.createParameterMap(CmsEncoder.decode(query.toString())), null, null);
-    }
-
-    /**
-     * Creates a {@link CmsSolrQuery} based on a request parameter map as argument.<p>
-     * 
-     * @param cms the cms
-     * @param params the request parameter map
-     * 
-     */
-    public CmsSolrQuery(CmsObject cms, Map<String, String[]> params) {
-
-        this(cms, null, params, null, null);
-    }
-
-    /**
-     * Creates a new {@link CmsSolrQuery} and sets the Solr query string.<p>
-     * 
-     * @param cms the CMS object
-     * @param q the Solr query string {@link CommonParams#Q}
-     */
-    public CmsSolrQuery(CmsObject cms, String q) {
-
-        this(cms, q, null, null, null);
-    }
-
-    /**
-     * Creates a {@link CmsSolrQuery} based on a request parameter map as argument.<p>
-     * 
-     * Use this constructor in order to let OpenCms behave identical to standard HttpSolrServer
-     * 
-     * @param params the request parameter map
-     */
-    public CmsSolrQuery(Map<String, String[]> params) {
-
-        addField(SCORE_FIELD);
-        addParameterMap(params);
-        ensureReturnFields();
-    }
-
-    /**
-     * Creates a new {@link CmsSolrQuery} and initializes its members with the defaults.<p>
-     * 
-     * <b>Please note</b>: at least the one of the parameters query or parameters must not be <code>null</code>
-     * 
-     * The used defaults are:
-     * <ul>
-     * <li>{@link #DEFAULT_QUERY}
-     * <li>{@link #QUERY_TYPE}
-     * <li>{@link #SCORE_FIELD}
-     * <li>{@link #DEFAULT_ROWS}
-     * <li>{@link #RESULT_COUNT}
-     * <li>{@link #FACET_DATE_GAP}
-     * <li>{@link I_CmsSearchField#FIELD_PREFIX_TEXT}<code>_&lt;DEFAULT_LOCALE&gt;</code>
-     * </ul>
-     * 
-     * @param cms the cms to use, can be <code>null</code>
-     * @param query the Solr query string {@link CommonParams#Q}
-     * @param parameters the request parameter map, can contain any Solr query parameter
-     * @param locales the locales that should be used for the search, can be <code>null</code>
-     * @param searchRoots the search roots that should be used
-     */
-    private CmsSolrQuery(
-        CmsObject cms,
-        String query,
-        Map<String, String[]> parameters,
-        List<Locale> locales,
-        List<String> searchRoots) {
-
-        // set the defaults
-        setQueryType(QUERY_TYPE);
-        addField(SCORE_FIELD);
-        setRows(new Integer(CmsSolrQuery.DEFAULT_ROWS));
-        setFacetDateGab(FACET_DATE_GAP);
-        addTextFields("text");
-
-        // set the query
-        if (query != null) {
-            setQuery(query);
-        } else {
-            setQuery(DEFAULT_QUERY);
+        // set the values from the request context
+        if (cms != null) {
+            m_locales.add(cms.getRequestContext().getLocale());
+            m_searchRoots.add(cms.getRequestContext().getSiteRoot() + "/");
         }
-
-        // set the locales to search for
-        List<Locale> localesToUse = new ArrayList<Locale>();
-        if ((locales == null) && (cms != null)) {
-            localesToUse.add(cms.getRequestContext().getLocale());
+        if (queryParams != null) {
+            m_queryParameters = queryParams;
         }
-        setLocales(localesToUse);
-
-        // set the search roots
-        // set the locales to search for
-        List<String> searchRootsToUse = new ArrayList<String>();
-        if ((searchRoots == null) && (cms != null)) {
-            searchRootsToUse.add(cms.getRequestContext().getSiteRoot() + "/");
-        }
-        setSearchRoots(searchRootsToUse.toArray(new String[0]));
-
-        // set the given parameters
-        if ((parameters != null) && !parameters.isEmpty()) {
-            m_parameters = parameters;
-            addParameterMap(parameters);
-        }
-
-        // ensure the query returns at least the 'path' and the type 'field'
-        ensureReturnFields();
-    }
-
-    /**
-     * Adds a search root.<p>
-     * 
-     * @param searchRoot the VFS path that should be added to the search roots
-     */
-    public void addSearchRoot(String searchRoot) {
-
-        String[] searchRoots = new String[m_searchRoots.length + 1];
-        searchRoots[m_searchRoots.length - 1] = searchRoot;
-        setSearchRoots(searchRoots);
-    }
-
-    /**
-     * Adds all the text fields for the given locales to the list text fields that should be searched.<p>
-     * 
-     * @param locales the locales to set the text fields for
-     */
-    public void addTextFields(Locale... locales) {
-
-        for (Locale locale : locales) {
-            m_textFields.add(I_CmsSearchField.FIELD_PREFIX_TEXT + locale.toString());
-        }
-    }
-
-    /**
-     * Adds the given fields to those to search text in.<p>
-     * 
-     * @param textsFields the concrete field names to search for texts in
-     */
-    public void addTextFields(String... textsFields) {
-
-        m_textFields.addAll(Arrays.asList(textsFields));
     }
 
     /**
@@ -296,15 +193,15 @@ public class CmsSolrQuery extends SolrQuery {
      *
      * @return the categories
      */
-    public String[] getCategories() {
+    public List<String> getCategories() {
 
         return m_categories;
     }
 
     /**
-     * Returns the date ranges.<p>
-     * 
-     * @return the date ranges
+     * Returns the dateRanges.<p>
+     *
+     * @return the dateRanges
      */
     public Map<String, CmsPair<Date, Date>> getDateRanges() {
 
@@ -312,28 +209,28 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Returns the facetDateGab.<p>
+     * Returns the facetDateGap.<p>
      *
-     * @return the facetDateGab
+     * @return the facetDateGap
      */
-    public String getFacetDateGab() {
+    public String getFacetDateGap() {
 
-        return m_facetDateGab;
+        return m_facetDateGap;
     }
 
     /**
-     * Returns the {@link HighlightParams#FORMATTER} parameter.<p>
-     * 
-     * @return the {@link HighlightParams#FORMATTER} parameter
+     * Returns the fields.<p>
+     *
+     * @return the fields
      */
-    public String getHighlightFormatter() {
+    public String getFields() {
 
-        return getParams(HighlightParams.FORMATTER) != null ? getParams(HighlightParams.FORMATTER)[0] : null;
+        return m_fields;
     }
 
     /**
      * Returns the locales.<p>
-     * 
+     *
      * @return the locales
      */
     public List<Locale> getLocales() {
@@ -342,51 +239,63 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Returns the locales.<p>
+     * Returns the queryString.<p>
      *
-     * @return the locales
+     * @return the queryString
      */
-    public String[] getLocalesArray() {
+    public String getQueryString() {
 
-        return m_localesArray;
+        return m_queryString;
     }
 
     /**
-     * Returns the parameters.<p>
+     * Returns the queryType.<p>
      *
-     * @return the parameters
+     * @return the queryType
      */
-    public Map<String, String[]> getParameters() {
+    public String getQueryType() {
 
-        return m_parameters;
+        return m_queryType;
     }
 
     /**
-     * Returns the resource types.<p>
+     * Returns the resourceTypes.<p>
      *
-     * @return the resource types
+     * @return the resourceTypes
      */
-    public String[] getResourceTypes() {
+    public List<String> getResourceTypes() {
 
-        List<String> types = new ArrayList<String>();
-        for (String s : getFilterQueries()) {
-            int idx = s.indexOf(I_CmsSearchField.FIELD_TYPE + ":");
-            if (idx != -1) {
-                types.add(s.substring((I_CmsSearchField.FIELD_TYPE + ":").length()));
-            }
-        }
-        m_resourceTypes = types.toArray(new String[types.size()]);
         return m_resourceTypes;
     }
 
     /**
-     * Returns the search roots.<p>
+     * Returns the rows.<p>
      *
-     * @return the search roots
+     * @return the rows
      */
-    public String[] getSearchRoots() {
+    public Integer getRows() {
+
+        return m_rows;
+    }
+
+    /**
+     * Returns the searchRoots.<p>
+     *
+     * @return the searchRoots
+     */
+    public List<String> getSearchRoots() {
 
         return m_searchRoots;
+    }
+
+    /**
+     * Returns the solrQuery.<p>
+     *
+     * @return the solrQuery
+     */
+    public SolrQuery getSolrQuery() {
+
+        return m_solrQuery;
     }
 
     /**
@@ -394,29 +303,39 @@ public class CmsSolrQuery extends SolrQuery {
      *
      * @return the sortFields
      */
-    public Map<String, ORDER> getSortFieldsMap() {
+    public Map<String, ORDER> getSortFields() {
 
-        return m_sortFieldsMap;
+        return m_sortFields;
     }
 
     /**
-     * Returns the text fields to search in.<p>
+     * Returns the text.<p>
      *
-     * @return the text fields to search in
+     * @return the text
      */
-    public List<String> getTextFields() {
+    public String getText() {
 
-        return m_textFields;
+        return m_text;
     }
 
     /**
-     * Returns the search texts.<p>
-     * 
-     * @return the search texts
+     * Returns the textSearchFields.<p>
+     *
+     * @return the textSearchFields
      */
-    public String[] getTexts() {
+    public List<String> getTextSearchFields() {
 
-        return m_texts;
+        return m_textSearchFields;
+    }
+
+    /**
+     * Returns the structureQuery.<p>
+     *
+     * @return the structureQuery
+     */
+    public boolean isStructureQuery() {
+
+        return m_structureQuery;
     }
 
     /**
@@ -424,10 +343,251 @@ public class CmsSolrQuery extends SolrQuery {
      *
      * @param categories the categories to set
      */
-    public void setCategories(String... categories) {
+    public void setCategories(List<String> categories) {
 
-        addFilterQuery(I_CmsSearchField.FIELD_CATEGORY, categories);
         m_categories = categories;
+    }
+
+    /**
+     * Sets the dateRanges.<p>
+     *
+     * @param dateRanges the dateRanges to set
+     */
+    public void setDateRanges(Map<String, CmsPair<Date, Date>> dateRanges) {
+
+        m_dateRanges = dateRanges;
+    }
+
+    /**
+     * Sets the facetDateGap.<p>
+     *
+     * @param facetDateGap the facetDateGap to set
+     */
+    public void setFacetDateGap(String facetDateGap) {
+
+        m_facetDateGap = facetDateGap;
+    }
+
+    /**
+     * Sets the fields.<p>
+     *
+     * @param fields the fields to set
+     */
+    public void setFields(String fields) {
+
+        m_fields = fields;
+    }
+
+    /**
+     * Sets the locales.<p>
+     *
+     * @param locales the locales to set
+     */
+    public void setLocales(List<Locale> locales) {
+
+        m_locales = locales;
+    }
+
+    /**
+     * Sets the locales.<p>
+     *
+     * @param locales the locales to set
+     */
+    public void setLocales(Locale... locales) {
+
+        m_locales = Arrays.asList(locales);
+    }
+
+    /**
+     * Sets the queryString.<p>
+     *
+     * @param queryString the queryString to set
+     */
+    public void setQueryString(String queryString) {
+
+        m_queryString = queryString;
+    }
+
+    /**
+     * Sets the queryType.<p>
+     *
+     * @param queryType the queryType to set
+     */
+    public void setQueryType(String queryType) {
+
+        m_queryType = queryType;
+    }
+
+    /**
+     * Sets the resourceTypes.<p>
+     *
+     * @param resourceTypes the resourceTypes to set
+     */
+    public void setResourceTypes(List<String> resourceTypes) {
+
+        m_resourceTypes = resourceTypes;
+    }
+
+    /**
+     * Sets the resourceTypes.<p>
+     *
+     * @param resourceTypes the resourceTypes to set
+     */
+    public void setResourceTypes(String... resourceTypes) {
+
+        m_resourceTypes = Arrays.asList(resourceTypes);
+    }
+
+    /**
+     * Sets the rows.<p>
+     *
+     * @param rows the rows to set
+     */
+    public void setRows(Integer rows) {
+
+        m_rows = rows;
+    }
+
+    /**
+     * Sets the searchRoots.<p>
+     *
+     * @param searchRoots the searchRoots to set
+     */
+    public void setSearchRoots(List<String> searchRoots) {
+
+        m_searchRoots = searchRoots;
+    }
+
+    /**
+     * Sets the searchRoots.<p>
+     *
+     * @param searchRoots the searchRoots to set
+     */
+    public void setSearchRoots(String... searchRoots) {
+
+        m_searchRoots = Arrays.asList(searchRoots);
+    }
+
+    /**
+     * Sets the solrQuery.<p>
+     *
+     * @param solrQuery the solrQuery to set
+     */
+    public void setSolrQuery(SolrQuery solrQuery) {
+
+        m_solrQuery = solrQuery;
+    }
+
+    /**
+     * Sets the sortFields.<p>
+     *
+     * @param sortFields the sortFields to set
+     */
+    public void setSortFields(Map<String, ORDER> sortFields) {
+
+        m_sortFields = sortFields;
+    }
+
+    /**
+     * Sets the structureQuery.<p>
+     *
+     * @param structureQuery the structureQuery to set
+     */
+    public void setStructureQuery(boolean structureQuery) {
+
+        m_structureQuery = structureQuery;
+    }
+
+    /**
+     * Sets the text.<p>
+     *
+     * @param text the text to set
+     */
+    public void setText(String text) {
+
+        m_text = text;
+    }
+
+    /**
+     * Sets the textSearchFields.<p>
+     *
+     * @param textSearchFields the textSearchFields to set
+     */
+    public void setTextSearchFields(String... textSearchFields) {
+
+        m_textSearchFields = Arrays.asList(textSearchFields);
+    }
+
+    /**
+     * Sets the textSearchFields.<p>
+     *
+     * @param textSearchFields the textSearchFields to set
+     */
+    public void setTextSearchFields(List<String> textSearchFields) {
+
+        m_textSearchFields = textSearchFields;
+    }
+
+    /**
+     * Returns the Solr query.<p>
+     * 
+     * @return the Solr query
+     */
+    public SolrQuery toQuery() {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_text)) {
+            m_solrQuery.setQuery(createTextQuery());
+        } else {
+            m_solrQuery.setQuery(m_queryString);
+        }
+        if (m_structureQuery) {
+            m_solrQuery.setFields(STRUCTURE_FIELDS);
+        } else {
+            m_solrQuery.setFields(m_fields);
+        }
+        m_solrQuery.setQueryType(m_queryType);
+        m_solrQuery.setRows(m_rows);
+
+        // set the values from the members
+        if ((m_sortFields != null) && !m_sortFields.isEmpty()) {
+            addSortFields(m_sortFields);
+        }
+        if ((m_locales != null) && !m_locales.isEmpty()) {
+            addLocales(m_locales);
+        }
+        if ((m_dateRanges != null) && !m_dateRanges.isEmpty()) {
+            addDateRanges(m_dateRanges);
+        }
+        if ((m_categories != null) && !m_categories.isEmpty()) {
+            addFilterQuery(I_CmsSearchField.FIELD_CATEGORY + "_exact", true, m_categories);
+        }
+        if ((m_resourceTypes != null) && !m_resourceTypes.isEmpty()) {
+            addFilterQuery(I_CmsSearchField.FIELD_TYPE, false, m_resourceTypes);
+        }
+        if ((m_searchRoots != null) && !m_searchRoots.isEmpty()) {
+            addFilterQuery(I_CmsSearchField.FIELD_PARENT_FOLDERS, false, m_searchRoots);
+        }
+
+        // overwrite already set values with values from query String
+        if ((m_queryParameters != null) && !m_queryParameters.isEmpty()) {
+            for (Map.Entry<String, String[]> entry : m_queryParameters.entrySet()) {
+                if (!entry.getKey().equals(CommonParams.FQ)) {
+                    // add or replace all parameters from the query String
+                    m_solrQuery.setParam(entry.getKey(), entry.getValue());
+                } else {
+                    // special handling for filter queries
+                    replaceFilterQueries(entry.getValue());
+                }
+            }
+        }
+        ensureReturnFields();
+        return m_solrQuery;
+    }
+
+    @Override
+    public String toString() {
+
+        return CmsEncoder.decode(toQuery().toString());
     }
 
     /**
@@ -449,122 +609,25 @@ public class CmsSolrQuery extends SolrQuery {
      * 
      * @param ranges the ranges map with field name as key and a CmsPair with min date as first and max date as second
      */
-    public void setDateRanges(Map<String, CmsPair<Date, Date>> ranges) {
+    private void addDateRanges(Map<String, CmsPair<Date, Date>> ranges) {
 
         // remove the date ranges
         if (m_dateRanges != null) {
             for (Map.Entry<String, CmsPair<Date, Date>> entry : m_dateRanges.entrySet()) {
-                removeFacetField(entry.getKey());
+                m_solrQuery.removeFacetField(entry.getKey());
             }
         }
-
         // add the date ranges
         if (ranges != null) {
             for (Map.Entry<String, CmsPair<Date, Date>> entry : ranges.entrySet()) {
-                addDateRangeFacet(
+                m_solrQuery.addDateRangeFacet(
                     entry.getKey(),
                     entry.getValue().getFirst(),
                     entry.getValue().getSecond(),
-                    m_facetDateGab);
+                    m_facetDateGap);
             }
         }
-
         m_dateRanges = ranges;
-    }
-
-    /**
-     * Sets the facetDateGab.<p>
-     *
-     * @param facetDateGab the facetDateGab to set
-     */
-    public void setFacetDateGab(String facetDateGab) {
-
-        m_facetDateGab = facetDateGab;
-    }
-
-    /**
-     * Sets the locales.<p>
-     *
-     * @param locales the locales to set
-     */
-    public void setLocales(List<Locale> locales) {
-
-        m_locales = locales;
-        m_textFields.clear();
-        if ((locales == null) || locales.isEmpty()) {
-            m_textFields.add("text");
-            if ((m_localesArray != null) && (m_localesArray.length > 0)) {
-                removeFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES);
-            }
-            m_localesArray = null;
-        } else {
-            List<String> localeStrings = new ArrayList<String>();
-            for (Locale locale : locales) {
-                localeStrings.add(locale.toString());
-                m_textFields.add("text_" + locale);
-            }
-            String[] asArray = localeStrings.toArray(new String[0]);
-            addFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES, asArray);
-            m_localesArray = asArray;
-        }
-    }
-
-    /**
-     * Sets the resource types.<p>
-     *
-     * @param resourceTypes the resource types to set
-     */
-    public void setResourceTypes(String... resourceTypes) {
-
-        addFilterQuery(I_CmsSearchField.FIELD_TYPE, resourceTypes);
-        m_resourceTypes = resourceTypes;
-    }
-
-    /**
-     * Sets the search roots.<p>
-     *
-     * @param searchRoots the VFS paths to search in
-     */
-    public void setSearchRoots(String... searchRoots) {
-
-        if ((searchRoots != null) && (searchRoots.length > 0)) {
-            addFilterQuery(I_CmsSearchField.FIELD_PARENT_FOLDERS, searchRoots);
-        }
-        m_searchRoots = searchRoots;
-    }
-
-    /**
-     * Sets the fields that should be used to sort the results.<p>
-     *
-     * @param sortFields the sort fields to set
-     */
-    public void setSortFieldsMap(Map<String, ORDER> sortFields) {
-
-        m_sortFieldsMap = sortFields;
-
-        // add the sort fields to the query
-        if (m_sortFieldsMap != null) {
-            for (Map.Entry<String, ORDER> entry : m_sortFieldsMap.entrySet()) {
-                addSortField(entry.getKey(), entry.getValue());
-            }
-        }
-    }
-
-    /**
-     * Sets the search text phrases to search for.<p>
-     * 
-     * @param texts the texts
-     */
-    public void setTexts(String... texts) {
-
-        m_texts = texts;
-        String vals = CmsStringUtil.arrayAsString(texts, " ");
-        String query = "{!q.op=OR ";
-        for (String textField : m_textFields) {
-            query += "qf=" + textField + " ";
-        }
-        query += "}" + vals;
-        setQuery(query);
     }
 
     /**
@@ -574,41 +637,61 @@ public class CmsSolrQuery extends SolrQuery {
      * @param all <code>true</code> to combine the given values with 'AND', <code>false</code> for 'OR'
      * @param vals the values
      */
-    private void addFilterQuery(String fieldName, boolean all, String... vals) {
+    private void addFilterQuery(String fieldName, boolean all, List<String> vals) {
 
-        if (m_filterQueries.get(fieldName) != null) {
-            removeFilterQuery(m_filterQueries.get(fieldName));
-            m_filterQueries.remove(fieldName);
+        if (m_solrQuery.getFilterQueries() != null) {
+            for (String fq : m_solrQuery.getFilterQueries()) {
+                if (fq.startsWith(fieldName + ":")) {
+                    m_solrQuery.removeFilterQuery(fq);
+                }
+            }
         }
-        String query = createFilterQuery(fieldName, all, vals);
-        m_filterQueries.put(fieldName, query);
-        super.addFilterQuery(query);
+        String fq = createFilterQuery(fieldName, all, vals);
+        m_solrQuery.addFilterQuery(fq);
     }
 
     /**
-     * Adds a filter query.<p>
+     * Sets the locales.<p>
      * 
-     * Calls {@link #addFilterQuery(String, boolean, String...)} with false
-     * 
-     * @see #addFilterQuery(String, boolean, String...)
-     * 
-     * @param fieldName the field name
-     * @param vals the values
+     * @param locales the locales to set
      */
-    private void addFilterQuery(String fieldName, String... vals) {
+    private void addLocales(List<Locale> locales) {
 
-        addFilterQuery(fieldName, false, vals);
+        m_locales = locales;
+        m_textSearchFields = new ArrayList<String>();
+        if ((locales == null) || locales.isEmpty()) {
+            m_textSearchFields.add(I_CmsSearchField.FIELD_TEXT);
+            if (m_solrQuery.getFilterQueries() != null) {
+                for (String fq : m_solrQuery.getFilterQueries()) {
+                    if (fq.startsWith(I_CmsSearchField.FIELD_CONTENT_LOCALES + ":")) {
+                        m_solrQuery.removeFilterQuery(fq);
+                    }
+                }
+            }
+        } else {
+            List<String> localeStrings = new ArrayList<String>();
+            for (Locale locale : locales) {
+                localeStrings.add(locale.toString());
+                m_textSearchFields.add("text_" + locale);
+            }
+            addFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES, false, localeStrings);
+        }
     }
 
     /**
-     * Adds the given parameters to the Solr query and ensures that at least the 'path' and the 'type'
-     * is part of the returned fields.<p>
+     * Sets the fields that should be used to sort the results.<p>
      * 
-     * @param params the parameters
+     * @param sortFields the sort fields to set
      */
-    private void addParameterMap(Map<String, String[]> params) {
+    private void addSortFields(Map<String, ORDER> sortFields) {
 
-        add(new ModifiableSolrParams(params));
+        // add the sort fields to the query
+        m_sortFields.putAll(sortFields);
+        if (m_sortFields != null) {
+            for (Map.Entry<String, ORDER> entry : m_sortFields.entrySet()) {
+                m_solrQuery.addSortField(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     /**
@@ -620,18 +703,18 @@ public class CmsSolrQuery extends SolrQuery {
      * 
      * @return this query
      */
-    private String createFilterQuery(String fieldName, boolean all, String... vals) {
+    private String createFilterQuery(String fieldName, boolean all, List<String> vals) {
 
         String filterQuery = null;
         if ((vals != null)) {
-            if (vals.length == 1) {
-                filterQuery = fieldName + ":" + vals[0];
-            } else if (vals.length > 1) {
+            if (vals.size() == 1) {
+                filterQuery = fieldName + ":" + vals.get(0);
+            } else if (vals.size() > 1) {
                 filterQuery = fieldName + ":(";
-                for (int j = 0; j < vals.length; j++) {
-                    String val = vals[j];
+                for (int j = 0; j < vals.size(); j++) {
+                    String val = vals.get(j);
                     filterQuery += val;
-                    if (vals.length > (j + 1)) {
+                    if (vals.size() > (j + 1)) {
                         if (all) {
                             filterQuery += " AND ";
                         } else {
@@ -646,31 +729,81 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
+     * Creates a OR combined 'q' parameter.<p>
+     * 
+     * @return returns the 'q' parameter
+     */
+    private String createTextQuery() {
+
+        if (m_textSearchFields.isEmpty()) {
+            m_textSearchFields.add(I_CmsSearchField.FIELD_TEXT);
+        }
+        String q = "{!q.op=OR qf=";
+        boolean first = true;
+        for (String textField : m_textSearchFields) {
+            if (!first) {
+                q += " ";
+            }
+            q += textField;
+        }
+        q += "}" + m_text;
+        return q;
+    }
+
+    /**
      * Ensures that at least the 'path' and the 'type' are part of the fields returned field list.<p>
      * 
      * @see CommonParams#FL
      */
     private void ensureReturnFields() {
 
-        String[] fl = getParams(CommonParams.FL);
+        String[] fl = m_solrQuery.getParams(CommonParams.FL);
         if ((fl != null) && (fl.length > 0)) {
             List<String> result = new ArrayList<String>();
             for (String field : fl) {
                 String commasep = field.replaceAll(" ", ",");
                 List<String> list = CmsStringUtil.splitAsList(commasep, ',');
                 if (!list.contains("*")) {
-                    if (!list.contains(I_CmsSearchField.FIELD_PATH)) {
-                        list.add(I_CmsSearchField.FIELD_PATH);
-                    }
-                    if (!list.contains(I_CmsSearchField.FIELD_TYPE)) {
-                        list.add(I_CmsSearchField.FIELD_TYPE);
+                    for (String reqField : CmsStringUtil.splitAsList(MINIMUM_FIELDS, ",")) {
+                        if (!list.contains(reqField)) {
+                            list.add(reqField);
+                        }
                     }
                 }
                 result.addAll(list);
             }
-            setParam(CommonParams.FL, CmsStringUtil.arrayAsString(result.toArray(new String[0]), ","));
+            m_solrQuery.setParam(CommonParams.FL, CmsStringUtil.arrayAsString(result.toArray(new String[0]), ","));
         } else {
-            setParam(CommonParams.FL, MINIMUM_FIELDS);
+            m_solrQuery.setParam(CommonParams.FL, MINIMUM_FIELDS);
         }
     }
+
+    /**
+     * Removes those filter queries from the Solr filter queries that restrict the same field.<p>
+     * 
+     * @param fqs the filter queries to remove
+     */
+    private void replaceFilterQueries(String[] fqs) {
+
+        // iterate over the given filter queries to remove
+        for (String fq : fqs) {
+            int idx = fq.indexOf(':');
+            if (idx != -1) {
+                // get the field name of the fq to remove
+                String fieldName = fq.substring(0, idx);
+                // iterate over the fqs of the already existing fqs from the solr query
+                if (m_solrQuery.getFilterQueries() != null) {
+                    for (String sfq : m_solrQuery.getFilterQueries()) {
+                        if (sfq.startsWith(fieldName + ":")) {
+                            // there exists a filter query for exact the same field
+                            // remove it
+                            m_solrQuery.removeFilterQuery(sfq);
+                        }
+                    }
+                }
+            }
+        }
+        m_solrQuery.addFilterQuery(fqs);
+    }
+
 }
