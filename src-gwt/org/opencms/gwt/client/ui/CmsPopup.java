@@ -925,12 +925,13 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     public void show() {
 
         boolean fixed = Position.FIXED.getCssName().equals(getElement().getStyle().getPosition());
+        boolean wasAlreadyShowing = isShowing();
         super.show();
         if (fixed) {
             // keep position fixed as it may have been set to absolute
             setPositionFixed();
         }
-        if (m_useAnimation) {
+        if (m_useAnimation && !wasAlreadyShowing) {
             CmsFadeAnimation.fadeIn(getElement(), null, 500);
         }
         if (m_resizeHandlerRegistration == null) {
