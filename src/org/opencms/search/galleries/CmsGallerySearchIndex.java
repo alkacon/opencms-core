@@ -29,13 +29,11 @@ package org.opencms.search.galleries;
 
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -534,22 +532,7 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
             // don't index  folders or temporary files for galleries, but pretty much everything else
             return true;
         }
-        boolean excludeFromIndex = false;
-        try {
-            // do property lookup with folder search
-            String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
-            if (propValue != null) {
-                propValue = propValue.trim();
-                // property value was neither "true" nor null, must check for "all"
-                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue)
-                    || PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY.equalsIgnoreCase(propValue);
-            }
-        } catch (CmsException e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, resource.getRootPath()));
-            }
-        }
-        return excludeFromIndex;
+        return false;
     }
 
     /**
