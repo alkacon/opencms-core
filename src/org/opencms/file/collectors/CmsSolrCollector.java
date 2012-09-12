@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.util.CmsRequestUtil;
@@ -134,7 +135,8 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
             param = param.substring(0, param.indexOf('|'));
         }
         Map<String, String[]> pm = CmsRequestUtil.createParameterMap(param);
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(pm);
+        OpenCms.getSearchManager();
+        CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
         CmsSolrQuery q = COLLECTORS_LIST.indexOf(collectorName) == 0 ? new CmsSolrQuery(pm) : new CmsSolrQuery(cms, pm);
         return new ArrayList<CmsResource>(index.search(cms, q));
     }

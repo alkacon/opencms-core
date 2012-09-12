@@ -87,6 +87,12 @@ import org.apache.solr.response.SolrQueryResponse;
  */
 public class CmsSolrIndex extends A_CmsSearchIndex {
 
+    /** The name of the default Solr Offline index. */
+    public static final String DEFAULT_INDEX_NAME_OFFLINE = "Solr Offline";
+
+    /** The name of the default Solr Online index. */
+    public static final String DEFAULT_INDEX_NAME_ONLINE = "Solr Online";
+
     /** Constant for additional parameter to set the post processor class name. */
     public static final String POST_PROCESSOR = "search.solr.postProcessor";
 
