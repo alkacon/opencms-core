@@ -326,119 +326,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * Default search method.<p>
-     * 
-     * @param cms the current CMS object 
-     * @param query the query
-     * 
-     * @return the results
-     * 
-     * @throws CmsSearchException if something goes wrong
-     * 
-     * @see #search(CmsObject, String)
-     */
-    public CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
-
-        return search(cms, CmsEncoder.decode(query.toString()));
-    }
-
-    /**
-     * Performs a search.<p>
-     * 
-     * @param cms the cms object
-     * @param solrQuery the Solr query
-     * 
-     * @return a list of documents
-     * 
-     * @throws CmsSearchException if something goes wrong
-     * 
-     * @see #search(CmsObject, CmsSolrQuery, boolean)
-     */
-    public CmsSolrResultList search(CmsObject cms, String solrQuery) throws CmsSearchException {
-
-        return search(cms, new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrQuery)), false);
-    }
-
-    /**
-     * Sets the search post processor.<p>
-     *
-     * @param postProcessor the search post processor to set
-     */
-    public void setPostProcessor(I_CmsSolrPostSearchProcessor postProcessor) {
-
-        m_postProcessor = postProcessor;
-    }
-
-    /**
-     * Writes the response into the writer.<p>
-     * 
-     * NOTE: Currently not available for HTTP server.<p>
-     * 
-     * @param response the servlet response
-     * @param result the result to print
-     * 
-     * @throws Exception if there is no embedded server
-     */
-    public void writeResponse(ServletResponse response, CmsSolrResultList result) throws Exception {
-
-        if (m_solr instanceof EmbeddedSolrServer) {
-
-            SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-            SolrQueryRequest queryRequest = result.getSolrQueryRequest();
-            SolrQueryResponse queryResponse = result.getSolrQueryResponse();
-            QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
-
-            final String ct = responseWriter.getContentType(queryRequest, queryResponse);
-            if (null != ct) {
-                response.setContentType(ct);
-            }
-
-            if (responseWriter instanceof BinaryQueryResponseWriter) {
-                BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
-                binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
-            } else {
-                String charset = ContentStreamBase.getCharsetFromContentType(ct);
-                Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString())) ? new OutputStreamWriter(
-                    response.getOutputStream(),
-                    UTF8) : new OutputStreamWriter(response.getOutputStream(), charset);
-                out = new FastWriter(out);
-                responseWriter.write(out, queryRequest, queryResponse);
-                out.flush();
-            }
-        } else {
-            throw new UnsupportedOperationException();
-        }
-        LOG.debug("### Query Time After Write      : " + (System.currentTimeMillis() - result.getStartTime()));
-    }
-
-    /**
-     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherClose()
-     */
-    @Override
-    protected void indexSearcherClose() {
-
-        // nothing to do here
-    }
-
-    /**
-     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherOpen(java.lang.String)
-     */
-    @Override
-    protected void indexSearcherOpen(String path) {
-
-        // nothing to do here
-    }
-
-    /**
-     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherUpdate()
-     */
-    @Override
-    protected void indexSearcherUpdate() {
-
-        // nothing to do here
-    }
-
-    /**
      * <h4>Performs a search on the Solr index</h4>
      * 
      * Returns a list of 'OpenCms resource documents' 
@@ -485,7 +372,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * @see org.opencms.search.I_CmsSearchDocument
      * @see org.opencms.search.solr.CmsSolrQuery
      */
-    protected synchronized CmsSolrResultList search(CmsObject cms, final CmsSolrQuery cmsQuery, boolean ignoreMaxRows)
+    public synchronized CmsSolrResultList search(CmsObject cms, final CmsSolrQuery cmsQuery, boolean ignoreMaxRows)
     throws CmsSearchException {
 
         LOG.debug("### START SRARCH (time in ms) ###");
@@ -598,5 +485,118 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             // re-set thread to previous priority
             Thread.currentThread().setPriority(previousPriority);
         }
+    }
+
+    /**
+     * Default search method.<p>
+     * 
+     * @param cms the current CMS object 
+     * @param query the query
+     * 
+     * @return the results
+     * 
+     * @throws CmsSearchException if something goes wrong
+     * 
+     * @see #search(CmsObject, String)
+     */
+    public CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
+
+        return search(cms, CmsEncoder.decode(query.toString()));
+    }
+
+    /**
+     * Performs a search.<p>
+     * 
+     * @param cms the cms object
+     * @param solrQuery the Solr query
+     * 
+     * @return a list of documents
+     * 
+     * @throws CmsSearchException if something goes wrong
+     * 
+     * @see #search(CmsObject, CmsSolrQuery, boolean)
+     */
+    public CmsSolrResultList search(CmsObject cms, String solrQuery) throws CmsSearchException {
+
+        return search(cms, new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrQuery)), false);
+    }
+
+    /**
+     * Sets the search post processor.<p>
+     *
+     * @param postProcessor the search post processor to set
+     */
+    public void setPostProcessor(I_CmsSolrPostSearchProcessor postProcessor) {
+
+        m_postProcessor = postProcessor;
+    }
+
+    /**
+     * Writes the response into the writer.<p>
+     * 
+     * NOTE: Currently not available for HTTP server.<p>
+     * 
+     * @param response the servlet response
+     * @param result the result to print
+     * 
+     * @throws Exception if there is no embedded server
+     */
+    public void writeResponse(ServletResponse response, CmsSolrResultList result) throws Exception {
+
+        if (m_solr instanceof EmbeddedSolrServer) {
+
+            SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
+            SolrQueryRequest queryRequest = result.getSolrQueryRequest();
+            SolrQueryResponse queryResponse = result.getSolrQueryResponse();
+            QueryResponseWriter responseWriter = core.getQueryResponseWriter(queryRequest);
+
+            final String ct = responseWriter.getContentType(queryRequest, queryResponse);
+            if (null != ct) {
+                response.setContentType(ct);
+            }
+
+            if (responseWriter instanceof BinaryQueryResponseWriter) {
+                BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
+                binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
+            } else {
+                String charset = ContentStreamBase.getCharsetFromContentType(ct);
+                Writer out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString())) ? new OutputStreamWriter(
+                    response.getOutputStream(),
+                    UTF8) : new OutputStreamWriter(response.getOutputStream(), charset);
+                out = new FastWriter(out);
+                responseWriter.write(out, queryRequest, queryResponse);
+                out.flush();
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        LOG.debug("### Query Time After Write      : " + (System.currentTimeMillis() - result.getStartTime()));
+    }
+
+    /**
+     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherClose()
+     */
+    @Override
+    protected void indexSearcherClose() {
+
+        // nothing to do here
+    }
+
+    /**
+     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherOpen(java.lang.String)
+     */
+    @Override
+    protected void indexSearcherOpen(String path) {
+
+        // nothing to do here
+    }
+
+    /**
+     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherUpdate()
+     */
+    @Override
+    protected void indexSearcherUpdate() {
+
+        // nothing to do here
     }
 }
