@@ -40,7 +40,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** The copyright message for OpenCms. */
     public static final String[] COPYRIGHT_BY_ALKACON = {
         "",
-        "Copyright (c) 2010 Alkacon Software GmbH",
+        "Copyright (c) 2012 Alkacon Software GmbH",
         "OpenCms comes with ABSOLUTELY NO WARRANTY",
         "This is free software, and you are welcome to",
         "redistribute it under certain conditions.",
@@ -97,6 +97,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CRITICAL_NO_DB_CONTEXT_0 = "ERR_CRITICAL_NO_DB_CONTEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DERIGISTERING_JDBC_DRIVER_1 = "ERR_DERIGISTERING_JDBC_DRIVER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_ILLEGAL_ARG_2 = "ERR_ILLEGAL_ARG_2";
 
     /** Message constant for key in the resource bundle. */
@@ -125,6 +128,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REQUEST_SECURE_RESOURCE_0 = "ERR_REQUEST_SECURE_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_INIT_ABORTED_1 = "ERR_RESOURCE_INIT_ABORTED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SECURE_SITE_NOT_CONFIGURED_1 = "ERR_SECURE_SITE_NOT_CONFIGURED_1";
@@ -238,13 +244,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SHELL_WRONG_USAGE_0 = "GUI_SHELL_WRONG_USAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOLR_ERROR_HTML_1 = "GUI_SOLR_ERROR_HTML_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SOLR_INDEX_NOT_FOUND_1 = "GUI_SOLR_INDEX_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOLR_NOT_LOGGED_IN_0 = "GUI_SOLR_NOT_LOGGED_IN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SOLR_ERROR_HTML_0 = "GUI_SOLR_ERROR_HTML_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOLR_UNEXPECTED_ERROR_0 = "GUI_SOLR_UNEXPECTED_ERROR_0";
@@ -365,6 +371,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_ADE_MANAGER_SHUTDOWN_1 = "LOG_ERROR_ADE_MANAGER_SHUTDOWN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_DERIGISTERING_JDBC_DRIVER_1 = "LOG_ERROR_DERIGISTERING_JDBC_DRIVER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_EXPORT_1 = "LOG_ERROR_EXPORT_1";
