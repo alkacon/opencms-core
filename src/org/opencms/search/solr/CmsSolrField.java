@@ -173,7 +173,7 @@ public class CmsSolrField extends A_CmsSearchField {
     }
 
     /**
-     * Sets the locale
+     * Sets the locale.<p>
      * 
      * @param locale the locale to set
      */
@@ -183,7 +183,7 @@ public class CmsSolrField extends A_CmsSearchField {
     }
 
     /**
-     * Sets the target field name
+     * Sets the target field name.<p>
      * 
      * @param targetField the name to set
      */

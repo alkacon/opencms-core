@@ -244,7 +244,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SHELL_WRONG_USAGE_0 = "GUI_SHELL_WRONG_USAGE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SOLR_ERROR_HTML_0 = "GUI_SOLR_ERROR_HTML_0";
+    public static final String GUI_SOLR_ERROR_HTML_1 = "GUI_SOLR_ERROR_HTML_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOLR_INDEX_NOT_FOUND_1 = "GUI_SOLR_INDEX_NOT_FOUND_1";

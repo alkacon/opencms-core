@@ -1,33 +1,33 @@
-                                                        /*
- * File   : $Source$
- * Date   : $Date$
- * Version: $Revision$
- *
- * This library is part of OpenCms -
- * the Open Source Content Management System
- *
- * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * For further information about Alkacon Software, please see the
- * company website: http://www.alkacon.com
- *
- * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/*
+* File   : $Source$
+* Date   : $Date$
+* Version: $Revision$
+*
+* This library is part of OpenCms -
+* the Open Source Content Management System
+*
+* Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about Alkacon Software, please see the
+* company website: http://www.alkacon.com
+*
+* For further information about OpenCms, please see the
+* project website: http://www.opencms.org
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 package org.opencms.main;
 
@@ -56,14 +56,23 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class OpenCmsSolrHandler implements I_CmsRequestHandler {
 
-    /** Some HTML to use for display solr errors. */
-    private static final String ERROR_HTML = Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_0);
+    /** A constant for the HTTP 'referer'. */
+    protected static final String HEADER_REFERER_KEY = "referer";
+
+    /** A constant for the optional 'core' parameter. */
+    protected static final String PARAM_BASE_CORE = "core";
+
+    /** A constant for the optional 'index' parameter. */
+    protected static final String PARAM_BASE_INDEX = "index";
+
+    /** A constant for the optional 'baseUri' parameter. */
+    protected static final String PARAM_BASE_URI = "baseUri";
 
     /** 
      * A constant for all handler names that are implemented by this class.<p>
      * This handler is reachable under "/opencms/opencms/handleSolrSelect".<p>
      */
-    private final static String[] HANDLER_NAMES = new String[] {"SolrSelect"};
+    private static String[] HANDLER_NAMES = new String[] {"SolrSelect"};
 
     /**
      * Returns the requested URI.<p>
@@ -73,19 +82,18 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
      * 
      * @return the requested URI
      */
-    private static final String getRequestUri(HttpServletRequest req, CmsObject cms) {
-    	
-    	String baseUri = req.getParameter("baseUri");
-    	if (CmsStringUtil.isEmptyOrWhitespaceOnly(baseUri)) {
-    		String referer = req.getHeader("referer");
-    		CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
-    		String prefix = site.getServerPrefix(cms, "/") + OpenCms.getSystemInfo().getOpenCmsContext();
-            if (referer != null && referer.startsWith(prefix)) {
-                // cut off the server prefix
-            	baseUri =  referer.substring(prefix.length());
+    private static String getRequestUri(HttpServletRequest req, CmsObject cms) {
+
+        String baseUri = req.getParameter(PARAM_BASE_URI);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(baseUri)) {
+            String referer = req.getHeader(HEADER_REFERER_KEY);
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
+            String prefix = site.getServerPrefix(cms, "/") + OpenCms.getSystemInfo().getOpenCmsContext();
+            if ((referer != null) && referer.startsWith(prefix)) {
+                baseUri = referer.substring(prefix.length());
             }
-    	}
-    	return baseUri;
+        }
+        return baseUri;
     }
 
     /**
@@ -95,7 +103,7 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
 
         return HANDLER_NAMES;
     }
-    
+
     /**
      * @see org.opencms.main.I_CmsRequestHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
      */
@@ -107,16 +115,16 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
             if (cms == null) {
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
                 String message = Messages.get().getBundle().key(Messages.GUI_SOLR_NOT_LOGGED_IN_0);
-                res.getWriter().println(ERROR_HTML.replace("$content$", message));
+                res.getWriter().println(Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message));
             } else {
-            	String baseUri = getRequestUri(req, cms);
-            	if (baseUri != null) {
-            		cms.getRequestContext().setUri(baseUri);
-            	}
+                String baseUri = getRequestUri(req, cms);
+                if (baseUri != null) {
+                    cms.getRequestContext().setUri(baseUri);
+                }
                 Map<String, String[]> params = CmsRequestUtil.createParameterMap(req.getParameterMap());
-                String indexName = params.get("core") != null ? params.get("core")[0] : (params.get("index") != null
-                ? params.get("index")[0]
-                : null);
+                String indexName = params.get(PARAM_BASE_CORE) != null
+                ? params.get(PARAM_BASE_CORE)[0]
+                : (params.get(PARAM_BASE_INDEX) != null ? params.get(PARAM_BASE_INDEX)[0] : null);
                 CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(params);
                 if (index != null) {
                     CmsSolrQuery query = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(req.getParameterMap()));
@@ -124,14 +132,15 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
                 } else {
                     res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
                     String message = Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName);
-                    res.getWriter().println(ERROR_HTML.replace("$content$", message));
+                    res.getWriter().println(Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message));
                 }
             }
         } catch (Exception e) {
             res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
             String message = Messages.get().getBundle().key(Messages.GUI_SOLR_UNEXPECTED_ERROR_0);
             String formattedException = CmsException.getStackTraceAsString(e).replace("\n", "<br/>");
-            res.getWriter().println(ERROR_HTML.replace("$content$", message + formattedException));
+            res.getWriter().println(
+                Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message + formattedException));
         } finally {
             res.getWriter().flush();
         }

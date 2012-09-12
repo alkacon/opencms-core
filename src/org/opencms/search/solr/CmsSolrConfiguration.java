@@ -143,7 +143,7 @@ public class CmsSolrConfiguration {
     }
 
     /**
-     * Returns the servers URL if embedded is set to <code>false</code>
+     * Returns the servers URL if embedded is set to <code>false</code>.<p>
      * 
      * @return the external servers URL
      */

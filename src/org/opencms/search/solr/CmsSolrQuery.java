@@ -47,7 +47,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.HighlightParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
@@ -179,7 +178,7 @@ public class CmsSolrQuery extends SolrQuery {
     /**
      * Creates a {@link CmsSolrQuery} based on a request parameter map as argument.<p>
      * 
-     * Use this constructor in order to let OpenCms behave identical to standard {@link HttpSolrServer}
+     * Use this constructor in order to let OpenCms behave identical to standard HttpSolrServer
      * 
      * @param params the request parameter map
      */
@@ -369,6 +368,14 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public String[] getResourceTypes() {
 
+        List<String> types = new ArrayList<String>();
+        for (String s : getFilterQueries()) {
+            int idx = s.indexOf(I_CmsSearchField.FIELD_TYPE + ":");
+            if (idx != -1) {
+                types.add(s.substring((I_CmsSearchField.FIELD_TYPE + ":").length()));
+            }
+        }
+        m_resourceTypes = types.toArray(new String[types.size()]);
         return m_resourceTypes;
     }
 
