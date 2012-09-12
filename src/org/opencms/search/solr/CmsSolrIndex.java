@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -261,11 +262,13 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
+     * Not yet implemented for Solr.<p>
+     * 
      * <code>
      * #################<br>
      * ### DON'T USE ###<br>
      * #################<br>
-     * </code><p>
+     * </code>
      * 
      * @Deprecated Use {@link #search(CmsObject, CmsSolrQuery)} or {@link #search(CmsObject, String)} instead
      */
@@ -385,7 +388,8 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             LOG.debug("### Query Time After Execution  : " + (System.currentTimeMillis() - startTime));
 
             // initialize the hit count and the max score
-            long hitCount, visibleHitCount = hitCount = queryResponse.getResults().getNumFound();
+            long hitCount = queryResponse.getResults().getNumFound();
+            long visibleHitCount = hitCount;
             float maxScore = 0;
 
             // iterate over found documents
@@ -440,15 +444,10 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                 visibleHitCount,
                 new Float(maxScore),
                 startTime);
-
-        } catch (RuntimeException e) {
-            throw new CmsSearchException(Messages.get().container(
-                Messages.ERR_SEARCH_INVALID_SEARCH_1,
-                query.toString()), e);
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(
                 Messages.ERR_SEARCH_INVALID_SEARCH_1,
-                query.toString()), e);
+                CmsEncoder.decode(query.toString())), e);
         } finally {
             // re-set thread to previous priority
             Thread.currentThread().setPriority(previousPriority);

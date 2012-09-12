@@ -1,11 +1,9 @@
 
 package org.opencms.search.solr;
 
-import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchResource;
-import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
@@ -42,10 +40,11 @@ import org.apache.solr.search.QParser;
  * Encapsulates a list of 'OpenCms resource documents' ({@link CmsSearchResource}).<p>
  * 
  * This list can be accessed exactly like an {@link ArrayList} which entries are 
- * {@link CmsSearchResource} that extend {@link CmsResource} and holds the Solr 
- * implementation of {@link I_CmsSearchDocument} as member. <b>This enables you to deal 
- * with the resulting list as you do with well known {@link List} and work on it's entries
- * like you do on {@link CmsResource}.</b><p>
+ * {@link CmsSearchResource} that extend {@link org.opencms.file.CmsResource} and
+ * holds the Solr implementation of {@link org.opencms.search.I_CmsSearchDocument}
+ * as member. <b>This enables you to deal with the resulting list as you do with 
+ * well known {@link List} and work on it's entries like you do on 
+ * {@link org.opencms.file.CmsResource}.</b><p>
  * 
  * @since 8.5.0
  */
