@@ -9,8 +9,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/activation-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/alkacon-diff-0.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/alkacon-simapi-0.9.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/apache-solr-core-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/apache-solr-solrj-3.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/apache-solr-core-3.6.1.jar" sourcepath="/home/kurz/dev/apache-solr-3.6.1"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/apache-solr-solrj-3.6.1.jar" sourcepath="/home/kurz/dev/apache-solr-3.6.1"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/bcprov-jdk15-146.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-beanutils-1.8.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/commons-codec-1.6.jar"/>

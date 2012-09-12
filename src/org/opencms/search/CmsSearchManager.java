@@ -708,11 +708,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public static final CmsSolrIndex getIndexSolr(CmsObject cms, Map<String, String[]> params) {
 
+        String indexName = null;
         CmsSolrIndex index = null;
-        // try to get the index name from the parameters: 'core' or 'index' 
-        String indexName = params.get(OpenCmsSolrHandler.PARAM_CORE) != null
-        ? params.get(OpenCmsSolrHandler.PARAM_CORE)[0]
-        : (params.get(OpenCmsSolrHandler.PARAM_INDEX) != null ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0] : null);
+        // try to get the index name from the parameters: 'core' or 'index'
+        if (params != null) {
+            indexName = params.get(OpenCmsSolrHandler.PARAM_CORE) != null
+            ? params.get(OpenCmsSolrHandler.PARAM_CORE)[0]
+            : (params.get(OpenCmsSolrHandler.PARAM_INDEX) != null
+            ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0]
+            : null);
+        }
         // if no parameter is specified try to use the default online/offline indexes by context
         indexName = (indexName == null) && cms.getRequestContext().getCurrentProject().isOnlineProject()
         ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE

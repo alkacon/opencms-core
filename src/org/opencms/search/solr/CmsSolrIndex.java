@@ -45,12 +45,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchException;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.CmsSearchResultList;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -130,6 +132,27 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     throws CmsIllegalArgumentException {
 
         super(name);
+    }
+
+    /**
+     * Returns the resource type for the given root path.<p>
+     * 
+     * @param cms the current CMS context
+     * @param rootPath the root path of the resource to get the type for
+     * 
+     * @return the resource type for the given root path
+     */
+    public static final String getType(CmsObject cms, String rootPath) {
+
+        String type = null;
+        CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, null);
+        if (index != null) {
+            I_CmsSearchDocument doc = index.getDocument(I_CmsSearchField.FIELD_PATH, rootPath);
+            if (doc != null) {
+                type = doc.getFieldValueAsString(I_CmsSearchField.FIELD_TYPE);
+            }
+        }
+        return type;
     }
 
     /**
