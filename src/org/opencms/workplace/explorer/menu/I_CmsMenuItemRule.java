@@ -28,6 +28,7 @@
 package org.opencms.workplace.explorer.menu;
 
 import org.opencms.file.CmsObject;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
@@ -41,10 +42,13 @@ public interface I_CmsMenuItemRule {
     String ATTR_CONTEXT_INFO = "__contextInfo";
 
     /** A constant that signals that we are in the container page context. */
-    String CONTEXT_CONTAINERPAGE = "containerpage";
+    String CONTEXT_CONTAINERPAGE = AdeContext.containerpage.toString();
+
+    /** A constant that signals that we are in the edit provider context. */
+    String CONTEXT_EDITPROVIDER = AdeContext.editprovider.toString();
 
     /** A constant that signals that we are in the sitemap context. */
-    String CONTEXT_SITEMAP = "sitemap";
+    String CONTEXT_SITEMAP = AdeContext.sitemap.toString();
 
     /**
      * Returns the visibility for the menu item.<p>

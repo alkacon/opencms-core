@@ -297,21 +297,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         List<CmsContextMenuEntryBean> result = null;
         CmsObject cms = getCmsObject();
-        switch (context) {
-            case containerpage:
-                cms.getRequestContext().setAttribute(
-                    I_CmsMenuItemRule.ATTR_CONTEXT_INFO,
-                    I_CmsMenuItemRule.CONTEXT_CONTAINERPAGE);
-                break;
-            case sitemap:
-                cms.getRequestContext().setAttribute(
-                    I_CmsMenuItemRule.ATTR_CONTEXT_INFO,
-                    I_CmsMenuItemRule.CONTEXT_SITEMAP);
-                break;
-            default:
-                // nothing to do here
+        if (context != null) {
+            cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
         }
-
         try {
             CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
             resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId));

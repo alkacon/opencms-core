@@ -58,17 +58,20 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
     /** The context menu. */
     private CmsContextMenu m_menu;
 
-    /** The main content widget. */
-    private FlexTable m_menuPanel;
-
     /** The registration for the first close handler. */
     private HandlerRegistration m_menuCloseHandler;
 
-    /** The registration for the second close handler. */
-    private HandlerRegistration m_popupCloseHandler;
+    /** Context used for loading the context menu entries. */
+    private AdeContext m_menuContext = AdeContext.containerpage;
+
+    /** The main content widget. */
+    private FlexTable m_menuPanel;
 
     /** The label which is displayed when no entries are found. */
     private CmsLabel m_noEntriesLabel = new CmsLabel("No entries found!");
+
+    /** The registration for the second close handler. */
+    private HandlerRegistration m_popupCloseHandler;
 
     /**
      * Constructor.<p>
@@ -96,7 +99,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
      */
     public void onToolbarActivate() {
 
-        getHandler().loadContextMenu(CmsCoreProvider.get().getStructureId(), AdeContext.containerpage);
+        getHandler().loadContextMenu(CmsCoreProvider.get().getStructureId(), m_menuContext);
     }
 
     /**
@@ -110,6 +113,16 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
             m_resizeRegistration.removeHandler();
             m_resizeRegistration = null;
         }
+    }
+
+    /** 
+     * Sets the menu context.<p>
+     * 
+     * @param menuContext the new menu context
+     */
+    public void setMenuContext(AdeContext menuContext) {
+
+        m_menuContext = menuContext;
     }
 
     /**

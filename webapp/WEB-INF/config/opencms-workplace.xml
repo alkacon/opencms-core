@@ -663,6 +663,8 @@
 			<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage"/>
 			<entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0"  name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"  rule="containerpage" />
 			<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage"/>
+			<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0" 	name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"  rule="editprovider" />
+			<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" 	name="org.opencms.gwt.client.ui.contextmenu.CmsLogout" 	rule="editprovider" />
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -899,6 +901,10 @@
     	<menurule name="containerpage">
     	  <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />
     	  <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+    	</menurule>
+    	<menurule name="editprovider">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirEditProviderActive" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
     	</menurule>
     	<menurule name="sitemap">
     	  <menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSitemapActive" />

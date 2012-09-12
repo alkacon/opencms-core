@@ -31,6 +31,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 /**
  * Defines a menu item rule that sets the visibility to invisible
  * if the current resource is opened via the container page.<p>
@@ -38,6 +42,11 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * @since 8.0.0
  */
 public class CmsMirContainerpageInvisible extends A_CmsMenuItemRule {
+
+    /** List of contexts used for matching. */
+    private static List<String> contexts = Lists.newArrayList(
+        I_CmsMenuItemRule.CONTEXT_CONTAINERPAGE,
+        I_CmsMenuItemRule.CONTEXT_EDITPROVIDER);
 
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, CmsResourceUtil[])
@@ -55,7 +64,7 @@ public class CmsMirContainerpageInvisible extends A_CmsMenuItemRule {
 
         String context = (String)cms.getRequestContext().getAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(context)) {
-            return context.toLowerCase().equals(I_CmsMenuItemRule.CONTEXT_CONTAINERPAGE);
+            return contexts.contains(context);
         }
         return false;
     }

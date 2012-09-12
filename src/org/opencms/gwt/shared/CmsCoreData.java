@@ -46,6 +46,9 @@ public class CmsCoreData implements IsSerializable {
         /** Context for container page. */
         containerpage,
 
+        /** Context for classic direct edit provider. */
+        editprovider,
+
         /** Context for sitemap. */
         sitemap
     }

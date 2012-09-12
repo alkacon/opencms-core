@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -226,11 +227,11 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
         selection.addClickHandler(clickHandler);
         m_toolbar.addLeft(selection);
         m_selection = selection;
-
-        CmsToolbarContextButton context = new CmsToolbarContextButton(handler);
-        context.addClickHandler(clickHandler);
-        m_toolbar.addRight(context);
-        handler.setContextMenuButton(context);
+        CmsToolbarContextButton contextMenuButton = new CmsToolbarContextButton(handler);
+        contextMenuButton.setMenuContext(AdeContext.editprovider);
+        contextMenuButton.addClickHandler(clickHandler);
+        m_toolbar.addRight(contextMenuButton);
+        handler.setContextMenuButton(contextMenuButton);
 
     }
 
