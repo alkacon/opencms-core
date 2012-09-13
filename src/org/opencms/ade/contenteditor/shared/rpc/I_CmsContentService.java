@@ -33,6 +33,7 @@ import com.alkacon.acacia.shared.rpc.I_ContentService;
 
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -57,6 +58,19 @@ public interface I_CmsContentService extends I_ContentService {
      * @throws Exception if something goes wrong processing the request
      */
     CmsContentDefinition loadDefinition(String entityId) throws Exception;
+
+    /**
+     * Loads the content definition for a given entity.<p>
+     * 
+     * @param entityId the entity id/URI
+     * @param newLink the new link
+     * @param modelFileId  the optional model file id
+     * 
+     * @return the content definition
+     * 
+     * @throws Exception if something goes wrong processing the request
+     */
+    CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId) throws Exception;
 
     /**
      * Loads new entity definition.<p>

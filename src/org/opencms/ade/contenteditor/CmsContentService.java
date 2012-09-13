@@ -37,6 +37,7 @@ import com.alkacon.vie.shared.I_Entity;
 import com.alkacon.vie.shared.I_EntityAttribute;
 import com.alkacon.vie.shared.I_Type;
 
+import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
@@ -44,10 +45,12 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -62,7 +65,9 @@ import org.opencms.widgets.I_CmsADEWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.editors.CmsEditor;
+import org.opencms.workplace.editors.CmsXmlContentEditor;
 import org.opencms.workplace.editors.Messages;
+import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
@@ -481,6 +486,21 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     */
+    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId) throws Exception {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
+            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
+            CmsResource resource = getCmsObject().readResource(structureId);
+            Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            return readContentDefnitionForNew(newLink, resource, modelFileId, contentLocale);
+        } else {
+            return loadDefinition(entityId);
+        }
+    }
+
+    /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String)
      */
     public CmsContentDefinition loadNewDefinition(String entityId) throws CmsRpcException {
@@ -507,24 +527,29 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public CmsContentDefinition prefetch() throws CmsRpcException {
 
         String paramResource = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
+        String paramNewLink = getRequest().getParameter(CmsXmlContentEditor.PARAM_NEWLINK);
+        String paramLocale = getRequest().getParameter(CmsEditor.PARAM_ELEMENTLANGUAGE);
+        Locale locale;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
             try {
                 CmsResource resource = getCmsObject().readResource(paramResource);
                 if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                    String paramLocale = getRequest().getParameter(CmsEditor.PARAM_ELEMENTLANGUAGE);
-                    Locale locale;
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
                         locale = CmsLocaleManager.getLocale(paramLocale);
                     } else {
-                        locale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), resource);
+                        locale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), paramResource);
                     }
 
-                    return readContentDefinition(resource, null, locale, false);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramNewLink)) {
+
+                        return readContentDefnitionForNew(paramNewLink, resource, null, locale);
+                    } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
+                        return readContentDefinition(resource, null, locale, false);
+                    }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 error(e);
             }
-
         }
         return null;
     }
@@ -947,6 +972,60 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             title,
             cms.getSitePath(resource),
             typeName);
+    }
+
+    /**
+     * Creates a new resource according to the new link, or returns the model file informations
+     * modelFileId is <code>null</code> but required.<p>
+     * 
+     * @param newLink the new link
+     * @param referenceResource the reference resource
+     * @param modelFileId the model file structure id
+     * @param locale the content locale
+     * 
+     * @return the content definition
+     * 
+     * @throws CmsException if creating the resource failed
+     */
+    private CmsContentDefinition readContentDefnitionForNew(
+        String newLink,
+        CmsResource referenceResource,
+        CmsUUID modelFileId,
+        Locale locale) throws CmsException {
+
+        String sitePath = getCmsObject().getSitePath(referenceResource);
+        String resourceType = OpenCms.getResourceManager().getResourceType(referenceResource.getTypeId()).getTypeName();
+        String modelFile = null;
+        if (modelFileId == null) {
+            List<CmsResource> modelResources = CmsNewResourceXmlContent.getModelFiles(
+                getCmsObject(),
+                CmsResource.getFolderPath(sitePath),
+                resourceType);
+            if (!modelResources.isEmpty()) {
+                List<CmsModelResourceInfo> modelInfos = CmsContainerpageService.generateModelResourceList(
+                    getCmsObject(),
+                    resourceType,
+                    modelResources,
+                    locale);
+                return new CmsContentDefinition(
+                    modelInfos,
+                    newLink,
+                    referenceResource.getStructureId(),
+                    locale.toString());
+            }
+        } else if (!modelFileId.isNullUUID()) {
+            modelFile = getCmsObject().getSitePath(getCmsObject().readResource(modelFileId));
+        }
+        String newFileName = A_CmsResourceCollector.createResourceForCollector(
+            getCmsObject(),
+            newLink,
+            locale,
+            sitePath,
+            modelFile);
+        CmsResource resource = getCmsObject().readResource(newFileName);
+        CmsContentDefinition contentDefinition = readContentDefinition(resource, null, locale, false);
+        contentDefinition.setDeleteOnCancel(true);
+        return contentDefinition;
     }
 
     /**

@@ -130,6 +130,47 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private CmsADESessionCache m_sessionCache;
 
     /**
+     * Generates the model resource data list.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceType the resource type name
+     * @param modelResources the model resource
+     * @param contentLocale the content locale
+     * 
+     * @return the model resources data
+     * 
+     * @throws CmsException if something goes wrong reading the resource information
+     */
+    public static List<CmsModelResourceInfo> generateModelResourceList(
+        CmsObject cms,
+        String resourceType,
+        List<CmsResource> modelResources,
+        Locale contentLocale) throws CmsException {
+
+        List<CmsModelResourceInfo> result = new ArrayList<CmsModelResourceInfo>();
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        CmsModelResourceInfo defaultInfo = new CmsModelResourceInfo(Messages.get().getBundle(wpLocale).key(
+            Messages.GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0), Messages.get().getBundle(wpLocale).key(
+            Messages.GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0), null);
+        defaultInfo.setResourceType(resourceType);
+        result.add(defaultInfo);
+        for (CmsResource model : modelResources) {
+            CmsGallerySearchResult searchInfo = CmsGallerySearch.searchById(cms, model.getStructureId(), contentLocale);
+            CmsModelResourceInfo modelInfo = new CmsModelResourceInfo(
+                searchInfo.getTitle(),
+                searchInfo.getDescription(),
+                null);
+            modelInfo.addAdditionalInfo(
+                Messages.get().getBundle(wpLocale).key(Messages.GUI_LABEL_PATH_0),
+                cms.getSitePath(model));
+            modelInfo.setResourceType(resourceType);
+            modelInfo.setStructureId(model.getStructureId());
+            result.add(modelInfo);
+        }
+        return result;
+    }
+
+    /**
      * Returns a new configured service instance.<p>
      * 
      * @param request the current request
@@ -196,6 +237,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 result.setCreatedElement(createNewElement(pageStructureId, clientId, resourceType, null, locale));
             } else {
                 result.setModelResources(generateModelResourceList(
+                    getCmsObject(),
                     resourceType,
                     modelResources,
                     CmsLocaleManager.getLocale(locale)));
@@ -703,48 +745,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } finally {
             cms.getRequestContext().setLocale(origLocale);
         }
-    }
-
-    /**
-     * Generates the model resource data list.<p>
-     * 
-     * @param resourceType the resource type name
-     * @param modelResources the model resource
-     * @param contentLocale the content locale
-     * 
-     * @return the model resources data
-     * 
-     * @throws CmsException if something goes wrong reading the resource information
-     */
-    private List<CmsModelResourceInfo> generateModelResourceList(
-        String resourceType,
-        List<CmsResource> modelResources,
-        Locale contentLocale) throws CmsException {
-
-        List<CmsModelResourceInfo> result = new ArrayList<CmsModelResourceInfo>();
-        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
-        CmsModelResourceInfo defaultInfo = new CmsModelResourceInfo(Messages.get().getBundle(wpLocale).key(
-            Messages.GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0), Messages.get().getBundle(wpLocale).key(
-            Messages.GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0), null);
-        defaultInfo.setResourceType(resourceType);
-        result.add(defaultInfo);
-        for (CmsResource model : modelResources) {
-            CmsGallerySearchResult searchInfo = CmsGallerySearch.searchById(
-                getCmsObject(),
-                model.getStructureId(),
-                contentLocale);
-            CmsModelResourceInfo modelInfo = new CmsModelResourceInfo(
-                searchInfo.getTitle(),
-                searchInfo.getDescription(),
-                null);
-            modelInfo.addAdditionalInfo(
-                Messages.get().getBundle(wpLocale).key(Messages.GUI_LABEL_PATH_0),
-                getCmsObject().getSitePath(model));
-            modelInfo.setResourceType(resourceType);
-            modelInfo.setStructureId(model.getStructureId());
-            result.add(modelInfo);
-        }
-        return result;
     }
 
     /**

@@ -41,6 +41,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,6 +174,52 @@ public class CmsEditorBase extends EditorBase {
                             callback.execute(result);
                         }
                     });
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Loads the content definition for the given entity and executes the callback on success.<p>
+     * 
+     * @param entityId the entity id
+     * @param newLink the new link
+     * @param modelFileId  the model file id
+     * @param callback the callback
+     */
+    public void loadDefinition(
+        final String entityId,
+        final String newLink,
+        final CmsUUID modelFileId,
+        final I_CmsSimpleCallback<CmsContentDefinition> callback) {
+
+        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getService().loadDefinition(entityId, newLink, modelFileId, this);
+            }
+
+            @Override
+            protected void onResponse(final CmsContentDefinition result) {
+
+                if (result.isModelInfo()) {
+                    callback.execute(result);
+                } else {
+                    registerContentDefinition(result);
+                    WidgetRegistry.getInstance().registerExternalWidgets(
+                        result.getExternalWidgetConfigurations(),
+                        new Command() {
+
+                            public void execute() {
+
+                                stop(false);
+                                callback.execute(result);
+                            }
+                        });
+                }
             }
         };
         action.execute();

@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.util.CmsUUID;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
 
 /**
@@ -119,6 +120,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 CmsContentEditor.getInstance().openFormEditor(
                     CmsCoreProvider.get().getLocale(),
                     CmsContainerpageController.getServerId(getCurrentElementId()),
+                    null,
+                    null,
                     onClose);
             }
         }
@@ -144,9 +147,17 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         if (m_handler.m_controller.getData().isUseClassicEditor()) {
             CmsContentEditorDialog.get().openEditDialog(editableData, isNew, this);
         } else {
+            String newLink = null;
+            if (isNew) {
+                newLink = editableData.getNewLink();
+                newLink = URL.decodeQueryString(newLink);
+                newLink = URL.decodeQueryString(newLink);
+            }
             CmsContentEditor.getInstance().openFormEditor(
                 CmsCoreProvider.get().getLocale(),
                 CmsContainerpageController.getServerId(getCurrentElementId()),
+                newLink,
+                null,
                 new Command() {
 
                     public void execute() {

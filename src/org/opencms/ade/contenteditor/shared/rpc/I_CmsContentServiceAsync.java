@@ -32,6 +32,7 @@ import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.acacia.shared.rpc.I_ContentServiceAsync;
 
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -49,6 +50,20 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * @param callback the asynchronous callback
      */
     void loadDefinition(String entityId, AsyncCallback<CmsContentDefinition> callback);
+
+    /**
+     * Loads the content definition for a given type creating a new resource according to the new link and model file parameter.<p>
+     * 
+     * @param entityId the entity id/URI
+     * @param newLink the new link
+     * @param modelFileId  the optional model file id
+     * @param callback the asynchronous callback
+     */
+    void loadDefinition(
+        String entityId,
+        String newLink,
+        CmsUUID modelFileId,
+        AsyncCallback<CmsContentDefinition> callback);
 
     /**
      * Loads new entity definition.<p>

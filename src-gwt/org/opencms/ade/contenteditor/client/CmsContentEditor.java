@@ -38,15 +38,18 @@ import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
+import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -127,6 +130,9 @@ public final class CmsContentEditor {
     /** The delete locale button. */
     private CmsPushButton m_deleteLocaleButton;
 
+    /** Flag indicating the resource needs to removed on cancel. */
+    private boolean m_deleteOnCancel;
+
     /** The id of the edited entity. */
     private String m_entityId;
 
@@ -205,20 +211,28 @@ public final class CmsContentEditor {
      * 
      * @param locale the content locale
      * @param elementId the element id
+     * @param newLink the new link
+     * @param modelFileId the model file id
      * @param onClose the command executed on dialog close
      */
-    public void openFormEditor(String locale, String elementId, Command onClose) {
+    public void openFormEditor(String locale, String elementId, String newLink, CmsUUID modelFileId, Command onClose) {
 
         m_onClose = onClose;
         CmsUUID structureId = new CmsUUID(elementId);
         if (CmsCoreProvider.get().lock(structureId)) {
             m_editor.loadDefinition(
                 CmsContentDefinition.uuidToEntityId(structureId, locale),
+                newLink,
+                modelFileId,
                 new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                     public void execute(CmsContentDefinition contentDefinition) {
 
-                        initEditor(contentDefinition, null, false);
+                        if (contentDefinition.isModelInfo()) {
+                            openModelSelectDialog(contentDefinition);
+                        } else {
+                            initEditor(contentDefinition, null, false);
+                        }
                     }
                 });
         } else {
@@ -268,12 +282,16 @@ public final class CmsContentEditor {
             return;
         }
         m_isStandAlone = true;
-        if (CmsCoreProvider.get().lock(CmsContentDefinition.entityIdToUuid(definition.getEntityId()))) {
-
-            m_editor.registerContentDefinition(definition);
-            initEditor(definition, null, false);
+        if (definition.isModelInfo()) {
+            openModelSelectDialog(definition);
         } else {
-            showLockedResourceMessage();
+            if (CmsCoreProvider.get().lock(CmsContentDefinition.entityIdToUuid(definition.getEntityId()))) {
+
+                m_editor.registerContentDefinition(definition);
+                initEditor(definition, null, false);
+            } else {
+                showLockedResourceMessage();
+            }
         }
     }
 
@@ -321,11 +339,11 @@ public final class CmsContentEditor {
      */
     void cancelEdit() {
 
+        unlockResource();
         if (m_onClose != null) {
             m_onClose.execute();
         }
         m_editor.destroyFrom(true);
-        unlockResource();
         clearEditor();
     }
 
@@ -399,6 +417,7 @@ public final class CmsContentEditor {
 
         m_locale = contentDefinition.getLocale();
         m_entityId = contentDefinition.getEntityId();
+        m_deleteOnCancel = contentDefinition.isDeleteOnCancel();
         initClosingHandler();
         setContentDefinition(contentDefinition);
         initToolbar();
@@ -440,6 +459,34 @@ public final class CmsContentEditor {
     }
 
     /**
+     * Opens the model file select dialog.<p>
+     * 
+     * @param definition the content definition
+     */
+    void openModelSelectDialog(final CmsContentDefinition definition) {
+
+        I_CmsModelSelectHandler handler = new I_CmsModelSelectHandler() {
+
+            public void onModelSelect(CmsUUID modelStructureId) {
+
+                if (modelStructureId == null) {
+                    modelStructureId = CmsUUID.getNullUUID();
+                }
+                openFormEditor(
+                    definition.getLocale(),
+                    definition.getReferenceResourceId().toString(),
+                    definition.getNewLink(),
+                    modelStructureId,
+                    m_onClose);
+            }
+        };
+        String title = "Select a content model";
+        String message = "Please select the model to create the initial content off the new resource.";
+        CmsModelSelectDialog dialog = new CmsModelSelectDialog(handler, definition.getModelInfos(), title, message);
+        dialog.center();
+    }
+
+    /**
      * Renders the form content.<p>
      */
     void renderFormContent() {
@@ -470,6 +517,7 @@ public final class CmsContentEditor {
 
             public void execute() {
 
+                setSaved();
                 setUnchanged();
             }
         });
@@ -484,6 +532,7 @@ public final class CmsContentEditor {
 
             public void execute() {
 
+                setSaved();
                 if (m_onClose != null) {
                     m_onClose.execute();
                 }
@@ -523,6 +572,14 @@ public final class CmsContentEditor {
                 setChanged();
             }
         });
+    }
+
+    /**
+     * Removes the delete on cancel flag for new resources.<p>
+     */
+    void setSaved() {
+
+        m_deleteOnCancel = false;
     }
 
     /**
@@ -577,7 +634,26 @@ public final class CmsContentEditor {
     void unlockResource() {
 
         if (m_entityId != null) {
-            CmsCoreProvider.get().unlock(CmsContentDefinition.entityIdToUuid(m_entityId));
+            final CmsUUID structureId = CmsContentDefinition.entityIdToUuid(m_entityId);
+            if (m_deleteOnCancel) {
+                CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                    @Override
+                    public void execute() {
+
+                        CmsCoreProvider.getVfsService().syncDeleteResource(structureId, this);
+                    }
+
+                    @Override
+                    protected void onResponse(Void result) {
+
+                        // nothing to do
+                    }
+                };
+                action.executeSync();
+            } else {
+                CmsCoreProvider.get().unlock(structureId);
+            }
         }
     }
 

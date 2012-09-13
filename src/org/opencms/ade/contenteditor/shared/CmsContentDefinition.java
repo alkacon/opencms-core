@@ -33,6 +33,7 @@ import com.alkacon.acacia.shared.Entity;
 import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.vie.shared.I_Type;
 
+import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -54,8 +55,20 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The content locales. */
     private List<String> m_contentLocales;
 
+    /** Flag indicating the resource needs to removed on cancel. */
+    private boolean m_deleteOnCancel;
+
     /** The external widget configurations. */
     private List<CmsExternalWidgetConfiguration> m_externalWidgetConfigurations;
+
+    /** The model file informations. */
+    private List<CmsModelResourceInfo> m_modelInfos;
+
+    /** The new link. */
+    private String m_newLink;
+
+    /** The reference resource structure id. */
+    private CmsUUID m_referenceResourceId;
 
     /** The resource type name. */
     private String m_resourceType;
@@ -101,6 +114,26 @@ public class CmsContentDefinition extends ContentDefinition {
         m_sitePath = sitePath;
         m_resourceType = resourceType;
         m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
+    }
+
+    /**
+     * Constructor for model file informations object.<p>
+     * 
+     * @param modelInfos the model file informations
+     * @param newLink the new link
+     * @param referenceId the reference resource structure id
+     * @param locale the locale
+     */
+    public CmsContentDefinition(
+        List<CmsModelResourceInfo> modelInfos,
+        String newLink,
+        CmsUUID referenceId,
+        String locale) {
+
+        super(null, null, null, null, locale);
+        m_modelInfos = modelInfos;
+        m_newLink = newLink;
+        m_referenceResourceId = referenceId;
     }
 
     /**
@@ -185,6 +218,36 @@ public class CmsContentDefinition extends ContentDefinition {
     }
 
     /**
+     * Returns the model file informations.<p>
+     * 
+     * @return the model file informations
+     */
+    public List<CmsModelResourceInfo> getModelInfos() {
+
+        return m_modelInfos;
+    }
+
+    /**
+     * Returns the new link.<p>
+     *
+     * @return the new link
+     */
+    public String getNewLink() {
+
+        return m_newLink;
+    }
+
+    /**
+     * Returns the reference resource structure id.<p>
+     * 
+     * @return the reference resource structure id
+     */
+    public CmsUUID getReferenceResourceId() {
+
+        return m_referenceResourceId;
+    }
+
+    /**
      * Returns the resource type.<p>
      *
      * @return the resource type
@@ -212,6 +275,36 @@ public class CmsContentDefinition extends ContentDefinition {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns if the resource needs to removed on cancel.<p>
+     *
+     * @return <code>true</code> if the resource needs to removed on cancel
+     */
+    public boolean isDeleteOnCancel() {
+
+        return m_deleteOnCancel;
+    }
+
+    /**
+     * Returns if the model file informations are present, in this case no additional data is contained.<p>
+     * 
+     * @return <code>true</code> if the definition contains the model file informations
+     */
+    public boolean isModelInfo() {
+
+        return m_modelInfos != null;
+    }
+
+    /**
+     * Sets if the resource needs to removed on cancel.<p>
+     *
+     * @param deleteOnCancel <code>true</code> if the resource needs to removed on cancel
+     */
+    public void setDeleteOnCancel(boolean deleteOnCancel) {
+
+        m_deleteOnCancel = deleteOnCancel;
     }
 
 }
