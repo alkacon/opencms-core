@@ -517,6 +517,9 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         //guava
         preload(MapMaker.class);
+
+        //xerces
+        preload(org.apache.xerces.impl.Constants.class);
     }
 
     /**
@@ -1016,7 +1019,8 @@ public class CmsUpdateBean extends CmsSetupBean {
                 if ("8.0.0".equals(version)
                     || "8.0.1".equals(version)
                     || "8.0.2".equals(version)
-                    || "8.0.3".equals(version)) {
+                    || "8.0.3".equals(version)
+                    || "8.0.4".equals(version)) {
                     result.add("org.opencms.ade.containerpage");
                     result.add("org.opencms.ade.sitemap");
                 }

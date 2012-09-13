@@ -32,7 +32,6 @@ import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.xml.A_CmsXmlWorkplace;
-import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.setup.xml.CmsXmlUpdateAction;
 import org.opencms.util.CmsStringUtil;
 
@@ -43,6 +42,7 @@ import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Element;
 
 /**
  * XML updater class for adding context menu rules specific to ADE.<p>
@@ -50,6 +50,274 @@ import org.dom4j.DocumentException;
  * @since 8.0.0
  */
 public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
+
+    /**
+     * Update action for adding GWT context menu entries.<p>
+     */
+    static class GwtContextMenuUpdateAction extends CmsXmlUpdateAction {
+
+        /** The bean containing the information about which context menu entries to add. */
+        private GwtEntryList m_entryList;
+
+        /**
+         * Creates a new update action instance.<p>
+         * 
+         * @param entryList the list of entries to update
+         */
+        public GwtContextMenuUpdateAction(GwtEntryList entryList) {
+
+            m_entryList = entryList;
+        }
+
+        /**
+         * @see org.opencms.setup.xml.CmsXmlUpdateAction#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
+         */
+        @Override
+        public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+            if (!forReal) {
+                return true;
+            } else {
+                String typeName = m_entryList.getTypeName();
+                Element typeElement = (Element)(doc.selectSingleNode(xpath));
+                if (typeElement == null) {
+                    System.err.println("Couldn't find explorer type " + typeName);
+                    return false;
+                }
+                Element menuElement = (Element)(typeElement.selectSingleNode("editoptions/contextmenu"));
+                if (menuElement == null) {
+                    System.err.println("Couldn't find context menu entry for explorer type " + typeName);
+                    return false;
+                }
+                for (GwtMenuEntry menuEntry : m_entryList.getEntries()) {
+                    Element entryElement = (Element)(menuElement.selectSingleNode("entry[@name='"
+                        + menuEntry.getName()
+                        + "']"));
+                    if (entryElement == null) {
+                        menuElement.addElement("entry").addAttribute("key", menuEntry.getKey()).addAttribute(
+                            "name",
+                            menuEntry.getName()).addAttribute("rule", menuEntry.getRule());
+                    } else {
+                        entryElement.attribute("rule").setValue(menuEntry.getRule());
+                    }
+                    String oldName = menuEntry.getName().replace(
+                        "org.opencms.gwt.client.ui.contextmenu",
+                        "org.opencms.gwt.client.ui");
+                    Element oldEntryElement = (Element)(menuElement.selectSingleNode("entry[@name='" + oldName + "']"));
+                    if (oldEntryElement != null) {
+                        oldEntryElement.detach();
+                    }
+                }
+                return true;
+            }
+
+        }
+
+        /**
+         * Gets the xpath for the update action.<p>
+         * 
+         * @return the xpath for the update action 
+         */
+        public String getXpath() {
+
+            String keyName = "gwtcontextmenuupdate_" + m_entryList.getTypeName();
+            // use a dummy xpath condition to make the xpaths unique 
+            return "/opencms/workplace/explorertypes/explorertype[@name='"
+                + m_entryList.getTypeName()
+                + "']['"
+                + keyName
+                + "'='"
+                + keyName
+                + "']";
+        }
+
+    }
+
+    /** 
+     * We use this enum to define the GWT context menu entries.<p>
+     */
+    enum GwtMenuEntry {
+        /** Availability. */
+        AVAILABILITY("GUI_EXPLORER_CONTEXT_AVAILABILITY_0",
+        "org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog", "containerpage"),
+
+        /** Categories. */
+        CATEGORIES("GUI_EXPLORER_CONTEXT_CATEGORIES_0", "org.opencms.gwt.client.ui.contextmenu.CmsCategories",
+        "containerpage"),
+
+        /** Delete. */
+        DELETE("GUI_EXPLORER_CONTEXT_DELETE_0", "org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource",
+        "containerpage"),
+
+        /** Resource info. */
+        INFO("GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0", "org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo",
+        "containerpage"),
+
+        /** Lock report. */
+        LOCKREPORT("GUI_EXPLORER_CONTEXT_LOCK_REPORT_0", "org.opencms.gwt.client.ui.contextmenu.CmsLockReport",
+        "containerpage"),
+
+        /** Logout. */
+        LOGOUT("GUI_EXPLORER_CONTEXT_LOGOUT_0", "org.opencms.gwt.client.ui.contextmenu.CmsLogout", "editprovider"),
+
+        /** Properties. */
+        PROPERTIES("GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0",
+        "org.opencms.gwt.client.ui.contextmenu.CmsEditProperties", "containerpage"),
+        /** Rename. */
+        RENAME("GUI_EXPLORER_CONTEXT_RENAME_0", "org.opencms.gwt.client.ui.contextmenu.CmsRename", "containerpage"),
+
+        /** Replace. */
+        REPLACE("GUI_EXPLORER_CONTEXT_REPLACE_0", "org.opencms.gwt.client.ui.contextmenu.CmsReplace", "containerpage"),
+
+        /** Show workplace. */
+        SHOWWORKPLACE("GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0",
+        "org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace", "editprovider"),
+
+        /** Undo changes. */
+        UNDOCHANGES("GUI_EXPLORER_CONTEXT_UNDOCHANGES_0", "org.opencms.gwt.client.ui.contextmenu.CmsRestore",
+        "ade-undochanges");
+
+        /** The message key. */
+        private String m_key;
+
+        /** The class name. */
+        private String m_name;
+
+        /** The rule to use. */
+        private String m_rule;
+
+        /** Enum constructor.
+         * 
+         * @param key the message key
+         * @param name the class name 
+         * @param rule the menu rule 
+         */
+        private GwtMenuEntry(String key, String name, String rule) {
+
+            m_key = key;
+            m_name = name;
+            m_rule = rule;
+        }
+
+        /**
+         * Gets the message key.
+         *
+         * @return the message key
+         */
+        public String getKey() {
+
+            return m_key;
+        }
+
+        /**
+         * Gets the class name.
+         *
+         * @return the class name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+
+        /**
+         * Gets the menu rule.
+         *
+         * @return the menu rule
+         */
+        public String getRule() {
+
+            return m_rule;
+        }
+    }
+
+    /**
+     * Data holder class for the menu GWT menu entries defined for a specific explorer type.
+     */
+    private static class GwtEntryList {
+
+        /** List of menu entries to up. */
+        private GwtMenuEntry[] m_entries;
+
+        /** The class name. */
+        private String m_typeName;
+
+        /**
+         * Creates a new entry list.<p>
+         * 
+         * @param typeName the explorer type name 
+         * @param entries the entries to add 
+         */
+        public GwtEntryList(String typeName, GwtMenuEntry... entries) {
+
+            m_typeName = typeName;
+            m_entries = entries;
+        }
+
+        /**
+         * Gets the entries.
+         *
+         * @return the entries
+         */
+        public GwtMenuEntry[] getEntries() {
+
+            return m_entries;
+        }
+
+        /**
+         * Gets the explorer type name.
+         *
+         * @return the explorer type name
+         */
+        public String getTypeName() {
+
+            return m_typeName;
+        }
+    }
+
+    /**
+     * Data for updating the GWT context menu entries.
+     */
+    private static GwtEntryList[] entryLists = {
+        new GwtEntryList(
+            "plain",
+            GwtMenuEntry.LOCKREPORT,
+            GwtMenuEntry.RENAME,
+            GwtMenuEntry.DELETE,
+            GwtMenuEntry.REPLACE,
+            GwtMenuEntry.AVAILABILITY,
+            GwtMenuEntry.PROPERTIES,
+            GwtMenuEntry.CATEGORIES),
+        new GwtEntryList(
+            "binary",
+            GwtMenuEntry.LOCKREPORT,
+            GwtMenuEntry.RENAME,
+            GwtMenuEntry.DELETE,
+            GwtMenuEntry.REPLACE,
+            GwtMenuEntry.AVAILABILITY,
+            GwtMenuEntry.PROPERTIES,
+            GwtMenuEntry.INFO,
+            GwtMenuEntry.CATEGORIES),
+        new GwtEntryList(
+            "image",
+            GwtMenuEntry.LOCKREPORT,
+            GwtMenuEntry.RENAME,
+            GwtMenuEntry.DELETE,
+            GwtMenuEntry.REPLACE,
+            GwtMenuEntry.AVAILABILITY,
+            GwtMenuEntry.PROPERTIES,
+            GwtMenuEntry.INFO,
+            GwtMenuEntry.CATEGORIES),
+        new GwtEntryList(
+            "xmlcontent",
+            GwtMenuEntry.LOCKREPORT,
+            GwtMenuEntry.DELETE,
+            GwtMenuEntry.UNDOCHANGES,
+            GwtMenuEntry.AVAILABILITY,
+            GwtMenuEntry.PROPERTIES,
+            GwtMenuEntry.INFO,
+            GwtMenuEntry.CATEGORIES,
+            GwtMenuEntry.SHOWWORKPLACE,
+            GwtMenuEntry.LOGOUT)};
 
     /**
      * The map of update actions to be executed.<p>
@@ -139,82 +407,11 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
                 }
             };
             m_updateActions.put(pointerAdvanced, updatePointerTouch);
-
-            final String xmlcontentContext = xpathForType("xmlcontent")
-                + "/"
-                + CmsWorkplaceConfiguration.N_EDITOPTIONS
-                + "/"
-                + CmsWorkplaceConfiguration.N_CONTEXTMENU;
-            m_updateActions.put(xmlcontentContext, new CmsXmlUpdateAction() {
-
-                @Override
-                public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
-
-                    // ------------------------- AVAILABILITY ----------------------------------------
-                    String availabilityEntry = xpath
-                        + "/"
-                        + CmsWorkplaceConfiguration.N_ENTRY
-                        + xpathAttr(I_CmsXmlConfiguration.A_KEY, "GUI_EXPLORER_CONTEXT_AVAILABILITY_0");
-                    CmsSetupXmlHelper.setValue(
-                        doc,
-                        availabilityEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
-                        "org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog");
-                    CmsSetupXmlHelper.setValue(
-                        doc,
-                        availabilityEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
-                        "containerpage");
-
-                    //--------------------------- WORKPLACE ----------------------------------------------
-                    String workplaceEntry = xpath
-                        + "/"
-                        + CmsWorkplaceConfiguration.N_ENTRY
-                        + xpathAttr(I_CmsXmlConfiguration.A_KEY, "GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0");
-                    CmsSetupXmlHelper.setValue(
-                        doc,
-                        workplaceEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
-                        "org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
-
-                    );
-                    CmsSetupXmlHelper.setValue(
-                        doc,
-                        workplaceEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
-                        "containerpage");
-
-                    //----------------------------- LOGOUT -----------------------------------------------
-                    String logoutEntry = xpath
-                        + "/"
-                        + CmsWorkplaceConfiguration.N_ENTRY
-                        + xpathAttr(I_CmsXmlConfiguration.A_KEY, "GUI_EXPLORER_CONTEXT_LOGOUT_0");
-                    CmsSetupXmlHelper.setValue(
-                        doc,
-                        logoutEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
-                        "org.opencms.gwt.client.ui.contextmenu.CmsLogout"
-
-                    );
-                    CmsSetupXmlHelper.setValue(
-                        doc,
-                        logoutEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
-                        "containerpage");
-
-                    // ------------------------------- PROPERTIES ---------------------------------------
-                    String propertyEntry = xpath
-                        + "/"
-                        + CmsWorkplaceConfiguration.N_ENTRY
-                        + xpathAttr(I_CmsXmlConfiguration.A_KEY, "GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0");
-                    CmsSetupXmlHelper.setValue(
-                        doc,
-                        propertyEntry + "/@" + I_CmsXmlConfiguration.A_NAME,
-                        "org.opencms.gwt.client.ui.contextmenu.CmsEditProperties");
-                    CmsSetupXmlHelper.setValue(
-                        doc,
-                        propertyEntry + "/@" + CmsWorkplaceConfiguration.A_RULE,
-                        "containerpage");
-
-                    return true;
-
-                }
-            });
-
+            for (GwtEntryList entryList : entryLists) {
+                GwtContextMenuUpdateAction action = new GwtContextMenuUpdateAction(entryList);
+                String xpath = action.getXpath();
+                m_updateActions.put(xpath, action);
+            }
         }
         return new ArrayList<String>(m_updateActions.keySet());
 

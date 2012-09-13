@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
 
 /**
  * XML updater for adding icon rules to opencms-workplace.xml.<p>
@@ -49,6 +51,9 @@ import org.dom4j.Document;
  * @since 8.0.0
  */
 public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
+
+    /** The map of update actions. */
+    private Map<String, CmsXmlUpdateAction> m_actions;
 
     /** The icon data to update.*/
     private String[][] m_iconValues = {
@@ -77,9 +82,6 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
 
     /** The page data to update. */
     private String[][] m_pages = { {"xmlpage", "otheroptions"}, {"link", "otheroptions"}};
-
-    /** The map of update actions. */
-    private Map<String, CmsXmlUpdateAction> m_actions;
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -183,6 +185,84 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
                 }
             });
 
+            m_actions.put(xpathForType("classicgallery"), new CmsXmlUpdateAction() {
+
+                @Override
+                public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                    Element typeElement = (Element)(doc.selectSingleNode(xpath));
+                    if (typeElement != null) {
+                        return false;
+                    }
+                    Element parent = (Element)(doc.selectSingleNode("/opencms/workplace/explorertypes"));
+
+                    String xml = "      <explorertype name=\"classicgallery\" key=\"fileicon.downloadgallery\" icon=\"downloadgallery.gif\" bigicon=\"downloadgallery_big.png\">\n"
+                        + "        <newresource page=\"none\"  uri=\"newresource.jsp?newresourcetype=downloadgallery\"  order=\"20\" />\n"
+                        + "        <editoptions>\n"
+                        + "          <defaultproperties enabled=\"true\" shownavigation=\"true\">\n"
+                        + "            <defaultproperty name=\"Title\"/>\n"
+                        + "          </defaultproperties>\n"
+                        + "          <contextmenu>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_LOCK_0\" uri=\"commons/lock.jsp\" rule=\"lock\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0\" uri=\"commons/lockchange.jsp\" rule=\"changelock\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_UNLOCK_0\" uri=\"commons/unlock.jsp\" rule=\"unlock\"/>\n"
+                        + "            <separator/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0\" uri=\"commons/copytoproject.jsp\" rule=\"copytoproject\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_PUBLISH_0\" uri=\"commons/publishresource.jsp\" rule=\"directpublish\"/>\n"
+                        + "            <separator/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_OPENGALLERY_0\" uri=\"commons/opengallery.jsp\" rule=\"nondeleted\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0\" uri=\"commons/property_multifile.jsp\" rule=\"nondeleted\"/>     \n"
+                        + "            <separator/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_COPY_0\" uri=\"commons/copy.jsp\" rule=\"standard\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_MOVE_0\" uri=\"commons/move.jsp\" rule=\"standard\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_DELETE_0\" uri=\"commons/delete.jsp\" rule=\"standard\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_UNDOCHANGES_0\" uri=\"commons/undochanges.jsp\" rule=\"undochanges\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_UNDELETE_0\" uri=\"commons/undelete.jsp\" rule=\"undelete\"/>\n"
+                        + "            <separator/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_RELATIONS_0\" rule=\"substandard\">\n"
+                        + "                <entry key=\"GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0\" uri=\"views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget\" rule=\"standard\"/>\n"
+                        + "                <entry key=\"GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0\" uri=\"views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource\" rule=\"standard\"/>\n"
+                        + "                <separator/>\n"
+                        + "                <entry key=\"GUI_EXPLORER_CONTEXT_CATEGORIES_0\" uri=\"views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories\" rule=\"standard\"/>\n"
+                        + "            </entry>\n"
+                        + "            <separator/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_ACCESS_0\" uri=\"commons/chacc.jsp\" rule=\"permissions\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_CHNAV_0\" uri=\"commons/chnav.jsp\" rule=\"standard\"/>\n"
+                        + "            <separator/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_ADVANCED_0\" rule=\"substandard\">\n"
+                        + "                <entry key=\"GUI_EXPLORER_CONTEXT_TOUCH_0\" uri=\"commons/touch.jsp\" rule=\"standard\"/>\n"
+                        + "                <entry key=\"GUI_EXPLORER_CONTEXT_AVAILABILITY_0\" uri=\"commons/availability.jsp\" rule=\"standard\"/>\n"
+                        + "                <separator/>\n"
+                        + "                <entry key=\"GUI_EXPLORER_CONTEXT_SECURE_0\" uri=\"commons/secure.jsp\" rule=\"standard\"/>\n"
+                        + "                <entry key=\"GUI_EXPLORER_CONTEXT_TYPE_0\" uri=\"commons/chtype.jsp\" rule=\"standard\"/>\n"
+                        + "                <separator/>\n"
+                        + "                <entry key=\"GUI_EXPLORER_CONTEXT_SHOW_DELETED_0\" uri=\"commons/show_deleted.jsp\" rule=\"standard\"/>\n"
+                        + "            </entry>\n"
+                        + "            <separator/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_HISTORY_0\" uri=\"views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory\" rule=\"nondeleted\"/>\n"
+                        + "            <entry key=\"GUI_EXPLORER_CONTEXT_PROPERTY_0\" uri=\"commons/property.jsp\" rule=\"nondeleted\"/>\n"
+                        + "          </contextmenu>\n"
+                        + "        </editoptions>\n"
+                        + "      </explorertype>";
+                    try {
+                        Element elementToInsert = createElementFromXml(xml);
+                        parent.elements().add(0, elementToInsert);
+                        if (forReal) {
+                            for (String referencingType : new String[] {"tablegallery", "htmlgallery", "linkgallery"}) {
+                                Element referencingTypeElement = (Element)(doc.selectSingleNode(xpathForType(referencingType)));
+                                if (referencingTypeElement != null) {
+                                    referencingTypeElement.attribute("reference").setValue("classicgallery");
+                                }
+                            }
+                        }
+                        return true;
+                    } catch (DocumentException e) {
+                        System.err.println("Couldn't create classicgallery explorer type!");
+                        return false;
+                    }
+                }
+            });
+
             // order updates
             for (int i = 0; i < m_orders.length; i++) {
                 String type = m_orders[i][0];
@@ -218,7 +298,7 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
      * 
      * @return the xpath for that explorer type 
      */
-    private String xpathForType(String explorerType) {
+    String xpathForType(String explorerType) {
 
         return "/"
             + CmsConfigurationManager.N_ROOT

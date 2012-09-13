@@ -604,7 +604,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     "Offline",
                     "all",
                     "gallery_fields",
-                    new String[] {"gallery_source", "gallery_modules_source"});
+                    new String[] {"gallery_source_all"});
                 return true;
             }
         };
@@ -742,7 +742,15 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 mapping.setType("property");
                 mapping.setParam("Description");
                 field.addMapping(mapping);
+
+                // <mapping type="attribute">name</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("attribute");
+                mapping.setParam("name");
+                field.addMapping(mapping);
+
                 fieldConf.addField(field);
+
                 // <field name="res_dateExpired" store="true" index="untokenized">
                 field = new CmsSearchField();
                 field.setName("res_dateExpired");
@@ -884,6 +892,32 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         //=============================================================================================================
         //
 
+        m_actions.put(
+            "/opencms/search/fieldconfigurations/fieldconfiguration[name='gallery_fields']/field[@name='search_exclude']",
+            new CmsXmlUpdateAction() {
+
+                @Override
+                public boolean executeUpdate(Document document, String xpath, boolean forReal) {
+
+                    if (document.selectSingleNode(xpath) == null) {
+                        Element galleryFieldsElement = (Element)(document.selectSingleNode("/opencms/search/fieldconfigurations/fieldconfiguration[name='gallery_fields']/fields"));
+                        Element fieldElement = galleryFieldsElement.addElement("field").addAttribute(
+                            "name",
+                            "search_exclude").addAttribute("store", "true").addAttribute("index", "true");
+                        fieldElement.addElement("mapping").addAttribute("type", "property-search").addText(
+                            "search.exclude");
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+            });
+
+        //
+        //=============================================================================================================
+        //
+
         m_actions.put("/opencms/search/indexsources", new CmsIndexSourceTypeUpdateAction());
 
         // use dummy check [1=1] to make the xpaths unique 
@@ -891,6 +925,54 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         m_actions.put(
             buildXpathForIndexedDocumentType("source1", "containerpage"),
             createIndexedTypeAction("containerpage"));
+
+        m_actions.put("/opencms/search/indexsource[2=2]", new CmsXmlUpdateAction() {
+
+            /**
+             * @see org.opencms.setup.xml.CmsXmlUpdateAction#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
+             */
+            @Override
+            public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                Element node = (Element)doc.selectSingleNode("/opencms/search/indexsources");
+                if (!node.selectNodes("indexsource[name='gallery_source_all']").isEmpty()) {
+                    return false;
+                }
+                String xml = "      <indexsource>\n"
+                    + "        <name>gallery_source_all</name>\n"
+                    + "        <indexer class=\"org.opencms.search.CmsVfsIndexer\" />\n"
+                    + "        <resources>\n"
+                    + "          <resource>/</resource>\n"
+                    + "        </resources>\n"
+                    + "        <documenttypes-indexed>\n"
+                    + "          <name>generic</name>\n"
+                    + "          <name>xmlpage-galleries</name>\n"
+                    + "          <name>xmlcontent-galleries</name>\n"
+                    + "          <name>jsp</name>\n"
+                    + "          <name>text</name>\n"
+                    + "          <name>pdf</name>\n"
+                    + "          <name>rtf</name>\n"
+                    + "          <name>html</name>\n"
+                    + "          <name>image</name>\n"
+                    + "          <name>generic</name>\n"
+                    + "          <name>msoffice-ole2</name>\n"
+                    + "          <name>msoffice-ooxml</name>\n"
+                    + "          <name>openoffice</name>\n"
+                    + "          <name>containerpage</name>\n"
+                    + "        </documenttypes-indexed>\n"
+                    + "      </indexsource>\n"
+                    + "";
+                try {
+                    Element sourceElem = createElementFromXml(xml);
+                    node.add(sourceElem);
+                    return true;
+                } catch (DocumentException e) {
+                    System.err.println("Failed to add gallery_modules_source");
+                    return false;
+                }
+            }
+
+        });
 
         //=============================================================================================================
 
