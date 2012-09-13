@@ -68,6 +68,15 @@ public interface I_CmsVfsService extends RemoteService {
     /**
      * Deletes a resource from the VFS.<p>
      * 
+     * @param structureId the structure id of the resource to delete
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void syncDeleteResource(CmsUUID structureId) throws CmsRpcException;
+
+    /**
+     * Deletes a resource from the VFS.<p>
+     * 
      * @param sitePath the site path of the resource to delete
      * 
      * @throws CmsRpcException if something goes wrong 

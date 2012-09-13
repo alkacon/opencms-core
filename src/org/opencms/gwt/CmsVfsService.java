@@ -898,6 +898,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#syncDeleteResource(org.opencms.util.CmsUUID)
+     */
+    public void syncDeleteResource(CmsUUID structureId) throws CmsRpcException {
+
+        deleteResource(structureId);
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#undoChanges(org.opencms.util.CmsUUID, boolean)
      */
     public void undoChanges(CmsUUID structureId, boolean undoMove) throws CmsRpcException {

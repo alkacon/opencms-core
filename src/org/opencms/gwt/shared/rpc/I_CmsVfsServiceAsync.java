@@ -67,6 +67,15 @@ public interface I_CmsVfsServiceAsync {
     /**
      * Deletes a resource from the VFS.<p>
      * 
+     * @param structureId the structure id of the resource to delete
+     * @param callback the callback
+     */
+    @SynchronizedRpcRequest
+    void syncDeleteResource(CmsUUID structureId, AsyncCallback<Void> callback);
+
+    /**
+     * Deletes a resource from the VFS.<p>
+     * 
      * @param sitePath the site path of the resource to delete
      * @param callback the callback
      */
