@@ -437,6 +437,7 @@ public final class CmsContentEditor {
     void initFormPanel() {
 
         m_openFormButton.setVisible(false);
+        m_saveButton.setVisible(true);
         m_hideHelpBubblesButton.setVisible(true);
         m_basePanel = new FlowPanel();
         m_basePanel.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().basePanel());
@@ -828,6 +829,7 @@ public final class CmsContentEditor {
             }
         });
         m_saveButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
+        m_saveButton.setVisible(false);
         m_toolbar.addLeft(m_saveButton);
 
         m_openFormButton = createButton(
