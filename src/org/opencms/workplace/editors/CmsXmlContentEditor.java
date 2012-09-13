@@ -33,7 +33,6 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
-import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -475,63 +474,15 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     public void actionNew() throws JspException {
 
-        // get the collector used to create the new content
-        int pos = m_paramNewLink.indexOf('|');
-        String collectorName = m_paramNewLink.substring(0, pos);
-        String collectorParams = m_paramNewLink.substring(pos + 1);
-
-        String param;
-        String templateFileName;
-
-        pos = collectorParams.indexOf(A_CmsResourceCollector.SEPARATOR_TEMPLATEFILE);
-        if (pos != -1) {
-            // found an explicit template file name to use for the new resource, use it
-            param = collectorParams.substring(0, pos);
-            templateFileName = collectorParams.substring(pos + A_CmsResourceCollector.SEPARATOR_TEMPLATEFILE.length());
-        } else {
-            // no template file name was specified, use given resource name as template file
-            param = collectorParams;
-            templateFileName = getParamResource();
-        }
-
-        // get the collector used for calculating the next file name
-        I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
         String newFileName = "";
         try {
 
-            // one resource serves as a "template" for the new resource
-            CmsFile templateFile = getCms().readFile(templateFileName, CmsResourceFilter.IGNORE_EXPIRATION);
-
-            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCloneCms(), templateFile);
-
-            // set the required content locale
-            Locale locale = getElementLocale();
-
-            // now create a new XML content based on the templates content definition            
-            CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
+            newFileName = A_CmsResourceCollector.createResourceForCollector(
                 getCms(),
-                locale,
-                template.getEncoding(),
-                template.getContentDefinition());
-
-            // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
-            newFileName = collector.getCreateLink(getCms(), collectorName, param);
-
-            boolean useModelFile = false;
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamModelFile())) {
-                getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, getParamModelFile());
-                useModelFile = true;
-            }
-            // now create the resource, fill it with the marshalled XML and write it back to the VFS
-            getCms().createResource(newFileName, templateFile.getTypeId());
-            // re-read the created resource
-            CmsFile newFile = getCms().readFile(newFileName, CmsResourceFilter.ALL);
-            if (!useModelFile) {
-                newFile.setContents(newContent.marshal());
-
-                // write the file with the updated content
-                getCloneCms().writeFile(newFile);
-            }
+                m_paramNewLink,
+                getElementLocale(),
+                getParamResource(),
+                getParamModelFile());
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
             setParamAction(null);
@@ -543,8 +494,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
             // set the member variables for the content 
             m_file = getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL);
-            if (!useModelFile) {
-                m_content = newContent;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamModelFile())) {
+                m_content = CmsXmlContentFactory.unmarshal(
+                    getCms(),
+                    getCms().readFile(newFileName, CmsResourceFilter.ALL));
             } else {
                 m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
             }
