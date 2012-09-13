@@ -540,7 +540,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         Map<String, ORDER> orders = new LinkedHashMap<String, ORDER>();
         orders.put("Title_prop", ORDER.asc);
         orders.put("score", ORDER.asc);
-        q.setSortFields(orders);
+        q.addSortFieldOrders(orders);
         results = index.search(getCmsObject(), q);
         System.out.println("Result sorted by title:");
         AllSolrTests.printResults(getCmsObject(), results, false);
@@ -560,7 +560,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         q.setRows(new Integer(100));
         orders = new LinkedHashMap<String, ORDER>();
         orders.put("lastmodified", ORDER.desc);
-        q.setSortFields(orders);
+        q.addSortFieldOrders(orders);
         results = index.search(getCmsObject(), q);
         System.out.println("Result sorted by date last modified:");
         AllSolrTests.printResults(getCmsObject(), results, false);

@@ -361,7 +361,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * 
      * @param cms the current OpenCms context
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
-     * @param cmsQuery the OpenCms Solr query
+     * @param query the OpenCms Solr query
      * 
      * @return the list of found documents
      * 
@@ -372,7 +372,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * @see org.opencms.search.I_CmsSearchDocument
      * @see org.opencms.search.solr.CmsSolrQuery
      */
-    public synchronized CmsSolrResultList search(CmsObject cms, final CmsSolrQuery cmsQuery, boolean ignoreMaxRows)
+    public synchronized CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
 
         LOG.debug("### START SRARCH (time in ms) ###");
@@ -380,9 +380,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         long startTime = System.currentTimeMillis();
 
         // remember the initial query
-        SolrQuery query = cmsQuery.toQuery();
-        SolrQuery initQuery = new SolrQuery();
-        initQuery = query;
+        SolrQuery initQuery = query.clone();
 
         query.setHighlight(false);
 
@@ -401,7 +399,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             SolrDocumentList solrDocumentList = new SolrDocumentList();
 
             // Initialize rows, offset, end and the current page.
-            int rows = query.getRows() != null ? query.getRows().intValue() : CmsSolrQuery.DEFAULT_ROWS;
+            int rows = query.getRows() != null ? query.getRows().intValue() : CmsSolrQuery.DEFAULT_ROWS.intValue();
             if (!ignoreMaxRows && (rows > ROWS_MAX)) {
                 rows = ROWS_MAX;
             }

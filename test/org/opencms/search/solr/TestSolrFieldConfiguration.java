@@ -157,7 +157,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
             String absoluteFileName = cms.getRequestContext().addSiteRoot(folderName + filename.getKey());
-            SolrQuery squery = new CmsSolrQuery().toQuery();
+            SolrQuery squery = new CmsSolrQuery();
             squery.addFilterQuery("path:" + absoluteFileName);
             results = index.search(cms, squery);
         }
@@ -209,7 +209,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
             String absoluteFileName = cms.getRequestContext().addSiteRoot(folderName + filename.getKey());
-            SolrQuery squery = new CmsSolrQuery().toQuery();
+            SolrQuery squery = new CmsSolrQuery();
             squery.addFilterQuery("path:" + absoluteFileName);
             results = index.search(cms, squery);
             assertEquals(1, results.size());
@@ -220,7 +220,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
             assertTrue(filename.getValue().containsAll(fieldLocales));
         }
 
-        SolrQuery squery = new CmsSolrQuery().toQuery();
+        SolrQuery squery = new CmsSolrQuery();
         squery.addFilterQuery("path:" + "/sites/default/xmlcontent/article_0004.html");
         results = index.search(cms, squery);
         assertEquals(1, results.size());
