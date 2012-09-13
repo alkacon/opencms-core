@@ -4,3 +4,4 @@
 /test/data/WEB-INF/index
 /test/data/WEB-INF/config
 Thumbs.db
+/xbuild.properties
