@@ -501,8 +501,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_move,
             m_edit,
             m_remove,
-            m_properties,
             m_info,
+            m_properties,
             m_addToFavorites);
         controller.init(containerpageHandler, dndHandler, contentEditorHandler, containerpageUtil);
 
@@ -579,18 +579,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-      $wnd.__openStacktraceDialog = function(event) {
-         event = (event) ? event : ((window.event) ? window.event : "");
-         var elem = (event.target) ? event.target : event.srcElement;
-         if (elem != null) {
-            var children = elem.getElementsByTagName("span");
-            if (children.length > 0) {
-               var title = children[0].getAttribute("title");
-               var content = children[0].innerHTML;
-               @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+        $wnd.__openStacktraceDialog = function(event) {
+            event = (event) ? event : ((window.event) ? window.event : "");
+            var elem = (event.target) ? event.target : event.srcElement;
+            if (elem != null) {
+                var children = elem.getElementsByTagName("span");
+                if (children.length > 0) {
+                    var title = children[0].getAttribute("title");
+                    var content = children[0].innerHTML;
+                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                }
             }
-         }
-      }
+        }
     }-*/;
 
 }
