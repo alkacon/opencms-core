@@ -224,7 +224,7 @@ public class CmsPublishGroupPanel extends Composite {
             previewButton.disable(noPreviewReason);
         }
         fillButtonSlot(itemWidget, SLOT_PREVIEW, previewButton);
-
+        itemWidget.setUnselectable();
         itemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resourceBean.getResourceType(), false));
         return itemWidget;
     }
