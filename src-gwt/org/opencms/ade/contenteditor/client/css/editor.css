@@ -11,7 +11,7 @@
 @url editCursorIcoUrl editCursorIco;
 
 .inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
-	cursor: editCursorGifUrl, editCursorIcoUrl, crosshair;
+	cursor: editCursorIcoUrl, editCursorGifUrl, crosshair;
 }
 
 body.standAloneEditor div.basePanel{
