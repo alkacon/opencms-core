@@ -53,6 +53,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class CmsCategoryDialog extends CmsPopup {
 
+    /** Default dialog width. */
+    private static final int DEFAULT_WIDTH = 600;
     /** The category tree widget. */
     CmsCategoryTree m_categoryTree;
 
@@ -90,7 +92,7 @@ public class CmsCategoryDialog extends CmsPopup {
         m_onSave = onSave;
         setGlassEnabled(true);
         catchNotifications();
-        setWidth(600);
+        setWidth(DEFAULT_WIDTH);
         addDialogClose(null);
         m_main = new FlowPanel();
         setMainContent(m_main);
@@ -179,6 +181,7 @@ public class CmsCategoryDialog extends CmsPopup {
                 @Override
                 public void execute() {
 
+                    setHeight(450);
                     start(0, true);
                     CmsCoreProvider.getService().getCategoryInfo(m_structureId, this);
                 }
@@ -188,6 +191,8 @@ public class CmsCategoryDialog extends CmsPopup {
 
                     stop(false);
                     initialize(result);
+                    setHeight(-1);
+                    setWidth(DEFAULT_WIDTH);
                 }
             };
             action.execute();
