@@ -385,7 +385,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                     while ((target != null) && (target != getElement())) {
                         if ("true".equals(target.getAttribute("contentEditable"))) {
                             controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this, true);
-                            removeInlineEditor();
+                            removeEditorHandler();
                             break;
                         } else {
                             target = target.getParentElement();
@@ -434,18 +434,6 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     }
 
     /**
-     * Removes the editor click handler.<p>
-     */
-    public void removeInlineEditor() {
-
-        if (m_editorClickHandlerRegistration != null) {
-            CmsEditorBase.setEditable(getElement(), false);
-            m_editorClickHandlerRegistration.removeHandler();
-            m_editorClickHandlerRegistration = null;
-        }
-    }
-
-    /**
      * @see com.google.gwt.user.client.ui.Widget#removeFromParent()
      */
     @Override
@@ -464,6 +452,15 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             m_highlighting.removeFromParent();
             m_highlighting = null;
         }
+    }
+
+    /**
+     * Removes the inline editor.<p>
+     */
+    public void removeInlineEditor() {
+
+        CmsEditorBase.setEditable(getElement(), false);
+        removeEditorHandler();
     }
 
     /**
@@ -684,6 +681,17 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
             }
         }
         resetOptionbar();
+    }
+
+    /**
+     * Removes the inline editor handler.<p>
+     */
+    protected void removeEditorHandler() {
+
+        if (m_editorClickHandlerRegistration != null) {
+            m_editorClickHandlerRegistration.removeHandler();
+            m_editorClickHandlerRegistration = null;
+        }
     }
 
     /**
