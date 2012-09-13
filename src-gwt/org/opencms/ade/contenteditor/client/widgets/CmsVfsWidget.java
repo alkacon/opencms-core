@@ -63,11 +63,7 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config the configuration string given from OpenCms XSD
      * @param type the mode in witch the widget should be started
-<<<<<<< OURS
      * @param icon the icon image CSS class
-=======
-     * @param icon the icon of the widget 
->>>>>>> THEIRS
      */
     public CmsVfsWidget(String config, String type, String icon) {
 
@@ -181,14 +177,4 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
         }
 
     }
-
-    /**
-     * Parse the given configuration string.<p>
-     * @param config the given configuration string
-     * */
-    private void parseconfig(String config) {
-
-        //TODO next time.
-    }
-
 }

@@ -370,7 +370,7 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
 
                 }
                 //copy value and option to the Map.
-                values.put(options[i], value[i]);
+                values.put(value[i], options[i]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
