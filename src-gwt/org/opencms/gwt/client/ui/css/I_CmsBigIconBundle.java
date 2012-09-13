@@ -303,7 +303,7 @@ public interface I_CmsBigIconBundle extends ClientBundle {
      * Access method.<p>
      * @return an image resource
      */
-    @Source("images/icons/big/saveExitBigIconActive.png")
+    @Source("images/icons/big/saveExitBigIconDeactivated.png")
     ImageResource saveExitBigIconDeactivated();
 
     /** 
