@@ -14,20 +14,21 @@
 			float: none;
 			display: table-cell;
 		}
-		table.main td.message{
+		table.main div.message{
 			vertical-align: middle;
 			padding: 15px 15px 15px 0px;
 			overflow: auto;
 			position: relative;
+			max-height: 150px;
 		}
-		table.main td.message > p:first-child {
+		table.main div.message > p:first-child {
 			margin-top: 0px;
 		}
-		table.main td.message > p {
+		table.main div.message > p {
 			margin-top: 5px;
 		}
 	</ui:style>
 	<table class="{style.main} {resources.generalCss.cornerAll}">
-		<tr><td ui:field="m_icon" class="{style.icon}"></td><td ui:field="m_message" class="{style.message}"></td></tr>
+		<tr><td ui:field="m_icon" class="{style.icon}"></td><td><div ui:field="m_message" class="{style.message}"></div></td></tr>
 	</table>
 </ui:UiBinder>

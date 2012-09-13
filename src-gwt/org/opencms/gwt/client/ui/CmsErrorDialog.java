@@ -70,6 +70,7 @@ public class CmsErrorDialog extends CmsPopup {
         setModal(true);
         setGlassEnabled(true);
         setWidth(512);
+        addDialogClose(null);
         m_closeButton = new CmsPushButton();
         m_closeButton.setText(Messages.get().key(Messages.GUI_OK_0));
         m_closeButton.setUseMinWidth(true);
