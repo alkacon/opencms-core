@@ -73,7 +73,7 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
      * A constant for all handler names that are implemented by this class.<p>
      * This handler is reachable under "/opencms/opencms/handleSolrSelect".<p>
      */
-    private final static String[] HANDLER_NAMES = new String[] {"SolrSelect"};
+    private static String[] HANDLER_NAMES = new String[] {"SolrSelect"};
 
     /**
      * Returns the requested URI.<p>
@@ -83,15 +83,17 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
      * 
      * @return the requested URI
      */
-    private static final String getRequestUri(HttpServletRequest req, CmsObject cms) {
+    private static String getRequestUri(HttpServletRequest req, CmsObject cms) {
 
         String baseUri = req.getParameter(PARAM_BASE_URI);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(baseUri)) {
             String referer = req.getHeader(HEADER_REFERER_KEY);
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
-            String prefix = site.getServerPrefix(cms, "/") + OpenCms.getSystemInfo().getOpenCmsContext();
-            if ((referer != null) && referer.startsWith(prefix)) {
-                baseUri = referer.substring(prefix.length());
+            if (site != null) {
+                String prefix = site.getServerPrefix(cms, "/") + OpenCms.getSystemInfo().getOpenCmsContext();
+                if ((referer != null) && referer.startsWith(prefix)) {
+                    baseUri = referer.substring(prefix.length());
+                }
             }
         }
         return baseUri;
@@ -114,30 +116,28 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
         try {
             CmsObject cms = OpenCmsCore.getInstance().initCmsObjectFromSession(req);
             // use the guest user as fall back
-            cms = cms == null ? OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest()) : null;
             if (cms == null) {
-                res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
-                String message = Messages.get().getBundle().key(Messages.GUI_SOLR_NOT_LOGGED_IN_0);
-                res.getWriter().println(Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message));
+                cms = OpenCmsCore.getInstance().initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+                String siteRoot = OpenCmsCore.getInstance().getSiteManager().matchRequest(req).getSiteRoot();
+                cms.getRequestContext().setSiteRoot(siteRoot);
+            }
+            String baseUri = getRequestUri(req, cms);
+            if (baseUri != null) {
+                cms.getRequestContext().setUri(baseUri);
+            }
+            Map<String, String[]> params = CmsRequestUtil.createParameterMap(req.getParameterMap());
+            String indexName = params.get(PARAM_CORE) != null
+            ? params.get(PARAM_CORE)[0]
+            : (params.get(PARAM_INDEX) != null ? params.get(PARAM_INDEX)[0] : null);
+            OpenCms.getSearchManager();
+            CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, params);
+            if (index != null) {
+                CmsSolrQuery query = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(req.getParameterMap()));
+                index.writeResponse(res, index.search(cms, query));
             } else {
-                String baseUri = getRequestUri(req, cms);
-                if (baseUri != null) {
-                    cms.getRequestContext().setUri(baseUri);
-                }
-                Map<String, String[]> params = CmsRequestUtil.createParameterMap(req.getParameterMap());
-                String indexName = params.get(PARAM_CORE) != null
-                ? params.get(PARAM_CORE)[0]
-                : (params.get(PARAM_INDEX) != null ? params.get(PARAM_INDEX)[0] : null);
-                OpenCms.getSearchManager();
-                CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, params);
-                if (index != null) {
-                    CmsSolrQuery query = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(req.getParameterMap()));
-                    index.writeResponse(res, index.search(cms, query));
-                } else {
-                    res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
-                    String message = Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName);
-                    res.getWriter().println(Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message));
-                }
+                res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+                String message = Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName);
+                res.getWriter().println(Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message));
             }
         } catch (Exception e) {
             res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
