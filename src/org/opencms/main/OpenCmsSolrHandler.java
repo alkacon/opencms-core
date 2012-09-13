@@ -113,6 +113,8 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
 
         try {
             CmsObject cms = OpenCmsCore.getInstance().initCmsObjectFromSession(req);
+            // use the guest user as fall back
+            cms = cms == null ? OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest()) : null;
             if (cms == null) {
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
                 String message = Messages.get().getBundle().key(Messages.GUI_SOLR_NOT_LOGGED_IN_0);

@@ -215,16 +215,17 @@ public class TestSolrSearchFulltextSearching extends OpenCmsTestCase {
 
         String defaultContextQuery = "q=*:*&fl=*,score&qt=dismax&rows=10&fq=con_locales:en&fq=parent-folders:/sites/default/";
         String modifiedContextQuery = "q=*:*&fl=*,score&qt=dismax&rows=10&fq=con_locales:en&fq=parent-folders:/";
-        String modifiedLocales = "q=*:*&fl=*,score&qt=dismax&rows=10&fq=con_locales:(de OR fr)&fq=parent-folders:/";
 
         // members should be stronger than request context
         CmsSolrQuery query = new CmsSolrQuery(getCmsObject(), null);
         assertEquals(defaultContextQuery, query.toString());
         query.setSearchRoots("/");
-        assertEquals(modifiedContextQuery, query.toString());
+        assertEquals(modifiedContextQuery, "q=*:*&fl=*,score&qt=dismax&rows=10&fq=con_locales:en&fq=parent-folders:/");
         query.setLocales(Locale.GERMAN, Locale.FRENCH, Locale.ENGLISH);
         query.setLocales(Locale.GERMAN, Locale.FRENCH);
-        assertEquals(modifiedLocales, query.toString());
+        assertEquals(
+            "q=*:*&fl=*,score&qt=dismax&rows=10&fq=parent-folders:/&fq=con_locales:(de OR fr)",
+            query.toString());
 
         // parameters should be stronger than request context
         query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("fq=parent-folders:/"));
@@ -241,7 +242,10 @@ public class TestSolrSearchFulltextSearching extends OpenCmsTestCase {
         query.setRows(new Integer(1000));
         query.setQueryType("lucene");
         query.setResourceTypes("article");
-        String ex = "q=test&fl=content_fr,path,type,id&qt=dismax&rows=50&fq=parent-folders:/&fq=con_locales:fr&fq=type:v8news";
+        String ex = "q={!q.op=OR qf=text_en}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:/&fq=con_locales:de&fq=type:article";
         assertEquals(ex, query.toString());
+
+        assertEquals("article", CmsSolrQuery.getResourceType(query.getFilterQueries()));
+
     }
 }

@@ -100,9 +100,7 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
                 if (param.indexOf('|') > 0) {
                     solrParams = param.substring(0, param.indexOf('|'));
                     CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrParams));
-                    String type = (q.getResourceTypes() != null) && (q.getResourceTypes().size() == 1)
-                    ? q.getResourceTypes().get(0)
-                    : null;
+                    String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
                     String rows = q.getRows().toString();
                     int lastPipe = param.lastIndexOf('|');
                     if (lastPipe > 0) {
