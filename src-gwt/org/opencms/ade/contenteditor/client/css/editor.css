@@ -12,6 +12,7 @@
 
 .inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
 	cursor: editCursorIcoUrl, editCursorGifUrl, crosshair;
+	outline: none;
 }
 
 body.standAloneEditor div.basePanel{
