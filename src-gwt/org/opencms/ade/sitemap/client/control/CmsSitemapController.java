@@ -1367,8 +1367,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 if (change.hasChangedName()) {
                     CmsClientSitemapEntry changed = getEntryById(change.getEntryId());
                     String oldSitepath = changed.getSitePath();
-                    CmsClientSitemapEntry parent = getEntry(CmsResource.getParentFolder(oldSitepath));
-                    String newSitepath = CmsStringUtil.joinPaths(parent.getSitePath(), change.getName());
+                    String parentPath = CmsResource.getParentFolder(oldSitepath);
+                    String newSitepath = CmsStringUtil.joinPaths(parentPath, change.getName());
                     changed.updateSitePath(newSitepath, this);
                     cleanupOldPaths(oldSitepath, newSitepath);
                 }
