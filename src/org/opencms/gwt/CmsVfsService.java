@@ -841,7 +841,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         } catch (CmsException e) {
             return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         }
-        cms.unlockResource(resource);
+        tryUnlock(resource);
         return null;
     }
 
