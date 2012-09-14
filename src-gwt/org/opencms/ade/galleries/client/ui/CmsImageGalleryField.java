@@ -89,13 +89,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     public static final String WIDGET_TYPE = "imageGallery";
 
     /** Parameter to split or generate the value string. */
-    private static final String PARAMETER_DESC = "&description=";
+    private static final String PARAMETER_DESC = "description=";
 
     /** Parameter to split or generate the value string. */
-    private static final String PARAMETER_FORMAT = "&format=";
+    private static final String PARAMETER_FORMAT = "format=";
 
     /** Parameter to split or generate the value string. */
-    private static final String PARAMETER_SCALE = "?__scale=";
+    private static final String PARAMETER_SCALE = "scale=";
 
     /** The ui binder for this widget. */
     private static I_CmsImageGalleryFieldUiBinder uibinder = GWT.create(I_CmsImageGalleryFieldUiBinder.class);
@@ -267,12 +267,12 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     public String getFormValueAsString() {
 
         String result = m_textbox.getValue();
-        result += PARAMETER_SCALE + m_scaleValue;
+        result += "?__" + PARAMETER_SCALE + m_scaleValue;
         if (m_useFormats) {
-            result += PARAMETER_FORMAT + m_formatSelection.getFormValueAsString();
+            result += "&" + PARAMETER_FORMAT + m_formatSelection.getFormValueAsString();
             m_selectedFormat = m_formatSelection.getFormValueAsString();
         }
-        result += PARAMETER_DESC + URL.encode(m_descriptionArea.getFormValueAsString());
+        result += "&" + PARAMETER_DESC + URL.encode(m_descriptionArea.getFormValueAsString());
         m_description = m_descriptionArea.getFormValueAsString();
 
         return result;
@@ -622,48 +622,58 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     private String splitValue(String value) {
 
         m_croppingParam = CmsCroppingParamBean.parseImagePath(value);
-        int indexofscale = value.indexOf(PARAMETER_SCALE);
+        String path = "";
+        String params = "";
+        if (value.indexOf("?") > -1) {
+            path = value.substring(0, value.indexOf("?"));
+            params = value.substring(value.indexOf("?"));
+        } else {
+            path = value;
+        }
+        int indexofscale = params.indexOf(PARAMETER_SCALE);
         if (indexofscale > -1) {
             String scal = "";
-            int hasmoreValues = value.lastIndexOf("&");
+            int hasmoreValues = params.lastIndexOf("&");
             if (hasmoreValues > indexofscale) {
 
-                scal = value.substring(indexofscale, value.indexOf("&")).replace(PARAMETER_SCALE, "");
+                scal = params.substring(indexofscale, params.indexOf("&")).replace(PARAMETER_SCALE, "");
 
             } else {
-                scal = value.substring(indexofscale).replace(PARAMETER_SCALE, "");
+                scal = params.substring(indexofscale).replace(PARAMETER_SCALE, "");
             }
             if (!scal.equals(m_scaleValue)) {
                 m_scaleValue = scal;
             }
-            value = value.replace(PARAMETER_SCALE + m_scaleValue, "");
+            params = params.replace(PARAMETER_SCALE + m_scaleValue, "");
 
         }
-        int indexofformat = value.indexOf(PARAMETER_FORMAT);
+        int indexofformat = params.indexOf(PARAMETER_FORMAT);
         if (indexofformat > -1) {
-            int hasmoreValues = value.lastIndexOf("&");
+            int hasmoreValues = params.lastIndexOf("&");
             if (hasmoreValues > indexofformat) {
-                m_selectedFormat = value.substring(indexofformat, value.indexOf(PARAMETER_DESC)).replace(
+                m_selectedFormat = params.substring(indexofformat, params.indexOf(PARAMETER_DESC)).replace(
                     PARAMETER_FORMAT,
                     "");
             } else {
-                m_selectedFormat = value.substring(indexofformat).replace(PARAMETER_FORMAT, "");
+                m_selectedFormat = params.substring(indexofformat).replace(PARAMETER_FORMAT, "");
             }
-            value = value.replace(PARAMETER_FORMAT + m_selectedFormat, "");
+            params = params.replace(PARAMETER_FORMAT + m_selectedFormat, "");
             m_formatSelection.selectValue(m_selectedFormat);
         }
-        int indexofdescritption = value.indexOf(PARAMETER_DESC);
+        int indexofdescritption = params.indexOf(PARAMETER_DESC);
         if (indexofdescritption > -1) {
-            m_description = value.substring(indexofdescritption).replace(PARAMETER_DESC, "");
-            value = value.replace(PARAMETER_DESC + m_description, "");
+            int hasmoreValues = params.lastIndexOf("&");
+            if (hasmoreValues > indexofdescritption) {
+                m_description = params.substring(indexofdescritption, hasmoreValues).replace(PARAMETER_DESC, "");
+            } else {
+                m_description = params.substring(indexofdescritption).replace(PARAMETER_DESC, "");
+            }
+            params = params.replace(PARAMETER_DESC + m_description, "");
             m_description = URL.decode(m_description);
             m_descriptionArea.setFormValueAsString(m_description);
         }
-        if (value.indexOf("?") > -1) {
-            value = value.replaceAll("?", "");
-        }
-        if (!value.isEmpty()) {
-            String imageLink = CmsCoreProvider.get().link(value);
+        if (!path.isEmpty()) {
+            String imageLink = CmsCoreProvider.get().link(path);
             CmsCroppingParamBean restricted;
             if (m_croppingParam.getFormatName() == null) {
                 m_image.setUrl(imageLink + "?__scale=w:80,h:110,t:1,c:white,r:2");
@@ -674,7 +684,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             }
 
         }
-        return value;
+        return path;
 
     }
 
