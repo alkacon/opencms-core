@@ -488,16 +488,23 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
      */
-    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId) throws Exception {
+    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId)
+    throws CmsRpcException {
 
+        CmsContentDefinition result = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
-            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
-            CmsResource resource = getCmsObject().readResource(structureId);
-            Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-            return readContentDefnitionForNew(newLink, resource, modelFileId, contentLocale);
+            try {
+                CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
+                CmsResource resource = getCmsObject().readResource(structureId);
+                Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+                result = readContentDefnitionForNew(newLink, resource, modelFileId, contentLocale);
+            } catch (Throwable t) {
+                error(t);
+            }
         } else {
-            return loadDefinition(entityId);
+            result = loadDefinition(entityId);
         }
+        return result;
     }
 
     /**

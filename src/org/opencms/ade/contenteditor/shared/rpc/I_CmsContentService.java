@@ -68,9 +68,9 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @return the content definition
      * 
-     * @throws Exception if something goes wrong processing the request
+     * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId) throws Exception;
+    CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId) throws CmsRpcException;
 
     /**
      * Loads new entity definition.<p>
@@ -80,9 +80,9 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @return the content definition
      * 
-     * @throws Exception if something goes wrong processing the request
+     * @throws CmsRpcException if something goes wrong processing the request
      */
-    CmsContentDefinition loadNewDefinition(String entityId) throws Exception;
+    CmsContentDefinition loadNewDefinition(String entityId) throws CmsRpcException;
 
     /**
      * Returns the content definition of the resource requested through parameter 'resource'.<p>
@@ -101,7 +101,8 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @return the validation result in case of invalid entities
      * 
-     * @throws Exception if something goes wrong processing the request
+     * @throws CmsRpcException if something goes wrong processing the request
      */
-    ValidationResult saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities) throws Exception;
+    ValidationResult saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities)
+    throws CmsRpcException;
 }
