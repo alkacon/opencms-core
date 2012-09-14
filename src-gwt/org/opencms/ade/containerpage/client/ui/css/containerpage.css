@@ -265,6 +265,13 @@ div.groupcontainerPlaceholder{
     gwt-image: "images.selectionIconDeactivated";
 }
 
+@sprite .optionBar .cmsState-up-hovering .toolbarInherited, .optionBar .cmsState-down-hovering .toolbarInherited, .optionBar .cmsState-down .toolbarInherited {
+    gwt-image: "images.subSitemapIcon";
+}
+@sprite .optionBar .cmsState-up .toolbarInherited, .optionBar .cmsState-up-disabled .toolbarInherited, .optionBar .cmsState-down-disabled .toolbarInherited {
+    gwt-image: "images.subSitemapIconDeactivated";
+}
+
 
 @eval enlargedMinHeight org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel.getNecessaryHeight();
 
