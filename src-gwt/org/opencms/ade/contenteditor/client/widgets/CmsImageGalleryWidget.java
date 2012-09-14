@@ -32,6 +32,8 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.galleries.client.ui.CmsImageGalleryField;
 
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -40,7 +42,7 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  *
  * */
-public class CmsImageGalleryWidget extends Composite implements I_EditWidget {
+public class CmsImageGalleryWidget extends Composite implements I_EditWidget, HasResizeHandlers {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -78,6 +80,14 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget {
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
         return null;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
+     */
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+
+        return m_linkSelect.addResizeHandler(handler);
     }
 
     /**
