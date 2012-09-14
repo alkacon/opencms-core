@@ -60,7 +60,6 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
-import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
 import org.opencms.gwt.client.util.CmsDomUtil.Target;
@@ -245,10 +244,18 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         if (CmsInheritanceContainerEditor.getInstance() != null) {
                             CmsInheritanceContainerEditor.getInstance().onSettingsEdited();
                         }
+                        Map<String, String> filteredFieldValues = new HashMap<String, String>();
+                        for (Map.Entry<String, String> entry : fieldValues.entrySet()) {
+                            String key = entry.getKey();
+                            String value = entry.getValue();
+                            if ((value != null) && (value.length() > 0)) {
+                                filteredFieldValues.put(key, value);
+                            }
+                        }
                         m_controller.reloadElementWithSettings(
                             elementWidget,
                             elementBean.getClientId(),
-                            CmsCollectionUtil.removeNullEntries(fieldValues));
+                            filteredFieldValues);
                     }
 
                 };
