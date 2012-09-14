@@ -133,6 +133,9 @@ public final class CmsContentEditor {
     /** Flag indicating the resource needs to removed on cancel. */
     private boolean m_deleteOnCancel;
 
+    /** The in-line edit overlay hiding other content. */
+    private CmsInlineEditOverlay m_editOverlay;
+
     /** The id of the edited entity. */
     private String m_entityId;
 
@@ -300,6 +303,10 @@ public final class CmsContentEditor {
      */
     protected void clearEditor() {
 
+        if (m_editOverlay != null) {
+            m_editOverlay.removeFromParent();
+            m_editOverlay = null;
+        }
         if (m_toolbar != null) {
             m_toolbar.removeFromParent();
             m_toolbar = null;
@@ -396,6 +403,18 @@ public final class CmsContentEditor {
     }
 
     /**
+     * Leaves the editor saving the content if necessary.<p>
+     */
+    void exitWithSaving() {
+
+        if (m_saveExitButton.isEnabled()) {
+            saveAndExit();
+        } else {
+            cancelEdit();
+        }
+    }
+
+    /**
      * Hides the editor help bubbles.<p>
      * 
      * @param hide <code>true</code> to hide the help bubbles
@@ -422,6 +441,17 @@ public final class CmsContentEditor {
         setContentDefinition(contentDefinition);
         initToolbar();
         if (inline && (formParent != null)) {
+            m_editOverlay = new CmsInlineEditOverlay(formParent.getElement());
+            RootPanel.get().add(m_editOverlay);
+            m_editOverlay.updatePosition();
+            m_editOverlay.checkZIndex();
+            m_editOverlay.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    exitWithSaving();
+                }
+            });
             m_hideHelpBubblesButton.setVisible(false);
             setNativeResourceInfo(m_sitePath, m_locale);
             m_editor.renderInlineEntity(m_entityId, formParent);
@@ -436,6 +466,10 @@ public final class CmsContentEditor {
      */
     void initFormPanel() {
 
+        if (m_editOverlay != null) {
+            m_editOverlay.removeFromParent();
+            m_editOverlay = null;
+        }
         m_openFormButton.setVisible(false);
         m_saveButton.setVisible(true);
         m_hideHelpBubblesButton.setVisible(true);
@@ -550,6 +584,9 @@ public final class CmsContentEditor {
         enableSave();
         m_changedEntityIds.add(m_entityId);
         m_deletedEntities.remove(m_entityId);
+        if (m_editOverlay != null) {
+            m_editOverlay.updatePosition();
+        }
     }
 
     /**
