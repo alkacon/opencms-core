@@ -207,7 +207,16 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     private String m_type;
 
     /**
-     * TextBox widget to open the gallery selection.<p>
+     * VsfSelection widget to open the gallery selection.<p>
+     * 
+     */
+    public CmsVfsSelection() {
+
+        super();
+    }
+
+    /**
+     * VsfSelection widget to open the gallery selection.<p>
      * @param iconImage the image of the icon shown in the 
      * @param type the type of this widget
      * @param config the configuration for this widget
@@ -299,7 +308,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsTextArea();
+                return new CmsVfsSelection();
             }
         });
     }

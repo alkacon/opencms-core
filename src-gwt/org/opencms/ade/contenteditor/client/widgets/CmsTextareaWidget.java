@@ -34,6 +34,9 @@ import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -43,7 +46,7 @@ import com.google.gwt.user.client.ui.Composite;
  * Provides a display only widget, for use on a widget dialog.<p>
  *  
  * */
-public class CmsTextareaWidget extends Composite implements I_EditWidget {
+public class CmsTextareaWidget extends Composite implements I_EditWidget, HasResizeHandlers {
 
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 5;
@@ -79,6 +82,14 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
 
             }
         });
+        m_textarea.addResizeHandler(new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+
+                fireResizeEvent(event);
+
+            }
+        });
 
     }
 
@@ -88,6 +99,14 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
         return null;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
+     */
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+
+        return addHandler(handler, ResizeEvent.getType());
     }
 
     /**
@@ -110,6 +129,15 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget {
         }
 
         ValueChangeEvent.fire(this, result);
+    }
+
+    /**
+     * Represents a resize event.<p>
+     * @param event from text area panel
+     */
+    public void fireResizeEvent(ResizeEvent event) {
+
+        ResizeEvent.fire(this, event.getWidth(), event.getHeight());
     }
 
     /**

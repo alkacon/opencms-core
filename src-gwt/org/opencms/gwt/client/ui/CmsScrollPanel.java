@@ -36,6 +36,9 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -47,7 +50,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 /**
  * Scroll panel implementation allowing focused scrolling.<p>
  */
-public class CmsScrollPanel extends ScrollPanel {
+public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers {
 
     /**Inner class for the resize button. */
     protected class ResizeButton extends CmsPushButton {
@@ -172,6 +175,14 @@ public class CmsScrollPanel extends ScrollPanel {
     }
 
     /**
+     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
+     */
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+
+        return addHandler(handler, ResizeEvent.getType());
+    }
+
+    /**
      * Enables or disables the focused scrolling feature.<p>
      * Focused scrolling is enabled by default.<p>
      * 
@@ -285,6 +296,8 @@ public class CmsScrollPanel extends ScrollPanel {
                 newheight = m_defaultHeight;
             }
         }
+        int width = Integer.parseInt(getElement().getStyle().getWidth().replace("px", ""));
+        ResizeEvent.fire(this, width, (int)newheight);
         getElement().getStyle().setHeight(newheight, Unit.PX);
     }
 

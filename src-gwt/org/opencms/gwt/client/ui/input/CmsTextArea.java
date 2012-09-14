@@ -49,7 +49,9 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
@@ -64,7 +66,8 @@ import com.google.gwt.user.client.ui.TextArea;
  * @since 8.0.0
  * 
  */
-public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
+public class CmsTextArea extends Composite
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers {
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
@@ -194,6 +197,14 @@ public class CmsTextArea extends Composite implements I_CmsFormWidget, I_CmsHasI
                 return new CmsTextArea();
             }
         });
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
+     */
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+
+        return m_textAreaContainer.addResizeHandler(handler);
     }
 
     /**

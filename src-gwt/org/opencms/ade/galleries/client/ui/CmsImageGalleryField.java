@@ -52,7 +52,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -73,7 +76,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @since 8.0.0
  */
 public class CmsImageGalleryField extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers {
 
     /**
      * The UI Binder interface for this widget.<p>
@@ -219,6 +222,14 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
+     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
+     */
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+
+        return addHandler(handler, ResizeEvent.getType());
+    }
+
+    /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
@@ -313,7 +324,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /**
      * On select box value change.<p>
      * 
-     * @param event the even
+     * @param event the event
      */
     @UiHandler("m_formatSelection")
     public void onSelectBoxChange(ValueChangeEvent<String> event) {
@@ -324,7 +335,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     /**
      * On textarea box value change.<p>
      * 
-     * @param event the even
+     * @param event the event
      */
     @UiHandler("m_descriptionArea")
     public void onTextAreaBoxChange(ValueChangeEvent<String> event) {
@@ -333,9 +344,20 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
     }
 
     /**
+     * On textarea box resize.<p>
+     * 
+     * @param event the event
+     */
+    @UiHandler("m_descriptionArea")
+    public void onTextAreaBoxResize(ResizeEvent event) {
+
+        ResizeEvent.fire(CmsImageGalleryField.this, event.getWidth(), event.getHeight());
+    }
+
+    /**
      * On text box value change.<p>
      * 
-     * @param event the even
+     * @param event the event
      */
     @UiHandler("m_textbox")
     public void onTextboxChange(ValueChangeEvent<String> event) {

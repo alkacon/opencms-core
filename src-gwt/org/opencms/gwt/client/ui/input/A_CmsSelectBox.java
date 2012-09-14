@@ -601,7 +601,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     private void addHoverHandlers(FocusPanel panel) {
 
         final CmsStyleVariable hoverVar = new CmsStyleVariable(panel);
-        hoverVar.setValue(CSS.openerNoHover());
+        hoverVar.setValue(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().openerNoHover());
         panel.addMouseOverHandler(new MouseOverHandler() {
 
             /**
@@ -609,7 +609,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
              */
             public void onMouseOver(MouseOverEvent event) {
 
-                hoverVar.setValue(CSS.openerHover());
+                hoverVar.setValue(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().openerHover());
             }
         });
 
@@ -620,7 +620,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
              */
             public void onMouseOut(MouseOutEvent event) {
 
-                hoverVar.setValue(CSS.openerNoHover());
+                hoverVar.setValue(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().openerNoHover());
             }
         });
 
@@ -634,12 +634,12 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     private void addMainPanelHoverHandlers(Panel panel) {
 
         final CmsStyleVariable hoverPanel = new CmsStyleVariable(panel);
-        hoverPanel.setValue(CSS.openerNoHover());
+        hoverPanel.setValue(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().openerNoHover());
         panel.addDomHandler(new MouseOverHandler() {
 
             public void onMouseOver(MouseOverEvent event) {
 
-                hoverPanel.setValue(CSS.openerHover());
+                hoverPanel.setValue(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().openerHover());
 
             }
         }, MouseOverEvent.getType());
@@ -647,7 +647,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
 
             public void onMouseOut(MouseOutEvent event) {
 
-                hoverPanel.setValue(CSS.openerNoHover());
+                hoverPanel.setValue(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().openerNoHover());
 
             }
         }, MouseOutEvent.getType());
