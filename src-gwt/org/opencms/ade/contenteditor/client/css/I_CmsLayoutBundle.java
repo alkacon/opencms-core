@@ -132,20 +132,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
-        String openerHover();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String openerNoHover();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
         String passwordTextBox();
 
         /**
@@ -168,34 +154,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the css class
          */
         String selectBoxPanel();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String selectBoxPopup();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String selectBoxSelected();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String textAreaBox();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String textAreaBoxPanel();
 
         /**
          * Css class reader.<p>
