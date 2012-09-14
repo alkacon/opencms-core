@@ -80,7 +80,6 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers {
         @Override
         protected void onDetach() {
 
-            // TODO: Auto-generated method stub
             super.onDetach();
         }
     }
@@ -140,14 +139,14 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers {
     /** The scroll handler registration. */
     private HandlerRegistration m_handlerRegistration;
 
+    /** Saves if the scrolling panel has the resize button. */
+    private boolean m_isResize;
+
     /** The start height. */
     private double m_oldheight;
 
     /** The button to resize the scrolling panel. */
     private ResizeButton m_resize;
-
-    /** Saves if the scrolling panel has the resize button. */
-    private boolean m_isResize;
 
     /**
      * Constructor.<p>
@@ -296,8 +295,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers {
                 newheight = m_defaultHeight;
             }
         }
-        int width = Integer.parseInt(getElement().getStyle().getWidth().replace("px", ""));
-        ResizeEvent.fire(this, width, (int)newheight);
+        ResizeEvent.fire(this, getOffsetWidth(), (int)newheight);
         getElement().getStyle().setHeight(newheight, Unit.PX);
     }
 
