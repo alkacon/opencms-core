@@ -44,11 +44,13 @@ import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
@@ -249,6 +251,41 @@ public abstract class A_CmsGroupEditor extends Composite {
     public void showPopup() {
 
         m_editorDialog.getElement().getStyle().clearDisplay();
+    }
+
+    /**
+     * Updates the backup elements.<p>
+     * 
+     * @param updateElements the updated element data
+     */
+    public void updateBackupElements(Map<String, CmsContainerElementData> updateElements) {
+
+        ArrayList<CmsContainerPageElementPanel> updatedList = new ArrayList<CmsContainerPageElementPanel>();
+        String containerId = m_groupContainer.getContainerId();
+        for (CmsContainerPageElementPanel element : m_backUpElements) {
+            if (updateElements.containsKey(element.getId())
+                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(updateElements.get(element.getId()).getContents().get(
+                    containerId))) {
+                CmsContainerElementData elementData = updateElements.get(element.getId());
+                try {
+                    CmsContainerPageElementPanel replacer = m_controller.getContainerpageUtil().createElement(
+                        elementData,
+                        m_groupContainer);
+                    if (element.getInheritanceInfo() != null) {
+                        // in case of inheritance container editing, keep the inheritance info
+                        replacer.setInheritanceInfo(element.getInheritanceInfo());
+                    }
+                    updatedList.add(replacer);
+
+                } catch (Exception e) {
+                    // in this case keep the old version
+                    updatedList.add(element);
+                }
+            } else {
+                updatedList.add(element);
+            }
+        }
+        m_backUpElements = updatedList;
     }
 
     /**

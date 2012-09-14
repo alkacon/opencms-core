@@ -252,6 +252,10 @@ public final class CmsContainerpageController {
                 }
 
             }
+            if (isGroupcontainerEditing()) {
+                getGroupEditor().updateBackupElements(result);
+                getGroupcontainer().refreshHighlighting();
+            }
             m_handler.updateClipboard(result);
             resetEditableListButtons();
         }
@@ -1905,6 +1909,16 @@ public final class CmsContainerpageController {
             m_coreSvc = CmsCoreProvider.getService();
         }
         return m_coreSvc;
+    }
+
+    /**
+     * Returns the currently active group editor.<p>
+     * 
+     * @return the currently active group editor
+     */
+    protected A_CmsGroupEditor getGroupEditor() {
+
+        return m_groupEditor;
     }
 
     /**

@@ -150,6 +150,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             String newLink = null;
             if (isNew) {
                 newLink = editableData.getNewLink();
+                // the new link is URL encoded twice, decode it
                 newLink = URL.decodeQueryString(newLink);
                 newLink = URL.decodeQueryString(newLink);
             }
