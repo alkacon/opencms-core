@@ -27,9 +27,10 @@
 
 package org.opencms.gwt.client.ui.css;
 
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsOpenerHoverCss;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
 import com.google.gwt.resources.client.ImageResource;
@@ -45,7 +46,7 @@ public interface I_CmsImageBundle extends ClientBundle {
 
     /** Bundles the image sprite CSS classes. */
     @Shared
-    interface I_CmsImageStyle extends CssResource {
+    interface I_CmsImageStyle extends I_CmsOpenerHoverCss {
 
         /**
          * Access method.<p>

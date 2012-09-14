@@ -1,9 +1,16 @@
 @external html-face, popup,popupContent, colorPicker, textboxGhostMode, scrollContainer, textBoxPanel,testBox,textBoxReadOnly,textBoxPanelDisabled,transparentSelectBox,selectorPopup, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 
-div.selectBoxSelected {
+.openerNoHover div.selectBoxSelected {
 	border: 1px solid #7788AA  /*value("constants.css.borderColor")*/;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAGQCAYAAACXuPEsAAAAcElEQVR42u3KMRGEQAAEwVNMjgEUIAEJSHgFb4CcEAP3tRnhxl89VZP1mHM+zQMEQRAEQRAEQRAEQRAEQRAEQRAEQRAE3/BuDryaA7/NgZ/mwLM58GgO3JsDt+bAtTlwaR6SJEmSJEmSJEmSJOlv+gHGSKGbh/LLagAAAABJRU5ErkJggg==") repeat-x scroll 50% 50% #FFFFFF;
 }
+
+.openerHover div.selectBoxSelected {
+	border: 1px solid #7788AA  /*value("constants.css.borderColor")*/;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAGQCAYAAACXuPEsAAAAcElEQVR42u3KMRGEQAAEwVNMjgEUIAEJSHgFb4CcEAP3tRnhxl89VZP1mHM+zQMEQRAEQRAEQRAEQRAEQRAEQRAEQRAE3/BuDryaA7/NgZ/mwLM58GgO3JsDt+bAtTlwaR6SJEmSJEmSJEmSJOlv+gHGSKGbh/LLagAAAABJRU5ErkJggg==") repeat-x scroll 50% 50% #EEEEEE;
+}
+
 
 .selectBoxPopup {
 	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
@@ -16,6 +23,7 @@ textarea.textAreaBox {
 	display: block;
 	color: value("constants.css.textColor");
 	box-shadow: none;
+	font-size: 12px;
 	width: 99%;
 	border: none;
 	resize: none;
@@ -30,4 +38,9 @@ div.textAreaBoxPanel{
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 }
+
+
+
+
+
 

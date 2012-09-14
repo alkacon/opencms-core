@@ -16,8 +16,9 @@
 	width: auto;
 }
 
-.attributeValue .selectBoxSelected {
+.selectBoxPanel .openerNoHover.selectBoxSelected {
 	border: 1px solid #7788AA  /*value("constants.css.borderColor")*/;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAGQCAYAAACXuPEsAAAAcElEQVR42u3KMRGEQAAEwVNMjgEUIAEJSHgFb4CcEAP3tRnhxl89VZP1mHM+zQMEQRAEQRAEQRAEQRAEQRAEQRAEQRAE3/BuDryaA7/NgZ/mwLM58GgO3JsDt+bAtTlwaR6SJEmSJEmSJEmSJOlv+gHGSKGbh/LLagAAAABJRU5ErkJggg==") repeat-x scroll 50% 50% #FFFFFF;
 }
 
 .categoryPanel {
@@ -410,3 +411,5 @@ div.colorPicker{
 .floatBox{}
 .decorationBox{}
 .decorationBoxSmall{}
+.openerNoHover{}
+.openerHover{};

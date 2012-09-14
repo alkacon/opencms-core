@@ -926,7 +926,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /** The global widget CSS class. */
     @Shared
-    public interface I_CmsGlobalWidgetCss extends CssResource {
+    public interface I_CmsGlobalWidgetCss extends I_CmsOpenerHoverCss {
 
         /**
          * Css class reader.<p>
@@ -1475,6 +1475,25 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String notificationWarning();
+    }
+
+    /** The opener hover CSS class. */
+    @Shared
+    public interface I_CmsOpenerHoverCss extends CssResource {
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String openerHover();
+
+        /**
+         * Css class reader.<p>
+         * 
+         * @return the css class
+         */
+        String openerNoHover();
     }
 
     /** Page CSS. */
@@ -2311,6 +2330,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("notification.css")
     I_CmsNotificationCss notificationCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the upload button CSS
+     */
+    @Source("openerHoverWidget.css")
+    I_CmsOpenerHoverCss openerHoverCss();
 
     /**
      * Access method.<p>

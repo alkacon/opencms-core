@@ -27,14 +27,14 @@
 
 package org.opencms.gwt.client.ui.css;
 
-import com.google.gwt.resources.client.CssResource;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsGlobalWidgetCss;
 
 /**
  * Css resource.<p>
  * 
  * @since 8.0.0
  */
-public interface I_CmsInputCss extends CssResource {
+public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
 
     /** 
      * Css class reader.<p>
@@ -265,20 +265,6 @@ public interface I_CmsInputCss extends CssResource {
      * @return the css class
      */
     // String textAreaWidget();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String openerHover();
-
-    /**
-     * Css class reader.<p>
-     * 
-     * @return the css class
-     */
-    String openerNoHover();
 
     /**
      * Css class reader.<p>

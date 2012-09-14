@@ -199,7 +199,8 @@
 	display: inline-block;
 	cursor: pointer;
 }
-@sprite .cmsState-up-hovering div.triangleRight,.cmsState-up-hovering span.triangleRight, .openerHover span.triangleRight{
+
+@sprite .cmsState-up-hovering div.triangleRight,.cmsState-up-hovering span.triangleRight, .openerHover .cmsState-up span.triangleRight, .openerHover .cmsState-up div.triangleRight{
 	gwt-image: "triangleRightImage";
 	display: inline-block;
 	cursor: pointer;
@@ -246,3 +247,7 @@
 @sprite .infoBigIcon {
 	gwt-image: "informationBigImage";
 }
+
+.openerNoHover {}
+
+.openerHover {}

@@ -348,7 +348,7 @@ div.selectBoxOpener {
 	}
 } @elif user.agent gecko gecko1_8 {
 	.inputTextAreaFaider{
-		background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%);
+		background: literal("-moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%)");
 	}
 	
 	.dataValue{
@@ -357,22 +357,22 @@ div.selectBoxOpener {
 	}
 	
 	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider  {
-		background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+		background: literal("-moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)");
 	}
 } @elif user.agent safari {
 	.inputTextAreaFaider{
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.6)), color-stop(100%,rgba(255,255,255,1)));
+		background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.6)), color-stop(100%,rgba(255,255,255,1)))");
 	}
 	.dataValue{
 		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
 	
 	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider  {
-		background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+		background: literal("-webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)))");
 	}
 } @elif user.agent opera {
 	.inputTextAreaFaider{
-		background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,1) 100%);
+		background: literal("-o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,1) 100%)");
 	}
 	
 	.dataValue{
@@ -380,7 +380,7 @@ div.selectBoxOpener {
 	}
 	
 	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider {
-		background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+		background: literal("-o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%)");
 	}
 } @elif user.agent ie9 {
 	.inputTextAreaFaider{
@@ -566,3 +566,7 @@ div.formRow {
 	font-weight: bold;
 	margin-left: 8px;
 }
+
+.textAreaBox{}
+.selectBoxPopup{}
+.textAreaBoxPanel{}
