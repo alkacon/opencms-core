@@ -25,23 +25,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file.collectors;
+package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.collectors.CmsSolrCollector;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.report.CmsShellReport;
-import org.opencms.report.I_CmsReport;
+import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.List;
-import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -102,14 +103,15 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
             @Override
             protected void setUp() {
 
-                CmsObject cms = setupOpenCms(null, null, false);
-                try {
-                    initResources(cms);
-                    I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
-                    OpenCms.getSearchManager().rebuildIndex("Solr Offline", report);
-                } catch (CmsException exc) {
-                    exc.printStackTrace();
-                    fail(exc.getMessage());
+                setupOpenCms("simpletest", "/");
+                // disable all lucene indexes
+                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+                    if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
+                        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                        if (index instanceof CmsLuceneIndex) {
+                            index.setEnabled(false);
+                        }
+                    }
                 }
             }
 
@@ -131,17 +133,14 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
     public void testByQuery() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        String resTypePlainName = CmsResourceTypePlain.getStaticTypeName();
-        echo("Testing allInFolderPriorityDateDesc resource collector");
+        echo("Testing if Solr is able to do the same as: allInFolderPriorityDateDesc resource collector");
 
         I_CmsResourceCollector collector = new CmsSolrCollector();
 
         StringBuffer q = new StringBuffer(128);
-        q.append("q=");
-        q.append("+parent-folders:/sites/default/folder1/ -parent-folders:/sites/default/folder1/*/");
-        q.append(" +type:" + resTypePlainName);
+        q.append("&fq=parent-folders:/sites/default/xmlcontent/");
+        q.append("&fq=type:article");
         q.append("&rows=" + 3);
-        q.append("&start=0&type=dismax&fl=*,score");
         q.append("&sort=" + I_CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
         List<CmsResource> resources = collector.getResults(cms, "byQuery", q.toString());
 
@@ -150,11 +149,11 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
 
         CmsResource res;
         res = resources.get(0);
-        assertEquals("/sites/default/folder1/file4", res.getRootPath());
+        assertEquals("/sites/default/xmlcontent/article_0004.html", res.getRootPath());
         res = resources.get(1);
-        assertEquals("/sites/default/folder1/file3", res.getRootPath());
+        assertEquals("/sites/default/xmlcontent/article_0003.html", res.getRootPath());
         res = resources.get(2);
-        assertEquals("/sites/default/folder1/file2", res.getRootPath());
+        assertEquals("/sites/default/xmlcontent/article_0002.html", res.getRootPath());
     }
 
     /**
@@ -168,9 +167,8 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
 
         I_CmsResourceCollector collector = new CmsSolrCollector();
         List<CmsResource> resources = collector.getResults(getCmsObject(), "byContext", null);
-
-        // assert that 3 files are returned
-        assertEquals(6, resources.size());
+        // assert that 10 files are returned
+        assertEquals(10, resources.size());
     }
 
     /**
@@ -185,7 +183,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
         I_CmsResourceCollector collector = new CmsSolrCollector();
         StringBuffer q = new StringBuffer(128);
         q.append("q=");
-        q.append("+type:" + CmsResourceTypePlain.getStaticTypeName());
+        q.append("+type:article");
         q.append("&rows=" + 3);
         q.append("&sort=" + I_CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
         List<CmsResource> resources = collector.getResults(getCmsObject(), "byContext", q.toString());
@@ -195,10 +193,10 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
 
         CmsResource res;
         res = resources.get(0);
-        assertEquals("/sites/default/folder1/sub1/file5", res.getRootPath());
+        assertEquals("/sites/default/xmlcontent/article_0004.html", res.getRootPath());
         res = resources.get(1);
-        assertEquals("/sites/default/folder1/file4", res.getRootPath());
+        assertEquals("/sites/default/xmlcontent/article_0003.html", res.getRootPath());
         res = resources.get(2);
-        assertEquals("/sites/default/folder1/file3", res.getRootPath());
+        assertEquals("/sites/default/xmlcontent/article_0002.html", res.getRootPath());
     }
 }

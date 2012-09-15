@@ -95,23 +95,23 @@ public class TestSolrSearchPermissionHandling extends OpenCmsTestCase {
     public void testPermissionHandling() throws Throwable {
 
         echo("Testing search for permission check by comparing result counts");
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
 
         CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), null);
         squery.setSearchRoots("/sites/default/");
         squery.setRows(new Integer(100));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
-        AllSolrTests.printResults(getCmsObject(), results, true);
+        AllTests.printResults(getCmsObject(), results, true);
         assertEquals(53, results.getNumFound());
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test1"));
         results = index.search(cms, squery);
-        AllSolrTests.printResults(cms, results, false);
+        AllTests.printResults(cms, results, false);
         assertEquals(47, results.getNumFound());
 
         cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
         results = index.search(cms, squery);
-        AllSolrTests.printResults(cms, results, true);
+        AllTests.printResults(cms, results, true);
         assertEquals(49, results.getNumFound());
     }
 }

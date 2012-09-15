@@ -57,7 +57,7 @@ import org.apache.solr.common.SolrDocumentList;
  * 
  * @since 8.5.0
  */
-public final class AllSolrTests {
+public final class AllTests {
 
     /** Name of a search index created using API. */
     public static final String INDEX_TEST = "Test new index";
@@ -71,7 +71,7 @@ public final class AllSolrTests {
     /**
      * Hide constructor to prevent generation of class instances.<p>
      */
-    private AllSolrTests() {
+    private AllTests() {
 
         // empty
     }
@@ -100,15 +100,15 @@ public final class AllSolrTests {
      */
     public static Test suite() {
 
-        TestSuite suite = new TestSuite("Tests for package " + AllSolrTests.class.getPackage().getName());
+        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        // suite.addTest(TestSolrConfiguration.suite());
+        suite.addTest(TestSolrConfiguration.suite());
         suite.addTest(TestSolrFieldConfiguration.suite());
         suite.addTest(TestSolrIndexing.suite());
         suite.addTest(TestSolrSearch.suite());
         // suite.addTest(TestSolrSearchAutoSuggeting.suite());
-        // suite.addTest(TestSolrSearchFaceting.suite());
+        suite.addTest(TestSolrSearchFaceting.suite());
         suite.addTest(TestSolrSearchFulltextSearching.suite());
         // suite.addTest(TestSolrSearchHighlighting.suite());
         // suite.addTest(TestSolrSearchMLTQuerying.suite());
@@ -117,7 +117,7 @@ public final class AllSolrTests {
         // suite.addTest(TestSolrSearchRanging.suite());
         // suite.addTest(TestSolrSearchSorting.suite());
         // suite.addTest(TestSolrSearchSpellchecking.suite());
-        // suite.addTest(TestSolrSearchExcerptGenerating.suite());
+        suite.addTest(TestCmsSolrCollector.suite());
         //$JUnit-END$
         return suite;
     }

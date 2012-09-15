@@ -137,6 +137,16 @@
         </resourcetypes>
       </documenttype>
       <documenttype>
+        <name>containerpage-solr</name>
+        <class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>
+        <mimetypes>
+          <mimetype>text/html</mimetype>
+        </mimetypes>
+        <resourcetypes>
+          <resourcetype>containerpage-solr</resourcetype>
+        </resourcetypes>
+      </documenttype>
+      <documenttype>
         <name>msoffice-ole2</name>
         <class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>
         <mimetypes>
@@ -307,7 +317,7 @@
         </resources>
         <documenttypes-indexed>
           <name>xmlcontent-solr</name>
-          <name>containerpage</name>
+          <name>containerpage-solr</name>
           <name>xmlpage</name>
           <name>text</name>
           <name>pdf</name>
@@ -328,6 +338,7 @@
         </resources>
         <documenttypes-indexed>
           <name>xmlcontent-solr</name>
+          <name>containerpage-solr</name>
         </documenttypes-indexed>
       </indexsource>
     </indexsources>

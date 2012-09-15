@@ -31,12 +31,20 @@
 
 package org.opencms.search.solr;
 
+import java.io.File;
+import java.util.Locale;
+
+import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.core.CoreContainer;
+import org.apache.solr.core.SolrCore;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsLuceneIndex;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsFileUtil;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -48,16 +56,6 @@ import junit.framework.TestSuite;
  * @since 8.5.0
  */
 public class TestSolrConfiguration extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestSolrConfiguration(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Test suite for this test class.<p>
@@ -76,6 +74,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         suite.addTest(new TestSolrConfiguration("testDynamicFields"));
         suite.addTest(new TestSolrConfiguration("testDefaultFields"));
         suite.addTest(new TestSolrConfiguration("testCmsSolrPostProcessor"));
+        suite.addTest(new TestSolrConfiguration("testShutDown"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -85,7 +84,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
                 setupOpenCms("simpletest", "/");
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(AllSolrTests.SOLR_ONLINE)) {
+                    if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
                         A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
                         if (index instanceof CmsLuceneIndex) {
                             index.setEnabled(false);
@@ -104,6 +103,18 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         return wrapper;
     }
 
+    ThreadGroup rootThreadGroup = null;
+
+    /**
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     */
+    public TestSolrConfiguration(String arg0) {
+
+        super(arg0);
+    }
+    
     /**
      * Tests the CmsSearch with folder names with upper case letters.<p>
      * 
@@ -114,7 +125,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing Solr link processor");
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         // String query = "+text:Alkacon +text:OpenCms +text:Text +parent-folders:/sites/default/types/*";
         String query = "q=+text:>>SearchEgg1<<";
         CmsSolrResultList results = index.search(cms, query);
@@ -140,7 +151,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         // TODO: implement
     }
-
+    
     /**
      * @throws Throwable
      */
@@ -148,7 +159,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         // TODO: implement
     }
-
+    
     /**
      * @throws Throwable
      */
@@ -156,7 +167,35 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         // TODO: implement
     }
-
+    
+    public void testShutDown() throws Throwable {
+    	
+        CmsSolrIndex index = new CmsSolrIndex(AllTests.INDEX_TEST);
+        index.setProject("Offline");
+        index.setLocale(Locale.GERMAN);
+        index.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_AUTO);
+        index.setFieldConfigurationName("solr_fields");
+        index.addSourceName("solr_source2");
+        OpenCms.getSearchManager().addSearchIndex(index);
+        OpenCms.getSearchManager().rebuildIndex(AllTests.INDEX_TEST, new CmsShellReport(Locale.ENGLISH));
+        index.search(getCmsObject(), "q=*:*");
+        
+        // shut down
+        CoreContainer container = ((EmbeddedSolrServer) index.m_solr).getCoreContainer();
+        for (SolrCore core : container.getCores()) {
+        	core.closeSearcher();
+        	core.close();
+        }
+        container.shutdown();
+        
+        // wait for a moment
+        Thread.sleep(500);
+       
+        // success ?
+        CmsFileUtil.purgeDirectory(new File(index.getPath()));
+        assertTrue(!new File(index.getPath()).exists());
+    }
+    
     /**
      * @throws Throwable
      */

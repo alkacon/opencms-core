@@ -121,7 +121,7 @@ public class TestSolrSearchFaceting extends OpenCmsTestCase {
         // rows=0
         query.setRows(new Integer(0));
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrResultList results = index.search(getCmsObject(), query);
         long facetTextCount = results.getFacetQuery().get("text:OpenCms").intValue();
         long facetTitleCount = results.getFacetQuery().get("Title_prop:OpenCms").intValue();

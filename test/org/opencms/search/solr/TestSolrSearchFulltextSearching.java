@@ -140,7 +140,7 @@ public class TestSolrSearchFulltextSearching extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
 
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots("/sites/default/folder1/subfolder12/subsubfolder121/");

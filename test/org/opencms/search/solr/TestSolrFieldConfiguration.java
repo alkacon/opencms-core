@@ -148,11 +148,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots(Collections.singletonList(cms.getRequestContext().addSiteRoot(folderName)));
         CmsSolrResultList results = index.search(cms, query, false);
-        AllSolrTests.printResults(cms, results, false);
+        AllTests.printResults(cms, results, false);
         // assertEquals(10, results.getNumFound());
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
@@ -200,11 +200,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots(cms.getRequestContext().addSiteRoot(folderName));
         CmsSolrResultList results = index.search(cms, query);
-        AllSolrTests.printResults(cms, results, false);
+        AllTests.printResults(cms, results, false);
         assertEquals(10, results.getNumFound());
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
@@ -239,7 +239,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      */
     public void testAppinfoSolrField() throws Throwable {
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllSolrTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
             CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0001.html"));
@@ -250,7 +250,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         /////////////////
 
         // Test the result count
-        AllSolrTests.printResults(getCmsObject(), results, false);
+        AllTests.printResults(getCmsObject(), results, false);
         assertEquals(1, results.size());
 
         // Test if the result contains the expected resource 

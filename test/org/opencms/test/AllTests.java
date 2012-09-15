@@ -112,6 +112,7 @@ public final class AllTests {
         suite.addTest(org.opencms.search.AllTests.suite());
         suite.addTest(org.opencms.search.extractors.AllTests.suite());
         suite.addTest(org.opencms.search.gallery.AllTests.suite());
+        suite.addTest(org.opencms.search.solr.AllTests.suite());
         suite.addTest(org.opencms.security.AllTests.suite());
         suite.addTest(org.opencms.staticexport.AllTests.suite());
         suite.addTest(org.opencms.synchronize.AllTests.suite());
