@@ -46,7 +46,7 @@ Alkacon OpenCms Setup Wizard
 <% if (Bean.isInitialized()) { %>
 Alkacon OpenCms Setup Wizard - Apache OpenJPA compatible database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<form method="post" onSubmit="return checkSubmit()" class="nomargin">
+<form method="post" onSubmit="return checkSubmit()" class="nomargin" autocomplete="off">
 
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
 <tr><td style="vertical-align: top;">
