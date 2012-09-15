@@ -126,37 +126,31 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         Float maxScore,
         long startTime) {
 
-        super();
-
-        Integer queryTime = new Integer(new Long(System.currentTimeMillis() - startTime).intValue());
+        super(resourceDocumentList);
+        
+        m_query = query;
         m_startTime = startTime;
-
         m_rows = rows;
         m_end = end;
         m_page = page;
         m_visibleHitCount = visibleHitCount;
 
-        m_query = query;
-        // m_query.applyHighlightInfo();
-
         m_resultDocuments = resultDocuments;
         m_resultDocuments.setStart(start);
         m_resultDocuments.setMaxScore(maxScore);
-        m_resultDocuments.setNumFound(visibleHitCount);
+        m_resultDocuments.setNumFound(m_visibleHitCount);
 
         m_queryResponse = queryResponse;
         m_queryResponse.getResponse().setVal(
             m_queryResponse.getResponse().indexOf(QUERY_RESPONSE_NAME, 0),
             m_resultDocuments);
-        m_queryResponse.getResponseHeader().setVal(
-            m_queryResponse.getResponseHeader().indexOf(QUERY_TIME_NAME, 0),
-            queryTime);
-
-        addAll(resourceDocumentList);
 
         if (core != null) {
             initSolrReqRes(core);
         }
+        m_queryResponse.getResponseHeader().setVal(
+                m_queryResponse.getResponseHeader().indexOf(QUERY_TIME_NAME, 0),
+                new Integer(new Long(System.currentTimeMillis() - m_startTime).intValue()));
     }
 
     /**
@@ -414,6 +408,8 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
             } catch (Exception e) {
                 LOG.error(e);
             }
+            LOG.debug(CmsStringUtil.padRight("--- Highlighting Complete", CmsSolrIndex.DEBUG_PADDING_RIGHT) 
+            		+ ": " + (System.currentTimeMillis() - getStartTime()));
         }
     }
 

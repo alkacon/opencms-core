@@ -142,19 +142,10 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     /**
      * @see org.opencms.search.I_CmsIndexWriter#optimize()
      */
-    public void optimize() throws IOException {
+    public void optimize()  {
 
-        if ((m_server != null) && (m_index != null)) {
-            try {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_INDEX_WRITER_MSG_OPTIMIZE_2,
-                    m_index.getName(),
-                    m_index.getPath()));
-                m_server.optimize();
-            } catch (SolrServerException e) {
-                throw new IOException(e.getLocalizedMessage(), e);
-            }
-        }
+    	// optimization is not recommended
+    	// should be configured within solrconfig.xml
     }
 
     /**
