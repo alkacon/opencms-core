@@ -34,6 +34,7 @@ package org.opencms.search.solr;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -78,8 +79,12 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.FastWriter;
+import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrCore;
+import org.apache.solr.handler.ReplicationHandler;
+import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
+import org.apache.solr.request.SolrRequestHandler;
 import org.apache.solr.response.BinaryQueryResponseWriter;
 import org.apache.solr.response.QueryResponseWriter;
 import org.apache.solr.response.SolrQueryResponse;
@@ -100,9 +105,15 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     /** Constant for additional parameter to set the post processor class name. */
     public static final String POST_PROCESSOR = "search.solr.postProcessor";
     
+    /** The solr exclude property. */
+    public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR = "solr";
+    
     /** A constant for debug formatting outpu. */
     protected static final int DEBUG_PADDING_RIGHT = 50;    
 
+    /** The embedded Solr server for this index. */
+    SolrServer m_solr;
+    
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
 
@@ -114,21 +125,13 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
     /** The post document manipulator. */
     private I_CmsSolrPostSearchProcessor m_postProcessor;
-
-    /** The embedded Solr server, only one embedded instance per OpenCms. */
-    SolrServer m_solr;
-
+    
     /**
      * Default constructor.<p>
      */
     public CmsSolrIndex() {
 
         super();
-    }
-
-    @Override
-    public void shutDown() {
-    	// noop
     }
     
     /**
@@ -185,7 +188,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         }
         super.addConfigurationParameter(key, value);
     }
-
+    
     /**
      * @see org.opencms.search.A_CmsSearchIndex#createIndexWriter(boolean, org.opencms.report.I_CmsReport)
      */
@@ -193,22 +196,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public I_CmsIndexWriter createIndexWriter(boolean create, I_CmsReport report) {
 
         return new CmsSolrIndexWriter(m_solr, this);
-    }
-
-    /**
-     * Writes a formatted log message.<p>
-     * 
-     * @param keyMessage the message
-     * @param valueMessage optional value
-     * @param time a timestamp in ms
-     */
-    protected void debug(String keyMessage, String valueMessage, long time) {
-    
-    	if (valueMessage != null) {
-    		LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + valueMessage);
-    	} else {
-    		LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + time + " ms");
-    	}
     }
 
     /**
@@ -597,6 +584,15 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
+     * @see org.opencms.search.A_CmsSearchIndex#shutDown()
+     */
+    @Override
+    public void shutDown() {
+    	
+    	// noop
+    }
+
+    /**
      * Writes the response into the writer.<p>
      * 
      * NOTE: Currently not available for HTTP server.<p>
@@ -639,6 +635,72 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         }
     }
 
+    /**
+     * @see org.opencms.search.A_CmsSearchIndex#createIndexBackup()
+     */
+    @Override
+    protected String createIndexBackup() {
+
+    	if (!isBackupReindexing()) {
+            // if no backup is generated we don't need to do anything
+            return null;
+        }
+        if (m_solr instanceof EmbeddedSolrServer) {
+        	EmbeddedSolrServer ser = (EmbeddedSolrServer)m_solr;
+        	CoreContainer con =  ser.getCoreContainer();
+        	SolrCore core = con.getCore(getName());
+        	if (core != null) {
+        		SolrRequestHandler h = core.getRequestHandler("/replication");
+        		if (h instanceof ReplicationHandler) {
+        			h.handleRequest(new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")), new SolrQueryResponse());
+        		}
+        	}
+        }
+        return null;
+    }
+    
+    /**
+     * Writes a formatted log message.<p>
+     * 
+     * @param keyMessage the message
+     * @param valueMessage optional value
+     * @param time a timestamp in ms
+     */
+    protected void debug(String keyMessage, String valueMessage, long time) {
+    
+    	if (valueMessage != null) {
+    		LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + valueMessage);
+    	} else {
+    		LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + time + " ms");
+    	}
+    }
+    
+    /**
+     * @see org.opencms.search.A_CmsSearchIndex#excludeFromIndex(CmsObject, CmsResource)
+     */
+    @Override
+    protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
+    	
+    	if (resource.isFolder() || resource.isTemporaryFile()) {
+            // don't index  folders or temporary files for galleries, but pretty much everything else
+            return true;
+        }
+        boolean excludeFromIndex = false;
+        try {
+            // do property lookup with folder search
+            String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
+            if (propValue != null) {
+                propValue = propValue.trim();
+                // property value was neither "true" nor null, must check for "all"
+                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue)
+                    || PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue);
+            }
+        } catch (CmsException e) {
+            LOG.debug(e.getMessage(), e);
+        }
+        return excludeFromIndex;
+    }
+    
     /**
      * @see org.opencms.search.A_CmsSearchIndex#indexSearcherClose()
      */

@@ -31,6 +31,7 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsIndexWriter;
@@ -44,6 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
+
 
 /**
  * Implements the index writer for the Solr server used by OpenCms.<p>
@@ -80,11 +82,20 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      * 
      * @param server the standard Lucene IndexWriter to use as delegate
      * @param index the OpenCms search index instance this writer to supposed to write to
+     * @throws CmsConfigurationException 
      */
-    public CmsSolrIndexWriter(SolrServer server, CmsSolrIndex index) {
+    public CmsSolrIndexWriter(SolrServer server, CmsSolrIndex index)  {
 
-        m_server = server;
-        m_index = index;
+    	m_index = index;
+    	m_server = server;
+        try {
+        	m_index.createIndexBackup();
+			m_server.deleteByQuery("*:*");
+		} catch (SolrServerException e) {
+			LOG.error(e.getMessage(), e);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		}
         if ((m_index != null) && LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_CREATE_2,
