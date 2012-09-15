@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
+import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.HighlightingHandler;
 import com.alkacon.acacia.client.I_InlineFormParent;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
@@ -182,7 +183,8 @@ public final class CmsContentEditor {
      * Constructor.<p>
      */
     private CmsContentEditor() {
-
+    	// set the acacia editor message bundle
+    	EditorBase.setDictionary(Messages.get().getDictionary());
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.widgetCss().ensureInjected();
         I_CmsContentServiceAsync service = GWT.create(I_CmsContentService.class);

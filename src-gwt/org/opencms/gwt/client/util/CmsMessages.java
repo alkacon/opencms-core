@@ -49,34 +49,11 @@ public class CmsMessages {
     /** The suffix of a "short" localized key name. */
     public static final String KEY_SHORT_SUFFIX = ".short";
 
-    /** Prefix / Suffix for unknown keys. */
-    public static final String UNKNOWN_KEY_EXTENSION = "???";
-
     /** Cached dictionaries. */
     private static Map<String, Dictionary> m_dictionaries;
 
-    /** The name of the resource bundle. */
-    private String m_bundleName;
-
-    /** The current dictionary. */
-    private Dictionary m_dictionary;
-
-    /**
-     * Default constructor.<p>
-     * 
-     * @param bundleName the localized bundle name 
-     */
-    public CmsMessages(String bundleName) {
-
-        if (m_dictionaries == null) {
-            m_dictionaries = new HashMap<String, Dictionary>();
-        }
-        m_dictionary = m_dictionaries.get(bundleName);
-        if (m_dictionary == null) {
-            m_dictionary = Dictionary.getDictionary(bundleName.replace('.', '_'));
-            m_dictionaries.put(bundleName, m_dictionary);
-        }
-    }
+    /** Prefix / Suffix for unknown keys. */
+    public static final String UNKNOWN_KEY_EXTENSION = "???";
 
     /**
      * Helper method for formatting message parameters.<p>
@@ -151,6 +128,23 @@ public class CmsMessages {
     }
 
     /**
+     * Returns a regular expression for replacement.<p>
+     * 
+     * @param position the parameter number
+     * @param options the optional options
+     * 
+     * @return the regular expression for replacement
+     */
+    private static String getRegEx(int position, String... options) {
+
+        String value = "" + position;
+        for (int i = 0; i < options.length; i++) {
+            value += "," + options[i];
+        }
+        return "{" + value + "}";
+    }
+
+    /**
      * Returns <code>true</code> if the provided value matches the scheme 
      * <code>"??? " + keyName + " ???"</code>, that is the value appears to be an unknown key.<p>
      * 
@@ -167,21 +161,27 @@ public class CmsMessages {
         return (value == null) || (value.startsWith(UNKNOWN_KEY_EXTENSION));
     }
 
-    /**
-     * Returns a regular expression for replacement.<p>
-     * 
-     * @param position the parameter number
-     * @param options the optional options
-     * 
-     * @return the regular expression for replacement
-     */
-    private static String getRegEx(int position, String... options) {
+    /** The name of the resource bundle. */
+    private String m_bundleName;
 
-        String value = "" + position;
-        for (int i = 0; i < options.length; i++) {
-            value += "," + options[i];
+    /** The current dictionary. */
+    private Dictionary m_dictionary;
+
+    /**
+     * Default constructor.<p>
+     * 
+     * @param bundleName the localized bundle name 
+     */
+    public CmsMessages(String bundleName) {
+
+        if (m_dictionaries == null) {
+            m_dictionaries = new HashMap<String, Dictionary>();
         }
-        return "{" + value + "}";
+        m_dictionary = m_dictionaries.get(bundleName);
+        if (m_dictionary == null) {
+            m_dictionary = Dictionary.getDictionary(bundleName.replace('.', '_'));
+            m_dictionaries.put(bundleName, m_dictionary);
+        }
     }
 
     /** 
@@ -290,6 +290,15 @@ public class CmsMessages {
     }
 
     /**
+     * Returns the internal dictionary.<p>
+     *
+     * @return the internal dictionary
+     */
+    public Dictionary getDictionary(){
+    	return m_dictionary;
+    }
+
+    /**
      * Returns the localized resource string for a given message key.<p>
      * 
      * If the key was not found in the bundle, the return value is
@@ -385,7 +394,7 @@ public class CmsMessages {
         String result = key(keyName, true);
         return (result == null) ? defaultValue : result;
     }
-
+    
     /**
      * Returns the localized resource string for a given message key,
      * treating all values appended with "|" as replacement parameters.<p>

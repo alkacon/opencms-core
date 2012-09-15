@@ -36,8 +36,14 @@ import org.opencms.gwt.client.util.CmsMessages;
  */
 public final class Messages {
 
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0 = "ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+	public static String GUI_CHOICE_ADD_CHOICE_0="GUI_CHOICE_ADD_CHOICE_0"; //Acacia message: Add choice
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DOWNLOAD_GALLERY_OPEN_0 = "GUI_DOWNLOAD_GALLERY_OPEN_0";
@@ -74,26 +80,27 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_OPEN_FORM_0 = "GUI_TOOLBAR_OPEN_FORM_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_RESET_0 = "GUI_TOOLBAR_RESET_0";
+	
+	/** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_SAVE_0 = "GUI_TOOLBAR_SAVE_0";
+	
+	/** Message constant for key in the resource bundle. */
+	public static String GUI_VIEW_ADD_0="GUI_VIEW_ADD_0"; //Acacia message: Add
+	
+	/** Message constant for key in the resource bundle. */
+	public static String GUI_VIEW_CLOSE_0="GUI_VIEW_CLOSE_0"; //Acacia message: Close
+	
+	/** Message constant for key in the resource bundle. */
+	public static String GUI_VIEW_DELETE_0="GUI_VIEW_DELETE_0"; //Acacia message: Delete
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_SAVE_0 = "GUI_TOOLBAR_SAVE_0";
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
+	public static String GUI_VIEW_MOVE_0="GUI_VIEW_MOVE_0"; //Acacia message: Move
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
-    }
 
     /**
      * Returns an instance of this localized message accessor.<p>
@@ -106,6 +113,14 @@ public final class Messages {
             INSTANCE = new CmsMessages(BUNDLE_NAME);
         }
         return INSTANCE;
+    }
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
     }
 
     /**
