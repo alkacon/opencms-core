@@ -517,8 +517,10 @@ public final class CmsContentEditor {
                     m_onClose);
             }
         };
-        String title = "Select a content model";
-        String message = "Please select the model to create the initial content off the new resource.";
+        String title = org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_TITLE_0);
+        String message = org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
         CmsModelSelectDialog dialog = new CmsModelSelectDialog(handler, definition.getModelInfos(), title, message);
         dialog.center();
     }

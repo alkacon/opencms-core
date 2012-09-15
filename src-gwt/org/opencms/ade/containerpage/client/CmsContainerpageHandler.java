@@ -632,10 +632,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 m_controller.createAndEditNewElement(element, modelStructureId);
             }
         };
-        String title = org.opencms.ade.containerpage.client.Messages.get().key(
-            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_SELECT_TITLE_0);
-        String message = org.opencms.ade.containerpage.client.Messages.get().key(
-            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
+        String title = org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_TITLE_0);
+        String message = org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
         CmsModelSelectDialog dialog = new CmsModelSelectDialog(handler, modelResources, title, message);
         dialog.center();
     }
