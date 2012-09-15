@@ -127,7 +127,7 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     public List<CmsResource> getResults(CmsObject cms, String name, String param) throws CmsException {
 
         name = name == null ? COLLECTORS[1] : name;
-        if (param.indexOf('|') > 0) {
+        if (param != null && param.indexOf('|') != -1) {
             param = param.substring(0, param.indexOf('|'));
         }
         Map<String, String[]> pm = CmsRequestUtil.createParameterMap(param);
