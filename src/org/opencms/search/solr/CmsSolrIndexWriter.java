@@ -88,15 +88,8 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
 
     	m_index = index;
     	m_server = server;
-        try {
-        	m_index.createIndexBackup();
-			m_server.deleteByQuery("*:*");
-		} catch (SolrServerException e) {
-			LOG.error(e.getMessage(), e);
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
         if ((m_index != null) && LOG.isInfoEnabled()) {
+        	m_index.createIndexBackup();
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_CREATE_2,
                 m_index.getName(),
@@ -131,6 +124,17 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
         }
     }
 
+    public void deleteAllDocuments() throws IOException {
+        if ((m_server != null) && (m_index != null)) {
+            try {
+                
+                m_server.deleteByQuery("*:*");
+            } catch (SolrServerException e) {
+                throw new IOException(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+    
     /**
      * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(java.lang.String)
      */

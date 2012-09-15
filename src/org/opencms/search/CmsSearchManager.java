@@ -60,6 +60,7 @@ import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.search.solr.CmsSolrFieldConfiguration;
 import org.opencms.search.solr.CmsSolrIndex;
+import org.opencms.search.solr.CmsSolrIndexWriter;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.A_CmsModeStringEnumeration;
@@ -2403,8 +2404,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (backup != null) {
                     index.indexSearcherOpen(backup);
                 }
+                
                 // create a new index writer
                 writer = index.getIndexWriter(report, true);
+                if (writer instanceof CmsSolrIndexWriter) {
+                	try {
+						((CmsSolrIndexWriter) writer).deleteAllDocuments();
+					} catch (IOException e) {
+						LOG.error(e.getMessage(), e);
+					}
+                }
 
                 // output start information on the report
                 report.println(
