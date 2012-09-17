@@ -41,6 +41,7 @@ import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentServiceAsync;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
@@ -50,6 +51,7 @@ import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
+import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
@@ -183,8 +185,9 @@ public final class CmsContentEditor {
      * Constructor.<p>
      */
     private CmsContentEditor() {
-    	// set the acacia editor message bundle
-    	EditorBase.setDictionary(Messages.get().getDictionary());
+
+        // set the acacia editor message bundle
+        EditorBase.setDictionary(Messages.get().getDictionary());
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.widgetCss().ensureInjected();
         I_CmsContentServiceAsync service = GWT.create(I_CmsContentService.class);
@@ -518,9 +521,9 @@ public final class CmsContentEditor {
             }
         };
         String title = org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_TITLE_0);
+            org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_TITLE_0);
         String message = org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
+            org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
         CmsModelSelectDialog dialog = new CmsModelSelectDialog(handler, definition.getModelInfos(), title, message);
         dialog.center();
     }
@@ -912,12 +915,38 @@ public final class CmsContentEditor {
 
             public void onClick(ClickEvent event) {
 
-                cancelEdit();
-
+                confirmCancel();
             }
         });
         m_toolbar.addRight(m_cancelButton);
         RootPanel.get().add(m_toolbar);
+    }
+
+    /**
+     * Asks the user to confirm resetting all changes.<p>
+     */
+    void confirmCancel() {
+
+        if (m_saveButton.isEnabled()) {
+            CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
+            dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                public void onClose() {
+
+                    // nothing to do
+                }
+
+                public void onOk() {
+
+                    cancelEdit();
+                }
+            });
+            dialog.center();
+        } else {
+            cancelEdit();
+        }
     }
 
     /**
