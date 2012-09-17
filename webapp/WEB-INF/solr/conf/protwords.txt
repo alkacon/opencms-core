@@ -11,21 +11,11 @@
 # limitations under the License.
 
 #-----------------------------------------------------------------------
-#some test synonym mappings unlikely to appear in real input text
-aaafoo => aaabar
-bbbfoo => bbbfoo bbbbar
-cccfoo => cccbar cccbaz
-fooaaa,baraaa,bazaaa
+# Use a protected word file to protect against the stemmer reducing two
+# unrelated words to the same base word.
 
-# Some synonym groups specific to this example
-GB,gib,gigabyte,gigabytes
-MB,mib,megabyte,megabytes
-Television, Televisions, TV, TVs
-#notice we use "gib" instead of "GiB" so any WordDelimiterFilter coming
-#after us won't split it into two words.
-
-# Synonym mappings can be used for spelling correction too
-pixima => pixma
-
-a\,a => b\,b
+# Some non-words that normally won't be encountered,
+# just to test that they won't be stemmed.
+dontstems
+zwhacky
 
