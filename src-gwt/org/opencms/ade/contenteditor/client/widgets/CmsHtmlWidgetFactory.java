@@ -34,8 +34,10 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import com.alkacon.acacia.client.widgets.I_FormEditWidget;
 import com.alkacon.acacia.client.widgets.TinyMCEWidget;
 
+import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -48,6 +50,9 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
     /** The widget name. */
     private static final String WIDGET_NAME = "org.opencms.widgets.CmsHtmlWidget";
+
+    /** The message bundle. */
+    private static final CmsMessages MESSAGES = Messages.get();
 
     /**
      * Initializes this class.<p>
@@ -86,6 +91,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     private native JavaScriptObject generateOptionsForHallo(String configuration)/*-{
         var options = null;
+        var messages = @org.opencms.ade.contenteditor.client.widgets.CmsHtmlWidgetFactory::MESSAGES;
         try {
             var config = (typeof $wnd.JSON != 'undefined')
                     && $wnd.JSON.parse(configuration)
@@ -94,53 +100,149 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
             if (config.toolbar_items) {
                 for ( var i = 0; i < config.toolbar_items.length; i++) {
                     var item = config.toolbar_items[i];
+                    if (item == 'undo') {
+                        options.reundo = {
+                            undoLabel : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_UNDO_0),
+                            redoLabel : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_REDO_0)
+                        }
+                    }
+                    if (item == 'alignleft') {
+                        if (!options.justify) {
+                            options.justify = {
+                                formats : []
+                            };
+                        }
+                        options.justify.formats
+                                .push({
+                                    command : "Left",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_LEFT_0)
+                                });
+                    }
+                    if (item == 'aligncenter') {
+                        if (!options.justify) {
+                            options.justify = {
+                                formats : []
+                            };
+                        }
+                        options.justify.formats
+                                .push({
+                                    command : "Center",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_CENTER_0)
+                                });
+                    }
+                    if (item == 'alignright') {
+                        if (!options.justify) {
+                            options.justify = {
+                                formats : []
+                            };
+                        }
+                        options.justify.formats
+                                .push({
+                                    command : "Right",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_RIGHT_0)
+                                });
+                    }
                     if (item == 'justify') {
-                        options.justify = true;
+                        if (!options.justify) {
+                            options.justify = {
+                                formats : []
+                            };
+                        }
+                        options.justify.formats
+                                .push({
+                                    command : "Full",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_JUSTIFY_0),
+                                    icon : "justify"
+                                });
                     }
                     if (item == 'unorderedlist') {
                         if (!options.lists) {
-                            options.lists = {};
+                            options.lists = {
+                                formats : []
+                            };
                         }
-                        options.lists.unordered = true;
+                        options.format.formats
+                                .push({
+                                    command : "Unordered",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_UNORDERED_LIST_0),
+                                    icon : "ul"
+                                });
                     }
                     if (item == 'orderedlist') {
                         if (!options.lists) {
-                            options.lists = {};
+                            options.lists = {
+                                formats : []
+                            };
                         }
-                        options.lists.ordered = true;
+                        options.format.formats
+                                .push({
+                                    command : "Ordered",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_ORDERED_LIST_0),
+                                    icon : "ol"
+                                });
                     }
                     if (item == 'bold') {
                         if (!options.format) {
-                            options.format = {};
+                            options.format = {
+                                formats : []
+                            };
                         }
-                        options.format.bold = true;
+                        options.format.formats
+                                .push({
+                                    command : "bold",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_BOLD_0)
+                                });
                     }
                     if (item == 'italic') {
                         if (!options.format) {
-                            options.format = {};
+                            options.format = {
+                                formats : []
+                            };
                         }
-                        options.format.italic = true;
+                        options.format.formats
+                                .push({
+                                    command : "italic",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_ITALIC_0)
+                                });
                     }
                     if (item == 'underline') {
                         if (!options.format) {
-                            options.format = {};
+                            options.format = {
+                                formats : []
+                            };
                         }
-                        options.format.underline = true;
+                        options.format.formats
+                                .push({
+                                    command : "underline",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_UNDERLINE_0)
+                                });
                     }
                     if (item == 'strikethrough') {
                         if (!options.format) {
-                            options.format = {};
+                            options.format = {
+                                formats : []
+                            };
                         }
-                        options.format.strikeThrough = true;
+                        options.format.formats
+                                .push({
+                                    command : "strikeThrough",
+                                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_STRIKE_THROUGH_0)
+                                });
                     }
                     if (item == 'formatselect' && !config.block_formats) {
-                        options.block = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                                'p', 'pre', 'address' ];
+                        options.block = {
+                            elements : [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                                    'p', 'pre', 'address' ],
+                            label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_BLOCK_FORMATS_0)
+                        };
                     }
                 }
             }
             if (config.block_formats) {
-                options.block = config.block_formats.split(",");
+                options.block = {
+                    elements : config.block_formats.split(","),
+                    label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_BLOCK_FORMATS_0)
+                };
             }
         } catch (e) {
             // nothing to do
