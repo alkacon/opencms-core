@@ -296,7 +296,12 @@ public class CmsADEManager {
         CmsADEConfigData configData = lookupConfiguration(cms, originRootPath);
         List<CmsDetailPageInfo> pageInfo = configData.getDetailPagesForType(resType);
         if ((pageInfo == null) || pageInfo.isEmpty()) {
-            return null;
+            // in case no detail page is found for the base URI try to fetch it for the page root path
+            configData = lookupConfiguration(cms, pageRootPath);
+            pageInfo = configData.getDetailPagesForType(resType);
+            if ((pageInfo == null) || pageInfo.isEmpty()) {
+                return null;
+            }
         }
         return pageInfo.get(0).getUri();
     }
