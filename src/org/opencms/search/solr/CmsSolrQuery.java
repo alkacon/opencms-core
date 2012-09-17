@@ -161,7 +161,7 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-     * Returns the resource type if only one is set as filter query
+     * Returns the resource type if only one is set as filter query.<p>
      * 
      * @param fqs the field queries to check
      * 
@@ -430,7 +430,7 @@ public class CmsSolrQuery extends SolrQuery {
     @Override
     protected CmsSolrQuery clone() {
 
-        return new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(this.toString()));
+        return new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(toString()));
     }
 
     /**

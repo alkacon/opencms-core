@@ -127,7 +127,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         long startTime) {
 
         super(resourceDocumentList);
-        
+
         m_query = query;
         m_startTime = startTime;
         m_rows = rows;
@@ -149,8 +149,8 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
             initSolrReqRes(core);
         }
         m_queryResponse.getResponseHeader().setVal(
-                m_queryResponse.getResponseHeader().indexOf(QUERY_TIME_NAME, 0),
-                new Integer(new Long(System.currentTimeMillis() - m_startTime).intValue()));
+            m_queryResponse.getResponseHeader().indexOf(QUERY_TIME_NAME, 0),
+            new Integer(new Long(System.currentTimeMillis() - m_startTime).intValue()));
     }
 
     /**
@@ -408,8 +408,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
             } catch (Exception e) {
                 LOG.error(e);
             }
-            LOG.debug(CmsStringUtil.padRight("--- Highlighting Complete", CmsSolrIndex.DEBUG_PADDING_RIGHT) 
-            		+ ": " + (System.currentTimeMillis() - getStartTime()));
+            LOG.debug(CmsStringUtil.padRight("--- Highlighting Complete", CmsSolrIndex.DEBUG_PADDING_RIGHT)
+                + ": "
+                + (System.currentTimeMillis() - getStartTime()));
         }
     }
 

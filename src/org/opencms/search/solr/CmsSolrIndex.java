@@ -104,16 +104,13 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
     /** Constant for additional parameter to set the post processor class name. */
     public static final String POST_PROCESSOR = "search.solr.postProcessor";
-    
+
     /** The solr exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR = "solr";
-    
-    /** A constant for debug formatting outpu. */
-    protected static final int DEBUG_PADDING_RIGHT = 50;    
 
-    /** The embedded Solr server for this index. */
-    SolrServer m_solr;
-    
+    /** A constant for debug formatting outpu. */
+    protected static final int DEBUG_PADDING_RIGHT = 50;
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrIndex.class);
 
@@ -123,9 +120,12 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     /** A constant for UTF-8 charset. */
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
+    /** The embedded Solr server for this index. */
+    SolrServer m_solr;
+
     /** The post document manipulator. */
     private I_CmsSolrPostSearchProcessor m_postProcessor;
-    
+
     /**
      * Default constructor.<p>
      */
@@ -133,7 +133,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
         super();
     }
-    
+
     /**
      * Public constructor to create a Solr index.<p>
      * 
@@ -188,7 +188,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         }
         super.addConfigurationParameter(key, value);
     }
-    
+
     /**
      * @see org.opencms.search.A_CmsSearchIndex#createIndexWriter(boolean, org.opencms.report.I_CmsReport)
      */
@@ -241,11 +241,11 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
 
         if ((res != null) && (getSources() != null)) {
-        	if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
-        		return OpenCms.getSearchManager().getDocumentFactory(
-                        CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR,
-                        "text/html");
-        	}
+            if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                return OpenCms.getSearchManager().getDocumentFactory(
+                    CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR,
+                    "text/html");
+            }
             if (CmsResourceTypeXmlContent.isXmlContent(res)) {
                 return OpenCms.getSearchManager().getDocumentFactory(
                     CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
@@ -392,9 +392,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public synchronized CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
 
-    	String currentTime = DateFormat.getTimeInstance(DateFormat.FULL, Locale.ENGLISH).format(new Date());
-    	debug("### START SRARCH with " + query.getRows() + " requested rows at", currentTime, 0);
-    	
+        String currentTime = DateFormat.getTimeInstance(DateFormat.FULL, Locale.ENGLISH).format(new Date());
+        debug("### START SRARCH with " + query.getRows() + " requested rows at", currentTime, 0);
+
         int previousPriority = Thread.currentThread().getPriority();
         long startTime = System.currentTimeMillis();
 
@@ -435,12 +435,13 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
             // perform the Solr query and remember the original Solr response
             QueryResponse queryResponse = m_solr.query(query);
-            
+
             // initialize the hit count and the max score
             long hitCount = queryResponse.getResults().getNumFound();
             debug("--- Query Executed " + "(hitCount=" + hitCount + ")", null, System.currentTimeMillis() - startTime);
             // page = params.getSearchPage();
-            start = -1; end = -1;
+            start = -1;
+            end = -1;
             if ((rows > 0) && (page > 0) && (hitCount > 0)) {
                 // calculate the final size of the search result
                 start = rows * (page - 1);
@@ -457,7 +458,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             float maxScore = 0;
 
             List<CmsSearchResource> allDocs = new ArrayList<CmsSearchResource>();
-            
+
             // iterate over found documents
             int cnt = 0;
             for (int i = 0; (i < queryResponse.getResults().size()) && (cnt < end); i++) {
@@ -491,21 +492,21 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_RESULT_ITERATION_FAILED_0), e);
                 }
             }
-            
+
             // the last documents were all secret so let's take the last found docs
-            if (resourceDocumentList.isEmpty() && allDocs.size() > 0) {
-            	page =  Math.round(allDocs.size() / rows) + 1;
-            	int showCount = allDocs.size() % rows;
-            	showCount = showCount == 0 ? rows : showCount;
-            	start = allDocs.size() - new Long(showCount).intValue();
-            	end = allDocs.size();
-            	if (allDocs.size() > start) {
-            		resourceDocumentList = allDocs.subList(start, end);
-            		for (CmsSearchResource r : resourceDocumentList) {
-            			 maxScore = maxScore < r.getDocument().getScore() ? r.getDocument().getScore() : maxScore;
-            			 solrDocumentList.add(((CmsSolrDocument) r.getDocument()).getSolrDocument());
-            		}
-            	}
+            if (resourceDocumentList.isEmpty() && (allDocs.size() > 0)) {
+                page = Math.round(allDocs.size() / rows) + 1;
+                int showCount = allDocs.size() % rows;
+                showCount = showCount == 0 ? rows : showCount;
+                start = allDocs.size() - new Long(showCount).intValue();
+                end = allDocs.size();
+                if (allDocs.size() > start) {
+                    resourceDocumentList = allDocs.subList(start, end);
+                    for (CmsSearchResource r : resourceDocumentList) {
+                        maxScore = maxScore < r.getDocument().getScore() ? r.getDocument().getScore() : maxScore;
+                        solrDocumentList.add(((CmsSolrDocument)r.getDocument()).getSolrDocument());
+                    }
+                }
             }
 
             SolrCore core = null;
@@ -515,18 +516,18 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             debug("--- Permissions Checked for " + cnt + " Resources", null, System.currentTimeMillis() - startTime);
             // create and return the result
             CmsSolrResultList result = new CmsSolrResultList(
-                    core,
-                    initQuery,
-                    queryResponse,
-                    solrDocumentList,
-                    resourceDocumentList,
-                    start,
-                    new Integer(rows),
-                    end,
-                    page,
-                    visibleHitCount,
-                    new Float(maxScore),
-                    startTime);
+                core,
+                initQuery,
+                queryResponse,
+                solrDocumentList,
+                resourceDocumentList,
+                start,
+                new Integer(rows),
+                end,
+                page,
+                visibleHitCount,
+                new Float(maxScore),
+                startTime);
             debug("### FINISH SEARCH in", null, System.currentTimeMillis() - startTime);
             return result;
         } catch (Exception e) {
@@ -588,8 +589,8 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      */
     @Override
     public void shutDown() {
-    	
-    	// noop
+
+        // noop
     }
 
     /**
@@ -606,7 +607,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
         if (m_solr instanceof EmbeddedSolrServer) {
 
-        	long start = System.currentTimeMillis();
+            long start = System.currentTimeMillis();
             SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
             SolrQueryRequest queryRequest = result.getSolrQueryRequest();
             SolrQueryResponse queryResponse = result.getSolrQueryResponse();
@@ -629,7 +630,10 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                 responseWriter.write(out, queryRequest, queryResponse);
                 out.flush();
             }
-            debug("### WRITE RESPONSE (" + (System.currentTimeMillis() - start) + " ms)", null, System.currentTimeMillis() - result.getStartTime());
+            debug(
+                "### WRITE RESPONSE (" + (System.currentTimeMillis() - start) + " ms)",
+                null,
+                System.currentTimeMillis() - result.getStartTime());
         } else {
             throw new UnsupportedOperationException();
         }
@@ -641,24 +645,26 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     @Override
     protected String createIndexBackup() {
 
-    	if (!isBackupReindexing()) {
+        if (!isBackupReindexing()) {
             // if no backup is generated we don't need to do anything
             return null;
         }
         if (m_solr instanceof EmbeddedSolrServer) {
-        	EmbeddedSolrServer ser = (EmbeddedSolrServer)m_solr;
-        	CoreContainer con =  ser.getCoreContainer();
-        	SolrCore core = con.getCore(getName());
-        	if (core != null) {
-        		SolrRequestHandler h = core.getRequestHandler("/replication");
-        		if (h instanceof ReplicationHandler) {
-        			h.handleRequest(new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")), new SolrQueryResponse());
-        		}
-        	}
+            EmbeddedSolrServer ser = (EmbeddedSolrServer)m_solr;
+            CoreContainer con = ser.getCoreContainer();
+            SolrCore core = con.getCore(getName());
+            if (core != null) {
+                SolrRequestHandler h = core.getRequestHandler("/replication");
+                if (h instanceof ReplicationHandler) {
+                    h.handleRequest(
+                        new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
+                        new SolrQueryResponse());
+                }
+            }
         }
         return null;
     }
-    
+
     /**
      * Writes a formatted log message.<p>
      * 
@@ -667,21 +673,21 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
      * @param time a timestamp in ms
      */
     protected void debug(String keyMessage, String valueMessage, long time) {
-    
-    	if (valueMessage != null) {
-    		LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + valueMessage);
-    	} else {
-    		LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + time + " ms");
-    	}
+
+        if (valueMessage != null) {
+            LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + valueMessage);
+        } else {
+            LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + time + " ms");
+        }
     }
-    
+
     /**
      * @see org.opencms.search.A_CmsSearchIndex#excludeFromIndex(CmsObject, CmsResource)
      */
     @Override
     protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
-    	
-    	if (resource.isFolder() || resource.isTemporaryFile()) {
+
+        if (resource.isFolder() || resource.isTemporaryFile()) {
             // don't index  folders or temporary files for galleries, but pretty much everything else
             return true;
         }
@@ -700,7 +706,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         }
         return excludeFromIndex;
     }
-    
+
     /**
      * @see org.opencms.search.A_CmsSearchIndex#indexSearcherClose()
      */

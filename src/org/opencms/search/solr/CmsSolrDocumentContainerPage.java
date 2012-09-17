@@ -65,12 +65,12 @@ import org.apache.commons.logging.Log;
  */
 public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSolrDocumentContainerPage.class);
-    
     /** The solr document type name for xml-contents. */
     public static final String TYPE_CONTAINERPAGE_SOLR = "containerpage-solr";
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSolrDocumentContainerPage.class);
+
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
@@ -108,14 +108,14 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
         // create the Lucene document according to the index field configuration
         return index.getFieldConfiguration().createDocument(cms, resource, index, content);
     }
-    
+
     /**
      * Returns the raw text content of a VFS resource of type <code>CmsResourceTypeContainerPage</code>.<p>
      * 
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, A_CmsSearchIndex)
      */
     @Override
-	public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
     throws CmsException {
 
         logContentExtraction(resource, index);
@@ -143,36 +143,16 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             return merge(all);
         } catch (Exception e) {
             throw new CmsIndexException(
-                    Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
-                    e);
+                Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
+                e);
         }
     }
 
-    private I_CmsExtractionResult merge(List<I_CmsExtractionResult> all) {
-
-        StringBuffer content = new StringBuffer();
-        Map<String, String> items = new HashMap<String, String>();
-        Set<I_CmsSearchField> fields = new HashSet<I_CmsSearchField>();
-    	
-    	for (I_CmsExtractionResult ex : all) {
-    		if (ex.getContent() != null) {
-    			content.append(ex.getContent());
-    		}
-    		if (ex.getContentItems() != null) {
-    			items.putAll(ex.getContentItems());
-    		}
-    		if (ex.getMappingFields() != null) {
-    			fields.addAll(ex.getMappingFields());
-    		}
-    	}
-    	return new CmsExtractionResult(content.toString(), items, fields);
-	}
-
-	/**
+    /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#isLocaleDependend()
      */
     @Override
-	public boolean isLocaleDependend() {
+    public boolean isLocaleDependend() {
 
         return true;
     }
@@ -181,8 +161,35 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
      * @see org.opencms.search.documents.I_CmsDocumentFactory#isUsingCache()
      */
     @Override
-	public boolean isUsingCache() {
+    public boolean isUsingCache() {
 
         return true;
+    }
+
+    /**
+     * Merges the given list of extraction results into a single one.<p>
+     * 
+     * @param all the extraction result objects to merge
+     * 
+     * @return the merged result
+     */
+    private I_CmsExtractionResult merge(List<I_CmsExtractionResult> all) {
+
+        StringBuffer content = new StringBuffer();
+        Map<String, String> items = new HashMap<String, String>();
+        Set<I_CmsSearchField> fields = new HashSet<I_CmsSearchField>();
+
+        for (I_CmsExtractionResult ex : all) {
+            if (ex.getContent() != null) {
+                content.append(ex.getContent());
+            }
+            if (ex.getContentItems() != null) {
+                items.putAll(ex.getContentItems());
+            }
+            if (ex.getMappingFields() != null) {
+                fields.addAll(ex.getMappingFields());
+            }
+        }
+        return new CmsExtractionResult(content.toString(), items, fields);
     }
 }

@@ -31,7 +31,6 @@
 
 package org.opencms.search.solr;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsIndexWriter;
@@ -45,7 +44,6 @@ import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
-
 
 /**
  * Implements the index writer for the Solr server used by OpenCms.<p>
@@ -82,14 +80,13 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      * 
      * @param server the standard Lucene IndexWriter to use as delegate
      * @param index the OpenCms search index instance this writer to supposed to write to
-     * @throws CmsConfigurationException 
      */
-    public CmsSolrIndexWriter(SolrServer server, CmsSolrIndex index)  {
+    public CmsSolrIndexWriter(SolrServer server, CmsSolrIndex index) {
 
-    	m_index = index;
-    	m_server = server;
+        m_index = index;
+        m_server = server;
         if ((m_index != null) && LOG.isInfoEnabled()) {
-        	m_index.createIndexBackup();
+            m_index.createIndexBackup();
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_INDEX_WRITER_MSG_CREATE_2,
                 m_index.getName(),
@@ -124,17 +121,23 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
         }
     }
 
+    /**
+     * Deletes all documents of the index belonging to this index writer.<p>
+     * 
+     * @throws IOException if something goes wrong
+     */
     public void deleteAllDocuments() throws IOException {
+
         if ((m_server != null) && (m_index != null)) {
             try {
-                
+
                 m_server.deleteByQuery("*:*");
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }
         }
     }
-    
+
     /**
      * @see org.opencms.search.I_CmsIndexWriter#deleteDocuments(java.lang.String)
      */
@@ -157,10 +160,10 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     /**
      * @see org.opencms.search.I_CmsIndexWriter#optimize()
      */
-    public void optimize()  {
+    public void optimize() {
 
-    	// optimization is not recommended
-    	// should be configured within solrconfig.xml
+        // optimization is not recommended
+        // should be configured within solrconfig.xml
     }
 
     /**
