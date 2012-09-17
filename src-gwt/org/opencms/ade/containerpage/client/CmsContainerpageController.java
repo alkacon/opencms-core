@@ -998,6 +998,16 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns if the selection button is active.<p>
+     * 
+     * @return <code>true</code> if the selection button is active
+     */
+    public boolean hasActiveSelection() {
+
+        return m_handler.hasActiveSelection();
+    }
+
+    /**
      * Returns if the page has changed.<p>
      * 
      * @return <code>true</code> if the page has changed
@@ -1295,7 +1305,8 @@ public final class CmsContainerpageController {
      */
     public void reInitInlineEditing() {
 
-        if (getData().isUseClassicEditor()) {
+        if ((m_targetContainers == null) || getData().isUseClassicEditor()) {
+            // if the target containers are not initialized yet or classic editor is set, don't do anything
             return;
         }
         if (isGroupcontainerEditing()) {

@@ -424,7 +424,9 @@ public class CmsContainerpageUtil {
         boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
         // only enable inline editing for the new content editor
         // also ignore group container sub-elements unless group editing
-        if (!m_controller.getData().isUseClassicEditor() && (!isSubElement || m_controller.isGroupcontainerEditing())) {
+        if (!m_controller.getData().isUseClassicEditor()
+            && m_controller.hasActiveSelection()
+            && (!isSubElement || m_controller.isGroupcontainerEditing())) {
             dragElement.initInlinetEditor(m_controller);
         }
         return dragElement;

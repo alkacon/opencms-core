@@ -130,6 +130,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void activateSelection() {
 
         m_editor.getSelection().setActive(true);
+        m_controller.reInitInlineEditing();
     }
 
     /**
@@ -178,6 +179,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void deactivateCurrentButton() {
 
         if (m_activeButton != null) {
+            if (m_activeButton == m_editor.getSelection()) {
+                m_controller.disableInlineEditing(null);
+            }
             m_activeButton.setActive(false);
             m_activeButton = null;
         }
@@ -382,6 +386,16 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
         };
         leavePage(leaveCommand);
+    }
+
+    /**
+     * Returns if the selection button is active.<p>
+     * 
+     * @return <code>true</code> if the selection button is active
+     */
+    public boolean hasActiveSelection() {
+
+        return m_editor.getSelection().isActive();
     }
 
     /**
@@ -635,7 +649,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         String title = org.opencms.gwt.client.Messages.get().key(
             org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_TITLE_0);
         String message = org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
+            org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
         CmsModelSelectDialog dialog = new CmsModelSelectDialog(handler, modelResources, title, message);
         dialog.center();
     }
