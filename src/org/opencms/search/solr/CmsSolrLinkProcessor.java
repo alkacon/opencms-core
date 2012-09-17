@@ -33,7 +33,9 @@ package org.opencms.search.solr;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
@@ -45,10 +47,28 @@ import org.apache.solr.common.SolrInputDocument;
  */
 public class CmsSolrLinkProcessor implements I_CmsSolrPostSearchProcessor {
 
-    public SolrDocument process(CmsObject searchCms, CmsResource resource, SolrInputDocument document) {
+    public SolrDocument process(CmsObject cms, CmsResource resource, SolrInputDocument document) {
 
-        document.addField("link", OpenCms.getLinkManager().substituteLink(searchCms, resource));
+        // TODO: Should be removed as soon as the subtitueLink method returns the the correct detail page for a
+        // given root path, if a explicit detail page is configured
+        // @see lighthouse ticket: #559
+        CmsObject linkCms = cms;
+        String subSiteRoot = OpenCms.getADEManager().getSubSiteRoot(cms, resource.getRootPath());
+        if (!cms.getRequestContext().getUri().startsWith(subSiteRoot)) {
+            try {
+                linkCms = OpenCms.initCmsObject(cms);
+                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(subSiteRoot);
+                if (site != null) {
+                    if (site.getSiteRoot() != linkCms.getRequestContext().getSiteRoot()) {
+                        linkCms.getRequestContext().setSiteRoot(site.getSiteRoot());
+                    }
+                }
+                linkCms.getRequestContext().setUri(linkCms.getRequestContext().removeSiteRoot(subSiteRoot));
+            } catch (CmsException e) {
+                // noop
+            }
+        }
+        document.addField("link", OpenCms.getLinkManager().substituteLink(linkCms, resource));
         return ClientUtils.toSolrDocument(document);
     }
-
 }
