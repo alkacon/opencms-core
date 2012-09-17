@@ -4,7 +4,7 @@ div.hallotoolbar {
     border-radius: 6px;
     font-size: 12pt;
     line-height: 1.1em;
-    z-index: 500;
+    z-index: 200000;
     box-shadow: 2px 2px 2px #333333;
 }
 div.hallotoolbar .ui-button *{
