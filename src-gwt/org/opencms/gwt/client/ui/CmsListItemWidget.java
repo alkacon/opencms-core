@@ -937,7 +937,10 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         final String originalTitle = m_title.getText();
         // wrap the boolean flag in an array so we can change it from the event handlers 
         final boolean[] checked = new boolean[] {false};
-
+        final boolean restoreUnselectable = CmsDomUtil.hasClass(
+            I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().unselectable(),
+            m_contentPanel.getElement());
+        m_contentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().unselectable());
         box.addBlurHandler(new BlurHandler() {
 
             /**
@@ -945,6 +948,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
              */
             public void onBlur(BlurEvent event) {
 
+                if (restoreUnselectable) {
+                    setUnselectable();
+                }
                 if (checked[0]) {
                     return;
                 }

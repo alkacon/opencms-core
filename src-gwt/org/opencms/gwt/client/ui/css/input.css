@@ -482,14 +482,8 @@ input.labelInput {
 	background: transparent;
 	border: none;
 	vertical-align: middle;
-	-webkit-touch-callout: normal;
-	-webkit-user-select: normal;
-	-khtml-user-select: normal;
-	-moz-user-select: normal;
-	-ms-user-select: normal;
-	user-select: normal;
 }
-
+	
 .alignBottom {
 	vertical-align: bottom;
 }
