@@ -72,6 +72,12 @@ public class CmsGalleryDataBean implements IsSerializable {
      */
     private String m_referenceSitePath;
 
+    /** The search scope. */
+    private CmsGallerySearchScope m_scope;
+
+    /** List of site selector options. */
+    private List<CmsSiteSelectorOption> m_siteSelectorOptions;
+
     /** The start gallery folder. */
     private String m_startGallery;
 
@@ -83,9 +89,6 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
-
-    /** The search scope. */
-    private CmsGallerySearchScope m_scope;
 
     /**
      * Returns the categories.<p>
@@ -167,6 +170,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public CmsGallerySearchScope getScope() {
 
         return m_scope;
+    }
+
+    /**
+     * Gets the list of site selector options.<p>
+     * 
+     * @return the list of site selector options 
+     */
+    public List<CmsSiteSelectorOption> getSiteSelectorOptions() {
+
+        return m_siteSelectorOptions;
     }
 
     /**
@@ -288,6 +301,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setScope(CmsGallerySearchScope scope) {
 
         m_scope = scope;
+    }
+
+    /**
+     * Sets the available site selector options.<p>
+     * 
+     * @param siteSelectorOptions the available site selector options 
+     */
+    public void setSiteSelectorOptions(List<CmsSiteSelectorOption> siteSelectorOptions) {
+
+        m_siteSelectorOptions = siteSelectorOptions;
     }
 
     /**

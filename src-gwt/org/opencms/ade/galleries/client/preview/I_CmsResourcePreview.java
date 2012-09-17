@@ -81,6 +81,8 @@ public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
      */
     A_CmsPreviewDialog<T> getPreviewDialog();
 
+    String getViewLink();
+
     /**
      * Returns the preview name, should return the same as in {@link org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewName()}.<p>
      * 

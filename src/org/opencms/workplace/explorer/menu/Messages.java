@@ -50,6 +50,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CONTEXTMENU_TITLE_INACTIVE_LOCK_INHERITED_0 = "GUI_CONTEXTMENU_TITLE_INACTIVE_LOCK_INHERITED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTEXTMENU_TITLE_INACTIVE_MOVED_0 = "GUI_CONTEXTMENU_TITLE_INACTIVE_MOVED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0 = "GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -89,7 +92,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CONTEXTMENU_TITLE_INACTIVE_UNCHANGED_0 = "GUI_CONTEXTMENU_TITLE_INACTIVE_UNCHANGED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CONTEXTMENU_TITLE_INACTIVE_MOVED_0 = "GUI_CONTEXTMENU_TITLE_INACTIVE_MOVED_0";
+    public static final String GUI_CONTEXTMENU_TITLE_OTHER_SITE_INACTIVE_0 = "GUI_CONTEXTMENU_TITLE_OTHER_SITE_INACTIVE_0";
 
     /** Name of the resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.menu.messages";

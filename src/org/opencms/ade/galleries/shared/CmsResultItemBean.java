@@ -69,6 +69,17 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** The name of the user who last modified the resource. */
     private String m_userLastModified;
 
+    /** The link for displaying the resource. */
+    private String m_viewLink;
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsResultItemBean() {
+
+        // empty default constructor
+    }
+
     /**
      * Returns the structured id.<p>
      *
@@ -140,6 +151,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public String getUserLastModified() {
 
         return m_userLastModified;
+    }
+
+    /**
+     * Gets the link for displaying the resource.<p>
+     * 
+     * @return the link for displaying the resource 
+     */
+    public String getViewLink() {
+
+        return m_viewLink;
     }
 
     /**
@@ -271,5 +292,15 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public void setUserLastModified(String userLastModified) {
 
         m_userLastModified = userLastModified;
+    }
+
+    /**
+     * Sets the link for displaying the resource.<p>
+     * 
+     * @param viewLink the link for displaying the 
+     */
+    public void setViewLink(String viewLink) {
+
+        m_viewLink = viewLink;
     }
 }

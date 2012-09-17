@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -135,6 +136,17 @@ public interface I_CmsGalleryService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     List<CmsVfsEntryBean> getSubFolders(String path) throws CmsRpcException;
+
+    /**
+     * Loads the root VFS entry bean for the given site selector option.
+     * 
+     * @param option the site selector option
+     * 
+     * @return the root VFS entry bean for the given option
+     * 
+     *  @throws CmsRpcException if something goes wrong 
+     * */
+    CmsVfsEntryBean loadVfsEntryBean(CmsSiteSelectorOption option) throws CmsRpcException;
 
     /**
      * Updates the offline indices.<p>

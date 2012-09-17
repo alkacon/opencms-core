@@ -27,8 +27,13 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.ade.galleries.client.ui.CmsVfsTab;
+import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.util.CmsStringUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -40,6 +45,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class CmsVfsTabHandler extends A_CmsTabHandler {
 
+    /** The VFS tab which this handler belongs to. */
+    CmsVfsTab m_tab;
+
     /**
      * Creates a new VFS tab handler.<p>
      * 
@@ -48,6 +56,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     public CmsVfsTabHandler(CmsGalleryController controller) {
 
         super(controller);
+
     }
 
     /**
@@ -56,7 +65,24 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     @Override
     public void clearParams() {
 
-        m_controller.clearFolders();
+        m_controller.clearFolders(false);
+    }
+
+    /**
+     * Gets the path which should be set as a value when a VFS entry is selected in the VFS tab.<p>
+     * 
+     * @param vfsEntry the VFS entry which has been selected 
+     * 
+     * @return the selection path for the given VFS entry 
+     */
+    public String getSelectPath(CmsVfsEntryBean vfsEntry) {
+
+        String normalizedSiteRoot = CmsStringUtil.joinPaths(CmsCoreProvider.get().getSiteRoot(), "/");
+        String rootPath = vfsEntry.getRootPath();
+        if (rootPath.startsWith(normalizedSiteRoot)) {
+            return rootPath.substring(normalizedSiteRoot.length() - 1);
+        }
+        return vfsEntry.getRootPath();
     }
 
     /**
@@ -94,7 +120,6 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
         } else {
             m_controller.removeFolder(folder);
         }
-
     }
 
     /**
@@ -112,8 +137,23 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(String sortParams, String filter) {
 
-        // ignore filter, not available for this tab
-        m_controller.sortResults(sortParams);
+        int siteIndex = Integer.parseInt(sortParams);
+        final CmsSiteSelectorOption option = m_controller.getSiteSelectorOptions().get(siteIndex);
+        m_controller.loadVfsEntryBean(option, new AsyncCallback<CmsVfsEntryBean>() {
+
+            public void onFailure(Throwable caught) {
+
+                // TODO: Auto-generated method stub
+
+            }
+
+            public void onSuccess(CmsVfsEntryBean result) {
+
+                m_tab.fillInitially(Collections.singletonList(result));
+            }
+
+        });
+        m_controller.clearFolders(true);
     }
 
     /**
@@ -123,5 +163,15 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     public void removeParam(String paramKey) {
 
         m_controller.removeFolderParam(paramKey);
+    }
+
+    /**
+     * Sets the tab which this handler is bound to.<p>
+     * 
+     * @param tab the VFS tab 
+     */
+    public void setTab(CmsVfsTab tab) {
+
+        m_tab = tab;
     }
 }

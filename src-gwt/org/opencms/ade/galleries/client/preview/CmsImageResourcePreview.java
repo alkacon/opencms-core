@@ -94,6 +94,15 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#getViewLink()
+     */
+    @Override
+    public String getViewLink() {
+
+        return m_infoBean.getViewLink();
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#loadResourceInfo(java.lang.String)
      */
     public void loadResourceInfo(final String resourcePath) {
@@ -116,6 +125,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
             protected void onResponse(CmsImageInfoBean result) {
 
                 result.setSelectedPath(resourcePath);
+                result.setViewLink(result.getViewLink());
                 showData(result);
             }
         };
@@ -298,8 +308,9 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
             @Override
             public void execute() {
 
-                A_CmsResourcePreview.getService().syncGetImageInfo(resourcePath, getLocale(), this);
                 start(0, true);
+                A_CmsResourcePreview.getService().syncGetImageInfo(resourcePath, getLocale(), this);
+
             }
 
             /**

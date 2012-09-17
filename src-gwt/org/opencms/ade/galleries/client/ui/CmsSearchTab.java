@@ -165,13 +165,13 @@ public class CmsSearchTab extends A_CmsTab {
     @UiField
     protected HTMLPanel m_scopeRow;
 
-    /** The search button. */
-    @UiField
-    protected CmsPushButton m_searchButton;
-
     /** The select box for the search scope selection. */
     @UiField
     protected CmsSelectBox m_scopeSelection;
+
+    /** The search button. */
+    @UiField
+    protected CmsPushButton m_searchButton;
 
     /** The input field for the search query. */
     @UiField
@@ -328,7 +328,7 @@ public class CmsSearchTab extends A_CmsTab {
         String modifiedEnd = m_dateModifiedEndDateBox.getValueAsFormatedString();
 
         CmsGallerySearchScope scope = CmsGallerySearchScope.valueOf(m_scopeSelection.getFormValueAsString());
-        if (scope != CmsGallerySearchScope.siteShared) {
+        if ((scope != CmsGallerySearchScope.everything)) {
             CmsSearchParamPanel panel = new CmsSearchParamPanel(
                 Messages.get().key(Messages.GUI_PARAMS_LABEL_SCOPE_0),
                 this);
@@ -440,7 +440,7 @@ public class CmsSearchTab extends A_CmsTab {
                 m_dateModifiedEndDateBox.setValue(null, true);
                 break;
             case scope:
-                m_scopeSelection.setFormValueAsString(CmsGallerySearchScope.siteShared.name());
+                m_scopeSelection.setFormValueAsString(CmsGallerySearchScope.everything.name());
                 break;
             default:
         }

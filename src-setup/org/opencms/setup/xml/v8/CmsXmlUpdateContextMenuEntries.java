@@ -139,15 +139,15 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
     enum GwtMenuEntry {
         /** Availability. */
         AVAILABILITY("GUI_EXPLORER_CONTEXT_AVAILABILITY_0",
-        "org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog", "containerpage"),
+        "org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog", "containerpage-no-different-site"),
 
         /** Categories. */
         CATEGORIES("GUI_EXPLORER_CONTEXT_CATEGORIES_0", "org.opencms.gwt.client.ui.contextmenu.CmsCategories",
-        "containerpage"),
+        "containerpage-no-different-site"),
 
         /** Delete. */
         DELETE("GUI_EXPLORER_CONTEXT_DELETE_0", "org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource",
-        "containerpage"),
+        "containerpage-no-different-site"),
 
         /** Resource info. */
         INFO("GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0", "org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo",
@@ -162,12 +162,14 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
         /** Properties. */
         PROPERTIES("GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0",
-        "org.opencms.gwt.client.ui.contextmenu.CmsEditProperties", "containerpage"),
+        "org.opencms.gwt.client.ui.contextmenu.CmsEditProperties", "containerpage-no-different-site"),
         /** Rename. */
-        RENAME("GUI_EXPLORER_CONTEXT_RENAME_0", "org.opencms.gwt.client.ui.contextmenu.CmsRename", "containerpage"),
+        RENAME("GUI_EXPLORER_CONTEXT_RENAME_0", "org.opencms.gwt.client.ui.contextmenu.CmsRename",
+        "containerpage-no-different-site"),
 
         /** Replace. */
-        REPLACE("GUI_EXPLORER_CONTEXT_REPLACE_0", "org.opencms.gwt.client.ui.contextmenu.CmsReplace", "containerpage"),
+        REPLACE("GUI_EXPLORER_CONTEXT_REPLACE_0", "org.opencms.gwt.client.ui.contextmenu.CmsReplace",
+        "containerpage-no-different-site"),
 
         /** Show workplace. */
         SHOWWORKPLACE("GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0",

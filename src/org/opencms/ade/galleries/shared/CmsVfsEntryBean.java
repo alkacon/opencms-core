@@ -43,21 +43,11 @@ public class CmsVfsEntryBean implements IsSerializable {
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
 
-    /** The site path of this VFS entry. */
-    private String m_sitePath;
+    /** The root path of the VFS entry. */
+    private String m_rootPath;
 
     /** The structure id. */
     private CmsUUID m_structureId;
-
-    /**
-     * Returns the structure id.<p>
-     *
-     * @return the structure id
-     */
-    public CmsUUID getStructureId() {
-
-        return m_structureId;
-    }
 
     /** The folder title. */
     private String m_title;
@@ -65,15 +55,16 @@ public class CmsVfsEntryBean implements IsSerializable {
     /**
      * Creates a new VFS entry bean.<p>
      * 
-     * @param sitePath the site path
+     * @param rootPath the root path 
      * @param structureId the structure id
      * @param title the folder title
      * @param isRoot flag indicating whether this is entry should be displayed at the top level of the tree
      * @param editable <code>true</code> if the user has write permissions to the folder
      */
-    public CmsVfsEntryBean(String sitePath, CmsUUID structureId, String title, boolean isRoot, boolean editable) {
+    public CmsVfsEntryBean(String rootPath, CmsUUID structureId, String title, boolean isRoot, boolean editable) {
 
-        m_sitePath = sitePath;
+        m_rootPath = rootPath;
+
         m_structureId = structureId;
         m_isRoot = isRoot;
         m_editable = editable;
@@ -99,9 +90,9 @@ public class CmsVfsEntryBean implements IsSerializable {
             return m_title;
         }
         if (m_isRoot) {
-            return m_sitePath;
+            return getRootPath();
         } else {
-            String fixedPath = m_sitePath.replaceFirst("/$", "");
+            String fixedPath = getRootPath().replaceFirst("/$", "");
             int lastSlash = fixedPath.lastIndexOf('/');
             if (lastSlash == -1) {
                 return fixedPath;
@@ -111,13 +102,23 @@ public class CmsVfsEntryBean implements IsSerializable {
     }
 
     /**
-     * Returns the site path of this VFS tree. 
+     * Gets the root path of the VFS entry.<p>
      * 
-     * @return the site path 
+     * @return the root path of the VFS entry 
      */
-    public String getSitePath() {
+    public String getRootPath() {
 
-        return m_sitePath;
+        return m_rootPath;
+    }
+
+    /**
+     * Returns the structure id.<p>
+     *
+     * @return the structure id
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
     }
 
     /**

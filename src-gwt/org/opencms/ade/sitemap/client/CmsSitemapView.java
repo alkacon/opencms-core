@@ -150,14 +150,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** Style variable which keeps track of whether we are in VFS mode or navigation mode. */
     private CmsStyleVariable m_inNavigationStyle;
 
+    /** The tree open handler. */
+    private TreeOpenHandler m_openHandler;
+
     /** The sitemap toolbar. */
     private CmsSitemapToolbar m_toolbar;
 
     /** The registered tree items. */
     private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
-
-    /** The tree open handler. */
-    private TreeOpenHandler m_openHandler;
 
     /**
      * Returns the instance.<p>
@@ -526,39 +526,6 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
-     * Builds the tree items initially.<p>
-     * 
-     * @param page the page
-     * @param loadingLabel the loading label, will be removed when finished
-     */
-    void initiateTreeItems(FlowPanel page, Label loadingLabel) {
-
-        CmsClientSitemapEntry root = m_controller.getData().getRoot();
-        CmsSitemapTreeItem rootItem = createSitemapItem(root);
-        rootItem.onFinishLoading();
-        rootItem.setOpen(true);
-        m_tree.addItem(rootItem);
-        setEditorMode(EditorMode.navigation);
-        m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
-        m_controller.recomputeProperties();
-        rootItem.updateSitePath();
-        // check if editable
-        if (!m_controller.isEditable()) {
-            // notify user
-            CmsNotification.get().sendSticky(
-                CmsNotification.Type.WARNING,
-                Messages.get().key(Messages.GUI_NO_EDIT_NOTIFICATION_1, m_controller.getData().getNoEditReason()));
-        }
-        String openPath = m_controller.getData().getOpenPath();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
-            m_openHandler.setInitializing(true);
-            openItemsOnPath(openPath);
-            m_openHandler.setInitializing(false);
-        }
-        page.remove(loadingLabel);
-    }
-
-    /**
      * Removes deleted entry widget reference.<p>
      * 
      * @param entry the entry being deleted
@@ -628,6 +595,39 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     protected CmsSitemapTreeItem getRootItem() {
 
         return (CmsSitemapTreeItem)(m_tree.getWidget(0));
+    }
+
+    /**
+     * Builds the tree items initially.<p>
+     * 
+     * @param page the page
+     * @param loadingLabel the loading label, will be removed when finished
+     */
+    void initiateTreeItems(FlowPanel page, Label loadingLabel) {
+
+        CmsClientSitemapEntry root = m_controller.getData().getRoot();
+        CmsSitemapTreeItem rootItem = createSitemapItem(root);
+        rootItem.onFinishLoading();
+        rootItem.setOpen(true);
+        m_tree.addItem(rootItem);
+        setEditorMode(EditorMode.navigation);
+        m_controller.addPropertyUpdateHandler(new CmsStatusIconUpdateHandler());
+        m_controller.recomputeProperties();
+        rootItem.updateSitePath();
+        // check if editable
+        if (!m_controller.isEditable()) {
+            // notify user
+            CmsNotification.get().sendSticky(
+                CmsNotification.Type.WARNING,
+                Messages.get().key(Messages.GUI_NO_EDIT_NOTIFICATION_1, m_controller.getData().getNoEditReason()));
+        }
+        String openPath = m_controller.getData().getOpenPath();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(openPath)) {
+            m_openHandler.setInitializing(true);
+            openItemsOnPath(openPath);
+            m_openHandler.setInitializing(false);
+        }
+        page.remove(loadingLabel);
     }
 
     /**

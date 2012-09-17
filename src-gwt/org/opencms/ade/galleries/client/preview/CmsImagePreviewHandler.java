@@ -194,7 +194,11 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     public void onValueChange(ValueChangeEvent<CmsCroppingParamBean> event) {
 
         m_croppingParam = event.getValue();
-        m_previewDialog.resetPreviewImage(CmsCoreProvider.get().link(m_resourcePreview.getResourcePath())
+        String viewLink = m_resourcePreview.getViewLink();
+        if (viewLink == null) {
+            viewLink = CmsCoreProvider.get().link(m_resourcePreview.getResourcePath());
+        }
+        m_previewDialog.resetPreviewImage(viewLink
             + "?"
             + getPreviewScaleParam(m_croppingParam.getOrgHeight(), m_croppingParam.getOrgWidth()));
     }

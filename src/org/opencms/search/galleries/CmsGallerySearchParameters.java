@@ -47,6 +47,62 @@ import org.apache.lucene.search.SortField;
  */
 public class CmsGallerySearchParameters {
 
+    /**
+     * Helper class to store a time range.<p>
+     */
+    public class CmsGallerySearchTimeRange {
+
+        /** The end time of the time range. */
+        private long m_endTime;
+
+        /** The start time of the time range. */
+        private long m_startTime;
+
+        /**
+         * Default constructor.<p>
+         * 
+         * This will create an object where the start date is equal to 
+         * {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}.<p>
+         */
+        public CmsGallerySearchTimeRange() {
+
+            m_startTime = Long.MIN_VALUE;
+            m_endTime = Long.MAX_VALUE;
+        }
+
+        /**
+         * Constructor with start and end time.<p>
+         * 
+         * @param startTime the start time of the time range
+         * @param endTime the end time of the time range
+         */
+        public CmsGallerySearchTimeRange(long startTime, long endTime) {
+
+            m_startTime = startTime;
+            m_endTime = endTime;
+        }
+
+        /**
+         * Returns the end time of the time range.<p>
+         * 
+         * @return the end time of the time range
+         */
+        public long getEndTime() {
+
+            return m_endTime;
+        }
+
+        /**
+         * Returns the start time of the time range.<p>
+         * 
+         * @return the start time of the time range
+         */
+        public long getStartTime() {
+
+            return m_startTime;
+        }
+    }
+
     /** Sort parameter constants. */
     public enum CmsGallerySortParam {
 
@@ -121,62 +177,6 @@ public class CmsGallerySearchParameters {
 
         /** The default sort parameter. */
         public static final CmsGallerySortParam DEFAULT = title_asc;
-    }
-
-    /**
-     * Helper class to store a time range.<p>
-     */
-    public class CmsGallerySearchTimeRange {
-
-        /** The end time of the time range. */
-        private long m_endTime;
-
-        /** The start time of the time range. */
-        private long m_startTime;
-
-        /**
-         * Default constructor.<p>
-         * 
-         * This will create an object where the start date is equal to 
-         * {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}.<p>
-         */
-        public CmsGallerySearchTimeRange() {
-
-            m_startTime = Long.MIN_VALUE;
-            m_endTime = Long.MAX_VALUE;
-        }
-
-        /**
-         * Constructor with start and end time.<p>
-         * 
-         * @param startTime the start time of the time range
-         * @param endTime the end time of the time range
-         */
-        public CmsGallerySearchTimeRange(long startTime, long endTime) {
-
-            m_startTime = startTime;
-            m_endTime = endTime;
-        }
-
-        /**
-         * Returns the end time of the time range.<p>
-         * 
-         * @return the end time of the time range
-         */
-        public long getEndTime() {
-
-            return m_endTime;
-        }
-
-        /**
-         * Returns the start time of the time range.<p>
-         * 
-         * @return the start time of the time range
-         */
-        public long getStartTime() {
-
-            return m_startTime;
-        }
     }
 
     /** Sort result documents by date of creation ascending. */
@@ -329,23 +329,23 @@ public class CmsGallerySearchParameters {
     /** The number of search results per page. */
     private int m_matchesPerPage;
 
+    /** The sitemap reference path. */
+    private String m_referencePath;
+
     /** The resource types to search for. */
     private List<String> m_resourceTypes;
 
     /** The requested page of the result. */
     private int m_resultPage;
 
+    /** The gallery search scope. */
+    private CmsGallerySearchScope m_scope;
+
     /** The sort order for the search result. */
     private CmsGallerySortParam m_sortOrder;
 
     /** Search words to search for. */
     private String m_words;
-
-    /** The gallery search scope. */
-    private CmsGallerySearchScope m_scope;
-
-    /** The sitemap reference path. */
-    private String m_referencePath;
 
     /**
      * Default constructor.<p>
@@ -520,7 +520,7 @@ public class CmsGallerySearchParameters {
     public CmsGallerySearchScope getScope() {
 
         if (m_scope == null) {
-            return CmsGallerySearchScope.siteShared;
+            return CmsGallerySearchScope.everything;
         }
         return m_scope;
     }

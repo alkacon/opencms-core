@@ -70,24 +70,24 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#generateMenuItem()
-     */
-    public A_CmsContextMenuItem generateMenuItem() {
-
-        if (m_menuCommand.hasItemWidget()) {
-            return m_menuCommand.getItemWidget(m_structureId, m_handler, m_bean);
-        } else {
-            return new CmsContextMenuItem(this);
-        }
-    }
-
-    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
      */
     public void execute() {
 
         if (m_menuCommand != null) {
             m_menuCommand.execute(m_structureId, m_handler, m_bean);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#generateMenuItem()
+     */
+    public A_CmsContextMenuItem generateMenuItem() {
+
+        if (m_menuCommand.hasItemWidget() && m_bean.isActive()) {
+            return m_menuCommand.getItemWidget(m_structureId, m_handler, m_bean);
+        } else {
+            return new CmsContextMenuItem(this);
         }
     }
 

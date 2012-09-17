@@ -31,6 +31,7 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -103,8 +104,14 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
         } catch (UmbrellaException exception) {
             Throwable wrappedException = exception.getCauses().iterator().next();
             onFailure(wrappedException);
+            if (!GWT.isProdMode()) {
+                throw exception;
+            }
         } catch (RuntimeException error) {
             onFailure(error);
+            if (!GWT.isProdMode()) {
+                throw error;
+            }
         }
     }
 

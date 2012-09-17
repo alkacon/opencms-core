@@ -233,12 +233,37 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                             "org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible",
                             "org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible",
                             "org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible",
+                            "org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive",
                             "org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNotDeletedNoAl",
                             "org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveChangedAl",
                             "org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible"};
 
                         for (String className : classes) {
                             CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("ade-undochanges", className), "");
+                        }
+                        return true;
+                    }
+                    return false;
+
+                }
+            });
+
+            m_updateActions.put(xpathForMenuRule("containerpage-no-different-site"), new CmsXmlUpdateAction() {
+
+                @Override
+                public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                    Element elem = (Element)doc.selectSingleNode(xpath);
+                    if (elem == null) {
+                        String[] classes = {
+                            "org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible",
+                            "org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive",
+                            "org.opencms.workplace.explorer.menu.CmsMirContainerPageActive"};
+                        for (String className : classes) {
+                            CmsSetupXmlHelper.setValue(
+                                doc,
+                                xpathForMenuItemRule("containerpage-no-different-site", className),
+                                "");
                         }
                         return true;
                     }

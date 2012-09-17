@@ -294,7 +294,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
                 case cms_tab_vfstree:
-                    m_vfsTab = new CmsVfsTab(new CmsVfsTabHandler(controller));
+                    CmsVfsTabHandler vfsTabHandler = new CmsVfsTabHandler(controller);
+                    m_vfsTab = new CmsVfsTab(vfsTabHandler, controller.getSiteSelectorOptions());
+                    vfsTabHandler.setTab(m_vfsTab);
                     m_vfsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_vfsTab, Messages.get().key(Messages.GUI_TAB_TITLE_VFS_0));
                     break;

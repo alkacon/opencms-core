@@ -46,6 +46,9 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     /** The selected image path (used for editor and widget mode). */
     private String m_selectedPath;
 
+    /** The view link for displaying the image. */
+    private String m_viewLink;
+
     /** The image width. */
     private int m_width;
 
@@ -87,6 +90,16 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     public String getSelectedPath() {
 
         return m_selectedPath;
+    }
+
+    /**
+     * The view link for displaying the image.<p>
+     * 
+     * @return the link for displaying the image 
+     */
+    public String getViewLink() {
+
+        return m_viewLink;
     }
 
     /**
@@ -137,6 +150,16 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
     public void setSelectedPath(String selectedPath) {
 
         m_selectedPath = selectedPath;
+    }
+
+    /**
+     * Sets the link for displaying the image.<p>
+     * 
+     * @param viewLink the link for displaying the image 
+     */
+    public void setViewLink(String viewLink) {
+
+        m_viewLink = viewLink;
     }
 
     /**

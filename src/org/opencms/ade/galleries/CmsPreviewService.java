@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
@@ -46,6 +47,7 @@ import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -171,8 +173,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             if (pos > -1) {
                 resName = resourcePath.substring(0, pos);
             }
-            CmsResource resource = cms.readResource(resName);
+            CmsResource resource = readResourceFromCurrentOrRootSite(cms, resName);
             readResourceInfo(cms, resource, resInfo, locale);
+            resInfo.setViewLink(CmsStringUtil.joinPaths(
+                OpenCms.getSystemInfo().getOpenCmsContext(),
+                CmsPermalinkResourceHandler.PERMALINK_HANDLER,
+                resource.getStructureId().toString()));
             resInfo.setHash(resource.getStructureId().hashCode());
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
             int height = -1;
@@ -206,7 +212,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             if (pos > -1) {
                 resName = resourcePath.substring(0, pos);
             }
-            CmsResource resource = cms.readResource(resName);
+            CmsResource resource = readResourceFromCurrentOrRootSite(cms, resName);
             readResourceInfo(cms, resource, resInfo, locale);
         } catch (CmsException e) {
             error(e);
@@ -314,6 +320,33 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
     private String getPreviewContent(CmsObject cms, CmsResource resource, Locale locale) {
 
         return getPreviewContent(getRequest(), getResponse(), cms, resource, locale);
+    }
+
+    /**
+     * Tries to read a resource either from the current site or from the root site.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param name the resource path 
+     * 
+     * @return the resource which was read 
+     * @throws CmsException if something goes wrong 
+     */
+    private CmsResource readResourceFromCurrentOrRootSite(CmsObject cms, String name) throws CmsException {
+
+        CmsResource resource = null;
+        try {
+            resource = cms.readResource(name);
+        } catch (CmsVfsResourceNotFoundException e) {
+            String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+            try {
+                cms.getRequestContext().setSiteRoot("");
+                resource = cms.readResource(name);
+            } finally {
+                cms.getRequestContext().setSiteRoot(originalSiteRoot);
+            }
+
+        }
+        return resource;
     }
 
     /**

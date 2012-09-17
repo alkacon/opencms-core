@@ -74,12 +74,13 @@ public class CmsResultItemWidget extends CmsListItemWidget {
         if (IMAGE_TYPE.equals(infoBean.getType())) {
             m_hasTileView = true;
             // add tile view marker css classes
-
+            String src = infoBean.getViewLink();
+            if (src == null) {
+                src = CmsCoreProvider.get().link(infoBean.getPath());
+            }
             // insert tile view image div
-            HTML imageTile = new HTML("<img src=\""
-                + CmsCoreProvider.get().link(infoBean.getPath())
-                + IMAGE_SCALE_PARAM
-                // add time stamp to override image caching
+            HTML imageTile = new HTML("<img src=\"" + src + IMAGE_SCALE_PARAM
+            // add time stamp to override image caching
                 + "&time="
                 + System.currentTimeMillis()
                 + "\" />");

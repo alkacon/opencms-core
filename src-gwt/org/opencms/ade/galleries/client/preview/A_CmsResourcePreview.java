@@ -119,6 +119,15 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
     public String getResourcePath() {
 
         return m_infoBean.getResourcePath();
+
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#getViewLink()
+     */
+    public String getViewLink() {
+
+        return getResourcePath();
     }
 
     /**

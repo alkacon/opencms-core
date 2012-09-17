@@ -100,7 +100,6 @@ public class CmsGallerySearch {
         if ((m_cms == null) && (m_index == null)) {
             throw new CmsException(Messages.get().container(Messages.ERR_SEARCH_NOT_INITIALIZED_0));
         }
-
         result = m_index.searchGallery(m_cms, params);
 
         if (result.size() > 0) {

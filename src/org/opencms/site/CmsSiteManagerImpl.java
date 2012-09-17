@@ -448,6 +448,9 @@ public final class CmsSiteManagerImpl {
      */
     public CmsSite getSiteForRootPath(String rootPath) {
 
+        if ((rootPath.length() > 0) && !rootPath.endsWith("/")) {
+            rootPath = rootPath + "/";
+        }
         // most sites will be below the "/sites/" folder, 
         CmsSite result = lookupSitesFolder(rootPath);
         if (result != null) {

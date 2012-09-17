@@ -30,10 +30,12 @@ package org.opencms.search.galleries;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -72,6 +74,9 @@ import org.apache.lucene.search.TopDocs;
  * @since 8.0.0 
  */
 public class CmsGallerySearchIndex extends CmsLuceneIndex {
+
+    /** The system folder. */
+    public static final String FOLDER_SYSTEM = "/system/";
 
     /** The system galleries path. */
     public static final String FOLDER_SYSTEM_GALLERIES = "/system/galleries/";
@@ -183,15 +188,20 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
      * Gets the search roots to use for the given site/subsite parameters.<p>
      *  
      * @param scope the search scope
+     * @param siteParam the current site 
      * @param subSiteParam the current subsite
      *  
      * @return the list of search roots for that option 
      */
-    public List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String subSiteParam) {
+    public List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String siteParam, String subSiteParam) {
 
         List<String> result = new ArrayList<String>();
-        if (scope.isIncludeSite()) {
+        if (scope == CmsGallerySearchScope.everything) {
             result.add("/");
+            return result;
+        }
+        if (scope.isIncludeSite()) {
+            result.add(siteParam);
         }
         if (scope.isIncludeSubSite() && (subSiteParam != null)) {
             result.add(subSiteParam);
@@ -202,9 +212,8 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
                 result.add(sharedFolder);
             }
         }
-        if (scope == CmsGallerySearchScope.siteShared) {
-            result.add(FOLDER_SYTEM_MODULES);
-            result.add(FOLDER_SYSTEM_GALLERIES);
+        if (scope.isIncludeShared()) {
+            result.add(FOLDER_SYSTEM);
         }
         return result;
     }
@@ -259,7 +268,10 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
                     subsite = cms.getRequestContext().removeSiteRoot(subsite);
                 }
             }
-            List<String> scopeFolders = getSearchRootsForScope(params.getScope(), subsite);
+            List<String> scopeFolders = getSearchRootsForScope(
+                params.getScope(),
+                cms.getRequestContext().getSiteRoot(),
+                subsite);
             filter = appendPathFilter(searchCms, filter, scopeFolders);
 
             // append category filter
@@ -461,17 +473,10 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
 
         // complete the search root
         TermsFilter pathFilter = new TermsFilter();
-        String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
         if ((roots != null) && (roots.size() > 0)) {
             // add the all configured search roots with will request context
             for (int i = 0; i < roots.size(); i++) {
-                String searchRoot = roots.get(i);
-                if (!searchRoot.startsWith(FOLDER_SYTEM_MODULES)
-                    && !searchRoot.startsWith(FOLDER_SYSTEM_GALLERIES)
-                    && ((sharedFolder == null) || !searchRoot.startsWith(OpenCms.getSiteManager().getSharedFolder()))) {
-                    searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
-                }
-                extendPathFilter(pathFilter, searchRoot);
+                extendPathFilter(pathFilter, roots.get(i));
             }
         } else {
             // use the current site root as the search root
@@ -557,6 +562,33 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
             }
         }
         return result;
+    }
+
+    /**
+     * We are overriding getResource since the default implementation uses the path to read the resource,
+     * which doesn't work for resources in a different site.<p>
+     * 
+     * @see org.opencms.search.A_CmsSearchIndex#getResource(org.opencms.file.CmsObject, org.opencms.search.I_CmsSearchDocument)
+     */
+    @Override
+    protected CmsResource getResource(CmsObject cms, I_CmsSearchDocument doc) {
+
+        String fieldStructureId = doc.getFieldValueAsString(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID);
+        CmsUUID structureId = new CmsUUID(fieldStructureId);
+        // check if the resource exits in the VFS, 
+        // this will implicitly check read permission and if the resource was deleted
+        //String contextPath = cms.getRequestContext().removeSiteRoot(doc.getPath());
+
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
+        if (isRequireViewPermission()) {
+            filter = CmsResourceFilter.DEFAULT_ONLY_VISIBLE;
+        }
+        try {
+            return cms.readResource(structureId, filter);
+        } catch (CmsException e) {
+            // Do nothing 
+        }
+        return null;
     }
 
 }

@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -118,6 +119,14 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the asynchronous callback 
      */
     void getSubFolders(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
+
+    /**
+     * Loads the root VFS entry bean for the given site selector option.
+     * 
+     * @param option the site selector option 
+     * @param resultCallback the callback for the result 
+     * */
+    void loadVfsEntryBean(CmsSiteSelectorOption option, AsyncCallback<CmsVfsEntryBean> resultCallback);
 
     /**
      * Updates the offline indices.<p>

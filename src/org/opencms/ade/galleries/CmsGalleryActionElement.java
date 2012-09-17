@@ -191,7 +191,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             // default selected scope option should be the one for which the search has been actually performed 
             data.setScope(search.getScope());
         } else if ((search != null) && (search.getScope() == null)) {
-            data.setScope(CmsGallerySearchScope.siteShared);
+            data.setScope(CmsGallerySearchScope.everything);
         }
 
         StringBuffer sb = new StringBuffer();

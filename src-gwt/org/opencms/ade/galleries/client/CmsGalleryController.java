@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
@@ -419,10 +420,15 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
     /**
      * Removes all selected folders from the search object.<p>
+     * 
+     * @param searchChanged if true, marks the search parameters as changed 
      */
-    public void clearFolders() {
+    public void clearFolders(boolean searchChanged) {
 
         Set<String> selectedFolders = m_searchObject.getFolders();
+        if (searchChanged) {
+            m_searchObjectChanged = true;
+        }
         m_handler.onClearFolders(selectedFolders);
         m_searchObject.clearFolders();
         updateResultsTab(false);
@@ -531,6 +537,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public CmsGallerySearchScope getSearchScope() {
 
         return m_dialogBean.getScope();
+    }
+
+    /**
+     * Gets the site selector options.<p>
+     * 
+     * @return the site selector options 
+     */
+    public List<CmsSiteSelectorOption> getSiteSelectorOptions() {
+
+        return m_dialogBean.getSiteSelectorOptions();
     }
 
     /**
@@ -701,6 +717,35 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public boolean isSearchObjectEmpty() {
 
         return m_searchObject.isEmpty();
+    }
+
+    /**
+     * Loads the root VFS entry bean for a given site selector option.<p>
+     * 
+     * @param option the option for which we want the VFS entry bean 
+     * 
+     * @param asyncCallback the callback to call with the result  
+     */
+    public void loadVfsEntryBean(final CmsSiteSelectorOption option, final AsyncCallback<CmsVfsEntryBean> asyncCallback) {
+
+        CmsRpcAction<CmsVfsEntryBean> action = new CmsRpcAction<CmsVfsEntryBean>() {
+
+            @Override
+            public void execute() {
+
+                start(200, false);
+                getGalleryService().loadVfsEntryBean(option, this);
+            }
+
+            @Override
+            public void onResponse(CmsVfsEntryBean result) {
+
+                stop(false);
+                asyncCallback.onSuccess(result);
+            }
+
+        };
+        action.execute();
     }
 
     /**
@@ -1419,12 +1464,12 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
-     * Gets the filtered list of categories.<p>
-     * 
-     * @param filter the search string to use for filtering 
-     * 
-     * @return the filtered category beans 
-     */
+    * Gets the filtered list of categories.<p>
+    * 
+    * @param filter the search string to use for filtering 
+    * 
+    * @return the filtered category beans 
+    */
     private List<CmsCategoryBean> getFilteredCategories(String filter) {
 
         List<CmsCategoryBean> result;

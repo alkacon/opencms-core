@@ -277,30 +277,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
-     * Creates a button widget to select the specified resource.<p>
-     * 
-     * @param resourcePath the item resource path 
-     * @param structureId the structure id
-     * @param title the resource title
-     * @param resourceType the item resource type
-     * 
-     * @return the initialized select resource button
-     */
-    protected CmsPushButton createSelectResourceButton(
-        String resourcePath,
-        CmsUUID structureId,
-        String title,
-        String resourceType) {
-
-        CmsPushButton result = new CmsPushButton();
-        result.setImageClass(I_CmsImageBundle.INSTANCE.style().checkIcon());
-        result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        result.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
-        result.addClickHandler(new SelectHandler(resourcePath, structureId, title, resourceType));
-        return result;
-    }
-
-    /**
      * Returns the list.<p>
      *
      * @return the list
@@ -450,6 +426,30 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         selectionHandler.setSelectButton(selectButton);
         selectButton.addClickHandler(selectionHandler);
         return selectButton;
+    }
+
+    /**
+     * Creates a button widget to select the specified resource.<p>
+     * 
+     * @param resourcePath the item resource path 
+     * @param structureId the structure id
+     * @param title the resource title
+     * @param resourceType the item resource type
+     * 
+     * @return the initialized select resource button
+     */
+    protected CmsPushButton createSelectResourceButton(
+        String resourcePath,
+        CmsUUID structureId,
+        String title,
+        String resourceType) {
+
+        CmsPushButton result = new CmsPushButton();
+        result.setImageClass(I_CmsImageBundle.INSTANCE.style().checkIcon());
+        result.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        result.setTitle(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
+        result.addClickHandler(new SelectHandler(resourcePath, structureId, title, resourceType));
+        return result;
     }
 
     /**

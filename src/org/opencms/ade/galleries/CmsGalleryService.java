@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
+import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
@@ -59,6 +60,7 @@ import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -69,6 +71,7 @@ import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -270,6 +273,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         data.setLocale(getCmsObject().getRequestContext().getLocale().toString());
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
+
+        CmsSiteSelectorOptionBuilder optionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
+        optionBuilder.addNormalSites();
+        optionBuilder.addSharedSite();
+        List<CmsSiteSelectorOption> options = optionBuilder.getOptions();
+        data.setSiteSelectorOptions(options);
+
         List<CmsResourceTypeBean> types = null;
         switch (galleryMode) {
             case editor:
@@ -360,7 +370,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         }
                         result.setTypes(types);
                         result.setLocale(data.getLocale());
-                        result.setScope(CmsGallerySearchScope.siteShared);
+                        result.setScope(CmsGallerySearchScope.everything);
                         result = search(result);
                     }
                     // remove all types
@@ -435,15 +445,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubFolders(java.lang.String)
      */
-    public List<CmsVfsEntryBean> getSubFolders(String path) throws CmsRpcException {
+    public List<CmsVfsEntryBean> getSubFolders(String rootPath) throws CmsRpcException {
 
         try {
-            CmsObject cms = getCmsObject();
-            List<CmsResource> resources = cms.getSubFolders(path);
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
+            CmsResource resource = cms.readResource(rootPath);
+            List<CmsResource> resources = cms.getSubFolders(resource.getRootPath());
             List<CmsVfsEntryBean> result = new ArrayList<CmsVfsEntryBean>();
             for (CmsResource res : resources) {
                 String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                result.add(new CmsVfsEntryBean(cms.getSitePath(res), res.getStructureId(), title, false, isEditable(
+                result.add(new CmsVfsEntryBean(res.getRootPath(), res.getStructureId(), title, false, isEditable(
                     cms,
                     res)));
             }
@@ -452,6 +464,30 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#loadVfsEntryBean(org.opencms.ade.galleries.shared.CmsSiteSelectorOption)
+     */
+    public CmsVfsEntryBean loadVfsEntryBean(CmsSiteSelectorOption option) throws CmsRpcException {
+
+        try {
+
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
+            String path = option.getSiteRoot();
+            CmsResource optionRes = cms.readResource(path);
+            CmsVfsEntryBean entryBean = new CmsVfsEntryBean(
+                option.getSiteRoot(),
+                optionRes.getStructureId(),
+                option.getSiteRoot(),
+                true,
+                isEditable(cms, optionRes));
+            return entryBean;
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
@@ -635,6 +671,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setType(sResult.getResourceType());
         // structured id
         bean.setClientId(sResult.getStructureId());
+
+        CmsResource resultResource = cms.readResource(
+            new CmsUUID(sResult.getStructureId()),
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+
+        String permalink = CmsStringUtil.joinPaths(
+            OpenCms.getSystemInfo().getOpenCmsContext(),
+            CmsPermalinkResourceHandler.PERMALINK_HANDLER,
+            sResult.getStructureId().toString());
+        bean.setViewLink(permalink);
+
         // set nice resource type name as subtitle
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getResourceType());
         String resourceTypeDisplayName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName());
@@ -664,7 +711,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         if (type instanceof CmsResourceTypeImage) {
             CmsProperty imageDimensionProp = cms.readPropertyObject(
-                path,
+                resultResource,
                 CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
                 false);
             if (!imageDimensionProp.isNullProperty()) {
@@ -686,7 +733,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DATE_EXPIRED_0),
                 CmsDateUtil.getDate(sResult.getDateExpired(), DateFormat.SHORT, getWorkplaceLocale()));
         }
-        bean.setNoEditReson(new CmsResourceUtil(cms, cms.readResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
+
+        bean.setNoEditReson(new CmsResourceUtil(cms, resultResource).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
             cms)));
         return bean;
     }
@@ -784,12 +832,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         if (pos > -1) {
             resName = resourceName.substring(0, pos);
         }
+        CmsObject cms = getCmsObject();
         try {
             log("reading resource: " + resName);
-            resource = getCmsObject().readResource(resName, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            resource = cms.readResource(resName, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
         } catch (CmsException e) {
-            logError(e);
-            return null;
+            String originalSiteRoot = cms.getRequestContext().getSiteRoot();
+            try {
+                cms.getRequestContext().setSiteRoot("");
+                resource = cms.readResource(resName, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            } catch (CmsException e2) {
+                logError(e);
+                return null;
+            } finally {
+                cms.getRequestContext().setSiteRoot(originalSiteRoot);
+            }
         }
         ArrayList<String> types = new ArrayList<String>();
         String resType = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
@@ -1016,22 +1073,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         try {
             CmsResource rootFolderResource = getCmsObject().readResource("/");
             String title = cms.readPropertyObject("/", CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-            rootFolders.add(new CmsVfsEntryBean("/", rootFolderResource.getStructureId(), title, true, isEditable(
-                getCmsObject(),
-                rootFolderResource)));
-            String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
-            if (sharedFolder != null) {
-                String sharedFolderTitle = org.opencms.workplace.Messages.get().getBundle().key(
-                    org.opencms.workplace.Messages.GUI_SHARED_TITLE_0);
-                CmsResource sharedFolderRes = getCmsObject().readResource(sharedFolder);
-                CmsVfsEntryBean sharedFolderBean = new CmsVfsEntryBean(
-                    sharedFolder,
-                    sharedFolderRes.getStructureId(),
-                    sharedFolderTitle,
-                    true,
-                    isEditable(getCmsObject(), sharedFolderRes));
-                rootFolders.add(sharedFolderBean);
-            }
+            rootFolders.add(new CmsVfsEntryBean(
+                rootFolderResource.getRootPath(),
+                rootFolderResource.getStructureId(),
+                title,
+                true,
+                isEditable(getCmsObject(), rootFolderResource)));
 
         } catch (CmsException e) {
             error(e);
@@ -1094,6 +1141,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         // create a new search parameter object
         CmsGallerySearchParameters params = new CmsGallerySearchParameters();
+        CmsObject cms = getCmsObject();
 
         // set the selected types to the parameters
         if (searchData.getTypes() != null) {
@@ -1102,7 +1150,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         // set the selected galleries to the parameters 
         if (searchData.getGalleries() != null) {
-            params.setGalleries(searchData.getGalleries());
+            List<String> paramGalleries = new ArrayList<String>();
+            for (String gallerySitePath : searchData.getGalleries()) {
+                paramGalleries.add(cms.getRequestContext().addSiteRoot(gallerySitePath));
+            }
+            params.setGalleries(paramGalleries);
         }
 
         // set the sort order for the galleries to the parameters
@@ -1115,7 +1167,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         params.setSortOrder(sortOrder);
         if (searchData.getScope() == null) {
-            params.setScope(CmsGallerySearchScope.siteShared);
+            params.setScope(CmsGallerySearchScope.everything);
         } else {
             params.setScope(searchData.getScope());
         }

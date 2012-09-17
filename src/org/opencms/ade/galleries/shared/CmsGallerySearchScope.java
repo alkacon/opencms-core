@@ -27,11 +27,14 @@
 
 package org.opencms.ade.galleries.shared;
 
-
 /**
  * An enum that represents the possible search scope choices in the ADE gallery search tab.<p>
  */
 public enum CmsGallerySearchScope {
+
+    /** Search everything. */
+    everything(true, true, true, "GUI_SCOPE_EVERYTHING_0"),
+
     /** Search only in the shared folder. */
     shared(false, false, true, "GUI_SCOPE_SHARED_0"),
 
