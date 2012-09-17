@@ -675,7 +675,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         if (!path.isEmpty()) {
             String imageLink = CmsCoreProvider.get().link(path);
             CmsCroppingParamBean restricted;
-            if (m_croppingParam.getFormatName() == null) {
+            if (m_croppingParam.getScaleParam().isEmpty()) {
                 m_image.setUrl(imageLink + "?__scale=w:80,h:110,t:1,c:white,r:2");
             } else {
                 restricted = m_croppingParam.getRestrictedSizeParam(110, 80);
