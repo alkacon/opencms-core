@@ -442,6 +442,16 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * On text box change.<p>
+     * @param event the event
+     */
+    @UiHandler("m_textbox")
+    void onValueChange(ValueChangeEvent<String> event) {
+
+        ValueChangeEvent.fire(this, getFormValueAsString());
+    }
+
+    /**
      * Toggles the fading element.<p>
      * 
      * @param faded <code>true</code> to show the fading element.<p>
