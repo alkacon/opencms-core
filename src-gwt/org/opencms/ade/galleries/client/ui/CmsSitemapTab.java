@@ -28,11 +28,9 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsSitemapTabHandler;
-import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
-import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.category.CmsDataValue;
@@ -74,7 +72,6 @@ public class CmsSitemapTab extends A_CmsListTab {
         super(GalleryTabId.cms_tab_sitemap);
         m_scrollList.truncate("sitemap_tab", CmsGalleryDialog.DIALOG_WIDTH);
         m_handler = handler;
-        addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().listOnlyTab());
         init();
     }
 
@@ -130,10 +127,6 @@ public class CmsSitemapTab extends A_CmsListTab {
      */
     protected CmsLazyTreeItem createItem(final CmsSitemapEntryBean sitemapEntry) {
 
-        String name = CmsResource.getName(sitemapEntry.getSitePath());
-        if (name.endsWith("/")) {
-            name = name.substring(0, name.length() - 1);
-        }
         CmsDataValue dataValue = new CmsDataValue(600, 3, CmsIconUtil.getResourceIconClasses(
             sitemapEntry.getType(),
             true), sitemapEntry.getDisplayName());
@@ -142,7 +135,7 @@ public class CmsSitemapTab extends A_CmsListTab {
         CmsLazyTreeItem result = new CmsLazyTreeItem(dataValue, true);
         if (getTabHandler().hasSelectResource()) {
             dataValue.addButton(createSelectResourceButton(
-                sitemapEntry.getSitePath(),
+                m_handler.getSelectPath(sitemapEntry),
                 sitemapEntry.getStructureId(),
                 sitemapEntry.getDisplayName(),
                 sitemapEntry.getType()));
@@ -174,7 +167,6 @@ public class CmsSitemapTab extends A_CmsListTab {
             public void load(final CmsLazyTreeItem target) {
 
                 CmsSitemapEntryBean entry = m_entryMap.get(target);
-                String path = entry.getSitePath();
                 AsyncCallback<List<CmsSitemapEntryBean>> callback = new AsyncCallback<List<CmsSitemapEntryBean>>() {
 
                     /**
@@ -199,7 +191,7 @@ public class CmsSitemapTab extends A_CmsListTab {
                     }
                 };
 
-                getTabHandler().getSubEntries(path, null, false, callback);
+                getTabHandler().getSubEntries(entry.getRootPath(), false, callback);
 
             }
         });
@@ -211,7 +203,8 @@ public class CmsSitemapTab extends A_CmsListTab {
     @Override
     protected LinkedHashMap<String, String> getSortList() {
 
-        return null;
+        return m_handler.getSortList();
+
     }
 
     /**

@@ -419,7 +419,7 @@ public class CmsJspNavBuilder {
         Visibility visibility,
         CmsResourceFilter resourceFilter) {
 
-        folder = CmsResource.getFolderPath(folder);
+        folder = CmsFileUtil.removeTrailingSeparator(folder);
         List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
 
         List<CmsResource> resources;

@@ -105,12 +105,11 @@ public interface I_CmsGalleryServiceAsync {
     /**
      * Returns the sub entries to the given sitemap path.<p>
      * 
-     * @param path the site path
-     * @param siteRoot the site root
+     * @param rootPath the root path 
      * @param isRoot <code>true</code> if the requested entry is the root entry
      * @param callback the asynchronous callback 
      */
-    void getSubEntries(String path, String siteRoot, boolean isRoot, AsyncCallback<List<CmsSitemapEntryBean>> callback);
+    void getSubEntries(String rootPath, boolean isRoot, AsyncCallback<List<CmsSitemapEntryBean>> callback);
 
     /**
      * Gets the sub-folders of a folder.<p>

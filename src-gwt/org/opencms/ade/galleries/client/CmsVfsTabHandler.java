@@ -34,6 +34,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -83,6 +84,24 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
             return rootPath.substring(normalizedSiteRoot.length() - 1);
         }
         return vfsEntry.getRootPath();
+    }
+
+    /**
+     * Gets the sort list for the tab.<p>
+     * 
+     * @return the sort list for the tab 
+     */
+    public LinkedHashMap<String, String> getSortList() {
+
+        LinkedHashMap<String, String> options = new LinkedHashMap<String, String>();
+        int i = 0;
+        for (CmsSiteSelectorOption option : m_controller.getVfsSiteSelectorOptions()) {
+            String key = "" + i;
+            options.put(key, option.getMessage());
+            i += 1;
+        }
+        return options;
+
     }
 
     /**
@@ -138,13 +157,12 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     public void onSort(String sortParams, String filter) {
 
         int siteIndex = Integer.parseInt(sortParams);
-        final CmsSiteSelectorOption option = m_controller.getSiteSelectorOptions().get(siteIndex);
+        final CmsSiteSelectorOption option = m_controller.getVfsSiteSelectorOptions().get(siteIndex);
         m_controller.loadVfsEntryBean(option, new AsyncCallback<CmsVfsEntryBean>() {
 
             public void onFailure(Throwable caught) {
 
-                // TODO: Auto-generated method stub
-
+                // will never be called.
             }
 
             public void onSuccess(CmsVfsEntryBean result) {
@@ -174,4 +192,5 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
         m_tab = tab;
     }
+
 }

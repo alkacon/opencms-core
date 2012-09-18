@@ -27,17 +27,21 @@
 
 package org.opencms.ade.galleries;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption.Type;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Helper class for building the options for the site selector in the gallery dialog.<p>
@@ -51,17 +55,22 @@ public class CmsSiteSelectorOptionBuilder {
 
         public int compare(CmsSiteSelectorOption o1, CmsSiteSelectorOption o2) {
 
-            if (o1.isCurrentSite()) {
-                return -1;
-            } else if (o2.isCurrentSite()) {
-                return 1;
-            } else if (o1.getType() == Type.shared) {
-                return -1;
-            } else if (o2.getType() == Type.shared) {
-                return 1;
+            return getSortKey(o1).compareTo(getSortKey(o2));
+        }
+
+        public String getSortKey(CmsSiteSelectorOption o) {
+
+            String prefix = "";
+            if (o.isCurrentSite()) {
+                prefix = "0_";
+            } else if (o.getType() == Type.shared) {
+                prefix = "1_";
+            } else if (o.getType() == Type.currentSubsite) {
+                prefix = "2_";
             } else {
-                return o1.getSiteRoot().compareTo(o2.getSiteRoot());
+                prefix = "3_";
             }
+            return prefix + o.getSiteRoot();
         }
     };
 
@@ -73,6 +82,9 @@ public class CmsSiteSelectorOptionBuilder {
 
     /** The current site root. */
     private String m_siteRoot;
+
+    /** Site roots of sites which have already been added. */
+    private Set<String> m_usedSiteRoots = new HashSet<String>();
 
     /**
      * Creates a new builder instance.<p>
@@ -86,9 +98,29 @@ public class CmsSiteSelectorOptionBuilder {
     }
 
     /**
-     * Adds 'normal' sites.<p>
+     * Adds the current subsite.<p>
+     * 
+     * @param referencePath the reference path 
      */
-    public void addNormalSites() {
+    public void addCurrentSubsite(String referencePath) {
+
+        CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(m_cms, referencePath);
+        String basePath = configData.getBasePath();
+        if (basePath != null) {
+            addOption(
+                Type.currentSubsite,
+                basePath,
+                Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
+                    Messages.GUI_SITESELECTOR_CURRENT_SUBSITE_0));
+        }
+    }
+
+    /**
+     * Adds 'normal' sites.<p>
+     * 
+     * @param includeRoot if true, also adds the root site 
+     */
+    public void addNormalSites(boolean includeRoot) {
 
         CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
         List<CmsSite> sites = siteManager.getAvailableSites(m_cms, true, false, m_cms.getRequestContext().getOuFqn());
@@ -99,6 +131,9 @@ public class CmsSiteSelectorOptionBuilder {
             if (siteRoot.equals("")) {
                 type = Type.root;
                 message = "/";
+                if (!includeRoot) {
+                    continue;
+                }
             }
             addOption(type, siteRoot, message);
         }
@@ -139,7 +174,11 @@ public class CmsSiteSelectorOptionBuilder {
      */
     private void addOption(Type type, String siteRoot, String message) {
 
+        if (m_usedSiteRoots.contains(CmsStringUtil.joinPaths(siteRoot, "/"))) {
+            return;
+        }
         CmsSiteSelectorOption option = new CmsSiteSelectorOption(type, siteRoot, m_siteRoot.equals(siteRoot), message);
         m_options.add(option);
+        m_usedSiteRoots.add(CmsStringUtil.joinPaths(siteRoot, "/"));
     }
 }

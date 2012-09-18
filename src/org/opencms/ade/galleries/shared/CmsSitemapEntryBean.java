@@ -48,6 +48,9 @@ public class CmsSitemapEntryBean implements IsSerializable {
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
 
+    /** The root path. */
+    private String m_rootPath;
+
     /** The site path of this VFS entry. */
     private String m_sitePath;
 
@@ -63,7 +66,8 @@ public class CmsSitemapEntryBean implements IsSerializable {
     /**
      * Constructor.<p>
      * 
-     * @param path the site path
+     * @param rootPath the root path 
+     * @param sitePath the site path
      * @param structureId the entry id
      * @param title the title
      * @param type the resource type
@@ -71,14 +75,16 @@ public class CmsSitemapEntryBean implements IsSerializable {
      * @param isRoot <code>true</code> if this is a site root entry
      */
     public CmsSitemapEntryBean(
-        String path,
+        String rootPath,
+        String sitePath,
         CmsUUID structureId,
         String title,
         String type,
         boolean isFolder,
         boolean isRoot) {
 
-        m_sitePath = path;
+        m_rootPath = rootPath;
+        m_sitePath = sitePath;
         m_structureId = structureId;
         m_title = title;
         m_type = type;
@@ -124,6 +130,16 @@ public class CmsSitemapEntryBean implements IsSerializable {
             }
             return fixedPath.substring(lastSlash + 1);
         }
+    }
+
+    /**
+     * Gets the root path of the sitemap entry.<p>
+     * 
+     * @return the root path of the sitemap entry 
+     */
+    public String getRootPath() {
+
+        return m_rootPath;
     }
 
     /**

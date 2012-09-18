@@ -30,7 +30,6 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -104,19 +103,14 @@ public class CmsVfsTab extends A_CmsListTab {
     /** A map of tree items indexed by VFS path. */
     private Map<String, CmsLazyTreeItem> m_itemsByPath = new HashMap<String, CmsLazyTreeItem>();
 
-    /** The list of site selector options. */
-    private List<CmsSiteSelectorOption> m_siteSelectorOptions;
-
     /**
      * Constructor.<p>
      * 
      * @param tabHandler the tab handler 
-     * @param siteSelectorOptions the site selector options 
      */
-    public CmsVfsTab(CmsVfsTabHandler tabHandler, List<CmsSiteSelectorOption> siteSelectorOptions) {
+    public CmsVfsTab(CmsVfsTabHandler tabHandler) {
 
         super(GalleryTabId.cms_tab_vfstree);
-        m_siteSelectorOptions = siteSelectorOptions;
         m_scrollList.truncate(TM_VFS_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_tabHandler = tabHandler;
         init();
@@ -277,14 +271,8 @@ public class CmsVfsTab extends A_CmsListTab {
     @Override
     protected LinkedHashMap<String, String> getSortList() {
 
-        LinkedHashMap<String, String> options = new LinkedHashMap<String, String>();
-        int i = 0;
-        for (CmsSiteSelectorOption option : m_siteSelectorOptions) {
-            String key = "" + i;
-            options.put(key, option.getMessage());
-            i += 1;
-        }
-        return options;
+        return m_tabHandler.getSortList();
+
     }
 
     /**

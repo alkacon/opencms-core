@@ -79,6 +79,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_LABEL_SIZE_0 = "GUI_RESULT_LABEL_SIZE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITESELECTOR_CURRENT_SUBSITE_0 = "GUI_SITESELECTOR_CURRENT_SUBSITE_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.galleries.messages";
 

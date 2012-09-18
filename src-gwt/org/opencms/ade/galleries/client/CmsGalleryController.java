@@ -538,15 +538,25 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         return m_dialogBean.getScope();
     }
+    
+    /**
+     * Gets the sitemap site selector options.<p>
+     * 
+     * @return the sitemap site selector options 
+     */
+    public List<CmsSiteSelectorOption> getSitemapSiteSelectorOptions() {
+
+        return m_dialogBean.getSitemapSiteSelectorOptions();
+    }
 
     /**
      * Gets the site selector options.<p>
      * 
      * @return the site selector options 
      */
-    public List<CmsSiteSelectorOption> getSiteSelectorOptions() {
+    public List<CmsSiteSelectorOption> getVfsSiteSelectorOptions() {
 
-        return m_dialogBean.getSiteSelectorOptions();
+        return m_dialogBean.getVfsSiteSelectorOptions();
     }
 
     /**
@@ -562,14 +572,12 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /**
      * Loads the sub entries for the given path.<p>
      * 
-     * @param path the site path
-     * @param siteRoot the site root, if requesting from another site
+     * @param rootPath the root path 
      * @param isRoot <code>true</code> if the requested entry is the root entry
      * @param callback the callback to execute with the result
      */
     public void getSubEntries(
-        final String path,
-        final String siteRoot,
+        final String rootPath,
         final boolean isRoot,
         final AsyncCallback<List<CmsSitemapEntryBean>> callback) {
 
@@ -579,7 +587,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             public void execute() {
 
                 start(0, false);
-                getGalleryService().getSubEntries(path, siteRoot, isRoot, this);
+                getGalleryService().getSubEntries(rootPath, isRoot, this);
             }
 
             @Override

@@ -116,15 +116,14 @@ public interface I_CmsGalleryService extends RemoteService {
     /**
      * Returns the sub entries to the given sitemap path.<p>
      * 
-     * @param path the site path
-     * @param siteRoot the site root
+     * @param rootPath the root path 
      * @param isRoot <code>true</code> if the requested entry is the root entry
      * 
-     * @return the sub entries
+     * @return the sub entries 
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    List<CmsSitemapEntryBean> getSubEntries(String path, String siteRoot, boolean isRoot) throws CmsRpcException;
+    List<CmsSitemapEntryBean> getSubEntries(String rootPath, boolean isRoot) throws CmsRpcException;
 
     /**
      * Gets the sub-folders of a folder.<p>

@@ -295,13 +295,15 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     break;
                 case cms_tab_vfstree:
                     CmsVfsTabHandler vfsTabHandler = new CmsVfsTabHandler(controller);
-                    m_vfsTab = new CmsVfsTab(vfsTabHandler, controller.getSiteSelectorOptions());
+                    m_vfsTab = new CmsVfsTab(vfsTabHandler);
                     vfsTabHandler.setTab(m_vfsTab);
                     m_vfsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_vfsTab, Messages.get().key(Messages.GUI_TAB_TITLE_VFS_0));
                     break;
                 case cms_tab_sitemap:
-                    m_sitemapTab = new CmsSitemapTab(new CmsSitemapTabHandler(controller));
+                    CmsSitemapTabHandler sitemapTabHandler = new CmsSitemapTabHandler(controller);
+                    m_sitemapTab = new CmsSitemapTab(sitemapTabHandler);
+                    sitemapTabHandler.setTab(m_sitemapTab);
                     m_sitemapTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_sitemapTab, "Sitemap");
                     break;

@@ -274,12 +274,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
 
-        CmsSiteSelectorOptionBuilder optionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
-        optionBuilder.addNormalSites();
-        optionBuilder.addSharedSite();
-        List<CmsSiteSelectorOption> options = optionBuilder.getOptions();
-        data.setSiteSelectorOptions(options);
-
         List<CmsResourceTypeBean> types = null;
         switch (galleryMode) {
             case editor:
@@ -330,6 +324,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             default:
                 break;
         }
+        CmsSiteSelectorOptionBuilder optionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
+        optionBuilder.addNormalSites(true);
+        optionBuilder.addSharedSite();
+        data.setVfsSiteSelectorOptions(optionBuilder.getOptions());
+
+        CmsSiteSelectorOptionBuilder sitemapOptionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
+        sitemapOptionBuilder.addNormalSites(false);
+        if (data.getReferenceSitePath() != null) {
+            sitemapOptionBuilder.addCurrentSubsite(getCmsObject().addSiteRoot(data.getReferenceSitePath()));
+        }
+        data.setSitemapSiteSelectorOptions(sitemapOptionBuilder.getOptions());
+
         return data;
     }
 
@@ -406,32 +412,28 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubEntries(java.lang.String, java.lang.String, boolean)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getSubEntries(java.lang.String, boolean)
      */
-    public List<CmsSitemapEntryBean> getSubEntries(String path, String siteRoot, boolean isRoot) throws CmsRpcException {
+    public List<CmsSitemapEntryBean> getSubEntries(String rootPath, boolean isRoot) throws CmsRpcException {
 
         try {
-            CmsObject cms = getCmsObject();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)) {
-                cms = OpenCms.initCmsObject(cms);
-                cms.getRequestContext().setSiteRoot(siteRoot);
-            }
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
-                path = "/";
-            }
-            CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
+            CmsObject rootCms = OpenCms.initCmsObject(getCmsObject());
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(rootCms);
             List<CmsSitemapEntryBean> result = new ArrayList<CmsSitemapEntryBean>();
             for (CmsJspNavElement navElement : navBuilder.getNavigationForFolder(
-                path,
+                rootPath,
                 Visibility.all,
                 CmsResourceFilter.ONLY_VISIBLE)) {
                 if (navElement.isInNavigation()) {
-                    result.add(prepareSitemapEntry(cms, navElement, false));
+                    result.add(prepareSitemapEntry(rootCms, navElement, false));
                 }
             }
             if (isRoot) {
-                CmsJspNavElement navElement = navBuilder.getNavigationForResource(path, CmsResourceFilter.ONLY_VISIBLE);
-                CmsSitemapEntryBean root = prepareSitemapEntry(cms, navElement, isRoot);
+                CmsJspNavElement navElement = navBuilder.getNavigationForResource(
+                    rootPath,
+                    CmsResourceFilter.ONLY_VISIBLE);
+                CmsSitemapEntryBean root = prepareSitemapEntry(rootCms, navElement, isRoot);
                 root.setChildren(result);
                 return Collections.singletonList(root);
             }
@@ -1253,6 +1255,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             type = OpenCms.getResourceManager().getResourceType(ownResource.getTypeId()).getTypeName();
         }
         return new CmsSitemapEntryBean(
+            navElement.getResource().getRootPath(),
             navElement.getResourceName(),
             ownResource.getStructureId(),
             navElement.getNavText(),

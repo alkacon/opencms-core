@@ -75,8 +75,8 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The search scope. */
     private CmsGallerySearchScope m_scope;
 
-    /** List of site selector options. */
-    private List<CmsSiteSelectorOption> m_siteSelectorOptions;
+    /** The site selector options for the sitemap tab. */
+    private List<CmsSiteSelectorOption> m_sitemapSiteSelectorOptions;
 
     /** The start gallery folder. */
     private String m_startGallery;
@@ -89,6 +89,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** A list of beans representing the root folders to display in the VFS tab. */
     private List<CmsVfsEntryBean> m_vfsRootFolders;
+
+    /** List of site selector options. */
+    private List<CmsSiteSelectorOption> m_vfsSiteSelectorOptions;
 
     /**
      * Returns the categories.<p>
@@ -173,13 +176,13 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
-     * Gets the list of site selector options.<p>
+     * Returns the site selector options for the sitemap.<p>
      * 
-     * @return the list of site selector options 
+     * @return the site selector options for the sitemap 
      */
-    public List<CmsSiteSelectorOption> getSiteSelectorOptions() {
+    public List<CmsSiteSelectorOption> getSitemapSiteSelectorOptions() {
 
-        return m_siteSelectorOptions;
+        return m_sitemapSiteSelectorOptions;
     }
 
     /**
@@ -220,6 +223,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsVfsEntryBean> getVfsRootFolders() {
 
         return m_vfsRootFolders;
+    }
+
+    /**
+     * Gets the list of site selector options for the VFS tab.<p>
+     * 
+     * @return the list of site selector options for the VFS tab  
+     */
+    public List<CmsSiteSelectorOption> getVfsSiteSelectorOptions() {
+
+        return m_vfsSiteSelectorOptions;
     }
 
     /**
@@ -304,13 +317,13 @@ public class CmsGalleryDataBean implements IsSerializable {
     }
 
     /**
-     * Sets the available site selector options.<p>
+     * Sets the site selector options for the sitemap tab.<p>
      * 
-     * @param siteSelectorOptions the available site selector options 
+     * @param options  the site selector options for the sitemap tab 
      */
-    public void setSiteSelectorOptions(List<CmsSiteSelectorOption> siteSelectorOptions) {
+    public void setSitemapSiteSelectorOptions(List<CmsSiteSelectorOption> options) {
 
-        m_siteSelectorOptions = siteSelectorOptions;
+        m_sitemapSiteSelectorOptions = options;
     }
 
     /**
@@ -351,5 +364,15 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setVfsRootFolders(List<CmsVfsEntryBean> rootFolders) {
 
         m_vfsRootFolders = rootFolders;
+    }
+
+    /**
+     * Sets the available site selector options.<p>
+     * 
+     * @param siteSelectorOptions the available site selector options 
+     */
+    public void setVfsSiteSelectorOptions(List<CmsSiteSelectorOption> siteSelectorOptions) {
+
+        m_vfsSiteSelectorOptions = siteSelectorOptions;
     }
 }

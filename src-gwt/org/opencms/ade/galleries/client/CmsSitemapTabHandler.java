@@ -28,8 +28,12 @@
 package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsSitemapTab;
+import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.util.CmsStringUtil;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -40,6 +44,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @since 8.5.0
  */
 public class CmsSitemapTabHandler extends A_CmsTabHandler {
+
+    /** The sitemap tab which this handler belongs to. */
+    CmsSitemapTab m_tab;
 
     /**
      * Creates a new sitemap tab handler.<p>
@@ -60,21 +67,60 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         // nothing to do, no parameters from this tab
     }
 
+    /** 
+     * Gets the selected site root.<p>
+     * 
+     * @return the selected site root 
+     */
+    public String getDefaultSelectedSiteRoot() {
+
+        return m_controller.getSitemapSiteSelectorOptions().get(0).getSiteRoot();
+    }
+
+    /**
+     * Gets the path which is used when the sitemap entry is selected.<p>
+     * 
+     * @param sitemapEntry the sitemap entry
+     * 
+     * @return the path to use when the entry is selected 
+     */
+    public String getSelectPath(CmsSitemapEntryBean sitemapEntry) {
+
+        String normalizedSiteRoot = CmsStringUtil.joinPaths(CmsCoreProvider.get().getSiteRoot(), "/");
+        String rootPath = sitemapEntry.getRootPath();
+        if (rootPath.startsWith(normalizedSiteRoot)) {
+            return rootPath.substring(normalizedSiteRoot.length() - 1);
+        }
+        return sitemapEntry.getRootPath();
+    }
+
+    /**
+     * Gets the select options for the sort list.<p>
+     * 
+     * @return the select options for the sort list 
+     */
+    public LinkedHashMap<String, String> getSortList() {
+
+        LinkedHashMap<String, String> options = new LinkedHashMap<String, String>();
+        int i = 0;
+        for (CmsSiteSelectorOption option : m_controller.getSitemapSiteSelectorOptions()) {
+            String key = "" + i;
+            options.put(key, option.getMessage());
+            i += 1;
+        }
+        return options;
+    }
+
     /**
      * Loads the sub entries for the given path.<p>
      * 
-     * @param path the site path
-     * @param siteRoot the site root, if requesting from another site
+     * @param rootPath the root path 
      * @param isRoot <code>true</code> if the requested entry is the root entry
      * @param callback the callback to execute with the result
      */
-    public void getSubEntries(
-        String path,
-        String siteRoot,
-        boolean isRoot,
-        AsyncCallback<List<CmsSitemapEntryBean>> callback) {
+    public void getSubEntries(String rootPath, boolean isRoot, AsyncCallback<List<CmsSitemapEntryBean>> callback) {
 
-        m_controller.getSubEntries(path, siteRoot, isRoot, callback);
+        m_controller.getSubEntries(rootPath, isRoot, callback);
     }
 
     /**
@@ -96,7 +142,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         if (getTab().isInitialized()) {
             getTab().onContentChange();
         } else {
-            getSubEntries("/", null, true, new AsyncCallback<List<CmsSitemapEntryBean>>() {
+            getSubEntries(getDefaultSelectedSiteRoot(), true, new AsyncCallback<List<CmsSitemapEntryBean>>() {
 
                 public void onFailure(Throwable caught) {
 
@@ -118,7 +164,22 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(String sortParams, String filter) {
 
-        // nothing to do, no sorting this one
+        int siteIndex = Integer.parseInt(sortParams);
+
+        final CmsSiteSelectorOption option = m_controller.getSitemapSiteSelectorOptions().get(siteIndex);
+        m_controller.getSubEntries(option.getSiteRoot(), true, new AsyncCallback<List<CmsSitemapEntryBean>>() {
+
+            public void onFailure(Throwable caught) {
+
+                // will never be called
+
+            }
+
+            public void onSuccess(List<CmsSitemapEntryBean> entries) {
+
+                m_tab.fillInitially(entries);
+            }
+        });
     }
 
     /**
@@ -128,6 +189,16 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     public void removeParam(String paramKey) {
 
         // nothing to do, no parameters from this tab
+    }
+
+    /**
+     * Sets the tab for the handler.<p>
+     * 
+     * @param tab the tab for this handler 
+     */
+    public void setTab(CmsSitemapTab tab) {
+
+        m_tab = tab;
     }
 
     /**
