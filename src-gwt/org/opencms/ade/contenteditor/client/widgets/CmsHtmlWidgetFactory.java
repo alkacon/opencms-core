@@ -102,8 +102,8 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                     var item = config.toolbar_items[i];
                     if (item == 'undo') {
                         options.reundo = {
-                            undoLabel : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_UNDO_0),
-                            redoLabel : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_REDO_0)
+                            labelUndo : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_UNDO_0),
+                            labelRedo : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_REDO_0)
                         }
                     }
                     if (item == 'alignleft') {
@@ -161,7 +161,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                 formats : []
                             };
                         }
-                        options.format.formats
+                        options.lists.formats
                                 .push({
                                     command : "Unordered",
                                     label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_UNORDERED_LIST_0),
@@ -174,7 +174,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                                 formats : []
                             };
                         }
-                        options.format.formats
+                        options.lists.formats
                                 .push({
                                     command : "Ordered",
                                     label : messages.@org.opencms.gwt.client.util.CmsMessages::key(Ljava/lang/String;)(@org.opencms.ade.contenteditor.client.Messages::GUI_HALLO_ORDERED_LIST_0),
