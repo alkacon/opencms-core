@@ -122,8 +122,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
 
+    /** Flag which indicates whether the site selector should be shown. */
+    private boolean m_isShowSiteSelector = true;
+
     /** If <code>true</code> the search object is changed <code>false</code> otherwise.  */
     private boolean m_searchObjectChanged = true;
+
+    /** The start site to set for the site selector. */
+    private String m_startSite;
 
     /** The configured tabs. */
     private GalleryTabId[] m_tabIds;
@@ -510,6 +516,26 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Gets the default site root for the sitemap tab.<p>
+     * 
+     * @return the default site root for the sitemap tab 
+     */
+    public String getDefaultSitemapTabSiteRoot() {
+
+        return getDefaultSiteRoot(m_dialogBean.getSitemapSiteSelectorOptions());
+    }
+
+    /**
+     * Gets the default site root for the VFS tab.<p>
+     * 
+     * @return the default site root for the VFS tab
+     */
+    public String getDefaultVfsTabSiteRoot() {
+
+        return getDefaultSiteRoot(m_dialogBean.getVfsSiteSelectorOptions());
+    }
+
+    /**
      * Returns the gallery dialog mode.<p>
      *
      * @return the gallery dialog mode
@@ -517,6 +543,30 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public I_CmsGalleryProviderConstants.GalleryMode getDialogMode() {
 
         return m_dialogMode;
+    }
+
+    /**
+     * Gets the option which should be preselected for the site selector, or null.<p>
+     * 
+     * @param siteRoot the site root 
+     * @param options the list of options 
+     * 
+     * @return the key for the option to preselect
+     */
+    public String getPreselectOption(String siteRoot, List<CmsSiteSelectorOption> options) {
+
+        int i = 0;
+        if ((siteRoot == null) || options.isEmpty()) {
+            return null;
+        }
+        for (CmsSiteSelectorOption option : options) {
+            String key = "" + i;
+            if (CmsStringUtil.joinPaths(siteRoot, "/").equals(CmsStringUtil.joinPaths(option.getSiteRoot(), "/"))) {
+                return key;
+            }
+            i += 1;
+        }
+        return null;
     }
 
     /**
@@ -538,7 +588,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         return m_dialogBean.getScope();
     }
-    
+
     /**
      * Gets the sitemap site selector options.<p>
      * 
@@ -550,16 +600,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
-     * Gets the site selector options.<p>
-     * 
-     * @return the site selector options 
-     */
-    public List<CmsSiteSelectorOption> getVfsSiteSelectorOptions() {
-
-        return m_dialogBean.getVfsSiteSelectorOptions();
-    }
-
-    /**
      * Returns the start locale.<p>
      * 
      * @return the start locale
@@ -567,6 +607,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public String getStartLocale() {
 
         return m_dialogBean.getLocale();
+    }
+
+    /**
+     * Gets the start site root.<p>
+     * 
+     * @return the start site root 
+     */
+    public String getStartSiteRoot() {
+
+        return m_startSite;
     }
 
     /**
@@ -641,6 +691,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         } else {
             return m_tabIds;
         }
+    }
+
+    /**
+     * Gets the site selector options.<p>
+     * 
+     * @return the site selector options 
+     */
+    public List<CmsSiteSelectorOption> getVfsSiteSelectorOptions() {
+
+        return m_dialogBean.getVfsSiteSelectorOptions();
     }
 
     /**
@@ -728,13 +788,23 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns true if the site selector should be shown.<p>
+     * 
+     * @return true if the site selector should be shown 
+     */
+    public boolean isShowSiteSelector() {
+
+        return m_isShowSiteSelector;
+    }
+
+    /**
      * Loads the root VFS entry bean for a given site selector option.<p>
      * 
-     * @param option the option for which we want the VFS entry bean 
+     * @param siteRoot the site root for which the VFS entry should be loaded 
      * 
      * @param asyncCallback the callback to call with the result  
      */
-    public void loadVfsEntryBean(final CmsSiteSelectorOption option, final AsyncCallback<CmsVfsEntryBean> asyncCallback) {
+    public void loadVfsEntryBean(final String siteRoot, final AsyncCallback<CmsVfsEntryBean> asyncCallback) {
 
         CmsRpcAction<CmsVfsEntryBean> action = new CmsRpcAction<CmsVfsEntryBean>() {
 
@@ -742,7 +812,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             public void execute() {
 
                 start(200, false);
-                getGalleryService().loadVfsEntryBean(option, this);
+                getGalleryService().loadVfsEntryBean(siteRoot, this);
             }
 
             @Override
@@ -1022,6 +1092,26 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public void setSearchObjectChanged() {
 
         m_searchObjectChanged = true;
+    }
+
+    /**
+     * Sets the "Show site selector" option.<p>
+     * 
+     * @param isShowSiteSelector the new value for the option
+     */
+    public void setShowSiteSelector(boolean isShowSiteSelector) {
+
+        m_isShowSiteSelector = isShowSiteSelector;
+    }
+
+    /**
+     * Sets the start site.<p>
+     * 
+     * @param startSite the start site 
+     */
+    public void setStartSite(String startSite) {
+
+        m_startSite = startSite;
     }
 
     /**
@@ -1472,6 +1562,22 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Helper method for getting the default site root for a list of site selector options.<p>
+     * 
+     * @param options the list of options 
+     * 
+     * @return the default site root 
+     */
+    private String getDefaultSiteRoot(List<CmsSiteSelectorOption> options) {
+
+        if (m_startSite != null) {
+            return m_startSite;
+        } else {
+            return options.get(0).getSiteRoot();
+        }
+    }
+
+    /**
     * Gets the filtered list of categories.<p>
     * 
     * @param filter the search string to use for filtering 
@@ -1586,4 +1692,5 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
         return null;
     }
+
 }

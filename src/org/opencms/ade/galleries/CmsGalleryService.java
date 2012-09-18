@@ -36,7 +36,6 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
-import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
@@ -469,22 +468,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#loadVfsEntryBean(org.opencms.ade.galleries.shared.CmsSiteSelectorOption)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#loadVfsEntryBean(java.lang.String)
      */
-    public CmsVfsEntryBean loadVfsEntryBean(CmsSiteSelectorOption option) throws CmsRpcException {
+    public CmsVfsEntryBean loadVfsEntryBean(String path) throws CmsRpcException {
 
         try {
-
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
             cms.getRequestContext().setSiteRoot("");
-            String path = option.getSiteRoot();
             CmsResource optionRes = cms.readResource(path);
-            CmsVfsEntryBean entryBean = new CmsVfsEntryBean(
-                option.getSiteRoot(),
-                optionRes.getStructureId(),
-                option.getSiteRoot(),
-                true,
-                isEditable(cms, optionRes));
+            CmsVfsEntryBean entryBean = new CmsVfsEntryBean(path, optionRes.getStructureId(), path, true, isEditable(
+                cms,
+                optionRes));
             return entryBean;
         } catch (Throwable e) {
             error(e);

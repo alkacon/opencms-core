@@ -101,6 +101,9 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
      */
     public LinkedHashMap<String, String> getSortList() {
 
+        if (!m_controller.isShowSiteSelector()) {
+            return null;
+        }
         LinkedHashMap<String, String> options = new LinkedHashMap<String, String>();
         int i = 0;
         for (CmsSiteSelectorOption option : m_controller.getSitemapSiteSelectorOptions()) {
@@ -142,19 +145,26 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         if (getTab().isInitialized()) {
             getTab().onContentChange();
         } else {
-            getSubEntries(getDefaultSelectedSiteRoot(), true, new AsyncCallback<List<CmsSitemapEntryBean>>() {
+            String key = m_controller.getPreselectOption(
+                m_controller.getStartSiteRoot(),
+                m_controller.getSitemapSiteSelectorOptions());
+            getTab().setSortSelectBoxValue(key);
+            getSubEntries(
+                m_controller.getDefaultVfsTabSiteRoot(),
+                true,
+                new AsyncCallback<List<CmsSitemapEntryBean>>() {
 
-                public void onFailure(Throwable caught) {
+                    public void onFailure(Throwable caught) {
 
-                    // nothing to do
-                }
+                        // nothing to do
+                    }
 
-                public void onSuccess(List<CmsSitemapEntryBean> result) {
+                    public void onSuccess(List<CmsSitemapEntryBean> result) {
 
-                    getTab().fillInitially(result);
-                    getTab().onContentChange();
-                }
-            });
+                        getTab().fillInitially(result);
+                        getTab().onContentChange();
+                    }
+                });
         }
     }
 

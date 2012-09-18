@@ -272,7 +272,6 @@ public class CmsVfsTab extends A_CmsListTab {
     protected LinkedHashMap<String, String> getSortList() {
 
         return m_tabHandler.getSortList();
-
     }
 
     /**
