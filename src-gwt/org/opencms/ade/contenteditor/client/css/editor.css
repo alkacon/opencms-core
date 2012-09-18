@@ -5,6 +5,8 @@
 	width: 100%;
 	margin: 0;
 	padding: 0;
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
 }
 
 @url editCursorGifUrl editCursorGif;
