@@ -38,6 +38,27 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_AUTOFORMAT_0 = "GUI_EDITOR_BUTTON_AUTOFORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_FOLDING_0 = "GUI_EDITOR_BUTTON_FOLDING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_SYNTAXHIGHLIGHT_0 = "GUI_EDITOR_BUTTON_SYNTAXHIGHLIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_VISIBLETABS_0 = "GUI_EDITOR_BUTTON_VISIBLETABS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_BUTTON_WORDWRAP_0 = "GUI_EDITOR_BUTTON_WORDWRAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_SELECT_FONTSIZE_0 = "GUI_EDITOR_SELECT_FONTSIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_SELECT_SYNTAX_0 = "GUI_EDITOR_SELECT_SYNTAX_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_TITLE_CODEMIRROR_0 = "GUI_EDITOR_TITLE_CODEMIRROR_0";
 
     /** Name of the used resource bundle. */
