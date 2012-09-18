@@ -93,79 +93,118 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_JOBS_LIST_ACTION_MLOGFILE_NAME_0 = "GUI_JOBS_LIST_ACTION_MLOGFILE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGADMIN_LIST_COLS_CH_LEVEL = "GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL";
+    public static final String GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_0 = "GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGADMIN_LIST_COLS_EF_LEVEL = "GUI_LOG4JADMIN_LIST_COLS_EF_LEVEL";
+    public static final String GUI_LOG4JADMIN_LIST_COLS_EF_LEVEL_0 = "GUI_LOG4JADMIN_LIST_COLS_EF_LEVEL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGADMIN_LIST_COLS_LOGGER = "GUI_LOG4JADMIN_LIST_COLS_LOGGER";
+    public static final String GUI_LOG4JADMIN_LIST_COLS_LOGGER_0 = "GUI_LOG4JADMIN_LIST_COLS_LOGGER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGADMIN_LIST_COLS_PARENT_LOGGER = "GUI_LOG4JADMIN_LIST_COLS_PARENT_LOGGER";
+    public static final String GUI_LOG4JADMIN_LIST_COLS_PARENT_LOGGER_0 = "GUI_LOG4JADMIN_LIST_COLS_PARENT_LOGGER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGADMIN_LIST_COLS_LOG_FILE = "GUI_LOGADMIN_LIST_COLS_LOG_FILE";
+    public static final String GUI_LOGADMIN_LIST_COLS_LOG_FILE_0 = "GUI_LOGADMIN_LIST_COLS_LOG_FILE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGADMIN_LIST_COLS_CH_FILE = "GUI_LOGADMIN_LIST_COLS_CH_FILE";
+    public static final String GUI_LOGADMIN_LIST_COLS_CH_FILE_0 = "GUI_LOGADMIN_LIST_COLS_CH_FILE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGADMIN_LIST_NAME = "GUI_LOGADMIN_LIST_NAME";
+    public static final String GUI_LOGADMIN_LIST_NAME_0 = "GUI_LOGADMIN_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_DEBUG = "LOGADMIN_LEVEL_DEBUG";
+    public static final String GUI_LOGADMIN_LEVEL_DEBUG_0 = "GUI_LOGADMIN_LEVEL_DEBUG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_DEBUG_HELP = "LOGADMIN_LEVEL_DEBUG_HELP";
+    public static final String GUI_LOGADMIN_LEVEL_DEBUG_HELP_0 = "GUI_LOGADMIN_LEVEL_DEBUG_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_ERROR = "LOGADMIN_LEVEL_ERROR";
+    public static final String GUI_LOGADMIN_LEVEL_ERROR_0 = "GUI_LOGADMIN_LEVEL_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_ERROR_HELP = "LOGADMIN_LEVEL_ERROR_HELP";
+    public static final String GUI_LOGADMIN_LEVEL_ERROR_HELP_0 = "GUI_LOGADMIN_LEVEL_ERROR_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_FATAL = "LOGADMIN_LEVEL_FATAL";
+    public static final String GUI_LOGADMIN_LEVEL_FATAL_0 = "GUI_LOGADMIN_LEVEL_FATAL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_FATAL_HELP = "LOGADMIN_LEVEL_FATAL_HELP";
+    public static final String GUI_LOGADMIN_LEVEL_FATAL_HELP_0 = "GUI_LOGADMIN_LEVEL_FATAL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_INFO = "LOGADMIN_LEVEL_INFO";
+    public static final String GUI_LOGADMIN_LEVEL_INFO_0 = "GUI_LOGADMIN_LEVEL_INFO_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_INFO_HELP = "LOGADMIN_LEVEL_INFO_HELP";
+    public static final String GUI_LOGADMIN_LEVEL_INFO_HELP_0 = "GUI_LOGADMIN_LEVEL_INFO_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_OFF = "LOGADMIN_LEVEL_OFF";
+    public static final String GUI_LOGADMIN_LEVEL_OFF_0 = "GUI_LOGADMIN_LEVEL_OFF_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_OFF_HELP = "LOGADMIN_LEVEL_OFF_HELP";
+    public static final String GUI_LOGADMIN_LEVEL_OFF_HELP_0 = "GUI_LOGADMIN_LEVEL_OFF_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_LOGFILE = "LOGADMIN_LEVEL_LOGFILE";
+    public static final String GUI_LOGADMIN_LEVEL_LOGFILE_0 = "GUI_LOGADMIN_LEVEL_LOGFILE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_LOGFILE_HELP = "LOGADMIN_LEVEL_LOGFILE_HELP";
+    public static final String GUI_LOGADMIN_LEVEL_LOGFILE_HELP_0 = "GUI_LOGADMIN_LEVEL_LOGFILE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_LOGFILE_HELP_ACTIV = "LOGADMIN_LEVEL_LOGFILE_HELP_ACTIV";
+    public static final String GUI_LOGADMIN_LEVEL_LOGFILE_HELP_ACTIV_0 = "GUI_LOGADMIN_LEVEL_LOGFILE_HELP_ACTIV_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_WARN = "LOGADMIN_LEVEL_WARN";
+    public static final String GUI_LOGADMIN_LEVEL_WARN_0 = "GUI_LOGADMIN_LEVEL_WARN_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_LEVEL_WARN_HELP = "LOGADMIN_LEVEL_WARN_HELP";
+    public static final String GUI_LOGADMIN_LEVEL_WARN_HELP_0 = "GUI_LOGADMIN_LEVEL_WARN_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOGADMIN_ACTIVATE_LOGFILE_HELP = "LOGADMIN_ACTIVATE_LOGFILE_HELP";
+    public static final String GUI_LOGADMIN_ACTIVATE_LOGFILE_HELP_0 = "GUI_LOGADMIN_ACTIVATE_LOGFILE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGADMIN_LEVEL_INFO_HELP_ACTIV_0 = "GUI_LOGADMIN_LEVEL_INFO_HELP_ACTIV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_LOGADMIN_NAME_0 = "GUI_WORKPLACE_LOGADMIN_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_FATAL_0 = "GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_FATAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGADMIN_LEVEL_ERROR_HELP_ACTIV_0 = "GUI_LOGADMIN_LEVEL_ERROR_HELP_ACTIV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGADMIN_LEVEL_WARN_HELP_ACTIV_0 = "GUI_LOGADMIN_LEVEL_WARN_HELP_ACTIV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGADMIN_LEVEL_OFF_HELP_ACTIV_0 = "GUI_LOGADMIN_LEVEL_OFF_HELP_ACTIV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGADMIN_LEVEL_FATAL_HELP_ACTIV_0 = "GUI_LOGADMIN_LEVEL_FATAL_HELP_ACTIV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGADMIN_LEVEL_DEBUG_HELP_ACTIV_0 = "GUI_LOGADMIN_LEVEL_DEBUG_HELP_ACTIV_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_INFO_0 = "GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_WARN_0 = "GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_WARN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_ERROR_0 = "GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_OFF_0 = "GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_OFF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_DEBUG_0 = "GUI_LOG4JADMIN_LIST_COLS_CH_LEVEL_DEBUG_0";
 
     /** Name of active buttons. */
-    public static final String ACTIVE = "ACTIVE";
+    public static final String GUI_ACTIVE_0 = "GUI_ACTIVE_0";
 
     /** Name of inactive buttons. */
-    public static final String INACTIV = "INACTIV";
+    public static final String GUI_INACTIV_0 = "GUI_INACTIV_0";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
