@@ -889,9 +889,11 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
                 oldDir.copy(newDir, fileName, fileName);
             }
         } catch (Exception e) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_CREATE_3, getName(), getPath(), backupPath),
-                e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_IO_INDEX_BACKUP_CREATE_3,
+                getName(),
+                getPath(),
+                backupPath), e);
             backupPath = null;
         }
         return backupPath;

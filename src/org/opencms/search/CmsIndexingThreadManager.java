@@ -139,12 +139,10 @@ public class CmsIndexingThreadManager {
                 writer.commit();
             } catch (IOException e) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(
-                        Messages.get().getBundle().key(
-                            Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
-                            indexer.getIndex().getName(),
-                            indexer.getIndex().getPath()),
-                        e);
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_IO_INDEX_WRITER_COMMIT_2,
+                        indexer.getIndex().getName(),
+                        indexer.getIndex().getPath()), e);
                 }
             }
         }

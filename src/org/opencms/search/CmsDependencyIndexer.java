@@ -152,20 +152,16 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
                 resources = m_cms.readResources(resourceName, CmsResourceFilter.IGNORE_EXPIRATION.addRequireFile());
             } catch (CmsException e) {
                 if (m_report != null) {
-                    m_report.println(
-                        Messages.get().container(
-                            Messages.RPT_UNABLE_TO_READ_SOURCE_2,
-                            resourceName,
-                            e.getLocalizedMessage()),
-                        I_CmsReport.FORMAT_WARNING);
+                    m_report.println(Messages.get().container(
+                        Messages.RPT_UNABLE_TO_READ_SOURCE_2,
+                        resourceName,
+                        e.getLocalizedMessage()), I_CmsReport.FORMAT_WARNING);
                 }
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(
-                        Messages.get().getBundle().key(
-                            Messages.LOG_UNABLE_TO_READ_SOURCE_2,
-                            resourceName,
-                            m_index.getName()),
-                        e);
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_UNABLE_TO_READ_SOURCE_2,
+                        resourceName,
+                        m_index.getName()), e);
                 }
             }
             if (resources != null) {

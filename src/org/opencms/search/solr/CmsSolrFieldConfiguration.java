@@ -125,8 +125,6 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
      * @param resourcename the resource name to get the locale suffix for
      * 
      * @return the locale suffix if found, <code>null</code> otherwise
-     * 
-     * @see #LOCALE_SUFFIX_PATTERN
      */
     public static String getLocaleSuffix(String resourcename) {
 
