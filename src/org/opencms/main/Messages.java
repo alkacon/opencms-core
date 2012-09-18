@@ -97,7 +97,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CRITICAL_NO_DB_CONTEXT_0 = "ERR_CRITICAL_NO_DB_CONTEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DERIGISTERING_JDBC_DRIVER_1 = "ERR_DERIGISTERING_JDBC_DRIVER_1";
+    public static final String ERR_DEREGISTERING_JDBC_DRIVER_1 = "ERR_DEREGISTERING_JDBC_DRIVER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ILLEGAL_ARG_2 = "ERR_ILLEGAL_ARG_2";
