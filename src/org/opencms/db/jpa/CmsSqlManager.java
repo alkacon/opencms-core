@@ -191,7 +191,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     throws CmsDbException {
 
         if (!m_isInitialized) {
-            throw new CmsDbException(Messages.get().container(Messages.ERR_SQLMANAGER_NOT_INITIALIZED));
+            throw new CmsDbException(Messages.get().container(Messages.ERR_SQLMANAGER_NOT_INITIALIZED_0));
         }
         m_cachedQueries = new Hashtable<String, String>();
         m_queries = new Hashtable<String, String>();

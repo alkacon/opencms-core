@@ -38,13 +38,10 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_JPA_PERSITENCE = "ERR_COUNTING_PROPERTIES_1";
+    public static final String ERR_COUNTING_PROPERTIES_1 = "ERR_COUNTING_PROPERTIES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COUNTING_VISITED_RESOURCES_1 = "ERR_COUNTING_VISITED_RESOURCES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_COUNTING_PROPERTIES_1 = "ERR_COUNTING_PROPERTIES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_SIBLING_FILE_NOT_FOUND_1 = "ERR_CREATE_SIBLING_FILE_NOT_FOUND_1";
@@ -99,6 +96,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_JDBC_CONN_INVALID_PROJECT_ID_1 = "ERR_JDBC_CONN_INVALID_PROJECT_ID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_JPA_PERSITENCE_1 = "ERR_JPA_PERSITENCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_ACE_FOUND_2 = "ERR_NO_ACE_FOUND_2";
@@ -225,6 +225,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SIBLING_WITH_NAME_ALREADY_EXISTS_1 = "ERR_SIBLING_WITH_NAME_ALREADY_EXISTS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SQLMANAGER_NOT_INITIALIZED_0 = "ERR_SQLMANAGER_NOT_INITIALIZED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TOO_MANY_PROPERTIES_3 = "ERR_TOO_MANY_PROPERTIES_3";
@@ -456,9 +459,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PUBLISH_STAT_4 = "RPT_PUBLISH_STAT_4";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SQLMANAGER_NOT_INITIALIZED = "ERR_SQLMANAGER_NOT_INITIALIZED";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.jpa.messages";

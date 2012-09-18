@@ -142,7 +142,7 @@ public class CmsWorkflowNotification extends A_CmsNotification {
         StringBuffer buffer = new StringBuffer();
         //----------INTRODUCTION LINE---------------------------------
         buffer.append("<div class=\"user_line\">");
-        buffer.append(getMessage(Messages.MAIL_USER_LINE_1, m_userCms.getRequestContext().getCurrentUser().getName()));
+        buffer.append(getMessage(Messages.GUI_MAIL_USER_LINE_1, m_userCms.getRequestContext().getCurrentUser().getName()));
         buffer.append("</div>");
 
         //----------RESOURCE TABLE-------------------------------------
@@ -170,7 +170,7 @@ public class CmsWorkflowNotification extends A_CmsNotification {
 
         //---------PUBLISH LINK-----------------------------------------
         buffer.append("<div class=\"publish_link\">");
-        buffer.append(getMessage(Messages.MAIL_PUBLISH_LINK_1, m_link));
+        buffer.append(getMessage(Messages.GUI_MAIL_PUBLISH_LINK_1, m_link));
         buffer.append("</div>");
         return buffer.toString();
     }
