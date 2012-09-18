@@ -71,7 +71,7 @@ public class CmsColor {
      */
     public String getHex() {
 
-        return m_hex;
+        return m_hex.toUpperCase();
     }
 
     /**

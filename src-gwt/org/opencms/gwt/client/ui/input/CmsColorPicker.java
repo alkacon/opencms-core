@@ -363,7 +363,14 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
         boolean valid = validateColorValue(colorvalue);
         if (valid) {
-            m_textboxColorValue.setValue(m_colorValue, true);
+            if (colorvalue.length() == 4) {
+                char[] chr = colorvalue.toCharArray();
+                for (int i = 1; i < 4; i++) {
+                    String foo = String.valueOf(chr[i]);
+                    colorvalue = colorvalue.replaceFirst(foo, foo + foo);
+                }
+            }
+            m_textboxColorValue.setValue(colorvalue, true);
             m_colorField.getElement().getStyle().setBackgroundColor(colorvalue);
             m_colorValue = colorvalue;
         }
@@ -381,7 +388,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
         }
         m_previewHandlerRegistration = null;
         CmsColorSelector picker = (CmsColorSelector)m_popup.getWidget(0);
-        if (checkvalue("#" + picker.getHexColor())) {
+        if (checkvalue("#" + picker.getHexColor().toUpperCase())) {
             m_popup.hide();
         }
 
