@@ -28,28 +28,24 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.gwt.client.ui.CmsLockReportDialog;
-
-import com.google.gwt.user.client.Command;
+import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 
 /**
- * Sitemap context menu show lock report entry.<p>
+ * Sitemap context menu resource info entry.<p>
  * 
  * @since 8.0.1
  */
-public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsResourceInfoMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsLockReportMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsResourceInfoMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_LOCK_REPORT_0));
+        setLabel(Messages.get().key(Messages.GUI_HOVERBAR_RESOURCE_INFO_0));
         setActive(true);
 
     }
@@ -59,16 +55,7 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
      */
     public void execute() {
 
-        final CmsSitemapController controller = getHoverbar().getController();
-        final CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        CmsLockReportDialog.openDialogForResource(entry.getId(), new Command() {
-
-            public void execute() {
-
-                controller.updateEntry(entry.getId());
-            }
-        });
-
+        CmsResourceInfoDialog.load(getHoverbar().getEntry().getId());
     }
 
     /**
