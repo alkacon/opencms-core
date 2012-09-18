@@ -260,27 +260,27 @@
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp"
 							rule="nondeleted" />
-						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" 
 							name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" 
 							rule="containerpage" /> 
-						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" 
-							rule="ade-undochanges"/>
+						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
+							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport"
+							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" 
 							rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_SEO_0" 
 							name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"  
 							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport"
-							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" 
+							rule="ade-undochanges"/>
 						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="containerpage" />
@@ -425,16 +425,20 @@
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp"
 							rule="nondeleted" />
+						<entry key="GUI_EXPLORER_CONTEXT_GO_TO_PARENT_0"
+							name="org.opencms.ade.sitemap.client.toolbar.CmsGoToParentAction"
+							rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0"
 							name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog"
 							rule="sitemap" />
+						<entry key="GUI_EXPLORER_CONTEXT_REFRESH_0"
+							name="org.opencms.ade.sitemap.client.toolbar.CmsRefreshAction"
+							rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="sitemap" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
 							rule="sitemap" />
-						<entry key="GUI_EXPLORER_CONTEXT_GO_TO_PARENT_0" name="org.opencms.ade.sitemap.client.toolbar.CmsGoToParentAction" rule="sitemap"/>
-						<entry key="GUI_EXPLORER_CONTEXT_REFRESH_0" name="org.opencms.ade.sitemap.client.toolbar.CmsRefreshAction"  rule="sitemap"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
