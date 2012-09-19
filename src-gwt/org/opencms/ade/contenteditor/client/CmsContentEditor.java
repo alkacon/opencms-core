@@ -428,6 +428,11 @@ public final class CmsContentEditor {
 
         m_editor.setShowEditorHelp(!hide);
         HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), hide);
+        if (!hide) {
+            m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0));
+        } else {
+            m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_HIDDEN_0));
+        }
     }
 
     /**
@@ -834,7 +839,7 @@ public final class CmsContentEditor {
         if (m_contentLocales.size() > 1) {
             m_deleteLocaleButton.enable();
         } else {
-            m_deleteLocaleButton.disable("Can't delete last locale.");
+            m_deleteLocaleButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0));
         }
         if (m_copyLocaleButton == null) {
             m_copyLocaleButton = createButton(
@@ -858,7 +863,7 @@ public final class CmsContentEditor {
 
         m_toolbar = new CmsToolbar();
         m_saveExitButton = createButton(
-            "Save and exit",
+            Messages.get().key(Messages.GUI_TOOLBAR_SAVE_AND_EXIT_0),
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSaveExit());
         m_saveExitButton.addClickHandler(new ClickHandler() {
 
@@ -897,7 +902,7 @@ public final class CmsContentEditor {
         m_toolbar.addLeft(m_openFormButton);
 
         m_hideHelpBubblesButton = new CmsToggleButton();
-        m_hideHelpBubblesButton.setTitle(I_CmsButton.ButtonData.TOGGLE_HELP.getTitle());
+        m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0));
         m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.TOGGLE_HELP.getIconClass());
         m_hideHelpBubblesButton.setButtonStyle(ButtonStyle.IMAGE, null);
         m_hideHelpBubblesButton.setSize(Size.big);
@@ -912,6 +917,7 @@ public final class CmsContentEditor {
         if (!CmsCoreProvider.get().isShowEditorHelp()) {
             m_hideHelpBubblesButton.setDown(false);
             HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), true);
+            m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_HIDDEN_0));
         }
         m_toolbar.addRight(m_hideHelpBubblesButton);
 

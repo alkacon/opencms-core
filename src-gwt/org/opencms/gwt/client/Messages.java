@@ -76,9 +76,6 @@ public final class Messages {
     public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NO_TITLE_0 = "GUI_NO_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROWSE_0 = "GUI_BROWSE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -97,9 +94,6 @@ public final class Messages {
     public static final String GUI_CANT_LOAD_TREE_1 = "GUI_CANT_LOAD_TREE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CATEGORIES_0 = "GUI_CATEGORIES_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -107,12 +101,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATE_PM_0 = "GUI_DATE_PM_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_SELECT_MESSAGE_0 = "GUI_MODEL_SELECT_MESSAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_SELECT_TITLE_0 = "GUI_MODEL_SELECT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATEBOX_DATETIME_PATTERN_0 = "GUI_DATEBOX_DATETIME_PATTERN_0";
@@ -173,6 +161,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_AVAILABILITY_TITLE_0 = "GUI_DIALOG_AVAILABILITY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_CATEGORIES_TITLE_0 = "GUI_DIALOG_CATEGORIES_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_CHANGES_PUBLISH_TEXT_0 = "GUI_DIALOG_CHANGES_PUBLISH_TEXT_0";
@@ -280,10 +271,19 @@ public final class Messages {
     public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_SELECT_MESSAGE_0 = "GUI_MODEL_SELECT_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_SELECT_TITLE_0 = "GUI_MODEL_SELECT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_0 = "GUI_NO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_DESCIPTION_0 = "GUI_NO_DESCIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_TITLE_0 = "GUI_NO_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NOTHING_CHANGED_0 = "GUI_NOTHING_CHANGED_0";

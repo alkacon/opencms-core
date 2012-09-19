@@ -87,7 +87,7 @@ public class CmsCategoryDialog extends CmsPopup {
      */
     public CmsCategoryDialog(CmsUUID structureId, Command onSave) {
 
-        super(Messages.get().key(Messages.GUI_CATEGORIES_0));
+        super(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
         m_structureId = structureId;
         m_onSave = onSave;
         setGlassEnabled(true);
