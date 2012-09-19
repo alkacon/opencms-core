@@ -112,6 +112,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WARN_NO_FORMATTERS_DEFINED_1 = "LOG_WARN_NO_FORMATTERS_DEFINED_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_SCHEMA_RESOURCE_DOES_NOT_EXIST_2 = "LOG_WARN_SCHEMA_RESOURCE_DOES_NOT_EXIST_2";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.file.types.messages";
 
