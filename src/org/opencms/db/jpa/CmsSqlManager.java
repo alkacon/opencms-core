@@ -32,6 +32,7 @@ import org.opencms.configuration.CmsPersistenceUnitConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbException;
 import org.opencms.db.CmsDbPool;
+import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -368,11 +369,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         // read the values of the pool configuration specified by the given key
         String jdbcDriver = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_DRIVER);
         String jdbcUrl = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_URL);
-        String jdbcUrlParams = config.get(CmsDbPool.KEY_DATABASE_POOL
-            + '.'
-            + key
-            + '.'
-            + CmsDbPool.KEY_JDBC_URL_PARAMS);
+        String jdbcUrlParams = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_URL_PARAMS);
         int maxActive = config.getInteger(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_MAX_ACTIVE, 10);
         int maxWait = config.getInteger(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_MAX_WAIT, 2000);
         int maxIdle = config.getInteger(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_MAX_IDLE, 5);

@@ -43,6 +43,7 @@ import org.opencms.db.CmsVfsOnlineResourceAlreadyExistsException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsVfsDriver;
+import org.opencms.db.generic.Messages;
 import org.opencms.db.jpa.persistence.CmsDAOAlias;
 import org.opencms.db.jpa.persistence.CmsDAOContents;
 import org.opencms.db.jpa.persistence.CmsDAOCounters;
@@ -1440,9 +1441,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             for (I_CmsDAOResourceRelations rr : res) {
                 CmsRelation rel = internalReadRelation(rr);
                 try {
-                    ous.add(m_driverManager.readOrganizationalUnit(
-                        dbc,
-                        rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                    ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
+                        CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
                 } catch (CmsException e) {
                     // should never happen
                     if (LOG.isErrorEnabled()) {
@@ -1499,7 +1499,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         String poolUrl = config.get("db.vfs.pool");
         String classname = config.get("db.vfs.sqlmanager");
 
-        m_sqlManager = this.initSqlManager(classname);
+        m_sqlManager = initSqlManager(classname);
 
         m_driverManager = driverManager;
 

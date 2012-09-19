@@ -49,7 +49,17 @@ public class CmsPoolEntityManagerFactory extends BasePoolableObjectFactory {
      */
     public CmsPoolEntityManagerFactory(EntityManagerFactory emFactory) {
 
-        this.m_emFactory = emFactory;
+        m_emFactory = emFactory;
+    }
+
+    /**
+     * @see org.apache.commons.pool.BasePoolableObjectFactory#destroyObject(java.lang.Object)
+     */
+    @Override
+    public void destroyObject(Object obj) {
+
+        EntityManager em = (EntityManager)obj;
+        em.close();
     }
 
     /**
@@ -69,15 +79,5 @@ public class CmsPoolEntityManagerFactory extends BasePoolableObjectFactory {
 
         EntityManager em = (EntityManager)obj;
         em.clear();
-    }
-
-    /**
-     * @see org.apache.commons.pool.BasePoolableObjectFactory#destroyObject(java.lang.Object)
-     */
-    @Override
-    public void destroyObject(Object obj) {
-
-        EntityManager em = (EntityManager)obj;
-        em.close();
     }
 }

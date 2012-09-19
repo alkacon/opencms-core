@@ -40,6 +40,7 @@ import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.db.generic.CmsUserQueryBuilder;
+import org.opencms.db.generic.Messages;
 import org.opencms.db.jpa.persistence.CmsDAOGroupUsers;
 import org.opencms.db.jpa.persistence.CmsDAOGroupUsers.CmsDAOGroupUsersPK;
 import org.opencms.db.jpa.persistence.CmsDAOGroups;
@@ -551,13 +552,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(
-                        dbc,
-                        "",
-                        CmsMacroResolver.localizedKeyMacro(Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0, null),
-                        0,
-                        null,
-                        "/");
+                    createOrganizationalUnit(dbc, "", CmsMacroResolver.localizedKeyMacro(
+                        Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0,
+                        null), 0, null, "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -570,7 +567,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
                         Messages.get().getBundle().key(Messages.INIT_ROOT_ORGUNIT_INITIALIZATION_FAILED_0),
                         exc);
                 }
-                throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), exc);
+                throw new CmsInitException(org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_INITIALIZING_USER_DRIVER_0), exc);
             }
         }
     }
@@ -698,9 +696,9 @@ public class CmsUserDriver implements I_CmsUserDriver {
             if (organizationalUnit.getProjectId() != null) {
                 try {
                     // maintain the default project synchronized
-                    m_driverManager.deleteProject(
+                    m_driverManager.deleteProject(dbc, m_driverManager.readProject(
                         dbc,
-                        m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
+                        organizationalUnit.getProjectId()));
                 } catch (CmsDbEntryNotFoundException e) {
                     // ignore
                 }
@@ -2091,9 +2089,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
         String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription)
         ? CmsMacroResolver.localizedKeyMacro(
             Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
-            new String[] {ouDescription}) : CmsMacroResolver.localizedKeyMacro(
-            Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0,
-            null));
+            new String[] {ouDescription})
+        : CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0, null));
         createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
             | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);
@@ -2519,16 +2516,12 @@ public class CmsUserDriver implements I_CmsUserDriver {
     throws CmsDataAccessException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_UPDATE_ROLEGROUP_2, role.getRoleName(), groupName));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_UPDATE_ROLEGROUP_2, groupName, role.getRoleName()));
         }
 
         CmsGroup group = readGroup(dbc, groupName);
         if ((CmsRole.valueOf(group) == null) || !CmsRole.valueOf(group).equals(role)) {
             CmsGroup roleGroup = readGroup(dbc, role.getGroupName());
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_UPDATE_ROLEGROUP_1, roleGroup));
-            }
 
             // copy all users from the group to the role
             Iterator<CmsUser> it;

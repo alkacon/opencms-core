@@ -28,10 +28,10 @@
 package org.opencms.db.jpa;
 
 import org.opencms.db.CmsSelectQuery;
+import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.CmsSimpleQueryFragment;
 import org.opencms.db.CmsStatementBuilder;
 import org.opencms.db.I_CmsQueryFragment;
-import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.generic.CmsUserQueryBuilder;
 import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -246,7 +246,7 @@ public class CmsJpaUserQueryBuilder extends CmsUserQueryBuilder {
         // flag to check : 001000b (= 2^3)
         // 2^4 = 010000b
         // flags % (2^4) = 001001b, which is >= 001000b
-        return "MOD(" + col + ", " + 2 * flag + ") >= " + flag;
+        return "MOD(" + col + ", " + (2 * flag) + ") >= " + flag;
     }
 
     /**
@@ -262,11 +262,11 @@ public class CmsJpaUserQueryBuilder extends CmsUserQueryBuilder {
             return expressions[0];
         }
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < expressions.length - 1; i++) {
+        for (int i = 0; i < (expressions.length - 1); i++) {
             buffer.append("CONCAT(" + expressions[i] + ", ");
         }
         buffer.append(expressions[expressions.length - 1]);
-        for (int i = 0; i < expressions.length - 1; i++) {
+        for (int i = 0; i < (expressions.length - 1); i++) {
             buffer.append(")");
         }
         return buffer.toString();

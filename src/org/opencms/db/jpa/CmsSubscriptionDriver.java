@@ -39,6 +39,7 @@ import org.opencms.db.CmsVisitEntryFilter;
 import org.opencms.db.CmsVisitedByFilter;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsSubscriptionDriver;
+import org.opencms.db.generic.Messages;
 import org.opencms.db.jpa.persistence.CmsDAOSubscription;
 import org.opencms.db.jpa.persistence.CmsDAOSubscriptionVisit;
 import org.opencms.db.jpa.utils.CmsQueryLongParameter;
@@ -233,7 +234,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         String poolUrl = config.get("db.subscription.pool");
         String classname = config.get("db.subscription.sqlmanager");
 
-        m_sqlManager = this.initSqlManager(classname);
+        m_sqlManager = initSqlManager(classname);
 
         m_driverManager = driverManager;
 

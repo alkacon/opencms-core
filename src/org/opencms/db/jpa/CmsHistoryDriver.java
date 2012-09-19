@@ -38,6 +38,7 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsHistoryDriver;
 import org.opencms.db.I_CmsVfsDriver;
+import org.opencms.db.generic.Messages;
 import org.opencms.db.jpa.persistence.CmsDAOContents;
 import org.opencms.db.jpa.persistence.CmsDAOHistoryPrincipals;
 import org.opencms.db.jpa.persistence.CmsDAOHistoryProjectResources;
