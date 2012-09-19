@@ -902,7 +902,7 @@ public final class CmsContentEditor {
         m_toolbar.addLeft(m_openFormButton);
 
         m_hideHelpBubblesButton = new CmsToggleButton();
-        m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0));
+
         m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.TOGGLE_HELP.getIconClass());
         m_hideHelpBubblesButton.setButtonStyle(ButtonStyle.IMAGE, null);
         m_hideHelpBubblesButton.setSize(Size.big);
@@ -914,10 +914,12 @@ public final class CmsContentEditor {
                 hideHelpBubbles(!button.isDown());
             }
         });
+        m_hideHelpBubblesButton.setDown(CmsCoreProvider.get().isShowEditorHelp());
+        HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), !CmsCoreProvider.get().isShowEditorHelp());
         if (!CmsCoreProvider.get().isShowEditorHelp()) {
-            m_hideHelpBubblesButton.setDown(false);
-            HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), true);
             m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_HIDDEN_0));
+        } else {
+            m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0));
         }
         m_toolbar.addRight(m_hideHelpBubblesButton);
 
