@@ -323,6 +323,9 @@ public class CmsGallerySearchParameters {
     /** The galleries to search in. */
     private List<String> m_galleries;
 
+    /** Indicates the search exclude property should be ignored. */
+    private boolean m_ignoreSearchExclude;
+
     /** The locale for the search. */
     private String m_locale;
 
@@ -630,6 +633,16 @@ public class CmsGallerySearchParameters {
     }
 
     /**
+     * Returns the search exclude property ignore flag.<p>
+     *
+     * @return the search exclude property ignore flag
+     */
+    public boolean isIgnoreSearchExclude() {
+
+        return m_ignoreSearchExclude;
+    }
+
+    /**
      * Sets the categories for the search.<p>
      *
      * Results are found only if they are contained in at least one of the given categories.
@@ -711,6 +724,16 @@ public class CmsGallerySearchParameters {
     public void setGalleries(List<String> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets the search exclude property ignore flag.<p>
+     *
+     * @param excludeForPageEditor the search exclude property ignore flag
+     */
+    public void setIgnoreSearchExclude(boolean excludeForPageEditor) {
+
+        m_ignoreSearchExclude = excludeForPageEditor;
     }
 
     /**

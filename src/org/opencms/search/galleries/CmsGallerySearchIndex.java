@@ -52,6 +52,7 @@ import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -92,6 +93,9 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
 
     /** The gallery document type name for xml-pages. */
     public static final String TYPE_XMLPAGE_GALLERIES = "xmlpage-galleries";
+
+    /** The search.exclude property values considered when searching for page editor gallery. */
+    private static final List<String> EXCLUDE_PROPERTY_VALUES = Arrays.asList(new String[] {"all", "gallery"});
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchIndex.class);
@@ -292,6 +296,8 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
                 filter,
                 params.getDateCreatedRange().getStartTime(),
                 params.getDateCreatedRange().getEndTime());
+            // append ignore search exclude filter
+            filter = appendIgnoreSearchExclude(filter, params.isIgnoreSearchExclude());
 
             // the search query to use, will be constructed in the next lines 
             Query query = null;
@@ -431,6 +437,24 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
     }
 
     /**
+     * Appends the ignore search exclude property filter.<p>
+     * 
+     * @param filter the filter to extend
+     * @param ignoreSearchExclude <code>true</code> if the search exclude property should be ignored
+     * 
+     * @return the extended filter clause
+     */
+    protected BooleanFilter appendIgnoreSearchExclude(BooleanFilter filter, boolean ignoreSearchExclude) {
+
+        if (!ignoreSearchExclude) {
+            filter.add(new FilterClause(getMultiTermQueryFilter(
+                I_CmsSearchField.FIELD_SEARCH_EXCLUDE,
+                EXCLUDE_PROPERTY_VALUES), BooleanClause.Occur.MUST_NOT));
+        }
+        return filter;
+    }
+
+    /**
      * Appends the locale filter to the given filter clause that matches the given locale.<p>
      * 
      * In case the provided List is null or empty, the original filter is left unchanged.<p>
@@ -495,36 +519,6 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
     /**
      * Checks if the provided resource should be excluded from this search index.<p> 
      *
-     * With the introduction of the gallery search index in OpenCms 8, the meaning 
-     * of the VFS property <code>search.exclude</code> that controls
-     * if a resource is included in a search index has been extended.<p>
-     *
-     * The following uses cases can be covered with the property:<p>
-     *
-     * <dl>
-     * <dt>Case A: Exclude from all indexes</dt>
-     *      <dd>Applies at least to ADE resource type copy templates.<br>
-     *      Set <code>search.exclude=all</code>
-     *      </dd>
-     *      
-     * <dt>Case B: Include in all indexes</dt>
-     *      <dd>Applies to most resources e.g. news articles etc.<br>
-     *      Set <code>search.exclude=false</code> - or anything else but <code>all|true|gallery</code>.
-     *      This is also the default in case the property is not set at all.
-     *      </dd>
-     *      
-     * <dt>Case D: Include in gallery index, but exclude in standard index</dt>
-     *      <dd>Applies to content like articles that are displayed only in container pages,
-     *          also applies to "list generating" resource types like those that contain settings for a collector.<br>
-     *      Set <code>search.exclude=true</code> - This is the behavior before OpenCms v8.
-     *      </dd>
-     *       
-     * <dt>Case C: Exclude from gallery index, but include in standard index</dt>
-     *      <dd>Use case so far unknown, but implemented anyway.<br>
-     *      Set <code>search.exclude=gallery</code>.
-     *      </dd> 
-     * </dl>
-     * 
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource to index
      * 
