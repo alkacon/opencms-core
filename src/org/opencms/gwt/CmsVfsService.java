@@ -78,6 +78,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.search.galleries.CmsGallerySearch;
+import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
@@ -343,7 +345,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 getCmsObject().changeLock(resource);
             }
             getCmsObject().unlockResource(resource);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
         }
     }
@@ -369,7 +371,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         try {
             CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             return getAvailabilityInfo(res);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
             return null; // will never be reached 
         }
@@ -383,7 +385,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         try {
             CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
             return getAvailabilityInfo(res);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
             return null; // will never be reached 
         }
@@ -430,7 +432,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             resources.addAll(cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT));
             List<CmsVfsEntryBean> result = makeEntryBeans(resources, false);
             return result;
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
         }
         return null;
@@ -449,7 +451,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             boolean isLockable = cms.getLock(res).isLockableBy(cms.getRequestContext().getCurrentUser());
             long maxFileSize = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(cms);
             result = new CmsReplaceInfo(fileInfo, cms.getSitePath(res), isLockable, maxFileSize);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
         }
         return result;
@@ -472,7 +474,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 }
             }
             result = new CmsLockReportInfo(getPageInfoWithLock(cms, resource), lockedInfos);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
         }
         return result;
@@ -486,7 +488,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         try {
             CmsResource res = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             return getPageInfo(res);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
             return null; // will never be reached 
         }
@@ -500,7 +502,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         try {
             CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
             return getPageInfo(res);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
             return null; // will never be reached 
         }
@@ -546,22 +548,30 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             CmsListInfoBean listInfo = getPageInfo(resource);
             String sitePath = cms.getSitePath(resource);
             return new CmsRenameInfoBean(sitePath, structureId, listInfo);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
             return null;
         }
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceStatus(org.opencms.util.CmsUUID)
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceStatus(org.opencms.util.CmsUUID, java.lang.String)
      */
-    public CmsResourceStatusBean getResourceStatus(CmsUUID structureId) throws CmsRpcException {
+    public CmsResourceStatusBean getResourceStatus(CmsUUID structureId, String contentLocale) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             cms.getRequestContext().setLocale(locale);
             CmsResource resource = cms.readResource(structureId);
+            String localizedTitle = null;
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(contentLocale)) {
+                Locale realLocale = CmsLocaleManager.getLocale(contentLocale);
+                CmsGallerySearchResult result = CmsGallerySearch.searchById(cms, structureId, realLocale);
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getTitle())) {
+                    localizedTitle = result.getTitle();
+                }
+            }
             CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
             List<CmsProperty> properties = cms.readPropertyObjects(resource, false);
             CmsResourceStatusBean result = new CmsResourceStatusBean();
@@ -603,7 +613,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             result.setSize(resource.getLength());
             result.setStateBean(resource.getState());
             CmsProperty title = CmsProperty.get(CmsPropertyDefinition.PROPERTY_TITLE, properties);
-            if (title != null) {
+            if (localizedTitle != null) {
+                result.setTitle(localizedTitle);
+                result.getListInfo().setTitle(localizedTitle);
+            } else if (title != null) {
                 result.setTitle(title.getValue());
             }
             result.setUserCreated(resourceUtil.getUserCreated());
@@ -622,7 +635,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 result.setLocales(localeStrings);
             }
             return result;
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
             return null;
         }
@@ -663,7 +676,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             result.setCanUndoMove(canUndoMove);
 
             return result;
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
             return null;
         }
@@ -793,7 +806,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             result.setSitePath(cms.getSitePath(resource));
             result.setStructureId(resource.getStructureId());
             return result;
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             error(e);
         }
         return null;

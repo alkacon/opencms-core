@@ -68,15 +68,6 @@ public interface I_CmsVfsService extends RemoteService {
     /**
      * Deletes a resource from the VFS.<p>
      * 
-     * @param structureId the structure id of the resource to delete
-     * 
-     * @throws CmsRpcException if something goes wrong 
-     */
-    void syncDeleteResource(CmsUUID structureId) throws CmsRpcException;
-
-    /**
-     * Deletes a resource from the VFS.<p>
-     * 
      * @param sitePath the site path of the resource to delete
      * 
      * @throws CmsRpcException if something goes wrong 
@@ -240,12 +231,14 @@ public interface I_CmsVfsService extends RemoteService {
     /**
      * Gets a bean containing status information for a given resource.<p>
      * 
-     * @param structureId the structure id of a resource 
+     * @param structureId the structure id of a resource
+     * @param locale the locale for which we want the resource information
+     *  
      * @return the resource status
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsResourceStatusBean getResourceStatus(CmsUUID structureId) throws CmsRpcException;
+    CmsResourceStatusBean getResourceStatus(CmsUUID structureId, String locale) throws CmsRpcException;
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>
@@ -339,6 +332,15 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     String substituteLinkForRootPath(String currentSiteRoot, String rootPath) throws CmsRpcException;
+
+    /**
+     * Deletes a resource from the VFS.<p>
+     * 
+     * @param structureId the structure id of the resource to delete
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void syncDeleteResource(CmsUUID structureId) throws CmsRpcException;
 
     /**
      * Undoes the changes to a given resource, i.e. restores its online content to its offline version.<p>

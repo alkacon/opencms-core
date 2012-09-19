@@ -66,7 +66,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
             public void execute() {
 
                 start(200, false);
-                CmsCoreProvider.getVfsService().getResourceStatus(structureId, this);
+                CmsCoreProvider.getVfsService().getResourceStatus(structureId, CmsCoreProvider.get().getLocale(), this);
             }
 
             @Override

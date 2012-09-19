@@ -174,6 +174,7 @@ public class CmsResourceInfoView extends Composite {
         String stateStyle = CmsResourceStateUtil.getStateStyle(state);
         String stateText = CmsResourceStateUtil.getStateName(state);
         m_state.setText(makeSpan(stateStyle, stateText));
+        m_title.setText(status.getTitle());
         m_navText.setText(status.getNavText());
         m_permissions.setText(status.getPermissions());
         m_resourceType.setText(status.getResourceType());
