@@ -58,6 +58,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jtidy-8-svn-2006-05-21b.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jug-lgpl-2.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/log4j-1.2.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/log4j-over-slf4j-1.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-analyzers-3.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-core-3.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/lucene-grouping-3.6.1.jar"/>
@@ -83,8 +84,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/saaj-api-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/saaj-impl-1.3.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/serp-1.13.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-api-1.6.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-jcl-1.6.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-api-1.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/runtime/slf4j-log4j12-1.7.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/standard-1.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/stax-api-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/stax-api-1.0.jar"/>
