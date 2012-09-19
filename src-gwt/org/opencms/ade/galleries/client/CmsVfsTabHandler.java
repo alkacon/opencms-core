@@ -49,6 +49,9 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     /** The VFS tab which this handler belongs to. */
     CmsVfsTab m_tab;
 
+    /** Flag which indicates whether this tab has already been initialized. */
+    boolean m_tabInitialized;
+
     /**
      * Creates a new VFS tab handler.<p>
      * 
@@ -93,6 +96,9 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
      */
     public LinkedHashMap<String, String> getSortList() {
 
+        if (!m_controller.isShowSiteSelector()) {
+            return null;
+        }
         LinkedHashMap<String, String> options = new LinkedHashMap<String, String>();
         int i = 0;
         for (CmsSiteSelectorOption option : m_controller.getVfsSiteSelectorOptions()) {
@@ -147,7 +153,31 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSelection() {
 
-        m_controller.m_handler.m_galleryDialog.getVfsTab().onContentChange();
+        if (m_tabInitialized) {
+            m_tab.onContentChange();
+        } else {
+            String key = m_controller.getPreselectOption(
+                m_controller.getStartSiteRoot(),
+                m_controller.getVfsSiteSelectorOptions());
+            m_tab.setSortSelectBoxValue(key);
+            m_controller.loadVfsEntryBean(
+                m_controller.getDefaultVfsTabSiteRoot(),
+                new AsyncCallback<CmsVfsEntryBean>() {
+
+                    public void onFailure(Throwable caught) {
+
+                        // nothing to do
+                    }
+
+                    public void onSuccess(CmsVfsEntryBean result) {
+
+                        m_tab.fillInitially(Collections.singletonList(result));
+                        m_tabInitialized = true;
+                        m_tab.onContentChange();
+                    }
+                });
+
+        }
     }
 
     /**
@@ -158,7 +188,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
         int siteIndex = Integer.parseInt(sortParams);
         final CmsSiteSelectorOption option = m_controller.getVfsSiteSelectorOptions().get(siteIndex);
-        m_controller.loadVfsEntryBean(option, new AsyncCallback<CmsVfsEntryBean>() {
+        m_controller.loadVfsEntryBean(option.getSiteRoot(), new AsyncCallback<CmsVfsEntryBean>() {
 
             public void onFailure(Throwable caught) {
 

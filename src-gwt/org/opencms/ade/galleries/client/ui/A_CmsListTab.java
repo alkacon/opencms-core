@@ -333,6 +333,18 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * Sets the value selected in the sort select box, if possible.<p>
+     * 
+     * @param value the new value for the sort select box 
+     */
+    public void setSortSelectBoxValue(String value) {
+
+        if ((m_sortSelectBox != null) && (value != null)) {
+            m_sortSelectBox.setFormValueAsString(value);
+        }
+    }
+
+    /**
      * Adds a widget to the front of the list.<p>
      * 
      * @param listItem the list item to add 

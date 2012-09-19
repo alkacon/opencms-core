@@ -196,7 +196,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         super(
             jsp,
             "Log Settings",
-            Messages.get().container("GUI_LOGADMIN_LIST_NAME"),
+            Messages.get().container("GUI_LOGADMIN_LIST_NAME_0"),
             "lo",
             CmsListOrderEnum.ORDER_ASCENDING,
             null);
@@ -444,7 +444,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
         // add column for FATAL level [Icon has a fix width 50px]
         CmsListColumnDefinition colChangeFatalLevel = new CmsListColumnDefinition(COLUMN_FATAL);
-        colChangeFatalLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_FATAL"));
+        colChangeFatalLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_FATAL_0"));
         colChangeFatalLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeFatalLevel.setWidth("50");
         colChangeFatalLevel.setListItemComparator(new CmsLogLevelListItemComparator());
@@ -467,24 +467,24 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                     if (actuallevel.toInt() <= Priority.FATAL_INT) {
                         // set the active icon if the loglevelvalue lower than the FATALlevelvalue
                         setIconPath(PATH_FATAL_ACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_FATAL_HELP_ACTIV"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_FATAL_HELP_ACTIV_0"));
                     } else {
                         // set the inactive icon if the loglevelvalue is higher than the FATALlevelvalue
                         setIconPath(PATH_FATAL_INACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_FATAL_HELP"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_FATAL_HELP_0"));
                     }
                 }
                 return super.isVisible();
             }
         };
         FatalActAction.setName(Messages.get().container("GUI_JOBS_LIST_ACTION_MFATAL_NAME_0"));
-        FatalActAction.setHelpText(Messages.get().container("LOGADMIN_LEVEL_FATAL_HELP"));
+        FatalActAction.setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_FATAL_HELP_0"));
         colChangeFatalLevel.addDirectAction(FatalActAction);
         metadata.addColumn(colChangeFatalLevel);
 
         // add column for ERROR level [Icon has a fix width 50px]
         CmsListColumnDefinition colChangeErrorLevel = new CmsListColumnDefinition(COLUMN_ERROR);
-        colChangeErrorLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_ERROR"));
+        colChangeErrorLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_ERROR_0"));
         colChangeErrorLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeErrorLevel.setWidth("50");
         colChangeErrorLevel.setPrintable(false);
@@ -505,24 +505,24 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                     if ((actuallevel.toInt() <= Priority.ERROR_INT)) {
                         // set the active icon if the loglevelvalue lower than the ERRORlevelvalue
                         setIconPath(PATH_ERROR_ACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_ERROR_HELP_ACTIV"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_ERROR_HELP_ACTIV_0"));
                     } else {
                         // set the inactive icon if the loglevelvalue is higher than the ERRORlevelvalue
                         setIconPath(PATH_ERROR_INACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_ERROR_HELP"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_ERROR_HELP_0"));
                     }
                 }
                 return super.isVisible();
             }
         };
         ErrorActAction.setName(Messages.get().container("GUI_JOBS_LIST_ACTION_MERROR_NAME_0"));
-        ErrorActAction.setHelpText(Messages.get().container("LOGADMIN_LEVEL_ERROR_HELP"));
+        ErrorActAction.setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_ERROR_HELP_0"));
         colChangeErrorLevel.addDirectAction(ErrorActAction);
         metadata.addColumn(colChangeErrorLevel);
 
         // add column for WARN level [Icon has a fix width 50px]
         CmsListColumnDefinition colChangeWarnLevel = new CmsListColumnDefinition(COLUMN_WARN);
-        colChangeWarnLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_WARN"));
+        colChangeWarnLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_WARN_0"));
         colChangeWarnLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeWarnLevel.setWidth("50");
         colChangeWarnLevel.setPrintable(false);
@@ -543,24 +543,24 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                     if ((actuallevel.toInt() <= Priority.WARN_INT)) {
                         // set the active icon if the loglevelvalue lower than the WARNlevelvalue
                         setIconPath(PATH_WARN_ACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_WARN_HELP_ACTIV"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_WARN_HELP_ACTIV_0"));
                     } else {
                         // set the inactive icon if the loglevelvalue is higher than the WARNlevelvalue
                         setIconPath(PATH_WARN_INACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_WARN_HELP"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_WARN_HELP_0"));
                     }
                 }
                 return super.isVisible();
             }
         };
         WarnActAction.setName(Messages.get().container("GUI_JOBS_LIST_ACTION_MWARN_NAME_0"));
-        WarnActAction.setHelpText(Messages.get().container("LOGADMIN_LEVEL_WARN_HELP"));
+        WarnActAction.setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_WARN_HELP_0"));
         colChangeWarnLevel.addDirectAction(WarnActAction);
         metadata.addColumn(colChangeWarnLevel);
 
         // add column for INFO level [Icon has a fix width 50px]
         CmsListColumnDefinition colChangeINFOLevel = new CmsListColumnDefinition(COLUMN_INFO);
-        colChangeINFOLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_INFO"));
+        colChangeINFOLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_INFO_0"));
         colChangeINFOLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeINFOLevel.setWidth("50");
         colChangeINFOLevel.setPrintable(false);
@@ -581,24 +581,24 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                     if ((actuallevel.toInt() <= Priority.INFO_INT)) {
                         // set the active icon if the loglevelvalue lower than the INFOlevelvalue
                         setIconPath(PATH_INFO_ACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_INFO_HELP_ACTIV"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_INFO_HELP_ACTIV_0"));
                     } else {
                         // set the inactive icon if the loglevelvalue is higher than the INFOlevelvalue
                         setIconPath(PATH_INFO_INACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_INFO_HELP"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_INFO_HELP_0"));
                     }
                 }
                 return super.isVisible();
             }
         };
         InfoActAction.setName(Messages.get().container("GUI_JOBS_LIST_ACTION_MINFO_NAME_0"));
-        InfoActAction.setHelpText(Messages.get().container("LOGADMIN_LEVEL_INFO_HELP"));
+        InfoActAction.setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_INFO_HELP_0"));
         colChangeINFOLevel.addDirectAction(InfoActAction);
         metadata.addColumn(colChangeINFOLevel);
 
         // add column for DEBUG level [Icon has a fix width 50px]
         CmsListColumnDefinition colChangeDebugLevel = new CmsListColumnDefinition(COLUMN_DEBUG);
-        colChangeDebugLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_DEBUG"));
+        colChangeDebugLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_DEBUG_0"));
         colChangeDebugLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeDebugLevel.setWidth("50");
         colChangeDebugLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -618,25 +618,25 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 if (actuallevel != null) {
                     if ((actuallevel.toInt() <= Priority.DEBUG_INT)) {
                         // set the active icon if the loglevelvalue lower than the DEBUGlevelvalue
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_DEBUG_HELP_ACTIV"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_DEBUG_HELP_ACTIV_0"));
                         setIconPath(PATH_DEBUG_ACTIVE);
                     } else {
                         // set the inactive icon if the loglevelvalue is higher than the DEBUGlevelvalue
                         setIconPath(PATH_DEBUG_INACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_DEBUG_HELP"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_DEBUG_HELP_0"));
                     }
                 }
                 return super.isVisible();
             }
         };
         DebugActAction.setName(Messages.get().container("GUI_JOBS_LIST_ACTION_MDEBUG_NAME_0"));
-        DebugActAction.setHelpText(Messages.get().container("LOGADMIN_LEVEL_DEBUG_HELP"));
+        DebugActAction.setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_DEBUG_HELP_0"));
         colChangeDebugLevel.addDirectAction(DebugActAction);
         metadata.addColumn(colChangeDebugLevel);
 
         // add column for OFF level [Icon has a fix width 50px]
         CmsListColumnDefinition colChangeOffLevel = new CmsListColumnDefinition(COLUMN_OFF);
-        colChangeOffLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_OFF"));
+        colChangeOffLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_LEVEL_OFF_0"));
         colChangeOffLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         colChangeOffLevel.setWidth("50");
         colChangeOffLevel.setSorteable(true);
@@ -658,25 +658,25 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                     if (actuallevel.toInt() == Priority.OFF_INT) {
                         // set the active icon if the loglevelvalue lower than the OFFlevelvalue
                         setIconPath(PATH_OFF_ACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_OFF_HELP_ACTIV"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_OFF_HELP_ACTIV_0"));
 
                     } else {
                         // set the inactive icon if the loglevelvalue is higher than the OFFlevelvalue
                         setIconPath(PATH_OFF_INACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_OFF_HELP"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_OFF_HELP_0"));
                     }
                 }
                 return super.isVisible();
             }
         };
         OffActAction.setName(Messages.get().container("GUI_JOBS_LIST_ACTION_MOFF_NAME_0"));
-        OffActAction.setHelpText(Messages.get().container("LOGADMIN_LEVEL_OFF_HELP"));
+        OffActAction.setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_OFF_HELP_0"));
         colChangeOffLevel.addDirectAction(OffActAction);
         metadata.addColumn(colChangeOffLevel);
 
         // add column for the actual log-level  
         CmsListColumnDefinition LogLevel = new CmsListColumnDefinition(LIST_COLUMN_PARENT_LOGGER_LEVEL);
-        LogLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_EF_LEVEL"));
+        LogLevel.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_EF_LEVEL_0"));
         LogLevel.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         LogLevel.setWidth("10%");
         LogLevel.setSorteable(true);
@@ -685,7 +685,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(LogLevel);
 
         CmsListColumnDefinition Logger = new CmsListColumnDefinition(LIST_COLUMN_LOGGERS);
-        Logger.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_LOGGER"));
+        Logger.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_LOGGER_0"));
         Logger.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         Logger.setSorteable(true);
         Logger.setWidth("50%");
@@ -693,7 +693,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(Logger);
 
         CmsListColumnDefinition colParentLogger = new CmsListColumnDefinition(LIST_COLUMN_PARENT);
-        colParentLogger.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_PARENT_LOGGER"));
+        colParentLogger.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_PARENT_LOGGER_0"));
         colParentLogger.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         colParentLogger.setSorteable(true);
         colParentLogger.setWidth("20%");
@@ -701,7 +701,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(colParentLogger);
 
         CmsListColumnDefinition colAppendLogger = new CmsListColumnDefinition(LIST_APPEND_LOGGER);
-        colAppendLogger.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_LOG_FILE"));
+        colAppendLogger.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_LOG_FILE_0"));
         colAppendLogger.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         colAppendLogger.setSorteable(true);
         colAppendLogger.setWidth("20%");
@@ -709,7 +709,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addColumn(colAppendLogger);
 
         CmsListColumnDefinition colChangeLogFile = new CmsListColumnDefinition(LIST_CHANGE_LOGFILE);
-        colChangeLogFile.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_FILE"));
+        colChangeLogFile.setName(Messages.get().container("GUI_LOGADMIN_LIST_COLS_CH_FILE_0"));
         colChangeLogFile.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         colChangeLogFile.setSorteable(false);
         colChangeLogFile.setWidth("25");
@@ -726,18 +726,18 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 if (logger != null) {
                     if (isloggingactivated(logger)) {
                         setIconPath(PATH_FILE_ACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_LOGFILE_HELP_ACTIV"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_LOGFILE_HELP_ACTIV_0"));
 
                     } else {
                         setIconPath(PATH_FILE_INACTIVE);
-                        setHelpText(Messages.get().container("LOGADMIN_LEVEL_LOGFILE_HELP"));
+                        setHelpText(Messages.get().container("GUI_LOGADMIN_LEVEL_LOGFILE_HELP_0"));
                     }
                 }
                 return super.isVisible();
             }
         };
         activatelogchannel.setName(Messages.get().container("GUI_JOBS_LIST_ACTION_MLOGFILE_NAME_0"));
-        activatelogchannel.setHelpText(Messages.get().container("LOGADMIN_ACTIVATE_LOGFILE_HELP"));
+        activatelogchannel.setHelpText(Messages.get().container("GUI_LOGADMIN_ACTIVATE_LOGFILE_HELP_0"));
         activatelogchannel.setIconPath(PATH_OFF_ACTIVE);
         colChangeLogFile.addDirectAction(activatelogchannel);
         metadata.addColumn(colChangeLogFile);
@@ -816,6 +816,70 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         metadata.addMultiAction(settoOff);
     }
 
+    /** Simple check if the logger has the global log file <p>
+     * or a single one.  
+     * 
+     * @param logchannel the channel that has do be checked
+     * @return true if the the log channel has a single log file
+     * */
+    boolean isloggingactivated(Logger logchannel) {
+
+        boolean check = false;
+        @SuppressWarnings("unchecked")
+        List<Appender> appenders = Collections.list(logchannel.getAllAppenders());
+        Iterator<Appender> app = appenders.iterator();
+        while (app.hasNext()) {
+            check = app.next().getName().equals(logchannel.getName());
+        }
+        return check;
+    }
+
+    /** Simple function to get the prefix of an logchannel name.
+     * 
+     * @param logname the full name of the logging channel
+     * @return a string array with different package prefixes
+     * */
+    private String[] buildsufix(String logname) {
+
+        // help String array to store all combination
+        String[] prefix_temp = new String[logname.length()];
+        int count = 0;
+        while (logname.indexOf(".") > 1) {
+            // separate the name of the logger into pieces of name and separator e.g.: "org."
+            String subprefix = logname.substring(0, logname.indexOf(".") + 1);
+            logname = logname.replace(subprefix, "");
+            if (logname.indexOf(".") > 1) {
+                if (count > 0) {
+                    // build different suffixes based on the pieces separated above  
+                    prefix_temp[count] = prefix_temp[count - 1] + subprefix;
+                } else {
+                    // if it's the first piece of the name only it will be set
+                    prefix_temp[count] = subprefix;
+
+                }
+            }
+            count++;
+        }
+        // if the logger name has more then one piece
+        if (count >= 1) {
+            // create result string array
+            String[] prefix = new String[count - 1];
+            // copy all different prefixes to one array with right size
+            for (int i = 0; i < (count - 1); i++) {
+                prefix[i] = prefix_temp[i].substring(0, prefix_temp[i].length() - 1);
+            }
+            // return all different prefixes
+            return prefix;
+        }
+        // if the logger name has only one or less piece
+        else {
+            // return the full logger name
+            String[] nullreturn = new String[1];
+            nullreturn[0] = logname;
+            return nullreturn;
+        }
+    }
+
     /**
      * Help function to get all loggers from LogManager.<p>
      * 
@@ -889,24 +953,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         return definedLoggers;
     }
 
-    /** Simple check if the logger has the global log file <p>
-     * or a single one.  
-     * 
-     * @param logchannel the channel that has do be checked
-     * @return true if the the log channel has a single log file
-     * */
-    boolean isloggingactivated(Logger logchannel) {
-
-        boolean check = false;
-        @SuppressWarnings("unchecked")
-        List<Appender> appenders = Collections.list(logchannel.getAllAppenders());
-        Iterator<Appender> app = appenders.iterator();
-        while (app.hasNext()) {
-            check = app.next().getName().equals(logchannel.getName());
-        }
-        return check;
-    }
-
     /** Simple function to set all child loggers to the same value of <p>
      * parent logger if the parent logger leves is changed.<p>
      * 
@@ -924,52 +970,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 isparentlogger(child_test);
                 child_test.setLevel(null);
             }
-        }
-    }
-
-    /** Simple function to get the prefix of an logchannel name.
-     * 
-     * @param logname the full name of the logging channel
-     * @return a string array with different package prefixes
-     * */
-    private String[] buildsufix(String logname) {
-
-        // help String array to store all combination
-        String[] prefix_temp = new String[logname.length()];
-        int count = 0;
-        while (logname.indexOf(".") > 1) {
-            // separate the name of the logger into pieces of name and separator e.g.: "org."
-            String subprefix = logname.substring(0, logname.indexOf(".") + 1);
-            logname = logname.replace(subprefix, "");
-            if (logname.indexOf(".") > 1) {
-                if (count > 0) {
-                    // build different suffixes based on the pieces separated above  
-                    prefix_temp[count] = prefix_temp[count - 1] + subprefix;
-                } else {
-                    // if it's the first piece of the name only it will be set
-                    prefix_temp[count] = subprefix;
-
-                }
-            }
-            count++;
-        }
-        // if the logger name has more then one piece
-        if (count >= 1) {
-            // create result string array
-            String[] prefix = new String[count - 1];
-            // copy all different prefixes to one array with right size
-            for (int i = 0; i < (count - 1); i++) {
-                prefix[i] = prefix_temp[i].substring(0, prefix_temp[i].length() - 1);
-            }
-            // return all different prefixes
-            return prefix;
-        }
-        // if the logger name has only one or less piece
-        else {
-            // return the full logger name
-            String[] nullreturn = new String[1];
-            nullreturn[0] = logname;
-            return nullreturn;
         }
     }
 }

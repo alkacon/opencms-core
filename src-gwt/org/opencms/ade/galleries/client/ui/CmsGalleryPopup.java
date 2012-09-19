@@ -53,6 +53,8 @@ public class CmsGalleryPopup extends CmsPopup {
      * @param referencePath the reference path, for example the resource being edited
      * @param currentElement the currently selected resource
      * @param resourceTypes the resource types (comma separated list)
+     * @param isShowSiteSelector if true, the site selector will be shown
+     * @param startSite the start site to use 
      * @param tabIds the tabs to use
      */
     public CmsGalleryPopup(
@@ -60,6 +62,8 @@ public class CmsGalleryPopup extends CmsPopup {
         String referencePath,
         String currentElement,
         String resourceTypes,
+        boolean isShowSiteSelector,
+        String startSite,
         GalleryTabId... tabIds) {
 
         this();
@@ -71,6 +75,8 @@ public class CmsGalleryPopup extends CmsPopup {
             currentElement,
             resourceTypes,
             tabIds);
+        m_controller.setShowSiteSelector(isShowSiteSelector);
+        m_controller.setStartSite(startSite);
         galleryDialog.setWidgetHandler(handler);
         m_container.setWidget(galleryDialog);
     }
