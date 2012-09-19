@@ -269,15 +269,18 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     @Override
     public Locale getLocaleForResource(CmsObject cms, CmsResource resource, List<Locale> availableLocales) {
 
-        Locale result;
+        Locale result = null;
         List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
         if ((availableLocales != null) && (availableLocales.size() > 0)) {
             result = OpenCms.getLocaleManager().getBestMatchingLocale(
                 defaultLocales.get(0),
                 defaultLocales,
                 availableLocales);
-        } else {
-            result = defaultLocales.get(0);
+        }
+        if (result == null) {
+            result = ((availableLocales != null) && availableLocales.isEmpty())
+            ? availableLocales.get(0)
+            : defaultLocales.get(0);
         }
         return result;
     }
@@ -656,9 +659,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             if (core != null) {
                 SolrRequestHandler h = core.getRequestHandler("/replication");
                 if (h instanceof ReplicationHandler) {
-                    h.handleRequest(
-                        new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
-                        new SolrQueryResponse());
+                    h.handleRequest(new LocalSolrQueryRequest(
+                        core,
+                        CmsRequestUtil.createParameterMap("?command=backup")), new SolrQueryResponse());
                 }
             }
         }
