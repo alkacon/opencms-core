@@ -305,7 +305,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         try {
             m_solr = OpenCms.getSearchManager().registerSolrIndex(this);
         } catch (CmsConfigurationException ex) {
-            LOG.error(ex.getMessage());
+            LOG.error(ex.getMessage(), ex);
             setEnabled(false);
         }
     }
