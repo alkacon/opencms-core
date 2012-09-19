@@ -29,7 +29,6 @@ package org.opencms.search;
 
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
-import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
@@ -208,7 +207,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the description
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link CmsSearchField#FIELD_DESCRIPTION} to get the description (if available)
+     *      for example use {@link org.opencms.search.fields.CmsSearchField#FIELD_DESCRIPTION} to get the description (if available)
      */
     public String getDescription() {
 
@@ -261,7 +260,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the key words
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link CmsSearchField#FIELD_KEYWORDS} to get the keywords (if available)
+     *      for example use {@link org.opencms.search.fields.CmsSearchField#FIELD_KEYWORDS} to get the keywords (if available)
      */
     public String getKeywords() {
 
@@ -326,7 +325,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the title
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link CmsSearchField#FIELD_TITLE} to get the title (if available)
+     *      for example use {@link org.opencms.search.fields.CmsSearchField#FIELD_TITLE} to get the title (if available)
      */
     public String getTitle() {
 

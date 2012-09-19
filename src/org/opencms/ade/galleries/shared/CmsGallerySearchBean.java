@@ -78,6 +78,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
 
+    /** Indicates the search exclude property should be ignored. */
+    private boolean m_ignoreSearchExclude;
+
     /** Flag indicating if the search should include expired or unreleased resources. */
     private boolean m_includeExpired;
 
@@ -160,6 +163,7 @@ public class CmsGallerySearchBean implements IsSerializable {
         setDateModifiedStart(searchObj.getDateModifiedStart());
         setScope(searchObj.getScope());
         setIncludeExpired(searchObj.isIncludeExpired());
+        setIgnoreSearchExclude(searchObj.isIgnoreSearchExclude());
     }
 
     /**
@@ -506,6 +510,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Returns the search exclude property ignore flag.<p>
+     *
+     * @return the search exclude property ignore flag
+     */
+    public boolean isIgnoreSearchExclude() {
+
+        return m_ignoreSearchExclude;
+    }
+
+    /**
      * Returns if the search should include expired or unreleased resources.<p>
      *
      * @return <code>true</code> if the search should include expired or unreleased resources
@@ -623,6 +637,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setGalleries(List<String> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets the search exclude property ignore flag.<p>
+     *
+     * @param excludeForPageEditor the search exclude property ignore flag
+     */
+    public void setIgnoreSearchExclude(boolean excludeForPageEditor) {
+
+        m_ignoreSearchExclude = excludeForPageEditor;
     }
 
     /**

@@ -367,6 +367,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                     if ((result == null) || (result.getResults() == null) || result.getResults().isEmpty()) {
                         result = new CmsGallerySearchBean();
+                        result.setIgnoreSearchExclude(true);
                         String gallery = data.getStartGallery();
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(gallery)) {
                             List<String> galleries = new ArrayList<String>();
@@ -848,6 +849,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         String resType = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         types.add(resType);
         CmsGallerySearchBean initialSearchObj = new CmsGallerySearchBean();
+        initialSearchObj.setIgnoreSearchExclude(true);
         initialSearchObj.setTypes(types);
         ArrayList<String> galleries = new ArrayList<String>();
         for (CmsGalleryFolderBean gallery : data.getGalleries()) {
@@ -1219,7 +1221,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } else if (dateModifiedEnd != -1L) {
             params.setDateLastModifiedTimeRange(Long.MIN_VALUE, dateModifiedEnd);
         }
-
+        params.setIgnoreSearchExclude(searchData.isIgnoreSearchExclude());
         return params;
     }
 

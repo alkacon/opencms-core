@@ -30,6 +30,7 @@ package org.opencms.loader;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -179,7 +180,9 @@ public class CmsPointerLoader extends CmsDumpLoader {
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 
-        String pointer = new String(cms.readFile(resource).getContents());
+        String pointer = new String(cms.readFile(resource).getContents(), CmsLocaleManager.getResourceEncoding(
+            cms,
+            resource));
         StringBuffer result = new StringBuffer(128);
         result.append(EXPORT_PREFIX);
         // conditionally append parameters of the current request:
@@ -300,7 +303,9 @@ public class CmsPointerLoader extends CmsDumpLoader {
             return;
         }
 
-        String pointer = new String(cms.readFile(resource).getContents());
+        String pointer = new String(cms.readFile(resource).getContents(), CmsLocaleManager.getResourceEncoding(
+            cms,
+            resource));
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(pointer)) {
             throw new CmsLoaderException(Messages.get().container(
                 Messages.ERR_INVALID_POINTER_FILE_1,

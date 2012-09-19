@@ -267,7 +267,14 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         if (m_schema != null) {
             // unmarshal the XML schema, this is required to update the resource bundle cache
             try {
-                CmsXmlContentDefinition.unmarshal(cms, m_schema);
+                if (cms.existsResource(m_schema)) {
+                    CmsXmlContentDefinition.unmarshal(cms, m_schema);
+                } else {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_WARN_SCHEMA_RESOURCE_DOES_NOT_EXIST_2,
+                        m_schema,
+                        getTypeName()));
+                }
             } catch (CmsXmlException e) {
                 // unable to unmarshal the XML schema configured
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_BAD_XML_SCHEMA_2, m_schema, getTypeName()), e);

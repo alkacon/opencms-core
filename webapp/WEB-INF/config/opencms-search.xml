@@ -439,7 +439,7 @@
             <mapping type="property">Description</mapping>
 			<mapping type="attribute">name</mapping>
           </field>
-          <field name="search_exclude" store="true" index="true">
+          <field name="search_exclude" store="true" index="untokenized">
           	<mapping type="property-search">search.exclude</mapping>
           </field>
           <field name="res_dateExpired" store="true" index="untokenized">

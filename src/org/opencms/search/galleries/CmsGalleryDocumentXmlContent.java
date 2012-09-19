@@ -35,7 +35,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
@@ -80,7 +79,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
      * 
-     * For gallery document generators, we never check for {@link CmsLuceneIndex#isExtractingContent()} since
+     * For gallery document generators, we never check for {@link org.opencms.search.CmsLuceneIndex#isExtractingContent()} since
      * all these classes are assumed to be written with optimizations special to gallery search indexing anyway.<p>
      * 
      * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, I_CmsExtractionResult)

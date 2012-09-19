@@ -40,19 +40,19 @@ import java.util.Locale;
 public interface I_CmsSearchDocument {
 
     /** Value for "high" search priority. */
-    static final String SEARCH_PRIORITY_HIGH_VALUE = "high";
+    String SEARCH_PRIORITY_HIGH_VALUE = "high";
 
     /** Value for "low" search priority. */
-    static final String SEARCH_PRIORITY_LOW_VALUE = "low";
+    String SEARCH_PRIORITY_LOW_VALUE = "low";
 
     /** Value for "maximum" search priority. */
-    static final String SEARCH_PRIORITY_MAX_VALUE = "max";
+    String SEARCH_PRIORITY_MAX_VALUE = "max";
 
     /** Value for "normal" search priority. */
-    static final String SEARCH_PRIORITY_NORMAL_VALUE = "normal";
+    String SEARCH_PRIORITY_NORMAL_VALUE = "normal";
 
     /** The VFS prefix for document keys. */
-    static final String VFS_DOCUMENT_KEY_PREFIX = "VFS";
+    String VFS_DOCUMENT_KEY_PREFIX = "VFS";
 
     /**
      * Adds the list of the given categories to this document.<p>
@@ -114,7 +114,7 @@ public interface I_CmsSearchDocument {
     void addSearchField(I_CmsSearchField field, String value);
 
     /**
-     * Adds the suffix field to the document. This field should contain the resource suffix. 
+     * Adds the suffix field to the document. This field should contain the resource suffix.<p>
      * 
      * <b>Example</b><br/>
      * <code>'html' for a file named 'article.html'</code>
@@ -124,7 +124,7 @@ public interface I_CmsSearchDocument {
     void addSuffixField(String suffix);
 
     /**
-     * Adds the resource type to this document
+     * Adds the resource type to this document.<p>
      * @param paramString
      */
     void addTypeField(String paramString);
