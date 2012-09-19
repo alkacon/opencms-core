@@ -105,16 +105,6 @@ public abstract class TestCmsMessageBundles extends TestCase {
     }
 
     /**
-     * Checks all message bundles for the ES locale.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testLocale_ES_MessagesBundles() throws Exception {
-
-        messagesBundleConstantTest(new Locale("es"));
-    }
-
-    /**
      * Performs some key and language independent tests.<p>
      * 
      * @param className the bundle implementing class name
