@@ -36,7 +36,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsTermHighlighter;
-import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
@@ -95,7 +94,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
 
     /**
      * Lucene filter index reader implementation that will ensure the OpenCms default search index fields
-     * {@link CmsSearchField#FIELD_CONTENT} and {@link CmsSearchField#FIELD_CONTENT_BLOB}
+     * {@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT_BLOB}
      * are lazy loaded.<p>
      * 
      * This is to optimize performance - these 2 fields will be rather large especially for extracted
@@ -371,7 +370,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
 
     /**
      * Returns a field selector for Lucene that that will ensure the OpenCms default search index fields
-     * {@link CmsSearchField#FIELD_CONTENT} and {@link CmsSearchField#FIELD_CONTENT_BLOB}
+     * {@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT_BLOB}
      * are lazy loaded.<p>
      * 
      * This is to optimize performance - these 2 fields will be rather large especially for extracted
@@ -569,7 +568,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
      * 
      * @return the Lucene document with the given root path from the index
      * 
-     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link CmsSearchField#FIELD_PATH} as field to search in
+     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link org.opencms.search.fields.CmsSearchField#FIELD_PATH} as field to search in
      */
     @Deprecated
     public Document getDocument(String rootPath) {
