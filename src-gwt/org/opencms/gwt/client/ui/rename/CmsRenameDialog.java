@@ -56,6 +56,8 @@ public class CmsRenameDialog extends CmsPopup {
     public CmsRenameDialog(CmsUUID structureId, AsyncCallback<String> renameHandler) {
 
         super(CmsRenameMessages.messageDialogTitle());
+        setModal(true);
+        setGlassEnabled(true);
         m_structureId = structureId;
         m_renameHandler = renameHandler;
     }

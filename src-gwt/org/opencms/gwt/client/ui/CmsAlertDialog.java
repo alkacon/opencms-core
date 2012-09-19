@@ -111,8 +111,8 @@ public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
     public CmsAlertDialog(String title, String content, String buttonText, String buttonIconClass) {
 
         super(title, DEFAULT_DIALOG_WIDTH);
-        super.setAutoHideEnabled(false);
-        super.setModal(true);
+        setAutoHideEnabled(false);
+        setModal(true);
         setGlassEnabled(true);
 
         // create the dialogs content panel

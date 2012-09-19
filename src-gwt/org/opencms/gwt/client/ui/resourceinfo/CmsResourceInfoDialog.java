@@ -46,7 +46,8 @@ public class CmsResourceInfoDialog extends CmsPopup {
     public CmsResourceInfoDialog(CmsResourceStatusBean statusBean) {
 
         super(CmsResourceInfoMessages.messageDialogTitle());
-        setModal(false);
+        setModal(true);
+        setGlassEnabled(true);
         addDialogClose(null);
         setWidth(520);
         setMainContent(new CmsResourceInfoView(statusBean));
