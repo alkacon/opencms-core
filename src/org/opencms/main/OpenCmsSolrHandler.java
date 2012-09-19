@@ -145,8 +145,6 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
             String formattedException = CmsException.getStackTraceAsString(e).replace("\n", "<br/>");
             res.getWriter().println(
                 Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message + formattedException));
-        } finally {
-            res.getWriter().flush();
         }
     }
 }
