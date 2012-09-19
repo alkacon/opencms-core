@@ -389,13 +389,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SKIPPED_1 = "LOG_SKIPPED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_SOLR_CREATED_CORE_CONTAINER_1 = "LOG_SOLR_CREATED_CORE_CONTAINER_1";
+    public static final String LOG_SOLR_CORE_CONTAINER_CREATED_2 = "LOG_SOLR_CORE_CONTAINER_CREATED_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_SOLR_CREATED_EMBEDDED_SERVER_1 = "LOG_SOLR_CREATED_EMBEDDED_SERVER_1";
+    public static final String LOG_SOLR_INDEX_DIR_CREATED_2 = "LOG_SOLR_INDEX_DIR_CREATED_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_SOLR_CREATED_INDEX_DIR_2 = "LOG_SOLR_CREATED_INDEX_DIR_2";
+    public static final String LOG_SOLR_SERVER_CREATED_1 = "LOG_SOLR_SERVER_CREATED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_SHUTDOWN_SUCCESS_0 = "LOG_SOLR_SHUTDOWN_SUCCESS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_STAT_RESULTS_TIME_4 = "LOG_STAT_RESULTS_TIME_4";

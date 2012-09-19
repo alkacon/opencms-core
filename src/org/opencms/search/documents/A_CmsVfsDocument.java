@@ -152,7 +152,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                     }
                 } catch (CmsIndexNoContentException e) {
                     // there was no content found for the resource 
-                    LOG.info(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
+                    LOG.info(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath())
+                        + " "
+                        + e.getMessage());
                 } catch (Exception e) {
                     // text extraction failed for document - continue indexing meta information only
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
