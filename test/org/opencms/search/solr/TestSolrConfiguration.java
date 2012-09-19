@@ -31,12 +31,6 @@
 
 package org.opencms.search.solr;
 
-import java.io.File;
-import java.util.Locale;
-
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.core.CoreContainer;
-import org.apache.solr.core.SolrCore;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -46,9 +40,16 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 
+import java.io.File;
+import java.util.Locale;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.core.CoreContainer;
+import org.apache.solr.core.SolrCore;
 
 /**
  * Tests the Solr configuration.<p>
@@ -56,6 +57,16 @@ import junit.framework.TestSuite;
  * @since 8.5.0
  */
 public class TestSolrConfiguration extends OpenCmsTestCase {
+
+    /**
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     */
+    public TestSolrConfiguration(String arg0) {
+
+        super(arg0);
+    }
 
     /**
      * Test suite for this test class.<p>
@@ -103,18 +114,6 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         return wrapper;
     }
 
-    ThreadGroup rootThreadGroup = null;
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestSolrConfiguration(String arg0) {
-
-        super(arg0);
-    }
-    
     /**
      * Tests the CmsSearch with folder names with upper case letters.<p>
      * 
@@ -151,7 +150,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         // TODO: implement
     }
-    
+
     /**
      * @throws Throwable
      */
@@ -159,7 +158,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         // TODO: implement
     }
-    
+
     /**
      * @throws Throwable
      */
@@ -167,9 +166,14 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         // TODO: implement
     }
-    
+
+    /**
+     * Tests shutting down Solr.<p>
+     * 
+     * @throws Throwable
+     */
     public void testShutDown() throws Throwable {
-    	
+
         CmsSolrIndex index = new CmsSolrIndex(AllTests.INDEX_TEST);
         index.setProject("Offline");
         index.setLocale(Locale.GERMAN);
@@ -179,23 +183,23 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         OpenCms.getSearchManager().addSearchIndex(index);
         OpenCms.getSearchManager().rebuildIndex(AllTests.INDEX_TEST, new CmsShellReport(Locale.ENGLISH));
         index.search(getCmsObject(), "q=*:*");
-        
+
         // shut down
-        CoreContainer container = ((EmbeddedSolrServer) index.m_solr).getCoreContainer();
+        CoreContainer container = ((EmbeddedSolrServer)index.m_solr).getCoreContainer();
         for (SolrCore core : container.getCores()) {
-        	core.closeSearcher();
-        	core.close();
+            core.closeSearcher();
+            core.close();
         }
         container.shutdown();
-        
+
         // wait for a moment
         Thread.sleep(500);
-       
+
         // success ?
         CmsFileUtil.purgeDirectory(new File(index.getPath()));
         assertTrue(!new File(index.getPath()).exists());
     }
-    
+
     /**
      * @throws Throwable
      */
