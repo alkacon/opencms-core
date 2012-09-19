@@ -38,22 +38,40 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_POST_PROCESSOR_CLASS_NOT_EXIST_1 = "ERR_POST_PROCESSOR_CLASS_NOT_EXIST_1";
+    public static final String LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1 = "LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_SEARCH_INVALID_SEARCH_1 = "ERR_SEARCH_INVALID_SEARCH_1";
+    public static final String LOG_SOLR_ERR_CONFIG_XML_NOT_READABLE_1 = "LOG_SOLR_ERR_CONFIG_XML_NOT_READABLE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_SOLR_CONFIG_XML_NOT_FOUND_1 = "ERR_SOLR_CONFIG_XML_NOT_FOUND_1";
+    public static final String LOG_SOLR_ERR_POST_PROCESSOR_NOT_EXIST_1 = "LOG_SOLR_ERR_POST_PROCESSOR_NOT_EXIST_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_SOLR_CONFIG_XML_NOT_READABLE_1 = "ERR_SOLR_CONFIG_XML_NOT_READABLE_1";
+    public static final String LOG_SOLR_ERR_RESULT_ITERATION_FAILED_0 = "LOG_SOLR_ERR_RESULT_ITERATION_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_SOLR_SCHEMA_XML_NOT_FOUND_1 = "ERR_SOLR_SCHEMA_XML_NOT_FOUND_1";
+    public static final String LOG_SOLR_ERR_SCHEMA_XML_NOT_FOUND_1 = "LOG_SOLR_ERR_SCHEMA_XML_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_RESULT_ITERATION_FAILED_0 = "LOG_RESULT_ITERATION_FAILED_0";
+    public static final String LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1 = "LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_SEARCH_EXECUTED_5 = "LOG_SOLR_SEARCH_EXECUTED_5";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_WRITER_COMMIT_2 = "LOG_SOLR_WRITER_COMMIT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_WRITER_CREATE_2 = "LOG_SOLR_WRITER_CREATE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_WRITER_DELETE_ALL_2 = "LOG_SOLR_WRITER_DELETE_ALL_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_WRITER_DOC_DELETE_3 = "LOG_SOLR_WRITER_DOC_DELETE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_WRITER_DOC_UPDATE_3 = "LOG_SOLR_WRITER_DOC_UPDATE_3";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.search.solr.messages";

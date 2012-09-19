@@ -176,12 +176,12 @@ public class CmsSolrConfiguration {
                 m_solrConfig = new SolrConfig(getHome(), null, solrConfig);
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
-                    Messages.ERR_SOLR_CONFIG_XML_NOT_FOUND_1,
+                    Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1,
                     getSolrConfigFile()), e);
                 LOG.error(ex.getLocalizedMessage(), ex);
             } catch (Exception e) {
                 CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
-                    Messages.ERR_SOLR_CONFIG_XML_NOT_READABLE_1,
+                    Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_READABLE_1,
                     getSolrConfigFile()), e);
                 LOG.error(ex.getLocalizedMessage(), ex);
             }
@@ -236,7 +236,7 @@ public class CmsSolrConfiguration {
                 m_schema = new IndexSchema(getSolrConfig(), null, solrSchema);
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
-                    Messages.ERR_SOLR_SCHEMA_XML_NOT_FOUND_1,
+                    Messages.LOG_SOLR_ERR_SCHEMA_XML_NOT_FOUND_1,
                     getSolrSchemaFile().getPath()), e);
                 LOG.error(ex.getLocalizedMessage(), ex);
             }

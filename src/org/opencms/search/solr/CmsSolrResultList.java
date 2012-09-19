@@ -68,6 +68,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     /** The end index of documents to display (start + rows). */
     private int m_end;
 
+    /** The time in ms when the highlighting is finished. */
+    private long m_highlightEndTime;
+
     /** The current page (start / rows), used to build a pagination. */
     private int m_page;
 
@@ -226,6 +229,16 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     public List<RangeFacet> getFacetRanges() {
 
         return m_queryResponse.getFacetRanges();
+    }
+
+    /**
+     * Returns the time in ms when the highlighting is finished.<p>
+     * 
+     * @return the time in ms when the highlighting is finished
+     */
+    public long getHighlightEndTime() {
+
+        return m_highlightEndTime;
     }
 
     /**
@@ -408,9 +421,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
             } catch (Exception e) {
                 LOG.error(e);
             }
-            LOG.debug(CmsStringUtil.padRight("--- Highlighting Complete", CmsSolrIndex.DEBUG_PADDING_RIGHT)
-                + ": "
-                + (System.currentTimeMillis() - getStartTime()));
+            m_highlightEndTime = System.currentTimeMillis();
         }
     }
 

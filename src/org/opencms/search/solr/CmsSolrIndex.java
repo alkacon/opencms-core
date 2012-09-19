@@ -60,9 +60,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -180,7 +178,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                     setPostProcessor((I_CmsSolrPostSearchProcessor)Class.forName(value).newInstance());
                 } catch (Exception e) {
                     CmsException ex = new CmsException(Messages.get().container(
-                        Messages.ERR_POST_PROCESSOR_CLASS_NOT_EXIST_1,
+                        Messages.LOG_SOLR_ERR_POST_PROCESSOR_NOT_EXIST_1,
                         value), e);
                     LOG.error(ex.getMessage(), ex);
                 }
@@ -395,9 +393,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public synchronized CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
 
-        String currentTime = DateFormat.getTimeInstance(DateFormat.FULL, Locale.ENGLISH).format(new Date());
-        debug("### START SRARCH with " + query.getRows() + " requested rows at", currentTime, 0);
-
         int previousPriority = Thread.currentThread().getPriority();
         long startTime = System.currentTimeMillis();
 
@@ -438,11 +433,10 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
 
             // perform the Solr query and remember the original Solr response
             QueryResponse queryResponse = m_solr.query(query);
+            long solrTime = System.currentTimeMillis() - startTime;
 
-            // initialize the hit count and the max score
+            // initialize the counts
             long hitCount = queryResponse.getResults().getNumFound();
-            debug("--- Query Executed " + "(hitCount=" + hitCount + ")", null, System.currentTimeMillis() - startTime);
-            // page = params.getSearchPage();
             start = -1;
             end = -1;
             if ((rows > 0) && (page > 0) && (hitCount > 0)) {
@@ -460,9 +454,8 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             long visibleHitCount = hitCount;
             float maxScore = 0;
 
+            // process found documents
             List<CmsSearchResource> allDocs = new ArrayList<CmsSearchResource>();
-
-            // iterate over found documents
             int cnt = 0;
             for (int i = 0; (i < queryResponse.getResults().size()) && (cnt < end); i++) {
                 try {
@@ -492,10 +485,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                     }
                 } catch (Exception e) {
                     // should not happen, but if it does we want to go on with the next result nevertheless                        
-                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_RESULT_ITERATION_FAILED_0), e);
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_SOLR_ERR_RESULT_ITERATION_FAILED_0), e);
                 }
             }
-
             // the last documents were all secret so let's take the last found docs
             if (resourceDocumentList.isEmpty() && (allDocs.size() > 0)) {
                 page = Math.round(allDocs.size() / rows) + 1;
@@ -511,13 +503,12 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                     }
                 }
             }
+            long processTime = System.currentTimeMillis() - startTime - solrTime;
 
-            SolrCore core = null;
-            if (m_solr instanceof EmbeddedSolrServer) {
-                core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
-            }
-            debug("--- Permissions Checked for " + cnt + " Resources", null, System.currentTimeMillis() - startTime);
             // create and return the result
+            SolrCore core = m_solr instanceof EmbeddedSolrServer
+            ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName())
+            : null;
             CmsSolrResultList result = new CmsSolrResultList(
                 core,
                 initQuery,
@@ -531,11 +522,22 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                 visibleHitCount,
                 new Float(maxScore),
                 startTime);
-            debug("### FINISH SEARCH in", null, System.currentTimeMillis() - startTime);
+
+            if (LOG.isDebugEnabled()) {
+                Object[] logParams = new Object[] {
+                    new Long(System.currentTimeMillis() - startTime),
+                    new Long(result.getNumFound()),
+                    new Long(solrTime),
+                    new Long(processTime),
+                    new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
+                LOG.debug(query.toString()
+                    + "\n"
+                    + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
+            }
             return result;
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(
-                Messages.ERR_SEARCH_INVALID_SEARCH_1,
+                Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1,
                 CmsEncoder.decode(query.toString())), e);
         } finally {
             // re-set thread to previous priority
@@ -609,8 +611,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     public void writeResponse(ServletResponse response, CmsSolrResultList result) throws Exception {
 
         if (m_solr instanceof EmbeddedSolrServer) {
-
-            long start = System.currentTimeMillis();
             SolrCore core = ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName());
             SolrQueryRequest queryRequest = result.getSolrQueryRequest();
             SolrQueryResponse queryResponse = result.getSolrQueryResponse();
@@ -633,10 +633,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
                 responseWriter.write(out, queryRequest, queryResponse);
                 out.flush();
             }
-            debug(
-                "### WRITE RESPONSE (" + (System.currentTimeMillis() - start) + " ms)",
-                null,
-                System.currentTimeMillis() - result.getStartTime());
         } else {
             throw new UnsupportedOperationException();
         }
@@ -666,22 +662,6 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             }
         }
         return null;
-    }
-
-    /**
-     * Writes a formatted log message.<p>
-     * 
-     * @param keyMessage the message
-     * @param valueMessage optional value
-     * @param time a timestamp in ms
-     */
-    protected void debug(String keyMessage, String valueMessage, long time) {
-
-        if (valueMessage != null) {
-            LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + valueMessage);
-        } else {
-            LOG.debug(CmsStringUtil.padRight(keyMessage, DEBUG_PADDING_RIGHT) + ": " + time + " ms");
-        }
     }
 
     /**
