@@ -2053,7 +2053,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (m_coreContainer != null) {
             for (SolrCore core : m_coreContainer.getCores()) {
                 core.closeSearcher();
-                core.close();
             }
             m_coreContainer.shutdown();
             LOG.info("SOLR core container was shutdown successfully.");
