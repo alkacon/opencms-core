@@ -119,10 +119,10 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             if ((cache != null) && (resource.getSiblingCount() > 1)) {
                 // hard drive based caching only makes sense for resources that have siblings, 
                 // because the index will also store the content as a blob
-                cacheName = cache.getCacheName(
+                cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocaleForResource(
+                    cms,
                     resource,
-                    isLocaleDependend() ? index.getLocaleForResource(cms, resource, null) : null,
-                    getName());
+                    null) : null, getName());
                 content = cache.getCacheObject(cacheName);
             }
 
@@ -150,6 +150,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                         // save extracted content to the cache
                         cache.saveCacheObject(cacheName, content);
                     }
+                } catch (CmsIndexNoContentException e) {
+                    // there was no content found for the resource 
+                    LOG.info(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
                 } catch (Exception e) {
                     // text extraction failed for document - continue indexing meta information only
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
