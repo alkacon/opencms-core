@@ -133,7 +133,7 @@ public class TestSolrSearchFaceting extends OpenCmsTestCase {
             + facetTitleCount
             + "' of them containing the word \"OpenCms\" in the field 'Title_prop!'");
 
-        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("text:OpenCms"));
+        query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("q=text:OpenCms"));
         results = index.search(getCmsObject(), query);
         long numExpected = results.getNumFound();
 
