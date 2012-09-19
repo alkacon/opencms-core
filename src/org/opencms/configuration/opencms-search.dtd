@@ -228,7 +228,7 @@
 <!ELEMENT fieldconfiguration (
 	name,
 	description?,
-	fields
+	fields?
 )>
 <!ATTLIST fieldconfiguration
 	class CDATA #IMPLIED
