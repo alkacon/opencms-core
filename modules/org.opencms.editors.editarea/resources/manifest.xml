@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.5.1</opencms_version>
+		<opencms_version>8.5.0</opencms_version>
 		<createdate>Thu, 14 Jan 2010 15:56:45 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -15,8 +15,8 @@
 		<class/>
 		<description><![CDATA[<p>This module adds the Open Source text editor "EditArea" to the OpenCms Workplace.</p>
 <p>Install this module if you want a source code editor with syntax highlighting. The version of EditArea is 0.8.2</p>
-<p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>8.0.1</version>
+<p><i>(c) 2012 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>8.5.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
