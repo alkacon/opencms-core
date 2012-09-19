@@ -67,15 +67,6 @@ public interface I_CmsVfsServiceAsync {
     /**
      * Deletes a resource from the VFS.<p>
      * 
-     * @param structureId the structure id of the resource to delete
-     * @param callback the callback
-     */
-    @SynchronizedRpcRequest
-    void syncDeleteResource(CmsUUID structureId, AsyncCallback<Void> callback);
-
-    /**
-     * Deletes a resource from the VFS.<p>
-     * 
      * @param sitePath the site path of the resource to delete
      * @param callback the callback
      */
@@ -199,10 +190,11 @@ public interface I_CmsVfsServiceAsync {
     /**
      * Gets status information for a single resource.<p>
      * 
-     * @param structureId the structure id of the resource 
+     * @param structureId the structure id of the resource
+     * @param locale the locale for which we want the resource information  
      * @param callback the callback for the results 
      */
-    void getResourceStatus(CmsUUID structureId, AsyncCallback<CmsResourceStatusBean> callback);
+    void getResourceStatus(CmsUUID structureId, String locale, AsyncCallback<CmsResourceStatusBean> callback);
 
     /**
      * Gets the information which is necessary for opening the 'Restore' dialog for a resource.<p>
@@ -282,6 +274,15 @@ public interface I_CmsVfsServiceAsync {
      */
     @SynchronizedRpcRequest
     void substituteLinkForRootPath(String currentSiteRoot, String rootPath, AsyncCallback<String> callback);
+
+    /**
+     * Deletes a resource from the VFS.<p>
+     * 
+     * @param structureId the structure id of the resource to delete
+     * @param callback the callback
+     */
+    @SynchronizedRpcRequest
+    void syncDeleteResource(CmsUUID structureId, AsyncCallback<Void> callback);
 
     /**
      * Undoes the changes to a given resource, i.e. restores its online content to its offline version.<p>

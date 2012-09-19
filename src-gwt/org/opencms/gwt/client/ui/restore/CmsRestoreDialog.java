@@ -59,6 +59,8 @@ public class CmsRestoreDialog extends CmsPopup {
     public CmsRestoreDialog(CmsUUID structureId, Runnable afterRestoreAction) {
 
         super(CmsRestoreMessages.messageRestoreDialogTitle());
+        setModal(true);
+        setGlassEnabled(true);
         m_structureId = structureId;
         m_afterRestoreAction = afterRestoreAction;
     }

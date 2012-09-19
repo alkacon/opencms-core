@@ -136,8 +136,9 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
 
         super(org.opencms.ade.containerpage.client.Messages.get().key(
             org.opencms.ade.containerpage.client.Messages.GUI_ASK_DELETE_REMOVED_ELEMENT_TITLE_0));
+        setModal(true);
+        setGlassEnabled(true);
         m_status = status;
-
         CmsListInfoBean elementInfo = status.getElementInfo();
         Panel panel = uibinder.createAndBindUi(this);
         CmsListItemWidget infoBox = new CmsListItemWidget(elementInfo);

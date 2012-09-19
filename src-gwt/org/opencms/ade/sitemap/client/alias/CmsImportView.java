@@ -167,6 +167,8 @@ public class CmsImportView extends Composite {
     public static void showPopup() {
 
         final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleImport());
+        popup.setModal(true);
+        popup.setGlassEnabled(true);
         CmsImportView importView = new CmsImportView();
         popup.setMainContent(importView);
         popup.setWidth(800);

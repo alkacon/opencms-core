@@ -428,6 +428,11 @@ public final class CmsContentEditor {
 
         m_editor.setShowEditorHelp(!hide);
         HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), hide);
+        if (!hide) {
+            m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0));
+        } else {
+            m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_HIDDEN_0));
+        }
     }
 
     /**
@@ -603,8 +608,11 @@ public final class CmsContentEditor {
      */
     void setContentDefinition(CmsContentDefinition definition) {
 
-        m_availableLocales.putAll(definition.getAvailableLocales());
-        m_contentLocales.addAll(definition.getContentLocales());
+        if (m_availableLocales.isEmpty()) {
+            // only set the locales when initially setting the content definition
+            m_availableLocales.putAll(definition.getAvailableLocales());
+            m_contentLocales.addAll(definition.getContentLocales());
+        }
         m_title = definition.getTitle();
         m_sitePath = definition.getSitePath();
         m_resourceTypeName = definition.getResourceType();
@@ -645,6 +653,9 @@ public final class CmsContentEditor {
      */
     void switchLocale(final String locale) {
 
+        if (locale.equals(m_locale)) {
+            return;
+        }
         m_locale = locale;
         m_basePanel.clear();
         m_editor.destroyFrom(false);
@@ -777,36 +788,8 @@ public final class CmsContentEditor {
      */
     private void initLocaleSelect() {
 
-        if (m_localeSelect != null) {
-            m_localeSelect.removeFromParent();
-        }
-        if (m_deleteLocaleButton == null) {
-            m_deleteLocaleButton = createButton(
-                Messages.get().key(Messages.GUI_TOOLBAR_DELETE_LOCALE_0),
-                I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarDeleteLocale());
-            m_deleteLocaleButton.addClickHandler(new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-
-                    deleteCurrentLocale();
-                }
-            });
-        } else {
-            m_deleteLocaleButton.removeFromParent();
-        }
-        if (m_copyLocaleButton == null) {
-            m_copyLocaleButton = createButton(
-                I_CmsButton.ButtonData.COPY_LOCALE.getTitle(),
-                I_CmsButton.ButtonData.COPY_LOCALE.getIconClass());
-            m_copyLocaleButton.addClickHandler(new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-
-                    openCopyLocaleDialog();
-                }
-            });
-        } else {
-            m_copyLocaleButton.removeFromParent();
+        if (m_availableLocales.size() < 2) {
+            return;
         }
         if (m_localeLabel == null) {
             m_localeLabel = new CmsLabel();
@@ -823,23 +806,52 @@ public final class CmsContentEditor {
                 selectOptions.put(localeEntry.getKey(), localeEntry.getValue() + " [-]");
             }
         }
-        m_localeSelect = new CmsSelectBox(selectOptions);
+        if (m_localeSelect == null) {
+            m_localeSelect = new CmsSelectBox(selectOptions);
+            m_toolbar.addLeft(m_localeSelect);
+            m_localeSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().inlineBlock());
+            m_localeSelect.getElement().getStyle().setWidth(100, Unit.PX);
+            m_localeSelect.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
+            m_localeSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                public void onValueChange(ValueChangeEvent<String> event) {
+
+                    switchLocale(event.getValue());
+                }
+            });
+        } else {
+            m_localeSelect.setItems(selectOptions);
+        }
         m_localeSelect.setFormValueAsString(m_locale);
-        m_localeSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().inlineBlock());
-        m_localeSelect.getElement().getStyle().setWidth(100, Unit.PX);
-        m_localeSelect.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
-        m_localeSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+        if (m_deleteLocaleButton == null) {
+            m_deleteLocaleButton = createButton(
+                Messages.get().key(Messages.GUI_TOOLBAR_DELETE_LOCALE_0),
+                I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarDeleteLocale());
+            m_deleteLocaleButton.addClickHandler(new ClickHandler() {
 
-            public void onValueChange(ValueChangeEvent<String> event) {
+                public void onClick(ClickEvent event) {
 
-                switchLocale(event.getValue());
-            }
-        });
-        m_toolbar.addLeft(m_localeSelect);
-        if (m_contentLocales.size() > 1) {
+                    deleteCurrentLocale();
+                }
+            });
             m_toolbar.addLeft(m_deleteLocaleButton);
         }
-        if (m_availableLocales.size() > 1) {
+        if (m_contentLocales.size() > 1) {
+            m_deleteLocaleButton.enable();
+        } else {
+            m_deleteLocaleButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0));
+        }
+        if (m_copyLocaleButton == null) {
+            m_copyLocaleButton = createButton(
+                I_CmsButton.ButtonData.COPY_LOCALE.getTitle(),
+                I_CmsButton.ButtonData.COPY_LOCALE.getIconClass());
+            m_copyLocaleButton.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    openCopyLocaleDialog();
+                }
+            });
             m_toolbar.addLeft(m_copyLocaleButton);
         }
     }
@@ -851,7 +863,7 @@ public final class CmsContentEditor {
 
         m_toolbar = new CmsToolbar();
         m_saveExitButton = createButton(
-            "Save and exit",
+            Messages.get().key(Messages.GUI_TOOLBAR_SAVE_AND_EXIT_0),
             I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSaveExit());
         m_saveExitButton.addClickHandler(new ClickHandler() {
 
@@ -890,7 +902,7 @@ public final class CmsContentEditor {
         m_toolbar.addLeft(m_openFormButton);
 
         m_hideHelpBubblesButton = new CmsToggleButton();
-        m_hideHelpBubblesButton.setTitle(I_CmsButton.ButtonData.TOGGLE_HELP.getTitle());
+
         m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.TOGGLE_HELP.getIconClass());
         m_hideHelpBubblesButton.setButtonStyle(ButtonStyle.IMAGE, null);
         m_hideHelpBubblesButton.setSize(Size.big);
@@ -902,9 +914,12 @@ public final class CmsContentEditor {
                 hideHelpBubbles(!button.isDown());
             }
         });
+        m_hideHelpBubblesButton.setDown(CmsCoreProvider.get().isShowEditorHelp());
+        HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), !CmsCoreProvider.get().isShowEditorHelp());
         if (!CmsCoreProvider.get().isShowEditorHelp()) {
-            m_hideHelpBubblesButton.setDown(false);
-            HighlightingHandler.getInstance().hideHelpBubbles(RootPanel.get(), true);
+            m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_HIDDEN_0));
+        } else {
+            m_hideHelpBubblesButton.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0));
         }
         m_toolbar.addRight(m_hideHelpBubblesButton);
 

@@ -61,6 +61,7 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
 
         super(400);
         setModal(true);
+        setGlassEnabled(true);
         CmsPublishDialog.State state = dialog.getState();
 
         String message = "-";

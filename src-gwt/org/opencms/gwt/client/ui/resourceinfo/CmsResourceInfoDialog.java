@@ -46,7 +46,8 @@ public class CmsResourceInfoDialog extends CmsPopup {
     public CmsResourceInfoDialog(CmsResourceStatusBean statusBean) {
 
         super(CmsResourceInfoMessages.messageDialogTitle());
-        setModal(false);
+        setModal(true);
+        setGlassEnabled(true);
         addDialogClose(null);
         setWidth(520);
         setMainContent(new CmsResourceInfoView(statusBean));
@@ -65,7 +66,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
             public void execute() {
 
                 start(200, false);
-                CmsCoreProvider.getVfsService().getResourceStatus(structureId, this);
+                CmsCoreProvider.getVfsService().getResourceStatus(structureId, CmsCoreProvider.get().getLocale(), this);
             }
 
             @Override

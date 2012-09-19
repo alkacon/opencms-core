@@ -85,6 +85,8 @@ public class CmsAliasEditor {
     public void show() {
 
         final CmsPopup popup = new CmsPopup(CmsAliasMessages.messageTitleAliasEditor());
+        popup.setGlassEnabled(true);
+        popup.setModal(true);
 
         final RepeatingCommand updateCommand = new RepeatingCommand() {
 

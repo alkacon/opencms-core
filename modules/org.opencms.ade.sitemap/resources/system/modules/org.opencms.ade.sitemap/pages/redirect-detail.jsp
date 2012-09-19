@@ -15,9 +15,14 @@
 			<%
 				// use the nav builder to get the first sub level entry
 			    CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms.getCmsObject());
-			    CmsJspNavElement target = navBuilder.getNavigationForFolder().get(0);
-			    pageContext.setAttribute("lnkUri", CmsJspTagLink.linkTagAction(target.getResourceName(), request));
-			    pageContext.setAttribute("errorCode", HttpServletResponse.SC_MOVED_TEMPORARILY + "");
+				if (navBuilder.getNavigationForFolder().size()>0){
+			    	CmsJspNavElement target = navBuilder.getNavigationForFolder().get(0);
+			    	pageContext.setAttribute("lnkUri", CmsJspTagLink.linkTagAction(target.getResourceName(), request));
+			    	pageContext.setAttribute("errorCode", HttpServletResponse.SC_MOVED_TEMPORARILY + "");
+				}else{
+				    // send error 404 if no sub entry available
+				    pageContext.setAttribute("errorCode", HttpServletResponse.SC_NOT_FOUND+"");
+				}
 			%>
 		</c:when>
 		<c:otherwise>

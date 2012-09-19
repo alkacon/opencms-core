@@ -130,7 +130,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void activateSelection() {
 
         m_editor.getSelection().setActive(true);
-        m_controller.reInitInlineEditing();
+        reInitInlineEditing();
     }
 
     /**
@@ -684,6 +684,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         });
         dialog.center();
 
+    }
+
+    /**
+     * Re-initializes the inline editing.<p>
+     */
+    public void reInitInlineEditing() {
+
+        m_controller.reInitInlineEditing();
     }
 
     /**

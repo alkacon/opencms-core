@@ -188,6 +188,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         content.getElement().getStyle().setProperty("maxHeight", dialog.getAvailableHeight(100), Unit.PX);
         dialog.setWidth(-1);
         dialog.addDialogClose(null);
+        dialog.setModal(true);
+        dialog.setGlassEnabled(true);
         dialog.centerHorizontally(100);
     }
 

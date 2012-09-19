@@ -103,10 +103,19 @@ public final class Messages {
     public static final String GUI_LOCALE_DIALOG_TITLE_0 = "GUI_LOCALE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0 = "GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_COPY_LOCALE_0 = "GUI_TOOLBAR_COPY_LOCALE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_DELETE_LOCALE_0 = "GUI_TOOLBAR_DELETE_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_HELP_BUBBLES_HIDDEN_0 = "GUI_TOOLBAR_HELP_BUBBLES_HIDDEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0 = "GUI_TOOLBAR_HELP_BUBBLES_SHOWN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_LANGUAGE_0 = "GUI_TOOLBAR_LANGUAGE_0";
@@ -122,6 +131,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_SAVE_0 = "GUI_TOOLBAR_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_SAVE_AND_EXIT_0 = "GUI_TOOLBAR_SAVE_AND_EXIT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ADD_0 = "GUI_VIEW_ADD_0"; //Acacia message: Add

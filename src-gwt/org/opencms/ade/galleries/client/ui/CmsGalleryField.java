@@ -224,34 +224,34 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
      * @param configuration the widget configuration as a JSON string
      */
     public native void parseConfiguration(String configuration)/*-{
-      var config;
-      if (typeof $wnd.JSON != 'undefined') {
-         config = $wnd.JSON.parse(configuration);
-      } else {
-         config = eval("(" + configuration + ")");
-      }
-      var types = null;
-      var gallerypath = null;
-      var gallerytypes = null;
-      var referencepath = null;
-      var useformats = false;
-      var imageformats = null;
-      var imageformatnames = null;
-      if (config.types)
-         types = config.types;
-      if (config.gallerypath)
-         gallerypath = config.gallerypath;
-      if (config.gallerytypes)
-         gallerytypes = config.gallerytypes;
-      if (config.resource)
-         referencepath = config.resource;
-      if (config.useFormats)
-         useformats = config.useFormats;
-      if (config.imageFormats)
-         imageformats = config.imageFormats.toString();
-      if (config.imageFormatNames)
-         imageformatnames = config.imageFormatNames.toString();
-      this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setConfiguration(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;)(referencepath,gallerypath,types,gallerytypes,useformats,imageformats,imageformatnames);
+        var config;
+        if (typeof $wnd.JSON != 'undefined') {
+            config = $wnd.JSON.parse(configuration);
+        } else {
+            config = eval("(" + configuration + ")");
+        }
+        var types = null;
+        var gallerypath = null;
+        var gallerytypes = null;
+        var referencepath = null;
+        var useformats = false;
+        var imageformats = null;
+        var imageformatnames = null;
+        if (config.types)
+            types = config.types;
+        if (config.gallerypath)
+            gallerypath = config.gallerypath;
+        if (config.gallerytypes)
+            gallerytypes = config.gallerytypes;
+        if (config.resource)
+            referencepath = config.resource;
+        if (config.useFormats)
+            useformats = config.useFormats;
+        if (config.imageFormats)
+            imageformats = config.imageFormats.toString();
+        if (config.imageFormatNames)
+            imageformatnames = config.imageFormatNames.toString();
+        this.@org.opencms.ade.galleries.client.ui.CmsGalleryField::setConfiguration(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;)(referencepath,gallerypath,types,gallerytypes,useformats,imageformats,imageformatnames);
     }-*/;
 
     /**
@@ -486,7 +486,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
             GalleryTabId[] tabIds = null;
             if (m_isIncludeFiles) {
                 tabIds = new GalleryTabId[] {
-                    GalleryTabId.cms_tab_galleries,
+                    GalleryTabId.cms_tab_types,
                     GalleryTabId.cms_tab_vfstree,
                     GalleryTabId.cms_tab_sitemap,
                     GalleryTabId.cms_tab_categories,

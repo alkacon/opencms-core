@@ -31,6 +31,7 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.CmsCategoryField;
@@ -332,7 +333,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
         if (m_cmsPopup == null) {
 
-            m_cmsPopup = new CmsPopup("Category");
+            m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
             m_cmsPopup.setWidth(600);
             m_cmsPopup.setHeight(386);
             List<String> selected = new ArrayList<String>();

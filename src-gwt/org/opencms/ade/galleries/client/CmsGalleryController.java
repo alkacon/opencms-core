@@ -63,6 +63,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -256,6 +257,15 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_searchObject.setIgnoreSearchExclude(m_dialogMode != GalleryMode.ade);
                     m_searchObject.setLocale(m_dialogBean.getLocale());
                     m_searchObject.setScope(m_dialogBean.getScope());
+                    List<GalleryTabId> tabs = Arrays.asList(getTabIds());
+                    // in case the selected start tab is not present, choose another one
+                    if (!tabs.contains(m_dialogBean.getStartTab())) {
+                        if ((m_dialogMode == GalleryMode.widget) && tabs.contains(GalleryTabId.cms_tab_vfstree)) {
+                            m_dialogBean.setStartTab(GalleryTabId.cms_tab_vfstree);
+                        } else {
+                            m_dialogBean.setStartTab(tabs.get(0));
+                        }
+                    }
                     m_handler.onInitialSearch(m_searchObject, m_dialogBean, CmsGalleryController.this);
                 }
             }
