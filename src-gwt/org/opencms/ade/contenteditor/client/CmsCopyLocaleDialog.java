@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsMessageWidget;
 import org.opencms.gwt.client.ui.CmsPopup;
@@ -103,7 +104,7 @@ public class CmsCopyLocaleDialog extends CmsPopup {
         String currentLocale,
         final CmsContentEditor editor) {
 
-        super(Messages.get().key(Messages.GUI_LOCALE_DIALOG_TITLE_0));
+        super(Messages.get().key(Messages.GUI_LOCALE_DIALOG_TITLE_0), CmsAlertDialog.DEFAULT_DIALOG_WIDTH);
         FlowPanel main = new FlowPanel();
         CmsMessageWidget message = new CmsMessageWidget();
         message.setMessageText(Messages.get().key(
