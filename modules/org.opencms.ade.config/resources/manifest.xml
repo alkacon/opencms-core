@@ -22,8 +22,8 @@
 		<userinstalled />
 		<dateinstalled />
 		<dependencies>
-			<dependency name="org.opencms.workplace" version="8.0.0"/>
-			<dependency name="org.opencms.workplace.categories" version="8.0.0"/>
+			<dependency name="org.opencms.workplace" version="8.5.0"/>
+			<dependency name="org.opencms.workplace.categories" version="8.5.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"

@@ -1526,7 +1526,7 @@
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibung des Berechtigungssystems von OpenCms 8.0.0]]></value>
+					<value><![CDATA[Beschreibung des Berechtigungssystems von OpenCms 8.5.0]]></value>
 				</property>
 				<property>
 					<name>Title</name>
