@@ -108,6 +108,9 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
     /** Configuration parameter to set the 'selection type' parameter. */
+    private static final String CONFIGURATION_PARENTSELECTION = "parentSelection";
+
+    /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_CATEGORYLIST = "CategoryList";
 
     /** Configuration parameter to set the default height. */
@@ -158,6 +161,9 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** List of all category folder. */
     protected List<CmsCategoryTreeEntry> m_resultList;
 
+    /** Sets the value if the parent should be selected with the children. */
+    private boolean m_children;
+
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD
@@ -173,6 +179,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         } else {
             m_isSingelValue = true;
         }
+        m_categoryField.setParentSelection(m_children);
         genearteList();
         m_categoryField.getScrollPanel().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().categoryPanel());
         m_categoryField.addDomHandler(new ClickHandler() {
@@ -318,7 +325,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         if (m_isSingelValue) {
             result = m_cmsCategoryTree.getSelected();
         } else {
-            result = m_cmsCategoryTree.getAllSelected();
+            result = m_cmsCategoryTree.getAllSelectedSitePath();
         }
         m_selected.clear();
         m_selected = result;
@@ -460,6 +467,12 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                 }
                 m_selectiontype = selectiontype;
             }
+            int parentIndex = configuration.indexOf(CONFIGURATION_PARENTSELECTION);
+            if (parentIndex != -1) {
+                // parent selection is given
+                m_children = true;
+            }
+
             int categoryListIndex = configuration.indexOf(CONFIGURATION_CATEGORYLIST);
             if (categoryListIndex != -1) {
                 // selection type is given

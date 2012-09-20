@@ -159,6 +159,9 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     /** The sife pathes of all added categories. */
     private List<String> m_allSidePath = new ArrayList<String>();
 
+    /** The value if the parent should be selected with the children. */
+    private boolean m_selectParent;
+
     /**
      * Category field widgets for ADE forms.<p>
      */
@@ -209,10 +212,18 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             // add the first level and children
             for (CmsCategoryTreeEntry category : treeEntries) {
                 // set the category tree item and add to list 
-                CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
+                CmsTreeItem treeItem;
+                if (m_selectParent || !hasSelectedChildren(category.getChildren(), selectedCategories)) {
+                    treeItem = buildTreeItem(category, selectedCategories, false);
+                    if (treeItem.isOpen()) {
+                        m_allSidePath.add(category.getSitePath());
+                    }
+                } else {
+                    treeItem = buildTreeItem(category, selectedCategories, true);
+                }
                 if (treeItem.isOpen()) {
                     m_singelSidePath = category.getSitePath();
-                    m_allSidePath.add(category.getRootPath());
+
                     m_valuesSet++;
                     addChildren(treeItem, category.getChildren(), selectedCategories);
                 }
@@ -361,6 +372,16 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     }
 
     /**
+     * Sets if the parent category should be selected with the child or not.
+     * 
+     * @param value if the parent categories should be selected or not
+     * */
+    public void setParentSelection(boolean value) {
+
+        m_selectParent = value;
+    }
+
+    /**
      * Sets the value of the widget.<p>
      * 
      * @param value the new value 
@@ -401,7 +422,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         if (children != null) {
             for (CmsCategoryTreeEntry child : children) {
                 // set the category tree item and add to parent tree item
-                CmsTreeItem treeItem = buildTreeItem(child, selectedCategories);
+                CmsTreeItem treeItem;
                 boolean isPartofPath = false;
                 Iterator<String> it = selectedCategories.iterator();
                 while (it.hasNext()) {
@@ -412,8 +433,13 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 }
                 if (isPartofPath) {
                     m_singelSidePath = child.getSitePath();
-                    m_allSidePath.add(child.getRootPath());
                     m_valuesSet++;
+                    if (m_selectParent || !hasSelectedChildren(child.getChildren(), selectedCategories)) {
+                        m_allSidePath.add(child.getSitePath());
+                        treeItem = buildTreeItem(child, selectedCategories, false);
+                    } else {
+                        treeItem = buildTreeItem(child, selectedCategories, true);
+                    }
                     addChildren(treeItem, child.getChildren(), selectedCategories);
                     parent.addChild(treeItem);
                 }
@@ -427,10 +453,11 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      * 
      * @param category the category
      * @param selectedCategories the selected categories
+     * @param inactive true if the value should be displayed inactive
      * 
      * @return the tree item widget
      */
-    private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
+    private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories, boolean inactive) {
 
         CmsListInfoBean categoryBean = new CmsListInfoBean(
             category.getTitle(),
@@ -446,6 +473,9 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             null,
             categoryBean.getTitle(),
             categoryBean.getSubTitle());
+        if (inactive) {
+            categoryTreeItem.setInactive();
+        }
         categoryTreeItem.setTitle(categoryBean.getSubTitle());
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());
@@ -462,5 +492,31 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
             treeItem.setOpen(true);
         }
         return treeItem;
+    }
+
+    /**
+     * Checks if it has selected children.<p>
+     * 
+     * @param children the children to check
+     * @param selectedCategories list of all selected categories
+     *  
+     * @return true if it has selected children
+     * */
+    private boolean hasSelectedChildren(List<CmsCategoryTreeEntry> children, List<String> selectedCategories) {
+
+        boolean result = false;
+        if (children == null) {
+            return false;
+        }
+        List<String> controll = selectedCategories;
+
+        for (CmsCategoryTreeEntry child : children) {
+            result = controll.contains(child.getSitePath());
+            if (result) {
+                return true;
+            }
+        }
+
+        return result;
     }
 }

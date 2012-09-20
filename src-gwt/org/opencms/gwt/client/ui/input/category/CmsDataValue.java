@@ -218,6 +218,15 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
     }
 
     /**
+     * Sets the style if the data value should be inactive.<p>
+     * */
+    public void setInactive() {
+
+        getElement().getStyle().setBorderColor("#999999");
+        getElement().getStyle().setColor("#999999");
+    }
+
+    /**
      * Makes the content of the list info box unselectable.<p>
      */
     public void setUnselectable() {
