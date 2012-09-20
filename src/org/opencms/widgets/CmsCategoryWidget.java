@@ -42,6 +42,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.types.A_CmsXmlContentValue;
+import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -74,6 +75,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
+    /** Configuration parameter to set the 'selection type' parameter. */
+    private static final String CONFIGURATION_PARENTSELECTION = "parentSelection";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCategoryWidget.class);
 
@@ -88,6 +92,9 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The selection type parsed from configuration string. */
     private String m_selectiontype = "single";
+
+    /** The value if the parents should be selected with the children. */
+    private boolean m_parentSelection;
 
     /**
      * Creates a new category widget.<p>
@@ -153,7 +160,13 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource) {
 
         String result = getConfiguration();
-        // append 'selection type' to configuration
+        // append 'selection type' to configuration in case of the schemaType
+        if (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)) {
+            m_selectiontype = "multi";
+        } else {
+            m_selectiontype = "single";
+        }
+
         if (m_selectiontype != null) {
             if (result.length() > 0) {
                 result += "|";
@@ -161,6 +174,13 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             result += CONFIGURATION_SELECTIONTYPE;
             result += "=";
             result += m_selectiontype;
+        }
+
+        if (m_parentSelection) {
+            if (result.length() > 0) {
+                result += "|";
+            }
+            result += CONFIGURATION_PARENTSELECTION;
         }
         CmsCategoryService catService = CmsCategoryService.getInstance();
         List<String> categoriesList = catService.getCategoryRepositories(cms, resource.getRootPath());
@@ -413,6 +433,11 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                 }
                 m_onlyLeafs = onlyLeafs;
             }
+            int parentSelectionIndex = configuration.indexOf(CONFIGURATION_PARENTSELECTION);
+            if (parentSelectionIndex != -1) {
+                // parent selection is given
+                m_parentSelection = true;
+            }
             int propertyIndex = configuration.indexOf(CONFIGURATION_PROPERTY);
             if (propertyIndex != -1) {
                 // property is given
@@ -422,18 +447,6 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                     property = property.substring(0, property.indexOf('|'));
                 }
                 m_property = property;
-            }
-            int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
-            if (selectiontypeIndex != -1) {
-                // selection type is given
-                String selectiontype = configuration.substring(selectiontypeIndex
-                    + CONFIGURATION_SELECTIONTYPE.length()
-                    + 1);
-                if (selectiontype.indexOf("|") != -1) {
-                    // cut eventual following configuration values
-                    selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));
-                }
-                m_selectiontype = selectiontype;
             }
         }
         super.setConfiguration(configuration);

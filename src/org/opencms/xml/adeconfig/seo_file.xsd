@@ -43,7 +43,7 @@
 					<resource key="label.SeoFile.ComputeContPageDates.help">Aktiviert oder deaktiviert die relativ aufwendige Berechnung von Containerpage-Änderungsdaten für die XML-Sitemap.</resource>
 					<resource key="label.SeoFile.SitemapInclude">Ordner hinzufügen</resource>
 					<resource key="label.SeoFile.SitemapInclude.help">Fügt einen Ordner zur XML-Sitemap hinzu.</resource>
-					<resource key="label.SeoFile.SitemapExclude">Ordner ausschlie0en</resource>
+					<resource key="label.SeoFile.SitemapExclude">Ordner ausschließen</resource>
 					<resource key="label.SeoFile.SitemapExclude.help">Schließt einen Ordner von der XML-Sitemap aus.</resource>
 					<resource key="label.SeoFile.RobotsTxtText">robots.txt-Inhalt</resource>
 					<resource key="label.SeoFile.RobotsTxtText.help">Der Text, der im robots.txt-Modus nach den Sitemap-Referenzen eingefügt wird.</resource>
@@ -52,6 +52,9 @@
 				</bundle>						
 				</xmlbundle>
 			</resourcebundles>
+			<defaults>
+				<default element="Mode" value="xmlsitemap" />
+			</defaults>
 			<layouts>
 				<layout element="Mode" widget="SelectorWidget" configuration="xmlsitemap*:%(key.choice.xmlsitemap)|robotstxt:%(key.choice.robotstxt)" />
 				<layout element="RobotsTxtText" widget="TextareaWidget" />

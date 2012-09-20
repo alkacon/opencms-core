@@ -43,6 +43,12 @@ public final class Messages {
     public static final String GUI_CHOICE_ADD_CHOICE_0 = "GUI_CHOICE_ADD_CHOICE_0"; //Acacia message: Add choice
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_DELETE_LOCALE_TEXT_0 = "GUI_CONFIRM_DELETE_LOCALE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_DELETE_LOCALE_TITLE_0 = "GUI_CONFIRM_DELETE_LOCALE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DOWNLOAD_GALLERY_OPEN_0 = "GUI_DOWNLOAD_GALLERY_OPEN_0";
 
     /** Message constant for key in the resource bundle. */
@@ -103,6 +109,9 @@ public final class Messages {
     public static final String GUI_LOCALE_DIALOG_TITLE_0 = "GUI_LOCALE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MULTISELECT_ACTIVATE_0 = "GUI_MULTISELECT_ACTIVATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0 = "GUI_TOOLBAR_CANT_DELETE_LAST_LOCALE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -146,6 +155,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_MOVE_0 = "GUI_VIEW_MOVE_0"; //Acacia message: Move
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WARN_INVALID_XML_STRUCTURE_0 = "GUI_WARN_INVALID_XML_STRUCTURE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";

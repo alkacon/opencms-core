@@ -29,6 +29,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -41,12 +42,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Provides a widget for a standard HTML form for a group of radio buttons.<p>
@@ -97,6 +100,9 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     /** Key suffix for the 'default' , 'help', 'option' text without following entrances.*/
     private static final String KEY_SUFFIX_SHORT = "'";
 
+    /** Configuration parameter to indicate the multi-select needs to be activated by a check box. */
+    public static final String CONFIGURATION_REQUIRES_ACTIVATION = "|requiresactivation";
+
     /** Key prefix for the 'value'. */
     private static final String KEY_VALUE = "value='";
 
@@ -108,6 +114,12 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
 
     /** Value of the activation. */
     private boolean m_active = true;
+
+    /** Value of the requiresactivation. */
+    private boolean m_requiresactivation;
+
+    /** Activation button.*/
+    private CmsCheckBox m_activation;
 
     /** Array of all radio button. */
     private CmsCheckBox[] m_arrayCheckbox;
@@ -122,17 +134,26 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
      * Constructs an OptionalTextBox with the given caption on the check.<p>
      * @param config the configuration string.
      */
-    @SuppressWarnings("boxing")
     public CmsMultiSelectWidget(String config) {
 
+        FlowPanel main = new FlowPanel();
         // generate a list of all radio button.
         Map<String, CmsPair<String, Boolean>> list = parse(config);
         m_arrayCheckbox = new CmsCheckBox[list.size()];
         int j = 0;
+        if (m_requiresactivation) {
+
+            buildActivationButton();
+            SimplePanel activation = new SimplePanel(m_activation);
+            activation.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonPanel());
+            activation.getElement().getStyle().setMarginBottom(5, Unit.PX);
+            main.add(activation);
+        }
+
         for (Map.Entry<String, CmsPair<String, Boolean>> entry : list.entrySet()) {
             m_arrayCheckbox[j] = new CmsCheckBox(entry.getKey());
             m_arrayCheckbox[j].setInternalValue(entry.getValue().getFirst());
-            if (entry.getValue().getSecond()) {
+            if ((entry.getValue().getSecond()).booleanValue()) {
                 m_defaultCheckBox.add(m_arrayCheckbox[j]);
             }
             m_arrayCheckbox[j].addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -164,7 +185,11 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
         }
         m_scrollPanel.setDefaultHeight(height);
         m_scrollPanel.setHeight(height + "px");
-        initWidget(m_scrollPanel);
+        main.add(m_scrollPanel);
+        initWidget(main);
+        if (m_requiresactivation) {
+            setAllCheckboxEnabled(false);
+        }
 
     }
 
@@ -303,6 +328,19 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
     }
 
     /**
+     * Sets the checkboxes enabled or disabled.<p>
+     * 
+     * @param value if it should be enabled or disabled
+     */
+    protected void setAllCheckboxEnabled(boolean value) {
+
+        for (int i = 0; i < m_arrayCheckbox.length; i++) {
+            // set the checkbox active / inactive.
+            m_arrayCheckbox[i].setEnabled(value);
+        }
+    }
+
+    /**
      * Helper class for parsing the configuration in to a list for the combobox. <p>
      * @param config the configuration string given from xsd
      * @return the pares values from the configuration in a Map
@@ -312,7 +350,10 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
         // key = option
         // Pair = 1. label
         // Pair = 2. selected
-
+        if (config.contains(CONFIGURATION_REQUIRES_ACTIVATION)) {
+            config = config.replace(CONFIGURATION_REQUIRES_ACTIVATION, "");
+            m_requiresactivation = true;
+        }
         Map<String, CmsPair<String, Boolean>> result = new LinkedHashMap<String, CmsPair<String, Boolean>>();
         CmsPair<String, Boolean> pair = new CmsPair<String, Boolean>();
         //split the configuration in single strings to handle every string single. 
@@ -447,6 +488,24 @@ public class CmsMultiSelectWidget extends Composite implements I_EditWidget {
         }
 
         return result;
+    }
+
+    /**
+     * Adds a button to activate or deactivate the selection.<p>
+     */
+    private void buildActivationButton() {
+
+        m_activation = new CmsCheckBox(Messages.get().key(Messages.GUI_MULTISELECT_ACTIVATE_0));
+
+        m_activation.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().checkboxlabel());
+        m_activation.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+
+                setAllCheckboxEnabled(event.getValue().booleanValue());
+
+            }
+        });
     }
 
     /**

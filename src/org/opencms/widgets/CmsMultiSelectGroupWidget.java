@@ -136,7 +136,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.CmsSelectGroupWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
      */
     @Override
     public String getConfiguration(
@@ -145,10 +145,23 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
         CmsMessages messages,
         CmsResource resource) {
 
-        parseSelectOptions(cms, messages, null);
-        String results = getConfiguration();
-
-        return results;
+        String result = "";
+        CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(schemaType.getLocale(), messages);
+        List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, schemaType);
+        Iterator<CmsSelectWidgetOption> it = options.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            CmsSelectWidgetOption option = it.next();
+            if (i > 0) {
+                result += "|";
+            }
+            result += option.toString();
+            i++;
+        }
+        if (m_requiresActivation) {
+            result += "|" + CmsMultiSelectWidget.CONFIGURATION_REQUIRES_ACTIVATION;
+        }
+        return result;
     }
 
     /**

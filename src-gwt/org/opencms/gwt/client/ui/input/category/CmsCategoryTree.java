@@ -474,6 +474,25 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     }
 
     /**
+     * Returns a list of all selected values as Sidepath.<p>
+     * 
+     * @return a list of selected values
+     */
+    public List<String> getAllSelectedSitePath() {
+
+        List<String> result = new ArrayList<String>();
+        Iterator<Widget> it = m_scrollList.iterator();
+        while (it.hasNext()) {
+            CmsTreeItem test = (CmsTreeItem)it.next();
+            if (test.getCheckBox().isChecked()) {
+                result.add(((CmsDataValue)test.getMainWidget()).getParameter(2));
+                selectedChildrenSitePath(result, test);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the scrollpanel of this widget.<p>
      * 
      * @return CmsScrollPanel the scrollpanel of this widget
@@ -999,7 +1018,8 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
-        CmsDataValue dataValue = new CmsDataValue(600, 3, null, category.getTitle(), category.getPath());
+        CmsDataValue dataValue = new CmsDataValue(600, 3, null, category.getTitle(), category.getPath(), "hide:"
+            + category.getSitePath());
 
         // create the check box for this item 
         CmsCheckBox checkBox = new CmsCheckBox();
@@ -1086,6 +1106,24 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
             if (test.getCheckBox().isChecked()) {
                 result.add(test.getId());
                 selectedChildren(result, test);
+            }
+        }
+
+    }
+
+    /**
+     * Helper function to selected all selected values site path.<p>
+     * @param result list of all selected values
+     * @param item the parent where the children have to be checked
+     * */
+    private void selectedChildrenSitePath(List<String> result, CmsTreeItem item) {
+
+        Iterator<Widget> it = item.getChildren().iterator();
+        while (it.hasNext()) {
+            CmsTreeItem test = (CmsTreeItem)it.next();
+            if (test.getCheckBox().isChecked()) {
+                result.add(((CmsDataValue)test.getMainWidget()).getParameter(2));
+                selectedChildrenSitePath(result, test);
             }
         }
 

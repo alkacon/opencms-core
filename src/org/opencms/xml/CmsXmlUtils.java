@@ -452,7 +452,7 @@ public final class CmsXmlUtils {
             p = path.indexOf("\'", p + 1);
         }
         String parentPath = path.substring(0, pos);
-        if (count % 2 == 0) {
+        if ((count % 2) == 0) {
             // if substring is complete 
             return parentPath;
         }

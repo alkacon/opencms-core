@@ -45,6 +45,8 @@ import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
+import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -360,6 +362,56 @@ public final class CmsContentEditor {
     }
 
     /**
+     * Asks the user to confirm resetting all changes.<p>
+     */
+    void confirmCancel() {
+
+        if (m_saveButton.isEnabled()) {
+            CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
+            dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+                public void onClose() {
+
+                    // nothing to do
+                }
+
+                public void onOk() {
+
+                    cancelEdit();
+                }
+            });
+            dialog.center();
+        } else {
+            cancelEdit();
+        }
+    }
+
+    /**
+     * Opens the confirm delete locale dialog.<p>
+     */
+    void confirmDeleteLocale() {
+
+        CmsConfirmDialog dialog = new CmsConfirmDialog(
+            Messages.get().key(Messages.GUI_CONFIRM_DELETE_LOCALE_TITLE_0),
+            Messages.get().key(Messages.GUI_CONFIRM_DELETE_LOCALE_TEXT_0));
+        dialog.setHandler(new I_CmsConfirmDialogHandler() {
+
+            public void onClose() {
+
+                // nothing to do
+            }
+
+            public void onOk() {
+
+                deleteCurrentLocale();
+            }
+        });
+        dialog.center();
+    }
+
+    /**
      * Copies the current entity values to the given locales.<p>
      * 
      * @param targetLocales the target locales
@@ -468,6 +520,10 @@ public final class CmsContentEditor {
         } else {
             initFormPanel();
             renderFormContent();
+        }
+        if (contentDefinition.isPerformedAutocorrection()) {
+            CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_WARN_INVALID_XML_STRUCTURE_0));
+            setChanged();
         }
     }
 
@@ -831,7 +887,7 @@ public final class CmsContentEditor {
 
                 public void onClick(ClickEvent event) {
 
-                    deleteCurrentLocale();
+                    confirmDeleteLocale();
                 }
             });
             m_toolbar.addLeft(m_deleteLocaleButton);
@@ -935,33 +991,6 @@ public final class CmsContentEditor {
         });
         m_toolbar.addRight(m_cancelButton);
         RootPanel.get().add(m_toolbar);
-    }
-
-    /**
-     * Asks the user to confirm resetting all changes.<p>
-     */
-    void confirmCancel() {
-
-        if (m_saveButton.isEnabled()) {
-            CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
-            dialog.setHandler(new I_CmsConfirmDialogHandler() {
-
-                public void onClose() {
-
-                    // nothing to do
-                }
-
-                public void onOk() {
-
-                    cancelEdit();
-                }
-            });
-            dialog.center();
-        } else {
-            cancelEdit();
-        }
     }
 
     /**

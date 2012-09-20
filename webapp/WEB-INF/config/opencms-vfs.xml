@@ -707,6 +707,7 @@
                 <schematype class="org.opencms.xml.types.CmsXmlVarLinkValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsImageValue" defaultwidget="org.opencms.widgets.CmsVfsImageWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlCategoryValue" defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
 			</schematypes>
 		</xmlcontent>
 	</vfs>

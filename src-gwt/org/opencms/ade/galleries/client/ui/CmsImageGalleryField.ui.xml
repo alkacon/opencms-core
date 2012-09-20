@@ -16,7 +16,7 @@
 	.galleryField{
 		position:relative;
 		background: none repeat scroll 0 0 white;
-    	margin-left: 90px;
+    	margin-left: 170px;
     	margin-bottom: 5px;
     	border-radius: 3px;
     	width: auto;
@@ -39,7 +39,7 @@
 	}
 	.imagePriview {
 		height: 110px;
-		width: 80px;
+		width: 165px;
 		float: left;
 		border-radius: 3px;
 		overflow: hidden;
@@ -47,13 +47,13 @@
 	.formats{
 	 	height: 18px;
 	 	width: auto;
-	 	margin-left: 90px;
+	 	margin-left: 170px;
 	 	margin-bottom: 5px;
 	 	position: relative;
 	}
 	
 	.descriptionField{
-		margin-left: 90px;
+		margin-left: 170px;
 	}
 	
 </ui:style>

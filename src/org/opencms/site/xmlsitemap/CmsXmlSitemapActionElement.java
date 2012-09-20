@@ -106,7 +106,7 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
         String mode = m_configuration.getMode();
         if (mode.equals(CmsXmlSeoConfiguration.MODE_ROBOTS_TXT)) {
             showRobotsTxt();
-        } else if (mode.equals(CmsXmlSeoConfiguration.MODE_XML_SITEMAP)) {
+        } else {
             renderXmlSitemap();
         }
     }

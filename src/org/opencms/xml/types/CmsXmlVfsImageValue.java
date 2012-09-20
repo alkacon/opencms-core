@@ -196,7 +196,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
         // the schema definition is located in a separate file for easier editing
         if (m_schemaDefinition == null) {
-            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVfsImageValue.xsd");
+            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVfsFileValue.xsd");
         }
         return m_schemaDefinition;
     }

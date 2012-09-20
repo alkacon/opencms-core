@@ -1,0 +1,18 @@
+<xsd:complexType name="OpenCmsCategories">
+	<xsd:sequence>
+ 		<xsd:element name="categories" type="OpenCmsCategoryList" minOccurs="0" />
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="OpenCmsCategoryList">
+<xsd:sequence>
+	<xsd:element name="link" type= "OpenCmsCategoryValue" minOccurs="0" maxOccurs="unbounded" /> 
+</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="OpenCmsCategoryValue">
+	<xsd:sequence>
+		<xsd:element name="target" type="xsd:string" />
+		<xsd:element name="uuid" type="xsd:string" minOccurs="0" />
+	</xsd:sequence>	
+</xsd:complexType>
