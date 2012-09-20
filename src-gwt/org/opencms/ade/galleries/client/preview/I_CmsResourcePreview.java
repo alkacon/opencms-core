@@ -81,8 +81,6 @@ public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
      */
     A_CmsPreviewDialog<T> getPreviewDialog();
 
-    String getViewLink();
-
     /**
      * Returns the preview name, should return the same as in {@link org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewName()}.<p>
      * 
@@ -96,6 +94,13 @@ public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
      * @return the resource path
      */
     String getResourcePath();
+
+    /**
+     * Returns the site independent perma link.<p>
+     * 
+     * @return the site independent link
+     */
+    String getViewLink();
 
     /**
      * Loads the resource info and displays the retrieved data.<p>
