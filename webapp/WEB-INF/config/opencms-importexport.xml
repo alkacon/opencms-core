@@ -140,12 +140,14 @@
 			<params>
 				<param name="project">Offline</param>
 				<param name="description">Offline project CMIS repository</param>
+				<param name="index">Solr Offline</param>
 			</params>
 	 	</repository>
 	    <repository name="cmis-online" class="org.opencms.cmis.CmsCmisRepository">
 			<params>
 				<param name="project">Online</param>
 				<param name="description">Online project CMIS repository</param>
+				<param name="index">Solr Online</param>
 			</params>
 		</repository>
 	</repositories>
