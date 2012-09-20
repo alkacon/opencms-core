@@ -27,6 +27,19 @@
 
 package org.opencms.workplace.tools.workplace.logging;
 
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
+import org.opencms.workplace.list.A_CmsListDialog;
+import org.opencms.workplace.list.CmsListColumnAlignEnum;
+import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListSearchAction;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,18 +58,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
-import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsLog;
-import org.opencms.main.CmsRuntimeException;
-import org.opencms.workplace.list.A_CmsListDialog;
-import org.opencms.workplace.list.CmsListColumnAlignEnum;
-import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListDirectAction;
-import org.opencms.workplace.list.CmsListItem;
-import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListMultiAction;
-import org.opencms.workplace.list.CmsListOrderEnum;
-import org.opencms.workplace.list.CmsListSearchAction;
 
 /**
  * Main logging management list view.<p>
@@ -199,8 +200,13 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
      */
     public CmsLog4JAdminDialog(CmsJspActionElement jsp) {
 
-        super(jsp, "Log Settings", Messages.get().container(Messages.GUI_LOG_LIST_NAME_0), "lo",
-                CmsListOrderEnum.ORDER_ASCENDING, null);
+        super(
+            jsp,
+            "Log Settings",
+            Messages.get().container(Messages.GUI_LOG_LIST_NAME_0),
+            "lo",
+            CmsListOrderEnum.ORDER_ASCENDING,
+            null);
     }
 
     /**
@@ -299,7 +305,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 Iterator<Appender> app_root = appenders_root.iterator();
                 // get the layout and file path from root logger
                 while (app_root.hasNext()) {
-                    FileAppender fapp = (FileAppender) app_root.next();
+                    FileAppender fapp = (FileAppender)app_root.next();
                     filepath = fapp.getFile().substring(0, fapp.getFile().lastIndexOf(File.separatorChar));
                     layout = fapp.getLayout();
                 }
@@ -309,7 +315,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 Iterator<Appender> app = appenders.iterator();
                 // check if the logger has an Appender get his layout
                 while (app.hasNext()) {
-                    FileAppender fapp = (FileAppender) app.next();
+                    FileAppender fapp = (FileAppender)app.next();
                     layout = fapp.getLayout();
                 }
                 String logfilename = "";
@@ -320,8 +326,11 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                     temp = temp.replace(OPENCMS_CLASS_PREFIX, "");
                     // if the name has suffix 
                     if (temp.length() >= 1) {
-                        logfilename = filepath + File.separator + "opencms-" + temp.substring(1).replace(".", "-")
-                                + ".log";
+                        logfilename = filepath
+                            + File.separator
+                            + "opencms-"
+                            + temp.substring(1).replace(".", "-")
+                            + ".log";
                     }
                     // if the name has no suffix
                     else {
@@ -354,7 +363,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog.fillDetails(String)
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
     @Override
     protected void fillDetails(String detailId) {
@@ -391,7 +400,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             int count = 0;
             // select the Appender from logger 
             while (app.hasNext()) {
-                FileAppender fapp = (FileAppender) app.next();
+                FileAppender fapp = (FileAppender)app.next();
                 String temp = "";
                 temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
                 test = test + temp;
@@ -404,7 +413,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             // if no Appender found from logger, select the Appender from parent logger
             if (!app.hasNext() && (count == 0)) {
                 while (app_parent.hasNext()) {
-                    FileAppender fapp = (FileAppender) app_parent.next();
+                    FileAppender fapp = (FileAppender)app_parent.next();
                     String temp = "";
                     temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
                     test = test + temp;
@@ -418,7 +427,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 Iterator<Appender> app_root = appenders_root.iterator();
                 // if no Appender found from parent logger, select the Appender from root logger
                 while (app_root.hasNext()) {
-                    FileAppender fapp = (FileAppender) app_root.next();
+                    FileAppender fapp = (FileAppender)app_root.next();
                     String temp = "";
                     temp = fapp.getFile().substring(fapp.getFile().lastIndexOf(File.separatorChar) + 1);
                     test = test + temp;
@@ -474,7 +483,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             @Override
             public boolean isVisible() {
 
-                Level actuallevel = Level.toLevel((String) getItem().get(COLUMN_LOG_LEVEL));
+                Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
 
                     if (actuallevel.toInt() < Priority.FATAL_INT) {
@@ -513,7 +522,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             @Override
             public boolean isVisible() {
 
-                Level actuallevel = Level.toLevel((String) getItem().get(COLUMN_LOG_LEVEL));
+                Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
                     if ((actuallevel.toInt() < Priority.ERROR_INT)) {
                         setIconPath(PATH_ERROR_ACTIVE);
@@ -551,7 +560,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             @Override
             public boolean isVisible() {
 
-                Level actuallevel = Level.toLevel((String) getItem().get(COLUMN_LOG_LEVEL));
+                Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
                     if ((actuallevel.toInt() < Priority.WARN_INT)) {
                         setIconPath(PATH_WARN_ACTIVE);
@@ -590,7 +599,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             public boolean isVisible() {
 
                 // check the Loglevel from hidden column and set the right icon
-                Level actuallevel = Level.toLevel((String) getItem().get(COLUMN_LOG_LEVEL));
+                Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
                     if ((actuallevel.toInt() < Priority.INFO_INT)) {
                         setIconPath(PATH_INFO_ACTIVE);
@@ -629,7 +638,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             @Override
             public boolean isVisible() {
 
-                Level actuallevel = Level.toLevel((String) getItem().get(COLUMN_LOG_LEVEL));
+                Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
                     if (actuallevel.toInt() < Priority.DEBUG_INT) {
                         setIconPath(PATH_DEBUG_ACTIVE);
@@ -668,7 +677,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             @Override
             public boolean isVisible() {
 
-                Level actuallevel = Level.toLevel((String) getItem().get(COLUMN_LOG_LEVEL));
+                Level actuallevel = Level.toLevel((String)getItem().get(COLUMN_LOG_LEVEL));
                 if (actuallevel != null) {
                     if (actuallevel.toInt() == Priority.OFF_INT) {
                         setIconPath(PATH_OFF_ACTIVE);
@@ -747,7 +756,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             @Override
             public boolean isVisible() {
 
-                Logger logger = LogManager.getLogger((String) getItem().get(COLUMN_CHANNELS));
+                Logger logger = LogManager.getLogger((String)getItem().get(COLUMN_CHANNELS));
                 if (logger != null) {
                     if (isloggingactivated(logger)) {
                         setIconPath(PATH_FILE_ACTIVE);
@@ -773,8 +782,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog.setIndependentActions(
-     * CmsListMetadata)
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
@@ -950,7 +958,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
             public int compare(Object obj, Object obj1) {
 
-                return compare((Logger) obj, (Logger) obj1);
+                return compare((Logger)obj, (Logger)obj1);
             }
 
         });
