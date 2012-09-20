@@ -740,7 +740,7 @@ public final class CmsXmlUtils {
 
         XMLReader reader;
         try {
-            reader = XMLReaderFactory.createXMLReader("com.sun.org.apache.xerces.parsers.SAXParser");
+            reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
         } catch (SAXException e) {
             // xerces parser not available - no schema validation possible
             if (LOG.isWarnEnabled()) {
