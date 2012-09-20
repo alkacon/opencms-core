@@ -452,7 +452,7 @@ public final class CmsXmlUtils {
             p = path.indexOf("\'", p + 1);
         }
         String parentPath = path.substring(0, pos);
-        if (count % 2 == 0) {
+        if ((count % 2) == 0) {
             // if substring is complete 
             return parentPath;
         }
@@ -740,7 +740,7 @@ public final class CmsXmlUtils {
 
         XMLReader reader;
         try {
-            reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
+            reader = XMLReaderFactory.createXMLReader("com.sun.org.apache.xerces.parsers.SAXParser");
         } catch (SAXException e) {
             // xerces parser not available - no schema validation possible
             if (LOG.isWarnEnabled()) {
