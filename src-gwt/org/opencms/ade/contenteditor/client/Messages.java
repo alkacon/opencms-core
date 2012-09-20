@@ -150,6 +150,9 @@ public final class Messages {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MULTISELECT_ACTIVATE_0 = "GUI_MULTISELECT_ACTIVATE_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 
