@@ -43,6 +43,12 @@ public final class Messages {
     public static final String GUI_CHOICE_ADD_CHOICE_0 = "GUI_CHOICE_ADD_CHOICE_0"; //Acacia message: Add choice
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_DELETE_LOCALE_TEXT_0 = "GUI_CONFIRM_DELETE_LOCALE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_DELETE_LOCALE_TITLE_0 = "GUI_CONFIRM_DELETE_LOCALE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DOWNLOAD_GALLERY_OPEN_0 = "GUI_DOWNLOAD_GALLERY_OPEN_0";
 
     /** Message constant for key in the resource bundle. */
