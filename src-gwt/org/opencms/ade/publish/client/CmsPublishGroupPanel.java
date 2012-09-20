@@ -211,6 +211,8 @@ public class CmsPublishGroupPanel extends Composite {
         CmsPushButton previewButton = new CmsPushButton();
         previewButton.setImageClass(I_CmsImageBundle.INSTANCE.style().previewIcon());
         previewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        previewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+            org.opencms.gwt.client.Messages.GUI_SHOW_PREVIEW_0));
         previewButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {

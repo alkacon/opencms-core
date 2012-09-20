@@ -307,6 +307,9 @@ public final class Messages {
     public static final String GUI_POPUP_BLOCKED_TITLE_0 = "GUI_POPUP_BLOCKED_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOW_PREVIEW_0 = "GUI_SHOW_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTIES_0 = "GUI_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
