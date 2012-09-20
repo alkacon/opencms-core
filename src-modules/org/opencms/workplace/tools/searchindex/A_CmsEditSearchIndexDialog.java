@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Abstract dialog class for all dialogs that work on a <code>CmsSearchIndex</code>.<p> 
+ * Abstract dialog class for all dialogs that work on a <code>A_CmsSearchIndex</code>.<p> 
  * 
  * The <code>{@link #PARAM_INDEXNAME}</code> ("searchindex") is supported 
  * by means of widget technology (setter / getter).<p>

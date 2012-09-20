@@ -565,7 +565,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
      */
     private void fillDetailFieldConfiguration(CmsListItem item, String detailId) {
 
-        // search for the corresponding CmsSearchIndex: 
+        // search for the corresponding A_CmsSearchIndex: 
         String idxName = (String)item.get(LIST_COLUMN_NAME);
         A_CmsSearchIndex idx = OpenCms.getSearchManager().getIndexLucene(idxName);
         if (idx != null) {
@@ -639,7 +639,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     private void fillDetailIndexSource(CmsListItem item, String detailId) {
 
         StringBuffer html = new StringBuffer();
-        // search for the corresponding CmsSearchIndex: 
+        // search for the corresponding A_CmsSearchIndex: 
         A_CmsSearchIndex idx = OpenCms.getSearchManager().getIndex((String)item.get(LIST_COLUMN_NAME));
 
         html.append("<ul>\n");

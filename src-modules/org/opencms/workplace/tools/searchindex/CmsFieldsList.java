@@ -680,7 +680,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
     private void fillDetailField(CmsListItem item, String detailId) {
 
         StringBuffer html = new StringBuffer();
-        // search for the corresponding CmsSearchIndex: 
+        // search for the corresponding A_CmsSearchIndex: 
         String idxFieldName = (String)item.get(LIST_COLUMN_NAME);
 
         List<I_CmsSearchField> fields = OpenCms.getSearchManager().getFieldConfiguration(m_paramFieldconfiguration).getFields();

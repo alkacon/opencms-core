@@ -429,7 +429,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
     private void fillDetailFieldConfiguration(CmsListItem item, String detailId) {
 
         StringBuffer html = new StringBuffer();
-        // search for the corresponding CmsSearchIndex: 
+        // search for the corresponding A_CmsSearchIndex: 
         String idxConfigName = (String)item.get(LIST_COLUMN_NAME);
 
         I_CmsSearchFieldConfiguration idxFieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(
