@@ -42,6 +42,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.types.A_CmsXmlContentValue;
+import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -153,7 +154,13 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource) {
 
         String result = getConfiguration();
-        // append 'selection type' to configuration
+        // append 'selection type' to configuration in case of the schemaType
+        if (schemaType.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)) {
+            m_selectiontype = "multi";
+        } else {
+            m_selectiontype = "single";
+        }
+
         if (m_selectiontype != null) {
             if (result.length() > 0) {
                 result += "|";
@@ -422,18 +429,6 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                     property = property.substring(0, property.indexOf('|'));
                 }
                 m_property = property;
-            }
-            int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
-            if (selectiontypeIndex != -1) {
-                // selection type is given
-                String selectiontype = configuration.substring(selectiontypeIndex
-                    + CONFIGURATION_SELECTIONTYPE.length()
-                    + 1);
-                if (selectiontype.indexOf("|") != -1) {
-                    // cut eventual following configuration values
-                    selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));
-                }
-                m_selectiontype = selectiontype;
             }
         }
         super.setConfiguration(configuration);
