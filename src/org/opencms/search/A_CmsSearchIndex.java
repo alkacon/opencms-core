@@ -67,26 +67,29 @@ import org.apache.lucene.store.FSDirectory;
  */
 public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
+    /** A constant for the full qualified name of the CmsSearchIndex class. */
+    public static final String A_LEGACY_PARAM_PREFIX = "org.opencms.search.CmsSearchIndex";
+
     /** Constant for additional parameter to enable optimized full index regeneration (default: false). */
-    public static final String BACKUP_REINDEXING = A_CmsSearchIndex.class.getName() + ".useBackupReindexing";
+    public static final String BACKUP_REINDEXING = A_LEGACY_PARAM_PREFIX + ".useBackupReindexing";
 
     /** Constant for additional parameter to enable excerpt creation (default: true). */
-    public static final String EXCERPT = A_CmsSearchIndex.class.getName() + ".createExcerpt";
+    public static final String EXCERPT = A_LEGACY_PARAM_PREFIX + ".createExcerpt";
 
     /** Constant for additional parameter for index content extraction. */
-    public static final String EXTRACT_CONTENT = A_CmsSearchIndex.class.getName() + ".extractContent";
+    public static final String EXTRACT_CONTENT = A_LEGACY_PARAM_PREFIX + ".extractContent";
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
-    public static final String MAX_HITS = A_CmsSearchIndex.class.getName() + ".maxHits";
+    public static final String MAX_HITS = A_LEGACY_PARAM_PREFIX + ".maxHits";
 
     /** Indicates how many hits are loaded at maximum by default. */
     public static final int MAX_HITS_DEFAULT = 5000;
 
     /** Constant for additional parameter to enable permission checks (default: true). */
-    public static final String PERMISSIONS = A_CmsSearchIndex.class.getName() + ".checkPermissions";
+    public static final String PERMISSIONS = A_LEGACY_PARAM_PREFIX + ".checkPermissions";
 
     /** Constant for additional parameter to set the thread priority during search. */
-    public static final String PRIORITY = A_CmsSearchIndex.class.getName() + ".priority";
+    public static final String PRIORITY = A_LEGACY_PARAM_PREFIX + ".priority";
 
     /** Special value for the search.exclude property. */
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_ALL = "all";
@@ -101,7 +104,7 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
     public static final String REBUILD_MODE_OFFLINE = "offline";
 
     /** Constant for additional parameter to enable time range checks (default: true). */
-    public static final String TIME_RANGE = A_CmsSearchIndex.class.getName() + ".checkTimeRange";
+    public static final String TIME_RANGE = "search.checkTimeRange";
 
     /** The use all locale. */
     public static final String USE_ALL_LOCALE = "all";
