@@ -67,6 +67,9 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The new link. */
     private String m_newLink;
 
+    /** Flag indicating the current content has an invalid XML structure and was auto corrected. */
+    private boolean m_performedAutocorrection;
+
     /** The reference resource structure id. */
     private CmsUUID m_referenceResourceId;
 
@@ -93,6 +96,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * @param title the content title
      * @param sitePath the site path
      * @param resourceType the resource type name
+     * @param performedAutocorrection flag indicating the current content has an invalid XML structure and was auto corrected
      */
     public CmsContentDefinition(
         Entity entity,
@@ -105,7 +109,8 @@ public class CmsContentDefinition extends ContentDefinition {
         Map<String, String> availableLocales,
         String title,
         String sitePath,
-        String resourceType) {
+        String resourceType,
+        boolean performedAutocorrection) {
 
         super(entity, configurations, types, tabInfos, locale);
         m_contentLocales = contentLocales;
@@ -114,6 +119,7 @@ public class CmsContentDefinition extends ContentDefinition {
         m_sitePath = sitePath;
         m_resourceType = resourceType;
         m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
+        m_performedAutocorrection = performedAutocorrection;
     }
 
     /**
@@ -295,6 +301,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public boolean isModelInfo() {
 
         return m_modelInfos != null;
+    }
+
+    /**
+     * Returns if auto correction was performed.<p>
+     *
+     * @return <code>true</code> if auto correction was performed
+     */
+    public boolean isPerformedAutocorrection() {
+
+        return m_performedAutocorrection;
     }
 
     /**

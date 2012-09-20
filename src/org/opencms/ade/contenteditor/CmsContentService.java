@@ -69,6 +69,8 @@ import org.opencms.workplace.editors.CmsXmlContentEditor;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -582,6 +584,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 ensureLock(resource);
                 CmsFile file = cms.readFile(resource);
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                checkAutoCorrection(cms, content);
                 for (Entity entity : changedEntities) {
                     String entityId = entity.getId();
                     Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
@@ -897,6 +900,29 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Check if automatic content correction is required. Returns <code>true</code> if the content was changed.<p>
+     * 
+     * @param cms the cms context
+     * @param content the content to check
+     * 
+     * @return <code>true</code> if the content was changed
+     * @throws CmsXmlException if the automatic content correction failed
+     */
+    private boolean checkAutoCorrection(CmsObject cms, CmsXmlContent content) throws CmsXmlException {
+
+        boolean performedAutoCorrection = false;
+        try {
+            content.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        } catch (CmsXmlException eXml) {
+            // validation failed
+            content.setAutoCorrectionEnabled(true);
+            content.correctXmlStructure(cms);
+            performedAutoCorrection = true;
+        }
+        return performedAutoCorrection;
+    }
+
+    /**
      * Returns the workplace locale.<p>
      * 
      * @param cms the current OpenCms context 
@@ -935,7 +961,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         CmsFile file = cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-
+        boolean performedAutoCorrection = checkAutoCorrection(cms, content);
         TypeVisitor visitor = new TypeVisitor(file, getWorkplaceLocale(cms));
         visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
         Entity entity = null;
@@ -978,7 +1004,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             availableLocales,
             title,
             cms.getSitePath(resource),
-            typeName);
+            typeName,
+            performedAutoCorrection);
     }
 
     /**

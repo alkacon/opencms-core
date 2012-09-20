@@ -45,6 +45,8 @@ import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
+import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -468,6 +470,10 @@ public final class CmsContentEditor {
         } else {
             initFormPanel();
             renderFormContent();
+        }
+        if (contentDefinition.isPerformedAutocorrection()) {
+            CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_WARN_INVALID_XML_STRUCTURE_0));
+            setChanged();
         }
     }
 
