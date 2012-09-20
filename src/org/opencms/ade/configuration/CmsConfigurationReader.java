@@ -456,6 +456,8 @@ public class CmsConfigurationReader {
             } catch (CmsRuntimeException e) {
                 // may happen during import of org.opencms.ade.configuration module
                 LOG.warn(e.getLocalizedMessage(), e);
+            } catch (Throwable e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return mergeConfigurations(configurations);

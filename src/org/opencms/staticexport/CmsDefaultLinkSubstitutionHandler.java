@@ -154,8 +154,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             } else {
                 rootVfsName = vfsName;
             }
-            I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
-            detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
+            if (!rootVfsName.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
+                // never use the ADE manager for workplace links, to be sure the workplace stays usable in case of configuration errors
+                I_CmsDetailPageFinder finder = OpenCms.getADEManager().getDetailPageFinder();
+                detailPage = finder.getDetailPage(cms, rootVfsName, cms.getRequestContext().getUri());
+            }
             if (detailPage != null) {
                 if (detailPage.startsWith(targetSiteRoot)) {
                     detailPage = detailPage.substring(targetSiteRoot.length());
