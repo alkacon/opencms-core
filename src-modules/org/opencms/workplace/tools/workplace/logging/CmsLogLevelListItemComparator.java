@@ -74,19 +74,19 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                 public int compare(CmsListItem o1, CmsListItem o2) {
 
                     int test = 0;
-                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
-                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
+                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
+                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
                     // returns 0 if both rows have the loglevel "Debug"
-                    if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(DEBUG)
-                        && o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(DEBUG)) {
+                    if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(DEBUG)
+                        && o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(DEBUG)) {
                         test = 0;
                     } else {
                         // returns < 0 if the first rows have the loglevel "Debug"
-                        if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(DEBUG)) {
+                        if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(DEBUG)) {
                             test = -1;
                         } else
                         // returns > 0 if the second rows have the loglevel "Debug"
-                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(DEBUG)) {
+                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(DEBUG)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -111,19 +111,19 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                 public int compare(CmsListItem o1, CmsListItem o2) {
 
                     int test = 0;
-                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
-                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
+                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
+                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
                     // returns 0 if both rows have the loglevel "INFO"
-                    if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(INFO)
-                        && o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(INFO)) {
+                    if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(INFO)
+                        && o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(INFO)) {
                         test = 0;
                     } else {
                         // returns < 0 if the first rows have the loglevel "INFO"
-                        if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(INFO)) {
+                        if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(INFO)) {
                             test = -1;
                         } else
                         // returns > 0 if the second rows have the loglevel "INFO"
-                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(INFO)) {
+                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(INFO)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -148,19 +148,19 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                 public int compare(CmsListItem o1, CmsListItem o2) {
 
                     int test = 0;
-                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
-                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
+                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
+                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
                     // returns 0 if both rows have the loglevel "WARN"
-                    if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(WARN)
-                        && o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(WARN)) {
+                    if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(WARN)
+                        && o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(WARN)) {
                         test = 0;
                     } else {
                         // returns < 0 if the first rows have the loglevel "WARN"
-                        if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(WARN)) {
+                        if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(WARN)) {
                             test = -1;
                         } else
                         // returns > 0 if the second rows have the loglevel "WARN"
-                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(WARN)) {
+                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(WARN)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -185,19 +185,19 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                 public int compare(CmsListItem o1, CmsListItem o2) {
 
                     int test = 0;
-                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
-                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
+                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
+                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
                     // returns 0 if both rows have the loglevel "ERROR"
-                    if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(ERROR)
-                        && o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(ERROR)) {
+                    if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(ERROR)
+                        && o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(ERROR)) {
                         test = 0;
                     } else {
                         // returns < 0 if the first rows have the loglevel "ERROR"
-                        if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(ERROR)) {
+                        if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(ERROR)) {
                             test = -1;
                         } else
                         // returns > 0 if the second rows have the loglevel "ERROR"
-                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(ERROR)) {
+                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(ERROR)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -222,19 +222,19 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                 public int compare(CmsListItem o1, CmsListItem o2) {
 
                     int test = 0;
-                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
-                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
+                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
+                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
                     // returns 0 if both rows have the loglevel "FATAL"
-                    if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(FATAL)
-                        && o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(FATAL)) {
+                    if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(FATAL)
+                        && o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(FATAL)) {
                         test = 0;
                     } else {
                         // returns < 0 if the first rows have the loglevel "FATAL"
-                        if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(FATAL)) {
+                        if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(FATAL)) {
                             test = -1;
                         } else
                         // returns > 0 if the second rows have the loglevel "FATAL"
-                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(FATAL)) {
+                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(FATAL)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -259,19 +259,19 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                 public int compare(CmsListItem o1, CmsListItem o2) {
 
                     int test = 0;
-                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
-                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL));
+                    Level o1temp = Level.toLevel((String)o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
+                    Level o2temp = Level.toLevel((String)o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL));
                     // returns 0 if both rows have the loglevel "Off"
-                    if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(OFF)
-                        && o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(OFF)) {
+                    if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(OFF)
+                        && o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(OFF)) {
                         test = 0;
                     } else {
                         // returns < 0 if the first rows have the loglevel "Off"
-                        if (o1.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(OFF)) {
+                        if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(OFF)) {
                             test = -1;
                         } else
                         // returns > 0 if the second rows have the loglevel "Off"
-                        if (o2.get(CmsLog4JAdminDialog.LIST_COLUMN_PARENT_LOGGER_LEVEL).equals(OFF)) {
+                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(OFF)) {
                             test = 1;
                         } else {
                             // sort other values by level value
