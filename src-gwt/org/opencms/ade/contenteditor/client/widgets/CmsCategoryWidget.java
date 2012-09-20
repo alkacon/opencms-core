@@ -264,6 +264,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         }
 
         m_active = active;
+        fireChangeEvent();
     }
 
     /**
