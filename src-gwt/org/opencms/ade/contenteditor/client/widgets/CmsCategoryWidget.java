@@ -262,9 +262,11 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
         if (m_active == active) {
             return;
         }
-
         m_active = active;
-        fireChangeEvent();
+        // only fire change if the widget was activated
+        if (m_active) {
+            fireChangeEvent();
+        }
     }
 
     /**
