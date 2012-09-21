@@ -79,7 +79,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/runtime/poi-scratchpad-3.8-20120326.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/quartz-1.5.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/resolver-20050927.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/runtime/resolver-2.11-0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/saaj-api-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/saaj-impl-1.3.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/serp-1.13.1.jar"/>
