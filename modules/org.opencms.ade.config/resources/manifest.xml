@@ -64,6 +64,12 @@
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
 				name="groupcontainer" id="17">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>true</value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd
 				</param>
 			</type>
@@ -80,6 +86,10 @@
 					<property>
 						<name>template-elements</name>
 						<value type="shared"><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
 					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd
@@ -106,6 +116,10 @@
 						<name>locale</name>
 						<value><![CDATA[en]]></value>
 					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd
 				</param>
@@ -120,6 +134,10 @@
 					<property>
 						<name>locale</name>
 						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
 					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
@@ -140,22 +158,37 @@
 						<name>template-elements</name>
 						<value type="shared"><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/render-seo-file.jsp]]></value>
 					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/seo_file.xsd</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
 				name="inheritance_group" id="303">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>true</value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd
 				</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
 				name="inheritance_config" id="304">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd
 				</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
-
 			<explorertype name="subsitemap" key="fileicon.subsitemap"
 				icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
 				<newresource page="extendedfolder"
