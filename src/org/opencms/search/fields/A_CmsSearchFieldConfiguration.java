@@ -432,19 +432,12 @@ public abstract class A_CmsSearchFieldConfiguration implements I_CmsSearchFieldC
 
         StringBuffer text = new StringBuffer();
         for (I_CmsSearchFieldMapping mapping : field.getMappings()) {
-            if (extractionResult != null) {
-                String mapResult = mapping.getStringValue(
-                    cms,
-                    resource,
-                    extractionResult,
-                    properties,
-                    propertiesSearched);
-                if (mapResult != null) {
-                    if (text.length() > 0) {
-                        text.append('\n');
-                    }
-                    text.append(mapResult);
+            String mapResult = mapping.getStringValue(cms, resource, extractionResult, properties, propertiesSearched);
+            if (mapResult != null) {
+                if (text.length() > 0) {
+                    text.append('\n');
                 }
+                text.append(mapResult);
             }
         }
         if (text.length() > 0) {
