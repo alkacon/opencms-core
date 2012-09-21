@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
@@ -207,6 +208,15 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         }
         m_highlighting = new CmsHighlightingBorder(position, CmsHighlightingBorder.BorderColor.red);
         RootPanel.get().add(m_highlighting);
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel#initInlinetEditor(org.opencms.ade.containerpage.client.CmsContainerpageController)
+     */
+    @Override
+    public void initInlinetEditor(CmsContainerpageController controller) {
+
+        // don to anything
     }
 
     /**
