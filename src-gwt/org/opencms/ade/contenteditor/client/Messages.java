@@ -159,6 +159,9 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WARN_INVALID_XML_STRUCTURE_0 = "GUI_WARN_INVALID_XML_STRUCTURE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WIDGET_SELECT_FILE_0 = "GUI_WIDGET_SELECT_FILE_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
 
