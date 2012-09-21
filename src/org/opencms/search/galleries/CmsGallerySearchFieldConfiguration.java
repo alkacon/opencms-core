@@ -162,7 +162,7 @@ public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfigurat
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
             // iterate all configured locales
 
-            if (mappingName != null) {
+            if ((mappingName != null) && (extractionResult != null)) {
                 // should be the case for XML contents only
                 if (mappingName == I_CmsSearchField.FIELD_META) {
                     // meta field - we can use == because the String has been initialized above
