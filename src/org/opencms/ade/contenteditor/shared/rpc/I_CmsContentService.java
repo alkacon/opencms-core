@@ -98,11 +98,14 @@ public interface I_CmsContentService extends I_ContentService {
      * 
      * @param changedEntities the changed entities
      * @param deletedEntities the entity id's to delete
+     * @param clearOnSuccess  <code>true</code> to unlock resource after saving
      * 
      * @return the validation result in case of invalid entities
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    ValidationResult saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities)
-    throws CmsRpcException;
+    ValidationResult saveAndDeleteEntities(
+        List<Entity> changedEntities,
+        List<String> deletedEntities,
+        boolean clearOnSuccess) throws CmsRpcException;
 }

@@ -70,6 +70,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -433,6 +435,34 @@ public final class CmsContentEditor {
             }
         }
         initLocaleSelect();
+    }
+
+    /**
+     * Deferrers the save action to the end of the browser event queue.<p>
+     */
+    void deferreSave() {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                save();
+            }
+        });
+    }
+
+    /**
+     * Deferrers the save and exit action to the end of the browser event queue.<p>
+     */
+    void deferreSaveAndExit() {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                saveAndExit();
+            }
+        });
     }
 
     /**
@@ -925,7 +955,7 @@ public final class CmsContentEditor {
 
             public void onClick(ClickEvent event) {
 
-                saveAndExit();
+                deferreSaveAndExit();
             }
         });
         m_saveExitButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
@@ -937,7 +967,7 @@ public final class CmsContentEditor {
 
             public void onClick(ClickEvent event) {
 
-                save();
+                deferreSave();
             }
         });
         m_saveButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));

@@ -291,7 +291,7 @@ public class CmsEditorBase extends EditorBase {
             public void execute() {
 
                 start(200, true);
-                getService().saveAndDeleteEntities(entities, deletedEntites, this);
+                getService().saveAndDeleteEntities(entities, deletedEntites, clearOnSuccess, this);
             }
 
             @Override

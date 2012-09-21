@@ -86,11 +86,13 @@ public interface I_CmsContentServiceAsync extends I_ContentServiceAsync {
      * 
      * @param changedEntities the changed entities
      * @param deletedEntities the entity id's to delete
+     * @param clearOnSuccess  <code>true</code> to unlock resource after saving
      * @param callback the asynchronous callback
      */
     void saveAndDeleteEntities(
         List<Entity> changedEntities,
         List<String> deletedEntities,
+        boolean clearOnSuccess,
         AsyncCallback<ValidationResult> callback);
 
 }

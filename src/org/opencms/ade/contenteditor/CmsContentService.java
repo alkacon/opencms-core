@@ -564,10 +564,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(java.util.List, java.util.List)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(java.util.List, java.util.List, boolean)
      */
-    public ValidationResult saveAndDeleteEntities(List<Entity> changedEntities, List<String> deletedEntities)
-    throws CmsRpcException {
+    public ValidationResult saveAndDeleteEntities(
+        List<Entity> changedEntities,
+        List<String> deletedEntities,
+        boolean clearOnSuccess) throws CmsRpcException {
 
         CmsUUID structureId = null;
         if (!changedEntities.isEmpty()) {
@@ -605,7 +607,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     return validationResult;
                 }
                 writeContent(cms, file, content, getFileEncoding(cms, file));
-                tryUnlock(resource);
+                if (clearOnSuccess) {
+                    tryUnlock(resource);
+                }
             } catch (Exception e) {
                 if (resource != null) {
                     tryUnlock(resource);
@@ -621,7 +625,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     public ValidationResult saveEntities(List<Entity> entities) throws CmsRpcException {
 
-        return saveAndDeleteEntities(entities, Collections.<String> emptyList());
+        return saveAndDeleteEntities(entities, Collections.<String> emptyList(), true);
     }
 
     /**
@@ -646,7 +650,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsObject cms = getCmsObject();
             try {
                 CmsResource resource = cms.readResource(structureId);
-                ensureLock(resource);
                 CmsFile file = cms.readFile(resource);
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
                 for (Entity entity : changedEntities) {
