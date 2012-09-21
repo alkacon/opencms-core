@@ -170,8 +170,9 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
                     setStringValue(cms, uri);
                 }
             }
-            CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(
-                getPath()));
+            CmsLinkUpdateUtil.updateType(
+                linkElement,
+                getContentDefinition().getContentHandler().getRelationType(getPath()));
             CmsLink link = new CmsLink(linkElement);
             link.checkConsistency(cms);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(link.getTarget())) {

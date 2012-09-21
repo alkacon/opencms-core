@@ -184,7 +184,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
         // the schema definition is located in a separate file for easier editing
         if (m_schemaDefinition == null) {
-            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVfsFileValue.xsd");
+            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVarLinkValue.xsd");
         }
         return m_schemaDefinition;
     }
