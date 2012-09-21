@@ -655,9 +655,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             if (core != null) {
                 SolrRequestHandler h = core.getRequestHandler("/replication");
                 if (h instanceof ReplicationHandler) {
-                    h.handleRequest(new LocalSolrQueryRequest(
-                        core,
-                        CmsRequestUtil.createParameterMap("?command=backup")), new SolrQueryResponse());
+                    h.handleRequest(
+                        new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
+                        new SolrQueryResponse());
                 }
             }
         }
@@ -676,13 +676,12 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         }
         boolean excludeFromIndex = false;
         try {
-            // do property lookup with folder search
             String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
-            if (propValue != null) {
-                propValue = propValue.trim();
+            excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
+            if (!excludeFromIndex && (propValue != null)) {
                 // property value was neither "true" nor null, must check for "all"
-                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue)
-                    || PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue);
+                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim())
+                    || PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue.trim());
             }
         } catch (CmsException e) {
             LOG.debug(e.getMessage(), e);
