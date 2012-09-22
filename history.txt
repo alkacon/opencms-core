@@ -15,14 +15,32 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 8.5.0 - XXX xx, 2012
+OpenCms 8.5.0 - September 24, 2012
+! Added new inline content editor allows to edit content "in place" on the web page.
+! Added form based content editor has been completely rewritten for improved speed and ease-of-use.
+! Added integration of SEO features with automatic sitemap.xml generation and page alias support.
+! Added integration of Solr for improved search and noSQL like content queries.
+! Added integration of CMIS access to the content repository.
+! Added support for "Inheritance Groups".
+! Added option to undo all changes done on a page (or resource) that have not been published.
+! Added option to hide a page in the sitemap, so that it does not appear in the navigation.
+! Added option to edit content directly from the clipboard favorites.
+! Added option to directly delete an element removed from a page when it is no longer used anywhere.
+! Added CodeMirror syntax-highlighting source code editor with code folding, visible tabs and better performance.
+! Added new "Navigation level" function in the sitemap.
+! Added new "Attribute information" dialog for all content items on a page, gallery and sitemap.
+! Added new and improved dialog for assigning or selecting content categories.
+! Added new Log file tool in the OpenCms Administration allows to switch on/off log channels on the fly.
 * Fixed issue with categories not properly set on expired resources with category widget.
 * Fixed issue in the XML content correction where a total change of the schema was not processed
-! Added CodeMirror syntax-highlighting source code editor with code folding, visible tabs and better performance.
+- Improved layout in most of the new onscreen dialogs.
+- Improved content is now directly saved when you edit a page, no more confirmation required.
 
-OpenCms 8.0.4 - April xx, 2012
+
+OpenCms 8.0.4 - April 11, 2012
 ! Added configurable ADE context menu dialogs.
-! Added Italian localization.
+! Added Italian localization contributed by Antonio Cordeddu of coranto.it
+! Added Russian localization contributed by Alexey Chirkov of itdt.ru
 ! Added TinyMCE WYSIWYG editor.
 ! Added scheduled job for search index optimization.
 * Fixed issue with VFS image widget preview function.
@@ -45,6 +63,7 @@ OpenCms 8.0.4 - April xx, 2012
 - Improved sitemap editor change handling.
 - Improved synchronized lock behavior for offline indexing.
 - Updated Lucene to version 3.5.
+- Updated OpenJPA to version 2.2.0
 
 OpenCms 8.0.3 - November 16, 2011
 ! With the introduction of "Function Pages", JSP based dynamic pages can be added with simple drag and drop in the sitemap editor.
