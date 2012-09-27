@@ -123,6 +123,9 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
     /** Value of the activation. */
     private boolean m_active = true;
 
+    /** The last value set through the setValue method. This is not necessarily the current widget value. */
+    private String m_externalValue;
+
     /** The global select box. */
     private CmsSelectBox m_selectBox = new CmsSelectBox();
 
@@ -213,6 +216,12 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
 
         // check if value change. If not do nothing.
         if (m_active == active) {
+            if (active && !m_selectBox.getFormValueAsString().equals(m_externalValue)) {
+                // in case the previously set external value does not match the internal select box value fire change event
+                // this is needed in case the external value didn't match any select option, 
+                // in this case the select box will display the first available value so fire the change to reflect that
+                fireChangeEvent();
+            }
             return;
         }
         // set new value.
@@ -250,6 +259,7 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
     public void setValue(String value, boolean fireEvents) {
 
         m_selectBox.selectValue(value);
+        m_externalValue = value;
         if (fireEvents) {
             fireChangeEvent();
         }
