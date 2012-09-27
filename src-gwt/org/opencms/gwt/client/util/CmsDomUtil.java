@@ -1456,6 +1456,18 @@ public final class CmsDomUtil {
     }-*/;
 
     /**
+     * Parses the given string into a JSON object.<p>
+     *  
+     * @param jsonString the string to parse
+     * 
+     * @return the JSON object
+     */
+    public static native JavaScriptObject parseJSON(String jsonString)/*-{
+        return (typeof $wnd.JSON != 'undefined') && $wnd.JSON.parse(jsonString)
+                || eval('(' + jsonString + ')');
+    }-*/;
+
+    /**
      * Positions an element in the DOM relative to another element.<p>
      * 
      * @param elem the element to position

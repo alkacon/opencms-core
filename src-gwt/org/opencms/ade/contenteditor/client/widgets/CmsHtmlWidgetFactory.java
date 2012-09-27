@@ -93,9 +93,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
         var options = null;
         var messages = @org.opencms.ade.contenteditor.client.widgets.CmsHtmlWidgetFactory::MESSAGES;
         try {
-            var config = (typeof $wnd.JSON != 'undefined')
-                    && $wnd.JSON.parse(configuration)
-                    || eval('(' + configuration + ')');
+            var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
             options = {};
             if (config.toolbar_items) {
                 for ( var i = 0; i < config.toolbar_items.length; i++) {
@@ -261,9 +259,7 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 
         var options = null;
         try {
-            var config = (typeof $wnd.JSON != 'undefined')
-                    && $wnd.JSON.parse(configuration)
-                    || eval('(' + configuration + ')');
+            var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
             options = {
                 skin_variant : 'contenteditor'
             };
@@ -277,7 +273,16 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
                 options.theme_advanced_blockformats = config.block_formats;
             }
             if (config.style_formats) {
-                options.style_formats = config.styleFormats;
+                var temp = null;
+                try {
+                    temp = eval('(' + config.style_formats + ')');
+                } catch (error) {
+                    $wnd.alert("Could not parse WYSIWYG editor options: "
+                            + error);
+                }
+                if (typeof temp != 'undefined' && temp != null) {
+                    options.style_formats = temp;
+                }
             }
             if (config.cmsGalleryEnhancedOptions) {
                 options.cmsGalleryEnhancedOptions = config.cmsGalleryEnhancedOptions;

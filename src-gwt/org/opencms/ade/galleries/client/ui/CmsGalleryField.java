@@ -224,12 +224,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
      * @param configuration the widget configuration as a JSON string
      */
     public native void parseConfiguration(String configuration)/*-{
-        var config;
-        if (typeof $wnd.JSON != 'undefined') {
-            config = $wnd.JSON.parse(configuration);
-        } else {
-            config = eval("(" + configuration + ")");
-        }
+        var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
         var types = null;
         var gallerypath = null;
         var gallerytypes = null;

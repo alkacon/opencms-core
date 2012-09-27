@@ -191,12 +191,7 @@ public class CmsFileWidget extends Composite implements I_EditWidget {
      * @param configuration the widget configuration
      */
     private native void parseConfiguration(String configuration)/*-{
-        var config;
-        if (typeof $wnd.JSON != 'undefined') {
-            config = $wnd.JSON.parse(configuration);
-        } else {
-            config = eval("(" + configuration + ")");
-        }
+        var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
         if (config.includefiles)
             this.@org.opencms.ade.contenteditor.client.widgets.CmsFileWidget::m_includeFiles = config.includefiles;
         if (config.showsiteselector)

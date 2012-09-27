@@ -81,6 +81,14 @@ function initTinyMCE(options){
     if (options["fullpage"]){
         defaults["plugins"]+=",fullpage";
     }
+    if (options["style_formats"]){
+        try{
+        options["style_formats"]=eval('('+options["style_formats"]+')');
+        }catch(error){
+            delete options["style_formats"];
+            alert("Error while parsing style formats option for tinyMCE: "+error);
+        }
+    }
     // the fullpage attribute needs to be removed otherwise tinyMCE won't start
     delete options["fullpage"];
     $.extend(defaults, options);
