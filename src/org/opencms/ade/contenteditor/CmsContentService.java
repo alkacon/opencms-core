@@ -965,6 +965,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsFile file = cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
         boolean performedAutoCorrection = checkAutoCorrection(cms, content);
+        if (performedAutoCorrection) {
+            content.initDocument();
+        }
         TypeVisitor visitor = new TypeVisitor(file, getWorkplaceLocale(cms));
         visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
         Entity entity = null;
