@@ -73,14 +73,16 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
     public String export() throws Exception {
 
         StringBuffer sb = new StringBuffer();
+        sb.append(CmsContainer.KEY_CONTAINER_DATA).append("= new Array();");
+        wrapScript(sb);
         sb.append(ClientMessages.get().export(getRequest()));
         sb.append(org.opencms.gwt.seo.ClientMessages.get().export(getRequest()));
-        String prefetchedData = serializeForJavascript(
+        String prefetchedData = exportDictionary(
+            CmsCntPageData.DICT_NAME,
             I_CmsContainerpageService.class.getMethod("prefetch"),
             getCntPageData());
-        sb.append(CmsCntPageData.DICT_NAME).append("='").append(prefetchedData).append("';");
-        sb.append(CmsContainer.KEY_CONTAINER_DATA).append("= new Array();");
-        return wrapScript(sb).toString();
+        sb.append(prefetchedData);
+        return sb.toString();
     }
 
     /**

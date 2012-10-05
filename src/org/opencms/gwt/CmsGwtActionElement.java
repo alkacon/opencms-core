@@ -29,6 +29,7 @@ package org.opencms.gwt;
 
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -82,6 +83,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     /**
      * Serializes the result of the given method for RPC-prefetching.<p>
      * 
+     * @param name the dictionary name 
      * @param method the method
      * @param data the result to serialize
      * 
@@ -89,10 +91,24 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      * 
      * @throws SerializationException if something goes wrong
      */
-    public static String serialize(Method method, Object data) throws SerializationException {
+    public static String exportDictionary(String name, Method method, Object data) throws SerializationException {
 
-        String result = RPC.encodeResponseForSuccess(method, data, CmsPrefetchSerializationPolicy.instance());
-        return result;
+        return exportDictionary(name, serialize(method, data));
+    }
+
+    /**
+     * Exports a dictionary by the given name as the content attribute of a meta tag.<p>
+     * 
+     * @param name the dictionary name
+     * @param data the data
+     * 
+     * @return the meta tag
+     */
+    public static String exportDictionary(String name, String data) {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("<meta name=\"").append(name).append("\" content=\"").append(data).append("\" >");
+        return sb.toString();
     }
 
     /**
@@ -105,26 +121,25 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      * 
      * @throws SerializationException if something goes wrong
      */
-    public static String serializeForJavascript(Method method, Object data) throws SerializationException {
+    public static String serialize(Method method, Object data) throws SerializationException {
 
-        String result = serialize(method, data);
-        result = escape(result);
+        String result = RPC.encodeResponseForSuccess(method, data, CmsPrefetchSerializationPolicy.instance());
+        result = CmsEncoder.escapeXml(result, true);
         return result;
     }
 
     /**
-     * Escapes the given string for serialization.<p>
+     * Wraps the given buffer with surrounding script tags.<p> 
      * 
-     * @param s the string to escape
+     * @param sb the string buffer to wrap
      * 
-     * @return the escaped string
+     * @return the string buffer
      */
-    private static String escape(String s) {
+    public static StringBuffer wrapScript(StringBuffer sb) {
 
-        // escape back slashes
-        String ret = s.replaceAll("\\\\", "\\\\\\\\");
-        // escape single quotation marks
-        return ret.replaceAll("'", "\\\\'");
+        sb.insert(0, SCRIPT_TAG_OPEN);
+        sb.append(SCRIPT_TAG_CLOSE).append("\n");
+        return sb;
     }
 
     /**
@@ -171,10 +186,13 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             wpLocale = Locale.ENGLISH.getLanguage();
         }
         StringBuffer sb = new StringBuffer();
-        String prefetchedData = serializeForJavascript(I_CmsCoreService.class.getMethod("prefetch"), getCoreData());
-        sb.append(CmsCoreData.DICT_NAME).append("='").append(prefetchedData).append("';");
+        String prefetchedData = exportDictionary(
+            CmsCoreData.DICT_NAME,
+            I_CmsCoreService.class.getMethod("prefetch"),
+            getCoreData());
+        sb.append(prefetchedData);
         sb.append(ClientMessages.get().export(getRequest()));
-        wrapScript(sb);
+
         sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(iconCssClassPrefix)).append(
             "\");\n</style>\n");
         // append the workplace locale information
@@ -232,20 +250,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public Locale getWorkplaceLocale() {
 
         return OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
-    }
-
-    /**
-     * Wraps the given buffer with surrounding script tags.<p> 
-     * 
-     * @param sb the string buffer to wrap
-     * 
-     * @return the string buffer
-     */
-    protected StringBuffer wrapScript(StringBuffer sb) {
-
-        sb.insert(0, SCRIPT_TAG_OPEN);
-        sb.append(SCRIPT_TAG_CLOSE).append("\n");
-        return sb;
     }
 
     /**

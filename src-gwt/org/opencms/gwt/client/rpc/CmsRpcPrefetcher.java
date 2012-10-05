@@ -86,6 +86,13 @@ public final class CmsRpcPrefetcher {
      * @return the variable's value
      */
     private static native String getString(String name) /*-{
-        return $wnd[name];
+        var metas = $wnd.document.getElementsByTagName('META');
+        var i;
+        for (i = 0; i < metas.length; i++) {
+            if (metas[i].getAttribute('NAME') == name) {
+                break;
+            }
+        }
+        return metas[i].getAttribute("CONTENT");
     }-*/;
 }

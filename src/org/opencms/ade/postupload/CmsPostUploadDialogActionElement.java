@@ -72,10 +72,12 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
     public String export() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        String prefetchedData = serialize(I_CmsPostUploadDialogService.class.getMethod("prefetch"), getDialogData());
-        sb.append(CmsPostUploadDialogBean.DICT_NAME).append("='").append(prefetchedData).append("';");
+        String prefetchedData = exportDictionary(
+            CmsPostUploadDialogBean.DICT_NAME,
+            I_CmsPostUploadDialogService.class.getMethod("prefetch"),
+            getDialogData());
+        sb.append(prefetchedData);
         sb.append(ClientMessages.get().export(getRequest()));
-        wrapScript(sb);
         return sb.toString();
     }
 

@@ -108,7 +108,10 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
                 LOG.error(e1.getLocalizedMessage(), e1);
             }
         }
-        return getBundleName().replace('.', '_') + "=" + keys.toString() + ";";
+        StringBuffer sb = new StringBuffer();
+        sb.append(getBundleName().replace('.', '_')).append("=").append(keys.toString()).append(";");
+        CmsGwtActionElement.wrapScript(sb);
+        return sb.toString();
     }
 
     /**

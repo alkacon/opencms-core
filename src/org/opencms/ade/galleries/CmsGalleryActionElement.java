@@ -128,10 +128,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
      */
     public String exportWidget() {
 
-        StringBuffer sb = new StringBuffer();
-        sb.append(ClientMessages.get().export(getRequest()));
-        wrapScript(sb);
-        return sb.toString();
+        return ClientMessages.get().export(getRequest());
     }
 
     /**
@@ -196,8 +193,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
-        sb.append(CmsGalleryDataBean.DICT_NAME).append("='");
-        sb.append(serializeForJavascript(I_CmsGalleryService.class.getMethod(
+        sb.append(exportDictionary(CmsGalleryDataBean.DICT_NAME, I_CmsGalleryService.class.getMethod(
             "getInitialSettings",
             GalleryMode.class,
             String.class,
@@ -205,11 +201,10 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             String.class,
             String.class,
             String.class), data));
-        sb.append("';");
-        sb.append(CmsGallerySearchBean.DICT_NAME).append("='").append(
-            serializeForJavascript(I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class), search));
-        sb.append("';");
-        wrapScript(sb);
+        sb.append(exportDictionary(
+            CmsGallerySearchBean.DICT_NAME,
+            I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class),
+            search));
         return sb.toString();
     }
 

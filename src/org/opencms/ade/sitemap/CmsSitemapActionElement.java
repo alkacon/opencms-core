@@ -72,13 +72,14 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     public String export() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        String prefetchedData = serializeForJavascript(
+        String prefetchedData = exportDictionary(
+            CmsSitemapData.DICT_NAME,
             I_CmsSitemapService.class.getMethod("prefetch", String.class),
             getSitemapData());
-        sb.append(CmsSitemapData.DICT_NAME).append("='").append(prefetchedData).append("';");
+        sb.append(prefetchedData);
         sb.append(ClientMessages.get().export(getRequest()));
         sb.append(org.opencms.gwt.seo.ClientMessages.get().export(getRequest()));
-        return wrapScript(sb).toString();
+        return sb.toString();
     }
 
     /**

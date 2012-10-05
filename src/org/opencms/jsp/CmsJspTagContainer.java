@@ -564,8 +564,7 @@ public class CmsJspTagContainer extends TagSupport {
             }
             String serializedElement = getElementInfo(cms, elementBean);
             result.append("'");
-            String data = CmsEncoder.escapeXml(serializedElement);
-            result.append(" rel='").append(data);
+            result.append(" rel='").append(serializedElement);
             if (isGroupContainer) {
                 result.append("'>");
             } else {

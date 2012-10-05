@@ -63,7 +63,7 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
-        return wrapScript(sb).toString();
+        return sb.toString();
     }
 
     /**
@@ -75,9 +75,11 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
 
         CmsPublishData initData = CmsPublishService.newInstance(getRequest()).getInitData();
-        String prefetchedData = serializeForJavascript(I_CmsPublishService.class.getMethod("getInitData"), initData);
-        sb.append(CmsPublishData.DICT_NAME).append("='").append(prefetchedData).append("';");
-        wrapScript(sb);
+        String prefetchedData = exportDictionary(
+            CmsPublishData.DICT_NAME,
+            I_CmsPublishService.class.getMethod("getInitData"),
+            initData);
+        sb.append(prefetchedData);
         sb.append(super.export());
         sb.append(export());
         sb.append(createNoCacheScript(MODULE_NAME));

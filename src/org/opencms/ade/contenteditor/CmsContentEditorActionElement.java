@@ -31,6 +31,7 @@ import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.ade.galleries.CmsGalleryActionElement;
+import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
@@ -69,10 +70,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        StringBuffer sb = new StringBuffer();
-        sb.append(ClientMessages.get().export(getRequest()));
-        wrapScript(sb);
-        return sb.toString();
+        return ClientMessages.get().export(getRequest());
     }
 
     /**
@@ -85,6 +83,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         sb.append(getPrefetch());
         sb.append(super.export());
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportWidget());
+        sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(export());
         sb.append(createNoCacheScript(MODULE_NAME));
         return sb.toString();
@@ -101,8 +100,6 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
 
         CmsContentDefinition definition = CmsContentService.newInstance(getRequest()).prefetch();
         StringBuffer sb = new StringBuffer();
-        String prefetchedData = serializeForJavascript(I_CmsContentService.class.getMethod("prefetch"), definition);
-        sb.append(I_CmsContentService.DICT_CONTENT_DEFINITION).append("='").append(prefetchedData).append("';\n");
         String backlink = getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(backlink)) {
             backlink = link(CmsFrameset.JSP_WORKPLACE_URI);
@@ -111,6 +108,11 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         }
         sb.append(I_CmsContentService.PARAM_BACKLINK).append("='").append(backlink).append("';\n");
         wrapScript(sb);
+        String prefetchedData = exportDictionary(
+            I_CmsContentService.DICT_CONTENT_DEFINITION,
+            I_CmsContentService.class.getMethod("prefetch"),
+            definition);
+        sb.append(prefetchedData);
         addExternalResourceTags(sb, definition);
         return sb.toString();
     }
