@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.client;
 import com.alkacon.acacia.client.EditorBase;
 import com.alkacon.acacia.client.HighlightingHandler;
 import com.alkacon.acacia.client.I_InlineFormParent;
+import com.alkacon.acacia.client.ValidationContext;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.vie.shared.I_Entity;
@@ -203,6 +204,13 @@ public final class CmsContentEditor {
         m_availableLocales = new HashMap<String, String>();
         m_contentLocales = new HashSet<String>();
         m_deletedEntities = new HashSet<String>();
+        m_editor.addValidationChangeHandler(new ValueChangeHandler<ValidationContext>() {
+
+            public void onValueChange(ValueChangeEvent<ValidationContext> event) {
+
+                handleValidationChange(event.getValue());
+            }
+        });
     }
 
     /**
@@ -490,6 +498,17 @@ public final class CmsContentEditor {
     }
 
     /**
+     * Disables the save buttons with the given message.<p>
+     * 
+     * @param message the disabled message
+     */
+    void disableSave(String message) {
+
+        m_saveButton.disable(message);
+        m_saveExitButton.disable(message);
+    }
+
+    /**
      * Leaves the editor saving the content if necessary.<p>
      */
     void exitWithSaving() {
@@ -498,6 +517,30 @@ public final class CmsContentEditor {
             saveAndExit();
         } else {
             cancelEdit();
+        }
+    }
+
+    /**
+     * Handles validation changes.<p>
+     * 
+     * @param validationContext the changed validation context
+     */
+    void handleValidationChange(ValidationContext validationContext) {
+
+        if (validationContext.hasValidationErrors()) {
+            String locales = "";
+            for (String id : validationContext.getInvalidEntityIds()) {
+                if (locales.length() > 0) {
+                    locales += ", ";
+                }
+                String locale = CmsContentDefinition.getLocaleFromId(id);
+                if (m_availableLocales.containsKey(locale)) {
+                    locales += m_availableLocales.get(locale);
+                }
+            }
+            disableSave(Messages.get().key(Messages.GUI_TOOLBAR_VALIDATION_ERRORS_1, locales));
+        } else if (!m_changedEntityIds.isEmpty()) {
+            enableSave();
         }
     }
 
@@ -728,8 +771,7 @@ public final class CmsContentEditor {
 
         m_changedEntityIds.clear();
         m_deletedEntities.clear();
-        m_saveButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
-        m_saveExitButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
+        disableSave(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
     }
 
     /**
@@ -958,7 +1000,6 @@ public final class CmsContentEditor {
                 deferreSaveAndExit();
             }
         });
-        m_saveExitButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
         m_toolbar.addLeft(m_saveExitButton);
         m_saveButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0),
@@ -970,10 +1011,9 @@ public final class CmsContentEditor {
                 deferreSave();
             }
         });
-        m_saveButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
         m_saveButton.setVisible(false);
         m_toolbar.addLeft(m_saveButton);
-
+        disableSave(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
         m_openFormButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_OPEN_FORM_0),
             I_CmsButton.ButtonData.EDIT.getIconClass());

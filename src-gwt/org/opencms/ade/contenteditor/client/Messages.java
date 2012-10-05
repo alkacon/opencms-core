@@ -145,6 +145,9 @@ public final class Messages {
     public static final String GUI_TOOLBAR_SAVE_AND_EXIT_0 = "GUI_TOOLBAR_SAVE_AND_EXIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_VALIDATION_ERRORS_1 = "GUI_TOOLBAR_VALIDATION_ERRORS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ADD_0 = "GUI_VIEW_ADD_0"; //Acacia message: Add
 
     /** Message constant for key in the resource bundle. */
