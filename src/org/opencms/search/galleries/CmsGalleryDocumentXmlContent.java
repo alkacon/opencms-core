@@ -31,8 +31,12 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.I_CmsSearchDocument;
@@ -48,6 +52,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -158,10 +163,16 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                                             // if field is not title, it must be description
                                             fieldName = I_CmsSearchField.FIELD_DESCRIPTION;
                                         }
+                                        List<Locale> fieldTargetLocales = getTargetLocalesForField(
+                                            xmlContent,
+                                            fieldName,
+                                            locale);
                                         // append language individual property field
-                                        items.put(
-                                            A_CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale),
-                                            extracted);
+                                        for (Locale targetLocale : fieldTargetLocales) {
+                                            items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
+                                                fieldName,
+                                                targetLocale), extracted);
+                                        }
                                     }
                                 }
                             }
@@ -175,7 +186,9 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                         content.toString());
                 }
                 // store the locales
-                items.put(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString());
+                items.put(
+                    I_CmsSearchField.FIELD_RESOURCE_LOCALES,
+                    CmsStringUtil.listAsString(getLocalesToStore(xmlContent), " "));
             }
 
             // return the extraction result
@@ -196,5 +209,60 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     public boolean isLocaleDependend() {
 
         return false;
+    }
+
+    /**
+     * Gets the locales which should be stored in the locale field of the document for the given content.<p>
+     * 
+     * @param content the XML content 
+     * 
+     * @return the list of locales for the locale field 
+     */
+    protected List<Locale> getLocalesToStore(A_CmsXmlDocument content) {
+
+        if (isGroup(content)) {
+            return OpenCms.getLocaleManager().getAvailableLocales();
+        } else {
+            return content.getLocales();
+        }
+    }
+
+    /**
+     * Returns the locales which the given field should be written to in the document.
+     * 
+     * @param xmlContent the XML content 
+     * @param fieldName the field name 
+     * @param sourceLocale the source locale
+     * 
+     * @return the list of locales to which the field should be written 
+     */
+    protected List<Locale> getTargetLocalesForField(A_CmsXmlDocument xmlContent, String fieldName, Locale sourceLocale) {
+
+        if (isGroup(xmlContent)) {
+            return OpenCms.getLocaleManager().getAvailableLocales();
+        } else {
+            return Collections.singletonList(sourceLocale);
+        }
+    }
+
+    /**
+     * Helper method to check whether the content is an element group.<p>
+     * 
+     * @param content the content to check 
+     * 
+     * @return true if the content is an element group 
+     */
+    protected boolean isGroup(A_CmsXmlDocument content) {
+
+        try {
+            int typeId = content.getFile().getTypeId();
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeId);
+            String typeName = type.getTypeName();
+            return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(typeName)
+                || CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME.equals(typeName);
+        } catch (CmsLoaderException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return false;
+        }
     }
 }
