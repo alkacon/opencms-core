@@ -1793,6 +1793,15 @@ public final class OpenCmsCore {
                         Messages.get().getBundle().key(Messages.LOG_ERROR_RESOURCE_SHUTDOWN_1, e.getMessage()),
                         e);
                 }
+
+                try {
+                    if (m_repositoryManager != null) {
+                        m_repositoryManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(e.getLocalizedMessage(), e);
+                }
+
                 try {
                     // has to be stopped before the security manager, since this thread uses it
                     if (m_threadStore != null) {

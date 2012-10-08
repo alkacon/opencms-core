@@ -31,9 +31,9 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -139,12 +139,16 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String)
      */
     @Override
-    public boolean lockResource(CmsObject cms, String resourcename) throws CmsException {
+    public boolean lockResource(CmsObject cms, String resourcename, boolean temporary) throws CmsException {
 
         CmsResource res = getResource(cms, resourcename);
         if (res != null) {
-
-            cms.lockResource(cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+            String path = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+            if (temporary) {
+                cms.lockResourceTemporary(path);
+            } else {
+                cms.lockResource(path);
+            }
             return true;
         }
 

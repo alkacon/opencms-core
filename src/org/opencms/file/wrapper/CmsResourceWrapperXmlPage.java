@@ -458,11 +458,16 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String)
      */
     @Override
-    public boolean lockResource(CmsObject cms, String resourcename) throws CmsException {
+    public boolean lockResource(CmsObject cms, String resourcename, boolean temporary) throws CmsException {
 
         CmsResource res = findXmlPage(cms, resourcename);
         if (res != null) {
-            cms.lockResource(cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+            String path = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+            if (temporary) {
+                cms.lockResourceTemporary(path);
+            } else {
+                cms.lockResource(path);
+            }
             return true;
         }
 

@@ -2021,7 +2021,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
-
+            // store user info values which may have been modified by the login code 
+            internalWriteUserInfos(dbc, user.getId(), user.getAdditionalInfo());
         } else {
 
             try {

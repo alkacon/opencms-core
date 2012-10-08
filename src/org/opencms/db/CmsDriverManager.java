@@ -5501,6 +5501,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         newUser.setLastlogin(System.currentTimeMillis());
         dbc.setAttribute(ATTRIBUTE_LOGIN, newUser.getName());
         // write the changed user object back to the user driver
+        Map<String, Object> additionalInfosForRepositories = OpenCms.getRepositoryManager().getAdditionalInfoForLogin(
+            newUser.getName(),
+            password);
+        newUser.getAdditionalInfo().putAll(additionalInfosForRepositories);
         getUserDriver(dbc).writeUser(dbc, newUser);
 
         // update cache
