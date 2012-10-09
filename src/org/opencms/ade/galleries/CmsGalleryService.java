@@ -52,6 +52,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavBuilder.Visibility;
@@ -668,11 +669,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setType(sResult.getResourceType());
         // structured id
         bean.setClientId(sResult.getStructureId());
-
         CmsResource resultResource = cms.readResource(
             new CmsUUID(sResult.getStructureId()),
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-
+        CmsVfsService.addLockInfo(cms, resultResource, bean);
         String permalink = CmsStringUtil.joinPaths(
             OpenCms.getSystemInfo().getOpenCmsContext(),
             CmsPermalinkResourceHandler.PERMALINK_HANDLER,

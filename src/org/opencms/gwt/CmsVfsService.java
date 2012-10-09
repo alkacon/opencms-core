@@ -231,6 +231,24 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     throws CmsLoaderException, CmsException {
 
         CmsListInfoBean result = getPageInfo(cms, resource);
+        addLockInfo(cms, resource, result);
+        return result;
+    }
+
+    /**
+     * Adds the lock state information to the resource info bean.<p>
+     * 
+     * @param cms the CMS context
+     * @param resource the resource to get the page info for
+     * @param resourceInfo the resource info to add the lock state to
+     * 
+     * @return the resource info bean
+     * 
+     * @throws CmsException if something else goes wrong 
+     */
+    public static CmsListInfoBean addLockInfo(CmsObject cms, CmsResource resource, CmsListInfoBean resourceInfo)
+    throws CmsException {
+
         CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
         CmsLock lock = resourceUtil.getLock();
         LockIcon icon = LockIcon.NONE;
@@ -256,16 +274,16 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         if ((lock.getUserId() != null) && !lock.getUserId().isNullUUID()) {
             CmsUser lockOwner = cms.readUser(lock.getUserId());
             iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
-            result.addAdditionalInfo(
+            resourceInfo.addAdditionalInfo(
                 Messages.get().getBundle().key(Messages.GUI_LOCKED_OWNER_0),
                 lockOwner.getFullName());
         }
-        result.setLockIcon(icon);
-        result.setLockIconTitle(iconTitle);
+        resourceInfo.setLockIcon(icon);
+        resourceInfo.setLockIconTitle(iconTitle);
         if (icon != LockIcon.NONE) {
-            result.setTitle(result.getTitle() + " (" + iconTitle + ")");
+            resourceInfo.setTitle(resourceInfo.getTitle() + " (" + iconTitle + ")");
         }
-        return result;
+        return resourceInfo;
     }
 
     /**

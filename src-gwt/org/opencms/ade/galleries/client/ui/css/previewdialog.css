@@ -9,6 +9,7 @@ div.previewDialog {
 	bottom: 0px;
 	display: block;
 	background-color: value("constants.css.backgroundColorDialog");
+	z-index: value("constants.css.zIndexInline");
 }
 .previewDialog * {
 	margin: 0;
