@@ -926,6 +926,34 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Returns the path elements for the given content value.<p>
+     * 
+     * @param content the XML content
+     * @param value the content value
+     * 
+     * @return the path elements
+     */
+    private String[] getPathElements(CmsXmlContent content, I_CmsXmlContentValue value) {
+
+        List<String> pathElements = new ArrayList<String>();
+        String[] paths = value.getPath().split("/");
+        String path = "";
+        for (int i = 0; i < paths.length; i++) {
+            path += paths[i];
+            I_CmsXmlContentValue ancestor = content.getValue(path, value.getLocale());
+            int valueIndex = ancestor.getXmlIndex();
+            if (ancestor.isChoiceOption()) {
+                Element parent = ancestor.getElement().getParent();
+                valueIndex = parent.indexOf(ancestor.getElement());
+            }
+            String pathElement = getAttributeName(ancestor.getName(), getTypeUri(ancestor.getContentDefinition()));
+            pathElements.add(pathElement + "[" + valueIndex + "]");
+            path += "/";
+        }
+        return pathElements.toArray(new String[pathElements.size()]);
+    }
+
+    /**
      * Returns the workplace locale.<p>
      * 
      * @param cms the current OpenCms context 
@@ -1080,31 +1108,27 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     private ValidationResult validateContent(CmsObject cms, CmsUUID structureId, CmsXmlContent content) {
 
         CmsXmlContentErrorHandler errorHandler = content.validate(cms);
-        Map<String, Map<String, String>> errorsByEntity = new HashMap<String, Map<String, String>>();
+        Map<String, Map<String[], String>> errorsByEntity = new HashMap<String, Map<String[], String>>();
         if (errorHandler.hasErrors()) {
 
             for (Entry<Locale, Map<String, String>> localeEntry : errorHandler.getErrors().entrySet()) {
-                Map<String, String> errors = new HashMap<String, String>();
+                Map<String[], String> errors = new HashMap<String[], String>();
                 for (Entry<String, String> error : localeEntry.getValue().entrySet()) {
                     I_CmsXmlContentValue value = content.getValue(error.getKey(), localeEntry.getKey());
-                    String typeUri = getTypeUri(value.getContentDefinition());
-                    String attributeName = getAttributeName(value.getName(), typeUri);
-                    errors.put(attributeName + "[" + value.getXmlIndex() + "]", error.getValue());
+                    errors.put(getPathElements(content, value), error.getValue());
                 }
                 errorsByEntity.put(
                     CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
                     errors);
             }
         }
-        Map<String, Map<String, String>> warningsByEntity = new HashMap<String, Map<String, String>>();
+        Map<String, Map<String[], String>> warningsByEntity = new HashMap<String, Map<String[], String>>();
         if (errorHandler.hasWarnings()) {
             for (Entry<Locale, Map<String, String>> localeEntry : errorHandler.getWarnings().entrySet()) {
-                Map<String, String> warnings = new HashMap<String, String>();
+                Map<String[], String> warnings = new HashMap<String[], String>();
                 for (Entry<String, String> warning : localeEntry.getValue().entrySet()) {
                     I_CmsXmlContentValue value = content.getValue(warning.getKey(), localeEntry.getKey());
-                    String typeUri = getTypeUri(value.getContentDefinition());
-                    String attributeName = getAttributeName(value.getName(), typeUri);
-                    warnings.put(attributeName + "[" + value.getXmlIndex() + "]", warning.getValue());
+                    warnings.put(getPathElements(content, value), warning.getValue());
                 }
                 warningsByEntity.put(
                     CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
