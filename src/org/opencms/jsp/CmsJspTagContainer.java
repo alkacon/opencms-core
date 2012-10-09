@@ -692,7 +692,7 @@ public class CmsJspTagContainer extends TagSupport {
         CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(cms);
         try {
             parser.parse(resource);
-            CmsInheritanceReference ref = parser.getReferences().get(cms.getRequestContext().getLocale());
+            CmsInheritanceReference ref = parser.getReference(cms.getRequestContext().getLocale());
             if (ref != null) {
                 String name = ref.getName();
                 CmsADEManager adeManager = OpenCms.getADEManager();

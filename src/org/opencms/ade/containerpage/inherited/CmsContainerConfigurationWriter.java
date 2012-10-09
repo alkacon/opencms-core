@@ -136,14 +136,15 @@ public class CmsContainerConfigurationWriter {
         // make sure the internal flag is set
         configFile.setFlags(configFile.getFlags() | CmsResource.FLAG_INTERNAL);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-        removeExistingEntry(cms, content, cms.getRequestContext().getLocale(), name);
-        CmsContainerConfiguration configuration = createConfigurationBean(newOrdering, elements, keys);
-
-        Locale locale = cms.getRequestContext().getLocale();
-        if (!content.hasLocale(locale)) {
-            content.addLocale(cms, locale);
+        for (Locale localeToRemoveEntryFrom : content.getLocales()) {
+            removeExistingEntry(cms, content, localeToRemoveEntryFrom, name);
         }
-        Element parentElement = content.getLocaleNode(locale);
+        CmsContainerConfiguration configuration = createConfigurationBean(newOrdering, elements, keys);
+        Locale saveLocale = Locale.ENGLISH;
+        if (!content.hasLocale(saveLocale)) {
+            content.addLocale(cms, saveLocale);
+        }
+        Element parentElement = content.getLocaleNode(saveLocale);
         serializeSingleConfiguration(cms, name, configuration, parentElement);
         byte[] contentBytes = content.marshal();
         configFile.setContents(contentBytes);

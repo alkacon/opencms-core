@@ -42,7 +42,6 @@ import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -73,13 +72,20 @@ public class CmsInheritanceReferenceParser {
     }
 
     /**
-     * Gets the parsed references for different locales.<p>
+     * Gets the parsed reference for a locale.<p>
      * 
-     * @return a map containing the parsed references with the locales as keys 
+     * Gets the reference object for the locale, and uses the reference for the English language as a fallback.<p>
+     * 
+     * @param  locale the locale to get the reference for 
+     * @return the reference for the locale 
      */
-    public Map<Locale, CmsInheritanceReference> getReferences() {
+    public CmsInheritanceReference getReference(Locale locale) {
 
-        return Collections.unmodifiableMap(m_references);
+        CmsInheritanceReference ref = m_references.get(locale);
+        if (ref == null) {
+            ref = m_references.get(Locale.ENGLISH);
+        }
+        return ref;
     }
 
     /**

@@ -618,8 +618,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> saveResult = internalSaveGroupContainer(
                 cms,
                 pageStructureId,
-                groupContainer,
-                locale);
+                groupContainer);
             removedElements = saveResult.getSecond();
         } catch (Throwable e) {
             error(e);
@@ -657,7 +656,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 referenceResource = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
             }
             ensureLock(referenceResource);
-            saveInheritanceGroup(referenceResource, inheritanceContainer, requestedLocale);
+            saveInheritanceGroup(referenceResource, inheritanceContainer);
             tryUnlock(referenceResource);
             List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
             for (CmsContainerElement clientElement : inheritanceContainer.getElements()) {
@@ -1101,7 +1100,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         cms.getRequestContext().setLocale(locale);
         CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(cms);
         parser.parse(resource);
-        CmsInheritanceReference ref = parser.getReferences().get(locale);
+        CmsInheritanceReference ref = parser.getReference(locale);
         if (ref == null) {
             // new inheritance reference, return an empty list
             return Collections.emptyList();
@@ -1276,7 +1275,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param cms the cms context 
      * @param pageStructureId the container page structure id 
      * @param groupContainer the group container to save 
-     * @param localeStr the locale for which the group container should be saved 
      * 
      * @return the container element representing the group container
      *  
@@ -1286,8 +1284,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> internalSaveGroupContainer(
         CmsObject cms,
         CmsUUID pageStructureId,
-        CmsGroupContainer groupContainer,
-        String localeStr) throws CmsException, CmsXmlException {
+        CmsGroupContainer groupContainer) throws CmsException, CmsXmlException {
 
         ensureSession();
         CmsResource pageResource = getCmsObject().readResource(pageStructureId, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -1309,13 +1306,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsGroupContainerBean groupContainerBean = getGroupContainerBean(
             groupContainer,
             pageResource.getStructureId(),
-            localeStr);
+            Locale.ENGLISH.toString());
 
         cms.lockResourceTemporary(groupContainerResource);
         CmsFile groupContainerFile = cms.readFile(groupContainerResource);
-        Locale locale = CmsLocaleManager.getLocale(localeStr);
+        Locale locale = Locale.ENGLISH;
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, groupContainerFile);
         Set<CmsUUID> oldElementIds = getGroupElementIds(xmlGroupContainer, locale);
+        xmlGroupContainer.clearLocales();
         xmlGroupContainer.save(cms, groupContainerBean, locale);
         cms.unlockResource(groupContainerResource);
         Set<CmsUUID> newElementIds = getGroupElementIds(xmlGroupContainer, locale);
@@ -1339,19 +1337,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * 
      * @param resource the inheritance group resource
      * @param inheritanceContainer the inherited group container data
-     * @param locale the requested locale
      * 
      * @throws CmsException if something goes wrong
      */
-    private void saveInheritanceGroup(CmsResource resource, CmsInheritanceContainer inheritanceContainer, Locale locale)
+    private void saveInheritanceGroup(CmsResource resource, CmsInheritanceContainer inheritanceContainer)
     throws CmsException {
 
         CmsObject cms = getCmsObject();
         CmsFile file = cms.readFile(resource);
         CmsXmlContent document = CmsXmlContentFactory.unmarshal(cms, file);
-        if (document.hasLocale(locale)) {
-            document.removeLocale(locale);
+        for (Locale docLocale : document.getLocales()) {
+            document.removeLocale(docLocale);
         }
+        Locale locale = Locale.ENGLISH;
         document.addLocale(cms, locale);
         document.getValue("Title", locale).setStringValue(cms, inheritanceContainer.getTitle());
         document.getValue("Description", locale).setStringValue(cms, inheritanceContainer.getDescription());

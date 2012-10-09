@@ -196,6 +196,18 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
     }
 
     /**
+     * Removes all locales from the element group XML.<p>
+     * 
+     * @throws CmsXmlException if something goes wrong 
+     */
+    public void clearLocales() throws CmsXmlException {
+
+        for (Locale locale : getLocales()) {
+            removeLocale(locale);
+        }
+    }
+
+    /**
      * Returns the group container bean for the given locale.<p>
      *
      * @param cms the cms context
@@ -207,20 +219,23 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
         Locale theLocale = locale;
         if (!m_groupContainers.containsKey(theLocale)) {
-            LOG.warn(Messages.get().container(
+            LOG.info(Messages.get().container(
             // TODO: change message
                 Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
                 cms.getSitePath(getFile()),
                 theLocale.toString()).key());
-            theLocale = OpenCms.getLocaleManager().getDefaultLocales(cms, getFile()).get(0);
+            theLocale = Locale.ENGLISH;
             if (!m_groupContainers.containsKey(theLocale)) {
-                // locale not found!!
-                LOG.error(Messages.get().container(
-                // TODO: change message
-                    Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
-                    cms.getSitePath(getFile()),
-                    theLocale).key());
-                return null;
+                theLocale = OpenCms.getLocaleManager().getDefaultLocales(cms, getFile()).get(0);
+                if (!m_groupContainers.containsKey(theLocale)) {
+                    // locale not found!!
+                    LOG.error(Messages.get().container(
+                    // TODO: change message
+                        Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
+                        cms.getSitePath(getFile()),
+                        theLocale).key());
+                    return null;
+                }
             }
         }
         return m_groupContainers.get(theLocale);
@@ -255,6 +270,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
         if (hasLocale(locale)) {
             removeLocale(locale);
         }
+
         addLocale(cms, locale);
 
         // add the nodes to the raw XML structure

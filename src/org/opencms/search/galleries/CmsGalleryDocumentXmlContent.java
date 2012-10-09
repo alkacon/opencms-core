@@ -238,7 +238,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
      */
     protected List<Locale> getTargetLocalesForField(A_CmsXmlDocument xmlContent, String fieldName, Locale sourceLocale) {
 
-        if (isGroup(xmlContent)) {
+        if (isGroup(xmlContent) && sourceLocale.equals(Locale.ENGLISH)) {
             return OpenCms.getLocaleManager().getAvailableLocales();
         } else {
             return Collections.singletonList(sourceLocale);
