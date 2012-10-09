@@ -31,6 +31,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.util.CmsUUID;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,8 +57,20 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
     /** The permalink handler path. */
     public static final String PERMALINK_HANDLER = "/permalink/";
 
+    /** The pattern used to match permalink uris and extract the structure id. */
+    private Pattern m_uriPattern;
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPermalinkResourceHandler.class);
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsPermalinkResourceHandler() {
+
+        String uriRegex = PERMALINK_HANDLER + "(" + CmsUUID.UUID_REGEX + ")(?:\\.[a-zA-Z0-9]*)?$";
+        m_uriPattern = Pattern.compile(uriRegex);
+    }
 
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -66,20 +82,14 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
         if (resource == null) {
             String uri = cms.getRequestContext().getUri();
             // check if the resource starts with the PERMALINK_HANDLER
-            if (uri.startsWith(PERMALINK_HANDLER)) {
+            Matcher matcher = m_uriPattern.matcher(uri);
+            if (matcher.find()) {
                 // get the id of the real resource
-                String id = uri.substring(PERMALINK_HANDLER.length());
+                String id = matcher.group(1);
                 String storedSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
                     // we now must switch to the root site to read the resource
                     cms.getRequestContext().setSiteRoot("/");
-
-                    // get rid of the file extension if needed
-                    int pos = id.indexOf('.');
-                    if (pos > -1) {
-                        id = id.substring(0, id.indexOf('.'));
-                    }
-
                     // read the resource
                     resource = cms.readDefaultFile(id);
                 } catch (CmsPermissionViolationException e) {
