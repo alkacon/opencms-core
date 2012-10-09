@@ -89,6 +89,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -222,6 +223,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** Indicates if the user management icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
 
+    /** Exclude patterns for synchronization */
+    private ArrayList<Pattern> m_synchronizeExcludePatterns;
+
     /** The temporary file project used by the editors. */
     private CmsProject m_tempFileProject;
 
@@ -275,6 +279,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_preEditorConditionDefinitions = new ArrayList<I_CmsPreEditorActionDefinition>();
         m_editorCssHandlers = new ArrayList<I_CmsEditorCssHandler>();
         m_customFoot = new CmsWorkplaceCustomFoot();
+        m_synchronizeExcludePatterns = new ArrayList<Pattern>();
 
         // important to set this to null to avoid unnecessary overhead during configuration phase
         m_explorerTypeSettings = null;
@@ -362,6 +367,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 Messages.get().getBundle().key(Messages.LOG_INVALID_EDITOR_CSSHANDLER_1, editorCssHandlerClassName),
                 e);
         }
+    }
+
+    public void addSynchronizeExcludePattern(String pattern){
+        m_synchronizeExcludePatterns.add(Pattern.compile(pattern));
     }
 
     /** 
@@ -1098,6 +1107,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public List<I_CmsPreEditorActionDefinition> getPreEditorConditionDefinitions() {
 
         return m_preEditorConditionDefinitions;
+    }
+
+    /**
+     * Returns Regex patterns that should be excluded from synchronization
+     */
+    public ArrayList<Pattern> getSynchronizeExcludePatterns() {
+        return m_synchronizeExcludePatterns;
     }
 
     /**
