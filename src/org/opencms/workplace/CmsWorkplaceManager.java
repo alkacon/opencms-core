@@ -90,6 +90,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -369,10 +370,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
     }
 
-    public void addSynchronizeExcludePattern(String pattern){
-        m_synchronizeExcludePatterns.add(Pattern.compile(pattern));
-    }
-
     /** 
      * Adds an explorer type setting object to the list of type settings.<p>
      * 
@@ -515,6 +512,22 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     Messages.LOG_INVALID_EDITOR_PRE_ACTION_1,
                     preEditorConditionDefinitionClassName),
                 e);
+        }
+    }
+
+    /**
+     * Adds a pattern to be excluded in VFS synchronization
+     * @param pattern a java regex to applied on the file name
+     */
+    public void addSynchronizeExcludePattern(String pattern){
+        try{
+            m_synchronizeExcludePatterns.add(Pattern.compile(pattern));
+        } catch (PatternSyntaxException e){
+            LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_INVALID_SYNCHRONIZE_EXCLUDE_PATTERN_1,
+                        pattern),
+                    e);
         }
     }
 

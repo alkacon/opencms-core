@@ -429,6 +429,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_INVALID_EDITOR_PRE_ACTION_1 = "LOG_INVALID_EDITOR_PRE_ACTION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_INVALID_SYNCHRONIZE_EXCLUDE_PATTERN_1 = "LOG_INVALID_SYNCHRONIZE_EXCLUDE_PATTERN_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_NO_STARTUP_PROJECT_2 = "LOG_LOGIN_NO_STARTUP_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
@@ -472,6 +475,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /**The part of  state constant. */
     private static final String STATE_PREFIX = "GUI_EXPLORER_STATE";
+
 
     /**
      * Hides the public constructor for this utility class.<p>
