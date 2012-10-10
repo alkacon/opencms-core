@@ -29,7 +29,6 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
-import org.opencms.ade.contenteditor.client.CmsEditorBase;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.I_CmsEditableData;
@@ -110,7 +109,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     onClose(element.getSitePath(), false);
                 }
             };
-            if (inline && CmsEditorBase.hasEditable(element.getElement())) {
+            if (inline && CmsContentEditor.hasEditable(element.getElement())) {
                 CmsContentEditor.getInstance().openInlineEditor(
                     new CmsUUID(CmsContainerpageController.getServerId(getCurrentElementId())),
                     CmsCoreProvider.get().getLocale(),

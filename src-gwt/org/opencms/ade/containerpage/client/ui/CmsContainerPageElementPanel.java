@@ -33,7 +33,7 @@ import com.alkacon.acacia.client.widgets.I_EditWidget;
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
-import org.opencms.ade.contenteditor.client.CmsEditorBase;
+import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
@@ -369,7 +369,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      */
     public void initInlinetEditor(final CmsContainerpageController controller) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_noEditReason) && CmsEditorBase.setEditable(getElement(), true)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_noEditReason) && CmsContentEditor.setEditable(getElement(), true)) {
             if (m_editorClickHandlerRegistration != null) {
                 m_editorClickHandlerRegistration.removeHandler();
             }
@@ -459,7 +459,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      */
     public void removeInlineEditor() {
 
-        CmsEditorBase.setEditable(getElement(), false);
+        CmsContentEditor.setEditable(getElement(), false);
         removeEditorHandler();
     }
 
