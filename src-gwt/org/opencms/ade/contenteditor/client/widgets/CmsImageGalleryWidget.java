@@ -40,8 +40,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- *
- * */
+ * The VFS image gallery widget.<p>
+ **/
 public class CmsImageGalleryWidget extends Composite implements I_EditWidget, HasResizeHandlers {
 
     /** Value of the activation. */
