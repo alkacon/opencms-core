@@ -129,6 +129,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         } else if (CmsTextBox.WIDGET_TYPE.equals(key)) {
             CmsTextBox textBox = new CmsTextBox();
             textBox.setErrorMessageWidth("345px");
+            textBox.setTriggerChangeOnKeyPress(true);
             // we need this because the tab containing the text box may not be visible 
             // at the time the error message is set, so measuring the field's size would
             // yield an invalid value  
