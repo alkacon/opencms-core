@@ -37,6 +37,7 @@ import org.opencms.setup.xml.CmsXmlUpdateAction;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible;
 import org.opencms.workplace.explorer.menu.CmsMirContainerpageInvisible;
+import org.opencms.workplace.explorer.menu.CmsMirEditProviderActive;
 import org.opencms.workplace.explorer.menu.CmsMirSitemapActive;
 import org.opencms.workplace.explorer.menu.CmsMirSitemapInvisible;
 
@@ -279,7 +280,7 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
                     Element elem = (Element)doc.selectSingleNode(xpath);
                     String[] classNames = new String[] {
-                        CmsMirSitemapActive.class.getName(),
+                        CmsMirEditProviderActive.class.getName(),
                         CmsMirAlwaysInvisible.class.getName()};
                     if (elem == null) {
                         for (String classname : classNames) {
