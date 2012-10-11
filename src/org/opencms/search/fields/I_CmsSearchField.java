@@ -101,6 +101,9 @@ public interface I_CmsSearchField extends Serializable {
     /** Name of the field that usually contains the value of the "Keywords" property of the document (optional). */
     String FIELD_KEYWORDS = "keywords";
 
+    /** The field name for the link. */
+    String FIELD_LINK = "link";
+
     /** 
      * Name of the field that usually combines all document "meta" information, 
      * that is the values of the "Title", "Keywords" and "Description" properties (optional).
