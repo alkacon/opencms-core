@@ -103,6 +103,9 @@ public final class CmsDocumentDependency {
     private static final String JSON_LANGUAGES = "languages";
 
     /** Field name in JSON. */
+    private static final String JSON_LOCALE = "locale";
+
+    /** Field name in JSON. */
     private static final String JSON_MAIN = "main";
 
     /** Field name in JSON. */
@@ -805,6 +808,9 @@ public final class CmsDocumentDependency {
 
             // date created
             jsonAttachment.put(JSON_DATE_CREATED, res.getDateCreated());
+
+            // date created
+            jsonAttachment.put(JSON_LOCALE, m_locale);
 
             // date modified
             jsonAttachment.put(JSON_DATE_MODIFIED, res.getDateLastModified());
