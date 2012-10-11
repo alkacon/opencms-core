@@ -39,7 +39,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
 
     /** Cropping dialog CSS. */
-    public interface I_CmsCroppingDialogCss extends CssResource {
+    interface I_CmsCroppingDialogCss extends CssResource {
 
         /** Access method.<p>
          * 
@@ -239,6 +239,52 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String tabParamsPanel();
     }
 
+    /** The base gallery field CSS. */
+    @Shared
+    interface I_CmsGalleryFieldBaseCss extends CssResource {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fieldBox();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String galleryField();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String resourceInfo();
+    }
+
+    /** The gallery field CSS. */
+    @Shared
+    interface I_CmsGalleryFieldCss extends I_CmsGalleryFieldBaseCss {
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String fader();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String inputContainer();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String opener();
+    }
+
     /** The result item CSS. */
     @Shared
     interface I_CmsGalleryResultItemCss extends I_CmsListItemWidgetCss {
@@ -269,7 +315,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     }
 
     /** The advanced image editor form CSS. */
-    public interface I_CmsImageAdvancedFormCss extends CssResource {
+    interface I_CmsImageAdvancedFormCss extends CssResource {
 
         /** Access method.<p>
          * 
@@ -297,7 +343,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     }
 
     /** The image editor form CSS. */
-    public interface I_CmsImageEditorFormCss extends CssResource {
+    interface I_CmsImageEditorFormCss extends CssResource {
 
         /** Access method.<p>
          * 
@@ -509,6 +555,14 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      */
     @Source("gallerydialog.css")
     I_CmsGalleryDialogCss galleryDialogCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the gallery field CSS
+     */
+    @Source("galleryField.css")
+    I_CmsGalleryFieldCss galleryFieldCss();
 
     /**
      * Access method.<p>

@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -69,6 +70,18 @@ public interface I_CmsGalleryService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) throws CmsRpcException;
+
+    /**
+     * Returns the resource info for a single resource.<p>
+     * 
+     * @param path the resource path
+     * @param locale the content locale
+     * 
+     * @return the resource info
+     * 
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsResultItemBean getInfoForResource(String path, String locale) throws CmsRpcException;
 
     /**
      * Returns the initial data for the given gallery mode.<p>

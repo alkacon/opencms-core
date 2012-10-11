@@ -40,7 +40,7 @@ import org.opencms.gwt.client.I_CmsHasInit;
 import com.google.gwt.user.client.Element;
 
 /**
- * Factory to generate basic input widget.<p>
+ * File widget factory.<p>
  */
 public class CmsVfsFileWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
 

@@ -1,49 +1,20 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
-	xmlns:cms="urn:import:org.opencms.gwt.client.ui" 
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
 >
-	<ui:with field="layout" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="input" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
 	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-<ui:style>
-	div>div.fader{
-		right: 20px;
-		cursor: text;
-		top: 0px;
-	}
-	.galleryField{
-		border: 1px solid #bbbbbb;
-		position:relative;
-	}
-	div.galleryField input{
-		border: none;
-	    box-shadow: none;
-	    outline: none;
-	    color: #222222;
-	    height: 18px;
-	    padding: 0;
-	    width:100%;
-	    margin:0px;
-	}
-	div.inputContainer{
-		margin: 0px 20px 0px 4px;
-		padding: 0px;
-	}
-	div.galleryField input:focus{
-		box-shadow: none;
-	    outline: none;
-	}
-	.opener{
-		position: absolute;
-		right: 3px;
-		top: 1px;
-	}
-</ui:style>
-<g:HTMLPanel styleName="{style.galleryField}" addStyleNames="{main.generalCss.cornerAll}">
-	<div class="{style.inputContainer}">
-		<g:TextBox ui:field="m_textbox" />
+	<ui:with field="gallery" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
+<g:HTMLPanel styleName="{gallery.galleryFieldCss.galleryField}">
+	<div ui:field="m_fieldBox" class="{gallery.galleryFieldCss.fieldBox} {main.generalCss.cornerAll}">
+		<div class="{gallery.galleryFieldCss.inputContainer}">
+			<input:CmsSimpleTextBox ui:field="m_textbox" />
+		</div>
+		<cms:CmsPushButton ui:field="m_opener" addStyleNames="{gallery.galleryFieldCss.opener}"/>
+		<g:Label ui:field="m_fader" styleName="{input.inputCss.vfsInputBoxFaider}" addStyleNames="{gallery.galleryFieldCss.fader}" />
 	</div>
-	<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.opener}"/>
-	<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.fader}" />
+	<g:FlowPanel ui:field="m_resourceInfoPanel" styleName="{gallery.galleryFieldCss.resourceInfo}" />
 </g:HTMLPanel>
 </ui:UiBinder>

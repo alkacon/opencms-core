@@ -47,10 +47,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DOWNLOAD_GALLERY_TITLE_0 = "GUI_DOWNLOAD_GALLERY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXTERNAL_LINK_0 = "GUI_EXTERNAL_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_TITLE_0 = "GUI_GALLERIES_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_GALLERY_TITLE_0 = "GUI_IMAGE_GALLERY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_NOT_FOUND_0 = "GUI_RESOURCE_NOT_FOUND_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESULT_LABEL_DATE_0 = "GUI_RESULT_LABEL_DATE_0";

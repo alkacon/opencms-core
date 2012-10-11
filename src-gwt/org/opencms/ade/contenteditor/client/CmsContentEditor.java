@@ -210,6 +210,7 @@ public final class CmsContentEditor extends EditorBase {
         setDictionary(Messages.get().getDictionary());
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.widgetCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.galleryWidgetsCss().ensureInjected();
         m_changedEntityIds = new HashSet<String>();
         m_registeredEntities = new HashSet<String>();
         m_availableLocales = new HashMap<String, String>();

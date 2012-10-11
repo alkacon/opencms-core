@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.shared.rpc;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
@@ -64,6 +65,15 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the callback
      */
     void getGalleries(List<String> resourceTypes, AsyncCallback<List<CmsGalleryFolderBean>> callback);
+
+    /**
+     * Returns the resource info for a single resource.<p>
+     * 
+     * @param path the resource path
+     * @param locale the content locale
+     * @param callback the callback
+     */
+    void getInfoForResource(String path, String locale, AsyncCallback<CmsResultItemBean> callback);
 
     /**
      * Returns the initial data for the given gallery mode.<p>

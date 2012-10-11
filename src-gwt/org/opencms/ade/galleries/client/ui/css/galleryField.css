@@ -1,0 +1,36 @@
+div>div.fader{
+	right: 20px;
+	cursor: text;
+	top: 0px;
+}
+.fieldBox{
+	border: 1px solid #bbbbbb;
+	position:relative;
+}
+div.galleryField input{
+	border: none;
+    box-shadow: none;
+    outline: none;
+    color: #222222;
+    height: 18px;
+    padding: 0;
+    width:100%;
+    margin:0px;
+}
+div.inputContainer{
+	margin: 0px 20px 0px 4px;
+	padding: 0px;
+}
+div.galleryField input:focus{
+	box-shadow: none;
+    outline: none;
+}
+.opener{
+	position: absolute;
+	right: 3px;
+	top: 1px;
+}
+.resourceInfo{
+	margin:3px 0px 0px 0px;
+	min-height: 40px;
+}

@@ -29,22 +29,32 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
+import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.input.CmsSimpleTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -54,10 +64,12 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * A widget for selecting a resource from an ADE gallery dialog.<p>
@@ -73,6 +85,33 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
         // binder interface
     }
 
+    /** Timer to update the resource info box. */
+    class InfoTimer extends Timer {
+
+        /** The resource path. */
+        private String m_path;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param path the resource path
+         */
+        InfoTimer(String path) {
+
+            m_path = path;
+        }
+
+        /**
+         * @see com.google.gwt.user.client.Timer#run()
+         */
+        @Override
+        public void run() {
+
+            updateResourceInfo(m_path);
+            clearInfoTimer();
+        }
+    }
+
     /** The widget type. */
     public static final String WIDGET_TYPE = "gallery";
 
@@ -83,6 +122,10 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     @UiField
     protected Label m_fader;
 
+    /** The DIV carrying the input field. */
+    @UiField
+    protected DivElement m_fieldBox;
+
     /** The button to to open the selection. */
     @UiField
     protected CmsPushButton m_opener;
@@ -90,12 +133,19 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /** The gallery pop-up. */
     protected CmsGalleryPopup m_popup;
 
+    /** The resource info panel. */
+    @UiField
+    protected FlowPanel m_resourceInfoPanel;
+
     /** The textbox containing the currently selected path. */
     @UiField
-    protected TextBox m_textbox;
+    protected CmsSimpleTextBox m_textbox;
 
     /** The start gallery path. */
     private String m_galleryPath;
+
+    /** The gallery service instance. */
+    private I_CmsGalleryServiceAsync m_gallerySvc;
 
     /** The gallery types. */
     private String m_galleryTypes;
@@ -105,6 +155,9 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
 
     /** The image formats. */
     private String m_imageFormats;
+
+    /** The info timer instance. */
+    private InfoTimer m_infoTimer;
 
     /** Flag indicating files should be selectable, VFS widget only. */
     private boolean m_isIncludeFiles;
@@ -133,6 +186,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     public CmsGalleryField() {
 
         initWidget(uibinder.createAndBindUi(this));
+        I_CmsLayoutBundle.INSTANCE.galleryFieldCss().ensureInjected();
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());
     }
@@ -168,6 +222,16 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
                 return galleryField;
             }
         });
+    }
+
+    /**
+     * Adds a style name to the DIV carrying the input field.<p>
+     * 
+     * @param styleName the style name to add
+     */
+    public void addFieldStyleName(String styleName) {
+
+        m_fieldBox.addClassName(styleName);
     }
 
     /**
@@ -364,6 +428,21 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * Returns the gallery service instance.<p>
+     * 
+     * @return the gallery service instance
+     */
+    protected I_CmsGalleryServiceAsync getGalleryService() {
+
+        if (m_gallerySvc == null) {
+            m_gallerySvc = GWT.create(I_CmsGalleryService.class);
+            String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.galleries.CmsGalleryService.gwt");
+            ((ServiceDefTarget)m_gallerySvc).setServiceEntryPoint(serviceUrl);
+        }
+        return m_gallerySvc;
+    }
+
+    /**
      * Internal method which opens the gallery dialog.<p>
      */
     protected void openGalleryDialog() {
@@ -385,8 +464,33 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     protected void setValue(String value, boolean fireEvent) {
 
         m_textbox.setValue(value);
+        updateResourceInfo(value);
         if (fireEvent) {
             ValueChangeEvent.fire(this, getFormValueAsString());
+        }
+    }
+
+    /**
+     * Clears the info timer.<p>
+     */
+    void clearInfoTimer() {
+
+        m_infoTimer = null;
+    }
+
+    /**
+     * Displays the resource info.<p>
+     * 
+     * @param info the resource info
+     */
+    void displayResourceInfo(CmsResultItemBean info) {
+
+        CmsListItemWidget widget = new CmsListItemWidget(info);
+        widget.setIcon(CmsIconUtil.getResourceIconClasses(info.getType(), info.getPath(), false));
+        m_resourceInfoPanel.add(widget);
+        int width = m_resourceInfoPanel.getOffsetWidth();
+        if (width > 0) {
+            widget.truncate("STANDARD", width);
         }
     }
 
@@ -426,24 +530,20 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
-     * On text box value change.<p>
-     * 
-     * @param event the even
-     */
-    @UiHandler("m_textbox")
-    void onTextboxChange(ValueChangeEvent<String> event) {
-
-        ValueChangeEvent.fire(CmsGalleryField.this, getFormValueAsString());
-    }
-
-    /**
      * On text box change.<p>
+     * 
      * @param event the event
      */
     @UiHandler("m_textbox")
-    void onValueChange(ValueChangeEvent<String> event) {
+    void onTextBoxChange(ValueChangeEvent<String> event) {
 
         ValueChangeEvent.fire(this, getFormValueAsString());
+        if (m_infoTimer != null) {
+            m_infoTimer.cancel();
+            m_infoTimer = null;
+        }
+        m_infoTimer = new InfoTimer(event.getValue());
+        m_infoTimer.schedule(300);
     }
 
     /**
@@ -454,6 +554,36 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     void setFaded(boolean faded) {
 
         m_fader.setVisible(faded);
+    }
+
+    /**
+     * Updates the resource info.<p>
+     * 
+     * @param path the resource path
+     */
+    void updateResourceInfo(final String path) {
+
+        m_resourceInfoPanel.clear();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+            m_resourceInfoPanel.setVisible(false);
+        } else {
+            m_resourceInfoPanel.getElement().getStyle().clearDisplay();
+            CmsRpcAction<CmsResultItemBean> action = new CmsRpcAction<CmsResultItemBean>() {
+
+                @Override
+                public void execute() {
+
+                    getGalleryService().getInfoForResource(path, "en", this);
+                }
+
+                @Override
+                protected void onResponse(CmsResultItemBean result) {
+
+                    displayResourceInfo(result);
+                }
+            };
+            action.execute();
+        }
     }
 
     /**

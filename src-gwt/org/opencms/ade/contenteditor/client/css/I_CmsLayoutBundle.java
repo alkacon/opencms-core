@@ -40,8 +40,14 @@ import com.google.gwt.resources.client.DataResource;
  */
 public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
 
+    /** The gallery widget CSS. */
+    interface I_CmsGalleryWidgetsCss
+    extends I_Widgets, org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryFieldBaseCss {
+        // no additional CSS classes
+    }
+
     /** The XML content widget CSS. */
-    public interface I_CmsWidgetCss extends I_Widgets, I_CmsFloatDecoratedPanelCss, I_CmsGlobalWidgetCss {
+    interface I_CmsWidgetCss extends I_Widgets, I_CmsFloatDecoratedPanelCss, I_CmsGlobalWidgetCss {
 
         /**
          * Css class reader.<p>
@@ -118,13 +124,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
-        String galleryWidget();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
         String inputField();
 
         /**
@@ -171,7 +170,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     }
 
     /** The XML content editor CSS. */
-    public interface I_CmsXmlEditorCss extends CssResource {
+    interface I_CmsXmlEditorCss extends CssResource {
 
         /** Access method.<p>
          * 
@@ -230,6 +229,14 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      */
     @Source("editor.css")
     I_CmsXmlEditorCss editorCss();
+
+    /**
+     * Access method.<p>
+     * 
+     * @return the gallery widgets CSS
+     */
+    @Source("galleryWidgets.css")
+    I_CmsGalleryWidgetsCss galleryWidgetsCss();
 
     /**
      * Access method.<p>

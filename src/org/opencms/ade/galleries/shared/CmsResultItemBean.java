@@ -63,9 +63,6 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** Flag indicating if the result item resource is currently released and not expired. */
     private boolean m_releasedAndNotExpired;
 
-    /** The resource type name. */
-    private String m_type;
-
     /** The name of the user who last modified the resource. */
     private String m_userLastModified;
 
@@ -140,7 +137,7 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
      */
     public String getType() {
 
-        return m_type;
+        return getResourceType();
     }
 
     /** 
@@ -281,7 +278,7 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
      */
     public void setType(String type) {
 
-        m_type = type;
+        setResourceType(type);
     }
 
     /**

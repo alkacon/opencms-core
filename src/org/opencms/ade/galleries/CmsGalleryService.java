@@ -47,6 +47,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
@@ -54,6 +55,7 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavBuilder.Visibility;
 import org.opencms.jsp.CmsJspNavElement;
@@ -64,14 +66,17 @@ import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -254,6 +259,81 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     public List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) {
 
         return buildGalleriesList(readGalleryInfosByTypeNames(resourceTypes));
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInfoForResource(java.lang.String, java.lang.String)
+     */
+    public CmsResultItemBean getInfoForResource(String linkPath, String locale) throws CmsRpcException {
+
+        CmsResultItemBean result = null;
+        CmsObject cms = getCmsObject();
+        try {
+            if (new CmsUriSplitter(linkPath).getProtocol() != null) {
+                result = new CmsResultItemBean();
+                result.setTitle(Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EXTERNAL_LINK_0));
+                result.setSubTitle("");
+                result.setType("externallink");
+            } else {
+                boolean notFound = false;
+                String path = linkPath;
+                String siteRoot = OpenCms.getSiteManager().getSiteRoot(linkPath);
+                String oldSite = cms.getRequestContext().getSiteRoot();
+                try {
+                    if (siteRoot != null) {
+                        // only switch the site if needed
+                        cms.getRequestContext().setSiteRoot(siteRoot);
+                        // remove the site root, because the link manager call will append it anyway
+                        path = cms.getRequestContext().removeSiteRoot(linkPath);
+                    }
+                    // remove parameters, if not the link manager call might fail
+                    int pos = path.indexOf(CmsRequestUtil.URL_DELIMITER);
+                    int anchorPos = path.indexOf('#');
+                    if ((pos == -1) || ((anchorPos > -1) && (pos > anchorPos))) {
+                        pos = anchorPos;
+                    }
+                    if (pos > -1) {
+                        path = path.substring(0, pos);
+                    }
+                    // get the root path
+                    path = OpenCms.getLinkManager().getRootPath(cms, path);
+
+                } catch (Exception e) {
+                    notFound = true;
+                } finally {
+                    if (siteRoot != null) {
+                        cms.getRequestContext().setSiteRoot(oldSite);
+                    }
+                }
+                notFound = notFound || (path == null);
+                if (!notFound) {
+
+                    CmsGallerySearchResult resultItem = null;
+                    try {
+                        resultItem = CmsGallerySearch.searchByPath(
+                            getCmsObject(),
+                            path,
+                            CmsLocaleManager.getLocale(locale));
+                    } catch (CmsVfsResourceNotFoundException ex) {
+                        // ignore
+                    }
+                    notFound = resultItem == null;
+                    if (!notFound) {
+                        result = buildSingleSearchResultItem(getCmsObject(), resultItem, null);
+                    }
+                }
+                if (notFound) {
+                    result = new CmsResultItemBean();
+                    result.setTitle(Messages.get().getBundle(getWorkplaceLocale()).key(
+                        Messages.GUI_RESOURCE_NOT_FOUND_0));
+                    result.setSubTitle("");
+                    result.setType("brokenlink");
+                }
+            }
+        } catch (Throwable t) {
+            error(t);
+        }
+        return result;
     }
 
     /**

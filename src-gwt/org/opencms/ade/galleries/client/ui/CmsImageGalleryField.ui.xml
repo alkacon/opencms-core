@@ -60,7 +60,7 @@
 <g:FlowPanel>
 <g:SimplePanel ui:field="m_imageField"  styleName="{style.imagePriview}" addStyleNames="{main.globalWidgetCss.textAreaBoxPanel}"/>
 <g:FlowPanel styleName="{style.galleryField}" addStyleNames="{main.globalWidgetCss.textAreaBoxPanel}">
-	<g:TextBox ui:field="m_textbox" />
+	<cmi:CmsSimpleTextBox ui:field="m_textbox" />
 	<cms:CmsPushButton ui:field="m_opener" addStyleNames="{style.opener}"/>
 	<g:Label ui:field="m_fader" styleName="{layout.inputCss.vfsInputBoxFaider}" addStyleNames="{style.faider}" />
 </g:FlowPanel>

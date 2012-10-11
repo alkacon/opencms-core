@@ -362,7 +362,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @UiHandler("m_textbox")
     public void onTextboxChange(ValueChangeEvent<String> event) {
 
-        ValueChangeEvent.fire(CmsImageGalleryField.this, getFormValueAsString());
+        ValueChangeEvent.fire(this, getFormValueAsString());
     }
 
     /**

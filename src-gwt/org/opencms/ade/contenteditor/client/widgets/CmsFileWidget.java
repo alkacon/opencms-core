@@ -29,7 +29,6 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
-import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.CmsGalleryField;
 
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -73,11 +72,9 @@ public class CmsFileWidget extends Composite implements I_EditWidget {
     public CmsFileWidget(String openerTitle, String config) {
 
         m_linkSelect = new CmsGalleryField();
-        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
         parseConfiguration(config);
         m_linkSelect.setVfsConfiguration(m_includeFiles, m_showSiteSelector, m_startSite, m_referencePath, m_types);
         m_linkSelect.setGalleryOpenerTitle(openerTitle);
-        m_linkSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().galleryWidget());
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {

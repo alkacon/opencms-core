@@ -35,6 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.Messages;
+import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -73,6 +74,26 @@ public class CmsGallerySearch {
         gallerySearch.init(cms);
         gallerySearch.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         return gallerySearch.searchById(structureId, locale);
+    }
+
+    /**
+     * Searches by structure id.<p>
+     * 
+     * @param cms the OpenCms context to use for the search
+     * @param rootPath the resource root path
+     * @param locale the locale for which the search result should be returned
+     *  
+     * @return the search result 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static CmsGallerySearchResult searchByPath(CmsObject cms, String rootPath, Locale locale)
+    throws CmsException {
+
+        CmsGallerySearch gallerySearch = new CmsGallerySearch();
+        gallerySearch.init(cms);
+        gallerySearch.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        return gallerySearch.searchByPath(rootPath, locale);
     }
 
     /**
@@ -154,6 +175,30 @@ public class CmsGallerySearch {
             result = new CmsGallerySearchResult(m_cms, 100, doc, null, locale);
         } else {
             CmsResource res = m_cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+            result = new CmsGallerySearchResult(m_cms, res);
+        }
+        return result;
+    }
+
+    /**
+     * Searches by structure id.<p>
+     * 
+     * @param path the resource path
+     * @param locale the locale for which the search result should be returned
+     *  
+     * @return the search result 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsGallerySearchResult searchByPath(String path, Locale locale) throws CmsException {
+
+        I_CmsSearchDocument sDoc = m_index.getDocument(I_CmsSearchField.FIELD_PATH, path);
+        CmsGallerySearchResult result = null;
+        if ((sDoc != null) && (sDoc.getDocument() != null)) {
+            Document doc = (Document)sDoc.getDocument();
+            result = new CmsGallerySearchResult(m_cms, 100, doc, null, locale);
+        } else {
+            CmsResource res = m_cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
             result = new CmsGallerySearchResult(m_cms, res);
         }
         return result;

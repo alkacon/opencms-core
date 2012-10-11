@@ -151,12 +151,19 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             m_resourceType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
         } catch (CmsLoaderException e) {
             LOG.warn(e.getLocalizedMessage(), e);
-
         }
         m_state = res.getState().getState();
         m_structureId = res.getStructureId().toString();
-        m_userCreated = res.getUserCreated().toString();
-        m_userLastModified = res.getUserLastModified().toString();
+        try {
+            m_userCreated = cms.readUser(res.getUserCreated()).getFullName();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        try {
+            m_userLastModified = cms.readUser(res.getUserLastModified()).getFullName();
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
