@@ -27,6 +27,9 @@
 
 package org.opencms.widgets;
 
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
@@ -38,6 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides a OpenCms VFS file selection widget, for use on a widget dialog.<p>
@@ -180,20 +184,39 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     public String getConfiguration(
         CmsObject cms,
         A_CmsXmlContentValue schemaType,
         CmsMessages messages,
-        CmsResource resource) {
+        CmsResource resource,
+        Locale contentLocale) {
 
         JSONObject config = new JSONObject();
         try {
-            config.put(CONFIGURATION_STARTSITE, m_startSite);
-            config.put(CONFIGURATION_INCLUDEFILES, m_includeFiles);
-            config.put(CONFIGURATION_SHOWSITESELECTOR, m_showSiteSelector);
-            config.put("referencepath", cms.getSitePath(resource));
+            config.put(I_CmsGalleryProviderConstants.CONFIG_START_SITE, m_startSite);
+            String tabIds = null;
+            if (m_includeFiles) {
+                tabIds = GalleryTabId.cms_tab_types.name()
+                    + ","
+                    + GalleryTabId.cms_tab_vfstree.name()
+                    + ","
+                    + GalleryTabId.cms_tab_sitemap.name()
+                    + ","
+                    + GalleryTabId.cms_tab_categories.name()
+                    + ","
+                    + GalleryTabId.cms_tab_search.name()
+                    + ","
+                    + GalleryTabId.cms_tab_results.name();
+            } else {
+                tabIds = GalleryTabId.cms_tab_vfstree.name();
+            }
+            config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_IDS, tabIds);
+            config.put(I_CmsGalleryProviderConstants.CONFIG_SHOW_SITE_SELECTOR, m_showSiteSelector);
+            config.put(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH, cms.getSitePath(resource));
+            config.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, contentLocale.toString());
+            config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, GalleryMode.widget.name());
         } catch (JSONException e) {
             // TODO: Auto-generated catch block
             e.printStackTrace();

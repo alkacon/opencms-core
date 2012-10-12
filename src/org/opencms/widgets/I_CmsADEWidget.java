@@ -33,6 +33,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Widgets to be used with the new XML content editor are required to implement this interface.<p>
@@ -53,10 +54,16 @@ public interface I_CmsADEWidget extends I_CmsWidget {
      * @param schemaType the schema type
      * @param messages the messages
      * @param resource the edited resource
+     * @param contentLocale the content locale
      * 
      * @return the configuration string
      */
-    String getConfiguration(CmsObject cms, A_CmsXmlContentValue schemaType, CmsMessages messages, CmsResource resource);
+    String getConfiguration(
+        CmsObject cms,
+        A_CmsXmlContentValue schemaType,
+        CmsMessages messages,
+        CmsResource resource,
+        Locale contentLocale);
 
     /**
      * Returns a list of CSS resources required by the widget.<p>

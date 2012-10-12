@@ -27,9 +27,11 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
+import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -136,23 +138,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The image container. */
     Image m_image = new Image();
 
+    /** The gallery configuration. */
+    private I_CmsGalleryConfiguration m_configuration;
+
     /** The description value. */
     private String m_description;
-
-    /** The start gallery path. */
-    private String m_galleryPath;
-
-    /** The gallery types. */
-    private String m_galleryTypes;
-
-    /** The image format names. */
-    private String m_imageFormatNames;
-
-    /** The image formats. */
-    private String m_imageFormats;
-
-    /** The reference path, for example the site path of the edited resource. */
-    private String m_referencePath;
 
     /** The scale values. */
     private String m_scaleValue;
@@ -160,19 +150,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The selected format. */
     private String m_selectedFormat;
 
-    /** The resource types. */
-    private String m_types;
-
-    /** The use formats flag. */
-    private boolean m_useFormats;
-
     /** 
      * Constructs a new gallery widget.<p>
+     * 
+     * @param configuration the gallery configuration
      */
-    public CmsImageGalleryField() {
+    public CmsImageGalleryField(I_CmsGalleryConfiguration configuration) {
 
         initWidget(uibinder.createAndBindUi(this));
-
+        m_configuration = configuration;
+        generatesFormatSelection();
         m_descriptionArea.getTextArea().setStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().textAreaBox());
         m_descriptionArea.getTextAreaContainer().addStyleName(
             I_CmsLayoutBundle.INSTANCE.globalWidgetCss().textAreaBoxPanel());
@@ -191,11 +178,12 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** 
      * Constructs a new gallery widget.<p>
      * 
+     * @param configuration the gallery configuration
      * @param iconImage the icon image class 
      */
-    public CmsImageGalleryField(String iconImage) {
+    public CmsImageGalleryField(I_CmsGalleryConfiguration configuration, String iconImage) {
 
-        this();
+        this(configuration);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconImage)) {
             m_opener.setImageClass(iconImage);
         }
@@ -214,8 +202,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                CmsImageGalleryField galleryField = new CmsImageGalleryField(null);
-                galleryField.parseConfiguration(widgetParams.get("configuration"));
+                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
+                CmsImageGalleryField galleryField = new CmsImageGalleryField(conf);
                 return galleryField;
             }
         });
@@ -268,7 +256,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
         String result = m_textbox.getValue();
         result += "?__" + PARAMETER_SCALE + m_scaleValue;
-        if (m_useFormats) {
+        if (m_configuration.isUseFormats()) {
             result += "&" + PARAMETER_FORMAT + m_formatSelection.getFormValueAsString();
             m_selectedFormat = m_formatSelection.getFormValueAsString();
         }
@@ -371,71 +359,27 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     public void openGalleryDialog() {
 
         if (m_popup == null) {
-            m_popup = CmsGalleryFactory.createGalleryPopup(
-                new I_CmsGalleryWidgetHandler() {
+            m_configuration.setCurrentElement(getFormValueAsString());
+            m_popup = CmsGalleryFactory.createGalleryPopup(new I_CmsGalleryWidgetHandler() {
 
-                    public void setWidgetValue(
-                        String resourcePath,
-                        CmsUUID structureId,
-                        CmsCroppingParamBean croppingParameter) {
+                public void setWidgetValue(
+                    String resourcePath,
+                    CmsUUID structureId,
+                    CmsCroppingParamBean croppingParameter) {
 
-                        m_croppingParam = new CmsCroppingParamBean(croppingParameter);
-                        String path = resourcePath + "?";
-                        path += croppingParameter.toString();
-                        path += PARAMETER_FORMAT + croppingParameter.getFormatName();
-                        setValue(path, true);
-                        m_popup.hide();
-                    }
-                },
-                m_referencePath,
-                m_galleryPath,
-                getFormValueAsString(),
-                m_types,
-                m_galleryTypes,
-                m_useFormats,
-                m_imageFormats,
-                m_imageFormatNames);
+                    m_croppingParam = new CmsCroppingParamBean(croppingParameter);
+                    String path = resourcePath + "?";
+                    path += croppingParameter.toString();
+                    path += PARAMETER_FORMAT + croppingParameter.getFormatName();
+                    setValue(path, true);
+                    m_popup.hide();
+                }
+            }, m_configuration);
             m_popup.center();
         } else {
             m_popup.searchElement(getFormValueAsString());
         }
     }
-
-    /**
-     * Parses the widget configuration.<p>
-     * 
-     * @param configuration the widget configuration as a JSON string
-     */
-    public native void parseConfiguration(String configuration)/*-{
-                                                               var config;
-                                                               if (typeof JSON != 'undefined') {
-                                                               config = JSON.parse(configuration);
-                                                               } else {
-                                                               config = eval("(" + configuration + ")");
-                                                               }
-                                                               if (config.types){
-                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setTypes(Ljava/lang/String;)(config.types);
-                                                               }
-                                                               if (config.gallerypath){
-                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setGalleryPath(Ljava/lang/String;)(config.gallerypath);
-                                                               }
-                                                               if (config.gallerytypes){
-                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setGalleryTypes(Ljava/lang/String;)(config.gallerytypes);
-                                                               }
-                                                               if (config.referencepath){
-                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setReferencePath(Ljava/lang/String;)(config.referencepath);
-                                                               }
-                                                               if (config.useFormats){
-                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setUseFormats(Z)(config.useFormats);
-                                                               }
-                                                               if (config.imageFormats){
-                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setImageFormats(Ljava/lang/String;)(config.imageFormats.toString());
-                                                               }
-                                                               if (config.imageFormatNames){
-                                                               this.@org.opencms.ade.galleries.client.ui.CmsImageGalleryField::setImageFormatNames(Ljava/lang/String;)(config.imageFormatNames.toString());
-                                                               }
-                                                               
-                                                               }-*/;
 
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#reset()
@@ -498,47 +442,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
-     * Sets the galleryPath.<p>
-     *
-     * @param galleryPath the galleryPath to set
-     */
-    public void setGalleryPath(String galleryPath) {
-
-        m_galleryPath = galleryPath;
-    }
-
-    /**
-     * Sets the galleryTypes.<p>
-     *
-     * @param galleryTypes the galleryTypes to set
-     */
-    public void setGalleryTypes(String galleryTypes) {
-
-        m_galleryTypes = galleryTypes;
-    }
-
-    /**
-     * Sets the image format names.<p>
-     *
-     * @param imageFormatNames the image format names to set
-     */
-    public void setImageFormatNames(String imageFormatNames) {
-
-        m_imageFormatNames = imageFormatNames;
-        generatesFormatSelection();
-    }
-
-    /**
-     * Sets the image formats.<p>
-     *
-     * @param imageFormats the image formats to set
-     */
-    public void setImageFormats(String imageFormats) {
-
-        m_imageFormats = imageFormats;
-    }
-
-    /**
      * Sets the name of the input field.<p>
      * 
      * @param name of the input field
@@ -548,36 +451,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_textbox.setName(name);
         m_descriptionArea.setName(name + "_TextArea");
 
-    }
-
-    /**
-     * Sets the referencePath.<p>
-     *
-     * @param referencePath the referencePath to set
-     */
-    public void setReferencePath(String referencePath) {
-
-        m_referencePath = referencePath;
-    }
-
-    /**
-     * Sets the types.<p>
-     *
-     * @param types the types to set
-     */
-    public void setTypes(String types) {
-
-        m_types = types;
-    }
-
-    /**
-     * Sets the use image formats flag.<p>
-     *
-     * @param useFormats the use image formats flag to set
-     */
-    public void setUseFormats(boolean useFormats) {
-
-        m_useFormats = useFormats;
     }
 
     /**
@@ -595,11 +468,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
     }
 
-    /***/
+    /**
+     * Generates the format select box.<p> 
+     **/
     private void generatesFormatSelection() {
 
-        if (m_useFormats) {
-            String[] formats = m_imageFormatNames.split(",");
+        if (m_configuration.isUseFormats()) {
+            String[] formats = m_configuration.getImageFormatNames().split(",");
             for (int i = 0; i < formats.length; i++) {
                 m_formats.put(formats[i].split(":")[0], formats[i].split(":")[1]);
             }

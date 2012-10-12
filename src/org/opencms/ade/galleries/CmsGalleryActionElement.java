@@ -27,13 +27,13 @@
 
 package org.opencms.ade.galleries;
 
+import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.ReqParam;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
@@ -74,7 +74,8 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         super(context, req, res);
 
         try {
-            m_galleryMode = GalleryMode.valueOf(getRequest().getParameter(ReqParam.dialogmode.name()).trim());
+            m_galleryMode = GalleryMode.valueOf(getRequest().getParameter(
+                I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE).trim());
         } catch (Exception e) {
             m_galleryMode = GalleryMode.view;
         }
@@ -173,13 +174,20 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     private String export(GalleryMode galleryMode) throws Exception {
 
         CmsGalleryService galleryService = CmsGalleryService.newInstance(getRequest());
-        CmsGalleryDataBean data = galleryService.getInitialSettings(
-            galleryMode,
-            getRequest().getParameter(ReqParam.resource.name()),
-            getRequest().getParameter(ReqParam.gallerypath.name()),
-            getRequest().getParameter(ReqParam.currentelement.name()),
-            getRequest().getParameter(ReqParam.types.name()),
-            getRequest().getParameter(ReqParam.gallerytypes.name()));
+        CmsGalleryConfiguration conf = new CmsGalleryConfiguration();
+        conf.setGalleryMode(galleryMode);
+        conf.setReferencePath(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH));
+        conf.setGalleryPath(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH));
+        conf.setCurrentElement(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT));
+        String resourceTypes = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceTypes)) {
+            conf.setResourceTypes(resourceTypes.split(","));
+        }
+        String galleryTypes = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_GALLERY_TYPES);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {
+            conf.setGalleryTypes(galleryTypes.split(","));
+        }
+        CmsGalleryDataBean data = galleryService.getInitialSettings(conf);
         CmsGallerySearchBean search = null;
         if (GalleryTabId.cms_tab_results.equals(data.getStartTab())) {
             search = galleryService.getSearch(data);
@@ -193,14 +201,10 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(ClientMessages.get().export(getRequest()));
-        sb.append(exportDictionary(CmsGalleryDataBean.DICT_NAME, I_CmsGalleryService.class.getMethod(
-            "getInitialSettings",
-            GalleryMode.class,
-            String.class,
-            String.class,
-            String.class,
-            String.class,
-            String.class), data));
+        sb.append(exportDictionary(
+            CmsGalleryDataBean.DICT_NAME,
+            I_CmsGalleryService.class.getMethod("getInitialSettings", CmsGalleryConfiguration.class),
+            data));
         sb.append(exportDictionary(
             CmsGallerySearchBean.DICT_NAME,
             I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class),

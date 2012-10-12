@@ -27,13 +27,13 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
+import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 
 import java.util.List;
 
@@ -78,22 +78,10 @@ public interface I_CmsGalleryServiceAsync {
     /**
      * Returns the initial data for the given gallery mode.<p>
      * 
-     * @param galleryMode the gallery mode
-     * @param referencePath the reference path
-     * @param galleryPath the start gallery path
-     * @param currentElement the current element
-     * @param resourceTypes the available resource types (comma separated list)
-     * @param galleryTypes the gallery types (comma separated list)
+     * @param conf the gallery configuration
      * @param callback the callback
      */
-    void getInitialSettings(
-        GalleryMode galleryMode,
-        String referencePath,
-        String galleryPath,
-        String currentElement,
-        String resourceTypes,
-        String galleryTypes,
-        AsyncCallback<CmsGalleryDataBean> callback);
+    void getInitialSettings(CmsGalleryConfiguration conf, AsyncCallback<CmsGalleryDataBean> callback);
 
     /**
      * Performs an initial search based on the given data bean and the available parameters of the request.<p>

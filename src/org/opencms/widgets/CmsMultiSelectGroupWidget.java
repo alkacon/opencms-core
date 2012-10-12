@@ -47,6 +47,7 @@ import org.opencms.xml.types.A_CmsXmlContentValue;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -136,14 +137,15 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     }
 
     /**
-     * @see org.opencms.widgets.CmsSelectGroupWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     @Override
     public String getConfiguration(
         CmsObject cms,
         A_CmsXmlContentValue schemaType,
         CmsMessages messages,
-        CmsResource resource) {
+        CmsResource resource,
+        Locale contentLocale) {
 
         String result = "";
         CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(schemaType.getLocale(), messages);

@@ -437,7 +437,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
                     "').selectedIndex].value)+'");
             }
         }
-        result.put(I_CmsGalleryProviderConstants.ReqParam.currentelement.name(), currentElement.toString());
+        result.put(I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT, currentElement.toString());
         return result;
     }
 

@@ -139,6 +139,9 @@ public final class CmsContentEditor extends EditorBase {
     /** The core RPC service instance. */
     private I_CmsCoreServiceAsync m_coreSvc;
 
+    /** The loaded content definitions by locale. */
+    private Map<String, CmsContentDefinition> m_definitions;
+
     /** The entities to delete. */
     private Set<String> m_deletedEntities;
 
@@ -216,6 +219,7 @@ public final class CmsContentEditor extends EditorBase {
         m_availableLocales = new HashMap<String, String>();
         m_contentLocales = new HashSet<String>();
         m_deletedEntities = new HashSet<String>();
+        m_definitions = new HashMap<String, CmsContentDefinition>();
         addValidationChangeHandler(new ValueChangeHandler<ValidationContext>() {
 
             public void onValueChange(ValueChangeEvent<ValidationContext> event) {
@@ -658,6 +662,7 @@ public final class CmsContentEditor extends EditorBase {
         m_availableLocales.clear();
         m_contentLocales.clear();
         m_deletedEntities.clear();
+        m_definitions.clear();
         m_title = null;
         m_sitePath = null;
         m_resourceTypeName = null;
@@ -1074,6 +1079,8 @@ public final class CmsContentEditor extends EditorBase {
         m_resourceTypeName = definition.getResourceType();
         m_registeredEntities.add(definition.getEntityId());
         m_tabInfos = definition.getTabInfos();
+        m_definitions.put(definition.getLocale(), definition);
+        getWidgetService().addConfigurations(definition.getConfigurations());
         addEntityChangeHandler(definition.getEntityId(), new ValueChangeHandler<I_Entity>() {
 
             public void onValueChange(ValueChangeEvent<I_Entity> event) {
@@ -1158,6 +1165,7 @@ public final class CmsContentEditor extends EditorBase {
                 loadDefinition(m_entityId, callback);
             }
         } else {
+            getWidgetService().addConfigurations(m_definitions.get(locale).getConfigurations());
             renderFormContent();
         }
     }

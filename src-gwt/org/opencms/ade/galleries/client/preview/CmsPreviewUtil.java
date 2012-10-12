@@ -200,7 +200,7 @@ public final class CmsPreviewUtil {
         var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
         var additional = $wnd.parent['cms_additional_' + id];
         if (additional) {
-            return additional['useFormats'];
+            return additional[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_USE_FORMATS];
         }
         return false;
     }-*/;
@@ -365,7 +365,7 @@ public final class CmsPreviewUtil {
         var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
         var additional = $wnd.parent['cms_additional_' + id];
         if (additional) {
-            return additional['imageFormatNames'];
+            return additional[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES];
         }
         return null;
     }-*/;
@@ -379,7 +379,7 @@ public final class CmsPreviewUtil {
         var id = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::KEY_HASH_ID];
         var additional = $wnd.parent['cms_additional_' + id];
         if (additional) {
-            return additional['imageFormats'];
+            return additional[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS];
         }
         return null;
     }-*/;

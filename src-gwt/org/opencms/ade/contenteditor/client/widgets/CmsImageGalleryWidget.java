@@ -29,6 +29,7 @@ package org.opencms.ade.contenteditor.client.widgets;
 
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.ui.CmsImageGalleryField;
 
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -58,8 +59,7 @@ public class CmsImageGalleryWidget extends Composite implements I_EditWidget, Ha
      */
     public CmsImageGalleryWidget(String openerTitle, String config) {
 
-        m_linkSelect = new CmsImageGalleryField();
-        m_linkSelect.parseConfiguration(config);
+        m_linkSelect = new CmsImageGalleryField(CmsGalleryConfigurationJSO.parseConfiguration(config));
         m_linkSelect.setGalleryOpenerTitle(openerTitle);
         m_linkSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
 

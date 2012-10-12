@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.client;
 import org.opencms.ade.galleries.client.preview.I_CmsPreviewFactory;
 import org.opencms.ade.galleries.client.preview.I_CmsResourcePreview;
 import org.opencms.ade.galleries.client.ui.CmsSearchTab.ParamType;
+import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
@@ -40,6 +41,7 @@ import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsBinaryPreviewProvider;
+import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -180,54 +182,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * Constructor.<p>
      * 
      * @param handler the controller handler 
-     * @param galleryMode the gallery mode
-     * @param referencePath the reference path
-     * @param currentElement the current element
-     * @param resourceTypes the available resource types (comma separated list)
-     * @param tabIds the tabs to use
+     * @param conf the gallery configuration
      */
-    public CmsGalleryController(
-        CmsGalleryControllerHandler handler,
-        GalleryMode galleryMode,
-        String referencePath,
-        String currentElement,
-        String resourceTypes,
-        GalleryTabId... tabIds) {
-
-        this(handler, galleryMode, referencePath, null, currentElement, resourceTypes, null, false, null, null);
-        m_tabIds = tabIds;
-    }
-
-    /**
-     * Constructor.<p>
-     * 
-     * @param handler the controller handler 
-     * @param galleryMode the gallery mode
-     * @param referencePath the reference path
-     * @param galleryPath the start gallery path
-     * @param currentElement the current element
-     * @param resourceTypes the available resource types (comma separated list)
-     * @param galleryTypes the gallery types (comma separated list)
-     * @param useFormats the use image formats flag
-     * @param imageFormats the image formats (comma separated list)
-     * @param imageFormatNames the image format names (comma separated list)
-     */
-    public CmsGalleryController(
-        CmsGalleryControllerHandler handler,
-        final GalleryMode galleryMode,
-        final String referencePath,
-        final String galleryPath,
-        final String currentElement,
-        final String resourceTypes,
-        final String galleryTypes,
-        boolean useFormats,
-        String imageFormats,
-        String imageFormatNames) {
+    public CmsGalleryController(CmsGalleryControllerHandler handler, final I_CmsGalleryConfiguration conf) {
 
         m_handler = handler;
-        m_handler.m_galleryDialog.setUseFormats(useFormats);
-        m_handler.m_galleryDialog.setImageFormats(imageFormats);
-        m_handler.m_galleryDialog.setImageFormatNames(imageFormatNames);
+        m_handler.m_galleryDialog.setUseFormats(conf.isUseFormats());
+        m_handler.m_galleryDialog.setImageFormats(conf.getImageFormats());
+        m_handler.m_galleryDialog.setImageFormatNames(conf.getImageFormatNames());
         m_eventBus = new SimpleEventBus();
         addValueChangeHandler(m_handler);
         CmsRpcAction<CmsGalleryDataBean> initAction = new CmsRpcAction<CmsGalleryDataBean>() {
@@ -235,14 +197,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             @Override
             public void execute() {
 
-                getGalleryService().getInitialSettings(
-                    galleryMode,
-                    referencePath,
-                    galleryPath,
-                    currentElement,
-                    resourceTypes,
-                    galleryTypes,
-                    this);
+                getGalleryService().getInitialSettings(new CmsGalleryConfiguration(conf), this);
             }
 
             @Override
@@ -271,6 +226,13 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
         };
         initAction.execute();
+        if (conf.getTabIds() != null) {
+            m_tabIds = conf.getTabIds();
+        }
+        setShowSiteSelector(conf.isShowSiteSelector());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(conf.getStartSite())) {
+            setStartSite(conf.getStartSite());
+        }
     }
 
     /**

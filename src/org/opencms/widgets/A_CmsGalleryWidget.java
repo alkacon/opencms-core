@@ -40,6 +40,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Base class for all gallery widget implementations.<p>
@@ -68,18 +69,19 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     public String getConfiguration(
         CmsObject cms,
         A_CmsXmlContentValue schemaType,
         CmsMessages messages,
-        CmsResource resource) {
+        CmsResource resource,
+        Locale contentLocale) {
 
         CmsGalleryWidgetConfiguration config = new CmsGalleryWidgetConfiguration(
             cms,
             messages,
-            null,
+            schemaType,
             getConfiguration());
         JSONObject linkGalleryInfo = new JSONObject();
         try {

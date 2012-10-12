@@ -1,0 +1,149 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ade.galleries.shared;
+
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+
+/**
+ * The gallery configuration interface.<p>
+ */
+public interface I_CmsGalleryConfiguration {
+
+    /**
+     * Returns the currently selected element.<p>
+     * 
+     * @return the currently selected element
+     */
+    String getCurrentElement();
+
+    /**
+     * Returns the gallery mode.<p>
+     * 
+     * @return the gallery mode
+     */
+    GalleryMode getGalleryMode();
+
+    /**
+     * Returns the start gallery path.<p>
+     * 
+     * @return the start gallery path
+     */
+    String getGalleryPath();
+
+    /**
+     * Returns the available gallery types.<p>
+     * 
+     * @return the available gallery types
+     */
+    String[] getGalleryTypes();
+
+    /**
+     * Returns the image format names.<p>
+     *  
+     * @return the image format names
+     */
+    String getImageFormatNames();
+
+    /**
+     * Returns the image formats.<p>
+     * 
+     * @return the image formats
+     */
+    String getImageFormats();
+
+    /**
+     * Returns the content locale.<p>
+     * 
+     * @return the content locale
+     */
+    String getLocale();
+
+    /**
+     * Returns the path of the edited resource.<p>
+     * 
+     * @return the path of the edited resource
+     */
+    String getReferencePath();
+
+    /**
+     * Returns the available resource types.<p>
+     * 
+     * @return the available resource types
+     */
+    String[] getResourceTypes();
+
+    /**
+     * Returns the searchable types.<p>
+     * 
+     * @return the searchable types
+     */
+    String[] getSearchTypes();
+
+    /**
+     * Returns the start site.<p>
+     * 
+     * @return the start site
+     */
+    String getStartSite();
+
+    /**
+     * Returns the tab id's.<p>
+     * 
+     * @return the tab id's
+     */
+    GalleryTabId[] getTabIds();
+
+    /**
+     * Returns if files are selectable.<p>
+     * 
+     * @return <code>true</code> if files are selectable
+     */
+    boolean isIncludeFiles();
+
+    /**
+     * Returns if the site selector should be shown.<p>
+     * 
+     * @return <code>true</code> if the site selector should be shown
+     */
+    boolean isShowSiteSelector();
+
+    /**
+     * Returns if image formats should be used in preview.<p>
+     * 
+     * @return <code>true</code> if image format should be used in preview
+     */
+    boolean isUseFormats();
+
+    /**
+     * Sets the currentElement.<p>
+     *
+     * @param currentElement the currentElement to set
+     */
+    void setCurrentElement(String currentElement);
+}

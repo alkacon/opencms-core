@@ -103,14 +103,14 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
 
         CmsVfsImageWidgetConfiguration config = getWidgetConfiguration(cms, messages, param);
         JSONObject result = new JSONObject();
-        result.put(I_CmsGalleryProviderConstants.ReqParam.useFormats.name(), config.isShowFormat());
-        result.put(I_CmsGalleryProviderConstants.ReqParam.imageFormats.name(), new JSONArray(config.getFormatValues()));
+        result.put(I_CmsGalleryProviderConstants.CONFIG_USE_FORMATS, config.isShowFormat());
+        result.put(I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMATS, new JSONArray(config.getFormatValues()));
         String temp = config.getSelectFormatString();
         String[] formatNames = new String[0];
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(temp)) {
             formatNames = config.getSelectFormatString().split("\\|");
         }
-        result.put(I_CmsGalleryProviderConstants.ReqParam.imageFormatNames.name(), new JSONArray(formatNames));
+        result.put(I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMAT_NAMES, new JSONArray(formatNames));
         return result;
     }
 

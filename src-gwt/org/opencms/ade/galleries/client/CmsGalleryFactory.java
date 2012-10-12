@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryPopup;
+import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
@@ -79,37 +80,12 @@ public final class CmsGalleryFactory {
      * Creates a gallery widget pop-up.<p>
      * 
      * @param handler the widget handler, used to set the widgets value
-     * @param referencePath the reference path, for example the resource being edited
-     * @param galleryPath the startup gallery
-     * @param currentElement the currently selected resource
-     * @param resourceTypes the resource types (comma separated list)
-     * @param galleryTypes the gallery types (comma separated list)
-     * @param useFormats the use image formats flag
-     * @param imageFormats the image formats (comma separated list)
-     * @param imageFormatNames the image format names (comma separated list)
+     * @param conf the gallery configuration
      * 
      * @return the generated pop-up
      */
-    public static CmsGalleryPopup createGalleryPopup(
-        I_CmsGalleryWidgetHandler handler,
-        String referencePath,
-        String galleryPath,
-        String currentElement,
-        String resourceTypes,
-        String galleryTypes,
-        boolean useFormats,
-        String imageFormats,
-        String imageFormatNames) {
+    public static CmsGalleryPopup createGalleryPopup(I_CmsGalleryWidgetHandler handler, I_CmsGalleryConfiguration conf) {
 
-        return new CmsGalleryPopup(
-            handler,
-            referencePath,
-            galleryPath,
-            currentElement,
-            resourceTypes,
-            galleryTypes,
-            useFormats,
-            imageFormats,
-            imageFormatNames);
+        return new CmsGalleryPopup(handler, conf);
     }
 }

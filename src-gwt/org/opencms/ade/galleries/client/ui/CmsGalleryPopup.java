@@ -30,8 +30,7 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.CmsGalleryControllerHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.gwt.client.ui.CmsPopup;
 
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -48,76 +47,16 @@ public class CmsGalleryPopup extends CmsPopup {
     private CmsGalleryController m_controller;
 
     /**
-     * 
-     * @param handler the widget handler, used to set the widgets value
-     * @param referencePath the reference path, for example the resource being edited
-     * @param currentElement the currently selected resource
-     * @param resourceTypes the resource types (comma separated list)
-     * @param isShowSiteSelector if true, the site selector will be shown
-     * @param startSite the start site to use 
-     * @param tabIds the tabs to use
-     */
-    public CmsGalleryPopup(
-        I_CmsGalleryWidgetHandler handler,
-        String referencePath,
-        String currentElement,
-        String resourceTypes,
-        boolean isShowSiteSelector,
-        String startSite,
-        GalleryTabId... tabIds) {
-
-        this();
-        CmsGalleryDialog galleryDialog = new CmsGalleryDialog(null, this);
-        m_controller = new CmsGalleryController(
-            new CmsGalleryControllerHandler(galleryDialog),
-            GalleryMode.widget,
-            referencePath,
-            currentElement,
-            resourceTypes,
-            tabIds);
-        m_controller.setShowSiteSelector(isShowSiteSelector);
-        m_controller.setStartSite(startSite);
-        galleryDialog.setWidgetHandler(handler);
-        m_container.setWidget(galleryDialog);
-    }
-
-    /**
      * Constructor.<p>
      * 
      * @param handler the widget handler, used to set the widgets value
-     * @param referencePath the reference path, for example the resource being edited
-     * @param galleryPath the startup gallery
-     * @param currentElement the currently selected resource
-     * @param resourceTypes the resource types (comma separated list)
-     * @param galleryTypes the gallery types (comma separated list)
-     * @param useFormats the use image formats flag
-     * @param imageFormats the image formats (comma separated list)
-     * @param imageFormatNames the image format names (comma separated list)
+     * @param conf the gallery configuration
      */
-    public CmsGalleryPopup(
-        I_CmsGalleryWidgetHandler handler,
-        String referencePath,
-        String galleryPath,
-        String currentElement,
-        String resourceTypes,
-        String galleryTypes,
-        boolean useFormats,
-        String imageFormats,
-        String imageFormatNames) {
+    public CmsGalleryPopup(I_CmsGalleryWidgetHandler handler, I_CmsGalleryConfiguration conf) {
 
         this();
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(null, this);
-        m_controller = new CmsGalleryController(
-            new CmsGalleryControllerHandler(galleryDialog),
-            GalleryMode.widget,
-            referencePath,
-            galleryPath,
-            currentElement,
-            resourceTypes,
-            galleryTypes,
-            useFormats,
-            imageFormats,
-            imageFormatNames);
+        m_controller = new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog), conf);
         galleryDialog.setWidgetHandler(handler);
         m_container.setWidget(galleryDialog);
     }

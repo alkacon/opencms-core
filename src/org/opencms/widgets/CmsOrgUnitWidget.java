@@ -40,6 +40,7 @@ import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides a OpenCms orgaizational unit selection widget, for use on a widget dialog.<p>
@@ -106,13 +107,14 @@ public class CmsOrgUnitWidget extends A_CmsWidget implements I_CmsADEWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     public String getConfiguration(
         CmsObject cms,
         A_CmsXmlContentValue schemaType,
         CmsMessages messages,
-        CmsResource resource) {
+        CmsResource resource,
+        Locale contentLocale) {
 
         String result = "";
         try {

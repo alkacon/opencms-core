@@ -45,6 +45,7 @@ import org.opencms.xml.types.A_CmsXmlContentValue;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -96,13 +97,14 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     public String getConfiguration(
         CmsObject cms,
         A_CmsXmlContentValue schemaType,
         CmsMessages messages,
-        CmsResource resource) {
+        CmsResource resource,
+        Locale contentLocale) {
 
         return getJSONConfiguration(cms, resource).toString();
     }

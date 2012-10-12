@@ -136,55 +136,6 @@ public interface I_CmsGalleryProviderConstants {
 
     }
 
-    /** Request parameter name constants. */
-    public enum ReqParam {
-
-        /** The current element. */
-        currentelement,
-
-        /** Generic data parameter. */
-        data,
-
-        /** The dialog mode. */
-        dialogmode,
-
-        /** The widget field id. */
-        fieldid,
-
-        /** The gallery path. */
-        gallerypath,
-
-        /** The gallery tab id. */
-        gallerytabid,
-
-        /** The allowed gallery types. */
-        gallerytypes,
-
-        /** The widget field id hash. */
-        hashid,
-
-        /** Image format names. */
-        imageFormatNames,
-
-        /** Image formats. */
-        imageFormats,
-
-        /** The current locale. */
-        locale,
-
-        /** The edited resource. */
-        resource,
-
-        /** The tabs configuration, which tabs should be displayed. */
-        tabs,
-
-        /** The available types for the gallery dialog. */
-        types,
-
-        /** Use image formats. */
-        useFormats;
-    }
-
     /** Sorting parameters. */
     public enum SortParams implements IsSerializable {
 
@@ -218,6 +169,54 @@ public interface I_CmsGalleryProviderConstants {
 
     /** The request attribute name for the close link. */
     String ATTR_CLOSE_LINK = "closeLink";
+
+    /** Configuration key. */
+    String CONFIG_CURRENT_ELEMENT = "currentelement";
+
+    /** Configuration key. */
+    String CONFIG_GALLERY_MODE = "gallerymode";
+
+    /** Configuration key. */
+    String CONFIG_GALLERY_PATH = "gallerypath";
+
+    /** Configuration key. */
+    String CONFIG_GALLERY_TYPES = "gallerytypes";
+
+    /** Configuration key. */
+    String CONFIG_IMAGE_FORMAT_NAMES = "imageformatnames";
+
+    /** Configuration key. */
+    String CONFIG_IMAGE_FORMATS = "imageformats";
+
+    /** Configuration key. */
+    String CONFIG_INCLUDE_FILES = "includefiles";
+
+    /** Configuration key. */
+    String CONFIG_LOCALE = "locale";
+
+    /** Configuration key. */
+    String CONFIG_REFERENCE_PATH = "resource";
+
+    /** Configuration key. */
+    String CONFIG_RESOURCE_TYPES = "resourcetypes";
+
+    /** Configuration key. */
+    String CONFIG_SEARCH_TYPES = "searchtypes";
+
+    /** Configuration key. */
+    String CONFIG_SHOW_SITE_SELECTOR = "showsiteselector";
+
+    /** Configuration key. */
+    String CONFIG_START_SITE = "startsite";
+
+    /** Configuration key. */
+    String CONFIG_TAB_IDS = "tabids";
+
+    /** Configuration key. */
+    String CONFIG_TYPES_AVAILABLE = "typesavailable";
+
+    /** Configuration key. */
+    String CONFIG_USE_FORMATS = "useformats";
 
     /** The id for the HTML div containing the gallery dialog. */
     String GALLERY_DIALOG_ID = "galleryDialog";

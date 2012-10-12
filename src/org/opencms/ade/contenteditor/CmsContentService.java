@@ -302,7 +302,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 if (widget instanceof I_CmsADEWidget) {
                     I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
                     widgetName = adeWidget.getWidgetName();
-                    widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file);
+                    widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
                     if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
                         CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
                             widgetName,
@@ -996,7 +996,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if (performedAutoCorrection) {
             content.initDocument();
         }
-        TypeVisitor visitor = new TypeVisitor(file, getWorkplaceLocale(cms));
+        TypeVisitor visitor = new TypeVisitor(file, locale);
         visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
         Entity entity = null;
         if (content.hasLocale(locale) && newLocale) {

@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Base class for select widgets.<p>
@@ -122,23 +123,17 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
     }
 
     /**
-     * Returns the configuration string for the ADE content editor widget.<p>
-     * 
-     * @param cms the OpenCms context
-     * @param schemaType the schema type
-     * @param messages the messages
-     * @param resource the edited resource
-     * 
-     * @return the configuration string
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     public String getConfiguration(
         CmsObject cms,
         A_CmsXmlContentValue schemaType,
         CmsMessages messages,
-        CmsResource resource) {
+        CmsResource resource,
+        Locale contentLocale) {
 
         String result = "";
-        CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(schemaType.getLocale(), messages);
+        CmsDummyWidgetDialog widgetDialog = new CmsDummyWidgetDialog(messages.getLocale(), messages);
         List<CmsSelectWidgetOption> options = parseSelectOptions(cms, widgetDialog, schemaType);
         Iterator<CmsSelectWidgetOption> it = options.iterator();
         int i = 0;

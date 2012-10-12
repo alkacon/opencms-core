@@ -85,15 +85,16 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource)
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     public String getConfiguration(
         CmsObject cms,
         A_CmsXmlContentValue schemaType,
         CmsMessages messages,
-        CmsResource resource) {
+        CmsResource resource,
+        Locale contentLocale) {
 
-        return getJSONConfig(cms, schemaType, messages, resource).toString();
+        return getJSONConfig(cms, schemaType, messages, resource, contentLocale).toString();
     }
 
     /**
@@ -257,28 +258,28 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         long hashId) {
 
         Map<String, String> result = new HashMap<String, String>();
-        result.put(I_CmsGalleryProviderConstants.ReqParam.dialogmode.name(), A_CmsAjaxGallery.MODE_WIDGET);
-        result.put(I_CmsGalleryProviderConstants.ReqParam.types.name(), getGalleryTypes());
+        result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, A_CmsAjaxGallery.MODE_WIDGET);
+        result.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, getGalleryTypes());
         if (param != null) {
-            result.put(I_CmsGalleryProviderConstants.ReqParam.fieldid.name(), param.getId());
+            result.put(I_CmsGalleryProviderConstants.KEY_FIELD_ID, param.getId());
             // use javascript to read the current field value
-            result.put(I_CmsGalleryProviderConstants.ReqParam.currentelement.name(), "'+document.getElementById('"
-                + param.getId()
-                + "').getAttribute('value')+'");
+            result.put(
+                I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT,
+                "'+document.getElementById('" + param.getId() + "').getAttribute('value')+'");
         }
-        result.put(I_CmsGalleryProviderConstants.ReqParam.hashid.name(), "" + hashId);
+        result.put(I_CmsGalleryProviderConstants.KEY_HASH_ID, "" + hashId);
         // the edited resource
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resource)) {
-            result.put(I_CmsGalleryProviderConstants.ReqParam.resource.name(), resource);
+            result.put(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH, resource);
         }
         // the start up gallery path
         CmsGalleryWidgetConfiguration configuration = getWidgetConfiguration(cms, messages, param);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
-            result.put(I_CmsGalleryProviderConstants.ReqParam.gallerypath.name(), configuration.getStartup());
+            result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH, configuration.getStartup());
         }
         // set gallery types if available
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getGalleryTypes())) {
-            result.put(I_CmsGalleryProviderConstants.ReqParam.gallerytypes.name(), configuration.getGalleryTypes());
+            result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_TYPES, configuration.getGalleryTypes());
         }
         return result;
     }
@@ -297,6 +298,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
      * @param schemaType the schema type
      * @param messages the messages
      * @param resource the edited resource
+     * @param contentLocale the content locale
      * 
      * @return  the gallery widget configuration
      */
@@ -304,7 +306,8 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         CmsObject cms,
         I_CmsXmlSchemaType schemaType,
         CmsMessages messages,
-        CmsResource resource) {
+        CmsResource resource,
+        Locale contentLocale) {
 
         JSONObject result = new JSONObject();
         try {
@@ -320,8 +323,8 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
             if (additional != null) {
                 result.merge(additional, true, true);
             }
-
-            result.remove(I_CmsGalleryProviderConstants.ReqParam.currentelement.name());
+            result.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, contentLocale.toString());
+            result.remove(I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT);
         } catch (JSONException e) {
             LOG.error(e.getMessage(), e);
         }
