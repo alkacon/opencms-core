@@ -31,6 +31,7 @@ import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasBlur;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
+import org.opencms.gwt.client.util.CmsExtendedValueChangeEvent;
 import org.opencms.gwt.client.validation.CmsValidationController;
 import org.opencms.gwt.client.validation.I_CmsValidationHandler;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -442,10 +443,11 @@ public class CmsForm {
      * Default handler for value change events of form fields.<p>
      *  
      * @param field the form field for which the event has been fired 
+     * @param inhibitValidation prevents validation of the edited field 
      * 
      * @param newValue the new value 
      */
-    protected void defaultHandleValueChange(I_CmsFormField field, String newValue) {
+    protected void defaultHandleValueChange(I_CmsFormField field, String newValue, boolean inhibitValidation) {
 
         m_editedFields.add(field.getId());
         I_CmsStringModel model = field.getModel();
@@ -457,7 +459,9 @@ public class CmsForm {
         // if the user presses enter, the keypressed event is fired before the change event,
         // so we use a flag to keep track of whether enter was pressed.
         if (!m_pressedEnter) {
-            validateField(field);
+            if (!inhibitValidation) {
+                validateField(field);
+            }
         } else {
             validateAndSubmit();
         }
@@ -569,7 +573,12 @@ public class CmsForm {
                  */
                 public void onValueChange(ValueChangeEvent event) {
 
-                    defaultHandleValueChange(formField, widget.getFormValueAsString());
+                    boolean inhibitValidation = false;
+                    if (event instanceof CmsExtendedValueChangeEvent) {
+                        CmsExtendedValueChangeEvent extEvent = (CmsExtendedValueChangeEvent)event;
+                        inhibitValidation = extEvent.isInhibitValidation();
+                    }
+                    defaultHandleValueChange(formField, widget.getFormValueAsString(), inhibitValidation);
                 }
             });
         }

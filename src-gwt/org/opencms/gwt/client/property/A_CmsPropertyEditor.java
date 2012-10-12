@@ -228,6 +228,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         String description = message(Messages.GUI_URLNAME_PROPERTY_DESC_0);
         String label = message(Messages.GUI_URLNAME_PROPERTY_0);
         final CmsTextBox textbox = new CmsTextBox();
+        textbox.setTriggerChangeOnKeyPress(true);
+        textbox.setInhibitValidationForKeypresses(true);
 
         CmsBasicFormField result = new CmsBasicFormField(FIELD_URLNAME, description, label, null, textbox);
         String urlName = m_handler.getName();

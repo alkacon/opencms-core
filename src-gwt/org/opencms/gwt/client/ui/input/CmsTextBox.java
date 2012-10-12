@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsExtendedValueChangeEvent;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             } else if (m_ghostMode) {
                 setGhostStyleEnabled(true, true);
             }
-            checkForChange();
+            checkForChange(false);
         }
 
         /**
@@ -134,7 +135,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
                     public void execute() {
 
-                        checkForChange();
+                        checkForChange(m_inhibitValidationForKeypresses);
                     }
                 });
 
@@ -172,7 +173,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
             }
             if (!event.getValue().equals(m_currentValue)) {
                 m_currentValue = event.getValue();
-                fireValueChangedEvent();
+                fireValueChangedEvent(false);
             }
         }
 
@@ -188,20 +189,22 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
         /**
          * Checks if the current text box value has changed and fires the value changed event.<p>
+         * 
+         * @param inhibitValidation if set to true, validation should not be performed directly by event handlers 
          */
-        protected void checkForChange() {
+        protected void checkForChange(boolean inhibitValidation) {
 
             if (!m_textbox.getValue().equals(m_currentValue)) {
 
                 m_currentValue = getFormValueAsString();
-                fireValueChangedEvent();
+                fireValueChangedEvent(inhibitValidation);
             }
         }
-
     }
 
     /** The CSS bundle used for this widget. */
     public static final I_CmsInputCss CSS = I_CmsInputLayoutBundle.INSTANCE.inputCss();
+
     /** The widget type identifier for this widget. */
     public static final String WIDGET_TYPE = "string";
 
@@ -267,6 +270,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /** Flag indicating if the value change event should also be fired after key press events. */
     private boolean m_triggerChangeOnKeyPress;
+
+    /** Flag which controls whether validation should be inhibited when value change events are fired as a consequence of key presses. */
+    boolean m_inhibitValidationForKeypresses;
 
     /**
      * Constructs a new instance of this widget.
@@ -686,6 +692,16 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Sets the 'inhibitValidationForKeypresses' flag.<p>
+     * 
+     * @param inhibitValidationForKeypresses the new flag value 
+     */
+    public void setInhibitValidationForKeypresses(boolean inhibitValidationForKeypresses) {
+
+        m_inhibitValidationForKeypresses = inhibitValidationForKeypresses;
+    }
+
+    /**
      * Sets the name of the input box.
      * 
      * @param name of the input box
@@ -742,12 +758,28 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     }
 
-    /** 
-     * Helper method for firing a 'value changed' event.<p>
+    /**
+     * Fires a value change event.<p>
      */
     protected void fireValueChangedEvent() {
 
-        ValueChangeEvent.fire(this, getFormValueAsString());
+        fireValueChangedEvent(false);
+    }
+
+    /** 
+     * Helper method for firing a 'value changed' event.<p>
+     * 
+     * @param inhibitValidation if true, some additional information will be added to the event to ask event handlers to not perform any validation directly
+     */
+    protected void fireValueChangedEvent(boolean inhibitValidation) {
+
+        if (!inhibitValidation) {
+            ValueChangeEvent.fire(this, getFormValueAsString());
+        } else {
+            CmsExtendedValueChangeEvent<String> e = new CmsExtendedValueChangeEvent<String>(getFormValueAsString());
+            e.setInhibitValidation(true);
+            this.fireEvent(e);
+        }
     }
 
     /**
