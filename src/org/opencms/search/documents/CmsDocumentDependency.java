@@ -189,7 +189,7 @@ public final class CmsDocumentDependency {
             String langString = suffix.substring(0, 2);
             locale = suffix.length() == 5 ? new Locale(langString, suffix.substring(3, 5)) : new Locale(langString);
         }
-        if ((locale == null) || !OpenCms.getLocaleManager().getDefaultLocales().contains(locale)) {
+        if ((locale == null) || !OpenCms.getLocaleManager().getAvailableLocales().contains(locale)) {
             // check if a locale information is present
             locale = CmsLocaleManager.getDefaultLocale();
         }
