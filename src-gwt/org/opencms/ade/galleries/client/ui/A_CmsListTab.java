@@ -32,6 +32,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -49,6 +50,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.LinkedHashMap;
 
+import com.google.common.base.Supplier;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -473,9 +475,23 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      */
     protected CmsUploadButton createUploadButtonForTarget(String target) {
 
-        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler();
+        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(
+
+        new Supplier<I_CmsUploadContext>() {
+
+            public I_CmsUploadContext get() {
+
+                return new I_CmsUploadContext() {
+
+                    public void onUploadFinished() {
+
+                        getTabHandler().updateIndex();
+                    }
+
+                };
+            }
+        });
         buttonHandler.setTargetFolder(target);
-        buttonHandler.setCloseHandler(getTabHandler());
         CmsUploadButton uploadButton = new CmsUploadButton(buttonHandler);
 
         //uploadButton.setTargetFolder(target);

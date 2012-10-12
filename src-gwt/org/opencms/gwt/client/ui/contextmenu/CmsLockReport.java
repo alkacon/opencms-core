@@ -70,6 +70,8 @@ public class CmsLockReport implements I_CmsHasContextMenuCommand, I_CmsContextMe
             public void execute() {
 
                 onUnlock();
+                handler.refreshResource(structureId);
+
             }
         });
     }

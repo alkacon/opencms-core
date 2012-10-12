@@ -34,10 +34,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Upload dialog entry class.<p>
@@ -54,10 +51,10 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     public static native void exportOpenUploadDialog() /*-{
 
-        $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
-                uploadTarget) {
-            @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
-        };
+      $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
+            uploadTarget) {
+         @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
+      };
 
     }-*/;
 
@@ -70,14 +67,9 @@ public class CmsUpload extends A_CmsEntryPoint {
 
         try {
             A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
-            dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+            dialog.setContext(new I_CmsUploadContext() {
 
-                /**
-                 * The on close action.<p>
-                 * 
-                 * @param event the event
-                 */
-                public void onClose(CloseEvent<PopupPanel> event) {
+                public void onUploadFinished() {
 
                     Window.Location.reload();
                 }
@@ -104,19 +96,15 @@ public class CmsUpload extends A_CmsEntryPoint {
         } else {
             try {
                 A_CmsUploadDialog dialog = GWT.create(CmsUploadDialogImpl.class);
-                Runnable onFinish = new Runnable() {
+                I_CmsUploadContext context = new I_CmsUploadContext() {
 
-                    /**
-                     * The action to execute when the dialog has finished.<p>
-                     * @see java.lang.Runnable#run()
-                     */
-                    public void run() {
+                    public void onUploadFinished() {
 
                         String closeLink = getCloseLink() + "?resource=";
                         Window.Location.assign(CmsCoreProvider.get().link(closeLink));
                     }
                 };
-                dialog.setFinishAction(onFinish);
+                dialog.setContext(context);
                 dialog.setTargetFolder(getTargetFolder());
                 dialog.loadAndShow();
             } catch (Exception e) {
@@ -134,7 +122,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
+      return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 
@@ -145,7 +133,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getDialogMode() /*-{
 
-        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
+      return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
 
     }-*/;
 
@@ -156,7 +144,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     private native String getTargetFolder() /*-{
 
-        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
+      return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
 
     }-*/;
 }

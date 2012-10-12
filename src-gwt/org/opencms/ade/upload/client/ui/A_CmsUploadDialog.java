@@ -27,6 +27,7 @@
 
 package org.opencms.ade.upload.client.ui;
 
+import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.Messages;
 import org.opencms.ade.upload.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -71,6 +72,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Supplier;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -117,6 +119,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     /** The drag and drop message. */
     protected HTML m_dragAndDropMessage;
 
+    /** The upload context. */
+    protected I_CmsUploadContext m_context;
+
     /** The scroll panel. */
     protected CmsScrollPanel m_scrollPanel;
 
@@ -152,9 +157,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /** The Map of files to upload. */
     private Map<String, CmsFileInfo> m_filesToUpload;
-
-    /** The action to execute when the upload dialog is finished. */
-    private Runnable m_finishAction;
 
     /** Stores the content height of the selection dialog. */
     private int m_firstContentHeight;
@@ -279,9 +281,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
              */
             public void onClose(CloseEvent<PopupPanel> e) {
 
-                Runnable finishAction = getFinishAction();
-                if (finishAction != null) {
-                    finishAction.run();
+                if (m_context != null) {
+                    m_context.onUploadFinished();
                 }
             }
         });
@@ -318,16 +319,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      * @return the message
      */
     public abstract String getFileSizeTooLargeMessage(CmsFileInfo file);
-
-    /**
-     * Returns the action which should be executed when the upload dialog is finished.<p>
-     * 
-     * @return an action to run when the upload dialog is finished 
-     */
-    public Runnable getFinishAction() {
-
-        return m_finishAction;
-    }
 
     /**
      * Returns <code>true</code> if the file is too large, <code>false</code> otherwise.<p>
@@ -420,23 +411,23 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                     }
                 }
                 m_progressInfo.finish();
-                final Runnable finishAction = getFinishAction();
-                if (hookUri != null) {
-                    // clear finish action; we want to show another dialog, assign it our finish action instead 
-                    setFinishAction(null);
-                }
+                final I_CmsUploadContext context = m_context;
                 closeOnSuccess();
                 if (hookUri != null) {
-                    CloseHandler<PopupPanel> closeHandler = null;
-                    if (finishAction != null) {
-                        closeHandler = new CloseHandler<PopupPanel>() {
+                    // Set the context to be null so that it isn't called when the upload dialog closed;
+                    // we want it to be called when the upload property dialog is closed instead.<p>
+                    m_context = null;
+                    CloseHandler<PopupPanel> closeHandler;
+                    closeHandler = new CloseHandler<PopupPanel>() {
 
-                            public void onClose(CloseEvent<PopupPanel> event) {
+                        public void onClose(CloseEvent<PopupPanel> event) {
 
-                                finishAction.run();
+                            if (context != null) {
+                                context.onUploadFinished();
                             }
-                        };
-                    }
+                        }
+                    };
+
                     String title = Messages.get().key(Messages.GUI_UPLOAD_HOOK_DIALOG_TITLE_0);
                     CmsUploadHookDialog.openDialog(title, hookUri, uploadedFilesList, closeHandler);
                 }
@@ -449,13 +440,13 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
-     * Sets an action that should be executed if the upload dialog is finished.<p>
+     * Sets the upload context.<p>
      * 
-     * @param action the action to execute when finished 
+     * @param context the new upload context
      */
-    public void setFinishAction(Runnable action) {
+    public void setContext(I_CmsUploadContext context) {
 
-        m_finishAction = action;
+        m_context = context;
     }
 
     /**
@@ -1197,7 +1188,14 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         });
         addButton(m_okButton);
 
-        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler();
+        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(
+            new Supplier<I_CmsUploadContext>() {
+
+                public I_CmsUploadContext get() {
+
+                    return m_context;
+                }
+            });
         buttonHandler.setUploadDialog(this);
         // add a new upload button
         m_uploadButton = new CmsUploadButton(buttonHandler);

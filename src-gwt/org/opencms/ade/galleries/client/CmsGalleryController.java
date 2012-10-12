@@ -1021,7 +1021,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 @Override
                 public void execute() {
 
-                    start(0, true);
+                    start(200, true);
                     getGalleryService().getSearch(m_dialogBean, this);
                 }
 
@@ -1333,7 +1333,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 @Override
                 public void execute() {
 
-                    start(200, true);
+                    start(0, true);
                     m_currentCallId++;
                     m_callId = m_currentCallId;
                     m_loading = true;
@@ -1352,6 +1352,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 @Override
                 public void onResponse(CmsGallerySearchBean searchObj) {
 
+                    stop(false);
                     if (m_callId != m_currentCallId) {
                         return;
                     }
@@ -1365,7 +1366,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_searchObject.setPage(searchObj.getPage());
                     m_searchObject.setLastPage(searchObj.getLastPage());
                     m_handler.onResultTabSelection(m_searchObject);
-                    stop(false);
+
                 }
             };
             searchAction.execute();
