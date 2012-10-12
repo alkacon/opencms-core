@@ -133,7 +133,7 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
             CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, params);
             if (index != null) {
                 CmsSolrQuery query = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(req.getParameterMap()));
-                index.writeResponse(res, index.search(cms, query));
+                index.writeResponse(res, index.search(cms, query, true));
             } else {
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
                 String message = Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName);
