@@ -27,10 +27,8 @@
 
 package org.opencms.ade.contenteditor;
 
-import com.alkacon.acacia.shared.AttributeConfiguration;
 import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
-import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.acacia.shared.Type;
 import com.alkacon.acacia.shared.ValidationResult;
 import com.alkacon.vie.shared.I_Entity;
@@ -39,7 +37,6 @@ import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
-import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -53,16 +50,11 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.widgets.A_CmsWidget;
-import org.opencms.widgets.I_CmsADEWidget;
-import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
@@ -74,16 +66,10 @@ import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.content.CmsXmlContentTab;
-import org.opencms.xml.content.I_CmsXmlContentHandler;
-import org.opencms.xml.types.A_CmsXmlContentValue;
-import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
-import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -103,291 +89,6 @@ import org.dom4j.Element;
  */
 public class CmsContentService extends CmsGwtService implements I_CmsContentService {
 
-    /**
-     * Visitor to read all types and attribute configurations within a content definition.<p>
-     */
-    protected class TypeVisitor {
-
-        /** The attribute configurations. */
-        private Map<String, AttributeConfiguration> m_attributeConfigurations;
-
-        /** The content handler. */
-        private I_CmsXmlContentHandler m_contentHandler;
-
-        /** The content resource. */
-        private CmsFile m_file;
-
-        /** The content locale. */
-        private Locale m_locale;
-
-        /** The messages. */
-        private CmsMultiMessages m_messages;
-
-        /** The registered types. */
-        private Map<String, I_Type> m_registeredTypes;
-
-        /** The tab informations. */
-        private List<TabInfo> m_tabInfos;
-
-        /** The widget configurations. */
-        private Map<String, CmsExternalWidgetConfiguration> m_widgetConfigurations;
-
-        /**
-         * Constructor.<p>
-         * 
-         * @param file the content file
-         * @param locale the content locale
-         */
-        protected TypeVisitor(CmsFile file, Locale locale) {
-
-            m_file = file;
-            m_locale = locale;
-        }
-
-        /**
-         * Returns the tabInfos.<p>
-         *
-         * @return the tabInfos
-         */
-        public List<TabInfo> getTabInfos() {
-
-            return m_tabInfos;
-        }
-
-        /**
-         * Returns the attribute configurations.<p>
-         * 
-         * @return the attribute configurations
-         */
-        protected Map<String, AttributeConfiguration> getAttributeConfigurations() {
-
-            return m_attributeConfigurations;
-        }
-
-        /**
-         * Returns the types of the visited content definition.<p>
-         * 
-         * @return the types
-         */
-        protected Map<String, I_Type> getTypes() {
-
-            return m_registeredTypes;
-        }
-
-        /**
-         * Returns the external widget configurations.<p>
-         * 
-         * @return the external widget configurations
-         */
-        protected Collection<CmsExternalWidgetConfiguration> getWidgetConfigurations() {
-
-            return m_widgetConfigurations.values();
-        }
-
-        /**
-         * Visits all types within the XML content definition.<p>
-         * 
-         * @param xmlContentDefinition the content definition
-         * @param locale the locale
-         */
-        protected void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
-
-            m_contentHandler = xmlContentDefinition.getContentHandler();
-            CmsMessages messages = null;
-            m_messages = new CmsMultiMessages(locale);
-            try {
-                messages = OpenCms.getWorkplaceManager().getMessages(locale);
-                m_messages.addMessages(messages);
-                m_messages.addMessages(m_contentHandler.getMessages(locale));
-            } catch (Exception e) {
-                //ignore
-            }
-            // generate a new multi messages object and add the messages from the workplace
-
-            m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
-            m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
-            m_registeredTypes = new HashMap<String, I_Type>();
-            readTypes(xmlContentDefinition, "");
-            m_tabInfos = collectTabInfos(xmlContentDefinition);
-        }
-
-        /**
-         * Returns the tab informations for the given content definition.<p>
-         * 
-         * @param definition the content definition
-         * 
-         * @return the tab informations
-         */
-        private List<TabInfo> collectTabInfos(CmsXmlContentDefinition definition) {
-
-            List<TabInfo> result = new ArrayList<TabInfo>();
-            if (definition.getContentHandler().getTabs() != null) {
-                for (CmsXmlContentTab xmlTab : definition.getContentHandler().getTabs()) {
-                    String tabName = m_messages.keyDefault(A_CmsWidget.LABEL_PREFIX
-                        + definition.getInnerName()
-                        + "."
-                        + xmlTab.getTabName(), xmlTab.getTabName());
-                    result.add(new TabInfo(tabName, xmlTab.getIdName(), xmlTab.getStartName(), xmlTab.isCollapsed()));
-                }
-            }
-            return result;
-        }
-
-        /**
-         * Returns the help information for this value.<p>
-         * 
-         * @param value the value
-         * 
-         * @return the help information
-         */
-        private String getHelp(I_CmsXmlSchemaType value) {
-
-            StringBuffer result = new StringBuffer(64);
-            result.append(A_CmsWidget.LABEL_PREFIX);
-            result.append(getTypeKey(value));
-            result.append(A_CmsWidget.HELP_POSTFIX);
-            return m_messages.keyDefault(result.toString(), value.getName());
-        }
-
-        /**
-         * Returns the label for this value.<p>
-         * 
-         * @param value the value
-         * 
-         * @return the label
-         */
-        private String getLabel(I_CmsXmlSchemaType value) {
-
-            StringBuffer result = new StringBuffer(64);
-            result.append(A_CmsWidget.LABEL_PREFIX);
-            result.append(getTypeKey(value));
-            return m_messages.keyDefault(result.toString(), value.getName());
-        }
-
-        /**
-         * Returns the schema type message key.<p>
-         * 
-         * @param value the schema type
-         * 
-         * @return the schema type message key
-         */
-        private String getTypeKey(I_CmsXmlSchemaType value) {
-
-            StringBuffer result = new StringBuffer(64);
-            result.append(value.getContentDefinition().getInnerName());
-            result.append('.');
-            result.append(value.getName());
-            return result.toString();
-        }
-
-        /**
-         * Reads the attribute configuration for the given schema type. May return <code>null</code> if no special configuration was set.<p>
-         * 
-         * @param schemaType the schema type
-         * @param path the attribute path
-         * 
-         * @return the attribute configuration
-         */
-        private AttributeConfiguration readConfiguration(A_CmsXmlContentValue schemaType, String path) {
-
-            AttributeConfiguration result = null;
-            String widgetName = null;
-            String widgetConfig = null;
-            CmsObject cms = getCmsObject();
-            try {
-
-                I_CmsWidget widget = schemaType.getContentDefinition().getContentHandler().getWidget(schemaType);
-                widgetName = widget.getClass().getName();
-                widgetConfig = widget.getConfiguration();
-                if (widget instanceof I_CmsADEWidget) {
-                    I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
-                    widgetName = adeWidget.getWidgetName();
-                    widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
-                    if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
-                        CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
-                            widgetName,
-                            adeWidget.getInitCall(),
-                            adeWidget.getJavaScriptResourceLinks(cms),
-                            adeWidget.getCssResourceLinks(cms));
-                        m_widgetConfigurations.put(widgetName, externalConfiguration);
-                    }
-                }
-            } catch (Exception e) {
-                // may happen if no widget was set for the value
-                LOG.debug(e.getMessage(), e);
-            }
-            result = new AttributeConfiguration(
-                getLabel(schemaType),
-                getHelp(schemaType),
-                widgetName,
-                widgetConfig,
-                readDefaultValue(schemaType, path));
-            return result;
-        }
-
-        /**
-         * Reads the default value for the given type.<p>
-         * 
-         * @param schemaType the schema type
-         * @param path the element path
-         * 
-         * @return the default value
-         */
-        private String readDefaultValue(I_CmsXmlSchemaType schemaType, String path) {
-
-            return m_contentHandler.getDefault(getCmsObject(), m_file, schemaType, path, m_locale);
-        }
-
-        /**
-         * Reads the types from the given content definition and adds the to the map of already registered
-         * types if necessary.<p>
-         * 
-         * @param xmlContentDefinition the XML content definition
-         * @param path the element path
-         */
-        private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
-
-            String typeName = getTypeUri(xmlContentDefinition);
-            if (m_registeredTypes.containsKey(typeName)) {
-                return;
-            }
-            Type type = new Type(typeName);
-            type.setChoiceMaxOccurrence(xmlContentDefinition.getChoiceMaxOccurs());
-            m_registeredTypes.put(typeName, type);
-            if (type.isChoice()) {
-                Type choiceType = new Type(typeName + "/" + Type.CHOICE_ATTRIBUTE_NAME);
-                m_registeredTypes.put(choiceType.getId(), choiceType);
-                type.addAttribute(
-                    Type.CHOICE_ATTRIBUTE_NAME,
-                    choiceType.getId(),
-                    1,
-                    xmlContentDefinition.getChoiceMaxOccurs());
-                type = choiceType;
-            }
-            for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
-
-                String subTypeName = null;
-                String childPath = path + "/" + subType.getName();
-                String subAttributeName = getAttributeName(subType.getName(), typeName);
-                AttributeConfiguration config = readConfiguration((A_CmsXmlContentValue)subType, childPath);
-                if (config != null) {
-                    m_attributeConfigurations.put(subAttributeName, config);
-                }
-                if (subType.isSimpleType()) {
-                    subTypeName = TYPE_NAME_PREFIX + subType.getTypeName();
-                    if (!m_registeredTypes.containsKey(subTypeName)) {
-                        m_registeredTypes.put(subTypeName, new Type(subTypeName));
-                    }
-                } else {
-                    CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
-                    subTypeName = getTypeUri(subTypeDefinition);
-                    readTypes(subTypeDefinition, childPath);
-                }
-                type.addAttribute(subAttributeName, subTypeName, subType.getMinOccurs(), subType.getMaxOccurs());
-            }
-        }
-    }
-
     /** The logger for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsContentService.class);
 
@@ -395,7 +96,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     private static final long serialVersionUID = 7873052619331296648L;
 
     /** The type name prefix. */
-    private static final String TYPE_NAME_PREFIX = "http://opencms.org/types/";
+    static final String TYPE_NAME_PREFIX = "http://opencms.org/types/";
 
     /** The current users workplace locale. */
     private Locale m_workplaceLocale;
@@ -410,6 +111,19 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     public static String getAttributeName(I_CmsXmlContentValue contentValue) {
 
         return getTypeUri(contentValue.getContentDefinition()) + "/" + contentValue.getName();
+    }
+
+    /**
+     * Returns the entity attribute name to use for this element.<p>
+     * 
+     * @param elementName the element name
+     * @param parentType the parent type
+     * 
+     * @return the attribute name
+     */
+    public static String getAttributeName(String elementName, String parentType) {
+
+        return parentType + "/" + elementName;
     }
 
     /**
@@ -670,19 +384,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * Returns the entity attribute name to use for this element.<p>
-     * 
-     * @param elementName the element name
-     * @param parentType the parent type
-     * 
-     * @return the attribute name
-     */
-    protected String getAttributeName(String elementName, String parentType) {
-
-        return parentType + "/" + elementName;
-    }
-
-    /**
      * Returns the element name to the given element.<p>
      * 
      * @param attributeName the attribute name
@@ -828,7 +529,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     protected Map<String, I_Type> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
 
-        TypeVisitor visitor = new TypeVisitor(null, locale);
+        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), null, locale);
         visitor.visitTypes(xmlContentDefinition, locale);
         return visitor.getTypes();
     }
@@ -996,7 +697,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if (performedAutoCorrection) {
             content.initDocument();
         }
-        TypeVisitor visitor = new TypeVisitor(file, locale);
+        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, locale);
         visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
         Entity entity = null;
         if (content.hasLocale(locale) && newLocale) {

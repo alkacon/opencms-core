@@ -89,6 +89,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -171,6 +172,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void addToRecent(String clientId) {
 
         m_controller.addToRecentList(clientId);
+    }
+
+    public void checkNewWidgetsAvailable(AsyncCallback<Boolean> asyncCallback) {
+
+        // TODO: Auto-generated method stub
+
     }
 
     /**

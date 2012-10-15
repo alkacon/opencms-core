@@ -38,6 +38,7 @@ import org.opencms.util.CmsUUID;
 
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The container-page editor implementation of the XML content editor handler.<p>
@@ -90,39 +91,60 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * @param element the container element widget
      * @param inline <code>true</code> to open the in-line editor for the given element if available
      */
-    public void openDialog(final CmsContainerPageElementPanel element, boolean inline) {
+    public void openDialog(final CmsContainerPageElementPanel element, final boolean inline) {
 
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
         m_currentElementId = element.getId();
-        if (m_handler.m_controller.getData().isUseClassicEditor()) {
-            CmsEditableData editableData = new CmsEditableData();
-            editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-            editableData.setStructureId(new CmsUUID(CmsContainerpageController.getServerId(m_currentElementId)));
-            editableData.setSitePath(element.getSitePath());
-            CmsContentEditorDialog.get().openEditDialog(editableData, false, this);
-        } else {
-            Command onClose = new Command() {
+        final Runnable classicEdit = new Runnable() {
 
-                public void execute() {
+            public void run() {
 
-                    onClose(element.getSitePath(), false);
-                }
-            };
-            if (inline && CmsContentEditor.hasEditable(element.getElement())) {
-                CmsContentEditor.getInstance().openInlineEditor(
-                    new CmsUUID(CmsContainerpageController.getServerId(getCurrentElementId())),
-                    CmsCoreProvider.get().getLocale(),
-                    element,
-                    onClose);
-            } else {
-                CmsContentEditor.getInstance().openFormEditor(
-                    CmsCoreProvider.get().getLocale(),
-                    CmsContainerpageController.getServerId(getCurrentElementId()),
-                    null,
-                    null,
-                    onClose);
+                CmsEditableData editableData = new CmsEditableData();
+                editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+                editableData.setStructureId(new CmsUUID(CmsContainerpageController.getServerId(m_currentElementId)));
+                editableData.setSitePath(element.getSitePath());
+                CmsContentEditorDialog.get().openEditDialog(editableData, false, CmsContentEditorHandler.this);
             }
+        };
+        if (m_handler.m_controller.getData().isUseClassicEditor()) {
+            classicEdit.run();
+        } else {
+            final String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
+            final String editorLocale = CmsCoreProvider.get().getLocale();
+            m_handler.checkNewWidgetsAvailable(new AsyncCallback<Boolean>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // TODO: Auto-generated method stub
+
+                }
+
+                public void onSuccess(Boolean result) {
+
+                    if (result.booleanValue()) {
+                        Command onClose = new Command() {
+
+                            public void execute() {
+
+                                onClose(element.getSitePath(), false);
+                            }
+                        };
+                        if (inline && CmsContentEditor.hasEditable(element.getElement())) {
+                            CmsContentEditor.getInstance().openInlineEditor(
+                                new CmsUUID(serverId),
+                                editorLocale,
+                                element,
+                                onClose);
+                        } else {
+                            CmsContentEditor.getInstance().openFormEditor(editorLocale, serverId, null, null, onClose);
+                        }
+                    } else {
+                        classicEdit.run();
+                    }
+                }
+
+            });
         }
     }
 

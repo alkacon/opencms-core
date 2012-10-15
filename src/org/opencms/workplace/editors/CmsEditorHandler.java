@@ -27,15 +27,22 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.ade.contenteditor.CmsContentTypeVisitor;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
+
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -95,6 +102,30 @@ public class CmsEditorHandler implements I_CmsEditorHandler {
                 userAgent);
         }
 
+        Object resObj = cms.getRequestContext().getAttribute("EDITORHANDLER_RESOURCE");
+        if (resObj != null) {
+            CmsResource resource = (CmsResource)resObj;
+            if ((editorUri != null) && editorUri.contains("acacia")) {
+                if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                    String fallback = "/system/workplace/editors/xmlcontent/editor.jsp";
+                    try {
+                        CmsFile file = cms.readFile(resource);
+                        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(
+                            cms,
+                            cms.readFile(resource),
+                            Locale.ENGLISH);
+                        visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH);
+                        if (visitor.hasNonAdeWidgets()) {
+                            editorUri = fallback;
+                        }
+                    } catch (CmsException e) {
+                        editorUri = fallback;
+                    }
+                }
+            }
+        }
+
         return editorUri;
     }
 
@@ -115,6 +146,7 @@ public class CmsEditorHandler implements I_CmsEditorHandler {
         } else {
             // get the resource type id of the edited resource
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
+            jsp.getRequestContext().setAttribute("EDITORHANDLER_RESOURCE", res);
             resTypeId = res.getTypeId();
         }
 
