@@ -55,6 +55,7 @@ import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.util.CmsCollectionUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
@@ -242,20 +243,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         setShowSiteSelector(m_configuration.isShowSiteSelector());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration.getStartSite())) {
             setStartSite(m_configuration.getStartSite());
-        }
-    }
-
-    /**
-     * Removes the types tab from the list of configured tabs.<p>
-     * This will only take effect when executed before tab initialization.<p>
-     */
-    protected void removeTypesTab() {
-
-        List<GalleryTabId> tabs = new ArrayList<GalleryTabId>(Arrays.asList(m_tabIds));
-        if (tabs.contains(GalleryTabId.cms_tab_types)) {
-            m_tabIds = new GalleryTabId[tabs.size() - 1];
-            tabs.remove(GalleryTabId.cms_tab_types);
-            m_tabIds = tabs.toArray(new GalleryTabId[tabs.size()]);
         }
     }
 
@@ -655,7 +642,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public void getSubEntries(
         final String rootPath,
         final boolean isRoot,
-        final AsyncCallback<List<CmsSitemapEntryBean>> callback) {
+        final I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback) {
 
         CmsRpcAction<List<CmsSitemapEntryBean>> action = new CmsRpcAction<List<CmsSitemapEntryBean>>() {
 
@@ -670,7 +657,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             protected void onResponse(List<CmsSitemapEntryBean> result) {
 
                 stop(false);
-                callback.onSuccess(result);
+                callback.execute(result);
             }
 
         };
@@ -1445,6 +1432,22 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
         };
         action.execute();
+    }
+
+    /**
+     * Removes the types tab from the list of configured tabs.<p>
+     * This will only take effect when executed before tab initialization.<p>
+     */
+    protected void removeTypesTab() {
+
+        if (m_tabIds != null) {
+            List<GalleryTabId> tabs = new ArrayList<GalleryTabId>(Arrays.asList(m_tabIds));
+            if (tabs.contains(GalleryTabId.cms_tab_types)) {
+                m_tabIds = new GalleryTabId[tabs.size() - 1];
+                tabs.remove(GalleryTabId.cms_tab_types);
+                m_tabIds = tabs.toArray(new GalleryTabId[tabs.size()]);
+            }
+        }
     }
 
     /**
