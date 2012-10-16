@@ -73,10 +73,10 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     protected String m_ghostValue;
 
     /** The widget displayed in the opener. */
-    protected TextBox m_openerWidget;
+    protected CmsSimpleTextBox m_openerWidget;
 
     /** The faidpanel of this input box. */
-    Panel m_faidpanel;
+    Panel m_fadePanel;
 
     /** A map from select options to their label texts. */
     private Map<String, String> m_items;
@@ -180,8 +180,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        m_openerWidget.addValueChangeHandler(handler);
-        return super.addValueChangeHandler(handler);
+        return m_openerWidget.addValueChangeHandler(handler);
     }
 
     /**
@@ -472,17 +471,16 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     protected void initOpener() {
 
         m_mainPanel = new SimplePanel();
-        m_faidpanel = new SimplePanel();
-        m_openerWidget = new TextBox();
-        m_panel.add(m_faidpanel);
+        m_fadePanel = new SimplePanel();
+        m_openerWidget = new CmsSimpleTextBox();
+        m_panel.add(m_fadePanel);
 
         m_openerWidget.addBlurHandler(new BlurHandler() {
 
             public void onBlur(BlurEvent event) {
 
-                m_panel.add(m_faidpanel);
+                m_panel.add(m_fadePanel);
                 m_openerWidget.getElement().setTitle(m_openerWidget.getText());
-
             }
         });
         m_openerWidget.addFocusHandler(new FocusHandler() {
@@ -490,14 +488,14 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
             public void onFocus(FocusEvent event) {
 
                 // on focus remove the fader.
-                m_panel.remove(m_faidpanel);
+                m_panel.remove(m_fadePanel);
                 m_openerWidget.getElement().setTitle("");
 
             }
         });
 
         m_mainPanel.setStyleName(CSS.comboBoxOpener());
-        m_faidpanel.addDomHandler(new ClickHandler() {
+        m_fadePanel.addDomHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
 
@@ -512,7 +510,7 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
             }
         }, ClickEvent.getType());
-        m_faidpanel.setStyleName(CSS.inputBoxFaider());
+        m_fadePanel.setStyleName(CSS.inputBoxFaider());
         m_mainPanel.add(m_openerWidget);
         m_opener.add(m_mainPanel);
 
@@ -534,12 +532,10 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     @Override
     protected void updateOpener(String newValue) {
 
-        TextBox label = m_openerWidget;
-
         CmsLabelSelectCell cell = m_selectCells.get(newValue);
         String openerText = cell.getOpenerText();
-        label.setTitle(openerText);
-        label.setText(newValue);
+        m_openerWidget.setTitle(openerText);
+        m_openerWidget.setValue(newValue, true);
     }
 
     /**

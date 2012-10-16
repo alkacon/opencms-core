@@ -386,7 +386,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            this.onValueSelect(strValue);
+            onValueSelect(strValue);
         }
     }
 
@@ -510,7 +510,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         if (!m_enabled) {
             return;
         }
-
         m_openClose.setDown(true);
         if (m_maxCellWidth == 0) {
             initMaxCellWidth();
