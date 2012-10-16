@@ -330,7 +330,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                                 }
                             }
                             result.setTitle(title);
-                            result.setSubTitle("");
+                            try {
+                                String userName = cms.readUser(folder.getUserLastModified()).getFullName();
+                                result.setUserLastModified(userName);
+                            } catch (CmsException e) {
+                                log(e.getMessage(), e);
+                            }
+                            Date date = new Date(folder.getDateLastModified());
+                            String formattedDate = CmsDateUtil.getDateTime(
+                                date,
+                                DateFormat.MEDIUM,
+                                getWorkplaceLocale());
+                            result.setDateLastModified(formattedDate);
                             result.setType(OpenCms.getResourceManager().getResourceType(folder).getTypeName());
                         } catch (CmsException ex) {
                             notFound = true;
