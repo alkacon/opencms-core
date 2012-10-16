@@ -43,6 +43,7 @@
 		float: left;
 		border-radius: 3px;
 		overflow: hidden;
+		text-align: center;
 	}
 	.formats{
 	 	height: 18px;
