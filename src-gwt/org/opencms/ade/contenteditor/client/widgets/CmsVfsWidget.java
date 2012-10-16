@@ -163,7 +163,6 @@ public class CmsVfsWidget extends Composite implements I_EditWidget {
     public void setValue(String value) {
 
         setValue(value, false);
-
     }
 
     /**

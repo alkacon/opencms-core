@@ -144,7 +144,6 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
         m_comboBox.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
         m_comboBox.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPopup());
         m_comboBox.getTextBox().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().comboBoxInput());
-
         m_comboBox.getTextBox().addKeyUpHandler(new KeyUpHandler() {
 
             public void onKeyUp(KeyUpEvent arg0) {
@@ -248,7 +247,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value) {
 
-        setValue(value, true);
+        setValue(value, false);
 
     }
 

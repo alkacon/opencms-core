@@ -183,7 +183,7 @@ public class CmsCalendarWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value) {
 
-        setValue(value, true);
+        setValue(value, false);
 
     }
 

@@ -269,9 +269,7 @@ public class CmsTextboxWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value) {
 
-        // set the value and start changeEvent
         m_textbox.setText(value);
-
     }
 
     /**

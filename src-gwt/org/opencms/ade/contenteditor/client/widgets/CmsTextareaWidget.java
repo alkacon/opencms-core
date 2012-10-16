@@ -205,9 +205,7 @@ public class CmsTextareaWidget extends Composite implements I_EditWidget, HasRes
      */
     public void setValue(String value) {
 
-        // set the value and start changeEvent
-        setValue(value, true);
-
+        setValue(value, false);
     }
 
     /**
