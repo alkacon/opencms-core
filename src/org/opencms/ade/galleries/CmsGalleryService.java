@@ -968,7 +968,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         if (galleries.isEmpty()) {
             ArrayList<String> vfsFolders = new ArrayList<String>();
-            vfsFolders.add(CmsResource.getFolderPath(resName));
+            vfsFolders.add(CmsResource.getFolderPath(resource.getRootPath()));
             initialSearchObj.setFolders(new HashSet<String>(vfsFolders));
         }
         initialSearchObj.setLocale(data.getLocale());
