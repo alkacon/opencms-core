@@ -37,14 +37,13 @@ import org.opencms.gwt.client.ui.input.category.CmsDataValue;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsIconUtil;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The tab widget for selecting sitemap entries.<p>
@@ -167,21 +166,9 @@ public class CmsSitemapTab extends A_CmsListTab {
             public void load(final CmsLazyTreeItem target) {
 
                 CmsSitemapEntryBean entry = m_entryMap.get(target);
-                AsyncCallback<List<CmsSitemapEntryBean>> callback = new AsyncCallback<List<CmsSitemapEntryBean>>() {
+                I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback = new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
-                    /**
-                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
-                     */
-                    public void onFailure(Throwable caught) {
-
-                        // should never be called 
-
-                    }
-
-                    /**
-                     * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
-                     */
-                    public void onSuccess(List<CmsSitemapEntryBean> result) {
+                    public void execute(List<CmsSitemapEntryBean> result) {
 
                         for (CmsSitemapEntryBean childEntry : result) {
                             CmsLazyTreeItem item = createItem(childEntry);
@@ -192,7 +179,6 @@ public class CmsSitemapTab extends A_CmsListTab {
                 };
 
                 getTabHandler().getSubEntries(entry.getRootPath(), false, callback);
-
             }
         });
     }

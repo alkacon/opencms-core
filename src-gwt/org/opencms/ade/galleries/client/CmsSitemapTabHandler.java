@@ -31,12 +31,11 @@ import org.opencms.ade.galleries.client.ui.CmsSitemapTab;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Handler class for the sitemap tree tab.<p>
@@ -121,7 +120,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
      * @param isRoot <code>true</code> if the requested entry is the root entry
      * @param callback the callback to execute with the result
      */
-    public void getSubEntries(String rootPath, boolean isRoot, AsyncCallback<List<CmsSitemapEntryBean>> callback) {
+    public void getSubEntries(String rootPath, boolean isRoot, I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback) {
 
         m_controller.getSubEntries(rootPath, isRoot, callback);
     }
@@ -152,14 +151,9 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
             getSubEntries(
                 m_controller.getDefaultVfsTabSiteRoot(),
                 true,
-                new AsyncCallback<List<CmsSitemapEntryBean>>() {
+                new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
-                    public void onFailure(Throwable caught) {
-
-                        // nothing to do
-                    }
-
-                    public void onSuccess(List<CmsSitemapEntryBean> result) {
+                    public void execute(List<CmsSitemapEntryBean> result) {
 
                         getTab().fillInitially(result);
                         getTab().onContentChange();
@@ -177,15 +171,9 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         int siteIndex = Integer.parseInt(sortParams);
 
         final CmsSiteSelectorOption option = m_controller.getSitemapSiteSelectorOptions().get(siteIndex);
-        m_controller.getSubEntries(option.getSiteRoot(), true, new AsyncCallback<List<CmsSitemapEntryBean>>() {
+        m_controller.getSubEntries(option.getSiteRoot(), true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
-            public void onFailure(Throwable caught) {
-
-                // will never be called
-
-            }
-
-            public void onSuccess(List<CmsSitemapEntryBean> entries) {
+            public void execute(List<CmsSitemapEntryBean> entries) {
 
                 m_tab.fillInitially(entries);
             }
