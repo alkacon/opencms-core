@@ -45,6 +45,9 @@ public class CmsSitemapEntryBean implements IsSerializable {
     /** The is folder flag. */
     private boolean m_isFolder;
 
+    /** The hidden entry flag. */
+    private boolean m_isHiddenEntry;
+
     /** Flag indicating whether this is entry should be displayed at the top level of the tree. */
     private boolean m_isRoot;
 
@@ -60,7 +63,7 @@ public class CmsSitemapEntryBean implements IsSerializable {
     /** The folder title. */
     private String m_title;
 
-    /** The reource type. */
+    /** The resource type. */
     private String m_type;
 
     /**
@@ -73,6 +76,8 @@ public class CmsSitemapEntryBean implements IsSerializable {
      * @param type the resource type
      * @param isFolder <code>true</code> if this entry represents a folder
      * @param isRoot <code>true</code> if this is a site root entry
+     * @param isHiddenEntry <code>true</code> if this is a hidden entry
+     * 
      */
     public CmsSitemapEntryBean(
         String rootPath,
@@ -81,7 +86,8 @@ public class CmsSitemapEntryBean implements IsSerializable {
         String title,
         String type,
         boolean isFolder,
-        boolean isRoot) {
+        boolean isRoot,
+        boolean isHiddenEntry) {
 
         m_rootPath = rootPath;
         m_sitePath = sitePath;
@@ -90,6 +96,7 @@ public class CmsSitemapEntryBean implements IsSerializable {
         m_type = type;
         m_isFolder = isFolder;
         m_isRoot = isRoot;
+        m_isHiddenEntry = isHiddenEntry;
     }
 
     /**
@@ -190,6 +197,16 @@ public class CmsSitemapEntryBean implements IsSerializable {
     public boolean isFolder() {
 
         return m_isFolder;
+    }
+
+    /**
+     * Returns if this is a hidden entry.<p>
+     * 
+     * @return <code>true</code> if this is a hidden entry
+     */
+    public boolean isHiddenEntry() {
+
+        return m_isHiddenEntry;
     }
 
     /**

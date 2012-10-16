@@ -1411,7 +1411,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             title,
             type,
             ownResource.isFolder(),
-            isRoot);
+            isRoot,
+            navElement.isHiddenNavigationEntry());
     }
 
     /**

@@ -130,6 +130,9 @@ public class CmsSitemapTab extends A_CmsListTab {
             sitemapEntry.getType(),
             true), sitemapEntry.getDisplayName());
         dataValue.setUnselectable();
+        if (sitemapEntry.isHiddenEntry()) {
+            dataValue.setColor("#aaaaaa");
+        }
 
         CmsLazyTreeItem result = new CmsLazyTreeItem(dataValue, true);
         if (getTabHandler().hasSelectResource()) {
