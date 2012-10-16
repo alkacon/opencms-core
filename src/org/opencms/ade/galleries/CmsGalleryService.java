@@ -96,6 +96,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -383,6 +384,19 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     galleryTypeInfos = infos;
                 }
                 data.setGalleries(buildGalleriesList(galleryTypeInfos));
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(conf.getStartFolder())) {
+                    try {
+                        CmsObject cloneCms = OpenCms.initCmsObject(getCmsObject());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(conf.getStartSite())) {
+                            cloneCms.getRequestContext().setSiteRoot(conf.getStartSite());
+                        }
+                        if (cloneCms.existsResource(conf.getStartFolder())) {
+                            data.setStartFolder(cloneCms.getRequestContext().addSiteRoot(conf.getStartFolder()));
+                        }
+                    } catch (CmsException e) {
+                        log(e.getMessage(), e);
+                    }
+                }
                 data.setStartTab(GalleryTabId.cms_tab_results);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !types.isEmpty()) {
                     String lastGallery = getWorkplaceSettings().getLastUsedGallery(types.get(0).getTypeId());
@@ -392,8 +406,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                 }
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery())
-                    && CmsStringUtil.isEmptyOrWhitespaceOnly(data.getCurrentElement())) {
-
+                    && CmsStringUtil.isEmptyOrWhitespaceOnly(data.getCurrentElement())
+                    && CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartFolder())
+                    && (data.getTypes().size() > 1)) {
                     data.setStartTab(GalleryTabId.cms_tab_galleries);
                 }
                 break;
@@ -460,13 +475,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             galleries.add(gallery);
                             result.setGalleries(galleries);
                         }
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(data.getStartFolder())) {
+                            Set<String> folders = new HashSet<String>();
+                            folders.add(data.getStartFolder());
+                            result.setFolders(folders);
+                        }
                         result.setTypes(types);
                         result.setLocale(data.getLocale());
                         result.setScope(CmsGallerySearchScope.everything);
                         result = search(result);
                     }
-                    // remove all types
-                    result.setTypes(null);
+                    if (types.size() > 1) {
+                        // only remove types parameter if there is more than one type available
+                        result.setTypes(null);
+                    }
                 } catch (CmsException e) {
                     logError(e);
                     result = null;
@@ -1094,7 +1116,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @param galleryMode the gallery mode
      * @param referenceSitePath the reference site-path to check permissions for
-     * @param resourceTypesArray the resource types parameter
+     * @param resourceTypesList the resource types parameter
      * 
      * @return the resource types
      * 
@@ -1103,7 +1125,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private List<CmsResourceTypeBean> getResourceTypeBeans(
         GalleryMode galleryMode,
         String referenceSitePath,
-        String[] resourceTypesArray) throws CmsRpcException {
+        List<String> resourceTypesList) throws CmsRpcException {
 
         List<I_CmsResourceType> resourceTypes = null;
         List<String> creatableTypes = null;
@@ -1111,7 +1133,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             case editor:
             case view:
             case widget:
-                resourceTypes = readResourceTypesFromRequest(resourceTypesArray);
+                resourceTypes = readResourceTypesFromRequest(resourceTypesList);
                 creatableTypes = Collections.<String> emptyList();
                 break;
             case ade:
@@ -1392,13 +1414,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the resource types
      */
-    private List<I_CmsResourceType> readResourceTypesFromRequest(String[] resourceTypes) {
+    private List<I_CmsResourceType> readResourceTypesFromRequest(List<String> resourceTypes) {
 
         List<I_CmsResourceType> result = new ArrayList<I_CmsResourceType>();
         if (resourceTypes != null) {
-            for (int i = 0; i < resourceTypes.length; i++) {
+            for (String type : resourceTypes) {
                 try {
-                    result.add(getResourceManager().getResourceType(resourceTypes[i].trim()));
+                    result.add(getResourceManager().getResourceType(type.trim()));
                 } catch (Exception e) {
                     logError(e);
                 }

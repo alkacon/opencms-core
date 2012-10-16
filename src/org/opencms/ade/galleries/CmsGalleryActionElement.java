@@ -43,6 +43,8 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.tools.CmsToolDialog;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -181,7 +183,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         conf.setCurrentElement(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT));
         String resourceTypes = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceTypes)) {
-            conf.setResourceTypes(resourceTypes.split(","));
+            conf.setResourceTypes(Arrays.asList(resourceTypes.split(",")));
         }
         String galleryTypes = getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_GALLERY_TYPES);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryTypes)) {

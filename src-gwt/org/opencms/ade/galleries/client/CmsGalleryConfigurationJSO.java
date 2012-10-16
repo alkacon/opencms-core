@@ -33,6 +33,9 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -147,10 +150,10 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getResourceTypes()
      */
-    public String[] getResourceTypes() {
+    public List<String> getResourceTypes() {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(internalGetResourceTypes())) {
-            return internalGetResourceTypes().split(",");
+            return Arrays.asList(internalGetResourceTypes().split(","));
         }
         return null;
     }
@@ -158,13 +161,23 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getSearchTypes()
      */
-    public String[] getSearchTypes() {
+    public List<String> getSearchTypes() {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(internalGetSearchTypes())) {
-            return internalGetSearchTypes().split(",");
+            return Arrays.asList(internalGetSearchTypes().split(","));
         }
         return null;
     }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getStartFolder()
+     */
+    public native String getStartFolder()/*-{
+        if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_FOLDER] != 'undefined') {
+            return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_FOLDER];
+        }
+        return null;
+    }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getStartSite()

@@ -207,13 +207,13 @@ public interface I_CmsGalleryProviderConstants {
     String CONFIG_SHOW_SITE_SELECTOR = "showsiteselector";
 
     /** Configuration key. */
+    String CONFIG_START_FOLDER = "startfolder";
+
+    /** Configuration key. */
     String CONFIG_START_SITE = "startsite";
 
     /** Configuration key. */
     String CONFIG_TAB_IDS = "tabids";
-
-    /** Configuration key. */
-    String CONFIG_TYPES_AVAILABLE = "typesavailable";
 
     /** Configuration key. */
     String CONFIG_USE_FORMATS = "useformats";

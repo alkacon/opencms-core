@@ -30,6 +30,8 @@ package org.opencms.ade.galleries.shared;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -65,13 +67,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     private String m_referencePath;
 
     /** The resource types. */
-    private String[] m_resourceTypes;
+    private List<String> m_resourceTypes;
 
     /** The search types. */
-    private String[] m_searchTypes;
+    private List<String> m_searchTypes;
 
     /** The show site selector flag. */
     private boolean m_showSiteSelector;
+
+    /** The start folder. */
+    private String m_startFolder;
 
     /** The start site. */
     private String m_startSite;
@@ -111,6 +116,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         m_resourceTypes = configuration.getResourceTypes();
         m_searchTypes = configuration.getSearchTypes();
         m_showSiteSelector = configuration.isShowSiteSelector();
+        m_startFolder = configuration.getStartFolder();
         m_startSite = configuration.getStartSite();
         m_tabIds = configuration.getTabIds();
         m_useFormats = configuration.isUseFormats();
@@ -183,7 +189,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getResourceTypes()
      */
-    public String[] getResourceTypes() {
+    public List<String> getResourceTypes() {
 
         return m_resourceTypes;
     }
@@ -191,9 +197,17 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getSearchTypes()
      */
-    public String[] getSearchTypes() {
+    public List<String> getSearchTypes() {
 
         return m_searchTypes;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getStartFolder()
+     */
+    public String getStartFolder() {
+
+        return m_startFolder;
     }
 
     /**
@@ -329,7 +343,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
      *
      * @param resourceTypes the resourceTypes to set
      */
-    public void setResourceTypes(String... resourceTypes) {
+    public void setResourceTypes(List<String> resourceTypes) {
 
         m_resourceTypes = resourceTypes;
     }
@@ -339,7 +353,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
      *
      * @param searchTypes the searchTypes to set
      */
-    public void setSearchTypes(String... searchTypes) {
+    public void setSearchTypes(List<String> searchTypes) {
 
         m_searchTypes = searchTypes;
     }
@@ -352,6 +366,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public void setShowSiteSelector(boolean showSiteSelector) {
 
         m_showSiteSelector = showSiteSelector;
+    }
+
+    /**
+     * Sets the start folder.<p>
+     * 
+     * @param startFolder the start folder
+     */
+    public void setStartFolder(String startFolder) {
+
+        m_startFolder = startFolder;
     }
 
     /**

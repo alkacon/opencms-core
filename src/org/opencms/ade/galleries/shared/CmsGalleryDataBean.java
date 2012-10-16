@@ -46,8 +46,6 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** Name of the used JS variable. */
     public static final String DICT_NAME = "cms_gallery_data_bean";
 
-    //TODO: add sitemap data, add vfs tree data, add container page data, resource locales if required
-
     /** The category tree entry to display as tree. */
     private List<CmsCategoryTreeEntry> m_categoryTreeEntry;
 
@@ -77,6 +75,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** The site selector options for the sitemap tab. */
     private List<CmsSiteSelectorOption> m_sitemapSiteSelectorOptions;
+
+    /** The start folder. */
+    private String m_startFolder;
 
     /** The start gallery folder. */
     private String m_startGallery;
@@ -183,6 +184,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsSiteSelectorOption> getSitemapSiteSelectorOptions() {
 
         return m_sitemapSiteSelectorOptions;
+    }
+
+    /**
+     * Returns the start folder.<p>
+     *
+     * @return the start folder
+     */
+    public String getStartFolder() {
+
+        return m_startFolder;
     }
 
     /**
@@ -324,6 +335,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setSitemapSiteSelectorOptions(List<CmsSiteSelectorOption> options) {
 
         m_sitemapSiteSelectorOptions = options;
+    }
+
+    /**
+     * Sets the start folder.<p>
+     *
+     * @param startFolder the start folder to set
+     */
+    public void setStartFolder(String startFolder) {
+
+        m_startFolder = startFolder;
     }
 
     /**

@@ -119,6 +119,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /** The gallery search object. */
     protected CmsGallerySearchBean m_searchObject;
 
+    /** The gallery configuration. */
+    private I_CmsGalleryConfiguration m_configuration;
+
     /** The current resource preview. */
     private I_CmsResourcePreview<?> m_currentPreview;
 
@@ -130,6 +133,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
     /** If <code>true</code> the search object is changed <code>false</code> otherwise.  */
     private boolean m_searchObjectChanged = true;
+
+    /** The search able resource types. */
+    private List<CmsResourceTypeBean> m_searchTypes;
 
     /** The start site to set for the site selector. */
     private String m_startSite;
@@ -186,10 +192,11 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     public CmsGalleryController(CmsGalleryControllerHandler handler, final I_CmsGalleryConfiguration conf) {
 
+        m_configuration = conf;
         m_handler = handler;
-        m_handler.m_galleryDialog.setUseFormats(conf.isUseFormats());
-        m_handler.m_galleryDialog.setImageFormats(conf.getImageFormats());
-        m_handler.m_galleryDialog.setImageFormatNames(conf.getImageFormatNames());
+        m_handler.m_galleryDialog.setUseFormats(m_configuration.isUseFormats());
+        m_handler.m_galleryDialog.setImageFormats(m_configuration.getImageFormats());
+        m_handler.m_galleryDialog.setImageFormatNames(m_configuration.getImageFormatNames());
         m_eventBus = new SimpleEventBus();
         addValueChangeHandler(m_handler);
         CmsRpcAction<CmsGalleryDataBean> initAction = new CmsRpcAction<CmsGalleryDataBean>() {
@@ -205,6 +212,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
                 m_dialogBean = result;
                 m_dialogMode = m_dialogBean.getMode();
+                if ((m_dialogBean.getTypes().size() == 1) && (m_dialogMode != GalleryMode.ade)) {
+                    removeTypesTab();
+                }
                 if (m_dialogBean.getStartTab() == GalleryTabId.cms_tab_results) {
                     initialSearch();
                 } else {
@@ -226,12 +236,26 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             }
         };
         initAction.execute();
-        if (conf.getTabIds() != null) {
-            m_tabIds = conf.getTabIds();
+        if (m_configuration.getTabIds() != null) {
+            m_tabIds = m_configuration.getTabIds();
         }
-        setShowSiteSelector(conf.isShowSiteSelector());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(conf.getStartSite())) {
-            setStartSite(conf.getStartSite());
+        setShowSiteSelector(m_configuration.isShowSiteSelector());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration.getStartSite())) {
+            setStartSite(m_configuration.getStartSite());
+        }
+    }
+
+    /**
+     * Removes the types tab from the list of configured tabs.<p>
+     * This will only take effect when executed before tab initialization.<p>
+     */
+    protected void removeTypesTab() {
+
+        List<GalleryTabId> tabs = new ArrayList<GalleryTabId>(Arrays.asList(m_tabIds));
+        if (tabs.contains(GalleryTabId.cms_tab_types)) {
+            m_tabIds = new GalleryTabId[tabs.size() - 1];
+            tabs.remove(GalleryTabId.cms_tab_types);
+            m_tabIds = tabs.toArray(new GalleryTabId[tabs.size()]);
         }
     }
 
@@ -561,6 +585,34 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public CmsGallerySearchScope getSearchScope() {
 
         return m_dialogBean.getScope();
+    }
+
+    /**
+     * Returns the searchable resource types.<p>
+     * 
+     * @return the searchable resource types
+     */
+    public List<CmsResourceTypeBean> getSearchTypes() {
+
+        if (m_searchTypes != null) {
+            return m_searchTypes;
+        }
+        if ((m_configuration != null)
+            && (m_configuration.getSearchTypes() != null)
+            && (m_configuration.getSearchTypes().size() > 0)) {
+            m_searchTypes = new ArrayList<CmsResourceTypeBean>();
+            for (String typeName : m_configuration.getSearchTypes()) {
+                for (CmsResourceTypeBean type : m_dialogBean.getTypes()) {
+                    if (type.getType().equals(typeName) && !m_searchTypes.contains(type)) {
+                        m_searchTypes.add(type);
+                        break;
+                    }
+                }
+            }
+            return m_searchTypes;
+        } else {
+            return m_dialogBean.getTypes();
+        }
     }
 
     /**
@@ -1192,7 +1244,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     public void sortTypes(String sortParams) {
 
-        List<CmsResourceTypeBean> types = m_dialogBean.getTypes();
+        List<CmsResourceTypeBean> types = getSearchTypes();
         SortParams sort = SortParams.valueOf(sortParams);
         switch (sort) {
             case title_asc:
@@ -1667,5 +1719,4 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         }
         return null;
     }
-
 }

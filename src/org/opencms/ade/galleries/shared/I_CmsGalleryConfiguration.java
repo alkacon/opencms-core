@@ -30,6 +30,8 @@ package org.opencms.ade.galleries.shared;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 
+import java.util.List;
+
 /**
  * The gallery configuration interface.<p>
  */
@@ -96,14 +98,21 @@ public interface I_CmsGalleryConfiguration {
      * 
      * @return the available resource types
      */
-    String[] getResourceTypes();
+    List<String> getResourceTypes();
 
     /**
      * Returns the searchable types.<p>
      * 
      * @return the searchable types
      */
-    String[] getSearchTypes();
+    List<String> getSearchTypes();
+
+    /**
+     * Returns the start folder.<p>
+     * 
+     * @return the start folder
+     */
+    String getStartFolder();
 
     /**
      * Returns the start site.<p>

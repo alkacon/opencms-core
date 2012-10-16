@@ -224,7 +224,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
         }
         if ((m_galleryDialog.getTypesTab() != null) && (dialogBean.getTypes() != null)) {
-            setTypesTabContent(dialogBean.getTypes(), searchObj.getTypes());
+            setTypesTabContent(controller.getSearchTypes(), searchObj.getTypes());
         }
         if ((m_galleryDialog.getCategoriesTab() != null) && (dialogBean.getCategories() != null)) {
             setCategoriesTabContent(dialogBean.getCategories());
