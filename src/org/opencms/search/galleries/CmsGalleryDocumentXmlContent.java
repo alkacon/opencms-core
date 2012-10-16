@@ -133,6 +133,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                 locales.append(locale.toString());
                 locales.append(' ');
                 StringBuffer content = new StringBuffer();
+                boolean hasTitleMapping = false;
                 for (String xpath : xmlContent.getNames(locale)) {
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
                     if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
@@ -158,26 +159,23 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                                         String fieldName = null;
                                         if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propertyName)) {
                                             // field is title
+                                            hasTitleMapping = true;
                                             fieldName = I_CmsSearchField.FIELD_TITLE_UNSTORED;
                                         } else {
                                             // if field is not title, it must be description
                                             fieldName = I_CmsSearchField.FIELD_DESCRIPTION;
                                         }
-                                        List<Locale> fieldTargetLocales = getTargetLocalesForField(
-                                            xmlContent,
-                                            fieldName,
-                                            locale);
-                                        // append language individual property field
-                                        for (Locale targetLocale : fieldTargetLocales) {
-                                            items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                                                fieldName,
-                                                targetLocale), extracted);
-                                        }
+                                        putMappingValue(xmlContent, fieldName, locale, items, extracted);
                                     }
                                 }
                             }
                         }
                     }
+                }
+                if (!hasTitleMapping) {
+                    // in case no title mapping present, use the title property for all locales
+                    String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                    putMappingValue(xmlContent, I_CmsSearchField.FIELD_TITLE_UNSTORED, locale, items, title);
                 }
                 if (content.length() > 0) {
                     // append language individual content field
@@ -197,6 +195,29 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
                 e);
+        }
+    }
+
+    /**
+     * Adds the given value to the document items for all target locales.<p>
+     * 
+     * @param xmlContent the XML content 
+     * @param fieldName the field name 
+     * @param sourceLocale the source locale
+     * @param items the document items
+     * @param value the value to put
+     */
+    protected void putMappingValue(
+        A_CmsXmlDocument xmlContent,
+        String fieldName,
+        Locale sourceLocale,
+        Map<String, String> items,
+        String value) {
+
+        List<Locale> fieldTargetLocales = getTargetLocalesForField(xmlContent, fieldName, sourceLocale);
+        // append language individual property field
+        for (Locale targetLocale : fieldTargetLocales) {
+            items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, targetLocale), value);
         }
     }
 
