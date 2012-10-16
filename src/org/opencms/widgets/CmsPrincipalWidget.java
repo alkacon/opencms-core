@@ -28,16 +28,22 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.types.A_CmsXmlContentValue;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides an OpenCms Principal selection widget, for use on a widget dialog.<p>
  * 
  * @since 6.5.6 
  */
-public class CmsPrincipalWidget extends A_CmsWidget {
+public class CmsPrincipalWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** Configuration parameter to set the flags of the principals to display, optional. */
     public static final String CONFIGURATION_FLAGS = "flags";
@@ -75,6 +81,33 @@ public class CmsPrincipalWidget extends A_CmsWidget {
     }
 
     /**
+     * Returns the needed java script for the search button.<p>
+     * 
+     * @param id the id of the widget to generate the search button for
+     * @param form the id of the form where to which the widget belongs
+     * 
+     * @return javascript code
+     */
+    public String getButtonJs(String id, String form) {
+
+        StringBuffer buttonJs = new StringBuffer(8);
+        buttonJs.append("javascript:openPrincipalWin('");
+        buttonJs.append(OpenCms.getSystemInfo().getOpenCmsContext());
+        buttonJs.append("/system/workplace/commons/principal_selection.jsp");
+        buttonJs.append("','" + form + "',  '");
+        buttonJs.append(id);
+        buttonJs.append("', document, '");
+        if (m_flags != null) {
+            buttonJs.append(m_flags);
+        } else {
+            buttonJs.append("null");
+        }
+        buttonJs.append("'");
+        buttonJs.append(");");
+        return buttonJs.toString();
+    }
+
+    /**
      * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
      */
     @Override
@@ -92,6 +125,27 @@ public class CmsPrincipalWidget extends A_CmsWidget {
             result.append(m_flags);
         }
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
+     */
+    public String getConfiguration(
+        CmsObject cms,
+        A_CmsXmlContentValue schemaType,
+        CmsMessages messages,
+        CmsResource resource,
+        Locale contentLocale) {
+
+        return getConfiguration();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getCssResourceLinks(CmsObject cms) {
+
+        return null;
     }
 
     /**
@@ -144,33 +198,6 @@ public class CmsPrincipalWidget extends A_CmsWidget {
     }
 
     /**
-     * Returns the needed java script for the search button.<p>
-     * 
-     * @param id the id of the widget to generate the search button for
-     * @param form the id of the form where to which the widget belongs
-     * 
-     * @return javascript code
-     */
-    public String getButtonJs(String id, String form) {
-
-        StringBuffer buttonJs = new StringBuffer(8);
-        buttonJs.append("javascript:openPrincipalWin('");
-        buttonJs.append(OpenCms.getSystemInfo().getOpenCmsContext());
-        buttonJs.append("/system/workplace/commons/principal_selection.jsp");
-        buttonJs.append("','" + form + "',  '");
-        buttonJs.append(id);
-        buttonJs.append("', document, '");
-        if (m_flags != null) {
-            buttonJs.append(m_flags);
-        } else {
-            buttonJs.append("null");
-        }
-        buttonJs.append("'");
-        buttonJs.append(");");
-        return buttonJs.toString();
-    }
-
-    /**
      * Returns the flags, or <code>null</code> if all.<p>
      *
      * @return the flags, or <code>null</code> if all
@@ -178,6 +205,38 @@ public class CmsPrincipalWidget extends A_CmsWidget {
     public Integer getFlags() {
 
         return m_flags;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getInitCall()
+     */
+    public String getInitCall() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getJavaScriptResourceLinks(org.opencms.file.CmsObject)
+     */
+    public List<String> getJavaScriptResourceLinks(CmsObject cms) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getWidgetName()
+     */
+    public String getWidgetName() {
+
+        return CmsPrincipalWidget.class.getName();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#isInternal()
+     */
+    public boolean isInternal() {
+
+        return true;
     }
 
     /**
