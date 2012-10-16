@@ -25,6 +25,24 @@ body.integratedEditor{
 	overflow: hidden !important;
 }
 
+.basePanel *, .basePanel table tr td{
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
+}
+
 @sprite .basePanel{
 	gwt-image: "backgrounds.sitemapBackground";
 	font-family: value("constants.css.fontFamily");
