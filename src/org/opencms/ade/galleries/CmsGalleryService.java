@@ -50,11 +50,13 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspNavBuilder;
@@ -275,7 +277,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 result = new CmsResultItemBean();
                 result.setTitle(Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EXTERNAL_LINK_0));
                 result.setSubTitle("");
-                result.setType("externallink");
+                result.setType(CmsResourceTypePointer.getStaticTypeName());
             } else {
                 boolean notFound = false;
                 String path = linkPath;
@@ -309,19 +311,41 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
                 notFound = notFound || (path == null);
                 if (!notFound) {
-
-                    CmsGallerySearchResult resultItem = null;
-                    try {
-                        resultItem = CmsGallerySearch.searchByPath(
-                            getCmsObject(),
-                            path,
-                            CmsLocaleManager.getLocale(locale));
-                    } catch (CmsVfsResourceNotFoundException ex) {
-                        // ignore
-                    }
-                    notFound = resultItem == null;
-                    if (!notFound) {
-                        result = buildSingleSearchResultItem(getCmsObject(), resultItem, null);
+                    if (CmsResource.isFolder(path)) {
+                        CmsObject rootCms = OpenCms.initCmsObject(cms);
+                        rootCms.getRequestContext().setSiteRoot("");
+                        try {
+                            CmsResource folder = rootCms.readResource(path);
+                            result = new CmsResultItemBean();
+                            String title = rootCms.readPropertyObject(
+                                folder,
+                                CmsPropertyDefinition.PROPERTY_NAVTEXT,
+                                false).getValue();
+                            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                                title = rootCms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                            } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                                title = CmsResource.getName(path);
+                                if (title.contains("/")) {
+                                    title = title.substring(0, title.indexOf("/"));
+                                }
+                            }
+                            result.setTitle(title);
+                            result.setSubTitle("");
+                            result.setType(OpenCms.getResourceManager().getResourceType(folder).getTypeName());
+                        } catch (CmsException ex) {
+                            notFound = true;
+                        }
+                    } else {
+                        CmsGallerySearchResult resultItem = null;
+                        try {
+                            resultItem = CmsGallerySearch.searchByPath(cms, path, CmsLocaleManager.getLocale(locale));
+                        } catch (CmsVfsResourceNotFoundException ex) {
+                            // ignore
+                        }
+                        notFound = resultItem == null;
+                        if (!notFound) {
+                            result = buildSingleSearchResultItem(getCmsObject(), resultItem, null);
+                        }
                     }
                 }
                 if (notFound) {
@@ -329,7 +353,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     result.setTitle(Messages.get().getBundle(getWorkplaceLocale()).key(
                         Messages.GUI_RESOURCE_NOT_FOUND_0));
                     result.setSubTitle("");
-                    result.setType("brokenlink");
+                    result.setType(CmsIconUtil.TYPE_RESOURCE_NOT_FOUND);
                 }
             }
         } catch (Throwable t) {
@@ -1357,11 +1381,23 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } else {
             type = OpenCms.getResourceManager().getResourceType(ownResource.getTypeId()).getTypeName();
         }
+        // make sure not to show ??? NavText ???
+        String title = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT))) {
+            title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE))) {
+            title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
+        } else {
+            title = navElement.getFileName();
+            if (title.contains("/")) {
+                title = title.substring(0, title.indexOf("/"));
+            }
+        }
         return new CmsSitemapEntryBean(
             navElement.getResource().getRootPath(),
             navElement.getResourceName(),
             ownResource.getStructureId(),
-            navElement.getNavText(),
+            title,
             type,
             ownResource.isFolder(),
             isRoot);

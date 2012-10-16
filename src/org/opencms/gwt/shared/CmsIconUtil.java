@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.shared;
 
-
 /**
  * Utility class for the resource icon CSS.<p>
  * 
@@ -40,6 +39,9 @@ public class CmsIconUtil {
 
     /** The resource icon CSS class prefix. */
     public static final String TYPE_ICON_CLASS = "cms_type_icon";
+
+    /** Type for resource not found. */
+    public static final String TYPE_RESOURCE_NOT_FOUND = "cms_resource_not_found";
 
     /**
      * Constructor.<p>
@@ -135,7 +137,7 @@ public class CmsIconUtil {
 
         if ((fileName != null) && fileName.contains(".")) {
             int last = fileName.lastIndexOf(".");
-            if (fileName.length() > last + 1) {
+            if (fileName.length() > (last + 1)) {
                 String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
                 return getResourceSubTypeIconClass(resourceTypeName, suffix, small);
             }

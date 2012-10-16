@@ -62,6 +62,7 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
             for (I_CmsResourceType type : OpenCms.getResourceManager().getResourceTypes()) {
                 addCssForType(type);
             }
+            addResourceNotFoundIconRule();
             return m_buffer.toString();
         }
 
@@ -157,6 +158,22 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
         }
 
         /**
+         * Adds an icon rule for resource not found.<p>
+         */
+        private void addResourceNotFoundIconRule() {
+
+            CmsIconCssRuleBuilder cssBig = new CmsIconCssRuleBuilder();
+            cssBig.addSelectorForType(TYPE_RESOURCE_NOT_FOUND, false);
+            cssBig.setImageUri(getIconUri(NOT_FOUND_ICON_BIG));
+            cssBig.writeCss(m_buffer);
+
+            CmsIconCssRuleBuilder cssSmall = new CmsIconCssRuleBuilder();
+            cssSmall.addSelectorForType(TYPE_RESOURCE_NOT_FOUND, true);
+            cssSmall.setImageUri(getIconUri(NOT_FOUND_ICON_SMALL));
+            cssSmall.writeCss(m_buffer);
+        }
+
+        /**
          * Converts an icon file name to a full icon URI.<p>
          * 
          * @param icon the file name of the icon
@@ -169,6 +186,12 @@ public class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil {
         }
 
     }
+
+    /** The big resource not found icon name. */
+    public static final String NOT_FOUND_ICON_BIG = "resourceNotFoundBig.png";
+
+    /** The small resource not found icon name. */
+    public static final String NOT_FOUND_ICON_SMALL = "resourceNotFoundSmall.png";
 
     /**
      * Builds the CSS for all resource types.<p>

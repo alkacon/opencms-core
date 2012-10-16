@@ -263,15 +263,6 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     }
 
     /**
-     * @see org.opencms.gwt.shared.CmsListInfoBean#setSubTitle(java.lang.String)
-     */
-    @Override
-    public void setSubTitle(String subTitle) {
-
-        setDescription(subTitle);
-    }
-
-    /**
      * Sets the resource type name.<p>
      * 
      * @param type the resource type name to set
