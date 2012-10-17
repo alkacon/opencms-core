@@ -96,13 +96,14 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
         m_currentElementId = element.getId();
+        final String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
         final Runnable classicEdit = new Runnable() {
 
             public void run() {
 
                 CmsEditableData editableData = new CmsEditableData();
                 editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-                editableData.setStructureId(new CmsUUID(CmsContainerpageController.getServerId(m_currentElementId)));
+                editableData.setStructureId(new CmsUUID(serverId));
                 editableData.setSitePath(element.getSitePath());
                 CmsContentEditorDialog.get().openEditDialog(editableData, false, CmsContentEditorHandler.this);
             }
@@ -110,9 +111,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         if (m_handler.m_controller.getData().isUseClassicEditor()) {
             classicEdit.run();
         } else {
-            final String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
             final String editorLocale = CmsCoreProvider.get().getLocale();
-            m_handler.checkNewWidgetsAvailable(new AsyncCallback<Boolean>() {
+            m_handler.checkNewWidgetsAvailable(new CmsUUID(serverId), new AsyncCallback<Boolean>() {
 
                 public void onFailure(Throwable caught) {
 

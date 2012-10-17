@@ -86,6 +86,15 @@ public interface I_CmsContainerpageServiceAsync {
         AsyncCallback<CmsCreateElementData> callback);
 
     /**
+     * Checks whether the Acacia widgets are available for all fields of the content.<p>
+     *  
+     * @param structureId the structure id of the content to check.<p>
+     * 
+     * @param resultCallback the callback for the result 
+     */
+    void checkNewWidgetsAvailable(CmsUUID structureId, AsyncCallback<Boolean> resultCallback);
+
+    /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
      * 
      * @param pageStructureId the container page structure id 

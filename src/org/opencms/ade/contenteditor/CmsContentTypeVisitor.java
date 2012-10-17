@@ -51,9 +51,11 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Visitor to read all types and attribute configurations within a content definition.<p>
@@ -75,9 +77,6 @@ public class CmsContentTypeVisitor {
     /** The messages. */
     private CmsMultiMessages m_messages;
 
-    /** Flag to indicate whether non-ADE compatible widgets were read. */
-    private boolean m_hasNonAdeWidgets;
-
     /** The registered types. */
     private Map<String, I_Type> m_registeredTypes;
 
@@ -90,9 +89,13 @@ public class CmsContentTypeVisitor {
     /** The CMS context used for this visitor. */
     private CmsObject m_cms;
 
+    /** Set of class names of non-ADE widgets which have been discovered. */
+    private Set<String> m_nonAdeWidgets = new HashSet<String>();
+
     /**
      * Constructor.<p>
      * 
+     * @param cms the CMS context 
      * @param file the content file
      * @param locale the content locale
      */
@@ -103,9 +106,24 @@ public class CmsContentTypeVisitor {
         m_locale = locale;
     }
 
+    /**
+     * Gets the CMS context.<p>
+     * 
+     * @return the CMS context 
+     */
     public CmsObject getCmsObject() {
 
         return m_cms;
+    }
+
+    /**
+     * Gets the set of class names of non-ADE widgets that have been discovered.<p>
+     * 
+     * @return the set of non-ADE widget classes 
+     */
+    public Set<String> getNonAdeWidgets() {
+
+        return m_nonAdeWidgets;
     }
 
     /**
@@ -125,24 +143,24 @@ public class CmsContentTypeVisitor {
      */
     public boolean hasNonAdeWidgets() {
 
-        return m_hasNonAdeWidgets;
+        return !m_nonAdeWidgets.isEmpty();
     }
 
     /**
      * Visits all types within the XML content definition.<p>
      * 
      * @param xmlContentDefinition the content definition
-     * @param locale the locale
+     * @param messageLocale the locale
      */
-    public void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
+    public void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale messageLocale) {
 
         m_contentHandler = xmlContentDefinition.getContentHandler();
         CmsMessages messages = null;
-        m_messages = new CmsMultiMessages(locale);
+        m_messages = new CmsMultiMessages(messageLocale);
         try {
-            messages = OpenCms.getWorkplaceManager().getMessages(locale);
+            messages = OpenCms.getWorkplaceManager().getMessages(messageLocale);
             m_messages.addMessages(messages);
-            m_messages.addMessages(m_contentHandler.getMessages(locale));
+            m_messages.addMessages(m_contentHandler.getMessages(messageLocale));
         } catch (Exception e) {
             //ignore
         }
@@ -286,7 +304,7 @@ public class CmsContentTypeVisitor {
                     m_widgetConfigurations.put(widgetName, externalConfiguration);
                 }
             } else {
-                m_hasNonAdeWidgets = true;
+                m_nonAdeWidgets.add(widget.getClass().getName());
             }
         } catch (Exception e) {
             // may happen if no widget was set for the value

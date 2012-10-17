@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.ade.contenteditor.CmsContentTypeVisitor;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -39,11 +40,14 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -129,6 +133,32 @@ public class CmsWorkplaceEditorManager {
             }
         }
         m_preferredEditors = new HashMap<String, CmsWorkplaceEditorConfiguration>(m_editorConfigurations.size());
+    }
+
+    /**
+     * Checks whether GWT widgets are available for all fields of a content.<p>
+     * 
+     * @param cms the current CMS context 
+     * @param resource the resource to check 
+     * 
+     * @return false if for some fields the new Acacia widgets are not available
+     *   
+     * @throws CmsException if something goes wrong 
+     */
+    public static boolean checkNewWidgetsAvailable(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsFile file = cms.readFile(resource);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+        CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
+        visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH);
+        if (visitor.hasNonAdeWidgets()) {
+            for (String nonAdeWidget : visitor.getNonAdeWidgets()) {
+                LOG.warn("Non-ADE-compatible widget: " + nonAdeWidget);
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

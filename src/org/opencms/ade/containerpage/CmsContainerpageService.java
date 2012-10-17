@@ -76,6 +76,7 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlException;
@@ -246,6 +247,21 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#checkNewWidgetsAvailable(org.opencms.util.CmsUUID)
+     */
+    public boolean checkNewWidgetsAvailable(CmsUUID structureId) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource resource = cms.readResource(structureId);
+            return CmsWorkplaceEditorManager.checkNewWidgetsAvailable(cms, resource);
+        } catch (Throwable t) {
+            error(t);
+        }
+        return false;
     }
 
     /**

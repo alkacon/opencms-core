@@ -90,6 +90,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -558,6 +559,36 @@ public final class CmsContainerpageController {
             }
         };
         action.execute();
+    }
+
+    /**
+     * Checks whether GWT widgets are available for all fields of a content.<p>
+     * 
+     * @param structureId the structure id of the content 
+     * @param resultCallback the callback for the result 
+     */
+    public void checkNewWidgetsAvailable(final CmsUUID structureId, final AsyncCallback<Boolean> resultCallback) {
+
+        CmsRpcAction<Boolean> action = new CmsRpcAction<Boolean>() {
+
+            @Override
+            public void execute() {
+
+                start(200, false);
+                getContainerpageService().checkNewWidgetsAvailable(structureId, this);
+            }
+
+            @Override
+            protected void onResponse(Boolean result) {
+
+                stop(false);
+                resultCallback.onSuccess(result);
+            }
+
+            // empty
+        };
+        action.execute();
+
     }
 
     /**

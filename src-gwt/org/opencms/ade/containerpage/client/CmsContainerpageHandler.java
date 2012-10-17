@@ -174,10 +174,16 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         m_controller.addToRecentList(clientId);
     }
 
-    public void checkNewWidgetsAvailable(AsyncCallback<Boolean> asyncCallback) {
+    /**
+     * Checks whether GWT widgets are available for all fields of a content.<p>
+     * 
+     * @param structureId the structure id of the content 
+     * 
+     * @param asyncCallback the callback for the result 
+     */
+    public void checkNewWidgetsAvailable(CmsUUID structureId, AsyncCallback<Boolean> asyncCallback) {
 
-        // TODO: Auto-generated method stub
-
+        m_controller.checkNewWidgetsAvailable(structureId, asyncCallback);
     }
 
     /**

@@ -90,6 +90,16 @@ public interface I_CmsContainerpageService extends RemoteService {
         String locale) throws CmsRpcException;
 
     /**
+     * Checks whether the Acacia widgets are available for all fields of the content.<p>
+     * 
+     * @param structureId the structure id of the content 
+     * @return true if Acacia widgets are available for all fields 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    boolean checkNewWidgetsAvailable(CmsUUID structureId) throws CmsRpcException;
+
+    /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
      * 
      * @param pageStructureId the container page structure id 
