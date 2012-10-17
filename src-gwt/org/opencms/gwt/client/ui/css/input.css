@@ -310,7 +310,7 @@ div.selectBoxOpener {
     padding-left: 0px;
 }
 
-.dataValue {
+div.dataValue {
 	height: 20px;
 	margin-top: 2px;
 	margin-right: 2px;
@@ -321,90 +321,89 @@ div.selectBoxOpener {
 	position: relative;
 }
 
-.categoryScrollPanel{
+div.categoryScrollPanel{
 	margin-top: 6px;
 	border: 1px solid value("constants.css.borderColor");
 	background-color: value("constants.css.backgroundColorDialog"); 
 }
 
-.disabled .dataValue{
+.disabled div.dataValue{
 	cursor: default;
 }
 
-.categoryItem{
+div.categoryItem{
 	margin-top: 6px;
-	
 }
 
 @if user.agent ie6 ie8 {
 	.inputTextAreaFaider{
 		filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 );");
 	}
-	.dataValue{
+	div.dataValue{
 		background-color: value("constants.css.gradientFormDialogColor");
 	}
 	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider {
 		filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );");
 	}
 } @elif user.agent gecko gecko1_8 {
-	.inputTextAreaFaider{
+	div.inputTextAreaFaider{
 		background: literal("-moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%)");
 	}
 	
-	.dataValue{
+	div.dataValue{
 	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	
 	}
 	
-	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider  {
+	div.inputBoxFaider, div.inputTextBoxFaider, div.vfsInputBoxFaider  {
 		background: literal("-moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)");
 	}
 } @elif user.agent safari {
-	.inputTextAreaFaider{
+	div.inputTextAreaFaider{
 		background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.6)), color-stop(100%,rgba(255,255,255,1)))");
 	}
-	.dataValue{
+	div.dataValue{
 		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
 	
-	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider  {
+	div.inputBoxFaider, div.inputTextBoxFaider, div.vfsInputBoxFaider  {
 		background: literal("-webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)))");
 	}
 } @elif user.agent opera {
-	.inputTextAreaFaider{
+	div.inputTextAreaFaider{
 		background: literal("-o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,1) 100%)");
 	}
 	
-	.dataValue{
+	div.dataValue{
 		background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
 	
-	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider {
+	div.inputBoxFaider, div.inputTextBoxFaider, div.vfsInputBoxFaider {
 		background: literal("-o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%)");
 	}
 } @elif user.agent ie9 {
-	.inputTextAreaFaider{
+	div.inputTextAreaFaider{
 		background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
 	}
-	.dataValue{
+	div.dataValue{
 		background-image: value("constants.css.gradientFormDialogIE9");
 	}
 	
-	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider  {
+	div.inputBoxFaider, div.inputTextBoxFaider, div.vfsInputBoxFaider  {
 		background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+); 
 	}
 } @else {
-	.inputTextAreaFaider{
+	div.inputTextAreaFaider{
 		background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,1) 100%);
 	}
-	.dataValue{
+	div.dataValue{
 		background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	}
-	.inputBoxFaider, .inputTextBoxFaider, .vfsInputBoxFaider  {
+	div.inputBoxFaider, div.inputTextBoxFaider, div.vfsInputBoxFaider  {
 		background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 	}
 }
-.inputBoxFaider{   	
+div.inputBoxFaider{   	
 	cursor: pointer;
     display: inline-block;
     height: 17px;
@@ -414,7 +413,7 @@ div.selectBoxOpener {
     top: 1px;
     right: 15px;
 }
-.vfsInputBoxFaider{   	
+div.vfsInputBoxFaider{   	
 	cursor: pointer;
     display: inline-block;
     height: 17px;
@@ -423,7 +422,7 @@ div.selectBoxOpener {
     position: absolute;
     right: 15px;
 }
-.inputTextAreaFaider{
+div.inputTextAreaFaider{
 	border-radius: 0 0 0 3px;
     cursor: pointer;
     display: block;
@@ -437,7 +436,7 @@ div.selectBoxOpener {
     width: 98.2%;
 }
 
-.inputTextBoxFaider{   	
+div.inputTextBoxFaider{   	
 	cursor: pointer;
     display: inline-block;
     height: 14px;
@@ -510,20 +509,20 @@ div.formRow {
 @eval openerWidth org.opencms.gwt.client.ui.input.form.CmsFormRow.getOpenerWidth();
 @eval widgetContainerMargin org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin();  
 
-.formOpener {
+div.formOpener {
 	width: openerWidth;
 	float: left;
 	vertical-align: top; 
 }
 
-.formInfo {
+div.formInfo {
 	margin-left: 5px;
 	margin-top: 5px;
 	margin-bottom: 12px;
 	font-weight: bold; 
 }
 
-.formLabel { 
+div.formLabel { 
 	width: formLabelWidth;
 	overflow: hidden;
 	vertical-align: top;
@@ -533,12 +532,12 @@ div.formRow {
 	width: widgetContainerMargin;
 }
 
-.formWidgetContainer {
+div.formWidgetContainer {
 	width: 356px;
 	margin-left: widgetContainerMargin;
 }
 
-.separator {
+div.separator {
 	width: 100%;
 	height: 1px;
 	margin-top: 5px;
@@ -547,13 +546,9 @@ div.formRow {
 	background-color: value("constants.css.borderColor");
 }
 
-.formDescriptionLabel {
+div.formDescriptionLabel {
 	margin-bottom: 5px;
 	margin-top: 5px;
-}
-
-.weakText { 
-	color: value("constants.css.textColorDisabled"); 
 }
 
 .subtitleSuffix {

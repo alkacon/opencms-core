@@ -42,7 +42,7 @@
 
 }
 
-.notInNavigationEntry{
+li.notInNavigationEntry{
 	display: none;
 }
 
@@ -74,27 +74,11 @@ div.itemTitle{
 	gwt-image: "baseImages.bigIcons.fileTypeNavLevel";
 } 
 
-.vfsMode .notInNavigationEntry{
+.vfsMode li.notInNavigationEntry{
 	display: block;
 }
 
-.highlight {
-	background-image: none;
-	background-color: value("constants.css.backgroundColorSitemapHighlight");
-}
-
-
-
-@sprite .brokenLink {
-    gwt-image: "baseImages.bigIcons.brokenLinkBigIcon";
-    margin-right: 4px;
-}
-
-.deletedEntryLabel {
-	text-decoration: line-through;
-}
-
-.marker {
+div.marker {
 	position: absolute; 
 	visibility: visible !important;
 	font-weight: bold;

@@ -14,6 +14,7 @@
 	bottom: 0px;
 	background: value("constants.css.backgroundColorDialog");
 	display: none;
+	z-index: value("constants.css.zIndexInline");
 }
 .croppingPanel{
 	margin:auto;

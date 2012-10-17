@@ -4,49 +4,49 @@
 	}
 }
 
-.listTreeItem {
+li.listTreeItem {
 	margin: 2px 0;
 	display: block;
 	clear: both;
 	list-style-type: none;
 }
 
-.listTreeItemOpener {
+div.listTreeItemOpener {
 	margin-left: 1px;
 	margin-right: 3px;
 	cursor: pointer;
 	outline: none;
 }
 
-.listTreeItemOpener, .listTreeItemOpener *{
+div.listTreeItemOpener, div.listTreeItemOpener *{
 line-height:12px;
 }
 
-.listTreeItemOpener > img {
+div.listTreeItemOpener > img {
 	background-position: center !important;
 }
 
 @if user.agent ie6 {
-	.listTreeItemOpener {
+	div.listTreeItemOpener {
 		display: inline;
 		vertical-align: bottom;
 	}
 	
-	.listTreeItemOpener * {
+	div.listTreeItemOpener * {
 		display: inline;
 	}
 } @else {
-	.listTreeItemOpener {
+	div.listTreeItemOpener {
 		display: inline-block;
 	}
 }
 
-@sprite .plus {
+@sprite span.plus {
 	gwt-image: "gwtImages.plusImage";
 	margin: 2px 0 3px;
 }
 
-@sprite .minus {
+@sprite span.minus {
 	gwt-image: "gwtImages.minusImage";
 	margin: 2px 0 3px;
 }
@@ -56,7 +56,7 @@ line-height:12px;
 	
 }
 
-.listTreeItemChildren {
+ul.listTreeItemChildren {
 	list-style-type: none;
 	margin:0px 0px 0px 19px;
 	padding-left: 0px;
@@ -87,7 +87,7 @@ li.listTreeItemLeaf ul.listTreeItemChildren{
 	display: none;
 }
 
-.listTreeItemLeaf .listTreeItemOpener {
+li.listTreeItemLeaf .listTreeItemOpener {
 	/* we do not use display: none  because otherwise a leaf's first content widget
 	would line up with the handler icon of a non-leaf at the same level. */ 
 	visibility: hidden;
@@ -102,7 +102,7 @@ li.listTreeItemLeaf ul.listTreeItemChildren{
 	display: none;
 }
 
-.listTreeItemNoOpeners .listTreeItemChildren {
+.listTreeItemNoOpeners ul.listTreeItemChildren {
 	display: list-item ;
 }
 

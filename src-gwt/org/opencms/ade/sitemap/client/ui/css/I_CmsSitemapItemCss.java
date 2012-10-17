@@ -42,13 +42,6 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * 
      * @return a CSS class
      **/
-    String brokenLink();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
     String contentHide();
 
     /**
@@ -56,21 +49,7 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * 
      * @return a CSS class
      **/
-    String deletedEntryLabel();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
     String hiddenNavEntry();
-
-    /**
-     * CSS class accessor.<p>
-     * 
-     * @return a CSS class
-     **/
-    String highlight();
 
     /**
      * CSS class accessor.<p>
