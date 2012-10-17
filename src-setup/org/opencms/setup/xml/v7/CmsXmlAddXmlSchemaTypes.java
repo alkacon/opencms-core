@@ -27,12 +27,12 @@
 
 package org.opencms.setup.xml.v7;
 
-import org.opencms.ade.contenteditor.client.widgets.CmsCategoryWidget;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.A_CmsXmlVfs;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
+import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.widgets.CmsVfsImageWidget;
@@ -57,6 +57,7 @@ import org.dom4j.Node;
  */
 public class CmsXmlAddXmlSchemaTypes extends A_CmsXmlVfs {
 
+    /** The schema data. */
     private Map<String, String> m_schemaData;
 
     /** List of xpaths to update. */
