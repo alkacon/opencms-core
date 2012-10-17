@@ -103,6 +103,9 @@ public class CmsPropertyviewList extends A_CmsListDialog {
     /** The request parameter for the properties to work on. */
     public static final String PARAM_PROPERTIES = "props";
 
+    /** The request parameter for the property value to search for. */
+    public static final String PARAM_PROPERTY_VALUE = "propvalue";
+
     /** The request parameter for the paths to work on. */
     public static final String PARAM_RESOURCES = "paths";
 
@@ -120,6 +123,9 @@ public class CmsPropertyviewList extends A_CmsListDialog {
 
     /** The properties. */
     private String[] m_props;
+
+    /** The value of the properties to check. */
+    private String m_propvalue;
 
     /** Flag for showing siblings. */
     private boolean m_siblings;
@@ -240,6 +246,17 @@ public class CmsPropertyviewList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the property value parameter.<p>
+     * 
+     * @return the property value 
+     *
+     */
+    public String getParamPropvalue() {
+
+        return m_propvalue;
+    }
+
+    /**
      * Returns true if siblings are shown.
      * <p>
      * 
@@ -264,6 +281,16 @@ public class CmsPropertyviewList extends A_CmsListDialog {
     public void setParamProps(final String props) {
 
         m_props = CmsStringUtil.splitAsArray(props, ',');
+    }
+
+    /**
+     * Sets the property value parameter.<p>
+     * 
+     * @param propvalue the property value to set 
+     */
+    public void setParamPropvalue(final String propvalue) {
+
+        m_propvalue = propvalue;
     }
 
     /**
@@ -463,12 +490,19 @@ public class CmsPropertyviewList extends A_CmsListDialog {
         for (String property : m_props) {
             CmsProperty prop;
             try {
+
                 prop = cms.readPropertyObject(resource, property, false);
                 if (prop.isNullProperty()) {
                     pathValue = m_messages.key("GUI_LIST_PROPERTYVIEW_NOTFOUND_0");
                 } else {
                     pathValue = prop.getValue();
-                    onePropCont = true;
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamPropvalue())) {
+                        if (prop.getValue().contains(getParamPropvalue())) {
+                            onePropCont = true;
+                        }
+                    } else {
+                        onePropCont = true;
+                    }
                 }
                 item.set(getPropertyColumnID(property), pathValue);
 

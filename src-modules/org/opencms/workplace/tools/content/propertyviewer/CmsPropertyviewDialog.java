@@ -32,8 +32,10 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -82,6 +84,9 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
         /** The properties to show. */
         private List<String> m_properties = new LinkedList<String>();
 
+        /** The value of the property to search. */
+        private String m_propValue;
+
         /** If true siblings will also be inspected. */
         private boolean m_showSiblings;
 
@@ -121,6 +126,16 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
         }
 
         /**
+         * Returns the value of the property to search.<p>
+         *
+         * @return the property value
+         */
+        public String getPropValue() {
+
+            return m_propValue;
+        }
+
+        /**
          * @return the showSiblings
          */
         public boolean isShowSiblings() {
@@ -150,6 +165,16 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
         public void setProperties(final List<String> properties) {
 
             m_properties = properties;
+        }
+
+        /**
+         * Sets the property value to search.<p>
+         *
+         * @param propValue the property value to set
+         */
+        public void setPropValue(String propValue) {
+
+            m_propValue = propValue;
         }
 
         /**
@@ -208,10 +233,12 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
         List<Throwable> errors = new ArrayList<Throwable>();
         Map<String, String[]> params = new HashMap<String, String[]>();
         List<String> paths = m_settings.getPaths();
-        params.put(CmsPropertyviewList.PARAM_RESOURCES, paths.toArray(new String[paths.size()]));
+        params.put(CmsPropertyviewList.PARAM_RESOURCES, new String[] {CmsStringUtil.listAsString(paths, ",")});
         List<String> props = m_settings.getProperties();
-        params.put(CmsPropertyviewList.PARAM_PROPERTIES, props.toArray(new String[props.size()]));
+        params.put(CmsPropertyviewList.PARAM_PROPERTIES, new String[] {CmsStringUtil.listAsString(props, ",")});
         params.put(CmsPropertyviewList.PARAM_SIBLINGS, new String[] {String.valueOf(m_settings.isShowSiblings())});
+        // value to search in property
+        params.put(CmsPropertyviewList.PARAM_PROPERTY_VALUE, new String[] {m_settings.getPropValue()});
         // set style to display report in correct layout
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         // set close link to get back to overview after finishing the import
@@ -243,7 +270,7 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
 
         // create export file name block
         result.append(createWidgetBlockStart(key(Messages.GUI_PROPERTYVIEW_ADMIN_TOOL_BLOCK_0)));
-        result.append(createDialogRowsHtml(0, 3));
+        result.append(createDialogRowsHtml(0, 4));
         result.append(createWidgetBlockEnd());
 
         // close table
@@ -281,6 +308,7 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
             new CmsCheckboxWidget(),
             1,
             1));
+        addWidget(new CmsWidgetDialogParameter(m_settings, "propValue", PAGES[0], new CmsInputWidget()));
     }
 
     /**

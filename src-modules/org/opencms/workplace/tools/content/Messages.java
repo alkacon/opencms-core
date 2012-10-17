@@ -195,6 +195,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_INPUT_PROPERTYCHANGE_INFO2_0 = "GUI_INPUT_PROPERTYCHANGE_INFO2_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYCHANGE_INFO3_0 = "GUI_INPUT_PROPERTYCHANGE_INFO3_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_PROPERTYCHANGE_OLDVALUE_0 = "GUI_INPUT_PROPERTYCHANGE_OLDVALUE_0";
 
     /** Message constant for key in the resource bundle. */
