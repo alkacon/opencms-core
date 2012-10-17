@@ -84,6 +84,12 @@ public class CmsContainerElement implements IsSerializable {
      **/
     private boolean m_viewPermission;
 
+    private boolean m_inlineEditingDisabled;
+
+    public CmsContainerElement() {
+
+    }
+
     /**
      * Returns the client id.<p>
      *
@@ -174,6 +180,11 @@ public class CmsContainerElement implements IsSerializable {
         return INHERIT_CONTAINER_TYPE_NAME.equals(m_resourceType);
     }
 
+    public boolean isInlineEditingDisabled() {
+
+        return m_inlineEditingDisabled;
+    }
+
     /**
      * Returns if the element is new and has not been created in the VFS yet.<p>
      * 
@@ -222,6 +233,11 @@ public class CmsContainerElement implements IsSerializable {
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
+    }
+
+    public void setInlineEditingDisabled(boolean disabled) {
+
+        m_inlineEditingDisabled = disabled;
     }
 
     /**

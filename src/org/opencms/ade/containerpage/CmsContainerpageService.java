@@ -326,6 +326,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             String newClientId = newBean.editorHash();
             getSessionCache().setCacheContainerElement(newClientId, newBean);
             element = new CmsContainerElement();
+            element.setInlineEditingDisabled(!CmsWorkplaceEditorManager.checkNewWidgetsAvailable(cms, newResource));
             element.setClientId(newClientId);
             element.setSitePath(cms.getSitePath(newResource));
             element.setResourceType(resourceType);

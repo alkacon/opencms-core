@@ -1996,6 +1996,7 @@ public final class CmsContainerpageController {
                         element.setResourceType(elementWidget.getNewType());
                         element.setNew(elementWidget.isNew());
                         element.setSitePath(elementWidget.getSitePath());
+                        element.setInlineEditingDisabled(elementWidget.isInlineEditingDisabled());
                         elements.add(element);
                     } catch (ClassCastException e) {
                         // no proper container element, skip it (this should never happen!)

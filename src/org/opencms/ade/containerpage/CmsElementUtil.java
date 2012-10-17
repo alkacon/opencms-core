@@ -53,6 +53,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
@@ -241,30 +242,30 @@ public class CmsElementUtil {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
         CmsUUID structureId = resUtil.getResource().getStructureId();
-        CmsContainerElementData elementBean = new CmsContainerElementData();
-        setElementInfo(element, elementBean);
-        elementBean.setLastModifiedDate(element.getResource().getDateLastModified());
-        elementBean.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
-        elementBean.setNavText(resUtil.getNavText());
+        CmsContainerElementData elementData = new CmsContainerElementData();
+        setElementInfo(element, elementData);
+        elementData.setLastModifiedDate(element.getResource().getDateLastModified());
+        elementData.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
+        elementData.setNavText(resUtil.getNavText());
         String title = resUtil.getTitle();
         if (!structureId.isNullUUID()) {
             CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(m_cms, structureId, requestLocale);
             title = searchResult.getTitle();
         }
-        elementBean.setTitle(title);
+        elementData.setTitle(title);
         Set<String> cssResources = new LinkedHashSet<String>();
         for (String cssSitePath : CmsJspTagHeadIncludes.getCSSHeadIncludes(m_cms, element.getResource())) {
             cssResources.add(OpenCms.getLinkManager().getOnlineLink(m_cms, cssSitePath));
         }
-        elementBean.setCssResources(cssResources);
+        elementData.setCssResources(cssResources);
         Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
             m_cms,
             element.getResource());
-        elementBean.setSettings(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
+        elementData.setSettings(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
             m_cms,
             element.getIndividualSettings(),
             settingConfig));
-        elementBean.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
+        elementData.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
         Map<String, String> contents = new HashMap<String, String>();
         if (element.isGroupContainer(m_cms)) {
             Set<String> types = new HashSet<String>();
@@ -279,9 +280,9 @@ public class CmsElementUtil {
                 m_req);
             CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(m_cms, m_locale);
             // make sure to use the content title and not the property title
-            elementBean.setTitle(groupContainer.getTitle());
-            elementBean.setTypes(groupContainer.getTypes());
-            elementBean.setDescription(groupContainer.getDescription());
+            elementData.setTitle(groupContainer.getTitle());
+            elementData.setTypes(groupContainer.getTypes());
+            elementData.setDescription(groupContainer.getDescription());
             if (groupContainer.getTypes().isEmpty()) {
                 if (groupContainer.getElements().isEmpty()) {
                     String emptySub = "<div>NEW AND EMPTY</div>";
@@ -308,7 +309,7 @@ public class CmsElementUtil {
                 // collect ids
                 subItems.add(subElement.editorHash());
             }
-            elementBean.setSubItems(subItems);
+            elementData.setSubItems(subItems);
         } else if (element.isInheritedContainer(m_cms)) {
             CmsInheritanceReferenceParser parser = new CmsInheritanceReferenceParser(m_cms);
             parser.parse(element.getResource());
@@ -317,8 +318,8 @@ public class CmsElementUtil {
             // check for new inheritance reference
             if (ref != null) {
                 name = ref.getName();
-                elementBean.setDescription(ref.getDescription());
-                elementBean.setTitle(ref.getTitle());
+                elementData.setDescription(ref.getDescription());
+                elementData.setTitle(ref.getTitle());
             }
             for (CmsContainer container : containers) {
                 contents.put(container.getName(), "<div>should not be used</div>");
@@ -339,16 +340,16 @@ public class CmsElementUtil {
                 // use the structure id so it will always be the same for the resource
                 name = element.getResource().getStructureId().toString();
             }
-            elementBean.setInheritanceInfos(inheritanceInfos);
-            elementBean.setInheritanceName(name);
+            elementData.setInheritanceInfos(inheritanceInfos);
+            elementData.setInheritanceName(name);
         } else {
             // get the formatter configuration
             Map<String, String> contentsByName = getContentsByContainerName(element, containers);
             contents = contentsByName;
         }
-        elementBean.setContents(contents);
+        elementData.setContents(contents);
         m_cms.getRequestContext().setLocale(requestLocale);
-        return elementBean;
+        return elementData;
     }
 
     /**
@@ -368,6 +369,10 @@ public class CmsElementUtil {
         String noEditReason = "";
         // reinitializing resource to avoid caching issues
         elementBean.initResource(m_cms);
+        boolean inlineEditingDisabled = !CmsWorkplaceEditorManager.checkNewWidgetsAvailable(
+            m_cms,
+            elementBean.getResource());
+        result.setInlineEditingDisabled(inlineEditingDisabled);
         if (!elementBean.isInMemoryOnly()) {
             if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
                 noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);

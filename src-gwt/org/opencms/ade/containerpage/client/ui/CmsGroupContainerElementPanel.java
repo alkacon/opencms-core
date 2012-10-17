@@ -93,7 +93,16 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         boolean hasViewPermission,
         boolean releasedAndNotExpired) {
 
-        super(element, parent, clientId, sitePath, noEditReason, hasSettings, hasViewPermission, releasedAndNotExpired);
+        super(
+            element,
+            parent,
+            clientId,
+            sitePath,
+            noEditReason,
+            hasSettings,
+            hasViewPermission,
+            releasedAndNotExpired,
+            true);
         m_resourceType = resourceType;
     }
 

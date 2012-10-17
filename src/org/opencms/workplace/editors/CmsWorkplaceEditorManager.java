@@ -147,7 +147,16 @@ public class CmsWorkplaceEditorManager {
      */
     public static boolean checkNewWidgetsAvailable(CmsObject cms, CmsResource resource) throws CmsException {
 
-        CmsFile file = cms.readFile(resource);
+        if (resource == null) {
+            try {
+                // we want a stack trace
+                throw new Exception();
+            } catch (Exception e) {
+                LOG.error("Can't check widget availability because resource is null!", e);
+            }
+            return false;
+        }
+        CmsFile file = (resource instanceof CmsFile) ? (CmsFile)resource : cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
         visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH);

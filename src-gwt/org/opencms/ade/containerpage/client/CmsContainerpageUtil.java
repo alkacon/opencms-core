@@ -419,7 +419,8 @@ public class CmsContainerpageUtil {
             elementData.getNoEditReason(),
             elementData.hasSettings(),
             elementData.hasViewPermission(),
-            elementData.isReleasedAndNotExpired());
+            elementData.isReleasedAndNotExpired(),
+            elementData.isInlineEditingDisabled());
         addOptionBar(dragElement);
         boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
         // only enable inline editing for the new content editor

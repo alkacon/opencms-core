@@ -489,6 +489,7 @@ public abstract class A_CmsGroupEditor extends Composite {
                 element.setResourceType(elementWidget.getNewType());
                 element.setNew(elementWidget.isNew());
                 element.setSitePath(elementWidget.getSitePath());
+                element.setInlineEditingDisabled(elementWidget.isInlineEditingDisabled());
                 subItems.add(element);
             }
         }
