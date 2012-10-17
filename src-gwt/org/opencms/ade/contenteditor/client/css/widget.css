@@ -312,13 +312,13 @@ div.colorPicker{
 
 /** The "has error" parameters. */
 
-.hasError .selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError input.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox {
+.hasError div.selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError input.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox, .hasError .colorPickerValue, .hasError .colorPicker, .hasError .vfsInputBox{
 	border: 1px solid value("constants.css.borderColorHighlight");
 }
 
 /** The "has warning" parameters. */
 
-.hasWarning .selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning input.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox{
+.hasWarning div.selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning input.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox, .hasWarning .colorPickerValue, .hasWarning .colorPicker, .hasWarning .vfsInputBox {
 	border: 1px solid #FFAA00;
 }
 

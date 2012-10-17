@@ -60,9 +60,11 @@ public class CmsVfsImageWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
      */
     public I_FormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new CmsImageGalleryWidget(
+        CmsImageGalleryWidget widget = new CmsImageGalleryWidget(
             I_CmsImageBundle.INSTANCE.style().imageSearchIcon(),
-            configuration));
+            configuration);
+        widget.getElement().setAttribute("style", "min-height:110px;");
+        return new FormWidgetWrapper(widget);
     }
 
     /**
