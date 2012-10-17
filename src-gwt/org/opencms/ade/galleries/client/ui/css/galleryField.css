@@ -17,6 +17,10 @@ div.galleryField input{
     width:100%;
     margin:0px;
 }
+.galleryField.hasImage{
+	height: 112px;
+	position: relative;
+}
 div.inputContainer{
 	margin: 0px 20px 0px 4px;
 	padding: 0px;
@@ -33,4 +37,32 @@ div.galleryField input:focus{
 .resourceInfo{
 	margin:3px 0px 0px 0px;
 	min-height: 40px;
+}
+
+.hasImage .fieldBox{
+	margin-left: 170px;
+}
+
+.hasImage .resourceInfo > div{
+	left: 170px;
+	right: 0px;
+	bottom: 0px;
+	position: absolute;
+}
+
+div.imagePreview {
+	border: 1px solid #bbbbbb;
+	width: auto;
+	text-align: center;
+	float: left;
+	display: none;
+	overflow: hidden;
+}
+
+div.imagePreview img {
+	display:block;
+}
+
+.hasImage div.imagePreview {
+	display: block;	
 }

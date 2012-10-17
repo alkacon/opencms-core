@@ -69,7 +69,19 @@ public class CmsGalleryWidget extends Composite implements I_EditWidget {
         });
         // All composites must call initWidget() in their constructors.
         initWidget(m_linkSelect);
+    }
 
+    /**
+     * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
+     * 
+     * @param openerTitle the gallery opener title
+     * @param config the widget configuration string
+     * @param hasImage <code>true</code> if the widget should show an image preview
+     */
+    public CmsGalleryWidget(String openerTitle, String config, boolean hasImage) {
+
+        this(openerTitle, config);
+        m_linkSelect.setHasImage(hasImage);
     }
 
     /**

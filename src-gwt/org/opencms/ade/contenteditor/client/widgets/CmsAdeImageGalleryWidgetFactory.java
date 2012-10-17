@@ -62,7 +62,8 @@ public class CmsAdeImageGalleryWidgetFactory implements I_WidgetFactory, I_CmsHa
 
         return new FormWidgetWrapper(new CmsGalleryWidget(
             Messages.get().key(Messages.GUI_IMAGE_GALLERY_OPEN_0),
-            configuration));
+            configuration,
+            true));
     }
 
     /**

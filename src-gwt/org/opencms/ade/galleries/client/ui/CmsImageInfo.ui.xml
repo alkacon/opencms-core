@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" field="res"></ui:with>
+	<ui:style>
+		span.title{
+			font-weight: bold;
+		}
+		
+		div.imageInfo table.infos{
+			border-collapse: collapse;
+			border-spacing:0px;
+			display: block;
+			border: none;
+			width: 100%;
+		}
+		
+		div.imageInfo > div{
+			padding:2px;
+		}
+		
+		div.imageInfo table.infos tr td, .imageInfo span.title{
+			border: none;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			padding: 1px;
+		}
+		div.imageInfo table.infos colgroup{
+			width:100%;
+			display:block;
+		}
+	</ui:style>
+	<g:HTMLPanel styleName="{style.imageInfo}" addStyleNames="{res.generalCss.cornerAll}">
+		<div class="{res.generalCss.cornerAll}">
+			<span class="{style.title}" ui:field="m_title"></span>
+			<table class="{style.infos}">
+				<colgroup>
+					<col width="30%" />
+					<col width="70%" />
+				</colgroup>
+				<tr>
+					<td ui:field="m_labelDimension"></td>
+					<td ui:field="m_dimension"></td>
+				</tr>
+				<tr>
+					<td ui:field="m_labelDescription"></td>
+					<td ui:field="m_description"></td>
+				</tr>
+				<tr>
+					<td ui:field="m_labelUserLastModified"></td>
+					<td ui:field="m_userLastModified"></td>
+				</tr>
+				<tr>
+					<td ui:field="m_labelLastChanged"></td>
+					<td ui:field="m_lastChanged"></td>
+				</tr>
+			</table>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder>

@@ -47,6 +47,7 @@ import org.opencms.gwt.client.ui.input.CmsSimpleTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.util.CmsStringUtil;
@@ -65,6 +66,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Composite;
@@ -127,6 +130,10 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     @UiField
     protected DivElement m_fieldBox;
 
+    /** The image preview element. */
+    @UiField
+    protected DivElement m_imagePreview;
+
     /** The button to to open the selection. */
     @UiField
     protected CmsPushButton m_opener;
@@ -147,6 +154,9 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
 
     /** The gallery service instance. */
     private I_CmsGalleryServiceAsync m_gallerySvc;
+
+    /** The has image flag. */
+    private boolean m_hasImage;
 
     /** The info timer instance. */
     private InfoTimer m_infoTimer;
@@ -307,6 +317,16 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
         m_opener.setTitle(openerTitle);
     }
 
+    /** 
+     * Sets the has image flag.<p>
+     * 
+     * @param hasImage the has image flag
+     **/
+    public void setHasImage(boolean hasImage) {
+
+        m_hasImage = hasImage;
+    }
+
     /**
      * Sets the name of the input field.<p>
      * 
@@ -376,12 +396,32 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
      */
     void displayResourceInfo(CmsResultItemBean info) {
 
-        CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon(CmsIconUtil.getResourceIconClasses(info.getType(), info.getPath(), false));
-        m_resourceInfoPanel.add(widget);
-        int width = m_resourceInfoPanel.getOffsetWidth();
-        if (width > 0) {
-            widget.truncate("STANDARD", width);
+        if (m_hasImage) {
+            CmsCroppingParamBean cropping = CmsCroppingParamBean.parseImagePath(getFormValueAsString());
+            String imagePath = info.getViewLink();
+            String dimension = info.getDimension();
+            if (cropping.isCropped()) {
+                dimension = cropping.getTargetWidth() + " x " + cropping.getTargetHeight();
+                String[] dimensions = dimension.split("x");
+                cropping.setOrgWidth(CmsClientStringUtil.parseInt(dimensions[0].trim()));
+                cropping.setOrgHeight(CmsClientStringUtil.parseInt(dimensions[1].trim()));
+                imagePath += "?" + cropping.getRestrictedSizeScaleParam(110, 165) + ",c:white";
+            } else {
+                imagePath += "?__scale=w:165,h:110,t:1,c:white,r:2";
+            }
+            Element image = DOM.createImg();
+            image.setAttribute("src", imagePath);
+            m_imagePreview.setInnerHTML("");
+            m_imagePreview.appendChild(image);
+            m_resourceInfoPanel.add(new CmsImageInfo(info, dimension));
+        } else {
+            CmsListItemWidget widget = new CmsListItemWidget(info);
+            widget.setIcon(CmsIconUtil.getResourceIconClasses(info.getType(), info.getPath(), false));
+            m_resourceInfoPanel.add(widget);
+            int width = m_resourceInfoPanel.getOffsetWidth();
+            if (width > 0) {
+                widget.truncate("STANDARD", width);
+            }
         }
     }
 
@@ -457,8 +497,14 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
         m_resourceInfoPanel.clear();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
             m_resourceInfoPanel.setVisible(false);
+            if (m_hasImage) {
+                removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().hasImage());
+            }
         } else {
             m_resourceInfoPanel.getElement().getStyle().clearDisplay();
+            if (m_hasImage) {
+                addStyleName(I_CmsLayoutBundle.INSTANCE.galleryFieldCss().hasImage());
+            }
             CmsRpcAction<CmsResultItemBean> action = new CmsRpcAction<CmsResultItemBean>() {
 
                 @Override

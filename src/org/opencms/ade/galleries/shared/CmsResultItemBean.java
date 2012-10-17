@@ -51,6 +51,9 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** The result item description. */
     private String m_description;
 
+    /** The image dimensions. */
+    private String m_dimension;
+
     /** A flag which indicates whether this result item corresponds to a preset value in the editor.<p> */
     private boolean m_isPreset;
 
@@ -88,6 +91,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     }
 
     /**
+     * Returns the formatted last modification date.<p>
+     * 
+     * @return the formatted last modification date 
+     */
+    public String getDateLastModified() {
+
+        return m_dateLastModified;
+    }
+
+    /**
      * Returns the description.<p>
      *
      * @return the description
@@ -95,6 +108,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public String getDescription() {
 
         return m_description;
+    }
+
+    /**
+     * Returns the dimension.<p>
+     *
+     * @return the dimension
+     */
+    public String getDimension() {
+
+        return m_dimension;
     }
 
     /**
@@ -220,6 +243,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public void setDescription(String description) {
 
         m_description = description;
+    }
+
+    /**
+     * Sets the dimension.<p>
+     *
+     * @param dimension the dimension to set
+     */
+    public void setDimension(String dimension) {
+
+        m_dimension = dimension;
     }
 
     /**

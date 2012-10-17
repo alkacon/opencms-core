@@ -29,7 +29,7 @@
 	outline:none;
 }
 	
-.resourceInfo > div{
+.widget .resourceInfo > div, .widget div.imagePreview{
 	border: 1px solid #7788AA;
 }
 

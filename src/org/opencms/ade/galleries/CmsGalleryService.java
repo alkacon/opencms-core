@@ -854,10 +854,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
                 false);
             if (!imageDimensionProp.isNullProperty()) {
-                String temp = imageDimensionProp.getValue();
+                String dimensions = imageDimensionProp.getValue();
+                dimensions = dimensions.substring(2).replace(",h:", " x ");
+                bean.setDimension(dimensions);
                 bean.addAdditionalInfo(
                     Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_RESULT_LABEL_DIMENSION_0),
-                    temp.substring(2).replace(",h:", " x "));
+                    dimensions);
             }
         }
         bean.addAdditionalInfo(
