@@ -84,10 +84,17 @@ public class CmsContainerElement implements IsSerializable {
      **/
     private boolean m_viewPermission;
 
-    private boolean m_inlineEditingDisabled;
+    /**
+     * Flag which controls whether the new editor is disabled for this element.<p>
+     */
+    private boolean m_newEditorDisabled;
 
+    /**
+     * Default constructor.<p>
+     */
     public CmsContainerElement() {
 
+        // empty
     }
 
     /**
@@ -180,11 +187,6 @@ public class CmsContainerElement implements IsSerializable {
         return INHERIT_CONTAINER_TYPE_NAME.equals(m_resourceType);
     }
 
-    public boolean isInlineEditingDisabled() {
-
-        return m_inlineEditingDisabled;
-    }
-
     /**
      * Returns if the element is new and has not been created in the VFS yet.<p>
      * 
@@ -193,6 +195,16 @@ public class CmsContainerElement implements IsSerializable {
     public boolean isNew() {
 
         return m_new;
+    }
+
+    /**
+     * Returns true if the new editor is disabled for this element.<p>
+     * 
+     * @return true if the new editor is disabled for this element 
+     */
+    public boolean isNewEditorDisabled() {
+
+        return m_newEditorDisabled;
     }
 
     /**
@@ -235,11 +247,6 @@ public class CmsContainerElement implements IsSerializable {
         m_inheritanceInfo = inheritanceInfo;
     }
 
-    public void setInlineEditingDisabled(boolean disabled) {
-
-        m_inlineEditingDisabled = disabled;
-    }
-
     /**
      * Sets the 'new' flag.<p>
      * 
@@ -248,6 +255,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setNew(boolean isNew) {
 
         m_new = isNew;
+    }
+
+    /**
+     * Disables the new editor for this element.<p>
+     * 
+     * @param disabled if true, the new editor will be disabled for this element
+     */
+    public void setNewEditorDisabled(boolean disabled) {
+
+        m_newEditorDisabled = disabled;
     }
 
     /**

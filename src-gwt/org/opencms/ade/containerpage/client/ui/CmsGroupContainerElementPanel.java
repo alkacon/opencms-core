@@ -220,10 +220,10 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel#initInlinetEditor(org.opencms.ade.containerpage.client.CmsContainerpageController)
+     * @see org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel#initInlineEditor(org.opencms.ade.containerpage.client.CmsContainerpageController)
      */
     @Override
-    public void initInlinetEditor(CmsContainerpageController controller) {
+    public void initInlineEditor(CmsContainerpageController controller) {
 
         // don to anything
     }

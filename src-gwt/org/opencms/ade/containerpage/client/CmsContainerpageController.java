@@ -1343,14 +1343,14 @@ public final class CmsContainerpageController {
         if (isGroupcontainerEditing()) {
             for (Widget element : m_groupEditor.getGroupContainerWidget()) {
                 if ((element instanceof CmsContainerPageElementPanel)) {
-                    ((CmsContainerPageElementPanel)element).initInlinetEditor(this);
+                    ((CmsContainerPageElementPanel)element).initInlineEditor(this);
                 }
             }
         } else {
             for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
                 for (Widget element : container) {
                     if (element instanceof CmsContainerPageElementPanel) {
-                        ((CmsContainerPageElementPanel)element).initInlinetEditor(this);
+                        ((CmsContainerPageElementPanel)element).initInlineEditor(this);
                     }
                 }
             }
@@ -1996,7 +1996,7 @@ public final class CmsContainerpageController {
                         element.setResourceType(elementWidget.getNewType());
                         element.setNew(elementWidget.isNew());
                         element.setSitePath(elementWidget.getSitePath());
-                        element.setInlineEditingDisabled(elementWidget.isInlineEditingDisabled());
+                        element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
                         elements.add(element);
                     } catch (ClassCastException e) {
                         // no proper container element, skip it (this should never happen!)

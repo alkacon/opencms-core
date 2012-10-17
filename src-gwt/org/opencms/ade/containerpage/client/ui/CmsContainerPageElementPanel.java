@@ -130,7 +130,10 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      **/
     private boolean m_viewPermission;
 
-    private boolean m_disableInlineEditing;
+    /**
+     * Flag which indicates whether the new editor is disabled for this element.<p>
+     */
+    private boolean m_disableNewEditor;
 
     /**
      * Constructor.<p>
@@ -143,6 +146,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * @param hasSettings should be true if the element has settings which can be edited 
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
+     * @param disableNewEditor flag to disable the new editor for this element 
      */
     public CmsContainerPageElementPanel(
         Element element,
@@ -153,7 +157,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         boolean hasSettings,
         boolean hasViewPermission,
         boolean releasedAndNotExpired,
-        boolean disableInlineEditing) {
+        boolean disableNewEditor) {
 
         super((com.google.gwt.user.client.Element)element);
         m_clientId = clientId;
@@ -161,7 +165,7 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         m_noEditReason = noEditReason;
         m_hasSettings = hasSettings;
         m_parent = parent;
-        m_disableInlineEditing = disableInlineEditing;
+        m_disableNewEditor = disableNewEditor;
         setViewPermission(hasViewPermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
@@ -371,10 +375,10 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * 
      * @param controller the container page controller instance
      */
-    public void initInlinetEditor(final CmsContainerpageController controller) {
+    public void initInlineEditor(final CmsContainerpageController controller) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_noEditReason)
-            && !m_disableInlineEditing
+            && !m_disableNewEditor
             && CmsContentEditor.setEditable(getElement(), true)) {
             if (m_editorClickHandlerRegistration != null) {
                 m_editorClickHandlerRegistration.removeHandler();
@@ -402,11 +406,6 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
         }
     }
 
-    public boolean isInlineEditingDisabled() {
-
-        return m_disableInlineEditing;
-    }
-
     /**
      * Returns if this is e newly created element.<p>
      * 
@@ -415,6 +414,16 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
     public boolean isNew() {
 
         return m_newType != null;
+    }
+
+    /**
+     * Returns true if the new content editor is disabled for this element.<p>
+     * 
+     * @return true if the new editor is disabled for this element
+     */
+    public boolean isNewEditorDisabled() {
+
+        return m_disableNewEditor;
     }
 
     /**

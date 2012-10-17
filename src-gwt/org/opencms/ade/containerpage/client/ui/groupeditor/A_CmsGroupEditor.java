@@ -489,7 +489,7 @@ public abstract class A_CmsGroupEditor extends Composite {
                 element.setResourceType(elementWidget.getNewType());
                 element.setNew(elementWidget.isNew());
                 element.setSitePath(elementWidget.getSitePath());
-                element.setInlineEditingDisabled(elementWidget.isInlineEditingDisabled());
+                element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
                 subItems.add(element);
             }
         }
@@ -569,7 +569,7 @@ public abstract class A_CmsGroupEditor extends Composite {
         if (!m_controller.getData().isUseClassicEditor()) {
             for (Widget element : m_groupContainer) {
                 if (element instanceof CmsContainerPageElementPanel) {
-                    ((CmsContainerPageElementPanel)element).initInlinetEditor(m_controller);
+                    ((CmsContainerPageElementPanel)element).initInlineEditor(m_controller);
                 }
             }
         }

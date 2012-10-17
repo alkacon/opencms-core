@@ -369,10 +369,10 @@ public class CmsElementUtil {
         String noEditReason = "";
         // reinitializing resource to avoid caching issues
         elementBean.initResource(m_cms);
-        boolean inlineEditingDisabled = !CmsWorkplaceEditorManager.checkNewWidgetsAvailable(
+        boolean newEditorDisabled = !CmsWorkplaceEditorManager.checkNewWidgetsAvailable(
             m_cms,
             elementBean.getResource());
-        result.setInlineEditingDisabled(inlineEditingDisabled);
+        result.setNewEditorDisabled(newEditorDisabled);
         if (!elementBean.isInMemoryOnly()) {
             if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
                 noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);

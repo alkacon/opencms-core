@@ -38,7 +38,6 @@ import org.opencms.util.CmsUUID;
 
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The container-page editor implementation of the XML content editor handler.<p>
@@ -108,43 +107,23 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 CmsContentEditorDialog.get().openEditDialog(editableData, false, CmsContentEditorHandler.this);
             }
         };
-        if (m_handler.m_controller.getData().isUseClassicEditor()) {
+        if (m_handler.m_controller.getData().isUseClassicEditor() || element.isNewEditorDisabled()) {
             classicEdit.run();
         } else {
             final String editorLocale = CmsCoreProvider.get().getLocale();
-            m_handler.checkNewWidgetsAvailable(new CmsUUID(serverId), new AsyncCallback<Boolean>() {
 
-                public void onFailure(Throwable caught) {
+            Command onClose = new Command() {
 
-                    // TODO: Auto-generated method stub
+                public void execute() {
 
+                    onClose(element.getSitePath(), false);
                 }
-
-                public void onSuccess(Boolean result) {
-
-                    if (result.booleanValue()) {
-                        Command onClose = new Command() {
-
-                            public void execute() {
-
-                                onClose(element.getSitePath(), false);
-                            }
-                        };
-                        if (inline && CmsContentEditor.hasEditable(element.getElement())) {
-                            CmsContentEditor.getInstance().openInlineEditor(
-                                new CmsUUID(serverId),
-                                editorLocale,
-                                element,
-                                onClose);
-                        } else {
-                            CmsContentEditor.getInstance().openFormEditor(editorLocale, serverId, null, null, onClose);
-                        }
-                    } else {
-                        classicEdit.run();
-                    }
-                }
-
-            });
+            };
+            if (inline && CmsContentEditor.hasEditable(element.getElement())) {
+                CmsContentEditor.getInstance().openInlineEditor(new CmsUUID(serverId), editorLocale, element, onClose);
+            } else {
+                CmsContentEditor.getInstance().openFormEditor(editorLocale, serverId, null, null, onClose);
+            }
         }
     }
 
