@@ -34,6 +34,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsUUID;
@@ -380,8 +381,11 @@ public class CmsJspContentAccessBean {
     /** The lazy initialized map for the "has locale value" check. */
     private Map<String, Map<String, Boolean>> m_hasLocaleValue;
 
-    /** The selected locale for accessing entries from the XML content. */
+    /** The locale used for accessing entries from the XML content, this may be a fallback default locale. */
     private Locale m_locale;
+
+    /** The original locale requested for accessing entries from the XML content. */
+    private Locale m_requestedLocale;
 
     /** The lazy initialized with the locale names. */
     private Map<String, List<String>> m_localeNames;
@@ -577,7 +581,7 @@ public class CmsJspContentAccessBean {
      */
     public Map<String, Boolean> getHasValue() {
 
-        return getHasLocaleValue().get(m_locale);
+        return getHasLocaleValue().get(getLocale());
     }
 
     /**
@@ -600,12 +604,16 @@ public class CmsJspContentAccessBean {
     }
 
     /**
-     * Returns the Locale this bean was initialized with.<p>
+     * Returns the Locale this bean is using for content access, this may be a default fall back Locale.<p>
      *
-     * @return the locale  this bean was initialized with
+     * @return the Locale this bean is using for content access, this may be a default fall back Locale
      */
     public Locale getLocale() {
 
+        // check the content if the locale has not been set yet
+        if (m_locale == null) {
+            getRawContent();
+        }
         return m_locale;
     }
 
@@ -749,7 +757,7 @@ public class CmsJspContentAccessBean {
      */
     public List<String> getNames() {
 
-        return getLocaleNames().get(m_locale);
+        return getLocaleNames().get(getLocale());
     }
 
     /**
@@ -779,6 +787,24 @@ public class CmsJspContentAccessBean {
                     m_resource.getRootPath()), e);
             }
         }
+
+        // make sure a valid locale is used
+        if (m_locale == null) {
+            m_locale = m_requestedLocale;
+            // check if the requested locale is available
+            if (!m_content.hasLocale(m_locale)) {
+                Iterator<Locale> it = OpenCms.getLocaleManager().getDefaultLocales().iterator();
+                while (it.hasNext()) {
+                    Locale locale = it.next();
+                    if (m_content.hasLocale(locale)) {
+                        // found a matching locale
+                        m_locale = locale;
+                        break;
+                    }
+                }
+            }
+        }
+
         return m_content;
     }
 
@@ -789,7 +815,7 @@ public class CmsJspContentAccessBean {
      */
     public Map<String, String> getRdfa() {
 
-        return getLocaleRdfa().get(m_locale);
+        return getLocaleRdfa().get(getLocale());
     }
 
     /**
@@ -813,7 +839,7 @@ public class CmsJspContentAccessBean {
      */
     public Map<String, List<CmsJspContentAccessValueWrapper>> getSubValueList() {
 
-        return getLocaleSubValueList().get(m_locale);
+        return getLocaleSubValueList().get(getLocale());
     }
 
     /**
@@ -833,7 +859,7 @@ public class CmsJspContentAccessBean {
      */
     public Map<String, CmsJspContentAccessValueWrapper> getValue() {
 
-        return getLocaleValue().get(m_locale);
+        return getLocaleValue().get(getLocale());
     }
 
     /**
@@ -856,7 +882,7 @@ public class CmsJspContentAccessBean {
      */
     public Map<String, List<CmsJspContentAccessValueWrapper>> getValueList() {
 
-        return getLocaleValueList().get(m_locale);
+        return getLocaleValueList().get(getLocale());
     }
 
     /**
@@ -882,7 +908,7 @@ public class CmsJspContentAccessBean {
     public void init(CmsObject cms, Locale locale, I_CmsXmlDocument content, CmsResource resource) {
 
         m_cms = cms;
-        m_locale = locale;
+        m_requestedLocale = locale;
         m_content = content;
         m_resource = resource;
     }

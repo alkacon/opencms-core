@@ -167,5 +167,13 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         assertEquals(0, val.getValueList().size());
         assertEquals(0, val.getHasValue().size());
         assertEquals(0, val.getValue().size());
+
+        // create the content access bean with a locale that is not available, so a fall back should be used
+        bean = new CmsJspContentAccessBean(cms, Locale.FRENCH, content);
+
+        // check list access to default locale English 
+        frValues = bean.getValueList();
+        assertEquals(2, ((List)frValues.get("Teaser")).size());
+        assertEquals("This is teaser 2 in sample article 2.", String.valueOf(((List)enValues.get("Teaser")).get(1)));
     }
 }
