@@ -10,9 +10,9 @@
 		div.imageInfo table.infos{
 			border-collapse: collapse;
 			border-spacing:0px;
-			display: block;
 			border: none;
 			width: 100%;
+			display: table;
 		}
 		
 		div.imageInfo > div{
@@ -26,18 +26,14 @@
 			text-overflow: ellipsis;
 			padding: 1px;
 		}
-		div.imageInfo table.infos colgroup{
-			width:100%;
-			display:block;
-		}
 	</ui:style>
 	<g:HTMLPanel styleName="{style.imageInfo}" addStyleNames="{res.generalCss.cornerAll}">
 		<div class="{res.generalCss.cornerAll}">
 			<span class="{style.title}" ui:field="m_title"></span>
 			<table class="{style.infos}">
 				<colgroup>
-					<col width="30%" />
-					<col width="70%" />
+					<col width="20%" />
+					<col width="80%" />
 				</colgroup>
 				<tr>
 					<td ui:field="m_labelDimension"></td>

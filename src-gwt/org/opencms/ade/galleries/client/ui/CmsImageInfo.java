@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.client.ui;
 
+import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 
 import com.google.gwt.core.client.GWT;
@@ -95,10 +96,10 @@ public class CmsImageInfo extends Composite {
     public CmsImageInfo(CmsResultItemBean info, String dimensions) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_labelDescription.setInnerText("Description:");
-        m_labelDimension.setInnerText("Dimensions:");
-        m_labelLastChanged.setInnerText("Date last changed:");
-        m_labelUserLastModified.setInnerText("Last changed by:");
+        m_labelDescription.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_DESCRIPTION_0));
+        m_labelDimension.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_DIMENSION_0));
+        m_labelLastChanged.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_DATE_LAST_CHANGED_0));
+        m_labelUserLastModified.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_LAST_CHANGED_BY_0));
         m_description.setInnerText(info.getDescription());
         m_dimension.setInnerText(dimensions);
         m_userLastModified.setInnerText(info.getUserLastModified());

@@ -124,6 +124,18 @@ public final class Messages {
     public static final String GUI_IMAGE_HSPACE_0 = "GUI_IMAGE_HSPACE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_INFO_DATE_LAST_CHANGED_0 = "GUI_IMAGE_INFO_DATE_LAST_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_INFO_DESCRIPTION_0 = "GUI_IMAGE_INFO_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_INFO_DIMENSION_0 = "GUI_IMAGE_INFO_DIMENSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGE_INFO_LAST_CHANGED_BY_0 = "GUI_IMAGE_INFO_LAST_CHANGED_BY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGE_INSERT_COPYRIGHT_0 = "GUI_IMAGE_INSERT_COPYRIGHT_0";
 
     /** Message constant for key in the resource bundle. */
