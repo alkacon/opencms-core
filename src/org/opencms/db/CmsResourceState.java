@@ -158,7 +158,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isChanged() {
 
-        return (this == CmsResource.STATE_CHANGED);
+        return (this.equals(CmsResource.STATE_CHANGED));
     }
 
     /**
@@ -168,7 +168,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isDeleted() {
 
-        return (this == CmsResource.STATE_DELETED);
+        return (this.equals(CmsResource.STATE_DELETED));
     }
 
     /**
@@ -178,7 +178,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isKeep() {
 
-        return (this == CmsResource.STATE_KEEP);
+        return (this.equals(CmsResource.STATE_KEEP));
     }
 
     /**
@@ -188,7 +188,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isNew() {
 
-        return (this == CmsResource.STATE_NEW);
+        return (this.equals(CmsResource.STATE_NEW));
     }
 
     /**
@@ -198,7 +198,7 @@ public class CmsResourceState implements Serializable {
      */
     public boolean isUnchanged() {
 
-        return (this == CmsResource.STATE_UNCHANGED);
+        return (this.equals(CmsResource.STATE_UNCHANGED));
     }
 
     /**
