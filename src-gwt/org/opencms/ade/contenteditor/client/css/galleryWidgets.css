@@ -32,7 +32,9 @@
 .widget .resourceInfo > div, .widget div.imagePreview{
 	border: 1px solid #7788AA;
 }
-
+.widget .hasError div.imagePreview{
+	display: none;
+}
 @if user.agent ie6 ie8 {
 	.resourceInfo > div > div:first-child{
 		background-color: value("constants.css.gradientFormDialogColor");

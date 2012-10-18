@@ -58,9 +58,14 @@ div.imagePreview {
 	display: none;
 	overflow: hidden;
 }
-
+div.imagePreview > div{
+	height: 110px;
+	width: 165px;
+	background: white;
+	text-align: center;
+}
 div.imagePreview img {
-	display:block;
+	margin: auto;
 }
 
 .hasImage div.imagePreview {

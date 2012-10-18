@@ -57,6 +57,7 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -464,17 +465,21 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             CmsCroppingParamBean cropping = CmsCroppingParamBean.parseImagePath(getFormValueAsString());
             String imagePath = info.getViewLink();
             String dimension = info.getDimension();
+            int marginTop = 0;
             if (cropping.isCropped()) {
                 dimension = cropping.getTargetWidth() + " x " + cropping.getTargetHeight();
                 String[] dimensions = dimension.split("x");
                 cropping.setOrgWidth(CmsClientStringUtil.parseInt(dimensions[0].trim()));
                 cropping.setOrgHeight(CmsClientStringUtil.parseInt(dimensions[1].trim()));
-                imagePath += "?" + cropping.getRestrictedSizeScaleParam(110, 165) + ",c:white";
+                CmsCroppingParamBean restricted = cropping.getRestrictedSizeParam(110, 165);
+                imagePath += "?" + restricted;
+                marginTop = (110 - restricted.getTargetHeight()) / 2;
             } else {
                 imagePath += "?__scale=w:165,h:110,t:1,c:white,r:2";
             }
             Element image = DOM.createImg();
             image.setAttribute("src", imagePath);
+            image.getStyle().setMarginTop(marginTop, Unit.PX);
             m_imagePreview.setInnerHTML("");
             m_imagePreview.appendChild(image);
             m_resourceInfoPanel.add(new CmsImageInfo(info, dimension));
