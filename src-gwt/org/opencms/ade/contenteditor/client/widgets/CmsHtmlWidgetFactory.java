@@ -269,6 +269,9 @@ public class CmsHtmlWidgetFactory implements I_WidgetFactory, I_CmsHasInit {
             if (config.content_css) {
                 options.content_css = config.content_css;
             }
+            if (config.height) {
+                options.editorHeight = config.height;
+            }
             if (config.block_formats) {
                 options.theme_advanced_blockformats = config.block_formats;
             }

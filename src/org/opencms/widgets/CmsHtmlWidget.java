@@ -237,6 +237,11 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             List<String> toolbarItems = getHtmlWidgetOption().getButtonBarShownItems();
             result.put("toolbar_items", toolbarItems);
             result.put("language", OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).getLanguage());
+            String editorHeight = getHtmlWidgetOption().getEditorHeight();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
+                editorHeight = editorHeight.replaceAll("px", "");
+                result.put("height", editorHeight);
+            }
             // set CSS style sheet for current editor widget if configured
             boolean cssConfigured = false;
             String cssPath = "";
