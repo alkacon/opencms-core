@@ -59,7 +59,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -80,13 +87,36 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @since 8.0.0
  */
-public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
+public class CmsGalleryField extends Composite
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers {
 
     /**
      * The UI Binder interface for this widget.<p>
      */
     protected interface I_CmsGalleryFieldUiBinder extends UiBinder<Panel, CmsGalleryField> {
         // binder interface
+    }
+
+    /**
+     * Handler to fire resize event on resource info widget open/close.<p>
+     */
+    protected class OpenCloseHandler implements CloseHandler<CmsListItemWidget>, OpenHandler<CmsListItemWidget> {
+
+        /**
+         * @see com.google.gwt.event.logical.shared.CloseHandler#onClose(com.google.gwt.event.logical.shared.CloseEvent)
+         */
+        public void onClose(CloseEvent<CmsListItemWidget> event) {
+
+            fireResize();
+        }
+
+        /**
+         * @see com.google.gwt.event.logical.shared.OpenHandler#onOpen(com.google.gwt.event.logical.shared.OpenEvent)
+         */
+        public void onOpen(OpenEvent<CmsListItemWidget> event) {
+
+            fireResize();
+        }
     }
 
     /** Timer to update the resource info box. */
@@ -161,6 +191,9 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     /** The info timer instance. */
     private InfoTimer m_infoTimer;
 
+    /** The previous field value. */
+    private String m_previousValue;
+
     /** 
      * Constructs a new gallery widget.<p>
      * 
@@ -217,6 +250,14 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     public void addFieldStyleName(String styleName) {
 
         m_fieldBox.addClassName(styleName);
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
+     */
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+
+        return addHandler(handler, ResizeEvent.getType());
     }
 
     /**
@@ -339,6 +380,28 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     }
 
     /**
+     * Fires the value change event if the value has changed.<p>
+     * 
+     * @param force <code>true</code> to force firing the event in any case
+     */
+    protected void fireChange(boolean force) {
+
+        String value = getFormValueAsString();
+        if (force || !value.equals(m_previousValue)) {
+            m_previousValue = value;
+            ValueChangeEvent.fire(this, value);
+        }
+    }
+
+    /**
+     * Fires the resize event for this widget.<p>
+     */
+    protected void fireResize() {
+
+        ResizeEvent.fire(this, getElement().getOffsetWidth(), getElement().getOffsetHeight());
+    }
+
+    /**
      * Returns the gallery service instance.<p>
      * 
      * @return the gallery service instance
@@ -376,8 +439,9 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
 
         m_textbox.setValue(value);
         updateResourceInfo(value);
+        m_previousValue = value;
         if (fireEvent) {
-            ValueChangeEvent.fire(this, getFormValueAsString());
+            fireChange(true);
         }
     }
 
@@ -416,6 +480,9 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
             m_resourceInfoPanel.add(new CmsImageInfo(info, dimension));
         } else {
             CmsListItemWidget widget = new CmsListItemWidget(info);
+            OpenCloseHandler handler = new OpenCloseHandler();
+            widget.addCloseHandler(handler);
+            widget.addOpenHandler(handler);
             widget.setIcon(CmsIconUtil.getResourceIconClasses(info.getType(), info.getPath(), false));
             m_resourceInfoPanel.add(widget);
             int width = m_resourceInfoPanel.getOffsetWidth();
@@ -468,7 +535,7 @@ public class CmsGalleryField extends Composite implements I_CmsFormWidget, I_Cms
     @UiHandler("m_textbox")
     void onTextBoxChange(ValueChangeEvent<String> event) {
 
-        ValueChangeEvent.fire(this, getFormValueAsString());
+        fireChange(false);
         if (m_infoTimer != null) {
             m_infoTimer.cancel();
             m_infoTimer = null;
