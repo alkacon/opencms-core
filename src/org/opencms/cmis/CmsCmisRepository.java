@@ -1557,7 +1557,7 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     CmsSolrResultList solrSearch(CmsObject cms, CmsSolrIndex index, String query, int start, int rows)
     throws CmsSearchException {
 
-        CmsSolrQuery q = new CmsSolrQuery(cms, CmsRequestUtil.createParameterMap(query));
+        CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
         q.setStart(new Integer(start));
         q.setRows(new Integer(rows));
         CmsSolrResultList resultPage = index.search(cms, q, true);
