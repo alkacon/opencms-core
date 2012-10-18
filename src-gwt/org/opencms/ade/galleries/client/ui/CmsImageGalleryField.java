@@ -144,6 +144,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The description value. */
     private String m_description;
 
+    /** The previous field value. */
+    private String m_previousValue;
+
     /** The scale values. */
     private String m_scaleValue;
 
@@ -317,7 +320,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @UiHandler("m_formatSelection")
     public void onSelectBoxChange(ValueChangeEvent<String> event) {
 
-        ValueChangeEvent.fire(CmsImageGalleryField.this, getFormValueAsString());
+        fireChange(false);
     }
 
     /**
@@ -328,7 +331,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @UiHandler("m_descriptionArea")
     public void onTextAreaBoxChange(ValueChangeEvent<String> event) {
 
-        ValueChangeEvent.fire(CmsImageGalleryField.this, getFormValueAsString());
+        fireChange(false);
     }
 
     /**
@@ -339,7 +342,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @UiHandler("m_descriptionArea")
     public void onTextAreaBoxResize(ResizeEvent event) {
 
-        ResizeEvent.fire(CmsImageGalleryField.this, event.getWidth(), event.getHeight());
+        ResizeEvent.fire(this, event.getWidth(), event.getHeight());
     }
 
     /**
@@ -350,7 +353,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @UiHandler("m_textbox")
     public void onTextboxChange(ValueChangeEvent<String> event) {
 
-        ValueChangeEvent.fire(this, getFormValueAsString());
+        fireChange(false);
     }
 
     /**
@@ -464,7 +467,21 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         value = splitValue(value);
         m_textbox.setValue(value);
         if (fireEvent) {
-            ValueChangeEvent.fire(this, getFormValueAsString());
+            fireChange(true);
+        }
+    }
+
+    /**
+     * Fires the value change event if the value has changed.<p>
+     * 
+     * @param force <code>true</code> to force firing the event in any case
+     */
+    protected void fireChange(boolean force) {
+
+        String value = getFormValueAsString();
+        if (force || !value.equals(m_previousValue)) {
+            m_previousValue = value;
+            ValueChangeEvent.fire(this, value);
         }
     }
 

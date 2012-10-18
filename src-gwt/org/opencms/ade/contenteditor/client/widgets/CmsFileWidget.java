@@ -33,6 +33,8 @@ import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
 import org.opencms.ade.galleries.client.ui.CmsGalleryField;
 
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -41,7 +43,7 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  *
  * */
-public class CmsFileWidget extends Composite implements I_EditWidget {
+public class CmsFileWidget extends Composite implements I_EditWidget, HasResizeHandlers {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -93,6 +95,14 @@ public class CmsFileWidget extends Composite implements I_EditWidget {
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
         return null;
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
+     */
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+
+        return m_linkSelect.addResizeHandler(handler);
     }
 
     /**
