@@ -125,9 +125,9 @@ function imageGalleryDialogUrl() {
 	var resParam = "";
     var editFrame=findFrame(self, 'edit');
 	if (editFrame.editedResource != null) {
-		resParam = "&resource=" + editFrame.editedResource;
+		resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + editFrame.editedResource;
 	} else {
-		resParam = "&resource=" + editFrame.editform.editedResource;
+		resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + editFrame.editform.editedResource;
 	}
 	// set the content locale
 	var elementLanguage="${locale}";
@@ -136,7 +136,7 @@ function imageGalleryDialogUrl() {
 	}catch(err){
 	    // nothing to do
 	}
-	var searchParam = "&types=<%=itemResType %>&currentelement="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
-	return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?dialogmode=editor" + searchParam + resParam;
+	var searchParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES%>=<%=itemResType %>&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
+	return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam;
 }
 </fmt:bundle>
