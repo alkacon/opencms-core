@@ -15,6 +15,19 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.5.0.1 - October 19, 2012
+! Improved file selector widget to show resource information
+! Improved image gallery widget to show image thumb nail
+! Added file name translation rules, issue #68, #70
+* Fixed issue #64 CmsResource Serialization Bug - Bad Resource State of Deserialization 
+* Fixed issue #77 Make CmsXmlBooleanValue return sensible values for getPlainText
+* Fixed issue #83 Acacia Editor Problem with Comments and Javascript
+* Fixed issue #84 Validation rules and saving + exit
+* Fixed issue #88 XML-Content-Editor:No preselection in selector widget 
+* Fixed issue #93 Gallery issue with non default site
+* Fixed issue #95, #96, #97 FireFox changed user agent string
+* Fixed issue where fall-back locale was not used
+
 OpenCms 8.5.0 - September 24, 2012
 ! Added new inline content editor allows to edit content "in place" on the web page.
 ! Added form based content editor has been completely rewritten for improved speed and ease-of-use.
