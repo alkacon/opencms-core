@@ -575,9 +575,8 @@ public final class CmsJspStandardContextBean {
     public void updateRequestData(CmsFlexRequest cmsFlexRequest) {
 
         CmsResource detailRes = CmsDetailPageResourceHandler.getDetailResource(cmsFlexRequest);
-        if (detailRes != null) {
-            m_detailContentResource = detailRes;
-        }
+        m_detailContentResource = detailRes;
+
     }
 
     /**
