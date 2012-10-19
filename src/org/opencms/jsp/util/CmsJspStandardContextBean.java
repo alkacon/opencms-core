@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.flex.CmsFlexRequest;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.Messages;
 import org.opencms.main.CmsException;
@@ -563,6 +564,19 @@ public final class CmsJspStandardContextBean {
         } catch (CmsException e) {
             // should not happen
             m_cms = cms;
+        }
+    }
+
+    /**
+     * Updates the standard context bean from the request.<p>
+     * 
+     * @param cmsFlexRequest the request from which to update the data 
+     */
+    public void updateRequestData(CmsFlexRequest cmsFlexRequest) {
+
+        CmsResource detailRes = CmsDetailPageResourceHandler.getDetailResource(cmsFlexRequest);
+        if (detailRes != null) {
+            m_detailContentResource = detailRes;
         }
     }
 

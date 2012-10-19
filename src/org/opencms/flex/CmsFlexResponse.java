@@ -476,8 +476,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             m_includeListParameters = new ArrayList<Map<String, String[]>>(10);
             m_includeListAttributes = new ArrayList<Map<String, Object>>(10);
         }
-        // never cache the Flex controller
-        attributeMap.remove(CmsFlexController.ATTRIBUTE_NAME);
+        // never cache some request attributes, e.g. the Flex controller 
+        m_controller.removeUncacheableAttributes(attributeMap);
         // only cache a copy of the JSP standard context bean
         CmsJspStandardContextBean bean = (CmsJspStandardContextBean)attributeMap.get(CmsJspStandardContextBean.ATTRIBUTE_NAME);
         if (bean != null) {

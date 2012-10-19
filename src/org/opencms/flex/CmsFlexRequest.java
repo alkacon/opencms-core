@@ -253,6 +253,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 } else if (CmsJspStandardContextBean.ATTRIBUTE_NAME.equals(key)) {
                     CmsJspStandardContextBean bean = (CmsJspStandardContextBean)entry.getValue();
                     bean.updateCmsObject(m_controller.getCmsObject());
+                    bean.updateRequestData(this);
                 }
                 attributes.put(key, entry.getValue());
             }

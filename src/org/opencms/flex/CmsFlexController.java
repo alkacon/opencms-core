@@ -27,12 +27,14 @@
 
 package org.opencms.flex;
 
+import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsRequestUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.ServletRequest;
@@ -600,6 +602,17 @@ public class CmsFlexController {
         m_flexResponseList.add(res);
         m_flexContextInfoList.add(new CmsFlexRequestContextInfo());
         updateRequestContextInfo();
+    }
+
+    /**
+     * Removes request attributes which shouldn't be cached in flex cache entries from a map.<p>
+     * 
+     * @param attributeMap the map of attributes 
+     */
+    public void removeUncacheableAttributes(Map<String, Object> attributeMap) {
+
+        attributeMap.remove(CmsFlexController.ATTRIBUTE_NAME);
+        attributeMap.remove(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE);
     }
 
     /**
