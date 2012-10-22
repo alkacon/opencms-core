@@ -34,6 +34,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -289,10 +290,30 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                             ? cd.getChoiceMaxOccurs()
                             : type.getMaxOccurs();
                             if (elements.size() > maxOccures) {
+                                if (type.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)) {
+                                    if (type.getMaxOccurs() == 1) {
+                                        Element category = elements.get(0);
+                                        List<Element> categories = new ArrayList<Element>();
+                                        for (Element value : elements) {
+                                            Iterator<Element> itLink = value.elementIterator();
+                                            while (itLink.hasNext()) {
+                                                Element link = itLink.next();
+                                                categories.add((Element)link.clone());
+                                            }
+                                        }
+                                        category.clearContent();
+                                        for (Element value : categories) {
+                                            category.add(value);
+                                        }
+                                    }
+
+                                }
+
                                 // to many nodes of this type appear according to the current schema definition
                                 for (int lo = (elements.size() - 1); lo >= type.getMaxOccurs(); lo--) {
                                     elements.remove(lo);
                                 }
+
                             }
                             nodeLists.add(elements);
                         }
