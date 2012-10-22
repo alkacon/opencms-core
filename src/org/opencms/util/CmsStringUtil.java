@@ -275,6 +275,24 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Returns a String array representation for the given enum.<p>
+     * 
+     * @param <T> the type of the enum
+     * @param values the enum values
+     * 
+     * @return the representing String array
+     */
+    public static <T extends Enum<T>> String[] enumNameToStringArray(T[] values) {
+
+        int i = 0;
+        String[] result = new String[values.length];
+        for (T value : values) {
+            result[i++] = value.name();
+        }
+        return result;
+    }
+
+    /**
      * Replaces occurrences of special control characters in the given input with 
      * a HTML representation.<p>
      * 

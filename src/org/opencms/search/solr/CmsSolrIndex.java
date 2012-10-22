@@ -63,6 +63,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletResponse;
 
@@ -75,6 +76,7 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.FastWriter;
 import org.apache.solr.core.CoreContainer;
@@ -599,6 +601,36 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
+     * Executes a spell checking Solr query and returns the Solr query response.<p>
+     * 
+     * @param cms the CMS object
+     * @param q the query
+     * @param reqParams the request parameters as map
+     * 
+     * @return the Solr response
+     * 
+     * @throws CmsSearchException if something goes wrong
+     */
+    public synchronized QueryResponse spellCheck(CmsObject cms, String q, Map<String, String[]> reqParams)
+    throws CmsSearchException {
+
+        try {
+            ModifiableSolrParams params = new ModifiableSolrParams();
+            params.set("qt", "/spell");
+            params.set("q", q);
+            params.set("spellcheck", "true");
+            params.set("spellcheck.collate", "true");
+            params.set("spellcheck.build", "false");
+            for (Map.Entry<String, String[]> ent : reqParams.entrySet()) {
+                params.set(ent.getKey(), ent.getValue());
+            }
+            return m_solr.query(params);
+        } catch (Exception e) {
+            throw new CmsSearchException(Messages.get().container(Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1, q), e);
+        }
+    }
+
+    /**
      * Writes the response into the writer.<p>
      * 
      * NOTE: Currently not available for HTTP server.<p>
@@ -655,9 +687,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             if (core != null) {
                 SolrRequestHandler h = core.getRequestHandler("/replication");
                 if (h instanceof ReplicationHandler) {
-                    h.handleRequest(
-                        new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
-                        new SolrQueryResponse());
+                    h.handleRequest(new LocalSolrQueryRequest(
+                        core,
+                        CmsRequestUtil.createParameterMap("?command=backup")), new SolrQueryResponse());
                 }
             }
         }
