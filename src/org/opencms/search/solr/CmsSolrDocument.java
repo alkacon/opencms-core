@@ -218,9 +218,13 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
             IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
             try {
-                FieldType type = schema.getFieldType(fieldName);
-                if (type instanceof DateField) {
-                    value = DateField.formatExternal(new Date(new Long(value).longValue()));
+                try {
+                    FieldType type = schema.getFieldType(fieldName);
+                    if (type instanceof DateField) {
+                        value = DateField.formatExternal(new Date(new Long(value).longValue()));
+                    }
+                } catch (SolrException e) {
+                    LOG.debug(e.getMessage(), e);
                 }
 
                 SolrInputField exfield = m_doc.getField(fieldName);
