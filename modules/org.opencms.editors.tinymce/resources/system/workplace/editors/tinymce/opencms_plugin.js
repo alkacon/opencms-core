@@ -117,12 +117,20 @@ function getDownloadSelectionPath() {
 }
 
 
+function getEditResource() {
+   if (typeof _editResource != 'undefined') {
+      return _editResource;
+   } else {
+      var editFrame = findFrame(self, 'edit'); 
+      var result = editFrame.editedResource; 
+      if (result != null) {
+         return result;
+      }
+      result = editFrame.editform.editedResource;
+      return result; 
+   }
+}
 
-/**
- * Returns the path to the gallery dialog with some request parameters for the dialog.<p>
- * 
- * @return <code>String</code> the dialog URL
- */ 
 /**
  * Returns the path to the gallery dialog with some request parameters for the dialog.<p>
  * 
@@ -131,15 +139,12 @@ function getDownloadSelectionPath() {
 function createGalleryDialogUrl(path, typesParam, integrator) {
    var resParam = "";
    var editFrame=window;
-   if (typeof _editResource!='undefined'){
-       resParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" +_editResource;
-   }else{
+   if (typeof _editResource=='undefined'){
        editFrame=findFrame(self, 'edit');
-       if (editFrame.editedResource != null) {
-          resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + editFrame.editedResource;
-       } else {
-          resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + editFrame.editform.editedResource;
-       }
+   }
+   var editResource = getEditResource();
+   if (editResource) {
+      resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + getEditResource(); 
    }
    if (!integrator) {
       integrator = "/system/workplace/editors/tinymce/integrator.js";
@@ -180,11 +185,10 @@ function downloadGalleryDialogUrl() {
 function linkGalleryDialogUrl() {
       var resParam = "";
        var editFrame=findFrame(self, 'edit');
-      if (editFrame.editedResource != null) {
-         resParam = "&resource=" + editFrame.editedResource;
-      } else {
-         resParam = "&resource=" + editFrame.editform.editedResource;
-      }
+       var editResource = getEditResource();
+       if (editResource) {
+          resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + editResource;           
+       }
       var baseLink =  "<cms:link>/system/workplace/galleries/linkgallery/index.jsp</cms:link>";
       var integrator = "/system/workplace/editors/tinymce/linkgallery_integrator.js";
       var integratorParam = "&integrator=" + integrator;  
@@ -297,11 +301,7 @@ function createLink(linkInformation) {
 function htmlGalleryDialogUrl() {
    var resParam = "";
    var editFrame = findFrame(self, "edit");
-   if (editFrame.editedResource != null) {
-      resParam = "&resource=" + editFrame.editedResource;
-   } else {
-      resParam = "&resource=" + editFrame.editform.editedResource;
-   }
+   resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + getEditResource(); 
    var integratorUri = "/system/workplace/editors/tinymce/htmlgallery_integrator.js";
    var integratorParam = "&integrator="+integratorUri; 
    return "<%= cms.link("/system/workplace/galleries/htmlgallery/index.jsp") %>?dialogmode=editor" + resParam +integratorParam;
