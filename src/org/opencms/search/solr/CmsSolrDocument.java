@@ -156,6 +156,21 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * Adds a multi-valued field.<p>
+     * 
+     * @param fieldName the field name to put the values in
+     * @param values the values to put in the field
+     */
+    public void addMultiValuedField(String fieldName, List<String> values) {
+
+        if ((values != null) && (values.size() > 0)) {
+            for (String value : values) {
+                m_doc.addField(fieldName, value);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.search.I_CmsSearchDocument#addPathField(java.lang.String)
      */
     public void addPathField(String rootPath) {
