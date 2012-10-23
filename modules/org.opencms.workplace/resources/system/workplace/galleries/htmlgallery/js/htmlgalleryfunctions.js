@@ -507,7 +507,7 @@ function loadActiveItem(data, isInitial) {
 	//set the active item
 	activeItem = eval("(" + data + ")");
 	//swich to preview tab
-	$tabs.data("disabled.tabs", []);
+	$tabs.tabs("enable", 0);
 	$tabs.tabs("select", 0);
 	try {
 		// do additional stuff in editor mode
