@@ -42,6 +42,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.flex.CmsFlexController;
@@ -188,7 +189,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsContentDefinition definition = null;
         try {
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
-            CmsResource resource = getCmsObject().readResource(structureId);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
             definition = readContentDefinition(
                 resource,
@@ -211,7 +212,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
             try {
                 CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
-                CmsResource resource = getCmsObject().readResource(structureId);
+                CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
                 result = readContentDefnitionForNew(newLink, resource, modelFileId, contentLocale);
             } catch (Throwable t) {
@@ -231,7 +232,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsContentDefinition definition = null;
         try {
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
-            CmsResource resource = getCmsObject().readResource(structureId);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
             definition = readContentDefinition(
                 resource,
@@ -255,7 +256,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Locale locale;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
             try {
-                CmsResource resource = getCmsObject().readResource(paramResource);
+                CmsResource resource = getCmsObject().readResource(paramResource, CmsResourceFilter.IGNORE_EXPIRATION);
                 if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
                         locale = CmsLocaleManager.getLocale(paramLocale);
@@ -296,7 +297,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsObject cms = getCmsObject();
             CmsResource resource = null;
             try {
-                resource = cms.readResource(structureId);
+                resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 ensureLock(resource);
                 CmsFile file = cms.readFile(resource);
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
@@ -363,7 +364,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if (structureId != null) {
             CmsObject cms = getCmsObject();
             try {
-                CmsResource resource = cms.readResource(structureId);
+                CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 CmsFile file = cms.readFile(resource);
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
                 for (Entity entity : changedEntities) {
@@ -783,7 +784,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     locale.toString());
             }
         } else if (!modelFileId.isNullUUID()) {
-            modelFile = getCmsObject().getSitePath(getCmsObject().readResource(modelFileId));
+            modelFile = getCmsObject().getSitePath(
+                getCmsObject().readResource(modelFileId, CmsResourceFilter.IGNORE_EXPIRATION));
         }
         String newFileName = A_CmsResourceCollector.createResourceForCollector(
             getCmsObject(),
@@ -791,7 +793,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             locale,
             sitePath,
             modelFile);
-        CmsResource resource = getCmsObject().readResource(newFileName);
+        CmsResource resource = getCmsObject().readResource(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsContentDefinition contentDefinition = readContentDefinition(resource, null, locale, false);
         contentDefinition.setDeleteOnCancel(true);
         return contentDefinition;

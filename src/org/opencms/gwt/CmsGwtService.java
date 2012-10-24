@@ -30,6 +30,7 @@ package org.opencms.gwt;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -308,7 +309,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     protected CmsLock ensureLock(CmsUUID structureId) throws CmsException {
 
-        return ensureLock(getCmsObject().readResource(structureId));
+        return ensureLock(getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION));
 
     }
 
@@ -324,7 +325,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     protected CmsLock ensureLock(String sitepath) throws CmsException {
 
-        return ensureLock(getCmsObject().readResource(sitepath));
+        return ensureLock(getCmsObject().readResource(sitepath, CmsResourceFilter.IGNORE_EXPIRATION));
     }
 
     /**
