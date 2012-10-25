@@ -84,7 +84,7 @@ public class CmsUploadPropertyDialog {
     private Command m_closeCommand;
 
     /** The pre fetched date. */
-    private CmsPostUploadDialogBean m_dialogData;
+    CmsPostUploadDialogBean m_dialogData;
 
     /** The dialog service. */
     private I_CmsPostUploadDialogServiceAsync m_dialogService;
@@ -328,7 +328,7 @@ public class CmsUploadPropertyDialog {
             @Override
             public void execute() {
 
-                getDialogService().load(uuid, this);
+                getDialogService().load(uuid, m_dialogData.isUsePropertyConfiguration(), this);
             }
 
             /**
@@ -375,7 +375,6 @@ public class CmsUploadPropertyDialog {
                 m_buttonNext.enable();
             }
         }
-
         m_uploadPropertyPanel = new CmsUploadPropertyPanel(this, m_dialogData, m_panelData);
         m_dialogContent.setWidget(m_uploadPropertyPanel);
 

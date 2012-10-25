@@ -27,6 +27,7 @@
 
 package org.opencms.ade.postupload;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.postupload.shared.CmsPostUploadDialogBean;
 import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
 import org.opencms.ade.postupload.shared.I_CmsDialogConstants;
@@ -86,9 +87,9 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
     }
 
     /**
-     * @see org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService#load(org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService#load(org.opencms.util.CmsUUID, boolean)
      */
-    public CmsPostUploadDialogPanelBean load(CmsUUID id) throws CmsRpcException {
+    public CmsPostUploadDialogPanelBean load(CmsUUID id, boolean useConfiguration) throws CmsRpcException {
 
         try {
             CmsResource res = getCmsObject().readResource(id);
@@ -122,19 +123,27 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             Map<String, CmsXmlContentProperty> propertyDefinitions = new LinkedHashMap<String, CmsXmlContentProperty>();
             Map<String, CmsClientProperty> clientProperties = new LinkedHashMap<String, CmsClientProperty>();
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(getCmsObject(), res.getRootPath());
+            Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
             for (String propertyName : defaultproperties) {
-                CmsXmlContentProperty propDef = new CmsXmlContentProperty(
-                    propertyName,
-                    "string",
-                    "string",
-                    "",
-                    "",
-                    "",
-                    "",
-                    null,
-                    "",
-                    "",
-                    "false");
+                CmsXmlContentProperty propDef = null;
+                if (useConfiguration) {
+                    propDef = propertyConfiguration.get(propertyName);
+                }
+                if (propDef == null) {
+                    propDef = new CmsXmlContentProperty(
+                        propertyName,
+                        "string",
+                        "string",
+                        "",
+                        "",
+                        "",
+                        "",
+                        null,
+                        "",
+                        "",
+                        "false");
+                }
                 propertyDefinitions.put(propertyName, propDef);
                 CmsProperty property = CmsProperty.get(propertyName, properties);
                 if (property != null) {

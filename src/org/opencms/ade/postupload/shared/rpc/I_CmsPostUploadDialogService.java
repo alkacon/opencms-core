@@ -43,12 +43,13 @@ public interface I_CmsPostUploadDialogService extends RemoteService {
      * Loads the dialog bean info for the given resource.<p>
      * 
      * @param uuid structure id to get the dialog bean for
+     * @param useConfiguration true if the property configurations should be used 
      * 
      * @return the dialog bean info for the given resource
      * 
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPostUploadDialogPanelBean load(CmsUUID uuid) throws CmsRpcException;
+    CmsPostUploadDialogPanelBean load(CmsUUID uuid, boolean useConfiguration) throws CmsRpcException;
 
     /**
      * Generates dialog data for prefetching in the host page.<p>

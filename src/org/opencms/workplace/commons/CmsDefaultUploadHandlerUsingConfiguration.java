@@ -25,33 +25,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.postupload.shared.rpc;
+package org.opencms.workplace.commons;
 
-import org.opencms.ade.postupload.shared.CmsPostUploadDialogBean;
-import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
-import org.opencms.util.CmsUUID;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.opencms.file.CmsObject;
+import org.opencms.workplace.I_CmsPostUploadDialogHandler;
 
 /**
- * Asynchronous service interface for the upload property dialog.<p>
+ * Default upload handler implementation.<p>
  */
-public interface I_CmsPostUploadDialogServiceAsync {
+public class CmsDefaultUploadHandlerUsingConfiguration implements I_CmsPostUploadDialogHandler {
 
     /**
-     * Loads the dialog bean info for the given resource.<p>
-     * 
-     * @param uuid the structure id of the resource to load
-     * @param useConfiguration true if the property configurations should be used 
-     * @param asyncCallback the asynchronous callback for the result
+     * @see org.opencms.workplace.I_CmsPostUploadDialogHandler#getUploadHook(org.opencms.file.CmsObject, java.lang.String)
      */
-    void load(CmsUUID uuid, boolean useConfiguration, AsyncCallback<CmsPostUploadDialogPanelBean> asyncCallback);
+    public String getUploadHook(CmsObject cms, String uploadFolderSitePath) {
 
-    /**
-     * Generates dialog data for prefetching in the host page.<p>
-     * 
-     * @param asyncCallback the asynchronous callback for the result 
-     */
-    void prefetch(AsyncCallback<CmsPostUploadDialogBean> asyncCallback);
-
+        return "/system/modules/org.opencms.ade.postupload/pages/postupload_useconfig.jsp";
+    }
 }

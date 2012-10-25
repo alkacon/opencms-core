@@ -50,6 +50,9 @@ public class CmsPostUploadDialogBean implements IsSerializable {
      */
     private Map<CmsUUID, String> m_resources = new HashMap<CmsUUID, String>();
 
+    /** Flag which controls whether the property configurations should be used. */
+    private boolean m_useConfiguration;
+
     /** 
      * Default constructor for serialization.<p>
      */
@@ -79,6 +82,17 @@ public class CmsPostUploadDialogBean implements IsSerializable {
     }
 
     /**
+     * Returns true if the property configurations should be used.<p>
+     * 
+     * @return true if the property configurations should be used 
+     */
+    public boolean isUsePropertyConfiguration() {
+
+        return m_useConfiguration;
+
+    }
+
+    /**
      * Sets the map of resources for which the properties should be uploaded.<p> 
      * 
      * @param resources the map of resources for which the properties should be uploaded 
@@ -86,6 +100,16 @@ public class CmsPostUploadDialogBean implements IsSerializable {
     public void setResources(Map<CmsUUID, String> resources) {
 
         m_resources = resources;
+    }
+
+    /**
+     * Enables/disables use of the property configuration.<p>
+     * 
+     * @param useConfiguration true if the property configuration should be used 
+     */
+    public void setUsePropertyConfiguration(boolean useConfiguration) {
+
+        m_useConfiguration = useConfiguration;
     }
 
 }

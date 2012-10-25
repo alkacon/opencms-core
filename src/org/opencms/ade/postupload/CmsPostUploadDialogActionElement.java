@@ -50,6 +50,9 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
     /** The dialog data. */
     private CmsPostUploadDialogBean m_dialogData;
 
+    /** Flag to control if property configuration should be used. */
+    private boolean m_useConfiguration;
+
     /**
      * Creates a new instance.<p>
      *  
@@ -106,7 +109,18 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
         if (m_dialogData == null) {
             m_dialogData = CmsPostUploadDialogService.newInstance(getRequest()).prefetch();
         }
+        m_dialogData.setUsePropertyConfiguration(m_useConfiguration);
         return m_dialogData;
+    }
+
+    /**
+     * Enables / disables use of property configurations.<p>
+     * 
+     * @param useConfiguration if true , use the property configurations 
+     */
+    public void setUsePropertyConfiguration(boolean useConfiguration) {
+
+        m_useConfiguration = useConfiguration;
     }
 
     /**
