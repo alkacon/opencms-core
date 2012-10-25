@@ -225,6 +225,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                     }
                 } catch (SolrException e) {
                     LOG.debug(e.getMessage(), e);
+                    throw new RuntimeException(e);
                 }
 
                 SolrInputField exfield = m_doc.getField(fieldName);
@@ -243,6 +244,8 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                 }
             } catch (SolrException e) {
                 LOG.error(e.getMessage(), e);
+            } catch (RuntimeException e) {
+                // noop
             }
         }
     }
