@@ -25,16 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client;
+package org.opencms.gwt.client.ui.contextmenu;
 
-import org.opencms.ade.galleries.client.ui.CmsContextMenuButton;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
-import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuEntry;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
@@ -54,17 +48,11 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
     /** The available context menu commands. */
     private static Map<String, I_CmsContextMenuCommand> m_contextMenuCommands;
 
-    /** The result tab handler. */
-    CmsResultsTabHandler m_resultTabHandler;
-
     /**
      * Constructor.<p>
-     * 
-     * @param resultTabHandler the result tab handler
      */
-    public CmsContextMenuHandler(CmsResultsTabHandler resultTabHandler) {
+    public CmsContextMenuHandler() {
 
-        m_resultTabHandler = resultTabHandler;
     }
 
     /**
@@ -76,12 +64,23 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#loadContextMenu(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsCoreData.AdeContext)
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextMenuCommands()
      */
-    public void loadContextMenu(final CmsUUID structureId, final AdeContext context) {
+    public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
 
-        throw new UnsupportedOperationException(
-            "Not supported. Use 'loadContextMenu(final CmsUUID structureId, final AdeContext context, final CmsContextMenuButton menuButton)' instead.");
+        if (m_contextMenuCommands == null) {
+            I_CmsContextMenuCommandInitializer initializer = GWT.create(I_CmsContextMenuCommandInitializer.class);
+            m_contextMenuCommands = initializer.initCommands();
+        }
+        return m_contextMenuCommands;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#leavePage(java.lang.String)
+     */
+    public void leavePage(String targetUri) {
+
+        // not supported within galleries
     }
 
     /**
@@ -114,6 +113,22 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#refreshResource(org.opencms.util.CmsUUID)
+     */
+    public void refreshResource(CmsUUID structureId) {
+
+        // do nothing 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#unlockResource(org.opencms.util.CmsUUID)
+     */
+    public void unlockResource(CmsUUID structureId) {
+
+        CmsCoreProvider.get().unlock(structureId);
+    }
+
+    /**
      * Transforms a list of context menu entry beans to a list of context menu entries.<p>
      * 
      * @param menuBeans the list of context menu entry beans
@@ -140,41 +155,5 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
             menuEntries.add(entry);
         }
         return menuEntries;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextMenuCommands()
-     */
-    public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
-
-        if (m_contextMenuCommands == null) {
-            I_CmsContextMenuCommandInitializer initializer = GWT.create(I_CmsContextMenuCommandInitializer.class);
-            m_contextMenuCommands = initializer.initCommands();
-        }
-        return m_contextMenuCommands;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#refreshResource(org.opencms.util.CmsUUID)
-     */
-    public void refreshResource(CmsUUID structureId) {
-
-        m_resultTabHandler.updateIndex();
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#unlockResource(org.opencms.util.CmsUUID)
-     */
-    public void unlockResource(CmsUUID structureId) {
-
-        CmsCoreProvider.get().unlock(structureId);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#leavePage(java.lang.String)
-     */
-    public void leavePage(String targetUri) {
-
-        // not supported within galleries
     }
 }

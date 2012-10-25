@@ -28,6 +28,8 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.util.CmsUUID;
 
 /**
  * An abstract interface used to coordinate toolbar buttons with a toolbar.<p>
@@ -52,6 +54,13 @@ public interface I_CmsToolbarHandler extends I_CmsContextMenuHandler {
      * @return the currently active button 
      */
     I_CmsToolbarButton getActiveButton();
+
+    /**
+     * Loads the context menu.<p>
+     * @param structureId the structure id of the resource for which to load the context menu  
+     * @param context the context menu item visibility context 
+     */
+    void loadContextMenu(CmsUUID structureId, AdeContext context);
 
     /** 
      * Sets the active button.<p>

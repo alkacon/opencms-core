@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui.contextmenu;
 
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -50,18 +49,18 @@ public interface I_CmsContextMenuHandler {
     boolean ensureLockOnResource(CmsUUID structureId);
 
     /**
-     * Loads the context menu.<p>
-     * @param structureId the structure id of the resource for which to load the context menu  
-     * @param context the context menu item visibility context 
-     */
-    void loadContextMenu(CmsUUID structureId, AdeContext context);
-
-    /**
      * Returns the available context menu commands as a map by class name.<p>
      * 
      * @return the available context menu commands as a map by class name
      */
     Map<String, I_CmsContextMenuCommand> getContextMenuCommands();
+
+    /**
+     * Leaves the current page calling the target URI.<p>
+     * 
+     * @param targetUri the target URI
+     */
+    void leavePage(String targetUri);
 
     /**
      * Reloads the resource edited.<p>
@@ -76,11 +75,4 @@ public interface I_CmsContextMenuHandler {
      * @param structureId the structure id of the resource to lock
      */
     void unlockResource(CmsUUID structureId);
-
-    /**
-     * Leaves the current page calling the target URI.<p>
-     * 
-     * @param targetUri the target URI
-     */
-    void leavePage(String targetUri);
 }

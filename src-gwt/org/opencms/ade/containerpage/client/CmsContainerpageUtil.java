@@ -40,6 +40,8 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
@@ -56,6 +58,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -348,7 +351,6 @@ public class CmsContainerpageUtil {
     public CmsMenuListItem createListItem(final CmsContainerElementData containerElement) {
 
         CmsMenuListItem listItem = new CmsMenuListItem(containerElement);
-        listItem.initMoveHandle(m_controller.getDndHandler());
         if (!containerElement.isGroupContainer()
             && !containerElement.isInheritContainer()
             && CmsStringUtil.isEmptyOrWhitespaceOnly(containerElement.getNoEditReason())) {
@@ -372,6 +374,21 @@ public class CmsContainerpageUtil {
                 listItem.disableEdit(Messages.get().key(Messages.GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0), false);
             }
         }
+        listItem.initMoveHandle(m_controller.getDndHandler(), true);
+        String clientId = containerElement.getClientId();
+        String serverId = CmsContainerpageController.getServerId(clientId);
+        if (CmsUUID.isValidUUID(serverId)) {
+            CmsContextMenuButton button = new CmsContextMenuButton(new CmsUUID(serverId), new CmsContextMenuHandler() {
+
+                @Override
+                public void refreshResource(CmsUUID structureId) {
+
+                    Window.Location.reload();
+                }
+            });
+            listItem.getListItemWidget().addButton(button);
+        }
+
         return listItem;
     }
 

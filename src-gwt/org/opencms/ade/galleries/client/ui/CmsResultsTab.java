@@ -27,7 +27,7 @@
 
 package org.opencms.ade.galleries.client.ui;
 
-import org.opencms.ade.galleries.client.CmsContextMenuHandler;
+import org.opencms.ade.galleries.client.CmsResultContextMenuHandler;
 import org.opencms.ade.galleries.client.CmsResultsTabHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
@@ -39,6 +39,8 @@ import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -277,7 +279,7 @@ public class CmsResultsTab extends A_CmsListTab {
     public CmsResultsTab(CmsResultsTabHandler tabHandler, CmsDNDHandler dndHandler) {
 
         super(GalleryTabId.cms_tab_results);
-        m_contextMenuHandler = new CmsContextMenuHandler(tabHandler);
+        m_contextMenuHandler = new CmsResultContextMenuHandler(tabHandler);
         m_types = new HashSet<String>();
         m_hasMoreResults = false;
         m_dndHandler = dndHandler;

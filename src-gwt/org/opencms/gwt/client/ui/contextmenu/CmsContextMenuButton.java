@@ -25,15 +25,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.galleries.client.ui;
+package org.opencms.gwt.client.ui.contextmenu;
 
-import org.opencms.ade.galleries.client.CmsContextMenuHandler;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
-import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
