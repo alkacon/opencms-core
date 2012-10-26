@@ -35,6 +35,12 @@ import java.util.Iterator;
 
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -43,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  * */
-public class CmsPatternPanelDaily extends FlowPanel {
+public class CmsPatternPanelDaily extends FlowPanel implements HasValueChangeHandlers<String> {
 
     /** Group off all radio buttons. */
     private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
@@ -57,6 +63,9 @@ public class CmsPatternPanelDaily extends FlowPanel {
     /** Array of all selections. */
     CmsRadioButton[] m_selection = new CmsRadioButton[2];
 
+    /** Value change handler. */
+    private ValueChangeHandler<String> m_handler;
+
     /**
      * Default constructor to create the panel.<p>
      */
@@ -64,12 +73,29 @@ public class CmsPatternPanelDaily extends FlowPanel {
 
         addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().serialDateDay());
         CmsRadioButton sel1 = new CmsRadioButton("sel1", "Every");
+        sel1.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                fireValueChange();
+
+            }
+
+        });
         m_selection[0] = sel1;
         sel1.setGroup(m_group);
         sel1.setChecked(true);
         sel1.getElement().getStyle().setFloat(Float.LEFT);
         createEverPanel();
         CmsRadioButton sel2 = new CmsRadioButton("sel2", "Every working days");
+        sel2.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                fireValueChange();
+
+            }
+        });
         m_selection[1] = sel2;
         sel2.setGroup(m_group);
         this.add(sel1);
@@ -77,6 +103,24 @@ public class CmsPatternPanelDaily extends FlowPanel {
 
         this.add(sel2);
 
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_handler = handler;
+        m_everyDay.addValueChangeHandler(m_handler);
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * Represents a value change event.<p>
+     */
+    public void fireValueChange() {
+
+        ValueChangeEvent.fire(this, getWorkingDay());
     }
 
     /**
@@ -146,6 +190,7 @@ public class CmsPatternPanelDaily extends FlowPanel {
         m_everyPanel.add(m_everyDay);
         m_everyDay.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
         m_everyDay.getElement().getStyle().setWidth(25, Unit.PX);
+
         m_everyPanel.add(new Label("day(s)"));
     }
 

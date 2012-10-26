@@ -34,6 +34,12 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 
 import java.util.Iterator;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -42,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  * */
-public class CmsPatternPanelYearly extends FlowPanel {
+public class CmsPatternPanelYearly extends FlowPanel implements HasValueChangeHandlers<String> {
 
     /** Group off all radio buttons. */
     private CmsRadioButtonGroup m_group = new CmsRadioButtonGroup();
@@ -68,6 +74,9 @@ public class CmsPatternPanelYearly extends FlowPanel {
     /** The array of all radio button. */
     private CmsRadioButton[] m_radio = new CmsRadioButton[2];
 
+    /** The value change handler. */
+    private ValueChangeHandler<String> m_handler;
+
     /**
      * Default constructor to create the panel.<p>
      */
@@ -91,6 +100,38 @@ public class CmsPatternPanelYearly extends FlowPanel {
         this.add(sel2);
         this.add(m_atPanel);
 
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_handler = handler;
+        m_atNummer.addValueChangeHandler(m_handler);
+        m_atDay.addValueChangeHandler(m_handler);
+        m_atMonth.addValueChangeHandler(m_handler);
+        m_everyDay.addValueChangeHandler(m_handler);
+        m_everyMonth.addValueChangeHandler(m_handler);
+        for (int i = 0; i < m_radio.length; i++) {
+            m_radio[i].addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    fireValueChange();
+
+                }
+            });
+        }
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * Represents a value change event.<p>
+     */
+    public void fireValueChange() {
+
+        ValueChangeEvent.fire(this, getWeekDays());
     }
 
     /**
@@ -204,6 +245,10 @@ public class CmsPatternPanelYearly extends FlowPanel {
     private void createAtPanel() {
 
         m_atPanel.add(m_atNummer);
+        m_atNummer.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        m_atNummer.getOpener().setStyleName(
+            org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
+        m_atNummer.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atNummer.setWidth("80px");
         m_atNummer.addOption("1", "first");
         m_atNummer.addOption("2", "second");
@@ -211,7 +256,11 @@ public class CmsPatternPanelYearly extends FlowPanel {
         m_atNummer.addOption("4", "fourth");
         m_atNummer.addOption("5", "fifth");
         m_atPanel.add(m_atDay);
-        m_atDay.setWidth("80px");
+        m_atDay.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        m_atDay.getOpener().setStyleName(
+            org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
+        m_atDay.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_atDay.setWidth("100px");
         m_atDay.addOption("1", "Sunday");
         m_atDay.addOption("2", "Monday");
         m_atDay.addOption("3", "Tuesday");
@@ -222,7 +271,11 @@ public class CmsPatternPanelYearly extends FlowPanel {
 
         m_atPanel.add(new Label("in"));
         m_atPanel.add(m_atMonth);
-        m_atMonth.setWidth("80px");
+        m_atMonth.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        m_atMonth.getOpener().setStyleName(
+            org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
+        m_everyMonth.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_atMonth.setWidth("100px");
         m_atMonth.addOption("0", "January");
         m_atMonth.addOption("1", "February");
         m_atMonth.addOption("2", "March");
@@ -248,7 +301,11 @@ public class CmsPatternPanelYearly extends FlowPanel {
         m_everyDay.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
         m_everyPanel.add(new Label("."));
         m_everyPanel.add(m_everyMonth);
-        m_everyMonth.setWidth("80px");
+        m_everyMonth.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        m_everyMonth.getOpener().setStyleName(
+            org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
+        m_everyMonth.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_everyMonth.setWidth("100px");
         m_everyMonth.addOption("0", "January");
         m_everyMonth.addOption("1", "February");
         m_everyMonth.addOption("2", "March");

@@ -34,6 +34,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -42,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  * */
-public class CmsPatternPanelWeekly extends FlowPanel {
+public class CmsPatternPanelWeekly extends FlowPanel implements HasValueChangeHandlers<String> {
 
     /** The panel for all values of 'every'. */
     private FlowPanel m_everyPanel = new FlowPanel();
@@ -55,6 +59,9 @@ public class CmsPatternPanelWeekly extends FlowPanel {
 
     /** The array of all checkboxes. */
     List<CmsCheckBox> m_checkboxes = new ArrayList<CmsCheckBox>();
+
+    /** The handler. */
+    private ValueChangeHandler<String> m_handler;
 
     /**
      * Default constructor to create the panel.<p>
@@ -71,6 +78,35 @@ public class CmsPatternPanelWeekly extends FlowPanel {
         }
         this.add(m_dayPanel);
 
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        m_handler = handler;
+        m_everyDay.addValueChangeHandler(m_handler);
+        for (CmsCheckBox box : m_checkboxes) {
+            box.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+                public void onValueChange(ValueChangeEvent<Boolean> event) {
+
+                    fireValueChange();
+
+                }
+
+            });
+        }
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * Represents a value change event.<p>
+     */
+    public void fireValueChange() {
+
+        ValueChangeEvent.fire(this, getWeekDays());
     }
 
     /**
@@ -196,5 +232,4 @@ public class CmsPatternPanelWeekly extends FlowPanel {
         m_everyDay.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
         m_everyPanel.add(new Label("week(s) at"));
     }
-
 }

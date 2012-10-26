@@ -48,6 +48,8 @@ import java.util.Map;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -323,6 +325,11 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
 
     }
 
+    /** Selects the right ending element*/
+    public void selectEnding(int element) {
+
+    }
+
     /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
@@ -482,15 +489,51 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
             m_patterPanel.removeFromParent();
             if (buttonName.equals(KEY_DAILY)) {
                 m_patterPanel = m_dailyPattern;
+                m_dailyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                    public void onValueChange(ValueChangeEvent<String> event) {
+
+                        fireValueChange();
+
+                    }
+                });
             }
             if (buttonName.equals(KEY_WEEKLY)) {
                 m_patterPanel = m_weeklyPattern;
+                m_weeklyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                    public void onValueChange(ValueChangeEvent<String> event) {
+
+                        fireValueChange();
+
+                    }
+
+                });
+
             }
             if (buttonName.equals(KEY_MONTHLY)) {
                 m_patterPanel = m_monthlyPattern;
+                m_monthlyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                    public void onValueChange(ValueChangeEvent<String> event) {
+
+                        fireValueChange();
+
+                    }
+
+                });
             }
             if (buttonName.equals(KEY_YEARLY)) {
                 m_patterPanel = m_yearlyPattern;
+                m_yearlyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                    public void onValueChange(ValueChangeEvent<String> event) {
+
+                        fireValueChange();
+
+                    }
+
+                });
             }
             m_patterPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
 
@@ -643,6 +686,14 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
 
             }
 
+        });
+        m_times.addFocusHandler(new FocusHandler() {
+
+            public void onFocus(FocusEvent event) {
+
+                selectEnding(1);
+
+            }
         });
         cell2.add(new Label("times"));
         cell2.add(sel3);
