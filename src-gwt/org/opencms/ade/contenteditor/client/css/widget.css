@@ -36,6 +36,205 @@
 	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
 }
 
+.serialDataTabel {
+	width:100%;
+}
+
+.serialDataTabel tr:first-child div{
+	float: left;
+    text-align: right;
+    margin-left: 7px;
+    line-height: 18px;
+}
+.serialDataTabel tr:first-child div:first-child{
+	margin-left: 0;	
+}
+.serialDataTabel tr:first-child div:last-child{
+	line-height: 14px;
+}
+input.textBoxSerialDate{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	font-family: value("constants.css.fontFamily");
+	display: block;
+	color: value("constants.css.textColor");
+	box-shadow: none;
+	width: 100%;
+	padding: 0px 4px;
+	height: 18px;
+	font-size: 12px;
+	outline:none;
+	float:left;
+	width:60px;
+	margin-left: 5px;
+}
+
+.serialDateDay {
+	height:70px;
+}
+.serialDateDay div:first-child {
+	font-weight: normal;
+    line-height: 20px;
+    margin-top: -1px;
+    padding-left:5px;
+}
+.serialDateDay div div:last-child {
+	font-weight: normal;
+    line-height: 20px;
+    margin-top: -4px;
+}
+
+.serialDateDay div {
+	padding-top: 6px;
+}
+
+.serialDateDay div:last-child {
+	font-weight: normal;
+    line-height: 20px;
+    padding-left:5px;
+}
+.serialDateWeek {
+	height:70px;
+}
+
+.serialDateWeek>div {
+	padding-top: 6px;
+}
+
+.serialDateWeek input  {
+	float:left;
+}
+
+.serialDateWeek>div:first-child {
+	padding-left: 10px;
+	line-height: 20px;
+}
+
+.serialDateWeek>div:first-child>div {
+	padding-top: 3px;
+	margin: 0;
+	float:left;
+}
+
+.serialDateWeek>div:last-child {
+	margin-left:1px;
+	clear:left;
+	padding-top: 10px;
+}
+
+
+.serialDateCheckBox {
+	padding-left: 8px;
+}
+.serialDateCheckBox div div {
+	font-weight: normal;
+	
+}
+
+.serialDateMonth {
+	height: 70px;
+}
+
+.serialDateMonth>div{
+	padding-top:6px;
+	float:left;	
+}
+.serialDateMonth>div:first-child{
+	padding-top:7px;
+}
+
+.serialDateMonth>div:last-child{
+	padding-top:8px;
+}
+.serialDateMonth div div{
+	font-weight: normal;
+}
+
+.serialDateMonth>div>div{
+	float:left;
+	line-height:20px;
+}
+
+.serialDateMonth>div:last-child>div{
+	margin-left: 5px;
+}
+.serialDateMonth>div:last-child>div:last-child{
+	margin-left: 0px;
+}
+
+.serialDateMonth>.serialDateMonthSelection{
+	clear:left;
+	margin-left: 10px;
+	padding-top:9px;
+}
+.serialDateMonth>.serialDateMonthSelection:last-child{
+	padding-top:8px;
+}
+
+
+.serialDateYear {
+	height: 70px;
+}
+
+.serialDateYear>div{
+	padding-top:6px;
+	float:left;	
+}
+.serialDateYear>div:last-child{
+	padding-top:8px;
+}
+
+.serialDateYear>div:first-child{
+	padding-top:7px;
+}
+.serialDateYear div div{
+	font-weight: normal;
+}
+
+.serialDateYear>div>div{
+	float:left;
+	line-height:20px;
+}
+
+.serialDateYear>div:last-child>div{
+	margin-left: 5px;
+}
+
+.serialDateYear>.serialDateYearSelection{
+	clear:left;
+	margin-left: 10px;
+	padding-top:9px;
+}
+
+.serialDateYear>.serialDateYearSelection:last-child{
+	padding-top:8px;
+}
+
+.serialDatelowPanel {
+	padding-top: 5px;
+}
+
+.serialDatelowPanel div{
+	font-weight: normal;
+}
+
+.serialDatelowPanel .serialDatelowPanelSelection{
+	padding-top: 2px;
+}
+
+.serialDatelowPanel td>div {
+	line-height: 20px;
+}
+.serialDatelowPanel td>div>div{
+	line-height:20px;
+}
+
+.serialDatelowPanel td>div>div:last-child{
+	border: 1px solid #7788AA;
+	border-radius: 3px;
+	background: #fff;
+}
 
 
 textarea.textAreaBox {
@@ -100,6 +299,7 @@ input.textBox{
 	font-size: 12px;
 	outline:none;
 }
+
 
 .passwordTextBox{
 	border: 1px solid #7788AA;
