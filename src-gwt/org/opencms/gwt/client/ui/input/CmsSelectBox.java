@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
@@ -183,16 +182,6 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     public FocusPanel getOpener() {
 
         return m_opener;
-    }
-
-    /**
-     * Returns the selector of this widget.<p>
-     * 
-     * @return the selector of this widget
-     */
-    public Panel getSelector() {
-
-        return m_selector;
     }
 
     /**

@@ -142,7 +142,7 @@ public class CmsComboWidget extends Composite implements I_EditWidget {
         m_comboBox.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
         // add some styles to parts of the combobox.
         m_comboBox.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_comboBox.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPopup());
+        m_comboBox.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPopup());
         m_comboBox.getTextBox().addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().comboBoxInput());
         m_comboBox.getTextBox().addKeyUpHandler(new KeyUpHandler() {
 

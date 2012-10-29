@@ -170,7 +170,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_descriptionArea.getTextAreaContainer().onResize();
 
         m_formatSelection.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxSelected());
-        m_formatSelection.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_formatSelection.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
 
         m_opener.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_opener.setImageClass(I_CmsImageBundle.INSTANCE.style().popupIcon());

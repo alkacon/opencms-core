@@ -246,16 +246,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
     }
 
     /**
-     * Returns the selector of this widget.<p>
-     * 
-     * @return the selector of this widget
-     */
-    public Panel getSelector() {
-
-        return m_selector;
-    }
-
-    /**
      * Returns the text box of this widget.<p>
      * 
      *  @return the text box of this widget

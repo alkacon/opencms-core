@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -192,7 +194,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         m_selectBoxState = new CmsStyleVariable(m_opener);
         m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
-        m_selectorState = new CmsStyleVariable(m_selector);
+        m_selectorState = new CmsStyleVariable(m_popup);
         m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
 
         m_opener.addStyleName(CSS.selectBoxSelected());
@@ -222,9 +224,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         m_popup.addStyleName(CSS.selectorPopup());
         m_popup.addAutoHidePartner(m_panel.getElement());
 
-        m_selector.setStyleName(CSS.selectBoxSelector());
-        m_selector.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
-        m_selector.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
+        m_popup.addStyleName(CSS.selectBoxSelector());
+        m_popup.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
+        m_popup.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             /**
@@ -291,6 +293,16 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
     public String getFormValueAsString() {
 
         return (String)getFormValue();
+    }
+
+    /**
+     * Returns the selector of this widget.<p>
+     * 
+     * @return the selector of this widget
+     */
+    public Panel getSelectorPopup() {
+
+        return m_popup;
     }
 
     /**
@@ -560,6 +572,14 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         // box, then then position the popup above the text box. However, if there
         // is not enough space on either side, then stick with displaying the
         // popup below the text box.
+        boolean displayAbove = distanceFromWindowTop > distanceToWindowBottom;
+
+        // in case there is not enough space, add a scroll panel to the selector popup
+        if ((displayAbove && (distanceFromWindowTop > m_popup.getOffsetHeight()))
+            || (distanceToWindowBottom < m_popup.getOffsetHeight())) {
+            setScrollingSelector((displayAbove ? distanceFromWindowTop : distanceToWindowBottom) - 10);
+        }
+
         if ((distanceToWindowBottom < m_popup.getOffsetHeight())
             && (distanceFromWindowTop >= m_popup.getOffsetHeight())) {
             // Position above the text box
@@ -570,7 +590,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
             CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, openerHeight);
             m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
             m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
-
         }
         // m_selectBoxState.setValue(CSS.selectBoxOpen());
 
@@ -693,6 +712,19 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
                 cell.removeStyleName(CSS.selectHover());
             }
         }, MouseOutEvent.getType());
+    }
+
+    /**
+     * Adds a scroll panel to the selector popup.<p>
+     * 
+     * @param availableHeight the available popup height
+     */
+    private void setScrollingSelector(int availableHeight) {
+
+        CmsScrollPanel panel = GWT.create(CmsScrollPanel.class);
+        panel.getElement().getStyle().setHeight(availableHeight, Unit.PX);
+        panel.setWidget(m_selector);
+        m_popup.setWidget(panel);
     }
 
     /**

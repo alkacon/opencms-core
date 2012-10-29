@@ -234,7 +234,7 @@ background-color: transparent;
 	color: value("constants.css.textColorDisabled") !important; 
 }
 
-div.selectBoxSelector, div.selectorPopup div.selectBoxSelector{
+div.selectBoxSelector, div.selectorPopup.selectBoxSelector{
 	border: 1px solid value("constants.css.borderColor");
 	background-color: value("constants.css.backgroundColorDialog");
 	padding-bottom: 2px;
@@ -274,7 +274,7 @@ div.selectBoxCell, div.selectorPopup div.selectBoxSelector div.selectBoxCell{
 	font-size: value("constants.css.fontSize");
 }
 
-div.selectHover, div.selectorPopup div.selectBoxSelector div.selectBoxCell.selectHover{
+div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHover{
 	background-color: value("constants.css.backgroundColorHighlight");
 }
 
