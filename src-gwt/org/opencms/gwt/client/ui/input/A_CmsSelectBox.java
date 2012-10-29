@@ -577,11 +577,11 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         // in case there is not enough space, add a scroll panel to the selector popup
         if ((displayAbove && (distanceFromWindowTop > m_popup.getOffsetHeight()))
             || (distanceToWindowBottom < m_popup.getOffsetHeight())) {
-            setScrollingSelector((displayAbove ? distanceFromWindowTop : distanceToWindowBottom) - 10);
+            popupHeight = (displayAbove ? distanceFromWindowTop : distanceToWindowBottom) - 10;
+            setScrollingSelector(popupHeight);
         }
 
-        if ((distanceToWindowBottom < m_popup.getOffsetHeight())
-            && (distanceFromWindowTop >= m_popup.getOffsetHeight())) {
+        if (displayAbove) {
             // Position above the text box
             CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, -(popupHeight - 2));
             m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
