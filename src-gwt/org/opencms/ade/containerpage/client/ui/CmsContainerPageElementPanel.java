@@ -393,8 +393,9 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                         return;
                     }
                     Element eventTarget = event.getNativeEvent().getEventTarget().cast();
-                    if (eventTarget.hasTagName("A") && eventTarget.hasAttribute("href")) {
-                        String linkTarget = eventTarget.getAttribute("href");
+                    Element linkTag = CmsDomUtil.getAncestor(eventTarget, Tag.a);
+                    if ((linkTag != null) && linkTag.hasAttribute("href")) {
+                        String linkTarget = linkTag.getAttribute("href");
                         Window.Location.assign(linkTarget);
                         return;
                     }
