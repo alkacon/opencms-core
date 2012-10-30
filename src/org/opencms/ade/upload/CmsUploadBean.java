@@ -333,9 +333,11 @@ public class CmsUploadBean extends CmsJspBean {
                 // create the resource
                 int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
                 createdResource = getCmsObject().createResource(newResname, resTypeId, content, properties);
+                getCmsObject().unlockResource(newResname);
             } catch (CmsSecurityException e) {
                 // in case of not enough permissions, try to create a plain text file
                 createdResource = getCmsObject().createResource(newResname, plainId, content, properties);
+                getCmsObject().unlockResource(newResname);
             } catch (CmsDbSqlException sqlExc) {
                 // SQL error, probably the file is too large for the database settings, delete file
                 getCmsObject().lockResource(newResname);
@@ -351,25 +353,33 @@ public class CmsUploadBean extends CmsJspBean {
         } else {
             // if the resource already exists, replace it
             CmsResource res = getCmsObject().readResource(newResname, CmsResourceFilter.ALL);
-            if (!getCmsObject().getLock(res).isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())) {
-                getCmsObject().lockResource(res);
-            }
-            CmsFile file = getCmsObject().readFile(res);
-            byte[] contents = file.getContents();
+            boolean wasLocked = false;
             try {
-                getCmsObject().replaceResource(newResname, res.getTypeId(), content, null);
-                createdResource = res;
-            } catch (CmsDbSqlException sqlExc) {
-                // SQL error, probably the file is too large for the database settings, restore content
-                file.setContents(contents);
-                getCmsObject().writeFile(file);
-                throw sqlExc;
-            } catch (OutOfMemoryError e) {
-                // the file is to large try to clear up
-                content = null;
-                file.setContents(contents);
-                getCmsObject().writeFile(file);
-                throw e;
+                if (!getCmsObject().getLock(res).isOwnedBy(getCmsObject().getRequestContext().getCurrentUser())) {
+                    getCmsObject().lockResource(res);
+                    wasLocked = true;
+                }
+                CmsFile file = getCmsObject().readFile(res);
+                byte[] contents = file.getContents();
+                try {
+                    getCmsObject().replaceResource(newResname, res.getTypeId(), content, null);
+                    createdResource = res;
+                } catch (CmsDbSqlException sqlExc) {
+                    // SQL error, probably the file is too large for the database settings, restore content
+                    file.setContents(contents);
+                    getCmsObject().writeFile(file);
+                    throw sqlExc;
+                } catch (OutOfMemoryError e) {
+                    // the file is to large try to clear up
+                    content = null;
+                    file.setContents(contents);
+                    getCmsObject().writeFile(file);
+                    throw e;
+                }
+            } finally {
+                if (wasLocked) {
+                    getCmsObject().unlockResource(res);
+                }
             }
         }
         return createdResource;

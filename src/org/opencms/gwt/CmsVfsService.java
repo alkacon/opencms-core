@@ -71,6 +71,8 @@ import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockActionRecord;
+import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -139,6 +141,57 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             "application/excel",
             "application/mspowerpoint",
             "application/zip"}));
+    }
+
+    /**
+     * Adds the lock state information to the resource info bean.<p>
+     * 
+     * @param cms the CMS context
+     * @param resource the resource to get the page info for
+     * @param resourceInfo the resource info to add the lock state to
+     * 
+     * @return the resource info bean
+     * 
+     * @throws CmsException if something else goes wrong 
+     */
+    public static CmsListInfoBean addLockInfo(CmsObject cms, CmsResource resource, CmsListInfoBean resourceInfo)
+    throws CmsException {
+
+        CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
+        CmsLock lock = resourceUtil.getLock();
+        LockIcon icon = LockIcon.NONE;
+        String iconTitle = null;
+        CmsLockType lockType = lock.getType();
+        if (!lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+            if ((lockType == CmsLockType.EXCLUSIVE)
+                || (lockType == CmsLockType.INHERITED)
+                || (lockType == CmsLockType.TEMPORARY)) {
+                icon = LockIcon.CLOSED;
+            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
+                icon = LockIcon.SHARED_CLOSED;
+            }
+        } else {
+            if ((lockType == CmsLockType.EXCLUSIVE)
+                || (lockType == CmsLockType.INHERITED)
+                || (lockType == CmsLockType.TEMPORARY)) {
+                icon = LockIcon.OPEN;
+            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
+                icon = LockIcon.SHARED_OPEN;
+            }
+        }
+        if ((lock.getUserId() != null) && !lock.getUserId().isNullUUID()) {
+            CmsUser lockOwner = cms.readUser(lock.getUserId());
+            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
+            resourceInfo.addAdditionalInfo(
+                Messages.get().getBundle().key(Messages.GUI_LOCKED_OWNER_0),
+                lockOwner.getFullName());
+        }
+        resourceInfo.setLockIcon(icon);
+        resourceInfo.setLockIconTitle(iconTitle);
+        if (icon != LockIcon.NONE) {
+            resourceInfo.setTitle(resourceInfo.getTitle() + " (" + iconTitle + ")");
+        }
+        return resourceInfo;
     }
 
     /**
@@ -233,57 +286,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsListInfoBean result = getPageInfo(cms, resource);
         addLockInfo(cms, resource, result);
         return result;
-    }
-
-    /**
-     * Adds the lock state information to the resource info bean.<p>
-     * 
-     * @param cms the CMS context
-     * @param resource the resource to get the page info for
-     * @param resourceInfo the resource info to add the lock state to
-     * 
-     * @return the resource info bean
-     * 
-     * @throws CmsException if something else goes wrong 
-     */
-    public static CmsListInfoBean addLockInfo(CmsObject cms, CmsResource resource, CmsListInfoBean resourceInfo)
-    throws CmsException {
-
-        CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
-        CmsLock lock = resourceUtil.getLock();
-        LockIcon icon = LockIcon.NONE;
-        String iconTitle = null;
-        CmsLockType lockType = lock.getType();
-        if (!lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
-            if ((lockType == CmsLockType.EXCLUSIVE)
-                || (lockType == CmsLockType.INHERITED)
-                || (lockType == CmsLockType.TEMPORARY)) {
-                icon = LockIcon.CLOSED;
-            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
-                icon = LockIcon.SHARED_CLOSED;
-            }
-        } else {
-            if ((lockType == CmsLockType.EXCLUSIVE)
-                || (lockType == CmsLockType.INHERITED)
-                || (lockType == CmsLockType.TEMPORARY)) {
-                icon = LockIcon.OPEN;
-            } else if ((lockType == CmsLockType.SHARED_EXCLUSIVE) || (lockType == CmsLockType.SHARED_INHERITED)) {
-                icon = LockIcon.SHARED_OPEN;
-            }
-        }
-        if ((lock.getUserId() != null) && !lock.getUserId().isNullUUID()) {
-            CmsUser lockOwner = cms.readUser(lock.getUserId());
-            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
-            resourceInfo.addAdditionalInfo(
-                Messages.get().getBundle().key(Messages.GUI_LOCKED_OWNER_0),
-                lockOwner.getFullName());
-        }
-        resourceInfo.setLockIcon(icon);
-        resourceInfo.setLockIconTitle(iconTitle);
-        if (icon != LockIcon.NONE) {
-            resourceInfo.setTitle(resourceInfo.getTitle() + " (" + iconTitle + ")");
-        }
-        return resourceInfo;
     }
 
     /**
@@ -1026,8 +1028,15 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         CmsResource target = cms.readResource(changes.getTargetStructureId());
-        ensureLock(cms.getSitePath(target));
-        internalUpdateProperties(cms, target, changes.getChanges());
+        CmsLockActionRecord actionRecord = ensureLock(cms.getSitePath(target));
+        try {
+            internalUpdateProperties(cms, target, changes.getChanges());
+        } finally {
+            if (actionRecord.getChange() == LockChange.locked) {
+                cms.unlockResource(cms.getSitePath(target));
+            }
+        }
+
     }
 
     /**

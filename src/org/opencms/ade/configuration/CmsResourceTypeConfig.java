@@ -340,6 +340,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             getType().getTypeId(),
             null,
             new ArrayList<CmsProperty>(0));
+        rootCms.unlockResource(creationPath);
         return createdResource;
     }
 
