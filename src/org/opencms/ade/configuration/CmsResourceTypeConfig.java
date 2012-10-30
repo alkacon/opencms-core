@@ -322,7 +322,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         checkInitialized();
         CmsObject rootCms = rootCms(userCms);
         String folderPath = getFolderPath(userCms);
-        createFolder(m_cms, folderPath);
+        CmsObject folderCreateCms = OpenCms.initCmsObject(m_cms);
+        folderCreateCms.getRequestContext().setCurrentProject(userCms.getRequestContext().getCurrentProject());
+        createFolder(folderCreateCms, folderPath);
         String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
         String creationPath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(rootCms, destination, 5);
         // set the content locale
