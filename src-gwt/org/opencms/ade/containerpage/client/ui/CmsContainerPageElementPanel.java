@@ -62,6 +62,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -389,6 +390,12 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
 
                     // if another content is already being edited, don't start another editor
                     if (controller.isContentEditing()) {
+                        return;
+                    }
+                    Element eventTarget = event.getNativeEvent().getEventTarget().cast();
+                    if (eventTarget.hasTagName("A") && eventTarget.hasAttribute("href")) {
+                        String linkTarget = eventTarget.getAttribute("href");
+                        Window.Location.assign(linkTarget);
                         return;
                     }
                     Element target = event.getNativeEvent().getEventTarget().cast();
@@ -756,28 +763,28 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
      * Resets the node inserted handler.<p>
      */
     private native void resetNodeInsertedHandler()/*-{
-      var $this = this;
-      var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-      var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-      if (handler == null) {
-         handler = function(event) {
-            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-         };
-         $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-      } else {
-         if (element.removeEventLister) {
-            element.removeEventListener("DOMNodeInserted", handler);
-         } else if (element.detachEvent) {
+        var $this = this;
+        var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
+        var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
+        if (handler == null) {
+            handler = function(event) {
+                $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
+            };
+            $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
+        } else {
+            if (element.removeEventLister) {
+                element.removeEventListener("DOMNodeInserted", handler);
+            } else if (element.detachEvent) {
+                // IE specific
+                element.detachEvent("onDOMNodeInserted", handler);
+            }
+        }
+        if (element.addEventListener) {
+            element.addEventListener("DOMNodeInserted", handler, false);
+        } else if (element.attachEvent) {
             // IE specific
-            element.detachEvent("onDOMNodeInserted", handler);
-         }
-      }
-      if (element.addEventListener) {
-         element.addEventListener("DOMNodeInserted", handler, false);
-      } else if (element.attachEvent) {
-         // IE specific
-         element.attachEvent("onDOMNodeInserted", handler);
-      }
+            element.attachEvent("onDOMNodeInserted", handler);
+        }
     }-*/;
 
     /**
