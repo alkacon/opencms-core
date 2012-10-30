@@ -538,7 +538,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
             selectorWidth = m_opener.getOffsetWidth() - 2;
         }
         m_popup.setWidth(selectorWidth + "px");
-
+        m_popup.setWidget(m_selector);
         m_popup.show();
 
         int openerHeight = CmsDomUtil.getCurrentStyleInt(m_opener.getElement(), CmsDomUtil.Style.height);
@@ -572,13 +572,14 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsTruncable {
         // box, then then position the popup above the text box. However, if there
         // is not enough space on either side, then stick with displaying the
         // popup below the text box.
-        boolean displayAbove = distanceFromWindowTop > distanceToWindowBottom;
+        boolean displayAbove = (distanceFromWindowTop > distanceToWindowBottom)
+            && (distanceToWindowBottom < popupHeight);
 
         // in case there is not enough space, add a scroll panel to the selector popup
-        if ((displayAbove && (distanceFromWindowTop > m_popup.getOffsetHeight()))
-            || (distanceToWindowBottom < m_popup.getOffsetHeight())) {
-            popupHeight = (displayAbove ? distanceFromWindowTop : distanceToWindowBottom) - 10;
-            setScrollingSelector(popupHeight);
+        if ((displayAbove && (distanceFromWindowTop < popupHeight))
+            || (!displayAbove && (distanceToWindowBottom < popupHeight))) {
+            setScrollingSelector((displayAbove ? distanceFromWindowTop : distanceToWindowBottom) - 10);
+            popupHeight = m_popup.getOffsetHeight();
         }
 
         if (displayAbove) {
