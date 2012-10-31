@@ -472,13 +472,13 @@ public class CmsJspNavBuilder {
      * 
      * @param sitePath the resource name to get the navigation information for, 
      *              must be a full path name, e.g. "/docs/index.html"
-     * @param includeExpired <code>true</code> if expired resources should be included
+     * @param reourceFilter the resource filter
      *              
      * @return a navigation element for the given resource
      */
-    public CmsJspNavElement getNavigationForResource(String sitePath, CmsResourceFilter includeExpired) {
+    public CmsJspNavElement getNavigationForResource(String sitePath, CmsResourceFilter reourceFilter) {
 
-        return getNavigationForResource(sitePath, includeExpired, false);
+        return getNavigationForResource(sitePath, reourceFilter, false);
     }
 
     /**

@@ -317,12 +317,27 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         try {
                             CmsResource folder = rootCms.readResource(path);
                             result = new CmsResultItemBean();
-                            String title = rootCms.readPropertyObject(
-                                folder,
-                                CmsPropertyDefinition.PROPERTY_NAVTEXT,
-                                false).getValue();
+                            CmsJspNavElement folderNav = new CmsJspNavBuilder(rootCms).getNavigationForResource(
+                                folder.getRootPath(),
+                                CmsResourceFilter.IGNORE_EXPIRATION);
+                            CmsResource defaultFileResource = null;
+                            if (folderNav.isInNavigation() && !folderNav.isNavigationLevel()) {
+                                try {
+                                    defaultFileResource = rootCms.readDefaultFile(
+                                        folder,
+                                        CmsResourceFilter.ONLY_VISIBLE);
+                                } catch (Exception e) {
+                                    log(e.getMessage(), e);
+                                }
+                            }
+                            if (defaultFileResource != null) {
+                                result.setType(OpenCms.getResourceManager().getResourceType(defaultFileResource).getTypeName());
+                            } else {
+                                result.setType(OpenCms.getResourceManager().getResourceType(folder).getTypeName());
+                            }
+                            String title = folderNav.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
                             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                                title = rootCms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                                title = folderNav.getTitle();
                             } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                                 title = CmsResource.getName(path);
                                 if (title.contains("/")) {
@@ -342,7 +357,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                                 DateFormat.MEDIUM,
                                 getWorkplaceLocale());
                             result.setDateLastModified(formattedDate);
-                            result.setType(OpenCms.getResourceManager().getResourceType(folder).getTypeName());
+
                         } catch (CmsException ex) {
                             notFound = true;
                         }
