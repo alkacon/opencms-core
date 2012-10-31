@@ -866,7 +866,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             modifyEntry(change);
         }
         if (change.hasDetailPageInfos() && (configFile != null)) {
-            saveDetailPages(change.getDetailPageInfos(), configFile, change.getEntryId());
+            saveDetailPages(change.getDetailPageInfos(), configFile, change.getEntryId(), change.getUpdatedEntry());
             tryUnlock(configFile);
         }
 
@@ -2184,13 +2184,25 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param detailPages saves the detailpage configuration
      * @param resource the configuration file resource
      * @param newId the structure id to use for new detail page entries
+     * @param updateEntry the new detail page entry
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
-    private void saveDetailPages(List<CmsDetailPageInfo> detailPages, CmsResource resource, CmsUUID newId)
-    throws CmsException {
+    private void saveDetailPages(
+        List<CmsDetailPageInfo> detailPages,
+        CmsResource resource,
+        CmsUUID newId,
+        CmsClientSitemapEntry updateEntry) throws CmsException {
 
         CmsObject cms = getCmsObject();
+        if (updateEntry != null) {
+            for (CmsDetailPageInfo info : detailPages) {
+                if (info.getId() == null) {
+                    updateEntry.setDetailpageTypeName(info.getType());
+                    break;
+                }
+            }
+        }
         CmsDetailPageConfigurationWriter writer = new CmsDetailPageConfigurationWriter(cms, resource);
         writer.updateAndSave(detailPages, newId);
     }
