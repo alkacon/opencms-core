@@ -33,6 +33,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.CssResource.Shared;
+import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
@@ -255,6 +256,22 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/arrowRightImage.png")
     ImageResource arrowRightImage();
+
+    /** 
+     * Returns the edit cursor icon resource.<p>
+     * 
+     * @return the edit cursor icon
+     */
+    @Source("images/editCursor.gif")
+    DataResource editCursorGif();
+
+    /** 
+     * Returns the edit cursor icon resource.<p>
+     * 
+     * @return the edit cursor icon
+     */
+    @Source("images/editCursor.ico")
+    DataResource editCursorIco();
 
     /**
      * Accessor for the big icon resource bundle.<p>

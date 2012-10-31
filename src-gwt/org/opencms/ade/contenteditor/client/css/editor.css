@@ -9,8 +9,8 @@
 	font-size: value("constants.css.fontSize");
 }
 
-@url editCursorGifUrl editCursorGif;
-@url editCursorIcoUrl editCursorIco;
+@url editCursorGifUrl coreImages.editCursorGif;
+@url editCursorIcoUrl coreImages.editCursorIco;
 
 .inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
 	cursor: editCursorIcoUrl, editCursorGifUrl, crosshair;

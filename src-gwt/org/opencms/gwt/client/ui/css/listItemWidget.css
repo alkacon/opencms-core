@@ -27,7 +27,12 @@ li div.itemContainer.cmsHovering{
 	font-size: value("constants.css.fontSize");
 	line-height: 16px;
 }
+@url editCursorGifUrl coreImages.editCursorGif;
+@url editCursorIcoUrl coreImages.editCursorIco;
 
+.inlineEditable, .inlineEditable:hover, .inlineEditable:focus{
+	cursor: editCursorIcoUrl, editCursorGifUrl, crosshair;
+}
 .itemContainer .titleInput{
 	font-weight: bold;
 	font-family: value("constants.css.fontFamily");

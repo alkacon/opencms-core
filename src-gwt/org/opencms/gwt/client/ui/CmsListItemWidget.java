@@ -844,8 +844,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         if (!editable) {
             m_titleClickHandlerRegistration.removeHandler();
             m_titleClickHandlerRegistration = null;
-
+            m_title.removeStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().inlineEditable());
         } else {
+            m_title.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().inlineEditable());
             m_titleClickHandlerRegistration = m_title.addClickHandler(new ClickHandler() {
 
                 /**

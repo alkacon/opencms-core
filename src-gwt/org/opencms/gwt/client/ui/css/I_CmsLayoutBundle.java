@@ -1126,6 +1126,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          **/
         String hidden();
 
+        /**
+         * CSS class accessor.<p>
+         * 
+         * @return a CSS class
+         **/
+        String inlineEditable();
+
         /** 
          * Access method.<p>
          * 
