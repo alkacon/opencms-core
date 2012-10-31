@@ -68,11 +68,19 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE_ORACLE = "cms_alter_remaining_queries.properties";
 
+    /** SQL constant. */
     private static final String DROP_NOT_NULL = "0";
+
+    /** SQL constant. */
     private static final String SET_NOT_NULL = "1";
+
+    /** SQL constant. */
     private static final String NO_CHANGE = "2";
 
+    /** SQL constant. */
     private static final String DV_NO_CHANGE = null;
+
+    /** SQL constant. */
     private static final String DV_DROP = "-- droping the default value --";
 
     /**
@@ -160,13 +168,27 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
         fixSchema(dbCon);
     }
 
-    private void initReplaceser(Map<String, String> replacer, String tableName, String fieldName) {
+    /**
+     * Initializes the replacer.<p>
+     * 
+     * @param replacer the replacer
+     * @param tableName the table name
+     * @param fieldName the field name
+     */
+    private void initReplacer(Map<String, String> replacer, String tableName, String fieldName) {
 
         replacer.clear();
         replacer.put(REPLACEMENT_TABLENAME, tableName);
         replacer.put(REPLACEMENT_FIELD_NAME, fieldName);
     }
 
+    /**
+     * Fixes the database schema.<p>
+     * 
+     * @param dbCon database connection
+     * 
+     * @throws SQLException if something goes wrong changing the schema 
+     */
     private void fixSchema(CmsSetupDb dbCon) throws SQLException {
 
         Map<String, String> replacer = new HashMap<String, String>();
@@ -184,7 +206,7 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
             defaultValue = DB_ARRAY[i][4];
 
             if ((fieldType != null) && (fieldType.length() > 0)) {
-                initReplaceser(replacer, tableName, fieldName);
+                initReplacer(replacer, tableName, fieldName);
                 replacer.put(REPLACEMENT_FIELD_TYPE, fieldType);
                 query = readQuery(QUERY_ALTER_FIELD);
                 dbCon.updateSqlStatement(query, replacer, null);
@@ -198,12 +220,12 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
                     q = QUERY_SET_NOT_NULL;
                 }
                 query = readQuery(q);
-                initReplaceser(replacer, tableName, fieldName);
+                initReplacer(replacer, tableName, fieldName);
                 dbCon.updateSqlStatement(query, replacer, null);
             }
 
             if ((defaultValue != null) && (defaultValue.length() > 0)) {
-                initReplaceser(replacer, tableName, fieldName);
+                initReplacer(replacer, tableName, fieldName);
                 if (defaultValue.equals(DV_DROP)) {
                     query = readQuery(QUERY_DROP_DEFAULT_VALUE);
                     dbCon.updateSqlStatement(query, replacer, null);

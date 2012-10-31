@@ -96,7 +96,7 @@ public class CmsMenuRuleTranslator {
     private static final String[] TRANS_LOCKEDLOCKRULES_LEGACY = new String[] {"aaaa", "dddd", "aaai", "aaid", "ddda"};
 
     /** The legacy rule Strings as List applying for locked resources. */
-    private static final List TRANS_LOCKEDLOCKRULES_LEGACY_LIST = Arrays.asList(TRANS_LOCKEDLOCKRULES_LEGACY);
+    private static final List<String> TRANS_LOCKEDLOCKRULES_LEGACY_LIST = Arrays.asList(TRANS_LOCKEDLOCKRULES_LEGACY);
 
     /** The rules applying for the Online project. */
     private static final Object[] TRANS_ONLINERULES = new Object[] {
@@ -108,7 +108,7 @@ public class CmsMenuRuleTranslator {
     private static final String[] TRANS_ONLINERULES_LEGACY = new String[] {"a", "i", "d"};
 
     /** The legacy rule Strings as List applying for the Online project. */
-    private static final List TRANS_ONLINERULES_LEGACY_LIST = Arrays.asList(TRANS_ONLINERULES_LEGACY);
+    private static final List<String> TRANS_ONLINERULES_LEGACY_LIST = Arrays.asList(TRANS_ONLINERULES_LEGACY);
 
     /** The rules applying for all other lock states. */
     private static final Object[] TRANS_OTHERLOCKRULES = new Object[] {
@@ -120,7 +120,7 @@ public class CmsMenuRuleTranslator {
     private static final String[] TRANS_OTHERLOCKRULES_LEGACY = new String[] {"aaaa", "dddd", "aaai"};
 
     /** The legacy rule Strings as List applying for all other lock states. */
-    private static final List TRANS_OTHERLOCKRULES_LEGACY_LIST = Arrays.asList(TRANS_OTHERLOCKRULES_LEGACY);
+    private static final List<String> TRANS_OTHERLOCKRULES_LEGACY_LIST = Arrays.asList(TRANS_OTHERLOCKRULES_LEGACY);
 
     /** The rules applying for other projects. */
     private static final Object[] TRANS_OTHERPROJECTRULES = new Object[] {
@@ -132,7 +132,7 @@ public class CmsMenuRuleTranslator {
     private static final String[] TRANS_OTHERPROJECTRULES_LEGACY = new String[] {"a", "i", "d"};
 
     /** The legacy rule Strings applying for other projects. */
-    private static final List TRANS_OTHERPROJECTRULES_LEGACY_LIST = Arrays.asList(TRANS_OTHERPROJECTRULES_LEGACY);
+    private static final List<String> TRANS_OTHERPROJECTRULES_LEGACY_LIST = Arrays.asList(TRANS_OTHERPROJECTRULES_LEGACY);
 
     /** The rules applying for unlocked resources. */
     private static final Object[] TRANS_UNLOCKEDRULES = new Object[] {
@@ -155,10 +155,10 @@ public class CmsMenuRuleTranslator {
         "ddda"};
 
     /** The legacy rule Strings as List applying for unlocked resources. */
-    private static final List TRANS_UNLOCKEDRULES_LEGACY_LIST = Arrays.asList(TRANS_UNLOCKEDRULES_LEGACY);
+    private static final List<String> TRANS_UNLOCKEDRULES_LEGACY_LIST = Arrays.asList(TRANS_UNLOCKEDRULES_LEGACY);
 
     /** The mappings from the legacy rule strings to the menu rule set names. */
-    private Map m_ruleMappings;
+    private Map<String, String> m_ruleMappings;
 
     /**
      * Empty constructor.<p>
@@ -233,7 +233,7 @@ public class CmsMenuRuleTranslator {
      */
     public String getMenuRuleName(String legacyRules) {
 
-        return (String)getRuleMappings().get(substituteLegacyRules(legacyRules));
+        return getRuleMappings().get(substituteLegacyRules(legacyRules));
     }
 
     /**
@@ -244,8 +244,8 @@ public class CmsMenuRuleTranslator {
      */
     public boolean hasMenuRule(String legacyRules) {
 
-        String ruleName = (String)getRuleMappings().get(substituteLegacyRules(legacyRules));
-        if (CmsStringUtil.isNotEmpty(ruleName) && OpenCms.getWorkplaceManager() != null) {
+        String ruleName = getRuleMappings().get(substituteLegacyRules(legacyRules));
+        if (CmsStringUtil.isNotEmpty(ruleName) && (OpenCms.getWorkplaceManager() != null)) {
             return OpenCms.getWorkplaceManager().getMenuRule(ruleName) != null;
         }
         return false;
@@ -256,10 +256,10 @@ public class CmsMenuRuleTranslator {
      * 
      * @return the mappings of the legacy rule Strings to the default menu rule set names
      */
-    protected Map getRuleMappings() {
+    protected Map<String, String> getRuleMappings() {
 
         if (m_ruleMappings == null) {
-            m_ruleMappings = new HashMap(MENURULES_LEGACY_STRINGS.length);
+            m_ruleMappings = new HashMap<String, String>(MENURULES_LEGACY_STRINGS.length);
             for (int i = 0; i < MENURULES_LEGACY_STRINGS.length; i++) {
                 try {
                     String ruleName = MENURULES[i];

@@ -187,6 +187,7 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
 
             m_actions.put(xpathForType("classicgallery"), new CmsXmlUpdateAction() {
 
+                @SuppressWarnings("unchecked")
                 @Override
                 public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 

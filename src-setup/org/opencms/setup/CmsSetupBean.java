@@ -2918,7 +2918,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * @param dbProperty
+     * Sets the pool size.<p>
+     * 
+     * @param poolSize the pool size
      */
     private void setEntityManagerPoolSize(String poolSize) {
 

@@ -40,6 +40,7 @@ public class CmsMirPrOtherActive extends A_CmsMenuItemRule {
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, CmsResourceUtil[])
      */
+    @Override
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;

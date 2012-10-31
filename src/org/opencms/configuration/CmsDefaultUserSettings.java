@@ -108,7 +108,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
-     * Enum for the subsitemap creation mode 
+     * Enum for the subsitemap creation mode.<p>
      */
     public enum SubsitemapCreationMode {
         /** In  this mode, existing folders are converted into subsitemaps. */

@@ -76,6 +76,7 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
@@ -84,6 +85,7 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         if (CmsStringUtil.isNotEmpty(request.getParameter(PARAM_RESOURCE))) {
@@ -94,6 +96,7 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
     /**
      * @see org.opencms.workplace.editors.CmsSimplePageEditor#prepareContent(boolean)
      */
+    @Override
     protected String prepareContent(boolean save) {
 
         if (save) {

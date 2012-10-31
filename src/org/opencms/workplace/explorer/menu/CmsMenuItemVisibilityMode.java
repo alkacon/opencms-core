@@ -142,6 +142,7 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     protected Object clone() {
 
         return new CmsMenuItemVisibilityMode(this.getMode());

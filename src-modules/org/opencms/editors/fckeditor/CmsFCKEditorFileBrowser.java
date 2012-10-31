@@ -201,7 +201,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
     private Document m_document;
 
     /** The list of multi part file items (if available). */
-    private List m_multiPartFileItems;
+    private List<FileItem> m_multiPartFileItems;
 
     /** The Command parameter. */
     private String m_paramCommand;
@@ -268,6 +268,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
      * 
      * @param request the current JSP request
      */
+    @Override
     public void fillParamValues(HttpServletRequest request) {
 
         // ensure a multipart request is parsed only once (for "forward" scenarios with reports)
@@ -497,10 +498,10 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
 
         try {
             int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
-            List resources = getCms().readResources(getParamCurrentFolder(), filter, false);
-            Iterator i = resources.iterator();
+            List<CmsResource> resources = getCms().readResources(getParamCurrentFolder(), filter, false);
+            Iterator<CmsResource> i = resources.iterator();
             while (i.hasNext()) {
-                CmsResource res = (CmsResource)i.next();
+                CmsResource res = i.next();
                 if (res.isFolder()) {
                     // resource is a folder, create folder node
                     Element folder = folders.addElement(NODE_FOLDER);
@@ -533,6 +534,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods and check for multipart file items
@@ -577,10 +579,10 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
         String errorCode = ERROR_UPLOAD_OK;
         try {
             // get the file item from the multipart request
-            Iterator i = m_multiPartFileItems.iterator();
+            Iterator<FileItem> i = m_multiPartFileItems.iterator();
             FileItem fi = null;
             while (i.hasNext()) {
-                fi = (FileItem)i.next();
+                fi = i.next();
                 if (fi.getName() != null) {
                     // found the file object, leave iteration
                     break;
@@ -609,7 +611,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
                 if (title.lastIndexOf('.') != -1) {
                     title = title.substring(0, title.lastIndexOf('.'));
                 }
-                List properties = new ArrayList(1);
+                List<CmsProperty> properties = new ArrayList<CmsProperty>(1);
                 CmsProperty titleProp = new CmsProperty();
                 titleProp.setName(CmsPropertyDefinition.PROPERTY_TITLE);
                 if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {

@@ -61,6 +61,7 @@ import org.dom4j.Node;
  */
 public class CmsXmlAddXmlContentWidgets extends A_CmsXmlVfs {
 
+    /** the widget data. */
     private Map<String, String> m_widgetData;
 
     /** List of xpaths to update. */

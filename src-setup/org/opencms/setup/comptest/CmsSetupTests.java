@@ -46,9 +46,16 @@ import java.util.List;
  */
 public class CmsSetupTests {
 
+    /** Flag indicating tests where successful. */
     private boolean m_green;
+
+    /** Flag indicating tests where not successful. */
     private boolean m_red;
+
+    /** The test results. */
     private List<CmsSetupTestResult> m_testResults;
+
+    /** Indicating there should be a warning. */
     private boolean m_yellow;
 
     /**

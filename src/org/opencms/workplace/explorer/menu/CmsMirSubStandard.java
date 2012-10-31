@@ -43,6 +43,7 @@ public class CmsMirSubStandard extends A_CmsMenuItemRule {
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, org.opencms.workplace.explorer.CmsResourceUtil[], org.opencms.workplace.explorer.menu.I_CmsMenuItemRule[])
      */
+    @Override
     public CmsMenuItemVisibilityMode getVisibility(
         CmsObject cms,
         CmsResourceUtil[] resourceUtil,
