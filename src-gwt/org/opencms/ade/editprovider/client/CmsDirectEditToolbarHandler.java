@@ -133,7 +133,7 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#loadContextMenu(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsCoreData.AdeContext)
+     * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#loadContextMenu(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsCoreData.AdeContext)
      */
     public void loadContextMenu(final CmsUUID structureId, final AdeContext context) {
 
