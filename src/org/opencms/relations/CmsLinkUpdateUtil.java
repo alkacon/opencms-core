@@ -29,6 +29,7 @@ package org.opencms.relations;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.htmlparser.util.Translate;
 
 /**
  * An utility class for updating the link xml node.<p>
@@ -69,10 +70,11 @@ public final class CmsLinkUpdateUtil {
         if (element != null) {
             if (!updateOnly || (element.element(CmsLink.NODE_TARGET) != null)) {
                 String strId = (link.getStructureId() == null ? null : link.getStructureId().toString());
-                updateNode(element, CmsLink.NODE_TARGET, link.getTarget(), true);
+                // there may still be entities in the target, so we decode it
+                updateNode(element, CmsLink.NODE_TARGET, decodeEntities(link.getTarget()), true);
                 updateNode(element, CmsLink.NODE_UUID, strId, false);
                 updateNode(element, CmsLink.NODE_ANCHOR, link.getAnchor(), true);
-                updateNode(element, CmsLink.NODE_QUERY, link.getQuery(), true);
+                updateNode(element, CmsLink.NODE_QUERY, decodeEntities(link.getQuery()), true);
             }
         }
     }
@@ -113,6 +115,21 @@ public final class CmsLinkUpdateUtil {
             // update the sub-elements
             updateXml(link, element, false);
         }
+    }
+
+    /**
+     * Decodes entities in a string if it isn't null.<p>
+     * 
+     * @param value the string for which to decode entities
+     *  
+     * @return the string with the decoded entities 
+     */
+    protected static String decodeEntities(String value) {
+
+        if (value != null) {
+            value = Translate.decode(value);
+        }
+        return value;
     }
 
     /**
