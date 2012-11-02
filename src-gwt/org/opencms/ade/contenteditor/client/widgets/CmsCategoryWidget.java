@@ -158,6 +158,9 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
     /** List of all possible category folder. */
     private List<String> m_categoryList = new ArrayList<String>();
 
+    /** Single category folder. */
+    private String m_category = "";
+
     /** List of all category folder. */
     protected List<CmsCategoryTreeEntry> m_resultList;
 
@@ -407,6 +410,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
 
         // generate a list of all configured categories.
         final List<String> categories = m_categoryList;
+        final String category = m_category;
 
         // start request 
         CmsRpcAction<List<CmsCategoryTreeEntry>> action = new CmsRpcAction<List<CmsCategoryTreeEntry>>() {
@@ -417,7 +421,8 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
             @Override
             public void execute() {
 
-                CmsCoreProvider.getService().getCategories("/", true, categories, this);
+                CmsCoreProvider.getService().getCategories(category, true, categories, this);
+
             }
 
             /**
@@ -452,7 +457,7 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                 String category = configuration.substring(CONFIGURATION_CATEGORY.length() + 1);
                 if (category.indexOf('|') != -1) {
                     // cut eventual following configuration values
-                    category = category.substring(0, category.indexOf('|'));
+                    m_category = category.substring(0, category.indexOf('|'));
                 }
             }
             int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
@@ -483,6 +488,9 @@ public class CmsCategoryWidget extends Composite implements I_EditWidget {
                 }
                 String[] catArray = catList.split(",");
                 for (int i = 0; i < catArray.length; i++) {
+                    if (m_category.startsWith(catArray[i])) {
+                        m_category = m_category.replace(catArray[i], "");
+                    }
                     m_categoryList.add(catArray[i]);
                 }
 
