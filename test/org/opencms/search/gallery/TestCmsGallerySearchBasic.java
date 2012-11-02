@@ -28,10 +28,14 @@
 package org.opencms.search.gallery;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.CmsSearchResultList;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
@@ -45,6 +49,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.text.DateFormat;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -148,6 +153,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         suite.addTest(new TestCmsGallerySearchBasic("testGallerySearchIndexCreation"));
         suite.addTest(new TestCmsGallerySearchBasic("testGallerySortSearchResults"));
         suite.addTest(new TestCmsGallerySearchBasic("testSearchById"));
+        suite.addTest(new TestCmsGallerySearchBasic("testSearchForMovedFiles"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -364,5 +370,31 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
             new CmsUUID("7d6c22cd-4e3a-11db-9016-5bf59c6009b3"),
             new Locale("en"));
         assertTrue(result.getPath().endsWith("/index.html"));
+    }
+
+    /**
+     * Test that search results don't get "duplicated" after moving a resource.
+     * 
+     * @throws Exception
+     */
+    public void testSearchForMovedFiles() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        // rebuild all indexes
+        cms.createResource(
+            "/foo1.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "foo1".getBytes(),
+            Collections.singletonList(new CmsProperty("Title", "foo1", "foo1")));
+        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
+        // rebuild all indexes
+        OpenCms.getSearchManager().rebuildAllIndexes(report);
+        cms.moveResource("/foo1.txt", "/foo2.txt");
+        OpenCms.getSearchManager().updateOfflineIndexes(5000);
+        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        CmsSearchParameters params = new CmsSearchParameters("/foo1.txt");
+        CmsSearchResultList results = index.search(cms, params);
+        assertEquals(1, results.size());
+        assertTrue(results.get(0).getPath().contains("foo2"));
     }
 }

@@ -415,8 +415,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                 }
             }
-
-            return result;
+            return changeStateOfMoveOriginsToDeleted(result);
         }
 
         /**
@@ -484,6 +483,40 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     Integer.valueOf(resourcesToIndex.size()),
                     Long.valueOf(System.currentTimeMillis() - startTime)));
             }
+        }
+
+        /**
+         * Helper method which changes the states of resources which are to be indexed but have the wrong path to 'deleted'.
+         * This is needed to deal with moved resources, since the documents with the old paths must be removed from the index,
+         * 
+         * @param resourcesToIndex the resources to index 
+         * 
+         * @return the resources to index, but resource states are set to 'deleted' for resources with outdated paths
+         */
+        private List<CmsPublishedResource> changeStateOfMoveOriginsToDeleted(List<CmsPublishedResource> resourcesToIndex) {
+
+            Map<CmsUUID, String> lastValidPaths = new HashMap<CmsUUID, String>();
+            for (CmsPublishedResource resource : resourcesToIndex) {
+                lastValidPaths.put(resource.getStructureId(), resource.getRootPath());
+            }
+            List<CmsPublishedResource> result = new ArrayList<CmsPublishedResource>();
+            for (CmsPublishedResource resource : resourcesToIndex) {
+                String lastValidPath = lastValidPaths.get(resource.getStructureId());
+                if (resource.getRootPath().equals(lastValidPath) || resource.getStructureId().isNullUUID()) {
+                    result.add(resource);
+                } else {
+                    result.add(new CmsPublishedResource(
+                        resource.getStructureId(),
+                        resource.getResourceId(),
+                        resource.getPublishTag(),
+                        resource.getRootPath(),
+                        resource.getType(),
+                        resource.isFolder(),
+                        CmsResource.STATE_DELETED, // make sure index entry with outdated path is deleted  
+                        resource.getSiblingCount()));
+                }
+            }
+            return result;
         }
     }
 
