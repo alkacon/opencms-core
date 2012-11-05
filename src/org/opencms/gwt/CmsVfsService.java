@@ -1028,7 +1028,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     protected void internalSaveProperties(CmsPropertyChangeSet changes) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsResource target = cms.readResource(changes.getTargetStructureId());
+        CmsResource target = cms.readResource(changes.getTargetStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
         CmsLockActionRecord actionRecord = ensureLock(cms.getSitePath(target));
         try {
             internalUpdateProperties(cms, target, changes.getChanges());
