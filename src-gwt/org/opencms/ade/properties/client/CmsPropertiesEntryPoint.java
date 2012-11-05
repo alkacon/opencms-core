@@ -74,6 +74,7 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
                 CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(null);
                 handler.setPropertiesBean(result);
                 CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
+                editor.setReadOnly(result.isReadOnly());
                 editor.setShowResourceProperties(!handler.isFolder());
                 stop(false);
                 CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());

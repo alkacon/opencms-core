@@ -83,6 +83,7 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -1500,7 +1501,15 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         String originalSiteRoot = cms.getRequestContext().getSiteRoot();
         CmsPropertiesBean result = new CmsPropertiesBean();
-        CmsResource resource = cms.readResource(id);
+        CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+        boolean hasPermissions = cms.hasPermissions(
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsLock lock = cms.getLock(resource);
+        boolean lockedByOtherUser = !lock.isUnlocked() && !lock.isOwnedBy(cms.getRequestContext().getCurrentUser());
+        result.setReadOnly(!hasPermissions || lockedByOtherUser);
         result.setFolder(resource.isFolder());
         result.setContainerPage(CmsResourceTypeXmlContainerPage.isContainerPage(resource));
         String sitePath = cms.getSitePath(resource);

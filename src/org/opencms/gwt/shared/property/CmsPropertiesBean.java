@@ -73,6 +73,9 @@ public class CmsPropertiesBean implements IsSerializable {
     /** The map of available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
 
+    /** Flag which indicates whether the properties are read-only. */
+    private boolean m_isReadOnly;
+
     /**
      * Creates a new instance.<p>
      */
@@ -182,6 +185,16 @@ public class CmsPropertiesBean implements IsSerializable {
     }
 
     /**
+     * If true, the properties can't be modified.<p>
+     * 
+     * @return true if the properties can't be modified 
+     */
+    public boolean isReadOnly() {
+
+        return m_isReadOnly;
+    }
+
+    /**
      * Sets the list of property names.<p>
      * 
      * @param allProperties the list of property names 
@@ -249,6 +262,16 @@ public class CmsPropertiesBean implements IsSerializable {
     public void setPropertyDefinitions(Map<String, CmsXmlContentProperty> propertyDefinitions) {
 
         m_propertyDefinitions = propertyDefinitions;
+    }
+
+    /**
+     * Sets "readonly mode".<p>
+     * 
+     * @param isReadOnly true if "readonly mode" should be enabled 
+     */
+    public void setReadOnly(boolean isReadOnly) {
+
+        m_isReadOnly = isReadOnly;
     }
 
     /**

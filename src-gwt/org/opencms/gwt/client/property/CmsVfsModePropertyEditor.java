@@ -30,6 +30,7 @@ package org.opencms.gwt.client.property;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -95,6 +96,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** Flag which indicates whether the resource properties should be editable. */
     private boolean m_showResourceProperties;
 
+    /** Flag to control whether the properties should be editable. */
+    private boolean m_isReadOnly;
+
     /**
      * Creates a new sitemap entry editor instance for the VFS mode.<p>
      * 
@@ -128,6 +132,19 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
+     * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#createFormWidget(java.lang.String, java.util.Map)
+     */
+    @Override
+    public I_CmsFormWidget createFormWidget(String key, Map<String, String> widgetParams) {
+
+        I_CmsFormWidget widget = super.createFormWidget(key, widgetParams);
+        if (m_isReadOnly) {
+            widget.setEnabled(false);
+        }
+        return widget;
+    }
+
+    /**
      * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#initializeWidgets(org.opencms.gwt.client.ui.CmsPopup)
      */
     @Override
@@ -148,6 +165,16 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
                 return true;
             }
         }, UPDATE_HEIGHT_INTERVAL);
+    }
+
+    /** 
+     * Sets the "readonly" mode.<p>
+     * 
+     * @param readonly if true, readonly mode will be enabled
+     */
+    public void setReadOnly(boolean readonly) {
+
+        m_isReadOnly = readonly;
     }
 
     /**
