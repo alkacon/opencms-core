@@ -45,7 +45,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -60,6 +62,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -168,18 +171,37 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
     public CmsSerialDate() {
 
         super();
+        DateTimeFormat timeformate = DateTimeFormat.getFormat("hh:mm aa");
+        m_endDate.setValue(timeformate.format(new Date()));
+        m_startDate.setValue(timeformate.format(new Date()));
+        m_dateboxbegin.setValue(new Date());
+
         setSelectVaues();
         setTopPanel();
         setLowPanel();
         m_table.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().serialDataTabel());
         m_table.insertRow(0);
-        m_table.setWidget(0, 0, m_topPanel);
-        m_table.getCellFormatter().getElement(0, 0).setAttribute("colspan", "2");
+
+        // Table for top panel
+        FlexTable topPanel = new FlexTable();
+        topPanel.insertRow(0);
+        // add the Time view.
+        topPanel.setWidget(0, 0, m_topPanel);
+        topPanel.getCellFormatter().getElement(0, 0).getStyle().setWidth(200, Unit.PX);
+        // add the date view.
+        topPanel.setWidget(0, 1, m_lowPanel);
+        m_table.setWidget(0, 0, topPanel);
+        m_table.getCellFormatter().getElement(0, 0).setAttribute("colspan", "3");
+        m_table.getCellFormatter().getElement(0, 0).setAttribute("style", "border-bottom:1px solid #7788AA;");
+
+        // the selection view
         m_table.insertRow(1);
         m_table.setWidget(1, 0, m_serialPanel);
-        m_table.getCellFormatter().getElement(1, 0).getStyle().setWidth(150, Unit.PX);
-        m_table.setWidget(1, 1, m_patterPanel);
-        m_patterPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
+        m_table.getCellFormatter().getElement(1, 0).getStyle().setWidth(1, Unit.PX);
+        m_table.setWidget(1, 1, new SimplePanel());
+        m_table.getCellFormatter().getElement(1, 1).setAttribute("style", "border-right:1px solid #7788AA;width:15px;");
+        m_table.setWidget(1, 2, m_patterPanel);
+
         for (int i = 0; i < m_arrayRadiobox.length; i++) {
             m_arrayRadiobox[i].addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().radioButtonlabel());
             m_arrayRadiobox[i].addClickHandler(new ClickHandler() {
@@ -192,10 +214,6 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
 
             m_serialPanel.add(m_arrayRadiobox[i]);
         }
-
-        m_table.insertRow(2);
-        m_table.setWidget(2, 0, m_lowPanel);
-        m_table.getCellFormatter().getElement(2, 0).setAttribute("colspan", "2");
         initWidget(m_panel);
         m_panel.add(m_table);
         m_panel.add(m_error);
@@ -269,6 +287,17 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
     }
 
     /**
+     * Cleared all fields for the inactive view.<p>
+     */
+    public void clearFealds() {
+
+        m_dateboxbegin.setFormValueAsString("");
+        m_dateboxend.setFormValueAsString("");
+        m_startDate.setValue("");
+        m_endDate.setValue("");
+    }
+
+    /**
      * Represents a value change event.<p>
      */
     public void fireValueChange() {
@@ -325,7 +354,7 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
 
     }
 
-    /** Selects the right ending element*/
+    /** Selects the right ending element. */
     public void selectEnding(int element) {
 
     }
@@ -351,7 +380,7 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
      */
     public void setErrorMessage(String errorMessage) {
 
-        m_error.setText(errorMessage);
+        //m_error.setText(errorMessage);
 
     }
 
@@ -360,15 +389,17 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
      */
     public void setFormValueAsString(String value) {
 
-        Map<String, String> values = new HashMap<String, String>();
-        String[] split = value.split("\\|");
-        for (int i = 0; i < split.length; i++) {
-            int pars = split[i].indexOf("=");
-            String key = split[i].substring(0, pars);
-            String val = split[i].substring(pars + 1);
-            values.put(key, val);
+        if (!value.isEmpty()) {
+            Map<String, String> values = new HashMap<String, String>();
+            String[] split = value.split("\\|");
+            for (int i = 0; i < split.length; i++) {
+                int pars = split[i].indexOf("=");
+                String key = split[i].substring(0, pars);
+                String val = split[i].substring(pars + 1);
+                values.put(key, val);
+            }
+            setValues(values);
         }
-        setValues(values);
 
     }
 
@@ -486,7 +517,7 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
 
         if (m_groupPattern.getSelectedButton() != null) {
             String buttonName = m_groupPattern.getSelectedButton().getName();
-            m_patterPanel.removeFromParent();
+            // m_patterPanel.removeFromParent();
             if (buttonName.equals(KEY_DAILY)) {
                 m_patterPanel = m_dailyPattern;
                 m_dailyPattern.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -535,9 +566,7 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
 
                 });
             }
-            m_patterPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
-
-            m_table.setWidget(1, 1, m_patterPanel);
+            m_table.setWidget(1, 2, m_patterPanel);
             fireValueChange();
         }
 
@@ -601,6 +630,9 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
         Date startDate = new Date();
         Date endDate = new Date();
         m_startDateValue = m_dateboxbegin.getValue();
+        if (m_startDateValue == null) {
+            m_startDateValue = new Date();
+        }
         startDate = format.parse(m_startDate.getText());
         m_startDateValue.setHours(startDate.getHours());
         m_startDateValue.setMinutes(startDate.getMinutes());
@@ -645,9 +677,12 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
         FlexTable table = new FlexTable();
         table.insertRow(0);
         FlowPanel cell1 = new FlowPanel();
-        cell1.add(new Label("Begin:"));
-
+        cell1.add(new Label("Startdate:"));
+        cell1.getElement().getStyle().setWidth(100, Unit.PCT);
         cell1.add(m_dateboxbegin);
+        m_dateboxbegin.setDateOnly(true);
+        m_dateboxbegin.getElement().getStyle().setWidth(108, Unit.PX);
+        m_dateboxbegin.getElement().getStyle().setFloat(Float.RIGHT);
         m_dateboxbegin.addValueChangeHandler(new ValueChangeHandler<Date>() {
 
             public void onValueChange(ValueChangeEvent<Date> event) {
@@ -657,7 +692,8 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
             }
         });
         table.setWidget(0, 0, cell1);
-        table.getCellFormatter().getElement(0, 0).getStyle().setWidth(200, Unit.PX);
+        table.getCellFormatter().getElement(0, 0).getStyle().setWidth(176, Unit.PX);
+        table.getCellFormatter().getElement(0, 0).getStyle().setVerticalAlign(VerticalAlign.TOP);
 
         FlowPanel cell2 = new FlowPanel();
         CmsRadioButton sel1 = new CmsRadioButton("1", "No ending");
@@ -665,18 +701,31 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
         sel1.setGroup(m_groupDuration);
         sel1.setChecked(true);
         sel1.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().serialDatelowPanelSelection());
+        sel1.getElement().getStyle().setMarginLeft(13, Unit.PX);
+        sel1.getElement().getStyle().setMarginTop(0, Unit.PX);
+
         CmsRadioButton sel2 = new CmsRadioButton("2", "Ends after:");
         m_lowRadioButton[1] = sel2;
         sel2.setGroup(m_groupDuration);
         sel2.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().serialDatelowPanelSelection());
+        sel2.getElement().setAttribute("style", "clear:left");
+        sel2.getElement().getStyle().setMarginLeft(13, Unit.PX);
+        sel2.getElement().getStyle().setMarginTop(6, Unit.PX);
+
         CmsRadioButton sel3 = new CmsRadioButton("3", "Ends at:");
         m_lowRadioButton[2] = sel3;
         sel3.setGroup(m_groupDuration);
         sel3.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().serialDatelowPanelSelection());
+        sel3.getElement().setAttribute("style", "clear:left");
+        sel3.getElement().getStyle().setMarginLeft(13, Unit.PX);
+        sel3.getElement().getStyle().setMarginTop(6, Unit.PX);
+
         cell2.add(sel1);
         cell2.add(sel2);
 
         m_times.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
+        m_times.getElement().getStyle().setMarginTop(5, Unit.PX);
+        m_times.getElement().getStyle().setWidth(82, Unit.PX);
         cell2.add(m_times);
         m_times.addValueChangeHandler(new ValueChangeHandler<String>() {
 
@@ -695,10 +744,17 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
 
             }
         });
-        cell2.add(new Label("times"));
+        Label times = new Label("times");
+        times.getElement().getStyle().setMarginTop(7, Unit.PX);
+        times.getElement().getStyle().setMarginLeft(2, Unit.PX);
+        cell2.add(times);
         cell2.add(sel3);
 
         cell2.add(m_dateboxend);
+        m_dateboxend.setDateOnly(true);
+        m_dateboxend.getElement().getStyle().setWidth(90, Unit.PX);
+        m_dateboxend.getElement().getStyle().setMarginTop(5, Unit.PX);
+        m_dateboxend.getElement().getStyle().setMarginLeft(22, Unit.PX);
         m_dateboxend.addValueChangeHandler(new ValueChangeHandler<Date>() {
 
             public void onValueChange(ValueChangeEvent<Date> event) {
@@ -734,9 +790,12 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
      * */
     private void setTopPanel() {
 
-        Label l_start = new Label("Start:");
-
+        Label l_start = new Label("Starttime:");
+        l_start.getElement().getStyle().setFloat(Float.LEFT);
         m_startDate.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
+        m_startDate.getElement().getStyle().setWidth(110, Unit.PX);
+        m_startDate.getElement().getStyle().setMarginRight(1, Unit.PX);
+        m_startDate.getElement().getStyle().setFloat(Float.RIGHT);
         m_startDate.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -746,9 +805,15 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
             }
         });
 
-        Label l_end = new Label("End:");
-
+        Label l_end = new Label("Endtime:");
+        l_end.getElement().getStyle().clearLeft();
+        l_end.getElement().getStyle().setFloat(Float.LEFT);
+        l_end.getElement().getStyle().setMarginTop(8, Unit.PX);
         m_endDate.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
+        m_endDate.getElement().getStyle().setWidth(110, Unit.PX);
+        m_endDate.getElement().getStyle().setMarginRight(1, Unit.PX);
+        m_endDate.getElement().getStyle().setMarginTop(5, Unit.PX);
+        m_endDate.getElement().getStyle().setFloat(Float.RIGHT);
         m_endDate.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -758,8 +823,15 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
             }
         });
 
-        Label l_duration = new Label("Duration:");
         m_duration = new CmsSelectBox();
+        m_duration.getElement().getStyle().setMarginTop(5, Unit.PX);
+        m_duration.getElement().getStyle().setFloat(Float.RIGHT);
+        m_duration.getElement().getStyle().setMarginRight(1, Unit.PX);
+        m_duration.getElement().getStyle().setMarginBottom(3, Unit.PX);
+        m_duration.getOpener().setWidth("118px");
+        m_duration.getOpener().setStyleName(
+            org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
+        m_duration.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_duration.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -769,15 +841,15 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
             }
         });
 
-        m_duration.addOption("0", "0 Days");
-        m_duration.addOption("1", "1 Days");
-        m_duration.addOption("2", "2 Days");
-        m_duration.addOption("3", "3 Days");
-        m_duration.addOption("4", "4 Days");
-        m_duration.addOption("5", "5 Days");
-        m_duration.addOption("6", "6 Days");
-        m_duration.addOption("7", "1 weeks");
-        m_duration.addOption("8", "2 weeks");
+        m_duration.addOption("0", "at same day");
+        m_duration.addOption("1", "after 1 day");
+        m_duration.addOption("2", "after 2 days");
+        m_duration.addOption("3", "after 3 days");
+        m_duration.addOption("4", "after 4 days");
+        m_duration.addOption("5", "after 5 days");
+        m_duration.addOption("6", "after 6 days");
+        m_duration.addOption("7", "after 1 week");
+        m_duration.addOption("8", "after 2 weeks");
 
         m_topPanel.add(l_start);
         m_topPanel.add(m_startDate);
@@ -785,7 +857,6 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
         m_topPanel.add(l_end);
         m_topPanel.add(m_endDate);
 
-        m_topPanel.add(l_duration);
         m_topPanel.add(m_duration);
 
     }

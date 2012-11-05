@@ -51,11 +51,17 @@ public final class CmsDateConverter {
     /** A pattern for date time representation. */
     private static final String DATETIME_PATTERN = Messages.get().key(Messages.GUI_DATEBOX_DATETIME_PATTERN_0);
 
+    /** A pattern for date representation. */
+    private static final String DATE_PATTERN = "MM/dd/yyyy";
+
     /** A pattern for date time representation in 12 hour presentation. */
     private static final String TIME_PATTERN = Messages.get().key(Messages.GUI_DATEBOX_TIME_PATTERN_0);
 
     /** The formatter for the date time format. */
     private static final DateTimeFormat Z_DATETIME_FORMAT = DateTimeFormat.getFormat(DATETIME_PATTERN);
+
+    /** The formatter for the date format. */
+    private static final DateTimeFormat Z_DATE_FORMAT = DateTimeFormat.getFormat(DATE_PATTERN);
 
     /** The formatter for the time format. */
     private static final DateTimeFormat Z_TIME_FORMAT = DateTimeFormat.getFormat(TIME_PATTERN);
@@ -89,6 +95,24 @@ public final class CmsDateConverter {
             }
         }
         return ret;
+    }
+
+    /**
+     * Formats the provided date. Note, a null date is a possible input.
+     * 
+     * @param date the date to format
+     * 
+     * @return the formatted date as a string
+     */
+    public static String DatetoString(final Date date) {
+
+        String result;
+        if (date == null) {
+            result = "";
+        } else {
+            result = Z_DATE_FORMAT.format(date);
+        }
+        return result;
     }
 
     /**
@@ -172,6 +196,31 @@ public final class CmsDateConverter {
         Date date = null;
         if (dateText.length() > 0) {
             date = Z_DATETIME_FORMAT.parse(dateText.trim());
+            if (!validateDate(date)) {
+                throw new IllegalArgumentException();
+            }
+        }
+        return date;
+    }
+
+    /**
+     * Parses the provided String as a date.<p>
+     * 
+     * First try to parse the String with the given time format.<p>
+     * 
+     * If that fails try to parse the date with the browser settings.<p>
+     * 
+     * @param dateText the string representing a date
+     * 
+     * @return the date created, or null if there was a parse error
+     * 
+     * @throws Exception 
+     */
+    public static Date toDayDate(final String dateText) throws Exception {
+
+        Date date = null;
+        if (dateText.length() > 0) {
+            date = Z_DATE_FORMAT.parse(dateText.trim());
             if (!validateDate(date)) {
                 throw new IllegalArgumentException();
             }

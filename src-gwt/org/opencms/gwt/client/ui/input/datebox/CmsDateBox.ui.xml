@@ -8,7 +8,7 @@
 		<input:CmsTextBox ui:field="m_box"></input:CmsTextBox>
 		<g:FlowPanel ui:field="m_dateTimePanel">
 			<h:DatePicker ui:field="m_picker"></h:DatePicker>
-			<g:FlowPanel addStyleNames="{style.dateBoxCss.dateTime}">
+			<g:FlowPanel ui:field="m_timeField" addStyleNames="{style.dateBoxCss.dateTime}">
 				<input:CmsTextBox ui:field="m_time" addStyleNames="{style.dateBoxCss.time}"></input:CmsTextBox>
 				<input:CmsRadioButton ui:field="m_am" addStyleNames="{style.dateBoxCss.ampm}"></input:CmsRadioButton>
 				<input:CmsRadioButton ui:field="m_pm" addStyleNames="{style.dateBoxCss.ampm}"></input:CmsRadioButton>

@@ -30,8 +30,11 @@ package org.opencms.ade.contenteditor.client.widgets;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.client.widgets.I_EditWidget;
 
+import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSerialDate;
 
+import com.google.gwt.dom.client.Style.BorderStyle;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -59,7 +62,7 @@ public class CmsSerialDateWidget extends Composite implements I_EditWidget {
         // All composites must call initWidget() in their constructors.
         initWidget(m_serialDate);
 
-        ValueChangeHandler<String> test = new ValueChangeHandler<String>() {
+        ValueChangeHandler<String> handler = new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> arg0) {
 
@@ -68,8 +71,11 @@ public class CmsSerialDateWidget extends Composite implements I_EditWidget {
             }
 
         };
-
-        m_serialDate.addValueChangeHandler(test);
+        m_serialDate.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_serialDate.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
+        m_serialDate.getElement().getStyle().setBorderColor("#7788AA");
+        m_serialDate.getElement().getStyle().setBorderWidth(1, Unit.PX);
+        m_serialDate.addValueChangeHandler(handler);
     }
 
     /**
@@ -132,12 +138,11 @@ public class CmsSerialDateWidget extends Composite implements I_EditWidget {
         }
         m_active = active;
         if (m_active) {
-            getElement().setAttribute("contentEditable", "true");
             getElement().removeClassName(I_LayoutBundle.INSTANCE.form().inActive());
             getElement().focus();
         } else {
-            getElement().setAttribute("contentEditable", "false");
             getElement().addClassName(I_LayoutBundle.INSTANCE.form().inActive());
+            m_serialDate.clearFealds();
         }
         if (active) {
             fireChangeEvent();

@@ -248,7 +248,7 @@ public class CmsPatternPanelYearly extends FlowPanel implements HasValueChangeHa
         m_atNummer.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
         m_atNummer.getOpener().setStyleName(
             org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_atNummer.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_atNummer.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atNummer.setWidth("80px");
         m_atNummer.addOption("1", "first");
         m_atNummer.addOption("2", "second");
@@ -259,7 +259,7 @@ public class CmsPatternPanelYearly extends FlowPanel implements HasValueChangeHa
         m_atDay.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
         m_atDay.getOpener().setStyleName(
             org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_atDay.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_atDay.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atDay.setWidth("100px");
         m_atDay.addOption("1", "Sunday");
         m_atDay.addOption("2", "Monday");
@@ -274,7 +274,7 @@ public class CmsPatternPanelYearly extends FlowPanel implements HasValueChangeHa
         m_atMonth.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
         m_atMonth.getOpener().setStyleName(
             org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_everyMonth.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_everyMonth.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atMonth.setWidth("100px");
         m_atMonth.addOption("0", "January");
         m_atMonth.addOption("1", "February");
@@ -299,12 +299,12 @@ public class CmsPatternPanelYearly extends FlowPanel implements HasValueChangeHa
 
         m_everyPanel.add(m_everyDay);
         m_everyDay.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
-        m_everyPanel.add(new Label("."));
+        m_everyPanel.add(new Label(""));
         m_everyPanel.add(m_everyMonth);
         m_everyMonth.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
         m_everyMonth.getOpener().setStyleName(
             org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_everyMonth.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_everyMonth.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_everyMonth.setWidth("100px");
         m_everyMonth.addOption("0", "January");
         m_everyMonth.addOption("1", "February");

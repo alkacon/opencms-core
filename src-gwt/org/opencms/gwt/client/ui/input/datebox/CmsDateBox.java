@@ -218,6 +218,10 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     @UiField
     protected FlowPanel m_dateTimePanel;
 
+    /** The panel for the time selection. */
+    @UiField
+    protected FlowPanel m_timeField;
+
     /** The gwt date picker. */
     @UiField
     protected DatePicker m_picker;
@@ -244,6 +248,9 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
 
     /** The popup panel to show the the date time picker widget in. */
     private CmsPopup m_popup;
+
+    /** The value for show date only. */
+    private boolean m_dateOnly;
 
     /***/
     protected HandlerRegistration m_previewHandlerRegistration;
@@ -409,7 +416,11 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         Date date = null;
         if (isEnabled()) {
             try {
-                date = CmsDateConverter.toDate(m_box.getText());
+                if (m_dateOnly) {
+                    date = CmsDateConverter.toDayDate(m_box.getText());
+                } else {
+                    date = CmsDateConverter.toDate(m_box.getText());
+                }
                 setErrorMessage(null);
             } catch (Exception e) {
                 setErrorMessage(Messages.get().key(Messages.ERR_DATEBOX_INVALID_DATE_FORMAT_0));
@@ -486,6 +497,26 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
         m_autoHideParent = autoHideParent;
+    }
+
+    /**
+     * Sets the value if the date only should be shown.
+     * @param dateOnly if the date only should be shown
+     */
+    public void setDateOnly(boolean dateOnly) {
+
+        if (m_dateOnly != dateOnly) {
+            m_dateOnly = dateOnly;
+            if (m_dateOnly) {
+                m_time.removeFromParent();
+                m_am.removeFromParent();
+                m_pm.removeFromParent();
+            } else {
+                m_timeField.add(m_time);
+                m_timeField.add(m_am);
+                m_timeField.add(m_pm);
+            }
+        }
     }
 
     /**
@@ -569,7 +600,11 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
         if (fireEvents) {
             fireChange(value);
         }
-        m_box.setFormValueAsString(CmsDateConverter.toString(value));
+        if (m_dateOnly) {
+            m_box.setFormValueAsString(CmsDateConverter.DatetoString(value));
+        } else {
+            m_box.setFormValueAsString(CmsDateConverter.toString(value));
+        }
     }
 
     /**

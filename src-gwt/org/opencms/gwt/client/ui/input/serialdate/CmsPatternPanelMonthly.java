@@ -245,7 +245,7 @@ public class CmsPatternPanelMonthly extends FlowPanel implements HasValueChangeH
         m_atNummer.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
         m_atNummer.getOpener().setStyleName(
             org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_atNummer.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_atNummer.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atNummer.addOption("1", "first");
         m_atNummer.addOption("2", "second");
         m_atNummer.addOption("3", "third");
@@ -257,7 +257,7 @@ public class CmsPatternPanelMonthly extends FlowPanel implements HasValueChangeH
         m_atDay.addStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
         m_atDay.getOpener().setStyleName(
             org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
-        m_atDay.getSelector().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_atDay.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         m_atDay.addOption("1", "Sunday");
         m_atDay.addOption("2", "Monday");
         m_atDay.addOption("3", "Tuesday");
@@ -270,7 +270,7 @@ public class CmsPatternPanelMonthly extends FlowPanel implements HasValueChangeH
         m_atPanel.add(new Label("every"));
         m_atPanel.add(m_atMonth);
         m_atMonth.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
-        m_atPanel.add(new Label(". month"));
+        m_atPanel.add(new Label(" month"));
 
     }
 
@@ -282,10 +282,10 @@ public class CmsPatternPanelMonthly extends FlowPanel implements HasValueChangeH
 
         m_everyPanel.add(m_everyDay);
         m_everyDay.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
-        m_everyPanel.add(new Label(". day every"));
+        m_everyPanel.add(new Label(" day every"));
         m_everyPanel.add(m_everyMonth);
         m_everyMonth.setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().textBoxSerialDate());
-        m_everyPanel.add(new Label(". month"));
+        m_everyPanel.add(new Label(" month"));
 
     }
 
