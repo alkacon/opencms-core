@@ -43,6 +43,9 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -106,6 +109,26 @@ public final class CmsCoreProvider extends CmsCoreData {
             }
         }
         return INSTANCE;
+    }
+
+    /**
+     * Gets the content attribute of a meta tag with a given name.<p>
+     * 
+     * @param nameToFind the name of the meta tag
+     *  
+     * @return the content attribute value of the found meta tag, or null if no meta tag with the given name was found 
+     */
+    public static String getMetaElementContent(String nameToFind) {
+
+        NodeList<Element> metas = Document.get().getDocumentElement().getElementsByTagName("meta");
+        for (int i = 0; i < metas.getLength(); i++) {
+            Element meta = metas.getItem(i);
+            String name = meta.getAttribute("name");
+            if (nameToFind.equals(name)) {
+                return meta.getAttribute("content");
+            }
+        }
+        return null;
     }
 
     /**

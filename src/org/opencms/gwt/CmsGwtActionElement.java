@@ -112,6 +112,21 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
+     * Generates the HTML for a meta tag with given name and content.<p>
+     * 
+     * @param name the name of the meta tag 
+     * @param data the content of the meta tag 
+     * 
+     * @return the HTML for the meta tag 
+     */
+    public static String exportMeta(String name, String data) {
+
+        String escName = CmsEncoder.escapeXml(name);
+        String escData = CmsEncoder.escapeXml(data);
+        return ("<meta name=\"" + escName + "\" content=\"" + escData + "\">");
+    }
+
+    /**
      * Serializes the result of the given method for RPC-prefetching.<p>
      * 
      * @param method the method

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="properties">
+	<inherits name="org.opencms.GwtBase" />
+	<entry-point class="org.opencms.ade.properties.client.CmsPropertiesEntryPoint" />
+	<source path="client" />
+	<source path="shared" />
+</module>
