@@ -38,12 +38,25 @@
 
 .serialDataTabel {
 	width:100%;
+	border-spacing: 3px;
+}
+
+.emptyValue .serialDataTabel {
+	color:value("constants.css.borderColor");
+}
+
+table.serialDataTabel > tr:first-child > td {
+	border-bottom: 1px solid #7788AA;
+	width: 300px;
+}
+
+.emptyValue table.serialDataTabel > tr:first-child > td {
+	border-bottom: 1px solid value("constants.css.borderColor");
 }
 
 .serialDataTabel tr:first-child div{
 	float: left;
     text-align: right;
-    margin-left: 7px;
     line-height: 18px;
 }
 .serialDataTabel tr:first-child div:first-child{
@@ -52,6 +65,11 @@
 .serialDataTabel tr:first-child div:last-child{
 	line-height: 14px;
 }
+
+.emptyValue input.textBoxSerialDate{
+	border: 1px solid value("constants.css.borderColor");
+}
+
 input.textBoxSerialDate{
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -77,7 +95,7 @@ input.textBoxSerialDate{
 	font-weight: normal;
     line-height: 20px;
     margin-top: -1px;
-    padding-left:5px;
+    padding-left:6px;
 }
 .serialDateDay div div:last-child {
 	font-weight: normal;
@@ -92,7 +110,7 @@ input.textBoxSerialDate{
 .serialDateDay div:last-child {
 	font-weight: normal;
     line-height: 20px;
-    padding-left:5px;
+    padding-left:6px;
 }
 .serialDateWeek {
 	height:70px;
@@ -154,6 +172,7 @@ input.textBoxSerialDate{
 .serialDateMonth>div>div{
 	float:left;
 	line-height:20px;
+	margin-left: 5px;
 }
 
 .serialDateMonth>div:last-child>div{
@@ -165,7 +184,7 @@ input.textBoxSerialDate{
 
 .serialDateMonth>.serialDateMonthSelection{
 	clear:left;
-	margin-left: 10px;
+	margin-left: 7px;
 	padding-top:9px;
 }
 .serialDateMonth>.serialDateMonthSelection:last-child{
@@ -195,6 +214,7 @@ input.textBoxSerialDate{
 .serialDateYear>div>div{
 	float:left;
 	line-height:20px;
+	margin-left: 5px;
 }
 
 .serialDateYear>div:last-child>div{
@@ -203,7 +223,7 @@ input.textBoxSerialDate{
 
 .serialDateYear>.serialDateYearSelection{
 	clear:left;
-	margin-left: 10px;
+	margin-left: 7px;
 	padding-top:9px;
 }
 
@@ -212,7 +232,9 @@ input.textBoxSerialDate{
 }
 
 .serialDatelowPanel {
-	padding-top: 5px;
+	margin-top:-5px;
+	margin-bottom: -2px;
+	margin-left: 10px !important; 
 }
 
 .serialDatelowPanel div{
