@@ -497,10 +497,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             Map<CmsUUID, String> lastValidPaths = new HashMap<CmsUUID, String>();
             for (CmsPublishedResource resource : resourcesToIndex) {
+                if (resource.getState().isDeleted()) {
+                    // we don't want the last path to be from a deleted resource 
+                    continue;
+                }
                 lastValidPaths.put(resource.getStructureId(), resource.getRootPath());
             }
             List<CmsPublishedResource> result = new ArrayList<CmsPublishedResource>();
             for (CmsPublishedResource resource : resourcesToIndex) {
+                if (resource.getState().isDeleted()) {
+                    result.add(resource);
+                    continue;
+                }
                 String lastValidPath = lastValidPaths.get(resource.getStructureId());
                 if (resource.getRootPath().equals(lastValidPath) || resource.getStructureId().isNullUUID()) {
                     result.add(resource);

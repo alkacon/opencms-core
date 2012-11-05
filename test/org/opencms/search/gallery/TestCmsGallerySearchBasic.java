@@ -29,6 +29,7 @@ package org.opencms.search.gallery;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -389,6 +390,9 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
         // rebuild all indexes
         OpenCms.getSearchManager().rebuildAllIndexes(report);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        cms.lockResource("/foo1.txt");
         cms.moveResource("/foo1.txt", "/foo2.txt");
         OpenCms.getSearchManager().updateOfflineIndexes(5000);
         A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
@@ -396,5 +400,10 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         CmsSearchResultList results = index.search(cms, params);
         assertEquals(1, results.size());
         assertTrue(results.get(0).getPath().contains("foo2"));
+        cms.undoChanges("/foo2.txt", CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT);
+        OpenCms.getSearchManager().updateOfflineIndexes(5000);
+        results = index.search(cms, params);
+        assertEquals(1, results.size());
+        assertTrue(results.get(0).getPath().contains("foo1"));
     }
 }
