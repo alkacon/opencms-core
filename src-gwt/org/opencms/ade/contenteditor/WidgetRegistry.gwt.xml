@@ -3,4 +3,6 @@
 	<inherits name="com.alkacon.acacia.AcaciaBare" />
 	<source path="widgetregistry/client" />
 	<source path="shared" />
+	<set-configuration-property name="CssResource.style" value="stable" /> 
+	<set-configuration-property name="CssResource.obfuscationPrefix" value="cms" />
 </module>

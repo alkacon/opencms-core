@@ -61,6 +61,9 @@ public final class NativeEditWidget extends JavaScriptObject {
         nat.isActive = function() {
             return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::isActive()();
         }
+        nat.setActive = function(active) {
+            return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::setActive(Z)(active);
+        }
         nat.getValue = function() {
             return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::getValue()();
         }
@@ -147,7 +150,7 @@ public final class NativeEditWidget extends JavaScriptObject {
      * @param value the value
      */
     protected native void setValue(String value)/*-{
-        this.setValue(value, true);
+        this.setValue(value, false);
     }-*/;
 
     /**

@@ -80,12 +80,12 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
     public String exportAll() throws Exception {
 
         StringBuffer sb = new StringBuffer();
-        sb.append(getPrefetch());
         sb.append(super.export());
         sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportWidget());
         sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
         sb.append(export());
         sb.append(createNoCacheScript(MODULE_NAME));
+        sb.append(getPrefetch());
         return sb.toString();
     }
 

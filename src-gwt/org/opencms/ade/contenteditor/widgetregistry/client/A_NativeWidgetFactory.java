@@ -38,28 +38,14 @@ import com.google.gwt.user.client.Element;
 public abstract class A_NativeWidgetFactory implements I_WidgetFactory {
 
     /**
-     * Returns the widget name.<p>
-     * 
-     * @return the widget name
-     */
-    protected abstract String getWidgetName();
-
-    /**
-     * Returns the name of the initialization call.<p>
-     * 
-     * @return the name of the initialization call
-     */
-    protected abstract String getInitCallName();
-
-    /**
      * Exports the widget factory.<p>
      */
     public native void exportFactory()/*-{
-
+        var self = this;
         $wnd[this.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::getInitCallName()()] = function() {
             var factory = {
-                instance : this,
-                widgetName : this.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::getWidgetName()(),
+                instance : self,
+                widgetName : self.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::getWidgetName()(),
                 createNativeWidget : function(configuration) {
 
                     return this.instance.@org.opencms.ade.contenteditor.widgetregistry.client.A_NativeWidgetFactory::createNativeWidget(Ljava/lang/String;)(configuration);
@@ -70,13 +56,29 @@ public abstract class A_NativeWidgetFactory implements I_WidgetFactory {
             };
 
             if ($wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] != null
-                    && typeof $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] == 'function')
+                    && typeof $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] == 'function') {
                 $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION]
                         (factory);
-            else
+            } else {
                 throw 'Registry not available';
+            }
         }
+
     }-*/;
+
+    /**
+     * Returns the name of the initialization call.<p>
+     * 
+     * @return the name of the initialization call
+     */
+    protected abstract String getInitCallName();
+
+    /**
+     * Returns the widget name.<p>
+     * 
+     * @return the widget name
+     */
+    protected abstract String getWidgetName();
 
     /**
      * Creates a widget wrapped in a native java script object.<p>

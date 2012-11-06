@@ -170,7 +170,7 @@ public final class WidgetRegistry {
             }
         } catch (error) {
             throw "Failed excuting " + initCall
-                    + " to initialize editing widget."
+                    + " to initialize editing widget. \n" + error
         }
         return false;
     }-*/;

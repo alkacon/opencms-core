@@ -495,7 +495,7 @@ public final class CmsContentEditor extends EditorBase {
      */
     public void openStandAloneFormEditor() {
 
-        CmsContentDefinition definition = null;
+        final CmsContentDefinition definition;
         try {
             definition = (CmsContentDefinition)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 getService(),
@@ -511,7 +511,17 @@ public final class CmsContentEditor extends EditorBase {
             if (CmsCoreProvider.get().lock(CmsContentDefinition.entityIdToUuid(definition.getEntityId()))) {
 
                 registerContentDefinition(definition);
-                initEditor(definition, null, false);
+                // register all external widgets
+                WidgetRegistry.getInstance().registerExternalWidgets(
+                    definition.getExternalWidgetConfigurations(),
+                    new Command() {
+
+                        public void execute() {
+
+                            initEditor(definition, null, false);
+                        }
+                    });
+
             } else {
                 showLockedResourceMessage();
             }

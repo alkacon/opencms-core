@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="contenteditor">
+<!-- Stand alone content editor module combining all required sources, including all required external CSS and JavaScripts.
+	 The module entry point will initialize the editor. --> 
 	<inherits name="org.opencms.ade.contenteditor.ContentEditorHeadless" />
 	<entry-point class="org.opencms.ade.contenteditor.client.CmsContentEditorEntryPoint"></entry-point>
 </module>
