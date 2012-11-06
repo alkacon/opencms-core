@@ -158,44 +158,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the css class
          */
-        String serialDataTabel();
-
-        String serialDateCheckBox();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
-        String serialDateDay();
-
-        String serialDatelowPanel();
-
-        String serialDatelowPanelSelection();
-
-        String serialDateMonth();
-
-        String serialDateMonthSelection();
-
-        String serialDateWeek();
-
-        String serialDateYear();
-
-        String serialDateYearSelection();
-
-        /**
-         * Css class reader.<p>
-         * 
-         * @return the css class
-         */
         String textBox();
-
-        /**
-        * Css class reader.<p>
-        * 
-        * @return the css class
-        */
-        String textBoxSerialDate();
 
         /**
          * Css class reader.<p>
