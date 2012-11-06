@@ -70,6 +70,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -833,11 +834,13 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
      */
     private void checkTime() {
 
-        if (!isValidTime()) {
-            m_time.setErrorMessageWidth((m_popup.getOffsetWidth() - 32) + Unit.PX.toString());
-            m_time.setErrorMessage(Messages.get().key(Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_0));
-        } else if (isValidTime()) {
-            m_time.setErrorMessage(null);
+        if (!m_dateOnly) {
+            if (!isValidTime()) {
+                m_time.setErrorMessageWidth((m_popup.getOffsetWidth() - 32) + Unit.PX.toString());
+                m_time.setErrorMessage(Messages.get().key(Messages.ERR_DATEBOX_INVALID_TIME_FORMAT_0));
+            } else if (isValidTime()) {
+                m_time.setErrorMessage(null);
+            }
         }
         updateCloseBehavior();
     }
@@ -869,7 +872,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
      */
     private boolean isValidTime() {
 
-        return CmsDateConverter.validateTime(getTimeText());
+        return m_dateOnly || CmsDateConverter.validateTime(getTimeText());
     }
 
     /**
@@ -912,13 +915,17 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
      */
     private void updateFromPicker() {
 
-        checkTime();
-        Date date = m_picker.getValue();
-        String timeAsString = getTimeText();
-        date = CmsDateConverter.getDateWithTime(date, timeAsString);
-        setValue(date);
-        setErrorMessage(null);
-        fireChange(date);
+        try {
+            checkTime();
+            Date date = m_picker.getValue();
+            String timeAsString = getTimeText();
+            date = CmsDateConverter.getDateWithTime(date, timeAsString);
+            setValue(date);
+            setErrorMessage(null);
+            fireChange(date);
+        } catch (Exception e) {
+            Window.alert(e.getMessage());
+        }
     }
 
     /**
