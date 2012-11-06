@@ -4,6 +4,8 @@
 }
 .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTabs{
 	border-bottom: 1px solid value("constants.css.borderColor");
+	width: auto !important;
+	position: static !important;
 }
 .gwt-TabLayoutPanel .tabPanel {
 }
@@ -153,7 +155,7 @@
 @sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
 	gwt-image: "backgrounds.softBackground";
 	background-position: 50% 50%;
-	height: auto;
+	height: auto !important;
 	display: block;
 	background-color: value("constants.css.backgroundColorSoft");
 }
