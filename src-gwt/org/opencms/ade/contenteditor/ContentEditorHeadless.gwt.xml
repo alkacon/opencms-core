@@ -2,7 +2,8 @@
 <module>
 <!-- Content editor module combining all required sources, including all required external CSS and JavaScripts.
 	 This module does not have an entry point. --> 
-	<inherits name="org.opencms.ade.contenteditor.ContentEditorBare" />
+	<inherits name="org.opencms.ade.galleries.GalleryHeadless" />
+	<inherits name="org.opencms.ade.contenteditor.WidgetRegistry" />
 	<stylesheet src="../jquery-ui-theme/jquery-ui-1.8.23.custom.css" />
 	<stylesheet src="../hallo/hallo.css" />
 	<stylesheet src="../hallo/fontawesome/css/font-awesome.css" />

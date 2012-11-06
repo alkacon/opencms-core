@@ -63,7 +63,6 @@ public abstract class A_NativeWidgetFactory implements I_WidgetFactory {
                 throw 'Registry not available';
             }
         }
-
     }-*/;
 
     /**
