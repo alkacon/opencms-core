@@ -40,13 +40,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.core.client.ScriptInjector.FromUrl;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
@@ -680,30 +675,7 @@ public final class CmsDomUtil {
     public static void ensureJavaScriptIncluded(String javascriptLink) {
 
         if (!isJavaScriptPresent(javascriptLink)) {
-            ScriptInjector.fromUrl(javascriptLink).inject();
-        }
-    }
-
-    /**
-     * Ensures a script tag is present within the window document context.<p>
-     * 
-     * @param javascriptLink the link to the java script resource
-     * @param callback the callback to execute when the script is loaded
-     */
-    public static void ensureJavaScriptIncluded(String javascriptLink, final Callback<Void, Exception> callback) {
-
-        if (!isJavaScriptPresent(javascriptLink)) {
-            FromUrl injector = ScriptInjector.fromUrl(javascriptLink);
-            injector.setCallback(callback);
-            injector.inject();
-        } else {
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                public void execute() {
-
-                    callback.onSuccess(null);
-                }
-            });
+            injectScript(javascriptLink);
         }
     }
 
@@ -1779,6 +1751,19 @@ public final class CmsDomUtil {
         }
         return styleImpl;
     }
+
+    /**
+     * Injects a script tag into the page head.<p>
+     * 
+     * @param scriptLink the link to the javascript resource
+     */
+    private static native void injectScript(String scriptLink)/*-{
+        var headID = $wnd.document.getElementsByTagName("head")[0];
+        var scriptNode = $wnd.document.createElement('script');
+        scriptNode.type = 'text/javascript';
+        scriptNode.src = scriptLink;
+        headID.appendChild(scriptNode);
+    }-*/;
 
     /**
      * Internal method to indicate if the given element has a CSS class.<p>
