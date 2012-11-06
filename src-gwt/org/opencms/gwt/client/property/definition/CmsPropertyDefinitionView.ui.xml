@@ -1,0 +1,35 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field="m" type="org.opencms.gwt.client.property.definition.CmsPropertyDefinitionMessages" />
+	<ui:style>
+		.invisible {
+			display: none; 
+		}
+		
+		.scrollpanel {
+			max-height: 500px; 
+		}
+		
+		.fieldset {
+		    margin-top: 20px; 
+		}
+	
+	</ui:style>
+	<g:FlowPanel>
+		<g:Label text="{m.labelNewProperty}"></g:Label>
+		<input:CmsTextBox ui:field="m_propertyNameField"></input:CmsTextBox>
+		<cms:CmsFieldSet legend="{m.labelExistingProperties}" addStyleNames="{style.fieldset}">
+			<cms:CmsScrollPanel addStyleNames="{style.scrollpanel}">
+				<g:FlowPanel ui:field="m_existingProperties">
+				</g:FlowPanel>
+			</cms:CmsScrollPanel>
+		</cms:CmsFieldSet>
+		<g:FlowPanel addStyleNames="{style.invisible}">
+			<cms:CmsPushButton ui:field="m_okButton" useMinWidth="true" text="{m.ok}"></cms:CmsPushButton>
+			<cms:CmsPushButton ui:field="m_cancelButton" useMinWidth="true" text="{m.cancel}"></cms:CmsPushButton>
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 

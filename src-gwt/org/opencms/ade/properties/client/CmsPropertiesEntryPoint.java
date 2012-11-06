@@ -33,13 +33,23 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
+import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionDialog;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
@@ -51,13 +61,30 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
 
+    /** Flag which indicates that the property definition dialog needs to be opened. */
+    protected boolean m_needsPropertyDefinitionDialog;
+
+    /** The link to open after editing the properties / property definition is finished. */
+    protected String m_closeLink;
+
+    /**
+     * @see org.opencms.gwt.client.A_CmsEntryPoint#onModuleLoad()
+     */
+    @Override
+    public void onModuleLoad() {
+
+        super.onModuleLoad();
+        m_closeLink = CmsCoreProvider.getMetaElementContent(I_CmsAdePropertiesConstants.META_BACKLINK);
+        String resource = CmsCoreProvider.getMetaElementContent(I_CmsAdePropertiesConstants.META_RESOURCE);
+        editProperties(new CmsUUID(resource));
+    }
+
     /**
      * Starts the property editor for the resource with the given structure id.<p>
      * 
      * @param structureId the structure id of a resource
-     * @param closeLink the link which should be opened when the property dialog is closed 
      */
-    protected static void editProperties(final CmsUUID structureId, final String closeLink) {
+    protected void editProperties(final CmsUUID structureId) {
 
         CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
 
@@ -77,7 +104,26 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
                 editor.setReadOnly(result.isReadOnly());
                 editor.setShowResourceProperties(!handler.isFolder());
                 stop(false);
-                CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+                final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
+
+                I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
+                String style = I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarProperties();
+                CmsCoreData.UserInfo userInfo = CmsCoreProvider.get().getUserInfo();
+                if (userInfo.isDeveloper()) {
+                    CmsPushButton button = new CmsPushButton(style);
+                    button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+                    button.getElement().getStyle().setFloat(Style.Float.LEFT);
+                    dialog.addButton(button);
+                    button.addClickHandler(new ClickHandler() {
+
+                        public void onClick(ClickEvent event) {
+
+                            m_needsPropertyDefinitionDialog = true;
+                            dialog.hide();
+                            editPropertyDefinition();
+                        }
+                    });
+                }
                 CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
                 formHandler.setDialog(dialog);
                 I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
@@ -85,37 +131,87 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
                 editor.getForm().setFormHandler(formHandler);
                 editor.initializeWidgets(dialog);
                 dialog.centerHorizontally(50);
-                dialog.catchNotifications();
                 dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
                     public void onClose(CloseEvent<PopupPanel> event) {
 
-                        Timer timer = new Timer() {
-
-                            @Override
-                            public void run() {
-
-                                Window.Location.assign(closeLink);
-                            }
-                        };
-                        timer.schedule(300);
+                        onClosePropertyDialog();
                     }
+
                 });
+                dialog.catchNotifications();
             }
         };
         action.execute();
     }
 
     /**
-     * @see org.opencms.gwt.client.A_CmsEntryPoint#onModuleLoad()
+     * Opens the dialog for creating new property definitions.<p>
      */
-    @Override
-    public void onModuleLoad() {
+    protected void editPropertyDefinition() {
 
-        super.onModuleLoad();
-        String resource = CmsCoreProvider.getMetaElementContent(I_CmsAdePropertiesConstants.META_RESOURCE);
-        String closeLink = CmsCoreProvider.getMetaElementContent(I_CmsAdePropertiesConstants.META_BACKLINK);
-        editProperties(new CmsUUID(resource), closeLink);
+        CmsRpcAction<ArrayList<String>> action = new CmsRpcAction<ArrayList<String>>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                CmsCoreProvider.getVfsService().getDefinedProperties(this);
+            }
+
+            @Override
+            protected void onResponse(ArrayList<String> result) {
+
+                stop(false);
+                CmsPropertyDefinitionDialog dialog = new CmsPropertyDefinitionDialog(result);
+                dialog.center();
+                dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                    public void onClose(CloseEvent<PopupPanel> event) {
+
+                        onClosePropertyDefinitionDialog();
+                    }
+
+                });
+            }
+
+        };
+        action.execute();
+    }
+
+    /**
+     * This method is called after the property definition dialog is closed.<p>
+     */
+    protected void onClosePropertyDefinitionDialog() {
+
+        closeDelayed();
+    }
+
+    /**
+     * This method is called after the property dialog is closed.<p>
+     */
+    protected void onClosePropertyDialog() {
+
+        if (!m_needsPropertyDefinitionDialog) {
+            closeDelayed();
+        }
+    }
+
+    /**
+     * Returns to the close link after a short delay.<p>
+     */
+    private void closeDelayed() {
+
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                Window.Location.assign(m_closeLink);
+
+            }
+        };
+        timer.schedule(300);
     }
 
 }

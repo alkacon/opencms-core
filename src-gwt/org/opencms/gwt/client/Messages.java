@@ -615,6 +615,24 @@ public final class Messages {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.gwt.clientmessages";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROPERTY_EXISTS_0 = "ERR_PROPERTY_EXISTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_EXISTING_PROPERTIES_0 = "GUI_LABEL_EXISTING_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_NEW_PROPERTY_0 = "GUI_LABEL_NEW_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CAPTION_DEFINE_PROPERTY_0 = "GUI_CAPTION_DEFINE_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_EMPTY_PROPERTY_NAME_0 = "ERR_EMPTY_PROPERTY_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_PROPERTY_NAME_0 = "ERR_INVALID_PROPERTY_NAME_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

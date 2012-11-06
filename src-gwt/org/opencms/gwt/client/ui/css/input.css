@@ -25,7 +25,7 @@ input.textBox:focus{
 	height: 20px;
 }
 
-.textboxGhostMode {
+input.textboxGhostMode {
 	font-style: oblique;
 	color: value("constants.css.textColorDisabled") /*!important*/;
 }

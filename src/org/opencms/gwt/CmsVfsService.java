@@ -325,6 +325,20 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#createPropertyDefinition(java.lang.String)
+     */
+    public void createPropertyDefinition(String name) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            cms.createPropertyDefinition(name.trim());
+        } catch (Exception e) {
+            error(e);
+        }
+
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#deleteResource(org.opencms.util.CmsUUID)
      */
     public void deleteResource(CmsUUID structureId) throws CmsRpcException {
@@ -457,6 +471,25 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getDefinedProperties()
+     */
+    public ArrayList<String> getDefinedProperties() throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            List<CmsPropertyDefinition> definitions = cms.readAllPropertyDefinitions();
+            ArrayList<String> result = new ArrayList<String>();
+            for (CmsPropertyDefinition def : definitions) {
+                result.add(def.getName());
+            }
+            return result;
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
     }
 
     /**

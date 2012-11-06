@@ -43,6 +43,7 @@ import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +56,15 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @since 8.0.0
  */
 public interface I_CmsVfsServiceAsync {
+
+    /**
+     * Creates a property definition.<p>
+     * 
+     * @param propertyName the new property name 
+     * 
+     * @param callback the callback 
+     */
+    void createPropertyDefinition(String propertyName, AsyncCallback<Void> callback);
 
     /**
      * Deletes a resource from the VFS.<p>
@@ -128,6 +138,13 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback 
      */
     void getChildren(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
+
+    /**
+     * Gets the names of defined properties.<p>
+     * 
+     * @param callback the callback for the results 
+     */
+    void getDefinedProperties(AsyncCallback<ArrayList<String>> callback);
 
     /**
      * Returns the file replace info.<p>

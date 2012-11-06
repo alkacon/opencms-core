@@ -44,6 +44,7 @@ import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +56,15 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @since 8.0.0
  */
 public interface I_CmsVfsService extends RemoteService {
+
+    /**
+     * Creates a new property definition.<p>
+     * 
+     * @param propDef the name of the property
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void createPropertyDefinition(String propDef) throws CmsRpcException;
 
     /**
      * Deletes a resource from the VFS.<p>
@@ -148,6 +158,15 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     List<CmsVfsEntryBean> getChildren(String path) throws CmsRpcException;
+
+    /**
+     * Gets the names of defined properties.<p>
+     * 
+     * @return the list of names for all defined properties
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    ArrayList<String> getDefinedProperties() throws CmsRpcException;
 
     /**
      * Returns the file replace info.<p>

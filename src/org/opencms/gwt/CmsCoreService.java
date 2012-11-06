@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsCoreData.UserInfo;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
@@ -63,6 +64,7 @@ import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleManager;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -523,7 +525,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
         String defaultWorkplaceLink = CmsExplorer.getWorkplaceExplorerLink(cms, cms.getRequestContext().getSiteRoot());
         Map<String, String> gwtBuildIds = getBuildIds();
-
+        CmsRoleManager roleManager = OpenCms.getRoleManager();
+        boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
+        boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
+        UserInfo userInfo = new UserInfo(isAdmin, isDeveloper);
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
@@ -541,7 +546,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             isShowHelp,
             toolbarVisible,
             defaultWorkplaceLink,
-            gwtBuildIds);
+            gwtBuildIds,
+            userInfo);
         return data;
     }
 

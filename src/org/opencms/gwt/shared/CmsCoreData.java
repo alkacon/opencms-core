@@ -53,6 +53,61 @@ public class CmsCoreData implements IsSerializable {
         sitemap
     }
 
+    /**
+     * Bean class containing info about the current user.<p>
+     */
+    public static class UserInfo implements IsSerializable {
+
+        /** True if the user is a template developer. */
+        private boolean m_isDeveloper;
+
+        /** True if the user is an administrator. */
+        private boolean m_isAdmin;
+
+        /** 
+         * Creates a new instance.<p>
+         * 
+         * @param isAdmin true if the user is an administrator 
+         * @param isDeveloper true if the user is a template developer 
+         */
+        public UserInfo(boolean isAdmin, boolean isDeveloper) {
+
+            m_isDeveloper = isDeveloper;
+            m_isAdmin = isAdmin;
+        }
+
+        /**
+         * Default constructor, needed for serialization.<p>
+         */
+        protected UserInfo() {
+
+            // empty 
+        }
+
+        /**
+         * Returns true if the user is an administrator.<p>
+         * 
+         * @return true if the user is an administrator 
+         */
+        public boolean isAdmin() {
+
+            return m_isAdmin;
+        }
+
+        /**
+         * Returns true if the user is a template developer.<p>
+         * 
+         * @return true if the user is a template developer 
+         */
+        public boolean isDeveloper() {
+
+            return m_isDeveloper;
+        }
+    }
+
+    /** A bean with information about the current user. */
+    protected UserInfo m_userInfo;
+
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_gwt";
 
@@ -148,7 +203,8 @@ public class CmsCoreData implements IsSerializable {
             clone.isShowEditorHelp(),
             clone.isToolbarVisible(),
             clone.getDefaultWorkplaceLink(),
-            clone.getGwtBuildIds());
+            clone.getGwtBuildIds(),
+            clone.getUserInfo());
     }
 
     /**
@@ -171,6 +227,7 @@ public class CmsCoreData implements IsSerializable {
      * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
      * @param defaultWorkplaceLink the default link to use for opening the workplace  
      * @param gwtBuildIds the map of GWT build ids 
+     * @param userInfo information about the current user 
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -189,7 +246,8 @@ public class CmsCoreData implements IsSerializable {
         boolean isShowEditorHelp,
         boolean toolbarVisible,
         String defaultWorkplaceLink,
-        Map<String, String> gwtBuildIds) {
+        Map<String, String> gwtBuildIds,
+        UserInfo userInfo) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -208,6 +266,7 @@ public class CmsCoreData implements IsSerializable {
         m_structureId = structureId;
         m_defaultWorkplaceLink = defaultWorkplaceLink;
         m_gwtBuildIds = gwtBuildIds;
+        m_userInfo = userInfo;
     }
 
     /**
@@ -338,6 +397,16 @@ public class CmsCoreData implements IsSerializable {
     public String getUri() {
 
         return m_uri;
+    }
+
+    /**
+     * Gets the information about the current user.<p>
+     * 
+     * @return the information about the current user 
+     */
+    public UserInfo getUserInfo() {
+
+        return m_userInfo;
     }
 
     /**
