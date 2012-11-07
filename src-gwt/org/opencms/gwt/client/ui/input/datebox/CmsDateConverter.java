@@ -48,20 +48,20 @@ public final class CmsDateConverter {
     /** The part of the 12 hour presentation which signals the am pm. */
     private static final String AMPM_PATTERN_PART = "aa";
 
+    /** A pattern for date representation. */
+    private static final String DATE_PATTERN = Messages.get().key(Messages.GUI_DATEBOX_DATE_PATTERN_0);
+
     /** A pattern for date time representation. */
     private static final String DATETIME_PATTERN = Messages.get().key(Messages.GUI_DATEBOX_DATETIME_PATTERN_0);
 
-    /** A pattern for date representation. */
-    private static final String DATE_PATTERN = "MM/dd/yyyy";
-
-    /** A pattern for date time representation in 12 hour presentation. */
+    /** A pattern for time representation. */
     private static final String TIME_PATTERN = Messages.get().key(Messages.GUI_DATEBOX_TIME_PATTERN_0);
-
-    /** The formatter for the date time format. */
-    private static final DateTimeFormat Z_DATETIME_FORMAT = DateTimeFormat.getFormat(DATETIME_PATTERN);
 
     /** The formatter for the date format. */
     private static final DateTimeFormat Z_DATE_FORMAT = DateTimeFormat.getFormat(DATE_PATTERN);
+
+    /** The formatter for the date time format. */
+    private static final DateTimeFormat Z_DATETIME_FORMAT = DateTimeFormat.getFormat(DATETIME_PATTERN);
 
     /** The formatter for the time format. */
     private static final DateTimeFormat Z_TIME_FORMAT = DateTimeFormat.getFormat(TIME_PATTERN);
@@ -98,13 +98,13 @@ public final class CmsDateConverter {
     }
 
     /**
-     * Formats the provided date. Note, a null date is a possible input.
+     * Formats the provided date to a date only representation.<p>
      * 
      * @param date the date to format
      * 
      * @return the formatted date as a string
      */
-    public static String DatetoString(final Date date) {
+    public static String dateToString(final Date date) {
 
         String result;
         if (date == null) {
@@ -221,9 +221,6 @@ public final class CmsDateConverter {
         Date date = null;
         if (dateText.length() > 0) {
             date = Z_DATE_FORMAT.parse(dateText.trim());
-            if (!validateDate(date)) {
-                throw new IllegalArgumentException();
-            }
         }
         return date;
     }

@@ -103,6 +103,9 @@ public final class Messages {
     public static final String GUI_DATE_PM_0 = "GUI_DATE_PM_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATEBOX_DATE_PATTERN_0 = "GUI_DATEBOX_DATE_PATTERN_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DATEBOX_DATETIME_PATTERN_0 = "GUI_DATEBOX_DATETIME_PATTERN_0";
 
     /** Message constant for key in the resource bundle. */
