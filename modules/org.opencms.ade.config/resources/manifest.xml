@@ -308,7 +308,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0"
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
-						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp"
+						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
@@ -473,7 +473,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0"
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
-						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp"
+						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_GO_TO_PARENT_0"
 							name="org.opencms.ade.sitemap.client.toolbar.CmsGoToParentAction"
