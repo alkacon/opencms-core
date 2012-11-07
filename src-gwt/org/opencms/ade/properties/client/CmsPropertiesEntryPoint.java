@@ -34,10 +34,11 @@ import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionDialog;
+import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionMessages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
@@ -98,6 +99,7 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
             @Override
             protected void onResponse(CmsPropertiesBean result) {
 
+                I_CmsLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
                 CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(null);
                 handler.setPropertiesBean(result);
                 CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
@@ -106,11 +108,11 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
                 stop(false);
                 final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
 
-                I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
-                String style = I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarProperties();
                 CmsCoreData.UserInfo userInfo = CmsCoreProvider.get().getUserInfo();
                 if (userInfo.isDeveloper()) {
+                    String style = I_CmsLayoutBundle.INSTANCE.propertiesCss().propertyDefinitionButton();
                     CmsPushButton button = new CmsPushButton(style);
+                    button.setTitle(CmsPropertyDefinitionMessages.messageDialogCaption());
                     button.setButtonStyle(ButtonStyle.TRANSPARENT, null);
                     button.getElement().getStyle().setFloat(Style.Float.LEFT);
                     dialog.addButton(button);

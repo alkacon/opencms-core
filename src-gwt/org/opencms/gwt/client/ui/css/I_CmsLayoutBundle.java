@@ -2136,6 +2136,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method.<p>
      * 
+     * @return the bundle for the big icons
+     */
+    I_CmsBigIconBundle bigIcons();
+
+    /**
+     * Access method.<p>
+     * 
      * @return the image bundle for the borders
      */
     I_CmsBorderImageBundle borders();

@@ -14,3 +14,13 @@
 	padding-left: 6px;
 	padding-top: 4px;
 }
+
+@external .cmsState-up-hovering; 
+
+@sprite .propertyDefinitionButton {
+	gwt-image: "bigIcons.invPropertyBigIconDeactivated";
+}
+
+@sprite .cmsState-up-hovering .propertyDefinitionButton {
+	gwt-image: "bigIcons.invPropertyBigIconActive";
+}

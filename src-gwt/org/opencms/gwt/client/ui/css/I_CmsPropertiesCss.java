@@ -44,6 +44,12 @@ public interface I_CmsPropertiesCss extends CssResource {
      * 
      * @return the CSS class name
      */
+    String propertyDefinitionButton();
+
+    /** Access method.<p>
+     * 
+     * @return the CSS class name
+     */
     String vfsModeSimplePropertiesBox();
 
 }
