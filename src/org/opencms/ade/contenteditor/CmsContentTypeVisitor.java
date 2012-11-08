@@ -65,6 +65,9 @@ public class CmsContentTypeVisitor {
     /** The attribute configurations. */
     private Map<String, AttributeConfiguration> m_attributeConfigurations;
 
+    /** The CMS context used for this visitor. */
+    private CmsObject m_cms;
+
     /** The content handler. */
     private I_CmsXmlContentHandler m_contentHandler;
 
@@ -77,6 +80,9 @@ public class CmsContentTypeVisitor {
     /** The messages. */
     private CmsMultiMessages m_messages;
 
+    /** Set of class names of non-ADE widgets which have been discovered. */
+    private Set<String> m_nonAdeWidgets = new HashSet<String>();
+
     /** The registered types. */
     private Map<String, I_Type> m_registeredTypes;
 
@@ -85,12 +91,6 @@ public class CmsContentTypeVisitor {
 
     /** The widget configurations. */
     private Map<String, CmsExternalWidgetConfiguration> m_widgetConfigurations;
-
-    /** The CMS context used for this visitor. */
-    private CmsObject m_cms;
-
-    /** Set of class names of non-ADE widgets which have been discovered. */
-    private Set<String> m_nonAdeWidgets = new HashSet<String>();
 
     /**
      * Constructor.<p>
@@ -154,6 +154,19 @@ public class CmsContentTypeVisitor {
      */
     public void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale messageLocale) {
 
+        visitTypes(xmlContentDefinition, messageLocale, false);
+    }
+
+    /**
+     * Visits all types within the XML content definition.<p>
+     * 
+     * @param xmlContentDefinition the content definition
+     * @param messageLocale the locale
+     * @param checkWidgetsOnly if <code>true</code> the availability of new editor widgets will be checked only, 
+     *        in this case widget configuration will NOT be read
+     */
+    public void visitTypes(CmsXmlContentDefinition xmlContentDefinition, Locale messageLocale, boolean checkWidgetsOnly) {
+
         m_contentHandler = xmlContentDefinition.getContentHandler();
         CmsMessages messages = null;
         m_messages = new CmsMultiMessages(messageLocale);
@@ -169,7 +182,7 @@ public class CmsContentTypeVisitor {
         m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
         m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
         m_registeredTypes = new HashMap<String, I_Type>();
-        readTypes(xmlContentDefinition, "");
+        readTypes(xmlContentDefinition, "", checkWidgetsOnly);
         m_tabInfos = collectTabInfos(xmlContentDefinition);
     }
 
@@ -277,10 +290,14 @@ public class CmsContentTypeVisitor {
      * 
      * @param schemaType the schema type
      * @param path the attribute path
+     * @param checkWidgetsOnly checks the availability of new editor widgets only
      * 
      * @return the attribute configuration
      */
-    private AttributeConfiguration readConfiguration(A_CmsXmlContentValue schemaType, String path) {
+    private AttributeConfiguration readConfiguration(
+        A_CmsXmlContentValue schemaType,
+        String path,
+        boolean checkWidgetsOnly) {
 
         AttributeConfiguration result = null;
         String widgetName = null;
@@ -290,18 +307,19 @@ public class CmsContentTypeVisitor {
 
             I_CmsWidget widget = schemaType.getContentDefinition().getContentHandler().getWidget(schemaType);
             widgetName = widget.getClass().getName();
-            widgetConfig = widget.getConfiguration();
             if (widget instanceof I_CmsADEWidget) {
-                I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
-                widgetName = adeWidget.getWidgetName();
-                widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
-                if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
-                    CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
-                        widgetName,
-                        adeWidget.getInitCall(),
-                        adeWidget.getJavaScriptResourceLinks(cms),
-                        adeWidget.getCssResourceLinks(cms));
-                    m_widgetConfigurations.put(widgetName, externalConfiguration);
+                if (!checkWidgetsOnly) {
+                    I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
+                    widgetName = adeWidget.getWidgetName();
+                    widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
+                    if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
+                        CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
+                            widgetName,
+                            adeWidget.getInitCall(),
+                            adeWidget.getJavaScriptResourceLinks(cms),
+                            adeWidget.getCssResourceLinks(cms));
+                        m_widgetConfigurations.put(widgetName, externalConfiguration);
+                    }
                 }
             } else {
                 m_nonAdeWidgets.add(widget.getClass().getName());
@@ -338,8 +356,9 @@ public class CmsContentTypeVisitor {
      * 
      * @param xmlContentDefinition the XML content definition
      * @param path the element path
+     * @param checkWidgetsOnly checks the availability of new editor widgets only
      */
-    private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
+    private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path, boolean checkWidgetsOnly) {
 
         String typeName = CmsContentService.getTypeUri(xmlContentDefinition);
         if (m_registeredTypes.containsKey(typeName)) {
@@ -363,7 +382,10 @@ public class CmsContentTypeVisitor {
             String subTypeName = null;
             String childPath = path + "/" + subType.getName();
             String subAttributeName = CmsContentService.getAttributeName(subType.getName(), typeName);
-            AttributeConfiguration config = readConfiguration((A_CmsXmlContentValue)subType, childPath);
+            AttributeConfiguration config = readConfiguration(
+                (A_CmsXmlContentValue)subType,
+                childPath,
+                checkWidgetsOnly);
             if (config != null) {
                 m_attributeConfigurations.put(subAttributeName, config);
             }
@@ -375,7 +397,7 @@ public class CmsContentTypeVisitor {
             } else {
                 CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
                 subTypeName = CmsContentService.getTypeUri(subTypeDefinition);
-                readTypes(subTypeDefinition, childPath);
+                readTypes(subTypeDefinition, childPath, checkWidgetsOnly);
             }
             type.addAttribute(subAttributeName, subTypeName, subType.getMinOccurs(), subType.getMaxOccurs());
         }

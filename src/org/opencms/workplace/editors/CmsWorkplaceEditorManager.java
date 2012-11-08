@@ -159,7 +159,7 @@ public class CmsWorkplaceEditorManager {
         CmsFile file = (resource instanceof CmsFile) ? (CmsFile)resource : cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
-        visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH);
+        visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH, true);
         if (visitor.hasNonAdeWidgets()) {
             for (String nonAdeWidget : visitor.getNonAdeWidgets()) {
                 LOG.warn("Non-ADE-compatible widget: " + nonAdeWidget);
