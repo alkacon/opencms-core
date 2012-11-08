@@ -62,6 +62,31 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
 
+    /**
+     * Property editor handler for the standalone dialog.<p>
+     */
+    static class PropertyEditorHandler extends CmsSimplePropertyEditorHandler {
+
+        /**
+         * Default constructor.<p> 
+         */
+        public PropertyEditorHandler() {
+
+            super(null);
+        }
+
+        /**
+         * Override: Always return false, since we want to be free to choose any JSP.
+         * 
+         * @see org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler#useAdeTemplates()
+         */
+        @Override
+        public boolean useAdeTemplates() {
+
+            return false;
+        }
+    }
+
     /** Flag which indicates that the property definition dialog needs to be opened. */
     protected boolean m_needsPropertyDefinitionDialog;
 
@@ -100,7 +125,7 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
             protected void onResponse(CmsPropertiesBean result) {
 
                 I_CmsLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
-                CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(null);
+                CmsSimplePropertyEditorHandler handler = new PropertyEditorHandler();
                 handler.setPropertiesBean(result);
                 CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
                 editor.setReadOnly(result.isReadOnly());
