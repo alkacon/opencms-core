@@ -1493,7 +1493,7 @@ public final class CmsDomUtil {
             if (child == element) {
                 indexCorrection = 1;
             }
-            String positioning = child.getStyle().getPosition();
+            String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
             if (Position.ABSOLUTE.getCssName().equals(positioning) || Position.FIXED.getCssName().equals(positioning)) {
                 // only not 'position:absolute' elements into account, 
                 // not visible children will be excluded in the next condition
