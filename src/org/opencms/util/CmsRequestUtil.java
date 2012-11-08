@@ -499,6 +499,19 @@ public final class CmsRequestUtil {
     public static String getCookieValue(CmsJspActionElement jsp, String name) {
 
         Cookie[] cookies = jsp.getRequest().getCookies();
+        return getCookieValue(cookies, name);
+    }
+
+    /**
+     * Gets the value of a specific cookie from an array of cookies.<p>
+     * 
+     * @param cookies the cookie array 
+     * @param name the name of the cookie we want 
+     * 
+     * @return the cookie value, or null if cookie with the given name wasn't found 
+     */
+    public static String getCookieValue(Cookie[] cookies, String name) {
+
         for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
             if (name.equalsIgnoreCase(cookies[i].getName())) {
                 return cookies[i].getValue();

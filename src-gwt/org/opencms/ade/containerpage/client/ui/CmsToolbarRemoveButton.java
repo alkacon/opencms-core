@@ -66,6 +66,6 @@ public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
     @Override
     public void onElementClick(ClickEvent event, CmsContainerPageElementPanel element) {
 
-        getHandler().removeElement(element);
+        getHandler().removeElement(element, true);
     }
 }

@@ -64,6 +64,12 @@ public final class Messages extends A_CmsMessageBundle {
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SETTING_TEMPLATE_CONTEXTS_NAME_0 = "GUI_SETTING_TEMPLATE_CONTEXTS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SETTING_TEMPLATE_CONTEXTS_DESCRIPTION_0 = "GUI_SETTING_TEMPLATE_CONTEXTS_DESCRIPTION_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -82,6 +83,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** The template context information. */
+    private CmsTemplateContextInfo m_templateContextInfo;
+
     /**
      * Constructor.<p>
      * 
@@ -96,6 +100,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param lockInfo lock information, if the page is locked by another user
      * @param locale the content locale
      * @param useClassicEditor <code>true</code> to use the classic XmlContent editor
+     * @param contextInfo the template context information 
      */
     public CmsCntPageData(
         String cntPageUri,
@@ -108,7 +113,8 @@ public final class CmsCntPageData implements IsSerializable {
         long lastModified,
         String lockInfo,
         String locale,
-        boolean useClassicEditor) {
+        boolean useClassicEditor,
+        CmsTemplateContextInfo contextInfo) {
 
         m_cntPageUri = cntPageUri;
         m_noEditReason = noEditReason;
@@ -121,6 +127,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_locale = locale;
         m_detailId = detailId;
         m_useClassicEditor = useClassicEditor;
+        m_templateContextInfo = contextInfo;
     }
 
     /**
@@ -249,6 +256,16 @@ public final class CmsCntPageData implements IsSerializable {
     public String getSitePath() {
 
         return m_sitePath;
+    }
+
+    /**
+     * Gets the template context information.<p>
+     * 
+     * @return the template context information 
+     */
+    public CmsTemplateContextInfo getTemplateContextInfo() {
+
+        return m_templateContextInfo;
     }
 
     /**

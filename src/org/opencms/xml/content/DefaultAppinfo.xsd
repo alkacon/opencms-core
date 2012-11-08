@@ -22,6 +22,7 @@
 			<xsd:element name="formatters" type="OpenCmsDefaultAppinfoFormatters" minOccurs="0" />
 			<xsd:element name="headincludes" type="OpenCmsDefaultAppinfoHeadIncludes" minOccurs="0" />
 			<xsd:element name="settings" type="OpenCmsDefaultAppinfoSettings" minOccurs="0" />
+			<xsd:element name="forbidden-contexts" type="xsd:string" minOccurs="0" maxOccurs="1" />
 		</xsd:all>
 	</xsd:complexType>
 	

@@ -59,6 +59,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
@@ -553,6 +554,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         HttpServletRequest request = getRequest();
         try {
+            CmsTemplateContextInfo info = OpenCms.getTemplateContextManager().getContextInfoBean(cms, request);
+
             CmsResource containerPage = getContainerpage(cms);
             long lastModified = containerPage.getDateLastModified();
             String cntPageUri = cms.getSitePath(containerPage);
@@ -573,7 +576,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 lastModified,
                 getLockInfo(containerPage),
                 cms.getRequestContext().getLocale().toString(),
-                useClassicEditor);
+                useClassicEditor,
+                info);
         } catch (Throwable e) {
             error(e);
         }
@@ -751,7 +755,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (settings != null) {
                 for (Map.Entry<String, String> entry : settings.entrySet()) {
                     String settingName = entry.getKey();
-                    String settingType = settingsConf.get(settingName).getType();
+                    String settingType = "string";
+                    if (settingsConf.get(settingName) != null) {
+                        settingType = settingsConf.get(settingName).getType();
+                    }
                     changedSettings.put(
                         settingName,
                         CmsXmlContentPropertyHelper.getPropValueIds(getCmsObject(), settingType, entry.getValue()));

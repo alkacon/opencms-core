@@ -101,6 +101,26 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
     }
 
     /**
+     * Gets the editor instance.<p>
+     * 
+     * @return the editor instance
+     */
+    public static CmsGroupContainerEditor getInstance() {
+
+        return INSTANCE;
+    }
+
+    /** 
+     * Returns true if the editor is active.<p>
+     * 
+     * @return true if the editor is active 
+     */
+    public static boolean isActive() {
+
+        return INSTANCE != null;
+    }
+
+    /**
      * Opens the group container editor.<p>
      * 
      * @param groupContainer the group container
@@ -211,7 +231,7 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
                 CmsDebugLog.getInstance().printLine(e.getMessage());
             }
         }
-        getController().addToRecentList(m_groupContainerBean.getClientId());
+        getController().addToRecentList(m_groupContainerBean.getClientId(), null);
         closeDialog(true);
         getController().setPageChanged();
     }

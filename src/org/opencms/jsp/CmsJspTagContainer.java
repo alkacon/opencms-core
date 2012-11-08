@@ -38,11 +38,15 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.loader.CmsLoaderException;
+import org.opencms.loader.CmsTemplateContext;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
@@ -66,6 +70,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -111,6 +116,9 @@ public class CmsJspTagContainer extends TagSupport {
 
     /** The default tag name constant. */
     private static final String DEFAULT_TAG_NAME = "div";
+
+    /** HTML used for invisible dummy elements. */
+    public static final String DUMMY_ELEMENT = "<div style='display: none !important;'></div>";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagContainer.class);
@@ -336,14 +344,18 @@ public class CmsJspTagContainer extends TagSupport {
                     // iterate over elements to render
                     for (int i = 0; (i < maxElements) && (i < allElements.size()); i++) {
                         try {
-                            renderContainerElement(cms, standardContext, allElements.get(i), locale);
+                            renderContainerElement(
+                                (HttpServletRequest)req,
+                                cms,
+                                standardContext,
+                                allElements.get(i),
+                                locale);
                         } catch (Exception e) {
                             if (LOG.isErrorEnabled()) {
                                 LOG.error(e.getLocalizedMessage(), e);
                             }
                         }
                     }
-
                     // close tag for container
                     if (createTag) {
                         pageContext.getOut().print(getTagClose(tagName));
@@ -812,6 +824,7 @@ public class CmsJspTagContainer extends TagSupport {
     /**
      * Renders a container element.<p>
      * 
+     * @param request the current request 
      * @param cms the CMS context 
      * @param standardContext the current standard contxt bean
      * @param element the container element to render
@@ -820,16 +833,23 @@ public class CmsJspTagContainer extends TagSupport {
      * @throws Exception if something goes wrong 
      */
     private void renderContainerElement(
+        HttpServletRequest request,
         CmsObject cms,
         CmsJspStandardContextBean standardContext,
         CmsContainerElementBean element,
         Locale locale) throws Exception {
 
+        CmsTemplateContext context = (CmsTemplateContext)(request.getAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));
+        boolean showInContext = shouldShowInContext(element, context);
+        boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
+
+        if (isOnline && !showInContext) {
+            return;
+        }
         ServletRequest req = pageContext.getRequest();
         ServletResponse res = pageContext.getResponse();
         String containerType = getType();
         int containerWidth = getContainerWidth();
-        boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         element.initResource(cms);
         // writing elements to the session cache to improve performance of the container-page editor in offline project
         if (!isOnline) {
@@ -851,8 +871,13 @@ public class CmsJspTagContainer extends TagSupport {
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
             printElementWrapperTagStart(isOnline, cms, element, true);
             for (CmsContainerElementBean subelement : subElements) {
+
                 try {
                     subelement.initResource(cms);
+                    boolean shouldShowSubElementInContext = shouldShowInContext(subelement, context);
+                    if (isOnline && !shouldShowSubElementInContext) {
+                        continue;
+                    }
                     // writing elements to the session cache to improve performance of the container-page editor
                     if (!isOnline) {
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
@@ -863,6 +888,7 @@ public class CmsJspTagContainer extends TagSupport {
                     CmsFormatterBean subelementFormatter = subelementFormatters.getFormatter(
                         containerType,
                         containerWidth);
+
                     if (subelementFormatter == null) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(new CmsIllegalStateException(Messages.get().container(
@@ -879,17 +905,21 @@ public class CmsJspTagContainer extends TagSupport {
                     printElementWrapperTagStart(isOnline, cms, subelement, false);
                     standardContext.setElement(subelement);
                     try {
-                        CmsJspTagInclude.includeTagAction(
-                            pageContext,
-                            subelementFormatter.getJspRootPath(),
-                            null,
-                            locale,
-                            false,
-                            isOnline,
-                            null,
-                            CmsRequestUtil.getAtrributeMap(req),
-                            req,
-                            res);
+                        if (shouldShowSubElementInContext) {
+                            CmsJspTagInclude.includeTagAction(
+                                pageContext,
+                                subelementFormatter.getJspRootPath(),
+                                null,
+                                locale,
+                                false,
+                                isOnline,
+                                null,
+                                CmsRequestUtil.getAtrributeMap(req),
+                                req,
+                                res);
+                        } else {
+                            pageContext.getOut().print(DUMMY_ELEMENT);
+                        }
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(
@@ -939,18 +969,23 @@ public class CmsJspTagContainer extends TagSupport {
             printElementWrapperTagStart(isOnline, cms, element, false);
             standardContext.setElement(element);
             try {
-                // execute the formatter jsp for the given element uri
-                CmsJspTagInclude.includeTagAction(
-                    pageContext,
-                    formatter,
-                    null,
-                    locale,
-                    false,
-                    isOnline,
-                    null,
-                    CmsRequestUtil.getAtrributeMap(req),
-                    req,
-                    res);
+                if (!showInContext && !isOnline) {
+                    // write invisible dummy element 
+                    pageContext.getOut().print(DUMMY_ELEMENT);
+                } else {
+                    // execute the formatter jsp for the given element uri
+                    CmsJspTagInclude.includeTagAction(
+                        pageContext,
+                        formatter,
+                        null,
+                        locale,
+                        false,
+                        isOnline,
+                        null,
+                        CmsRequestUtil.getAtrributeMap(req),
+                        req,
+                        res);
+                }
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(
@@ -964,5 +999,46 @@ public class CmsJspTagContainer extends TagSupport {
             }
             printElementWrapperTagEnd(isOnline, false);
         }
+    }
+
+    /**
+     * Helper method to determine whether an element should be shown in a context.<p>
+     * 
+     * @param element the element for which the visibility should be determined 
+     * @param context the context for which to check 
+     * 
+     * @return true if the current context doesn't prohibit the element from being shown 
+     */
+    private boolean shouldShowInContext(CmsContainerElementBean element, CmsTemplateContext context) {
+
+        if (context == null) {
+            return true;
+        }
+
+        Map<String, String> settings = element.getSettings();
+        String contextsAllowed = settings.get(CmsTemplateContextInfo.SETTING);
+        try {
+            if ((element.getResource() != null)
+                && !OpenCms.getTemplateContextManager().shouldShowType(
+                    context,
+                    OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getTypeName())) {
+                return false;
+            }
+        } catch (CmsLoaderException e) {
+            // ignore and log
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        if (contextsAllowed == null) {
+            return true;
+        }
+        if (contextsAllowed.equals(CmsTemplateContextInfo.EMPTY_VALUE)) {
+            return false;
+        }
+
+        List<String> contextsAllowedList = CmsStringUtil.splitAsList(contextsAllowed, "|");
+        if (!contextsAllowedList.contains(context.getKey())) {
+            return false;
+        }
+        return true;
     }
 }

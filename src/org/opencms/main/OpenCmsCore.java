@@ -66,6 +66,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.jsp.util.CmsErrorBean;
 import org.opencms.loader.CmsResourceManager;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.lock.CmsLockManager;
@@ -161,6 +162,9 @@ public final class OpenCmsCore {
 
     /** The ADE manager instance. */
     private CmsADEManager m_adeManager;
+
+    /** The template context manager. */
+    private CmsTemplateContextManager m_templateContextManager;
 
     /** The manager for page aliases. */
     private CmsAliasManager m_aliasManager;
@@ -755,6 +759,17 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Gets the template context manager instance.<p>
+     * 
+     * @return the template context manager instance 
+     */
+    protected CmsTemplateContextManager getTemplateContextManager() {
+
+        return m_templateContextManager;
+
+    }
+
+    /**
      * Returns the OpenCms Thread store.<p>
      * 
      * @return the OpenCms Thread store
@@ -1270,7 +1285,7 @@ public final class OpenCmsCore {
             CmsFormatterConfiguration.initialize(adminCms);
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
-
+            m_templateContextManager = new CmsTemplateContextManager(adminCms);
             m_workflowManager = systemConfiguration.getWorkflowManager();
             if (m_workflowManager == null) {
                 m_workflowManager = new CmsDefaultWorkflowManager();

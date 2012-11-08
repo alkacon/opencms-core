@@ -38,6 +38,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeUnknownFile;
 import org.opencms.file.types.CmsResourceTypeUnknownFolder;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -54,6 +55,8 @@ import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -633,6 +636,34 @@ public class CmsResourceManager {
     }
 
     /**
+     * Gets the map of forbidden contexts for resource types.<p>
+     * 
+     * @param cms the current CMS context 
+     * @return the map from resource types to the forbidden contexts 
+     * 
+     * @throws CmsXmlException if something goes wrong 
+     */
+    public Map<String, List<String>> getForbiddenContextMap(CmsObject cms) throws CmsXmlException {
+
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        for (I_CmsResourceType resType : getResourceTypes()) {
+            if (resType instanceof CmsResourceTypeXmlContent) {
+                String schema = ((CmsResourceTypeXmlContent)resType).getSchema();
+                if (schema != null) {
+                    CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+                    List<String> forbiddenContexts = contentDefinition.getContentHandler().getForbiddenContexts();
+                    if ((forbiddenContexts != null) && !forbiddenContexts.isEmpty()) {
+                        result.put(resType.getTypeName(), new ArrayList<String>(forbiddenContexts));
+                    }
+                } else {
+                    LOG.info("No schema for XML type " + resType.getTypeName() + " / " + resType.getClass().getName());
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the matching HTML converter class name for the specified option name.<p>
      * 
      * @param name the name of the option that should trigger the HTML converter class
@@ -911,7 +942,27 @@ public class CmsResourceManager {
     public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource, String templateProperty)
     throws CmsException {
 
+        return getTemplateLoaderFacade(cms, null, resource, templateProperty);
+    }
+
+    /**
+     * Returns a template loader facade for the given file.<p>
+     * @param cms the current OpenCms user context
+     * @param request the current request
+     * @param resource the requested file
+     * @param templateProperty the property to read for the template
+     * 
+     * @return a resource loader facade for the given file
+     * @throws CmsException if something goes wrong
+     */
+    public CmsTemplateLoaderFacade getTemplateLoaderFacade(
+        CmsObject cms,
+        HttpServletRequest request,
+        CmsResource resource,
+        String templateProperty) throws CmsException {
+
         String templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();
+        CmsTemplateContext templateContext = null;
         if (templateProp == null) {
 
             // use default template, if template is not set
@@ -924,16 +975,30 @@ public class CmsResourceManager {
                     templateProperty,
                     cms.getSitePath(resource)));
             }
-        } else if (!cms.existsResource(templateProp, CmsResourceFilter.IGNORE_EXPIRATION)) {
 
-            // use default template, if template does not exist
-            if (cms.existsResource(DEFAULT_TEMPLATE, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                templateProp = DEFAULT_TEMPLATE;
+        } else {
+            if ((request != null) && templateProp.startsWith(CmsTemplateContextManager.DYNAMIC_TEMPLATE_PREFIX)) {
+                templateContext = OpenCms.getTemplateContextManager().getTemplateContext(
+                    templateProp,
+                    cms,
+                    request,
+                    resource);
+                if (templateContext != null) {
+                    templateProp = templateContext.getTemplatePath();
+                }
+            }
+            if (!cms.existsResource(templateProp, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                // use default template, if template does not exist
+                if (cms.existsResource(DEFAULT_TEMPLATE, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    templateProp = DEFAULT_TEMPLATE;
+                }
             }
         }
-
         CmsResource template = cms.readFile(templateProp, CmsResourceFilter.IGNORE_EXPIRATION);
-        return new CmsTemplateLoaderFacade(getLoader(template), resource, template);
+        CmsTemplateLoaderFacade result = new CmsTemplateLoaderFacade(getLoader(template), resource, template);
+        result.setTemplateContext(templateContext);
+        return result;
+
     }
 
     /**
@@ -1348,4 +1413,5 @@ public class CmsResourceManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_RESOURCE_TYPE_INITIALIZED_0));
         }
     }
+
 }

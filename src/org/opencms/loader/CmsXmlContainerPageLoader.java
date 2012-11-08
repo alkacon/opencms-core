@@ -101,8 +101,11 @@ public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
 
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
+            req,
             resource,
             getTemplatePropertyDefinition());
+        CmsTemplateContext context = loaderFacade.getTemplateContext();
+        req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 

@@ -149,6 +149,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
 
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
+            req,
             resource,
             getTemplatePropertyDefinition());
         return loaderFacade.getLoader().export(cms, loaderFacade.getLoaderStartResource(), req, res);
@@ -219,6 +220,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
 
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
+            req,
             resource,
             getTemplatePropertyDefinition());
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);

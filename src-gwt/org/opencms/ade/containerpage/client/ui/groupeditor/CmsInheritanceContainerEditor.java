@@ -86,8 +86,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /** A flag which indicates whether the inheritance configuration needs to be updated. */
     private boolean m_changedInheritanceInfo;
-   
-    /** Flag which indicates whether the settings of an inheritance group element have been edited. */ 
+
+    /** Flag which indicates whether the settings of an inheritance group element have been edited. */
     private boolean m_editedSettings;
 
     /** The description input. */
@@ -196,7 +196,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     public void removeElement(CmsContainerPageElementPanel elementWidget) {
 
         if (elementWidget.getInheritanceInfo().isNew()) {
-            getHandler().removeElement(elementWidget);
+            getHandler().removeElement(elementWidget, true);
         } else {
             elementWidget.getInheritanceInfo().setVisible(false);
             elementWidget.addStyleName(HIDDEN_ELEMENT_CLASS);
@@ -332,7 +332,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                 CmsDebugLog.getInstance().printLine(e.getMessage());
             }
         }
-        getController().addToRecentList(getGroupContainerWidget().getId());
+        getController().addToRecentList(getGroupContainerWidget().getId(), null);
         closeDialog(true);
         getController().setPageChanged();
     }

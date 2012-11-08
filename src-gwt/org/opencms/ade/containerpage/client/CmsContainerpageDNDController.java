@@ -299,7 +299,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     } else {
                         CmsContainerElementData elementData = m_controller.getCachedElement(draggable.getId());
                         containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
-                        m_controller.addToRecentList(draggable.getId());
+                        m_controller.addToRecentList(draggable.getId(), null);
                     }
                     handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
                     if (container.getPlaceholderIndex() >= container.getWidgetCount()) {
@@ -334,7 +334,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             } else {
                 container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
             }
-            m_controller.addToRecentList(draggable.getId());
+            m_controller.addToRecentList(draggable.getId(), null);
             // changes are only relevant to the container page if not group-container editing
             changedContainerpage = !m_controller.isGroupcontainerEditing();
         } else if (draggable instanceof CmsContainerPageElementPanel) {

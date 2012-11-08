@@ -1184,7 +1184,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                                 } else {
                                     mode = itemRule.getVisibility(getCmsObject(), resUtil);
                                 }
-
                             }
                         }
                     }

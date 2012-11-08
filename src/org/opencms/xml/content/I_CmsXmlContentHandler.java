@@ -152,6 +152,13 @@ public interface I_CmsXmlContentHandler {
     String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale);
 
     /**
+     * Gets the list of forbidden template context names.<p>
+     * 
+     * @return the list of forbidden template context names
+     */
+    List<String> getForbiddenContexts();
+
+    /**
      * Returns the container page element formatter configuration for a given resource.<p>
      * 
      * @param cms the current users OpenCms context, used for selecting the right project

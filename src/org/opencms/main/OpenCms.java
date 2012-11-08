@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
+import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.publish.CmsPublishManager;
@@ -510,6 +511,16 @@ public final class OpenCms {
     public static List<CmsRole> getSystemRoles() {
 
         return CmsRole.getSystemRoles();
+    }
+
+    /**
+     * Gets the template context manager.<p>
+     * 
+     * @return the template context manager instance 
+     */
+    public static CmsTemplateContextManager getTemplateContextManager() {
+
+        return OpenCmsCore.getInstance().getTemplateContextManager();
     }
 
     /**

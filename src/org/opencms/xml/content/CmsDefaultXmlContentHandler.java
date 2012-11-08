@@ -126,6 +126,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "collapse" appinfo attribute name. */
     public static final String APPINFO_ATTR_COLLAPSE = "collapse";
 
+    /** Constant for the "forbidden-contexts" appinfo attribute name. */
+    public static final String APPINFO_FORBIDDEN_CONTEXTS = "forbidden-contexts";
+
     /** Constant for the "configuration" appinfo attribute name. */
     public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
 
@@ -431,6 +434,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
 
+    /** The list of forbidden template contexts. */
+    private List<String> m_forbiddenTemplateContexts;
+
     /**
      * Creates a new instance of the default XML content handler.<p>  
      */
@@ -551,6 +557,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
 
         return getDefault(cms, value.getDocument() != null ? value.getDocument().getFile() : null, value, path, locale);
+    }
+
+    /**
+     * Gets the forbidden template contexts.<p>
+     * 
+     * @return the forbidden contexts 
+     */
+    public List<String> getForbiddenContexts() {
+
+        return Collections.unmodifiableList(m_forbiddenTemplateContexts);
     }
 
     /**
@@ -798,6 +814,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initHeadIncludes(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_SETTINGS)) {
                     initSettings(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_FORBIDDEN_CONTEXTS)) {
+                    initForbiddenContexts(element, contentDefinition);
                 }
             }
         }
@@ -1752,6 +1770,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_titleMappings = new ArrayList<String>(2);
         m_formatters = new ArrayList<CmsFormatterBean>();
         m_searchFields = new HashMap<String, I_CmsSearchField>();
+        m_forbiddenTemplateContexts = new ArrayList<String>();
     }
 
     /**
@@ -1777,6 +1796,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // add a default value mapping for the element
                 addDefault(contentDefinition, elementName, defaultValue);
             }
+        }
+    }
+
+    /**
+     * Initializes the forbidden template contexts.<p>
+     * 
+     * @param root the root XML element 
+     * @param contentDefinition the content definition 
+     */
+    protected void initForbiddenContexts(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        String elementContent = root.getText();
+        for (String token : CmsStringUtil.splitAsList(elementContent, ",")) {
+            token = token.trim();
+            m_forbiddenTemplateContexts.add(token);
         }
     }
 

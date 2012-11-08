@@ -51,6 +51,9 @@ public class CmsTemplateLoaderFacade {
     /** The template file attached to the resource. */
     private CmsResource m_template;
 
+    /** The selected template context. */
+    private CmsTemplateContext m_context;
+
     /**
      * Creates a new template loader facade.<p>
      * 
@@ -118,6 +121,27 @@ public class CmsTemplateLoaderFacade {
     public CmsResource getTemplate() {
 
         return m_template;
+    }
+
+    /** 
+     * Gets the template context.<p>
+     * 
+     * @return the template context
+     */
+    public CmsTemplateContext getTemplateContext() {
+
+        return m_context;
+    }
+
+    /**
+     * Sets the template context.<p>
+     * 
+     * @param context the template context 
+     */
+    public void setTemplateContext(CmsTemplateContext context) {
+
+        m_context = context;
+
     }
 
 }

@@ -31,6 +31,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -585,6 +586,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             String propValue = property.getValue();
             boolean isSpecial = isSpecialProperty(propName);
             if (!isSpecial
+                && !CmsTemplateContextInfo.SETTING.equals(propName)
                 && (!propertiesConf.containsKey(propName) || (propValue == null) || (propValue.length() == 0))) {
                 continue;
             }
@@ -713,13 +715,14 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         for (Map.Entry<String, String> entry : props.entrySet()) {
             String propName = entry.getKey();
             String propValue = entry.getValue();
-            String type;
+            String type = "string";
             CmsXmlContentProperty configEntry = getPropertyConfig(propConfig, propName);
-            if (configEntry == null) {
+            if ((configEntry == null) && !CmsTemplateContextInfo.SETTING.equals(propName)) {
                 continue; // ignore properties which are not configured anymore 
             }
-            type = configEntry.getType();
-
+            if (configEntry != null) {
+                type = configEntry.getType();
+            }
             String newValue = convertStringPropertyValue(cms, propValue, type, toClient);
             result.put(propName, newValue);
         }

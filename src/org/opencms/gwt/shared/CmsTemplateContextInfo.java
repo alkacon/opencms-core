@@ -1,0 +1,218 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.gwt.shared;
+
+import org.opencms.xml.content.CmsXmlContentProperty;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+/**
+ * Client-compatible bean with information about the current template context.<p>
+ */
+public class CmsTemplateContextInfo implements IsSerializable {
+
+    /** The setting name used for storing the compatible template contexts. */
+    public static final String SETTING = "templateContexts";
+
+    /** The constant used for empty setting. */
+    public static final String EMPTY_VALUE = "none";
+
+    /** The name of the cookie used for overriding the template context. */
+    private String m_cookieName;
+
+    /** The name of the selected context (using the cookie) .*/
+    private String m_selectedContext;
+
+    /** The context provider class. */
+    private String m_contextProvider;
+
+    /** A map from the names of all available template contexts to their localized names. */
+    private Map<String, String> m_contextLabels = new HashMap<String, String>();
+
+    /** The key of the currently active context. */
+    private String m_currentContext;
+
+    /** The map of forbidden contexts for types. */
+    private Map<String, List<String>> m_forbiddenContextMap;
+
+    /** The setting definition for the templateContexts setting. */
+    private CmsXmlContentProperty m_settingDefinition;
+
+    /** 
+     * Default constructor.<p>
+     */
+    public CmsTemplateContextInfo() {
+
+        // default constructor 
+    }
+
+    /** 
+     * Gets the map of labels for the different template contexts.<p>
+     * 
+     * @return the map of template context labels 
+     */
+    public Map<String, String> getContextLabels() {
+
+        return m_contextLabels;
+    }
+
+    /** 
+     * Gets the name of the context provider class.<p>
+     * 
+     * @return the name of the context provider class 
+     */
+    public String getContextProvider() {
+
+        return m_contextProvider;
+    }
+
+    /**
+     * Gets the name of the cookie used for overriding the template context.<p>
+     * 
+     * @return the cookie name 
+     */
+    public String getCookieName() {
+
+        return m_cookieName;
+    }
+
+    /**
+     * Gets the key of the currently active template context.<p>
+     *  
+     * @return the key of the currently active template context 
+     */
+    public String getCurrentContext() {
+
+        return m_currentContext;
+    }
+
+    /**
+     * Gets the map of forbidden contexts for resource types.<p>
+     * 
+     * @return the map of forbidden contexts for resource types 
+     */
+    public Map<String, List<String>> getForbiddenContexts() {
+
+        return m_forbiddenContextMap;
+    }
+
+    /**
+     * Gets the key of the currently selected template context, using the cookie.<p>
+     * 
+     * @return the name of the currently selected template context 
+     */
+    public String getSelectedContext() {
+
+        return m_selectedContext;
+    }
+
+    /**
+     * Gets the property definition for the templateContexts setting.<p>
+     * 
+     * @return the property definition for the templateContexts setting 
+     */
+    public CmsXmlContentProperty getSettingDefinition() {
+
+        return m_settingDefinition;
+    }
+
+    /**
+     * Sets the map of labels for the contexts.<p>
+     * 
+     * @param contextLabels the map of context labels 
+     */
+    public void setContextLabels(Map<String, String> contextLabels) {
+
+        m_contextLabels = contextLabels;
+    }
+
+    /**
+     * Sets the context provider class name.<p>
+     * 
+     * @param contextProvider the context provider class name 
+     */
+    public void setContextProvider(String contextProvider) {
+
+        m_contextProvider = contextProvider;
+    }
+
+    /** 
+     * Sets the name of the cookie used for overriding the template context.<p>
+     * 
+     * @param cookieName the name of the cookie used for overriding the template context 
+     */
+    public void setCookieName(String cookieName) {
+
+        m_cookieName = cookieName;
+    }
+
+    /** 
+     * Sets the active context.<p>
+     * 
+     * @param context the active context 
+     */
+    public void setCurrentContext(String context) {
+
+        m_currentContext = context;
+    }
+
+    /**
+     * Sets the forbidden context map.<p>
+     * 
+     * @param forbiddenContexts the forbidden context map 
+     */
+    public void setForbiddenContexts(Map<String, List<String>> forbiddenContexts) {
+
+        m_forbiddenContextMap = forbiddenContexts;
+    }
+
+    /**
+     * Sets the selected context.<p>
+     * 
+     * @param selectedContext the selected context 
+     */
+    public void setSelectedContext(String selectedContext) {
+
+        m_selectedContext = selectedContext;
+    }
+
+    /**
+     * Sets the property definition for the templateContexts setting.<p>
+     * 
+     * @param definition the property definition 
+     */
+    public void setSettingDefinition(CmsXmlContentProperty definition) {
+
+        m_settingDefinition = definition;
+    }
+
+}

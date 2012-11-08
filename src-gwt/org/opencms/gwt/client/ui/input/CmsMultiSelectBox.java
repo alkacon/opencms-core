@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsMessages;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -147,7 +148,20 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsMultiSelectBox();
+                Map<String, CmsPair<String, Boolean>> entries = new HashMap<String, CmsPair<String, Boolean>>();
+                String label = "Select";
+                if (widgetParams.containsKey("label")) {
+                    label = widgetParams.get("label");
+                    widgetParams.remove("label");
+                }
+                for (Map.Entry<String, String> entry : widgetParams.entrySet()) {
+                    entries.put(entry.getKey(), CmsPair.create(entry.getValue(), Boolean.FALSE));
+                }
+                CmsMultiSelectCell cell = new CmsMultiSelectCell(entries);
+                cell.setOpenerText(label);
+                CmsMultiSelectBox box = new CmsMultiSelectBox();
+                box.addOption(cell);
+                return box;
             }
         });
     }

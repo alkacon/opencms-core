@@ -244,6 +244,7 @@ public class CmsElementUtil {
         CmsUUID structureId = resUtil.getResource().getStructureId();
         CmsContainerElementData elementData = new CmsContainerElementData();
         setElementInfo(element, elementData);
+
         elementData.setLastModifiedDate(element.getResource().getDateLastModified());
         elementData.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
         elementData.setNavText(resUtil.getNavText());

@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -302,7 +303,12 @@ public class CmsContainerpageUtil {
             container.getContainerId()));
         // ensure any embedded flash players are set opaque so UI elements may be placed above them
         CmsDomUtil.fixFlashZindex(element);
-        return createElement(element, container, containerElement);
+
+        CmsContainerPageElementPanel result = createElement(element, container, containerElement);
+        if (!CmsContainerpageController.get().shouldShowInContext(containerElement)) {
+            result.getElement().getStyle().setDisplay(Style.Display.NONE);
+        }
+        return result;
     }
 
     /**
