@@ -553,64 +553,66 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             // search fields
             Element fieldsElement = fieldConfigurationElement.addElement(N_FIELDS);
             for (I_CmsSearchField sfield : fieldConfiguration.getFields()) {
-                CmsSearchField field = (CmsSearchField)sfield;
-                Element fieldElement = fieldsElement.addElement(N_FIELD);
-                fieldElement.addAttribute(A_NAME, field.getName());
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDisplayNameForConfiguration())) {
-                    fieldElement.addAttribute(A_DISPLAY, field.getDisplayNameForConfiguration());
-                }
-                if (field.isCompressed()) {
-                    fieldElement.addAttribute(A_STORE, CmsSearchField.STR_COMPRESS);
-                } else {
-                    fieldElement.addAttribute(A_STORE, String.valueOf(field.isStored()));
-                }
-                String index;
-                if (field.isIndexed()) {
-                    if (field.isTokenizedAndIndexed()) {
-                        // index and tokenized
-                        index = CmsStringUtil.TRUE;
+                if (sfield instanceof CmsSearchField) {
+                    CmsSearchField field = (CmsSearchField)sfield;
+                    Element fieldElement = fieldsElement.addElement(N_FIELD);
+                    fieldElement.addAttribute(A_NAME, field.getName());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDisplayNameForConfiguration())) {
+                        fieldElement.addAttribute(A_DISPLAY, field.getDisplayNameForConfiguration());
+                    }
+                    if (field.isCompressed()) {
+                        fieldElement.addAttribute(A_STORE, CmsSearchField.STR_COMPRESS);
                     } else {
-                        // indexed but not tokenized
-                        index = CmsSearchField.STR_UN_TOKENIZED;
+                        fieldElement.addAttribute(A_STORE, String.valueOf(field.isStored()));
                     }
-                } else {
-                    // not indexed at all
-                    index = CmsStringUtil.FALSE;
-                }
-                fieldElement.addAttribute(A_INDEX, index);
-                if (field.getBoost() != I_CmsSearchField.BOOST_DEFAULT) {
-                    fieldElement.addAttribute(A_BOOST, String.valueOf(field.getBoost()));
-                }
-                if (field.isInExcerptAndStored()) {
-                    fieldElement.addAttribute(A_EXCERPT, String.valueOf(true));
-                }
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDefaultValue())) {
-                    fieldElement.addAttribute(A_DEFAULT, field.getDefaultValue());
-                }
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getType())) {
-                    fieldElement.addAttribute(A_TYPE, field.getType());
-                }
-                if (field.getAnalyzer() != null) {
-                    String className = field.getAnalyzer().getClass().getName();
-                    if (className.startsWith(CmsSearchManager.LUCENE_ANALYZER)) {
-                        className = className.substring(CmsSearchManager.LUCENE_ANALYZER.length());
+                    String index;
+                    if (field.isIndexed()) {
+                        if (field.isTokenizedAndIndexed()) {
+                            // index and tokenized
+                            index = CmsStringUtil.TRUE;
+                        } else {
+                            // indexed but not tokenized
+                            index = CmsSearchField.STR_UN_TOKENIZED;
+                        }
+                    } else {
+                        // not indexed at all
+                        index = CmsStringUtil.FALSE;
                     }
-                    fieldElement.addAttribute(A_ANALYZER, className);
-                }
-                // field mappings
-                for (I_CmsSearchFieldMapping mapping : field.getMappings()) {
-                    Element mappingElement = fieldElement.addElement(N_MAPPING);
-                    mappingElement.addAttribute(A_TYPE, mapping.getType().toString());
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getDefaultValue())) {
-                        mappingElement.addAttribute(A_DEFAULT, mapping.getDefaultValue());
+                    fieldElement.addAttribute(A_INDEX, index);
+                    if (field.getBoost() != I_CmsSearchField.BOOST_DEFAULT) {
+                        fieldElement.addAttribute(A_BOOST, String.valueOf(field.getBoost()));
                     }
-                    // add class attribute (if required)
-                    if (!mapping.getClass().equals(CmsSearchFieldMapping.class)
-                        || (mapping.getType() == CmsSearchFieldMappingType.DYNAMIC)) {
-                        mappingElement.addAttribute(A_CLASS, mapping.getClass().getName());
+                    if (field.isInExcerptAndStored()) {
+                        fieldElement.addAttribute(A_EXCERPT, String.valueOf(true));
                     }
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getParam())) {
-                        mappingElement.setText(mapping.getParam());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDefaultValue())) {
+                        fieldElement.addAttribute(A_DEFAULT, field.getDefaultValue());
+                    }
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getType())) {
+                        fieldElement.addAttribute(A_TYPE, field.getType());
+                    }
+                    if (field.getAnalyzer() != null) {
+                        String className = field.getAnalyzer().getClass().getName();
+                        if (className.startsWith(CmsSearchManager.LUCENE_ANALYZER)) {
+                            className = className.substring(CmsSearchManager.LUCENE_ANALYZER.length());
+                        }
+                        fieldElement.addAttribute(A_ANALYZER, className);
+                    }
+                    // field mappings
+                    for (I_CmsSearchFieldMapping mapping : field.getMappings()) {
+                        Element mappingElement = fieldElement.addElement(N_MAPPING);
+                        mappingElement.addAttribute(A_TYPE, mapping.getType().toString());
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getDefaultValue())) {
+                            mappingElement.addAttribute(A_DEFAULT, mapping.getDefaultValue());
+                        }
+                        // add class attribute (if required)
+                        if (!mapping.getClass().equals(CmsSearchFieldMapping.class)
+                            || (mapping.getType() == CmsSearchFieldMappingType.DYNAMIC)) {
+                            mappingElement.addAttribute(A_CLASS, mapping.getClass().getName());
+                        }
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getParam())) {
+                            mappingElement.setText(mapping.getParam());
+                        }
                     }
                 }
             }
