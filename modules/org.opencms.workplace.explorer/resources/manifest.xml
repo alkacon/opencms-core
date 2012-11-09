@@ -2145,6 +2145,10 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2533,6 +2537,10 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2557,6 +2565,10 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2580,6 +2592,10 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
 				</property>
 			</properties>
 			<relations/>
