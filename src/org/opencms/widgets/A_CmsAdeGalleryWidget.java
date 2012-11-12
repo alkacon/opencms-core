@@ -40,7 +40,6 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
-import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -260,7 +259,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         Map<String, String> result = new HashMap<String, String>();
         result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, A_CmsAjaxGallery.MODE_WIDGET);
         result.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, getGalleryTypes());
-        if (param != null) {
+        if (param.getId() != null) {
             result.put(I_CmsGalleryProviderConstants.KEY_FIELD_ID, param.getId());
             // use javascript to read the current field value
             result.put(
@@ -304,7 +303,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
      */
     protected JSONObject getJSONConfig(
         CmsObject cms,
-        I_CmsXmlSchemaType schemaType,
+        A_CmsXmlContentValue schemaType,
         CmsMessages messages,
         CmsResource resource,
         Locale contentLocale) {
@@ -314,7 +313,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
             for (Entry<String, String> paramEntry : getGalleryOpenParams(
                 cms,
                 messages,
-                null,
+                schemaType,
                 cms.getSitePath(resource),
                 0).entrySet()) {
                 result.put(paramEntry.getKey(), paramEntry.getValue());

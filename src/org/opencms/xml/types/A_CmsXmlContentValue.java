@@ -291,6 +291,10 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      */
     public String getId() {
 
+        if (m_element == null) {
+            return null;
+        }
+
         StringBuffer result = new StringBuffer(128);
         result.append(getTypeName());
         result.append('.');
@@ -390,6 +394,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      */
     public String getPath() {
 
+        if (m_element == null) {
+            return "";
+        }
         String path = m_element.getUniquePath();
         // must remove the first 2 nodes because these are not required for XML content values
         int pos = path.indexOf('/', path.indexOf('/', 1) + 1) + 1;
