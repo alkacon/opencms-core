@@ -347,7 +347,7 @@
       </indexsource>
       <indexsource>
         <name>solr_source</name>
-        <indexer class="org.opencms.search.CmsDependencyIndexer"/>
+        <indexer class="org.opencms.search.CmsVfsIndexer"/>
         <resources>
           <resource>/sites/</resource>
           <resource>/shared/</resource>
