@@ -78,7 +78,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
-        suite.setName(TestSolrSearch.class.getName());
+        suite.setName(TestSolrConfiguration.class.getName());
         suite.addTest(new TestSolrConfiguration("testFieldConfiguration"));
         suite.addTest(new TestSolrConfiguration("testXSDFields"));
         suite.addTest(new TestSolrConfiguration("testMandantoryFields"));

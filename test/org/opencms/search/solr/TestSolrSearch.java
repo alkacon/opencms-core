@@ -140,7 +140,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery();
-        squery.setText("Alkacon OpenCms Text");
+        squery.setText("+Alkacon +OpenCms +Text");
         squery.setSearchRoots("/sites/default/types/");
         List<CmsSearchResource> results = index.search(cms, squery);
 
@@ -196,17 +196,17 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         // String query = "+text:Alkacon +text:OpenCms +text:Text +parent-folders:/sites/default/types/*";
-        query = "q=+text:>>SearchEgg1<<";
+        query = "q=+text:\">>SearchEgg1<<\"";
         results = index.search(cms, query);
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0001.html", results.get(0).getRootPath());
 
-        query = "q=+text:>>SearchEgg2<<";
+        query = "q=+text:\">>SearchEgg2<<\"";
         results = index.search(cms, query);
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0002.html", results.get(0).getRootPath());
 
-        query = "q=+text:>>SearchEgg3<<";
+        query = "q=+text:\">>SearchEgg3<<\"";
         results = index.search(cms, query);
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0003.html", results.get(0).getRootPath());
@@ -217,7 +217,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         echo(content.toString());
 
         // now search for another Query "xmlcontent", this must not be found in article 4 since it is excluded
-        query = "q=+text:xmlcontent";
+        query = "q=+text:\"xmlcontent\"";
         results = index.search(cms, query);
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0003.html", (results.get(0)).getRootPath());
@@ -259,7 +259,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         AllTests.printResults(getCmsObject(), results, false);
         assertEquals(4, results.size());
 
-        query = "q=+text:SearchEgg1";
+        query = "q=+text:\"SearchEgg1\"";
         results = index.search(getCmsObject(), query);
 
         // assert one file is found in the default site     
@@ -490,7 +490,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         String query;
         CmsSolrResultList results;
 
-        query = "q=+text:Alkacon +text:OpenCms +parent-folders:/sites/default/&sort=path asc";
+        query = "q=+text:\"Alkacon\" +text:\"OpenCms\" +parent-folders:/sites/default/&sort=path asc";
         results = index.search(getCmsObject(), query);
         AllTests.printResults(cms, results, false);
         assertEquals(8, results.size());
