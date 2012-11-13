@@ -252,15 +252,6 @@ public interface I_CmsXmlContentHandler {
     CmsRelationType getRelationType(String path);
 
     /**
-     * Returns the Solr field configuration.<p>
-     * 
-     * @param value the to get the field configuration for
-     * 
-     * @return the field configuration
-     */
-    I_CmsSearchField getSearchField(I_CmsXmlContentValue value);
-
-    /**
      * Returns all configured Search fields for this XML content.<p>
      * 
      * @return the Search fields for this XMl content

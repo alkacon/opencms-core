@@ -695,16 +695,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchField(org.opencms.xml.types.I_CmsXmlContentValue)
-     */
-    public I_CmsSearchField getSearchField(I_CmsXmlContentValue value) {
-
-        String schemaPath = CmsXmlUtils.removeXpath(value.getPath());
-        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(schemaPath, value.getLocale());
-        return m_searchFields.get(key);
-    }
-
-    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchFields()
      */
     public Collection<I_CmsSearchField> getSearchFields() {
@@ -1510,20 +1500,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * Adds a Solr field for an element.<p>
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
-     * @param elementName the element name to map
      * @param field the Solr field
-     * 
-     * @throws CmsXmlException in case an unknown element name is used
      */
-    protected void addSearchField(CmsXmlContentDefinition contentDefinition, String elementName, I_CmsSearchField field)
-    throws CmsXmlException {
+    protected void addSearchField(CmsXmlContentDefinition contentDefinition, I_CmsSearchField field) {
 
-        if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
-                elementName));
-        }
-        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, field.getLocale());
+        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(field.getName(), field.getLocale());
         m_searchFields.put(key, field);
     }
 
@@ -2155,15 +2136,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             Element solrElement;
             while (it.hasNext()) {
                 solrElement = it.next();
+
                 String localeNames = solrElement.attributeValue(APPINFO_ATTR_LOCALE);
+                boolean localized = true;
+                if ((localeNames != null)
+                    && (localeNames.equals("none") || localeNames.equals("null") || localeNames.trim().equals(""))) {
+                    localized = false;
+                }
                 List<Locale> locales = OpenCms.getLocaleManager().getAvailableLocales(localeNames);
-                if ((locales == null) || locales.isEmpty()) {
+                if (localized && ((locales == null) || locales.isEmpty())) {
                     locales = OpenCms.getLocaleManager().getAvailableLocales();
+                } else if (locales.isEmpty()) {
+                    locales.add(CmsLocaleManager.getDefaultLocale());
                 }
                 for (Locale locale : locales) {
-                    String targetField = solrElement.attributeValue(APPINFO_ATTR_TARGET_FIELD)
-                        + "_"
-                        + locale.toString();
+                    String targetField = solrElement.attributeValue(APPINFO_ATTR_TARGET_FIELD);
+                    if (localized) {
+                        targetField = targetField + "_" + locale.toString();
+                    }
                     String sourceField = solrElement.attributeValue(APPINFO_ATTR_SOURCE_FIELD);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(sourceField)) {
                         int lastUnderScore = sourceField.lastIndexOf("_");
@@ -2192,7 +2182,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         Element mappingElement = ite.next();
                         field.addMapping(createSearchFieldMapping(contentDefinition, mappingElement, locale));
                     }
-                    addSearchField(contentDefinition, elementName, field);
+                    addSearchField(contentDefinition, field);
                 }
             }
         }
