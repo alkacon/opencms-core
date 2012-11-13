@@ -164,13 +164,13 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** The faid panel. */
     protected Panel m_faidpanel = new SimplePanel();
 
-    /***/
+    /** The old value. */
     protected String m_oldValue = "";
 
-    /** THe popup frame. */
+    /** The popup frame. */
     protected CmsFramePopup m_popup;
 
-    /***/
+    /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
 
     /** The x-coords of the popup. */
@@ -191,7 +191,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, I_Cms
     /** The container for the text area. */
     FlowPanel m_textBoxContainer = new FlowPanel();
 
-    /***/
+    /** The configuration string. */
     private String m_config;
 
     /** The error display for this widget. */

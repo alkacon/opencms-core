@@ -33,6 +33,7 @@ import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -127,7 +128,10 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
     private String m_externalValue;
 
     /** The global select box. */
-    private CmsSelectBox m_selectBox = new CmsSelectBox();
+    protected CmsSelectBox m_selectBox = new CmsSelectBox();
+
+    /** THe default value. */
+    private String m_defaultValue;
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -258,8 +262,13 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
      */
     public void setValue(String value, boolean fireEvents) {
 
-        m_selectBox.selectValue(value);
-        m_externalValue = value;
+        Map<String, String> items = m_selectBox.getItems();
+        if (items.containsKey(value)) {
+            m_selectBox.selectValue(value);
+            m_externalValue = value;
+        } else {
+            m_selectBox.selectValue(m_defaultValue);
+        }
         if (fireEvents) {
             fireChangeEvent();
         }
@@ -392,7 +401,10 @@ public class CmsSelectWidget extends Composite implements I_EditWidget {
         //if one entrance is declared for default.
         if (selected >= 0) {
             //set the declared value selected. 
-            m_selectBox.selectValue(options[selected]);
+            m_selectBox.selectValue(value[selected]);
+            m_defaultValue = value[selected];
         }
+        fireChangeEvent();
     }
+
 }

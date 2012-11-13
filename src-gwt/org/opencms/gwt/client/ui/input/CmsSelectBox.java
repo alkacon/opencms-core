@@ -175,6 +175,16 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     }
 
     /**
+     * Returns the items as a map for option values to label text.<p>
+     * 
+     * @return the items as a map for option values to label text
+     */
+    public Map<String, String> getItems() {
+
+        return m_items;
+    }
+
+    /**
      * Returns the opener of this widget.<p>
      * 
      * @return the opener of this widget
