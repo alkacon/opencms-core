@@ -104,30 +104,6 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
     private CmsSolrQuery m_query;
 
     /**
-     * Returns the requested URI.<p>
-     * 
-     * @param req the servlet request
-     * @param cms the CmsObject
-     * 
-     * @return the requested URI
-     */
-    private static String getRequestUri(HttpServletRequest req, CmsObject cms) {
-
-        String baseUri = req.getParameter(PARAM_BASE_URI);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(baseUri)) {
-            String referer = req.getHeader(HEADER_REFERER_KEY);
-            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
-            if (site != null) {
-                String prefix = site.getServerPrefix(cms, "/") + OpenCms.getSystemInfo().getOpenCmsContext();
-                if ((referer != null) && referer.startsWith(prefix)) {
-                    baseUri = referer.substring(prefix.length());
-                }
-            }
-        }
-        return baseUri;
-    }
-
-    /**
      * @see org.opencms.main.I_CmsRequestHandler#getHandlerNames()
      */
     public String[] getHandlerNames() {
@@ -183,7 +159,7 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
             String siteRoot = OpenCmsCore.getInstance().getSiteManager().matchRequest(req).getSiteRoot();
             cms.getRequestContext().setSiteRoot(siteRoot);
         }
-        String baseUri = getRequestUri(req, cms);
+        String baseUri = getBaseUri(req, cms);
         if (baseUri != null) {
             cms.getRequestContext().setUri(baseUri);
         }
@@ -215,5 +191,29 @@ public class OpenCmsSolrHandler implements I_CmsRequestHandler {
             String message = Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName);
             res.getWriter().println(Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message));
         }
+    }
+
+    /**
+     * Returns the base URI.<p>
+     * 
+     * @param req the servlet request
+     * @param cms the CmsObject
+     * 
+     * @return the base URI
+     */
+    private String getBaseUri(HttpServletRequest req, CmsObject cms) {
+
+        String baseUri = req.getParameter(PARAM_BASE_URI);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(baseUri)) {
+            String referer = req.getHeader(HEADER_REFERER_KEY);
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
+            if (site != null) {
+                String prefix = site.getServerPrefix(cms, "/") + OpenCms.getStaticExportManager().getVfsPrefix();
+                if ((referer != null) && referer.startsWith(prefix)) {
+                    baseUri = referer.substring(prefix.length());
+                }
+            }
+        }
+        return baseUri;
     }
 }
