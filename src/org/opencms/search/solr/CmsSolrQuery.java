@@ -67,7 +67,7 @@ public class CmsSolrQuery extends SolrQuery {
     public static final String DEFAULT_QUERY = "*:*";
 
     /** The query type. */
-    public static final String DEFAULT_QUERY_TYPE = "edismax";
+    public static final String DEFAULT_QUERY_TYPE = "dismax";
 
     /** The default search result count. */
     public static final Integer DEFAULT_ROWS = new Integer(10);
