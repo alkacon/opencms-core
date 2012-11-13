@@ -601,7 +601,7 @@ public class CmsDateBox extends Composite implements HasValue<Date>, I_CmsFormWi
             fireChange(value);
         }
         if (m_dateOnly) {
-            m_box.setFormValueAsString(CmsDateConverter.dateToString(value));
+            m_box.setFormValueAsString(CmsDateConverter.toDateString(value));
         } else {
             m_box.setFormValueAsString(CmsDateConverter.toString(value));
         }

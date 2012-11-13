@@ -98,6 +98,7 @@ public final class CmsDateConverter {
     }
 
     /**
+<<<<<<< OURS
      * Formats the provided date to a date only representation.<p>
      * 
      * @param date the date to format
@@ -116,6 +117,8 @@ public final class CmsDateConverter {
     }
 
     /**
+=======
+>>>>>>> THEIRS
      * Merges a given Date object with a given time String.<p>
      * 
      * Returns a <code>null</code> if the given time format coudn't be parsed.<p>
@@ -201,6 +204,24 @@ public final class CmsDateConverter {
             }
         }
         return date;
+    }
+
+    /**
+     * Formats the provided date as only a date format (dd/mm/yyyy). Note, a null date is a possible input.
+     * 
+     * @param date the date to format
+     * 
+     * @return the formatted date as a string
+     */
+    public static String toDateString(final Date date) {
+
+        String result;
+        if (date == null) {
+            result = "";
+        } else {
+            result = Z_DATE_FORMAT.format(date);
+        }
+        return result;
     }
 
     /**
