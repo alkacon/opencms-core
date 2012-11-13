@@ -51,6 +51,8 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -101,46 +103,29 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                 StringBuffer content = new StringBuffer();
 
                 // loop over the available element paths
-                for (String xpath : xmlContent.getNames(locale)) {
+                List<String> paths = xmlContent.getNames(locale);
+                for (String xpath : paths) {
 
-                    // get the value for the element path
+                    String extracted = extractValue(cms, xmlContent, xpath, locale);
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
 
-                    // first try to receive the text value 
-                    String extracted = value.getPlainText(cms);
-                    if (value.isSimpleType()) {
+                    // put the extraction to the content and to the items
+                    if (value.getContentDefinition().getContentHandler().isSearchable(value)
+                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                        // create the content value for the locale by adding all String values in the XML nodes
+                        content.append(extracted);
+                        content.append('\n');
+                        items.put(xpath, extracted);
+                    }
 
-                        // put the extraction to the content and to the items
-                        if (value.getContentDefinition().getContentHandler().isSearchable(value)
-                            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                            // create the content value for the locale by adding all String values in the XML nodes
-                            content.append(extracted);
-                            content.append('\n');
-                            items.put(xpath, extracted);
-                        }
-
-                        // if the extraction was empty try to take the String value as fall-back
-                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)
-                            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value.getStringValue(cms))) {
-                            try {
-                                extracted = value.getStringValue(cms);
-                                items.put(xpath, extracted);
-                            } catch (CmsRuntimeException re) {
-                                // ignore: is only thrown for those XML content values 
-                                // that don't have a String representation for those we 
-                                // will store a 'null'
-                            }
-                        }
-
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                            // The key must be the local extended parameter value of the Solr field mapping defined in:
-                            // CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
-                            // later during index process the values are retrieved in:
-                            // I_CmsSearchFieldMapping#getStringValue(CmsObject, CmsResource, I_CmsExtractionResult, List, List)
-                            items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                                CmsXmlUtils.removeXpath(xpath),
-                                locale), extracted);
-                        }
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                        // The key must be the local extended parameter value of the Solr field mapping defined in:
+                        // CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
+                        // later during index process the values are retrieved in:
+                        // I_CmsSearchFieldMapping#getStringValue(CmsObject, CmsResource, I_CmsExtractionResult, List, List)
+                        items.put(
+                            A_CmsSearchFieldConfiguration.getLocaleExtendedName(CmsXmlUtils.removeXpath(xpath), locale),
+                            extracted);
                     }
                 }
                 if (content.length() > 0) {
@@ -164,5 +149,53 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
                 e);
         }
+    }
+
+    /**
+     * Extracts the content of a given XML content value.<p>
+     * 
+     * @param cms the CMS object
+     * @param xmlContent the XML content
+     * @param xpath the xPath of the content
+     * @param locale the locale
+     * 
+     * @return the extracted value
+     */
+    private String extractValue(CmsObject cms, A_CmsXmlDocument xmlContent, String xpath, Locale locale) {
+
+        StringBuffer valueExtraction = new StringBuffer();
+        List<I_CmsXmlContentValue> values = xmlContent.getValues(xpath, locale);
+        Iterator<I_CmsXmlContentValue> it = values.iterator();
+        while (it.hasNext()) {
+            I_CmsXmlContentValue value = it.next();
+            String extracted = value.getPlainText(cms);
+            if (value.isSimpleType()) {
+                // put the extraction to the content and to the items
+                if (value.getContentDefinition().getContentHandler().isSearchable(value)
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                    // create the content value for the locale by adding all String values in the XML nodes
+                    valueExtraction.append(extracted);
+                    if (it.hasNext()) {
+                        valueExtraction.append('\n');
+                    }
+                }
+                // if the extraction was empty try to take the String value as fall-back
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(extracted)
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(value.getStringValue(cms))) {
+                    try {
+                        extracted = value.getStringValue(cms);
+                        valueExtraction.append(extracted);
+                        if (it.hasNext()) {
+                            valueExtraction.append('\n');
+                        }
+                    } catch (CmsRuntimeException re) {
+                        // ignore: is only thrown for those XML content values 
+                        // that don't have a String representation for those we 
+                        // will store a 'null'
+                    }
+                }
+            }
+        }
+        return valueExtraction.toString();
     }
 }

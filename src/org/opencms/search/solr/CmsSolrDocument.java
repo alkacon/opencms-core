@@ -39,6 +39,7 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.nio.ByteBuffer;
@@ -55,10 +56,10 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.SolrInputField;
 import org.apache.solr.schema.DateField;
 import org.apache.solr.schema.FieldType;
 import org.apache.solr.schema.IndexSchema;
+import org.apache.solr.schema.SchemaField;
 
 /**
  * A search document implementation for Solr indexes.<p>
@@ -149,9 +150,23 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void addDocumentDependency(CmsObject cms, CmsDocumentDependency resDeps) {
 
-        m_doc.addField(I_CmsSearchField.FIELD_DEPENDENCY_TYPE, resDeps.getType());
-        for (CmsDocumentDependency dep : resDeps.getDependencies()) {
-            m_doc.addField("dep_" + dep.getType().toString(), dep.toJSON(cms, true).toString());
+        if (resDeps != null) {
+            m_doc.addField(I_CmsSearchField.FIELD_DEPENDENCY_TYPE, resDeps.getType());
+            if ((resDeps.getMainDocument() != null) && (resDeps.getType() != null)) {
+                m_doc.addField(
+                    I_CmsSearchField.FIELD_PREFIX_DEPENDENCY + resDeps.getType().toString(),
+                    resDeps.getMainDocument().toDependencyString(cms));
+            }
+            for (CmsDocumentDependency dep : resDeps.getVariants()) {
+                m_doc.addField(
+                    I_CmsSearchField.FIELD_PREFIX_DEPENDENCY + dep.getType().toString(),
+                    dep.toDependencyString(cms));
+            }
+            for (CmsDocumentDependency dep : resDeps.getAttachments()) {
+                m_doc.addField(
+                    I_CmsSearchField.FIELD_PREFIX_DEPENDENCY + dep.getType().toString(),
+                    dep.toDependencyString(cms));
+            }
         }
     }
 
@@ -214,32 +229,34 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         if ((field.getCopyFields() != null) && !field.getCopyFields().isEmpty()) {
             fieldsToAdd.addAll(field.getCopyFields());
         }
+        IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
         for (String fieldName : fieldsToAdd) {
-
-            IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
             try {
-                try {
-                    FieldType type = schema.getFieldType(fieldName);
-                    if (type instanceof DateField) {
-                        value = DateField.formatExternal(new Date(new Long(value).longValue()));
-                    }
-                } catch (SolrException e) {
-                    LOG.debug(e.getMessage(), e);
-                    throw new RuntimeException(e);
+                List<String> splitedValues = new ArrayList<String>();
+                boolean multi = false;
+                SchemaField f = schema.getField(fieldName);
+                if (f != null) {
+                    multi = f.multiValued();
                 }
-
-                SolrInputField exfield = m_doc.getField(fieldName);
-                if (exfield == null) {
-                    if (schema.hasExplicitField(fieldName)) {
-                        m_doc.addField(fieldName, value);
-                    } else {
-                        m_doc.addField(fieldName, value, field.getBoost());
-                    }
+                FieldType type = schema.getFieldType(fieldName);
+                if (multi) {
+                    splitedValues = CmsStringUtil.splitAsList(value.toString(), "\n");
                 } else {
+                    splitedValues.add(value);
+                }
+                for (String val : splitedValues) {
+                    try {
+                        if (type instanceof DateField) {
+                            val = DateField.formatExternal(new Date(new Long(val).longValue()));
+                        }
+                    } catch (SolrException e) {
+                        LOG.debug(e.getMessage(), e);
+                        throw new RuntimeException(e);
+                    }
                     if (schema.hasExplicitField(fieldName)) {
-                        m_doc.setField(fieldName, value);
+                        m_doc.addField(fieldName, val);
                     } else {
-                        m_doc.setField(fieldName, value, field.getBoost());
+                        m_doc.addField(fieldName, val, field.getBoost());
                     }
                 }
             } catch (SolrException e) {
@@ -322,9 +339,14 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public String getFieldValueAsString(String fieldName) {
 
-        Object o = m_doc.getFieldValue(fieldName);
-        if (o != null) {
-            return o.toString();
+        List<String> values = getMultivaluedFieldAsStringList(fieldName);
+        if ((values != null) && !values.isEmpty()) {
+            return CmsStringUtil.listAsString(values, "\n");
+        } else {
+            Object o = m_doc.getFieldValue(fieldName);
+            if (o != null) {
+                return o.toString();
+            }
         }
         return null;
     }
