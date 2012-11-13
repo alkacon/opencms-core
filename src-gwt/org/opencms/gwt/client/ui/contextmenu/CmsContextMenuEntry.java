@@ -84,7 +84,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
      */
     public A_CmsContextMenuItem generateMenuItem() {
 
-        if (m_menuCommand.hasItemWidget() && m_bean.isActive()) {
+        if ((m_menuCommand != null) && m_menuCommand.hasItemWidget() && m_bean.isActive()) {
             return m_menuCommand.getItemWidget(m_structureId, m_handler, m_bean);
         } else {
             return new CmsContextMenuItem(this);
