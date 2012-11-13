@@ -144,6 +144,9 @@ public final class CmsDocumentDependency {
     /** The VFS resource for which the dependencies are calculated. */
     private CmsPublishedResource m_resource;
 
+    /** Stores the root path of this dependency. */
+    private String m_rootPath;
+
     /** The dependency type for this dependency. */
     private DependencyType m_type;
 
@@ -171,7 +174,8 @@ public final class CmsDocumentDependency {
     private CmsDocumentDependency(CmsPublishedResource resource, String rootPath) {
 
         m_resource = resource;
-        String docName = CmsResource.getName(m_resource.getRootPath());
+        m_rootPath = rootPath;
+        String docName = CmsResource.getName(rootPath);
 
         // check if an attachment number is present
         Matcher matcher = DOC_PATTERN_NUMBER.matcher(docName);
@@ -189,20 +193,27 @@ public final class CmsDocumentDependency {
             String langString = suffix.substring(0, 2);
             locale = suffix.length() == 5 ? new Locale(langString, suffix.substring(3, 5)) : new Locale(langString);
         }
-        if ((locale == null) || !OpenCms.getLocaleManager().getAvailableLocales().contains(locale)) {
-            // check if a locale information is present
+        if (locale == null) {
             locale = CmsLocaleManager.getDefaultLocale();
+        }
+        if ((locale == null) || !OpenCms.getLocaleManager().getAvailableLocales().contains(locale)) {
+            // check if the determined locale is available in the opencms-system.xml
+            // use the default locale as fall-back
+            // locale = CmsLocaleManager.getDefaultLocale();
         }
         setLocale(locale);
 
         // we must remove file suffixes like ".doc", ".pdf" etc. because attachments can have different types
-        int index = getResource().getRootPath().lastIndexOf('.');
+        int index = rootPath.lastIndexOf('.');
         if (index != -1) {
             // store the suffix for comparison to decide if this is a main document or a variation later
-            setDocumentSuffix(getResource().getRootPath().substring(index));
+            String suffix = rootPath.substring(index);
+            setDocumentSuffix(suffix);
+            if (docName.lastIndexOf(suffix) == (docName.length() - suffix.length())) {
+                docName = docName.substring(0, docName.length() - suffix.length());
+            }
         }
-
-        setDocumentName(CmsResource.getFolderPath(m_resource.getRootPath()) + docName);
+        setDocumentName(CmsResource.getFolderPath(rootPath) + docName);
     }
 
     /**
@@ -213,6 +224,63 @@ public final class CmsDocumentDependency {
     private CmsDocumentDependency(CmsResource res) {
 
         this(new CmsPublishedResource(res, -1, CmsResourceState.STATE_CHANGED));
+    }
+
+    /**
+     * Creates a dependency object from a String representation.<p>
+     * 
+     * @param input the String representation
+     * @param rootPath the root path of the base document of which the dependencies are encoded
+     * 
+     * @return the dependency object created from a String representation
+     */
+    public static CmsDocumentDependency fromDependencyString(String input, String rootPath) {
+
+        CmsDocumentDependency result = new CmsDocumentDependency(null, rootPath);
+        if (input != null) {
+
+            try {
+                if (input.startsWith("{")) {
+                    JSONObject jsonDoc = new JSONObject(input);
+                    result.fromJSON(jsonDoc, rootPath);
+
+                    // main document
+                    if (jsonDoc.has(JSON_MAIN)) {
+
+                        JSONObject jsonMain = jsonDoc.getJSONObject(JSON_MAIN);
+
+                        CmsDocumentDependency main = new CmsDocumentDependency(null, jsonMain.getString(JSON_PATH));
+                        main.fromJSON(jsonMain, rootPath);
+                        result.setMainDocument(main);
+                    }
+                } else {
+                    // special handling for news
+                    String[] docs = CmsStringUtil.splitAsArray(input, '|');
+                    for (int i = 0; i < docs.length; i++) {
+                        String doc = docs[i];
+
+                        String lang = doc.substring(0, 2);
+                        Locale loc = new Locale(lang);
+
+                        if (i == 0) {
+                            result.setLocale(loc);
+                        } else {
+                            String rp = doc.substring(3);
+                            CmsDocumentDependency dep = new CmsDocumentDependency(null, rp);
+                            if (!loc.equals(result.getLocale())) {
+                                dep.setLocale(new Locale(lang));
+                                result.addVariant(dep);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(ex.getLocalizedMessage(), ex);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -419,6 +487,64 @@ public final class CmsDocumentDependency {
     }
 
     /**
+     * Read the information out of the given JSON object to fill
+     * the values of the document.<p>
+     * 
+     * @param json the JSON object with the information about this document
+     * @param rootPath the current path the home division
+     */
+    public void fromJSON(JSONObject json, String rootPath) {
+
+        try {
+            // language versions
+            if (json.has(JSON_LANGUAGES)) {
+                JSONArray jsonLanguages = json.getJSONArray(JSON_LANGUAGES);
+                for (int i = 0; i < jsonLanguages.length(); i++) {
+                    JSONObject jsonLang = (JSONObject)jsonLanguages.get(i);
+
+                    CmsDocumentDependency lang = new CmsDocumentDependency(null, jsonLang.getString(JSON_PATH));
+                    lang.fromJSON(jsonLang, rootPath);
+                    addVariant(lang);
+                }
+            }
+
+            // attachments
+            if (json.has(JSON_ATTACHMENTS)) {
+                JSONArray jsonAttachments = json.getJSONArray(JSON_ATTACHMENTS);
+                for (int i = 0; i < jsonAttachments.length(); i++) {
+                    try {
+                        JSONObject jsonAttachment = (JSONObject)jsonAttachments.get(i);
+
+                        CmsDocumentDependency att = new CmsDocumentDependency(null, jsonAttachment.getString(JSON_PATH));
+                        att.fromJSON(jsonAttachment, rootPath);
+
+                        // language versions of attachment
+                        if (jsonAttachment.has(JSON_LANGUAGES)) {
+                            JSONArray jsonAttLanguages = jsonAttachment.getJSONArray(JSON_LANGUAGES);
+                            for (int j = 0; j < jsonAttLanguages.length(); j++) {
+                                JSONObject jsonAttLanguage = (JSONObject)jsonAttLanguages.get(j);
+
+                                CmsDocumentDependency attLang = new CmsDocumentDependency(
+                                    null,
+                                    jsonAttLanguage.getString(JSON_PATH));
+                                attLang.fromJSON(jsonAttLanguage, rootPath);
+                                att.addVariant(attLang);
+                            }
+                        }
+                        addAttachment(att);
+                    } catch (Exception e) {
+                        LOG.error(e);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getLocalizedMessage(), ex);
+            }
+        }
+    }
+
+    /**
      * Returns the attachment number.<p>
      *
      * @return the attachment number
@@ -499,6 +625,20 @@ public final class CmsDocumentDependency {
     public CmsPublishedResource getResource() {
 
         return m_resource;
+    }
+
+    /**
+     * Returns the root path of this dependency.<p>
+     * 
+     * @return the root path
+     */
+    public String getRootPath() {
+
+        if (m_resource != null) {
+            return m_resource.getRootPath();
+        } else {
+            return m_rootPath;
+        }
     }
 
     /**
@@ -616,6 +756,7 @@ public final class CmsDocumentDependency {
                             addVariant(dep);
                         }
                         // if the file suffix is NOT equal, this is a new main document
+                        setMainDocument(this);
                     }
                 }
             }
@@ -627,6 +768,16 @@ public final class CmsDocumentDependency {
             }
             // add the main document as dependency for this attachment 
             addDependency(m_mainDocument);
+        }
+        for (CmsDocumentDependency var : getVariants()) {
+            String mainFileName = getMainDocument().getDocumentName() + getMainDocument().getDocumentSuffix();
+            if (mainFileName.equals(var.getResource().getRootPath())) {
+                setType(DependencyType.variant);
+                break;
+            } else {
+                setType(DependencyType.document);
+                break;
+            }
         }
     }
 
@@ -677,15 +828,13 @@ public final class CmsDocumentDependency {
      */
     public void setMainDocument(CmsDocumentDependency mainDocument) {
 
-        mainDocument.setType(DependencyType.document);
-
         if (m_mainDocument == null) {
             // we currently have no main document at all
             m_mainDocument = mainDocument;
         } else {
             // check if we find a better match for the main document locale
             if (mainDocument.getLocale().equals(getLocale())) {
-                mainDocument.addVariant(m_mainDocument);
+                // mainDocument.addVariant(m_mainDocument);
                 // main document locale is the "best" one
                 m_mainDocument = mainDocument;
             } else {
@@ -743,7 +892,6 @@ public final class CmsDocumentDependency {
 
         try {
             if ((!isAttachment()) && (m_attachments != null)) {
-
                 // iterate through all attachments
                 JSONArray jsonAttachments = new JSONArray();
                 for (CmsDocumentDependency att : m_attachments) {
@@ -752,11 +900,9 @@ public final class CmsDocumentDependency {
                 }
                 jsonDoc.put(JSON_ATTACHMENTS, jsonAttachments);
             } else if (isAttachment()) {
-
                 CmsDocumentDependency main = getMainDocument();
                 if (main != null) {
                     JSONObject jsonMain = main.toJSON(cms, true);
-
                     // iterate through all attachments of the main document
                     List<CmsDocumentDependency> attachments = main.getAttachments();
                     if (attachments != null) {
@@ -770,16 +916,12 @@ public final class CmsDocumentDependency {
                     jsonDoc.put(JSON_MAIN, jsonMain);
                 }
             }
-
-            //LOG.debug(jsonDoc.toString(2));
-
             return jsonDoc.toString();
         } catch (JSONException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-
         return null;
     }
 
@@ -794,24 +936,20 @@ public final class CmsDocumentDependency {
     public JSONObject toJSON(CmsObject cms, boolean includeLang) {
 
         try {
+            CmsObject clone = OpenCms.initCmsObject(cms);
+            clone.getRequestContext().setSiteRoot("");
             JSONObject jsonAttachment = new JSONObject();
-
+            CmsResource res = clone.readResource(m_rootPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            Map<String, String> props = CmsProperty.toMap(clone.readPropertyObjects(res, false));
             // id and path
-            jsonAttachment.put(JSON_UUID, getResource().getStructureId());
-            jsonAttachment.put(JSON_PATH, getResource().getRootPath());
-
-            CmsResource res = cms.readResource(getResource().getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
-            Map<String, String> props = CmsProperty.toMap(cms.readPropertyObjects(res, false));
-
+            jsonAttachment.put(JSON_UUID, res.getStructureId());
+            jsonAttachment.put(JSON_PATH, res.getRootPath());
             // title
             jsonAttachment.put(JSON_TITLE, props.get(CmsPropertyDefinition.PROPERTY_TITLE));
-
             // date created
             jsonAttachment.put(JSON_DATE_CREATED, res.getDateCreated());
-
             // date created
             jsonAttachment.put(JSON_LOCALE, m_locale);
-
             // date modified
             jsonAttachment.put(JSON_DATE_MODIFIED, res.getDateLastModified());
 
@@ -828,7 +966,6 @@ public final class CmsDocumentDependency {
                     jsonAttachment.put(JSON_LANGUAGES, jsonLanguages);
                 }
             }
-
             return jsonAttachment;
         } catch (Exception ex) {
             LOG.error(ex.getLocalizedMessage(), ex);
@@ -842,6 +979,10 @@ public final class CmsDocumentDependency {
     @Override
     public String toString() {
 
-        return m_resource.toString();
+        if (m_resource != null) {
+            return m_resource.toString();
+        } else {
+            return m_rootPath;
+        }
     }
 }
