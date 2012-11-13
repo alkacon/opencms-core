@@ -222,4 +222,12 @@ public class CmsSearchFieldConfiguration extends A_CmsSearchFieldConfiguration {
         }
         return result;
     }
+
+    /**
+     * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#init()
+     */
+    public void init() {
+
+        // nothing to do here 
+    }
 }

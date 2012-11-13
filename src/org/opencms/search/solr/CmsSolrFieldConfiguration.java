@@ -76,9 +76,6 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
     /** Stores additional fields to index. */
     private List<I_CmsSearchField> m_additionalFields;
 
-    /** Signals if initialization has been done already. */
-    private boolean m_initialized;
-
     /**
      * Default constructor.<p>
      */
@@ -143,6 +140,17 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         CmsSolrDocument doc = new CmsSolrDocument(new SolrInputDocument());
         doc.setId(resource.getStructureId());
         return doc;
+    }
+
+    /**
+     * Initializes the Solr field configuration.<p>
+     */
+    public void init() {
+
+        addContentFields();
+        addAdditionalFields();
+        addLuceneFields();
+        // m_initialized = true;
     }
 
     /**
@@ -248,12 +256,6 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
         I_CmsExtractionResult extractionResult,
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
-
-        if (!m_initialized) {
-            // we need a lazy initialization here, because the OpenCms locale manager
-            // has not been finally initialized when the search field configuration is created
-            init();
-        }
 
         if ((extractionResult != null) && (extractionResult.getMappingFields() != null)) {
             for (I_CmsSearchField field : extractionResult.getMappingFields()) {
@@ -446,16 +448,5 @@ public class CmsSolrFieldConfiguration extends A_CmsSearchFieldConfiguration {
             }
         }
         return false;
-    }
-
-    /**
-     * Initializes the Solr field configuration.<p>
-     */
-    private void init() {
-
-        addContentFields();
-        addAdditionalFields();
-        addLuceneFields();
-        m_initialized = true;
     }
 }

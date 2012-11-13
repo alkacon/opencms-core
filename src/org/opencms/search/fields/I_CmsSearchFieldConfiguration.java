@@ -126,6 +126,11 @@ public interface I_CmsSearchFieldConfiguration extends Comparable<I_CmsSearchFie
     String getName();
 
     /**
+     * Initializes this field configuration.<p>
+     */
+    void init();
+
+    /**
      * Sets the description of this field configuration.<p>
      * 
      * @param description the description to set
