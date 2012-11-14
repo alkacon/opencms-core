@@ -49,15 +49,18 @@ public interface I_CmsWorkflowManager {
      * 
      * @param userCms the current user's CMS context
      * @param action the workflow action 
-     * 
+     * @param options the publish options 
      * @param resources the resources to be processed 
      * 
      * @return the workflow response for the executed action 
      * 
      * @throws CmsException if something goes wrong 
      */
-    CmsWorkflowResponse executeAction(CmsObject userCms, CmsWorkflowAction action, List<CmsResource> resources)
-    throws CmsException;
+    CmsWorkflowResponse executeAction(
+        CmsObject userCms,
+        CmsWorkflowAction action,
+        CmsPublishOptions options,
+        List<CmsResource> resources) throws CmsException;
 
     /**
      * Gets the parameters of the workflow manager.<p>
@@ -65,17 +68,6 @@ public interface I_CmsWorkflowManager {
      * @return the configuration parameters of the workflow manager 
      */
     Map<String, String> getParameters();
-
-    /**
-     * Returns the resources for the given workflow and project.<p>
-     * 
-     * @param cms the user cms context
-     * @param workflow the workflow
-     * @param options the resource options
-     * 
-     * @return the workflow resources
-     */
-    List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
 
     /**
      * Returns the publish resource beans for the given workflow and project.<p>
@@ -87,6 +79,17 @@ public interface I_CmsWorkflowManager {
      * @return the workflow publish resource beans
      */
     List<CmsPublishResource> getWorkflowPublishResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
+
+    /**
+     * Returns the resources for the given workflow and project.<p>
+     * 
+     * @param cms the user cms context
+     * @param workflow the workflow
+     * @param options the resource options
+     * 
+     * @return the workflow resources
+     */
+    List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
 
     /**
      * Returns the available workflows for the current user.<p>

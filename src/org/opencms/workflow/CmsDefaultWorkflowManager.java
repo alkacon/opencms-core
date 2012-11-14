@@ -60,16 +60,19 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     public static final String WORKFLOW_PUBLISH = "WORKFLOW_PUBLISH";
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, java.util.List)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, org.opencms.ade.publish.shared.CmsPublishOptions, java.util.List)
      */
-    public CmsWorkflowResponse executeAction(CmsObject userCms, CmsWorkflowAction action, List<CmsResource> resources)
-    throws CmsException {
+    public CmsWorkflowResponse executeAction(
+        CmsObject userCms,
+        CmsWorkflowAction action,
+        CmsPublishOptions options,
+        List<CmsResource> resources) throws CmsException {
 
         String actionKey = action.getAction();
         if (CmsWorkflowAction.ACTION_CANCEL.equals(actionKey)) {
             return new CmsWorkflowResponse(true, actionKey, null, null, null);
         } else if (ACTION_PUBLISH.equals(actionKey)) {
-            return actionPublish(userCms, resources);
+            return actionPublish(userCms, options, resources);
         } else if (ACTION_FORCE_PUBLISH.equals(actionKey)) {
             return actionForcePublish(userCms, resources);
         }
@@ -154,14 +157,18 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
      * The implementation of the "publish" workflow action.<p>
      * 
      * @param userCms the user CMS context 
+     * @param options the publish options 
      * @param resources the resources which the action should process 
      * 
      * @return the workflow response 
      * @throws CmsException if something goes wrong 
      */
-    protected CmsWorkflowResponse actionPublish(CmsObject userCms, List<CmsResource> resources) throws CmsException {
+    protected CmsWorkflowResponse actionPublish(
+        CmsObject userCms,
+        CmsPublishOptions options,
+        List<CmsResource> resources) throws CmsException {
 
-        CmsPublish publish = new CmsPublish(userCms);
+        CmsPublish publish = new CmsPublish(userCms, options);
         List<CmsPublishResource> brokenResources = publish.getBrokenResources(resources);
         if (brokenResources.size() == 0) {
             publish.publishResources(resources);

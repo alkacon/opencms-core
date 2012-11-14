@@ -45,6 +45,7 @@ import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationPublishValidator;
@@ -185,6 +186,7 @@ public class CmsPublish {
     public List<CmsPublishResource> getBrokenResources(List<CmsResource> pubResources) {
 
         List<CmsPublishResource> resources = new ArrayList<CmsPublishResource>();
+        CmsPublishManager publishManager = OpenCms.getPublishManager();
 
         CmsPublishList publishList;
         try {
@@ -193,6 +195,11 @@ public class CmsPublish {
                 pubResources,
                 m_options.isIncludeSiblings(),
                 true);
+            if (m_options.isIncludeRelated()) {
+                CmsPublishList related = publishManager.getRelatedResourcesToPublish(m_cms, publishList);
+                publishList = publishManager.mergePublishLists(m_cms, publishList, related);
+            }
+
         } catch (CmsException e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
@@ -450,11 +457,17 @@ public class CmsPublish {
         I_CmsReport report = new CmsHtmlReport(
             cms.getRequestContext().getLocale(),
             cms.getRequestContext().getSiteRoot());
-        CmsPublishList publishList = OpenCms.getPublishManager().getPublishListAll(
+        CmsPublishManager publishManager = OpenCms.getPublishManager();
+        CmsPublishList publishList = publishManager.getPublishListAll(
             m_cms,
             resources,
             m_options.isIncludeSiblings(),
             true);
+        if (m_options.isIncludeRelated()) {
+            CmsPublishList related = publishManager.getRelatedResourcesToPublish(m_cms, publishList);
+            LOG.info("merging related resources into publish list.");
+            publishList = publishManager.mergePublishLists(m_cms, publishList, related);
+        }
         OpenCms.getPublishManager().publishProject(m_cms, report, publishList);
     }
 

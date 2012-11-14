@@ -84,11 +84,14 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
     private static final Log LOG = CmsLog.getLog(CmsExtendedWorkflowManager.class);
 
     /**
-     * @see org.opencms.workflow.CmsDefaultWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, java.util.List)
+     * @see org.opencms.workflow.CmsDefaultWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, org.opencms.ade.publish.shared.CmsPublishOptions, java.util.List)
      */
     @Override
-    public CmsWorkflowResponse executeAction(CmsObject userCms, CmsWorkflowAction action, List<CmsResource> resources)
-    throws CmsException {
+    public CmsWorkflowResponse executeAction(
+        CmsObject userCms,
+        CmsWorkflowAction action,
+        CmsPublishOptions options,
+        List<CmsResource> resources) throws CmsException {
 
         if (LOG.isInfoEnabled()) {
             LOG.info("workflow action: "
@@ -107,7 +110,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
             if (ACTION_RELEASE.equals(actionKey)) {
                 return actionRelease(userCms, resources);
             } else {
-                return super.executeAction(userCms, action, resources);
+                return super.executeAction(userCms, action, options, resources);
             }
         } catch (CmsException e) {
             LOG.info("workflow action failed");

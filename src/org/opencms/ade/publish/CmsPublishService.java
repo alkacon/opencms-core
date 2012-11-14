@@ -101,11 +101,11 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         CmsWorkflowResponse response = null;
         try {
             CmsObject cms = getCmsObject();
-
-            CmsPublish pub = new CmsPublish(cms, getCachedOptions());
+            CmsPublishOptions options = getCachedOptions();
+            CmsPublish pub = new CmsPublish(cms, options);
             List<CmsResource> publishResources = idsToResources(cms, toPublish);
             pub.removeResourcesFromPublishList(toRemove);
-            response = OpenCms.getWorkflowManager().executeAction(cms, action, publishResources);
+            response = OpenCms.getWorkflowManager().executeAction(cms, action, options, publishResources);
 
         } catch (Throwable e) {
             error(e);

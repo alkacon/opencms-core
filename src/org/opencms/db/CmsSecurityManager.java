@@ -3558,6 +3558,9 @@ public final class CmsSecurityManager {
                 pubList1.isPublishSiblings(),
                 pubList1.isPublishSubResources());
             ret.addAll(publishResources, false); // ignore files that should not be published
+            if (pubList1.isUserPublishList()) {
+                ret.setUserPublishList(true);
+            }
             ret.initialize(); // ensure sort order
 
             checkPublishPermissions(dbc, ret);
