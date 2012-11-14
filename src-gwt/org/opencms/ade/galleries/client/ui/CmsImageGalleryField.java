@@ -543,9 +543,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         if (indexofformat > -1) {
             int hasmoreValues = params.lastIndexOf("&");
             if (hasmoreValues > indexofformat) {
-                m_selectedFormat = params.substring(indexofformat, params.indexOf(PARAMETER_DESC)).replace(
-                    PARAMETER_FORMAT,
-                    "");
+                m_selectedFormat = params.substring(indexofformat, hasmoreValues).replace(PARAMETER_FORMAT, "");
             } else {
                 m_selectedFormat = params.substring(indexofformat).replace(PARAMETER_FORMAT, "");
             }
