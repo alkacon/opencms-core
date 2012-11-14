@@ -491,6 +491,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Gets the available galleries.<p>
+     * 
+     * @return the list of available galleries 
+     */
+    public List<CmsGalleryFolderBean> getAvailableGalleries() {
+
+        return m_dialogBean.getGalleries();
+    }
+
+    /**
      * Returns the available locales.<p>
      * 
      * @return the available locales
@@ -1435,19 +1445,29 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Removes a tab id from the internal list of tab ids.<p>
+     * 
+     * @param tabId the id of the tab to remove 
+     */
+    protected void removeTab(GalleryTabId tabId) {
+
+        if (m_tabIds != null) {
+            List<GalleryTabId> tabs = new ArrayList<GalleryTabId>(Arrays.asList(m_tabIds));
+            if (tabs.contains(tabId)) {
+                m_tabIds = new GalleryTabId[tabs.size() - 1];
+                tabs.remove(tabId);
+                m_tabIds = tabs.toArray(new GalleryTabId[tabs.size()]);
+            }
+        }
+    }
+
+    /**
      * Removes the types tab from the list of configured tabs.<p>
      * This will only take effect when executed before tab initialization.<p>
      */
     protected void removeTypesTab() {
 
-        if (m_tabIds != null) {
-            List<GalleryTabId> tabs = new ArrayList<GalleryTabId>(Arrays.asList(m_tabIds));
-            if (tabs.contains(GalleryTabId.cms_tab_types)) {
-                m_tabIds = new GalleryTabId[tabs.size() - 1];
-                tabs.remove(GalleryTabId.cms_tab_types);
-                m_tabIds = tabs.toArray(new GalleryTabId[tabs.size()]);
-            }
-        }
+        removeTab(GalleryTabId.cms_tab_types);
     }
 
     /**

@@ -191,7 +191,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         final CmsGalleryController controller) {
 
         m_mode = dialogBean.getMode();
-
         if (m_mode.equals(I_CmsGalleryProviderConstants.GalleryMode.view)) {
             RootPanel panel = RootPanel.get(I_CmsGalleryProviderConstants.GALLERY_DIALOG_ID);
             panel.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().popup());
@@ -414,7 +413,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+      return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
 
     }-*/;
 

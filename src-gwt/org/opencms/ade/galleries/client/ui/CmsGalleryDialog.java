@@ -38,6 +38,7 @@ import org.opencms.ade.galleries.client.CmsVfsTabHandler;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -273,6 +274,10 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_tabbedPanel.add(m_typesTab, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
                     break;
                 case cms_tab_galleries:
+                    List<CmsGalleryFolderBean> availableGalleries = controller.getAvailableGalleries();
+                    if ((availableGalleries != null) && availableGalleries.isEmpty()) {
+                        continue;
+                    }
                     m_galleriesTab = new CmsGalleriesTab(new CmsGalleriesTabHandler(controller));
                     m_galleriesTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_galleriesTab, Messages.get().key(Messages.GUI_TAB_TITLE_GALLERIES_0));
