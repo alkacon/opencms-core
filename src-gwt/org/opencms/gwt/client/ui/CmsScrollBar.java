@@ -142,6 +142,9 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
     /** The scroll knob top and bottom offset. */
     private static final int SCROLL_KNOB_OFFSET = 2;
 
+    /** The scroll knob minimum height. */
+    private static final int SCROLL_KNOB_MIN_HEIGHT = 10;
+
     /** The size of the increments between knob positions. */
     protected int m_stepSize = 5;
 
@@ -549,6 +552,7 @@ public class CmsScrollBar extends FocusPanel implements RequiresResize, HasValue
         result = result > (outerHeight - 5) ? 5 : (result < 8 ? 8 : result);
         m_positionValueRatio = (1.0 * (outerHeight - result)) / (innerHeight - outerHeight);
         m_knobHeight = result - (2 * SCROLL_KNOB_OFFSET);
+        m_knobHeight = m_knobHeight < SCROLL_KNOB_MIN_HEIGHT ? SCROLL_KNOB_MIN_HEIGHT : m_knobHeight;
         m_knob.getStyle().setHeight(m_knobHeight, Unit.PX);
     }
 
