@@ -13,6 +13,7 @@
 			border: none;
 			width: 100%;
 			display: table;
+			table-layout:fixed;
 		}
 		
 		div.imageInfo > div{
@@ -26,14 +27,15 @@
 			text-overflow: ellipsis;
 			padding: 1px;
 		}
+		
 	</ui:style>
 	<g:HTMLPanel styleName="{style.imageInfo}" addStyleNames="{res.generalCss.cornerAll}">
 		<div class="{res.generalCss.cornerAll}">
 			<span class="{style.title}" ui:field="m_title"></span>
 			<table class="{style.infos}">
 				<colgroup>
-					<col width="20%" />
-					<col width="80%" />
+					<col style="width:20%" />
+					<col style="width:80%" />
 				</colgroup>
 				<tr>
 					<td ui:field="m_labelDimension"></td>

@@ -101,10 +101,14 @@ public class CmsImageInfo extends Composite {
         m_labelLastChanged.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_DATE_LAST_CHANGED_0));
         m_labelUserLastModified.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_LAST_CHANGED_BY_0));
         m_description.setInnerText(info.getDescription());
+        m_description.setTitle(info.getDescription());
         m_dimension.setInnerText(dimensions);
+        m_dimension.setTitle(dimensions);
         m_userLastModified.setInnerText(info.getUserLastModified());
+        m_userLastModified.setTitle(info.getUserLastModified());
         m_lastChanged.setInnerText(info.getDateLastModified());
+        m_lastChanged.setTitle(info.getDateLastModified());
         m_title.setInnerText(info.getTitle());
+        m_title.setTitle(info.getTitle());
     }
-
 }
