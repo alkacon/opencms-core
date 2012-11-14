@@ -199,6 +199,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Value to indicate a content change. */
     public static final int CHANGED_CONTENT = 16;
 
+    /** Value to indicate a project change. */
+    public static final int CHANGED_PROJECT = 32;
+
     /** Value to indicate a change in the lastmodified settings of a resource. */
     public static final int CHANGED_LASTMODIFIED = 4;
 
@@ -5332,10 +5335,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // add the resource to the lock dispatcher
         m_lockManager.addResource(dbc, resource, dbc.currentUser(), project, type);
-
+        boolean changedProjectLastModified = false;
         if (!resource.getState().isUnchanged() && !resource.getState().isKeep()) {
             // update the project flag of a modified resource as "last modified inside the current project"
             getVfsDriver(dbc).writeLastModifiedProjectId(dbc, project, project.getUuid(), resource);
+            changedProjectLastModified = true;
         }
 
         // we must also clear the permission cache
@@ -5344,7 +5348,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire resource modification event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(NOTHING_CHANGED));
+        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(changedProjectLastModified
+        ? CHANGED_PROJECT
+        : NOTHING_CHANGED));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
