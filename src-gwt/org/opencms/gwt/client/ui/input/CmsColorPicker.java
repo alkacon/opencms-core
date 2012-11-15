@@ -28,7 +28,9 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.colorpicker.CmsColorSelector;
@@ -124,6 +126,9 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /** The internal textbox used by this widget to display the color value. */
     protected TextBox m_textboxColorValue = new TextBox();
+
+    /** THe counter to not set the buttons more then one time. */
+    int m_count = 0;
 
     /**
      * Text area widgets for ADE forms.<p>
@@ -395,6 +400,22 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     }
 
     /**
+     * Close the popup and store the old color value in the colorvalue field.<p>
+     * 
+     */
+    protected void closePopupDefault() {
+
+        if (m_previewHandlerRegistration != null) {
+            m_previewHandlerRegistration.removeHandler();
+        }
+        m_previewHandlerRegistration = null;
+        if (checkvalue(m_textboxColorValue.getText())) {
+            m_popup.hide();
+        }
+
+    }
+
+    /**
      * Converts the integer value to an hex value.<p>
      * @param i the integer value
      * @return the hex string
@@ -430,16 +451,17 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     protected void openPopup() {
 
         m_popup.setWidth(450);
-        m_popup.setHeight(280);
+        //m_popup.setHeight(280);
         m_popup.setAutoHideEnabled(true);
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {
 
-                closePopup();
+                closePopupDefault();
 
             }
         });
+
         m_popup.addDialogClose(new Command() {
 
             public void execute() {
@@ -451,6 +473,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
         if (m_previewHandlerRegistration != null) {
             m_previewHandlerRegistration.removeHandler();
+
         }
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         m_popup.showRelativeTo(m_colorField);
@@ -466,6 +489,33 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
             // TODO: Auto-generated catch block
         }
         m_popup.add(picker);
+        if (m_count == 0) {
+            CmsPushButton close = new CmsPushButton();
+            CmsPushButton cancel = new CmsPushButton();
+            cancel.setText(Messages.get().key(Messages.GUI_CANCEL_0));
+            cancel.setTitle(Messages.get().key(Messages.GUI_CANCEL_0));
+            close.setText(Messages.get().key(Messages.GUI_OK_0));
+            close.setTitle(Messages.get().key(Messages.GUI_OK_0));
+            close.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    closePopup();
+
+                }
+            });
+            cancel.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    closePopupDefault();
+
+                }
+            });
+            m_popup.addButton(cancel);
+            m_popup.addButton(close);
+            m_count = 1;
+        }
 
         m_xcoordspopup = m_popup.getPopupLeft();
         m_ycoordspopup = m_popup.getPopupTop();
