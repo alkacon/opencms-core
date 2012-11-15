@@ -34,13 +34,19 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * Native change handler wrapper.<p>
  */
-public final class CmsNativeEntityChangeListener extends JavaScriptObject implements I_CmsEntityChangeListener {
+public final class CmsEntityChangeListenerWrapper implements I_CmsEntityChangeListener {
+
+    /** The wrapped native listener. */
+    private JavaScriptObject m_wrappedListener;
 
     /**
      * Constructor.<p>
+     * 
+     * @param listener the native listener to wrap 
      */
-    protected CmsNativeEntityChangeListener() {
+    protected CmsEntityChangeListenerWrapper(JavaScriptObject listener) {
 
+        m_wrappedListener = listener;
     }
 
     /**
@@ -57,6 +63,7 @@ public final class CmsNativeEntityChangeListener extends JavaScriptObject implem
      * @param entity the changed entiy
      */
     private native void onChange(Entity entity) /*-{
-        this.onChange(entity);
+        var listener = this.@org.opencms.ade.contenteditor.client.CmsEntityChangeListenerWrapper::m_wrappedListener;
+        listener.onChange(entity);
     }-*/;
 }

@@ -118,17 +118,9 @@ public class CmsEntityObserver implements ValueChangeHandler<Entity> {
                 || ((scopeValue == null) && (previousValue != null))) {
                 // the value within this scope has changed, notify all listeners
                 if (m_changeListeners.containsKey(scope)) {
-                    List<I_CmsEntityChangeListener> listeners = m_changeListeners.get(scope);
-                    for (int i = 0; i < listeners.size(); i++) {
+                    for (I_CmsEntityChangeListener changeListener : m_changeListeners.get(scope)) {
                         try {
-
-                            Object listener = listeners.get(i);
-                            if (listener instanceof I_CmsEntityChangeListener) {
-                                ((I_CmsEntityChangeListener)listener).onEntityChange(entity);
-                            } else {
-                                CmsNativeEntityChangeListener nativeListener = (CmsNativeEntityChangeListener)listener;
-                                nativeListener.onEntityChange(entity);
-                            }
+                            changeListener.onEntityChange(entity);
                         } catch (Exception e) {
                             String stack = CmsClientStringUtil.getStackTrace(e, "<br />");
                             CmsDebugLog.getInstance().printLine("<br />" + e.getMessage() + "<br />" + stack);

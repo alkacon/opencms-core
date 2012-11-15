@@ -79,6 +79,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -1334,10 +1335,10 @@ public final class CmsContentEditor extends EditorBase {
      * @param changeListener the change listener
      * @param changeScope the change scope
      */
-    private void addChangeListener(CmsNativeEntityChangeListener changeListener, String changeScope) {
+    private void addChangeListener(JavaScriptObject changeListener, String changeScope) {
 
         try {
-            m_entityObserver.addEntityChangeListener(changeListener, changeScope);
+            m_entityObserver.addEntityChangeListener(new CmsEntityChangeListenerWrapper(changeListener), changeScope);
         } catch (Exception e) {
 
             CmsDebugLog.getInstance().printLine("Exception occured during listener registration" + e.getMessage());
@@ -1395,7 +1396,7 @@ public final class CmsContentEditor extends EditorBase {
             var wrapper = {
                 onChange : listener.onChange
             }
-            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lorg/opencms/ade/contenteditor/client/CmsNativeEntityChangeListener;Ljava/lang/String;)(listener, scope);
+            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
         }
         $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
             return self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()();
