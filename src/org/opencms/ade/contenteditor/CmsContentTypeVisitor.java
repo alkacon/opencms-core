@@ -251,7 +251,7 @@ public class CmsContentTypeVisitor {
         result.append(A_CmsWidget.LABEL_PREFIX);
         result.append(getTypeKey(value));
         result.append(A_CmsWidget.HELP_POSTFIX);
-        return m_messages.keyDefault(result.toString(), value.getName());
+        return m_messages.keyDefault(result.toString(), null);
     }
 
     /**

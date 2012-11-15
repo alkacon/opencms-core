@@ -31,6 +31,8 @@ import com.alkacon.acacia.shared.AttributeConfiguration;
 import com.alkacon.acacia.shared.ContentDefinition;
 import com.alkacon.acacia.shared.Entity;
 import com.alkacon.acacia.shared.TabInfo;
+import com.alkacon.vie.shared.I_Entity;
+import com.alkacon.vie.shared.I_EntityAttribute;
 import com.alkacon.vie.shared.I_Type;
 
 import org.opencms.gwt.shared.CmsModelResourceInfo;
@@ -120,6 +122,40 @@ public class CmsContentDefinition extends ContentDefinition {
         m_resourceType = resourceType;
         m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
         m_performedAutocorrection = performedAutocorrection;
+    }
+
+    public static String getValueForPath(I_Entity entity, String path) {
+
+        String result = null;
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        String attributeName;
+        if (path.contains("/")) {
+            attributeName = path.substring(0, path.indexOf("/"));
+            path = path.substring(path.indexOf("/"));
+        } else {
+            attributeName = path;
+            path = null;
+        }
+        int index = ContentDefinition.extractIndex(attributeName);
+        if (index > 0) {
+            index--;
+        }
+        attributeName = entity.getTypeName() + "/" + ContentDefinition.removeIndex(attributeName);
+        I_EntityAttribute attribute = entity.getAttribute(attributeName);
+        if (!((attribute == null) || (attribute.isComplexValue() && (path == null)))) {
+            if (attribute.isSimpleValue()) {
+                if ((path == null) && (attribute.getValueCount() > 0)) {
+                    List<String> values = attribute.getSimpleValues();
+                    result = values.get(index);
+                }
+            } else if (attribute.getValueCount() > (index + 1)) {
+                List<I_Entity> values = attribute.getComplexValues();
+                result = getValueForPath(values.get(index), path);
+            }
+        }
+        return result;
     }
 
     /**

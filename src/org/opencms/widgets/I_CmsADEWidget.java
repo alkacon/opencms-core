@@ -51,7 +51,7 @@ public interface I_CmsADEWidget extends I_CmsWidget {
      * Returns the configuration string for the ADE content editor widget.<p>
      * 
      * @param cms the OpenCms context
-     * @param schemaType the schema type
+     * @param contentValue the schema type
      * @param messages the messages
      * @param resource the edited resource
      * @param contentLocale the content locale
@@ -60,7 +60,7 @@ public interface I_CmsADEWidget extends I_CmsWidget {
      */
     String getConfiguration(
         CmsObject cms,
-        A_CmsXmlContentValue schemaType,
+        A_CmsXmlContentValue contentValue,
         CmsMessages messages,
         CmsResource resource,
         Locale contentLocale);

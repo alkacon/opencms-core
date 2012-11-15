@@ -34,6 +34,7 @@ import com.alkacon.acacia.client.ValidationContext;
 import com.alkacon.acacia.client.css.I_LayoutBundle;
 import com.alkacon.acacia.shared.TabInfo;
 import com.alkacon.acacia.shared.ValidationResult;
+import com.alkacon.vie.client.Entity;
 import com.alkacon.vie.client.Vie;
 import com.alkacon.vie.shared.I_Entity;
 
@@ -62,6 +63,7 @@ import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
@@ -105,6 +107,12 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * The content editor.<p>
  */
 public final class CmsContentEditor extends EditorBase {
+
+    /** The add change listener method name. */
+    private static final String ADD_CHANGE_LISTENER_METHOD = "cmsAddEntityChangeListener";
+
+    /** The get current entity method name. */
+    private static final String GET_CURRENT_ENTITY_METHOD = "cmsGetCurrentEntity";
 
     /** The in-line editor instance. */
     private static CmsContentEditor INSTANCE;
@@ -156,6 +164,9 @@ public final class CmsContentEditor extends EditorBase {
 
     /** The id of the edited entity. */
     private String m_entityId;
+
+    /** The entity observer instance. */
+    private CmsEntityObserver m_entityObserver;
 
     /** The hide help bubbles button. */
     private CmsToggleButton m_hideHelpBubblesButton;
@@ -230,6 +241,53 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
+     * Adds an entity change listener.<p>
+     * 
+     * @param changeListener the change listener
+     * @param changeScope the change scope
+     */
+    public static void addEntityChangeListener(I_CmsEntityChangeListener changeListener, String changeScope) {
+
+        CmsDebugLog.getInstance().printLine("trying to ad change listener for scope: " + changeScope);
+        if ((INSTANCE == null) || (INSTANCE.m_entityObserver == null)) {
+            CmsDebugLog.getInstance().printLine("handling external registration");
+            if (isObserverExported()) {
+                CmsDebugLog.getInstance().printLine("registration is available");
+                try {
+                    addNativeListsner(changeListener, changeScope);
+                } catch (Exception e) {
+
+                    CmsDebugLog.getInstance().printLine(
+                        "Exception occured during listener registration" + e.getMessage());
+                }
+            } else {
+                throw new RuntimeException("Editor is not initialized yet.");
+            }
+        } else {
+            INSTANCE.m_entityObserver.addEntityChangeListener(changeListener, changeScope);
+        }
+    }
+
+    /**
+     * Returns the currently edited entity.<p>
+     * 
+     * @return the currently edited entity
+     */
+    public static Entity getEntity() {
+
+        if ((INSTANCE == null) || (INSTANCE.m_entityObserver == null)) {
+            CmsDebugLog.getInstance().printLine("handling external registration");
+            if (isObserverExported()) {
+                return nativeGetEntity();
+            } else {
+                throw new RuntimeException("Editor is not initialized yet.");
+            }
+        } else {
+            return INSTANCE.getCurrentEntity();
+        }
+    }
+
+    /**
      * Returns the in-line editor instance.<p>
      * 
      * @return the in-line editor instance
@@ -301,6 +359,59 @@ public final class CmsContentEditor extends EditorBase {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Adds the change listener.<p>
+     * 
+     * @param changeListener the change listener
+     * @param changeScope the change scope
+     */
+    private static native void addNativeListsner(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
+        var nat = {
+            instance : changeListener
+        };
+        nat.onChange = function(entity) {
+            this.instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lcom/alkacon/vie/client/Entity;)(entity);
+        }
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            method(nat, changeScope);
+        }
+    }-*/;
+
+    /**
+     * Checks whether the add entity change listener method has been exported.<p>
+     *  
+     * @return <code>true</code> if the add entity change listener method has been exported
+     */
+    private static native boolean isObserverExported()/*-{
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            return true;
+        } else {
+            return false;
+        }
+    }-*/;
+
+    /**
+     * Returns the current entity.<p>
+     * 
+     * @return the current entity
+     */
+    private static native Entity nativeGetEntity()/*-{
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+                ();
+    }-*/;
+
+    /**
+     * Returns the currently edited entity.<p>
+     * 
+     * @return the currently edited entity
+     */
+    public Entity getCurrentEntity() {
+
+        return (Entity)m_vie.getEntity(m_entityId);
     }
 
     /**
@@ -667,6 +778,10 @@ public final class CmsContentEditor extends EditorBase {
             m_basePanel.removeFromParent();
             m_basePanel = null;
         }
+        if (m_entityObserver != null) {
+            m_entityObserver.clear();
+            m_entityObserver = null;
+        }
         m_changedEntityIds.clear();
         m_registeredEntities.clear();
         m_availableLocales.clear();
@@ -1022,7 +1137,11 @@ public final class CmsContentEditor extends EditorBase {
         content.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().contentPanel());
         content.addStyleName(I_LayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);
-
+        if (m_entityObserver != null) {
+            m_entityObserver.clear();
+        }
+        m_entityObserver = new CmsEntityObserver(getCurrentEntity());
+        exportObserver();
         renderEntityForm(m_entityId, m_tabInfos, content, m_basePanel.getElement());
     }
 
@@ -1091,9 +1210,9 @@ public final class CmsContentEditor extends EditorBase {
         m_tabInfos = definition.getTabInfos();
         m_definitions.put(definition.getLocale(), definition);
         getWidgetService().addConfigurations(definition.getConfigurations());
-        addEntityChangeHandler(definition.getEntityId(), new ValueChangeHandler<I_Entity>() {
+        addEntityChangeHandler(definition.getEntityId(), new ValueChangeHandler<Entity>() {
 
-            public void onValueChange(ValueChangeEvent<I_Entity> event) {
+            public void onValueChange(ValueChangeEvent<Entity> event) {
 
                 setChanged();
             }
@@ -1210,6 +1329,22 @@ public final class CmsContentEditor extends EditorBase {
     }
 
     /**
+     * Adds the change listener to the observer.<p>
+     * 
+     * @param changeListener the change listener
+     * @param changeScope the change scope
+     */
+    private void addChangeListener(CmsNativeEntityChangeListener changeListener, String changeScope) {
+
+        try {
+            m_entityObserver.addEntityChangeListener(changeListener, changeScope);
+        } catch (Exception e) {
+
+            CmsDebugLog.getInstance().printLine("Exception occured during listener registration" + e.getMessage());
+        }
+    }
+
+    /**
      * Closes the editor.<p>
      */
     private native void closeEditorWidow() /*-{
@@ -1249,6 +1384,23 @@ public final class CmsContentEditor extends EditorBase {
         m_saveButton.enable();
         m_saveExitButton.enable();
     }
+
+    /**
+     * Exports the add entity change listener method.<p>
+     */
+    private native void exportObserver()/*-{
+        var self = this;
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+                listener, scope) {
+            var wrapper = {
+                onChange : listener.onChange
+            }
+            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lorg/opencms/ade/contenteditor/client/CmsNativeEntityChangeListener;Ljava/lang/String;)(listener, scope);
+        }
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
+            return self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()();
+        }
+    }-*/;
 
     /**
      * Returns the entity id for the given locale.<p>
