@@ -103,7 +103,7 @@ public class CmsEditorHandler implements I_CmsEditorHandler {
                 if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
                     String fallback = "/system/workplace/editors/xmlcontent/editor.jsp";
                     try {
-                        if (!CmsWorkplaceEditorManager.checkNewWidgetsAvailable(cms, resource)) {
+                        if (!CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(cms, resource)) {
                             editorUri = fallback;
                         }
                     } catch (CmsException e) {

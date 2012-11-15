@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.util.CmsDefaultSet;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -88,6 +89,13 @@ public interface I_CmsXmlContentHandler {
 
     /** Prefix for URL name mappings. */
     String MAPTO_URLNAME = "urlName";
+
+    /**
+     * Gets the list of allowed template context names.<p> 
+     * 
+     * @return the list of allowed template context names 
+     */
+    CmsDefaultSet<String> getAllowedTemplates();
 
     /**
      * Returns the configuration String value for the widget used to edit the given XML content schema type.<p> 
@@ -150,13 +158,6 @@ public interface I_CmsXmlContentHandler {
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(Locale)
      */
     String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale);
-
-    /**
-     * Gets the list of forbidden template context names.<p>
-     * 
-     * @return the list of forbidden template context names
-     */
-    List<String> getForbiddenContexts();
 
     /**
      * Returns the container page element formatter configuration for a given resource.<p>
@@ -321,6 +322,13 @@ public interface I_CmsXmlContentHandler {
      * @param document the document to resolve the check rules for
      */
     void invalidateBrokenLinks(CmsObject cms, CmsXmlContent document);
+
+    /**
+     * Checks whether the Acacia editor is disabled for this type.<p>
+     * 
+     * @return true if the Acacia editor is disabled 
+     */
+    boolean isAcaciaEditorDisabled();
 
     /**
      * Returns <code>true</code> in case the given value should be searchable with 

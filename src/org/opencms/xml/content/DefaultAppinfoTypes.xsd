@@ -80,6 +80,7 @@
 		<xsd:sequence>
 			<xsd:element name="layout" type="OpenCmsDefaultAppinfoLayout" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
+		<xsd:attribute name="useAcacia" type="xsd:string" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoLayout">
@@ -239,6 +240,24 @@
 		<xsd:attribute name="description" type="xsd:string" use="optional" />
 		<xsd:attribute name="error" type="xsd:string" use="optional" />
 	</xsd:complexType>
+
+	
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoTemplates">
+		<xsd:sequence>
+			<xsd:element name="template" type="OpenCmsDefaultAppinfoTemplate" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="enabledByDefault" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoTemplate">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="enabled" type="xsd:string" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType> 
+	
 	
 	<xsd:simpleType name="OpenCmsDefaultAppinfoSettingType">
 		<xsd:restriction base="xsd:string">

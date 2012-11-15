@@ -50,12 +50,11 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Visitor to read all types and attribute configurations within a content definition.<p>
@@ -80,8 +79,8 @@ public class CmsContentTypeVisitor {
     /** The messages. */
     private CmsMultiMessages m_messages;
 
-    /** Set of class names of non-ADE widgets which have been discovered. */
-    private Set<String> m_nonAdeWidgets = new HashSet<String>();
+    /** The widgets encountered by this visitor. */
+    private List<I_CmsWidget> m_widgets = new ArrayList<I_CmsWidget>();
 
     /** The registered types. */
     private Map<String, I_Type> m_registeredTypes;
@@ -117,13 +116,13 @@ public class CmsContentTypeVisitor {
     }
 
     /**
-     * Gets the set of class names of non-ADE widgets that have been discovered.<p>
+     * Gets the list of widgets which have been processed by this visitor.<p>
      * 
-     * @return the set of non-ADE widget classes 
+     * @return the list of widget 
      */
-    public Set<String> getNonAdeWidgets() {
+    public List<I_CmsWidget> getCollectedWidgets() {
 
-        return m_nonAdeWidgets;
+        return Collections.unmodifiableList(m_widgets);
     }
 
     /**
@@ -134,16 +133,6 @@ public class CmsContentTypeVisitor {
     public List<TabInfo> getTabInfos() {
 
         return m_tabInfos;
-    }
-
-    /** 
-     * Returns true if non-ADE compatible widgets were found.<p>
-     * 
-     * @return true if non-ADE compatible widgets were found 
-     */
-    public boolean hasNonAdeWidgets() {
-
-        return !m_nonAdeWidgets.isEmpty();
     }
 
     /**
@@ -321,9 +310,8 @@ public class CmsContentTypeVisitor {
                         m_widgetConfigurations.put(widgetName, externalConfiguration);
                     }
                 }
-            } else {
-                m_nonAdeWidgets.add(widget.getClass().getName());
             }
+            m_widgets.add(widget);
         } catch (Exception e) {
             // may happen if no widget was set for the value
             CmsContentService.LOG.debug(e.getMessage(), e);

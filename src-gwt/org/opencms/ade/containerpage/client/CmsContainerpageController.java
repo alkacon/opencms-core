@@ -67,6 +67,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
+import org.opencms.util.CmsDefaultSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -1922,8 +1923,8 @@ public final class CmsContainerpageController {
         if (contextInfo.getCurrentContext() == null) {
             return true;
         }
-        List<String> forbiddenContextsForType = contextInfo.getForbiddenContexts().get(elementData.getResourceType());
-        if ((forbiddenContextsForType != null) && forbiddenContextsForType.contains(contextInfo.getCurrentContext())) {
+        CmsDefaultSet<String> allowedContexts = contextInfo.getAllowedContexts().get(elementData.getResourceType());
+        if ((allowedContexts != null) && !allowedContexts.contains(contextInfo.getCurrentContext())) {
             return false;
         }
 

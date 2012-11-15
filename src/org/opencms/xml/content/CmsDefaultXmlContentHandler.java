@@ -63,6 +63,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
+import org.opencms.util.CmsDefaultSet;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
@@ -294,6 +295,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
 
+    /** Node name. */
+    public static final String APPINFO_TEMPLATE = "template";
+
+    /** Node name. */
+    public static final String APPINFO_TEMPLATES = "templates";
+
     /** The file where the default appinfo schema is located. */
     public static final String APPINFO_SCHEMA_FILE = "org/opencms/xml/content/DefaultAppinfo.xsd";
 
@@ -371,6 +378,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map<String, String> m_configurationValues;
 
+    /** The set of allowed templates. */
+    protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
+
     /** The CSS resources to include into the html-page head. */
     protected Set<String> m_cssHeadIncludes;
 
@@ -434,8 +444,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
 
-    /** The list of forbidden template contexts. */
-    private List<String> m_forbiddenTemplateContexts;
+    /** Attribute name. */
+    public static final String ATTR_ENABLED_BY_DEFAULT = "enabledByDefault";
+
+    /** Attribute name. */
+    public static final String ATTR_ENABLED = "enabled";
+
+    /** Attribute name. */
+    public static final String ATTR_USE_ACACIA = "useAcacia";
+
+    /** Flag which controls whether the Acacia editor should be disabled for this type. */
+    protected boolean m_useAcacia = true;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -473,6 +492,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 APPINFO_SCHEMA_FILE), e);
         }
         CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getAllowedTemplates()
+     */
+    public CmsDefaultSet<String> getAllowedTemplates() {
+
+        return m_allowedTemplates;
+
     }
 
     /**
@@ -557,16 +585,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
 
         return getDefault(cms, value.getDocument() != null ? value.getDocument().getFile() : null, value, path, locale);
-    }
-
-    /**
-     * Gets the forbidden template contexts.<p>
-     * 
-     * @return the forbidden contexts 
-     */
-    public List<String> getForbiddenContexts() {
-
-        return Collections.unmodifiableList(m_forbiddenTemplateContexts);
     }
 
     /**
@@ -804,8 +822,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initHeadIncludes(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_SETTINGS)) {
                     initSettings(element, contentDefinition);
-                } else if (nodeName.equals(APPINFO_FORBIDDEN_CONTEXTS)) {
-                    initForbiddenContexts(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_TEMPLATES)) {
+                    initTemplates(element, contentDefinition);
                 }
             }
         }
@@ -890,6 +908,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             // re-initialize the XML content 
             document.initDocument();
         }
+    }
+
+    /**
+     * Returns true if the Acacia editor is disabled for this type.<p>
+     * 
+     * @return true if the acacia editor is disabled 
+     */
+    public boolean isAcaciaEditorDisabled() {
+
+        return !m_useAcacia;
     }
 
     /**
@@ -1751,20 +1779,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_titleMappings = new ArrayList<String>(2);
         m_formatters = new ArrayList<CmsFormatterBean>();
         m_searchFields = new HashMap<String, I_CmsSearchField>();
-        m_forbiddenTemplateContexts = new ArrayList<String>();
+        m_allowedTemplates = new CmsDefaultSet<String>();
+        m_allowedTemplates.setDefaultMembership(true);
     }
 
     /**
-     * Initializes the default values for this content handler.<p>
-     * 
-     * Using the default values from the appinfo node, it's possible to have more 
-     * sophisticated logic for generating the defaults then just using the XML schema "default"
-     * attribute.<p> 
-     * 
-     * @param root the "defaults" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the default values belong to
-     * @throws CmsXmlException if something goes wrong
-     */
+    * Initializes the default values for this content handler.<p>
+    * 
+    * Using the default values from the appinfo node, it's possible to have more 
+    * sophisticated logic for generating the defaults then just using the XML schema "default"
+    * attribute.<p> 
+    * 
+    * @param root the "defaults" element from the appinfo node of the XML content definition
+    * @param contentDefinition the content definition the default values belong to
+    * @throws CmsXmlException if something goes wrong
+    */
     protected void initDefaultValues(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
 
         Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(root, APPINFO_DEFAULT);
@@ -1777,21 +1806,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // add a default value mapping for the element
                 addDefault(contentDefinition, elementName, defaultValue);
             }
-        }
-    }
-
-    /**
-     * Initializes the forbidden template contexts.<p>
-     * 
-     * @param root the root XML element 
-     * @param contentDefinition the content definition 
-     */
-    protected void initForbiddenContexts(Element root, CmsXmlContentDefinition contentDefinition) {
-
-        String elementContent = root.getText();
-        for (String token : CmsStringUtil.splitAsList(elementContent, ",")) {
-            token = token.trim();
-            m_forbiddenTemplateContexts.add(token);
         }
     }
 
@@ -1879,6 +1893,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     */
     protected void initLayouts(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
 
+        m_useAcacia = safeParseBoolean(root.attributeValue(ATTR_USE_ACACIA), true);
         Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(root, APPINFO_LAYOUT);
         while (i.hasNext()) {
             // iterate all "layout" elements in the "layouts" node
@@ -2256,6 +2271,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 m_tabs.add(0, tab);
             }
         }
+    }
+
+    /**
+     * Initializes the forbidden template contexts.<p>
+     * 
+     * @param root the root XML element 
+     * @param contentDefinition the content definition 
+     */
+    protected void initTemplates(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        String strEnabledByDefault = root.attributeValue(ATTR_ENABLED_BY_DEFAULT);
+        m_allowedTemplates.setDefaultMembership(safeParseBoolean(strEnabledByDefault, true));
+        @SuppressWarnings("unchecked")
+        List<Element> elements = root.selectNodes(APPINFO_TEMPLATE);
+        for (Element elem : elements) {
+            boolean enabled = safeParseBoolean(elem.attributeValue(ATTR_ENABLED), true);
+            String templateName = elem.getText().trim();
+            m_allowedTemplates.setContains(templateName, enabled);
+        }
+        m_allowedTemplates.freeze();
     }
 
     /**
@@ -2885,6 +2920,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             fieldMapping.setDefaultValue(element.attributeValue(APPINFO_ATTR_DEFAULT));
         }
         return fieldMapping;
+    }
+
+    /**
+     * Parses a boolean from a string and returns a default value if the string couldn't be parsed.<p>
+     *  
+     * @param text the text from which to get the boolean value 
+     * @param defaultValue the value to return if parsing fails
+     *  
+     * @return the parsed boolean 
+     */
+    private boolean safeParseBoolean(String text, boolean defaultValue) {
+
+        if (text == null) {
+            return defaultValue;
+        }
+        try {
+            return Boolean.parseBoolean(text);
+        } catch (Throwable t) {
+            return defaultValue;
+        }
     }
 
 }

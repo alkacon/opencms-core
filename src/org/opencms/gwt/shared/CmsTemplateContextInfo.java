@@ -27,10 +27,10 @@
 
 package org.opencms.gwt.shared;
 
+import org.opencms.util.CmsDefaultSet;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -61,8 +61,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
     /** The key of the currently active context. */
     private String m_currentContext;
 
-    /** The map of forbidden contexts for types. */
-    private Map<String, List<String>> m_forbiddenContextMap;
+    /** The map of allowed contexts for each type. */
+    private Map<String, CmsDefaultSet<String>> m_allowedContextMap;
 
     /** The setting definition for the templateContexts setting. */
     private CmsXmlContentProperty m_settingDefinition;
@@ -73,6 +73,17 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public CmsTemplateContextInfo() {
 
         // default constructor 
+    }
+
+    /**
+     * Gets the map of forbidden contexts for resource types.<p>
+     * 
+     * @return the map of forbidden contexts for resource types 
+     */
+    public Map<String, CmsDefaultSet<String>> getAllowedContexts() {
+
+        return m_allowedContextMap;
+
     }
 
     /** 
@@ -116,16 +127,6 @@ public class CmsTemplateContextInfo implements IsSerializable {
     }
 
     /**
-     * Gets the map of forbidden contexts for resource types.<p>
-     * 
-     * @return the map of forbidden contexts for resource types 
-     */
-    public Map<String, List<String>> getForbiddenContexts() {
-
-        return m_forbiddenContextMap;
-    }
-
-    /**
      * Gets the key of the currently selected template context, using the cookie.<p>
      * 
      * @return the name of the currently selected template context 
@@ -143,6 +144,16 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public CmsXmlContentProperty getSettingDefinition() {
 
         return m_settingDefinition;
+    }
+
+    /**
+     * Sets the allowed contexts.<p>
+     * 
+     * @param allowedContextMap the map of allowed contexts 
+     */
+    public void setAllowedContexts(Map<String, CmsDefaultSet<String>> allowedContextMap) {
+
+        m_allowedContextMap = allowedContextMap;
     }
 
     /**
@@ -183,16 +194,6 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public void setCurrentContext(String context) {
 
         m_currentContext = context;
-    }
-
-    /**
-     * Sets the forbidden context map.<p>
-     * 
-     * @param forbiddenContexts the forbidden context map 
-     */
-    public void setForbiddenContexts(Map<String, List<String>> forbiddenContexts) {
-
-        m_forbiddenContextMap = forbiddenContexts;
     }
 
     /**

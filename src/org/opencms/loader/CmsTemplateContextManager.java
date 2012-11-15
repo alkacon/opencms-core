@@ -35,6 +35,7 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsDefaultSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -114,8 +115,8 @@ public class CmsTemplateContextManager {
             result.setContextLabels(niceNames);
             result.setContextProvider(provider.getClass().getName());
         }
-        Map<String, List<String>> forbiddenContextMap = safeGetForbiddenContextMap();
-        result.setForbiddenContexts(forbiddenContextMap);
+        Map<String, CmsDefaultSet<String>> allowedContextMap = safeGetAllowedContextMap();
+        result.setAllowedContexts(allowedContextMap);
         return result;
     }
 
@@ -221,12 +222,12 @@ public class CmsTemplateContextManager {
      */
     public boolean shouldShowType(CmsTemplateContext context, String typeName) {
 
-        Map<String, List<String>> forbiddenContextMap = safeGetForbiddenContextMap();
-        List<String> forbiddenContextsForType = forbiddenContextMap.get(typeName);
-        if (forbiddenContextsForType == null) {
+        Map<String, CmsDefaultSet<String>> allowedContextMap = safeGetAllowedContextMap();
+        CmsDefaultSet<String> allowedContexts = allowedContextMap.get(typeName);
+        if (allowedContexts == null) {
             return true;
         }
-        return !forbiddenContextsForType.contains(context.getKey());
+        return allowedContexts.contains(context.getKey());
     }
 
     /**
@@ -272,10 +273,10 @@ public class CmsTemplateContextManager {
      * 
      * @return the forbidden context map
      */
-    protected Map<String, List<String>> safeGetForbiddenContextMap() {
+    protected Map<String, CmsDefaultSet<String>> safeGetAllowedContextMap() {
 
         try {
-            return OpenCms.getResourceManager().getForbiddenContextMap(m_cms);
+            return OpenCms.getResourceManager().getAllowedContextMap(m_cms);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
             return Collections.emptyMap();

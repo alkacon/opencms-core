@@ -48,6 +48,7 @@ import org.opencms.module.CmsModuleManager;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsDefaultSet;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsHtmlConverterJTidy;
 import org.opencms.util.CmsHtmlConverterOption;
@@ -547,6 +548,33 @@ public class CmsResourceManager {
     }
 
     /**
+     * Gets the map of forbidden contexts for resource types.<p>
+     * 
+     * @param cms the current CMS context 
+     * @return the map from resource types to the forbidden contexts 
+     * 
+     * @throws CmsXmlException if something goes wrong 
+     */
+    public Map<String, CmsDefaultSet<String>> getAllowedContextMap(CmsObject cms) throws CmsXmlException {
+
+        Map<String, CmsDefaultSet<String>> result = new HashMap<String, CmsDefaultSet<String>>();
+        for (I_CmsResourceType resType : getResourceTypes()) {
+            if (resType instanceof CmsResourceTypeXmlContent) {
+                String schema = ((CmsResourceTypeXmlContent)resType).getSchema();
+                if (schema != null) {
+                    CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+
+                    CmsDefaultSet<String> allowedContexts = contentDefinition.getContentHandler().getAllowedTemplates();
+                    result.put(resType.getTypeName(), allowedContexts);
+                } else {
+                    LOG.info("No schema for XML type " + resType.getTypeName() + " / " + resType.getClass().getName());
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the configured content collector with the given name, or <code>null</code> if 
      * no collector with this name is configured.<p>
      *  
@@ -633,34 +661,6 @@ public class CmsResourceManager {
     public CmsResourceTranslator getFolderTranslator() {
 
         return m_folderTranslator;
-    }
-
-    /**
-     * Gets the map of forbidden contexts for resource types.<p>
-     * 
-     * @param cms the current CMS context 
-     * @return the map from resource types to the forbidden contexts 
-     * 
-     * @throws CmsXmlException if something goes wrong 
-     */
-    public Map<String, List<String>> getForbiddenContextMap(CmsObject cms) throws CmsXmlException {
-
-        Map<String, List<String>> result = new HashMap<String, List<String>>();
-        for (I_CmsResourceType resType : getResourceTypes()) {
-            if (resType instanceof CmsResourceTypeXmlContent) {
-                String schema = ((CmsResourceTypeXmlContent)resType).getSchema();
-                if (schema != null) {
-                    CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
-                    List<String> forbiddenContexts = contentDefinition.getContentHandler().getForbiddenContexts();
-                    if ((forbiddenContexts != null) && !forbiddenContexts.isEmpty()) {
-                        result.put(resType.getTypeName(), new ArrayList<String>(forbiddenContexts));
-                    }
-                } else {
-                    LOG.info("No schema for XML type " + resType.getTypeName() + " / " + resType.getClass().getName());
-                }
-            }
-        }
-        return result;
     }
 
     /**

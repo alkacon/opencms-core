@@ -370,7 +370,7 @@ public class CmsElementUtil {
         String noEditReason = "";
         // reinitializing resource to avoid caching issues
         elementBean.initResource(m_cms);
-        boolean newEditorDisabled = !CmsWorkplaceEditorManager.checkNewWidgetsAvailable(
+        boolean newEditorDisabled = !CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(
             m_cms,
             elementBean.getResource());
         result.setNewEditorDisabled(newEditorDisabled);

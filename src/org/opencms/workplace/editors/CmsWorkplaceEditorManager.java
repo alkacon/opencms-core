@@ -39,6 +39,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.I_CmsADEWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -145,7 +147,7 @@ public class CmsWorkplaceEditorManager {
      *   
      * @throws CmsException if something goes wrong 
      */
-    public static boolean checkNewWidgetsAvailable(CmsObject cms, CmsResource resource) throws CmsException {
+    public static boolean checkAcaciaEditorAvailable(CmsObject cms, CmsResource resource) throws CmsException {
 
         if (resource == null) {
             try {
@@ -158,16 +160,19 @@ public class CmsWorkplaceEditorManager {
         }
         CmsFile file = (resource instanceof CmsFile) ? (CmsFile)resource : cms.readFile(resource);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+        if (content.getContentDefinition().getContentHandler().isAcaciaEditorDisabled()) {
+            return false;
+        }
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, cms.getRequestContext().getLocale());
         visitor.visitTypes(content.getContentDefinition(), Locale.ENGLISH, true);
-        if (visitor.hasNonAdeWidgets()) {
-            for (String nonAdeWidget : visitor.getNonAdeWidgets()) {
-                LOG.warn("Non-ADE-compatible widget: " + nonAdeWidget);
+        List<I_CmsWidget> widgets = visitor.getCollectedWidgets();
+        for (I_CmsWidget widget : widgets) {
+            if (!(widget instanceof I_CmsADEWidget)) {
+                LOG.info("Widget not compatible with new editor: " + widget.getClass().getName());
+                return false;
             }
-            return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**

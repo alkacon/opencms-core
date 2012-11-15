@@ -258,7 +258,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             CmsObject cms = getCmsObject();
             CmsResource resource = cms.readResource(structureId);
-            return CmsWorkplaceEditorManager.checkNewWidgetsAvailable(cms, resource);
+            return CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(cms, resource);
         } catch (Throwable t) {
             error(t);
         }
@@ -327,7 +327,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             String newClientId = newBean.editorHash();
             getSessionCache().setCacheContainerElement(newClientId, newBean);
             element = new CmsContainerElement();
-            element.setNewEditorDisabled(!CmsWorkplaceEditorManager.checkNewWidgetsAvailable(cms, newResource));
+            element.setNewEditorDisabled(!CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(cms, newResource));
             element.setClientId(newClientId);
             element.setSitePath(cms.getSitePath(newResource));
             element.setResourceType(resourceType);

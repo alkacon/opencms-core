@@ -14,6 +14,7 @@
 			<xsd:element name="defaults" type="OpenCmsDefaultAppinfoDefaults" minOccurs="0" />
 			<xsd:element name="mappings" type="OpenCmsDefaultAppinfoMappings" minOccurs="0" />
 			<xsd:element name="layouts" type="OpenCmsDefaultAppinfoLayouts" minOccurs="0" />
+			<xsd:element name="templates" type="OpenCmsDefaultAppinfoTemplates" minOccurs="0" />
 			<xsd:element name="validationrules" type="OpenCmsDefaultAppinfoValidationrules" minOccurs="0" />
 			<xsd:element name="searchsettings" type="OpenCmsDefaultAppinfoSearchsettings" minOccurs="0" />
 			<xsd:element name="relations" type="OpenCmsDefaultAppinfoRelations" minOccurs="0" />
@@ -22,7 +23,6 @@
 			<xsd:element name="formatters" type="OpenCmsDefaultAppinfoFormatters" minOccurs="0" />
 			<xsd:element name="headincludes" type="OpenCmsDefaultAppinfoHeadIncludes" minOccurs="0" />
 			<xsd:element name="settings" type="OpenCmsDefaultAppinfoSettings" minOccurs="0" />
-			<xsd:element name="forbidden-contexts" type="xsd:string" minOccurs="0" maxOccurs="1" />
 		</xsd:all>
 	</xsd:complexType>
 	
