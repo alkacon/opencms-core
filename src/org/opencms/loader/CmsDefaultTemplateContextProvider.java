@@ -27,11 +27,14 @@
 
 package org.opencms.loader;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.util.CmsJspDeviceSelector;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,7 +57,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     private Map<String, CmsTemplateContext> m_map = new HashMap<String, CmsTemplateContext>();
 
     /** The device selector used internally for detecting mobile devices. */
-    CmsJspDeviceSelector m_selector = new CmsJspDeviceSelector();
+    private CmsJspDeviceSelector m_selector = new CmsJspDeviceSelector();
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultTemplateContextProvider.class);
@@ -102,8 +105,25 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     public void initialize(CmsObject cms) {
 
         try {
+            InputStream stream = null;
+            if (getConfigurationPropertyPath() != null) {
+                try {
+                    CmsObject clone = OpenCms.initCmsObject(cms);
+                    clone.getRequestContext().setSiteRoot("");
+                    CmsResource res = clone.readResource(getConfigurationPropertyPath());
+                    if (res != null) {
+                        CmsFile file = cms.readFile(res);
+                        stream = new ByteArrayInputStream(file.getContents());
+                    }
+                } catch (Exception e) {
+                    LOG.error("Could not cerate input stream for given configuration path: "
+                        + getConfigurationPropertyPath(), e);
+                }
+            }
+            if (stream == null) {
+                stream = getClass().getClassLoader().getResourceAsStream("templatecontext.properties");
+            }
             Properties properties = new Properties();
-            InputStream stream = getClass().getClassLoader().getResourceAsStream("templatecontext.properties");
             properties.load(stream);
             stream.close();
             String templateMobile = properties.getProperty("template.mobile");
@@ -115,5 +135,27 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
         } catch (Throwable t) {
             LOG.error(t.getLocalizedMessage(), t);
         }
+    }
+
+    /**
+     * Returns the absolute VFS path, where the configuration property file is stored.<p>
+     * 
+     * The configuration property file must have the following format:
+     * <ul>
+     * <li>template.mobile=/absolute/path/to/mobile/template.jsp
+     * <li>template.desktop=/absolute/path/to/mobile/desktop.jsp
+     * </ul>
+     * 
+     * By default this method returns <code>null</code> what will trigger the default behavior:<br/>
+     * looking for a java property file named 'templatecontext.properties' in the class path.<p>
+     * 
+     * Extends this class, override this method and return the absolute VFS path where OpenCms
+     * should lookup the property file, in order to configure the template JSP inside OpenCms.<p> 
+     * 
+     * @return the absolute VFS path, where the configuration property file is stored
+     */
+    public String getConfigurationPropertyPath() {
+
+        return null;
     }
 }
