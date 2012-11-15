@@ -1040,12 +1040,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 protected void onResponse(CmsGallerySearchBean result) {
 
                     stop(false);
-                    m_searchObject = result;
-                    m_handler.m_galleryDialog.selectTab(GalleryTabId.cms_tab_results, false);
-                    m_handler.onResultTabSelection(m_searchObject);
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchObject.getResourcePath())
-                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchObject.getResourceType())) {
-                        openPreview(m_searchObject.getResourcePath(), m_searchObject.getResourceType());
+                    if (!result.isEmpty() && (result.getResults().size() > 0)) {
+                        m_searchObject = result;
+                        m_handler.m_galleryDialog.selectTab(GalleryTabId.cms_tab_results, false);
+                        m_handler.onResultTabSelection(m_searchObject);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchObject.getResourcePath())
+                            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchObject.getResourceType())) {
+                            openPreview(m_searchObject.getResourcePath(), m_searchObject.getResourceType());
+                        }
                     }
                 }
             };
