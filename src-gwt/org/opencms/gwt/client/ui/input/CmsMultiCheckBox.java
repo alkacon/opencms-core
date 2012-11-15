@@ -43,6 +43,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -53,7 +57,8 @@ import com.google.gwt.user.client.ui.Panel;
  * @since 8.0.0
  *  
  */
-public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_CmsHasInit {
+public class CmsMultiCheckBox extends Composite
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /** The type string for this widget. */
     public static final String WIDGET_TYPE = "multicheck";
@@ -113,6 +118,14 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
                 return new CmsMultiCheckBox(widgetParams);
             }
         });
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
@@ -261,6 +274,16 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
     }
 
     /**
+     * Fires the value change event for the widget.<p>
+     * 
+     * @param newValue the new value 
+     */
+    protected void fireValueChanged(String newValue) {
+
+        ValueChangeEvent.fire(this, newValue);
+    }
+
+    /**
      * Initializes the widget given a map of select options.<p>
      * 
      * The keys of the map are the values of the select options, while the values of the map 
@@ -280,6 +303,13 @@ public class CmsMultiCheckBox extends Composite implements I_CmsFormWidget, I_Cm
             // wrap the check boxes in FlowPanels to arrange them vertically 
             FlowPanel checkboxWrapper = new FlowPanel();
             checkboxWrapper.add(checkbox);
+            checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+                public void onValueChange(ValueChangeEvent<Boolean> valueChanged) {
+
+                    fireValueChanged(getFormValueAsString());
+                }
+            });
             m_panel.add(checkboxWrapper);
             m_checkboxes.add(checkbox);
         }

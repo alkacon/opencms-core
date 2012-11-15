@@ -247,7 +247,7 @@ public class CmsTemplateContextManager {
         }
         List<String> contextOptions = new ArrayList<String>();
         for (CmsTemplateContext context : contextProvider.getAllContexts().values()) {
-            contextOptions.add(context.getKey());
+            contextOptions.add(context.getKey() + ":" + context.getLocalizedName(locale));
         }
         String widgetConfig = CmsStringUtil.listAsString(contextOptions, "|");
 
@@ -256,7 +256,7 @@ public class CmsTemplateContextManager {
         CmsXmlContentProperty propDef = new CmsXmlContentProperty(
             CmsTemplateContextInfo.SETTING,
             "string",
-            "multiselectbox",
+            "multicheck",
             widgetConfig,
             null,
             null,
