@@ -30,6 +30,7 @@ package org.opencms.loader;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.util.CmsJspDeviceSelector;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -53,14 +54,14 @@ import org.apache.commons.logging.Log;
  */
 public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextProvider {
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDefaultTemplateContextProvider.class);
+
     /** The map of template contexts. */
     private Map<String, CmsTemplateContext> m_map = new HashMap<String, CmsTemplateContext>();
 
     /** The device selector used internally for detecting mobile devices. */
     private CmsJspDeviceSelector m_selector = new CmsJspDeviceSelector();
-
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDefaultTemplateContextProvider.class);
 
     /** Default constructor. */
     public CmsDefaultTemplateContextProvider() {
@@ -73,6 +74,48 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     public synchronized Map<String, CmsTemplateContext> getAllContexts() {
 
         return Collections.unmodifiableMap(m_map);
+    }
+
+    /**
+     * Returns the absolute VFS path, where the configuration property file is stored.<p>
+     * 
+     * The configuration property file must have the following format:
+     * <ul>
+     * <li>template.mobile=/absolute/path/to/mobile/template.jsp
+     * <li>template.desktop=/absolute/path/to/mobile/desktop.jsp
+     * </ul>
+     * 
+     * By default this method returns <code>null</code> what will trigger the default behavior:<br/>
+     * looking for a java property file named 'templatecontext.properties' in the class path.<p>
+     * 
+     * Extends this class, override this method and return the absolute VFS path where OpenCms
+     * should lookup the property file, in order to configure the template JSP inside OpenCms.<p> 
+     * 
+     * @return the absolute VFS path, where the configuration property file is stored
+     */
+    public String getConfigurationPropertyPath() {
+
+        return null;
+    }
+
+    /**
+     * Returns the message container.<p>
+     * 
+     * @return the message container
+     */
+    public CmsMessageContainer getMessageContainerDesktop() {
+
+        return null;
+    }
+
+    /**
+     * Returns the message container.<p>
+     * 
+     * @return the message container
+     */
+    public CmsMessageContainer getMessageContainerMobile() {
+
+        return null;
     }
 
     /**
@@ -128,34 +171,21 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
             stream.close();
             String templateMobile = properties.getProperty("template.mobile");
             String templateDesktop = properties.getProperty("template.desktop");
-            CmsTemplateContext mobile = new CmsTemplateContext("mobile", templateMobile, null, this);
+            CmsTemplateContext mobile = new CmsTemplateContext(
+                "mobile",
+                templateMobile,
+                getMessageContainerMobile(),
+                this);
             m_map.put(mobile.getKey(), mobile);
-            CmsTemplateContext desktop = new CmsTemplateContext("desktop", templateDesktop, null, this);
+            CmsTemplateContext desktop = new CmsTemplateContext(
+                "desktop",
+                templateDesktop,
+                getMessageContainerDesktop(),
+                this);
             m_map.put(desktop.getKey(), desktop);
         } catch (Throwable t) {
             LOG.error(t.getLocalizedMessage(), t);
         }
     }
 
-    /**
-     * Returns the absolute VFS path, where the configuration property file is stored.<p>
-     * 
-     * The configuration property file must have the following format:
-     * <ul>
-     * <li>template.mobile=/absolute/path/to/mobile/template.jsp
-     * <li>template.desktop=/absolute/path/to/mobile/desktop.jsp
-     * </ul>
-     * 
-     * By default this method returns <code>null</code> what will trigger the default behavior:<br/>
-     * looking for a java property file named 'templatecontext.properties' in the class path.<p>
-     * 
-     * Extends this class, override this method and return the absolute VFS path where OpenCms
-     * should lookup the property file, in order to configure the template JSP inside OpenCms.<p> 
-     * 
-     * @return the absolute VFS path, where the configuration property file is stored
-     */
-    public String getConfigurationPropertyPath() {
-
-        return null;
-    }
 }

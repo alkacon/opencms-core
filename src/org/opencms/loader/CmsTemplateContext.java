@@ -38,17 +38,17 @@ import java.util.Locale;
  */
 public class CmsTemplateContext {
 
-    /** The path to the template. */
-    private String m_templatePath;
-
     /** The key used for identifying the template context. */
     private String m_key;
+
+    /** The message container for the user-readable name. */
+    private CmsMessageContainer m_messageContainer;
 
     /** The template context provider which created this context. */
     private I_CmsTemplateContextProvider m_provider;
 
-    /** The message container for the user-readable name. */
-    private CmsMessageContainer m_messageContainer;
+    /** The path to the template. */
+    private String m_templatePath;
 
     /**
      * Constructor.<p>
@@ -66,6 +66,7 @@ public class CmsTemplateContext {
 
         m_key = key;
         m_templatePath = path;
+        m_messageContainer = container;
         m_provider = provider;
     }
 
