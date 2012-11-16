@@ -42,6 +42,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -62,6 +63,7 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -782,10 +784,11 @@ public class CmsADEManager {
      * Converts the given element to JSON.<p>
      * 
      * @param element the element to convert
+     * @param excludeSettings the keys of settings which should not be written to the JSON 
      * 
      * @return the JSON representation
      */
-    protected JSONObject elementToJson(CmsContainerElementBean element) {
+    protected JSONObject elementToJson(CmsContainerElementBean element, Set<String> excludeSettings) {
 
         JSONObject data = null;
         try {
@@ -796,7 +799,10 @@ public class CmsADEManager {
             }
             JSONObject properties = new JSONObject();
             for (Map.Entry<String, String> entry : element.getIndividualSettings().entrySet()) {
-                properties.put(entry.getKey(), entry.getValue());
+                String settingKey = entry.getKey();
+                if (!excludeSettings.contains(settingKey)) {
+                    properties.put(entry.getKey(), entry.getValue());
+                }
             }
             data.put(FavListProp.PROPERTIES.name().toLowerCase(), properties);
         } catch (JSONException e) {
@@ -879,8 +885,14 @@ public class CmsADEManager {
             elementList.remove(elementList.size() - 1);
         }
         JSONArray data = new JSONArray();
+
+        Set<String> excludedSettings = new HashSet<String>();
+        // do not store the template contexts, since dragging an element into the page which might be invisible 
+        // doesn't make sense 
+        excludedSettings.add(CmsTemplateContextInfo.SETTING);
+
         for (CmsContainerElementBean element : elementList) {
-            data.put(elementToJson(element));
+            data.put(elementToJson(element, excludedSettings));
         }
         CmsUser user = cms.getRequestContext().getCurrentUser();
         user.setAdditionalInfo(listKey, data.toString());
