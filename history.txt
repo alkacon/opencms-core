@@ -15,6 +15,16 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.5.0.4 - November 16, 2012
+! Added editor selector feature, to detect whether the old or new XMLContent editor should be used
+* Fixed in-line editor issue for string widget, now preventing line breaks of being added
+* Fixed Chrome TinyMCE toolbar overflow issue
+* Fixed issue where writing search configuration failed when SOLR index configured
+* Fixed issue where 'Publish with related resources' would not work as expected
+* Fixed issue with entities in editor labels
+* Fixed text overflow issue in file selector widget
+* Fixed issue #89 where help bubbles where shown, with no text configured
+
 OpenCms 8.5.0.3 - November 08, 2012
 * Fixed issue #90 displaying many tabs in the new content editor
 * Fixed issue #92 fixed link click handling in inline editor
