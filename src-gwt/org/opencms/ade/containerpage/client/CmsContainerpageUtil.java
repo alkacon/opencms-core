@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -307,6 +308,7 @@ public class CmsContainerpageUtil {
         CmsContainerPageElementPanel result = createElement(element, container, containerElement);
         if (!CmsContainerpageController.get().shouldShowInContext(containerElement)) {
             result.getElement().getStyle().setDisplay(Style.Display.NONE);
+            result.addStyleName(CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER);
         }
         return result;
     }

@@ -40,29 +40,32 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsTemplateContextInfo implements IsSerializable {
 
-    /** The setting name used for storing the compatible template contexts. */
-    public static final String SETTING = "templateContexts";
+    /** Dummy element marker class. */
+    public static final String DUMMY_ELEMENT_MARKER = "cmsTemplateContextDummyMarker";
 
     /** The constant used for empty setting. */
     public static final String EMPTY_VALUE = "none";
 
-    /** The name of the cookie used for overriding the template context. */
-    private String m_cookieName;
+    /** The setting name used for storing the compatible template contexts. */
+    public static final String SETTING = "templateContexts";
 
-    /** The name of the selected context (using the cookie) .*/
-    private String m_selectedContext;
-
-    /** The context provider class. */
-    private String m_contextProvider;
+    /** The map of allowed contexts for each type. */
+    private Map<String, CmsDefaultSet<String>> m_allowedContextMap;
 
     /** A map from the names of all available template contexts to their localized names. */
     private Map<String, String> m_contextLabels = new HashMap<String, String>();
 
+    /** The context provider class. */
+    private String m_contextProvider;
+
+    /** The name of the cookie used for overriding the template context. */
+    private String m_cookieName;
+
     /** The key of the currently active context. */
     private String m_currentContext;
 
-    /** The map of allowed contexts for each type. */
-    private Map<String, CmsDefaultSet<String>> m_allowedContextMap;
+    /** The name of the selected context (using the cookie) .*/
+    private String m_selectedContext;
 
     /** The setting definition for the templateContexts setting. */
     private CmsXmlContentProperty m_settingDefinition;

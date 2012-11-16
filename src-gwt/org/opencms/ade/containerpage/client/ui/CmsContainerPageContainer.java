@@ -35,12 +35,14 @@ import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -122,21 +124,24 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void checkMaxElementsOnEnter() {
 
         if (getWidgetCount() >= m_maxElements) {
-            m_overflowingElement = getWidget(getWidgetCount() - 1);
-            m_overflowingElement.removeFromParent();
-            //            Widget overflowElement=null;
-            //            int index =0;
-            //            for (Widget widget:this){
-            //                if (!Display.NONE.getCssName().equals(widget.getElement().getStyle().getDisplay())){
-            //                    index++;
-            //                    if (index >= m_maxElements){
-            //                        widget.getElement().getStyle().setDisplay(Display.NONE);
-            //                        if (overflowElement==null)
-            //                            overflowElement=widget;
-            //                    }
-            //                }
-            //            }
-            //            m_overflowingElement = overflowElement;
+            Widget overflowElement = null;
+            int index = 0;
+            for (Widget widget : this) {
+                boolean isDummy = widget.getStyleName().contains(CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER);
+                if (!isDummy) {
+                    index++;
+                    if (index >= m_maxElements) {
+                        widget.getElement().getStyle().setDisplay(Display.NONE);
+                        if (overflowElement == null) {
+                            overflowElement = widget;
+                        }
+                    }
+                }
+            }
+            if (overflowElement != null) {
+                m_overflowingElement = overflowElement;
+                m_overflowingElement.removeFromParent();
+            }
         }
     }
 

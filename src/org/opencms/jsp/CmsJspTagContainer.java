@@ -108,6 +108,11 @@ public class CmsJspTagContainer extends TagSupport {
     /** Default number of max elements in the container in case no value has been set. */
     public static final String DEFAULT_MAX_ELEMENTS = "100";
 
+    /** HTML used for invisible dummy elements. */
+    public static final String DUMMY_ELEMENT = "<div class='"
+        + CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER
+        + "' style='display: none !important;'></div>";
+
     /** Key used to write container data into the javascript window object. */
     public static final String KEY_CONTAINER_DATA = "org_opencms_ade_containerpage_containers";
 
@@ -116,9 +121,6 @@ public class CmsJspTagContainer extends TagSupport {
 
     /** The default tag name constant. */
     private static final String DEFAULT_TAG_NAME = "div";
-
-    /** HTML used for invisible dummy elements. */
-    public static final String DUMMY_ELEMENT = "<div style='display: none !important;'></div>";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagContainer.class);
@@ -342,14 +344,19 @@ public class CmsJspTagContainer extends TagSupport {
                         }
                     }
                     // iterate over elements to render
-                    for (int i = 0; (i < maxElements) && (i < allElements.size()); i++) {
+                    int numRenderedElements = 0;
+                    for (CmsContainerElementBean elementBean : allElements) {
                         try {
-                            renderContainerElement(
+                            boolean rendered = renderContainerElement(
                                 (HttpServletRequest)req,
                                 cms,
                                 standardContext,
-                                allElements.get(i),
-                                locale);
+                                elementBean,
+                                locale,
+                                numRenderedElements >= maxElements);
+                            if (rendered) {
+                                numRenderedElements += 1;
+                            }
                         } catch (Exception e) {
                             if (LOG.isErrorEnabled()) {
                                 LOG.error(e.getLocalizedMessage(), e);
@@ -829,22 +836,28 @@ public class CmsJspTagContainer extends TagSupport {
      * @param standardContext the current standard contxt bean
      * @param element the container element to render
      * @param locale the requested locale
+     * @param alreadyFull if true, only render invisible elements (they don't count towards the "max elements") 
+     * 
+     * @return true if an element was rendered that counts towards the container's maximum number of elements 
      * 
      * @throws Exception if something goes wrong 
      */
-    private void renderContainerElement(
+    private boolean renderContainerElement(
         HttpServletRequest request,
         CmsObject cms,
         CmsJspStandardContextBean standardContext,
         CmsContainerElementBean element,
-        Locale locale) throws Exception {
+        Locale locale,
+        boolean alreadyFull) throws Exception {
 
         CmsTemplateContext context = (CmsTemplateContext)(request.getAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));
+        if ((context == null) && alreadyFull) {
+            return false;
+        }
         boolean showInContext = shouldShowInContext(element, context);
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
-
         if (isOnline && !showInContext) {
-            return;
+            return false;
         }
         ServletRequest req = pageContext.getRequest();
         ServletResponse res = pageContext.getResponse();
@@ -861,6 +874,9 @@ public class CmsJspTagContainer extends TagSupport {
         boolean isGroupContainer = element.isGroupContainer(cms);
         boolean isInheritedContainer = element.isInheritedContainer(cms);
         if (isGroupContainer || isInheritedContainer) {
+            if (alreadyFull) {
+                return false;
+            }
             List<CmsContainerElementBean> subElements;
             if (isGroupContainer) {
                 subElements = getGroupContainerElements(cms, element, req, containerType);
@@ -943,61 +959,75 @@ public class CmsJspTagContainer extends TagSupport {
                 }
             }
             printElementWrapperTagEnd(isOnline, true);
-
+            return true;
         } else {
-
-            String formatter = null;
-            try {
-                formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
-            } catch (CmsException e) {
-                // the formatter resource can not be found, try reading it form the configuration
-                CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
-                CmsFormatterBean elementFormatterBean = elementFormatters.getFormatter(containerType, containerWidth);
-                if (elementFormatterBean == null) {
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(new CmsIllegalStateException(Messages.get().container(
-                            Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                            element.getSitePath(),
-                            OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
-                            containerType)));
-                    }
-                    // skip this element, it has no formatter for this container type defined
-                    return;
-                }
-                formatter = elementFormatterBean.getJspRootPath();
-            }
-            printElementWrapperTagStart(isOnline, cms, element, false);
-            standardContext.setElement(element);
-            try {
-                if (!showInContext && !isOnline) {
-                    // write invisible dummy element 
+            boolean result = true;
+            if (alreadyFull) {
+                result = false;
+                if (!showInContext) {
+                    printElementWrapperTagStart(isOnline, cms, element, false);
                     pageContext.getOut().print(DUMMY_ELEMENT);
-                } else {
-                    // execute the formatter jsp for the given element uri
-                    CmsJspTagInclude.includeTagAction(
-                        pageContext,
-                        formatter,
-                        null,
-                        locale,
-                        false,
-                        isOnline,
-                        null,
-                        CmsRequestUtil.getAtrributeMap(req),
-                        req,
-                        res);
+                    printElementWrapperTagEnd(isOnline, false);
                 }
-            } catch (Exception e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                            element.getSitePath(),
-                            formatter),
-                        e);
+            } else {
+                String formatter = null;
+                try {
+                    formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
+                } catch (CmsException e) {
+                    // the formatter resource can not be found, try reading it form the configuration
+                    CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
+                    CmsFormatterBean elementFormatterBean = elementFormatters.getFormatter(
+                        containerType,
+                        containerWidth);
+                    if (elementFormatterBean == null) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(new CmsIllegalStateException(Messages.get().container(
+                                Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                                element.getSitePath(),
+                                OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
+                                containerType)));
+                        }
+                        // skip this element, it has no formatter for this container type defined
+                        return false;
+                    }
+                    formatter = elementFormatterBean.getJspRootPath();
                 }
-                printElementErrorTag(isOnline, element.getSitePath(), formatter, e);
+
+                printElementWrapperTagStart(isOnline, cms, element, false);
+                standardContext.setElement(element);
+                try {
+                    if (!showInContext) {
+                        // write invisible dummy element 
+                        pageContext.getOut().print(DUMMY_ELEMENT);
+                        result = false;
+                    } else {
+                        // execute the formatter jsp for the given element uri
+                        CmsJspTagInclude.includeTagAction(
+                            pageContext,
+                            formatter,
+                            null,
+                            locale,
+                            false,
+                            isOnline,
+                            null,
+                            CmsRequestUtil.getAtrributeMap(req),
+                            req,
+                            res);
+                    }
+                } catch (Exception e) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                element.getSitePath(),
+                                formatter),
+                            e);
+                    }
+                    printElementErrorTag(isOnline, element.getSitePath(), formatter, e);
+                }
+                printElementWrapperTagEnd(isOnline, false);
             }
-            printElementWrapperTagEnd(isOnline, false);
+            return result;
         }
     }
 
