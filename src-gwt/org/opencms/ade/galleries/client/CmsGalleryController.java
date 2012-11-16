@@ -766,6 +766,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns if files are included.<p>
+     * 
+     * @return <code>true</code> if files are included
+     */
+    public boolean isIncludeFiles() {
+
+        return (m_configuration == null) || m_configuration.isIncludeFiles();
+    }
+
+    /**
      * Returns if a load results request is currently running.<p>
      * 
      * @return <code>true</code> if a load results request is currently running

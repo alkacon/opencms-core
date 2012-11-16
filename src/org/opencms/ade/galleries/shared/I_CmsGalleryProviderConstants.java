@@ -189,9 +189,6 @@ public interface I_CmsGalleryProviderConstants {
     String CONFIG_IMAGE_FORMATS = "imageformats";
 
     /** Configuration key. */
-    String CONFIG_INCLUDE_FILES = "includefiles";
-
-    /** Configuration key. */
     String CONFIG_LOCALE = "locale";
 
     /** Configuration key. */

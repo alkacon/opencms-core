@@ -208,11 +208,10 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isIncludeFiles()
      */
-    public native boolean isIncludeFiles()/*-{
-        // defaults to true
-        return 'false' != ''
-                + this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_INCLUDE_FILES]
-    }-*/;
+    public boolean isIncludeFiles() {
+
+        return (getTabIds() == null) || (getTabIds().length > 1);
+    }
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isShowSiteSelector()

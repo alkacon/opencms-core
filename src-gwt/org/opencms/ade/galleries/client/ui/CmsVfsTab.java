@@ -82,12 +82,32 @@ public class CmsVfsTab extends A_CmsListTab {
         }
 
         /**
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#onDoubleClick(com.google.gwt.event.dom.client.DoubleClickEvent)
+         */
+        @Override
+        public void onDoubleClick(DoubleClickEvent event) {
+
+            if (isIncludeFiles()) {
+                super.onDoubleClick(event);
+            } else if (getTabHandler().hasSelectResource()) {
+                String selectPath = m_tabHandler.getSelectPath(m_vfsEntry);
+                getTabHandler().selectResource(
+                    selectPath,
+                    m_vfsEntry.getStructureId(),
+                    m_vfsEntry.getDisplayName(),
+                    I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER);
+            }
+        }
+
+        /**
          * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#onSelectionChange()
          */
         @Override
         protected void onSelectionChange() {
 
-            getTabHandler().onSelectFolder(m_vfsEntry.getRootPath(), getCheckBox().isChecked());
+            if (isIncludeFiles()) {
+                getTabHandler().onSelectFolder(m_vfsEntry.getRootPath(), getCheckBox().isChecked());
+            }
         }
     }
 
@@ -100,6 +120,9 @@ public class CmsVfsTab extends A_CmsListTab {
     /** The tab handler. */
     protected CmsVfsTabHandler m_tabHandler;
 
+    /** Flag indicating files are included. */
+    private boolean m_includeFiles;
+
     /** A map of tree items indexed by VFS path. */
     private Map<String, CmsLazyTreeItem> m_itemsByPath = new HashMap<String, CmsLazyTreeItem>();
 
@@ -107,12 +130,14 @@ public class CmsVfsTab extends A_CmsListTab {
      * Constructor.<p>
      * 
      * @param tabHandler the tab handler 
+     * @param includeFiles the include files flag
      */
-    public CmsVfsTab(CmsVfsTabHandler tabHandler) {
+    public CmsVfsTab(CmsVfsTabHandler tabHandler, boolean includeFiles) {
 
         super(GalleryTabId.cms_tab_vfstree);
         m_scrollList.truncate(TM_VFS_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_tabHandler = tabHandler;
+        m_includeFiles = includeFiles;
         init();
     }
 
@@ -198,12 +223,19 @@ public class CmsVfsTab extends A_CmsListTab {
         if (vfsEntry.isEditable()) {
             dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath()));
         }
-        final CmsCheckBox checkbox = new CmsCheckBox();
-        CmsLazyTreeItem result = new CmsLazyTreeItem(checkbox, dataValue, true);
-        SelectionHandler selectionHandler = new SelectionHandler(vfsEntry, checkbox);
-        checkbox.addClickHandler(selectionHandler);
+        CmsLazyTreeItem result;
+        SelectionHandler selectionHandler;
+        if (isIncludeFiles()) {
+            final CmsCheckBox checkbox = new CmsCheckBox();
+            result = new CmsLazyTreeItem(checkbox, dataValue, true);
+            selectionHandler = new SelectionHandler(vfsEntry, checkbox);
+            checkbox.addClickHandler(selectionHandler);
+            dataValue.addButton(createSelectButton(selectionHandler));
+        } else {
+            result = new CmsLazyTreeItem(dataValue, true);
+            selectionHandler = new SelectionHandler(vfsEntry, null);
+        }
         dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
-        dataValue.addButton(createSelectButton(selectionHandler));
         if (getTabHandler().hasSelectResource()) {
             String selectPath = m_tabHandler.getSelectPath(vfsEntry);
             dataValue.addButton(createSelectResourceButton(
@@ -281,6 +313,16 @@ public class CmsVfsTab extends A_CmsListTab {
     protected CmsVfsTabHandler getTabHandler() {
 
         return m_tabHandler;
+    }
+
+    /**
+     * Returns if files are included.<p>
+     * 
+     * @return <code>true</code> if files are included
+     */
+    protected boolean isIncludeFiles() {
+
+        return m_includeFiles;
     }
 
 }

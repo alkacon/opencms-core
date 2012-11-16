@@ -57,9 +57,6 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /** The image formats. */
     private String m_imageFormats;
 
-    /** The include files flag. */
-    private boolean m_includeFiles;
-
     /** The content locale. */
     private String m_locale;
 
@@ -93,7 +90,6 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public CmsGalleryConfiguration() {
 
         // set defaults
-        m_includeFiles = true;
         m_showSiteSelector = true;
     }
 
@@ -110,7 +106,6 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         m_galleryTypes = configuration.getGalleryTypes();
         m_imageFormatNames = configuration.getImageFormatNames();
         m_imageFormats = configuration.getImageFormats();
-        m_includeFiles = configuration.isIncludeFiles();
         m_locale = configuration.getLocale();
         m_referencePath = configuration.getReferencePath();
         m_resourceTypes = configuration.getResourceTypes();
@@ -231,7 +226,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
      */
     public boolean isIncludeFiles() {
 
-        return m_includeFiles;
+        return (getTabIds() == null) || (getTabIds().length != 1);
     }
 
     /**
@@ -306,16 +301,6 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public void setImageFormats(String imageFormats) {
 
         m_imageFormats = imageFormats;
-    }
-
-    /**
-     * Sets the include files flag.<p>
-     *
-     * @param includeFiles the include files flag to set
-     */
-    public void setIncludeFiles(boolean includeFiles) {
-
-        m_includeFiles = includeFiles;
     }
 
     /**

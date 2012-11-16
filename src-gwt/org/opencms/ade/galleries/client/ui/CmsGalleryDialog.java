@@ -300,7 +300,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     break;
                 case cms_tab_vfstree:
                     CmsVfsTabHandler vfsTabHandler = new CmsVfsTabHandler(controller);
-                    m_vfsTab = new CmsVfsTab(vfsTabHandler);
+                    m_vfsTab = new CmsVfsTab(vfsTabHandler, controller.isIncludeFiles());
                     vfsTabHandler.setTab(m_vfsTab);
                     m_vfsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_vfsTab, Messages.get().key(Messages.GUI_TAB_TITLE_VFS_0));
