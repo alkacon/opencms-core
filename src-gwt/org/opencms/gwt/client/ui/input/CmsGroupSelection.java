@@ -27,8 +27,6 @@
 
 package org.opencms.gwt.client.ui.input;
 
-import com.alkacon.geranium.client.ui.Popup;
-
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -128,9 +126,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /** The old value. */
     protected String m_oldValue = "";
-
-    /** The popup frame. */
-    protected Popup m_popup;
 
     /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
