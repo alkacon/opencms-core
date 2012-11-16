@@ -62,7 +62,7 @@ java.util.Stack, true, true, true, true, java.util.Stack/1346942793, 1346942793
 java.util.TreeMap, true, true, true, true, java.util.TreeMap/1493889780, 1493889780
 java.util.TreeSet, true, true, true, true, java.util.TreeSet/4043497002, 4043497002
 java.util.Vector, true, true, true, true, java.util.Vector/3057315478, 3057315478
-org.opencms.ade.galleries.shared.CmsGalleryConfiguration, false, false, true, true, org.opencms.ade.galleries.shared.CmsGalleryConfiguration/105582876, 105582876
+org.opencms.ade.galleries.shared.CmsGalleryConfiguration, false, false, true, true, org.opencms.ade.galleries.shared.CmsGalleryConfiguration/3546046377, 3546046377
 org.opencms.ade.galleries.shared.CmsGalleryDataBean, true, true, true, true, org.opencms.ade.galleries.shared.CmsGalleryDataBean/2017894913, 2017894913
 org.opencms.ade.galleries.shared.CmsGalleryFolderBean, true, true, true, true, org.opencms.ade.galleries.shared.CmsGalleryFolderBean/1899300707, 1899300707
 [Lorg.opencms.ade.galleries.shared.CmsGalleryFolderBean;, true, true, true, true, [Lorg.opencms.ade.galleries.shared.CmsGalleryFolderBean;/1105409351, 1105409351
