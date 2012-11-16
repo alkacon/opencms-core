@@ -62,7 +62,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -394,19 +393,16 @@ implements I_CmsDraggable, HasClickHandlers, I_InlineFormParent {
                     }
                     Element eventTarget = event.getNativeEvent().getEventTarget().cast();
                     Element linkTag = CmsDomUtil.getAncestor(eventTarget, Tag.a);
-                    if ((linkTag != null) && linkTag.hasAttribute("href")) {
-                        String linkTarget = linkTag.getAttribute("href");
-                        Window.Location.assign(linkTarget);
-                        return;
-                    }
-                    Element target = event.getNativeEvent().getEventTarget().cast();
-                    while ((target != null) && (target != getElement())) {
-                        if ("true".equals(target.getAttribute("contentEditable"))) {
-                            controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this, true);
-                            removeEditorHandler();
-                            break;
-                        } else {
-                            target = target.getParentElement();
+                    if (linkTag == null) {
+                        Element target = event.getNativeEvent().getEventTarget().cast();
+                        while ((target != null) && (target != getElement())) {
+                            if ("true".equals(target.getAttribute("contentEditable"))) {
+                                controller.getHandler().openEditorForElement(CmsContainerPageElementPanel.this, true);
+                                removeEditorHandler();
+                                break;
+                            } else {
+                                target = target.getParentElement();
+                            }
                         }
                     }
                 }
