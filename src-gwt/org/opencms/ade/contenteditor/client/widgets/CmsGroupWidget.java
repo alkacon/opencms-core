@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.input.CmsGroupSelection;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
@@ -71,7 +72,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
 
     /** The disabled textbox to show the value. */
     private CmsGroupSelection m_groupSelection = new CmsGroupSelection(
-        new Image(I_CmsImageBundle.INSTANCE.groupImage()).toString());
+        new Image(I_CmsImageBundle.INSTANCE.groupImage()).asWidget().toString());
 
     /**
      * Creates a new display widget.<p>
@@ -84,6 +85,14 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
         // All composites must call initWidget() in their constructors.
         m_groupSelection.setParameter(m_flags, m_ouFqn, m_userName);
         m_groupSelection.getTextAreaContainer().setStyleName(I_CmsLayoutBundle.INSTANCE.widgetCss().vfsInputBox());
+        m_groupSelection.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+
+                fireChangeEvent();
+
+            }
+        });
         initWidget(m_groupSelection);
     }
 
@@ -100,7 +109,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
      */
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        return null;
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
@@ -109,7 +118,7 @@ public class CmsGroupWidget extends Composite implements I_EditWidget {
      */
     public void fireChangeEvent() {
 
-        // ValueChangeEvent.fire(this, result);
+        ValueChangeEvent.fire(this, m_groupSelection.getText());
 
     }
 

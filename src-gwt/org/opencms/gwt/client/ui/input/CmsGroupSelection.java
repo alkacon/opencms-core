@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import com.alkacon.geranium.client.ui.Popup;
+
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -48,9 +50,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
@@ -67,7 +69,8 @@ import com.google.gwt.user.client.ui.TextBox;
  * @since 8.0.0
  * 
  */
-public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_CmsHasInit {
+public class CmsGroupSelection extends Composite
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Event preview handler.<p>
@@ -90,20 +93,9 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
                 case Event.ONMOUSEDOWN:
                     break;
                 case Event.ONKEYUP:
-                    if (m_textBox.getValue().length() > 0) {
-                        close();
-                    } else {
-                        if (m_popup == null) {
-                            open();
-                        } else if (m_popup.isShowing()) {
-                            close();
-                        } else {
-                            open();
-                        }
-                    }
+                    openNative(buildGalleryUrl(), m_title);
                     break;
                 case Event.ONMOUSEWHEEL:
-                    close();
                     break;
                 default:
                     // do nothing
@@ -138,7 +130,7 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
     protected String m_oldValue = "";
 
     /** The popup frame. */
-    protected CmsFramePopup m_popup;
+    protected Popup m_popup;
 
     /** The handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
@@ -182,6 +174,10 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
     /** The user parameter. */
     private String m_userName;
 
+    /** The popup title. */
+    protected String m_title = org.opencms.gwt.client.Messages.get().key(
+        org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
+
     /**
      * VsfSelection widget to open the gallery selection.<p>
      * 
@@ -199,6 +195,7 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
     public CmsGroupSelection(String iconImage) {
 
         super();
+
         m_textBox = new TextBox();
         m_openSelection = new OpenButton(iconImage);
         m_id = "CmsGroupSelection_" + (idCounter++);
@@ -228,14 +225,8 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
 
                 m_textBoxContainer.remove(m_faidpanel);
                 setTitle("");
-                if (m_popup == null) {
-                    open();
-                } else if (m_popup.isShowing()) {
-                    close();
-                } else {
-                    open();
-                }
 
+                openNative(buildGalleryUrl(), m_title);
             }
 
         });
@@ -254,13 +245,7 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
 
             public void onClick(ClickEvent event) {
 
-                if (m_popup == null) {
-                    open();
-                } else if (m_popup.isShowing()) {
-                    close();
-                } else {
-                    open();
-                }
+                openNative(buildGalleryUrl(), m_title);
 
             }
         });
@@ -285,11 +270,11 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
     }
 
     /**
-     * @param handler
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
-    public void addValueChangeHandler(ValueChangeHandler<String> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
 
-        m_textBox.addValueChangeHandler(handler);
+        return m_textBox.addValueChangeHandler(handler);
     }
 
     /**
@@ -423,7 +408,7 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
         }
         if (value instanceof String) {
             String strValue = (String)value;
-            m_textBox.setText(strValue);
+            m_textBox.setValue(strValue, true);
             creatFaider();
             setTitle(strValue);
         }
@@ -449,6 +434,7 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
             link = new CmsLinkBean("", true);
         }
         m_textBox.setValue(link.getLink());
+
     }
 
     /**
@@ -527,72 +513,22 @@ public class CmsGroupSelection extends Composite implements I_CmsFormWidget, I_C
     }
 
     /**
-     * Close the popup of this widget.<p>
+     * Opens the Group selection.
+     * 
+     * @param url the url of the popup
+     * @param title the title of the popup
      * */
-    protected void close() {
-
-        m_popup.hideDelayed();
-        m_textBox.setFocus(true);
-        m_textBox.setCursorPos(m_textBox.getText().length());
-    }
-
-    /**
-     * Opens the popup of this widget.<p>
-     * */
-    protected void open() {
-
-        m_oldValue = m_textBox.getValue();
-        if (m_popup == null) {
-            String title = org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_GALLERY_SELECT_DIALOG_TITLE_0);
-            m_popup = new CmsFramePopup(title, buildGalleryUrl());
-
-            m_popup.setCloseHandler(new Runnable() {
-
-                public void run() {
-
-                    String textboxValue = m_textBox.getText();
-
-                    if (!m_oldValue.equals(textboxValue)) {
-                        m_textBox.setValue("", true);
-                        m_textBox.setValue(textboxValue, true);
-                    }
-
-                    if (m_previewHandlerRegistration != null) {
-                        m_previewHandlerRegistration.removeHandler();
-                        m_previewHandlerRegistration = null;
-                    }
-                    m_textBox.setFocus(true);
-                    m_textBox.setCursorPos(m_textBox.getText().length());
-                }
-            });
-            m_popup.setModal(false);
-            m_popup.setId(m_id);
-            m_popup.setWidth(717);
-
-            m_popup.getFrame().setSize("705px", "300px");
-
-            m_popup.addDialogClose(new Command() {
-
-                public void execute() {
-
-                    close();
-
-                }
-            });
-        } else {
-            m_popup.getFrame().setUrl(buildGalleryUrl());
-        }
-        m_popup.setAutoHideEnabled(true);
-        m_popup.showRelativeTo(m_textBox);
-        if (m_previewHandlerRegistration == null) {
-            m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
-        }
-
-        m_xcoordspopup = m_popup.getPopupLeft();
-        m_ycoordspopup = m_popup.getPopupTop();
-
-    }
+    native void openNative(String url, String title) /*-{
+        $wnd
+                .open(
+                        url,
+                        title,
+                        'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
+        var self = this;
+        $wnd.setGroupFormValue = function(value) {
+            self.@org.opencms.gwt.client.ui.input.CmsGroupSelection::setFormValueAsString(Ljava/lang/String;)(value);
+        };
+    }-*/;
 
     /**
      * Adds the fader if necessary.<p> 
