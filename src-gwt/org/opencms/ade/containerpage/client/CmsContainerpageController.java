@@ -54,11 +54,9 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
-import org.opencms.gwt.client.ui.CmsConfirmDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
-import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.util.CmsAsyncJoinHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -1049,24 +1047,11 @@ public final class CmsContainerpageController {
     public void handleChangeTemplateContext(final CmsContainerPageElementPanel element, final String newValue) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(newValue) || CmsTemplateContextInfo.EMPTY_VALUE.equals(newValue)) {
-            CmsConfirmDialog confirmation = new CmsConfirmDialog("Remove element", "Do you want to remove the element?");
-            confirmation.setHandler(new I_CmsConfirmDialogHandler() {
-
-                public void onClose() {
-
-                    // ignore
-                }
-
-                public void onOk() {
-
-                    if (CmsInheritanceContainerEditor.getInstance() != null) {
-                        CmsInheritanceContainerEditor.getInstance().removeElement(element);
-                    } else {
-                        removeElement(element, false);
-                    }
-                }
-            });
-            confirmation.center();
+            if (CmsInheritanceContainerEditor.getInstance() != null) {
+                CmsInheritanceContainerEditor.getInstance().removeElement(element);
+            } else {
+                removeElement(element, false);
+            }
         }
     }
 

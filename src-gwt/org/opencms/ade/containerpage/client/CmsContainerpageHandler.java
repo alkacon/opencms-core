@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsAcceptDeclineCancelDialog;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsConfirmDialog;
+import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
@@ -55,9 +56,12 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
+import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
@@ -93,7 +97,6 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
@@ -245,17 +248,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
                 Map<String, String> settings = elementBean.getSettings();
                 Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getSettingConfig();
-                CmsTemplateContextInfo contextInfo = CmsContainerpageController.get().getData().getTemplateContextInfo();
-                if (contextInfo.getCurrentContext() != null) {
-                    propertyConfig.put(CmsTemplateContextInfo.SETTING, contextInfo.getSettingDefinition());
-                }
-                if (propertyConfig.size() == 0) {
+                final CmsTemplateContextInfo contextInfo = CmsContainerpageController.get().getData().getTemplateContextInfo();
+                final boolean useTemplateContext = contextInfo.getCurrentContext() != null;
+                if ((propertyConfig.size() == 0) && !useTemplateContext) {
                     String message = Messages.get().key(Messages.GUI_NO_SETTINGS_0);
                     String title = Messages.get().key(Messages.GUI_NO_SETTINGS_TITLE_0);
                     (new CmsAlertDialog(title, message)).center();
                     return;
                 }
-                final boolean useTemplateContext = propertyConfig.containsKey(CmsTemplateContextInfo.SETTING);
                 if (useTemplateContext) {
                     String templateContexts = settings.get(CmsTemplateContextInfo.SETTING);
                     if (templateContexts == null) {
@@ -275,9 +275,39 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 infoBean.setTitle(elementBean.getTitle());
                 infoBean.setSubTitle(elementBean.getSitePath());
                 infoBean.setResourceType(elementBean.getResourceType());
-                CmsInfoBoxFormFieldPanel formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
-                form.setWidget(formFieldPanel);
+                A_CmsFormFieldPanel formFieldPanel = null;
                 final boolean[] changedContext = new boolean[] {false};
+                CmsMultiCheckBox contextsWidget = null;
+                final CmsMultiCheckBox[] contextsWidgets = new CmsMultiCheckBox[] {null};
+                if (useTemplateContext) {
+                    String settingsLegend = org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_SETTINGS_LEGEND_0);
+                    CmsFieldsetFormFieldPanel fieldSetPanel = new CmsFieldsetFormFieldPanel(infoBean, settingsLegend);
+                    formFieldPanel = fieldSetPanel;
+                    CmsFieldSet contextsFieldset = new CmsFieldSet();
+                    contextsFieldset.setLegend(contextInfo.getSettingDefinition().getNiceName());
+                    contextsFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+                    contextsWidget = new CmsMultiCheckBox(CmsStringUtil.splitAsMap(
+                        contextInfo.getSettingDefinition().getWidgetConfiguration(),
+                        "|",
+                        ":"));
+                    contextsWidget.setFormValueAsString(settings.get(CmsTemplateContextInfo.SETTING));
+                    contextsWidgets[0] = contextsWidget;
+                    contextsWidget.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                        public void onValueChange(ValueChangeEvent<String> event) {
+
+                            changedContext[0] = true;
+                        }
+                    });
+
+                    contextsFieldset.add(contextsWidget);
+                    fieldSetPanel.getMainPanel().add(contextsFieldset);
+                } else {
+                    formFieldPanel = new CmsInfoBoxFormFieldPanel(infoBean);
+                }
+                form.setWidget(formFieldPanel);
+
                 I_CmsFormSubmitHandler submitHandler = new I_CmsFormSubmitHandler() {
 
                     /**
@@ -292,11 +322,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                             CmsInheritanceContainerEditor.getInstance().onSettingsEdited();
                         }
                         if (useTemplateContext) {
-                            String newTemplateContexts = fieldValues.get(CmsTemplateContextInfo.SETTING);
+                            String newTemplateContexts = contextsWidgets[0].getFormValueAsString();
                             if ((newTemplateContexts == null) || "".equals(newTemplateContexts)) {
+                                newTemplateContexts = CmsTemplateContextInfo.EMPTY_VALUE;
                                 // translate an empty selection to "none" 
-                                fieldValues.put(CmsTemplateContextInfo.SETTING, CmsTemplateContextInfo.EMPTY_VALUE);
                             }
+                            fieldValues.put(CmsTemplateContextInfo.SETTING, newTemplateContexts);
                         }
                         final Map<String, String> filteredFieldValues = new HashMap<String, String>();
                         for (Map.Entry<String, String> entry : fieldValues.entrySet()) {
@@ -306,7 +337,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                                 filteredFieldValues.put(key, value);
                             }
                         }
-
                         m_controller.reloadElementWithSettings(
                             elementWidget,
                             elementBean.getClientId(),
@@ -341,19 +371,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 CmsFormDialog dialog = new CmsFormDialog(title, form);
                 formHandler.setDialog(dialog);
                 Map<String, I_CmsFormField> formFields = CmsBasicFormField.createFields(propertyConfig.values());
-                I_CmsFormField templateContextField = formFields.get(CmsTemplateContextInfo.SETTING);
-                if (templateContextField != null) {
-                    @SuppressWarnings("unchecked")
-                    HasValueChangeHandlers<String> hasChangeHandlers = (HasValueChangeHandlers<String>)(templateContextField.getWidget());
-                    hasChangeHandlers.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                        public void onValueChange(ValueChangeEvent<String> event) {
-
-                            changedContext[0] = true;
-                        }
-                    });
-
-                }
                 for (I_CmsFormField field : formFields.values()) {
                     String fieldId = field.getId();
                     String initialValue = settings.get(fieldId);

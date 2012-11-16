@@ -58,8 +58,12 @@ public class CmsToolbarSettingsButton extends A_CmsToolbarOptionButton {
     public boolean isOptionAvailable(CmsContainerPageElementPanel element) {
 
         boolean disableButtons = CmsContainerpageController.get().isEditingDisabled();
-
-        return element.hasSettings() && !element.getParentTarget().isDetailView() && !disableButtons;
+        boolean useTemplateContexts = CmsContainerpageController.get().getData().getTemplateContextInfo().getCurrentContext() != null;
+        boolean isGroupContainer = element instanceof CmsGroupContainerElementPanel;
+        return (useTemplateContexts || element.hasSettings())
+            && !element.getParentTarget().isDetailView()
+            && !disableButtons
+            && !isGroupContainer;
     }
 
     /**
