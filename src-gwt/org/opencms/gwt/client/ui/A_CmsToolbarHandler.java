@@ -58,22 +58,38 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
 
         List<I_CmsContextMenuEntry> menuEntries = new ArrayList<I_CmsContextMenuEntry>();
         for (CmsContextMenuEntryBean bean : menuBeans) {
-            String name = bean.getName();
-            I_CmsContextMenuCommand command = null;
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                command = getContextMenuCommands().get(name);
+            I_CmsContextMenuEntry entry = transformSingleEntry(structureId, bean);
+            if (entry != null) {
+                menuEntries.add(entry);
             }
-            if ((command == null) && !bean.hasSubMenu()) {
-                continue;
-            }
-            CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, command);
-            entry.setBean(bean);
-            if (bean.hasSubMenu()) {
-                entry.setSubMenu(transformEntries(bean.getSubMenu(), structureId));
-            }
-            menuEntries.add(entry);
         }
         return menuEntries;
+    }
+
+    /**
+     * Creates a single context menu entry from a context menu entry bean.<p>
+     * 
+     * @param structureId the structure id of the resource 
+     * @param bean the context menu entry bean 
+     * 
+     * @return the created context menu entry 
+     */
+    protected I_CmsContextMenuEntry transformSingleEntry(final CmsUUID structureId, CmsContextMenuEntryBean bean) {
+
+        String name = bean.getName();
+        I_CmsContextMenuCommand command = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            command = getContextMenuCommands().get(name);
+        }
+        if ((command == null) && !bean.hasSubMenu()) {
+            return null;
+        }
+        CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, command);
+        entry.setBean(bean);
+        if (bean.hasSubMenu()) {
+            entry.setSubMenu(transformEntries(bean.getSubMenu(), structureId));
+        }
+        return entry;
     }
 
 }

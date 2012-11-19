@@ -1014,6 +1014,58 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 result.add(entry);
             }
         }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsToolbarHandler#transformSingleEntry(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    @Override
+    public I_CmsContextMenuEntry transformSingleEntry(CmsUUID structureId, CmsContextMenuEntryBean menuEntryBean) {
+
+        if (menuEntryBean.getName().equals("templatecontexts")) {
+            return createTemplateContextSelectionMenuEntry(structureId);
+        } else {
+            return super.transformSingleEntry(structureId, menuEntryBean);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#unlockResource(org.opencms.util.CmsUUID)
+     */
+    public void unlockResource(CmsUUID structureId) {
+
+        // only unlock the container page, if nothing has changed yet
+        if (!m_controller.hasPageChanged()) {
+            m_controller.unlockContainerpage();
+        }
+    }
+
+    /**
+     * Updates the clip board elements is necessary.<p>
+     * 
+     * @param elements the elements data  
+     */
+    public void updateClipboard(Map<String, CmsContainerElementData> elements) {
+
+        if (m_editor.getClipboard().isOpen()) {
+            for (CmsContainerElementData elementData : elements.values()) {
+                m_editor.getClipboard().replaceFavoriteItem(
+                    m_controller.getContainerpageUtil().createListItem(elementData));
+                m_editor.getClipboard().replaceRecentItem(
+                    m_controller.getContainerpageUtil().createListItem(elementData));
+            }
+        }
+    }
+
+    /**
+     * Creates the template context selection entry for the context menu.<p>
+     * 
+     * @param structureId the structure id of the page
+     * 
+     * @return the new context menu entry 
+     */
+    protected I_CmsContextMenuEntry createTemplateContextSelectionMenuEntry(CmsUUID structureId) {
 
         CmsContainerpageController controller = CmsContainerpageController.get();
         final CmsTemplateContextInfo info = controller.getData().getTemplateContextInfo();
@@ -1074,38 +1126,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 this,
                 structureId));
             parentEntry.setSubMenu(templateContextEntries);
-            result.add(parentEntry);
-
-        }
-
-        return result;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#unlockResource(org.opencms.util.CmsUUID)
-     */
-    public void unlockResource(CmsUUID structureId) {
-
-        // only unlock the container page, if nothing has changed yet
-        if (!m_controller.hasPageChanged()) {
-            m_controller.unlockContainerpage();
-        }
-    }
-
-    /**
-     * Updates the clip board elements is necessary.<p>
-     * 
-     * @param elements the elements data  
-     */
-    public void updateClipboard(Map<String, CmsContainerElementData> elements) {
-
-        if (m_editor.getClipboard().isOpen()) {
-            for (CmsContainerElementData elementData : elements.values()) {
-                m_editor.getClipboard().replaceFavoriteItem(
-                    m_controller.getContainerpageUtil().createListItem(elementData));
-                m_editor.getClipboard().replaceRecentItem(
-                    m_controller.getContainerpageUtil().createListItem(elementData));
-            }
+            return parentEntry;
+        } else {
+            return null;
         }
     }
 
