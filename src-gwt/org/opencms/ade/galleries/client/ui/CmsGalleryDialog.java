@@ -40,6 +40,7 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
@@ -55,6 +56,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
@@ -124,6 +127,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The command which should be executed when this widget is attached to the DOM. */
     private Command m_onAttachCommand;
+
+    /** Filter for determining which search results are draggable. */
+    private Predicate<CmsResultItemBean> m_resultDndFilter = Predicates.alwaysTrue();
 
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
@@ -313,7 +319,10 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                     m_tabbedPanel.add(m_sitemapTab, "Sitemap");
                     break;
                 case cms_tab_results:
-                    m_resultsTab = new CmsResultsTab(new CmsResultsTabHandler(controller), m_dndHandler);
+                    m_resultsTab = new CmsResultsTab(
+                        new CmsResultsTabHandler(controller),
+                        m_dndHandler,
+                        m_resultDndFilter);
                     m_resultsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
                     disableSearchTab();
@@ -613,6 +622,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public void setOnAttachCommand(Command onAttachCommand) {
 
         m_onAttachCommand = onAttachCommand;
+    }
+
+    /**
+     * Sets the filter which determines which search results are draggable.<p>
+     * 
+     * @param resultDndFilter the result filter 
+     */
+    public void setResultDndFilter(Predicate<CmsResultItemBean> resultDndFilter) {
+
+        m_resultDndFilter = resultDndFilter;
     }
 
     /**

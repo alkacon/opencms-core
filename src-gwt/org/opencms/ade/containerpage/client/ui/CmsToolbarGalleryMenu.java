@@ -27,13 +27,17 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryFactory;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -77,7 +81,11 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
         if (!m_initialized) {
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
-            tabsContainer.add(CmsGalleryFactory.createDialog(m_dragHandler, m_popup));
+            Predicate<CmsResultItemBean> resultDndFilter = Predicates.alwaysTrue();
+            if (CmsContainerpageController.get().getData().getTemplateContextInfo().getCurrentContext() != null) {
+                resultDndFilter = new CmsTemplateContextResultDndFilter();
+            }
+            tabsContainer.add(CmsGalleryFactory.createDialog(m_dragHandler, m_popup, resultDndFilter));
             m_contentPanel.add(tabsContainer);
             m_initialized = true;
         }

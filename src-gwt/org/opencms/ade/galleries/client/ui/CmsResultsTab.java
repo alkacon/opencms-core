@@ -53,6 +53,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -261,6 +262,9 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The panel showing the search parameters. */
     private FlowPanel m_params;
 
+    /** The filter for determining whether search results are draggable. */
+    private Predicate<CmsResultItemBean> m_resultDndFilter;
+
     /** The reference to the handler of this tab. */
     private CmsResultsTabHandler m_tabHandler;
 
@@ -275,8 +279,12 @@ public class CmsResultsTab extends A_CmsListTab {
      * 
      * @param tabHandler the tab handler 
      * @param dndHandler the dnd manager
-     */
-    public CmsResultsTab(CmsResultsTabHandler tabHandler, CmsDNDHandler dndHandler) {
+     * @param resultDndFilter the filter for determining which search results are draggable  
+     **/
+    public CmsResultsTab(
+        CmsResultsTabHandler tabHandler,
+        CmsDNDHandler dndHandler,
+        Predicate<CmsResultItemBean> resultDndFilter) {
 
         super(GalleryTabId.cms_tab_results);
         m_contextMenuHandler = new CmsResultContextMenuHandler(tabHandler);
@@ -284,6 +292,7 @@ public class CmsResultsTab extends A_CmsListTab {
         m_hasMoreResults = false;
         m_dndHandler = dndHandler;
         m_tabHandler = tabHandler;
+        m_resultDndFilter = resultDndFilter;
         m_scrollList.truncate(TM_RESULT_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_params = new FlowPanel();
         m_params.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().tabParamsPanel());
@@ -469,7 +478,13 @@ public class CmsResultsTab extends A_CmsListTab {
 
         m_types.add(resultItem.getType());
         boolean hasPreview = m_tabHandler.hasPreview(resultItem.getType());
-        CmsResultListItem listItem = new CmsResultListItem(resultItem, hasPreview, m_dndHandler);
+        CmsDNDHandler dndHandler = m_dndHandler;
+        if (m_resultDndFilter != null) {
+            if (!m_resultDndFilter.apply(resultItem)) {
+                dndHandler = null;
+            }
+        }
+        CmsResultListItem listItem = new CmsResultListItem(resultItem, hasPreview, dndHandler);
         if (resultItem.isPreset()) {
             m_preset = listItem;
         }

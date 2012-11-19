@@ -29,10 +29,13 @@ package org.opencms.ade.galleries.client;
 
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryPopup;
+import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
+
+import com.google.common.base.Predicate;
 
 /**
  * Factory class to create gallery dialog with or without parameter.<p>
@@ -66,12 +69,17 @@ public final class CmsGalleryFactory {
      * 
      * @param dndHandler the reference to the drag and drop handler
      * @param autoHideParent the auto-hide parent to this dialog if present
+     * @param resultDndFilter the filter for determining whether search results are draggable 
      * 
      * @return gallery dialog
      */
-    public static CmsGalleryDialog createDialog(CmsDNDHandler dndHandler, I_CmsAutoHider autoHideParent) {
+    public static CmsGalleryDialog createDialog(
+        CmsDNDHandler dndHandler,
+        I_CmsAutoHider autoHideParent,
+        Predicate<CmsResultItemBean> resultDndFilter) {
 
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(dndHandler, autoHideParent);
+        galleryDialog.setResultDndFilter(resultDndFilter);
         new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog));
         return galleryDialog;
     }
