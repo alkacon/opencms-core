@@ -200,6 +200,16 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     }
 
     /**
+     * Gets the toggle button used internally.<p>
+     * 
+     * @return the toggle button 
+     */
+    public CmsToggleButton getButton() {
+
+        return m_button;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {

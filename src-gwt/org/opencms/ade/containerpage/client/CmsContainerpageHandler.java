@@ -56,6 +56,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
@@ -291,6 +292,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         contextInfo.getSettingDefinition().getWidgetConfiguration(),
                         "|",
                         ":"));
+                    for (CmsCheckBox checkbox : contextsWidget.getCheckboxes()) {
+                        Style checkboxStyle = checkbox.getElement().getStyle();
+                        checkbox.getButton().getElement().getStyle().setFontWeight(Style.FontWeight.NORMAL);
+                        checkboxStyle.setMarginTop(7, Style.Unit.PX);
+                    }
                     contextsWidget.setFormValueAsString(settings.get(CmsTemplateContextInfo.SETTING));
                     contextsWidgets[0] = contextsWidget;
                     contextsWidget.addValueChangeHandler(new ValueChangeHandler<String>() {
