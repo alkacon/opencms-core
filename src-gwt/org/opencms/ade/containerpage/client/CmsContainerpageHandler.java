@@ -250,7 +250,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 Map<String, String> settings = elementBean.getSettings();
                 Map<String, CmsXmlContentProperty> propertyConfig = elementBean.getSettingConfig();
                 final CmsTemplateContextInfo contextInfo = CmsContainerpageController.get().getData().getTemplateContextInfo();
-                final boolean useTemplateContext = contextInfo.getCurrentContext() != null;
+                final boolean useTemplateContext = contextInfo.shouldShowElementTemplateContextSelection();
                 if ((propertyConfig.size() == 0) && !useTemplateContext) {
                     String message = Messages.get().key(Messages.GUI_NO_SETTINGS_0);
                     String title = Messages.get().key(Messages.GUI_NO_SETTINGS_TITLE_0);
@@ -1069,7 +1069,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
         CmsContainerpageController controller = CmsContainerpageController.get();
         final CmsTemplateContextInfo info = controller.getData().getTemplateContextInfo();
-        if (info.getCookieName() != null) {
+        if ((info.getCookieName() != null) && info.shouldShowTemplateContextContextMenuEntry()) {
             CmsContextMenuEntry parentEntry = new CmsContextMenuEntry(this, structureId, new I_CmsContextMenuCommand() {
 
                 public void execute(

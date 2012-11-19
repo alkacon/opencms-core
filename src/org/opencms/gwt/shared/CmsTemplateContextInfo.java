@@ -219,4 +219,34 @@ public class CmsTemplateContextInfo implements IsSerializable {
         m_settingDefinition = definition;
     }
 
+    /**
+     * Returns true if the template context selection should be shown for container elements.<p>
+     * 
+     * @return true if the template context selection for elements should be shown 
+     */
+    public boolean shouldShowElementTemplateContextSelection() {
+
+        return hasMoreThanOneOption();
+    }
+
+    /**
+     * Returns true if the template context selection context menu entry should be shown.<p>
+     * 
+     * @return true if the template context selection context menu entry should be shown 
+     */
+    public boolean shouldShowTemplateContextContextMenuEntry() {
+
+        return hasMoreThanOneOption();
+
+    }
+
+    /**
+     * Returns true if there is more than one template context to choose from.<p>
+     * 
+     * @return true if there is more than one template context 
+     */
+    private boolean hasMoreThanOneOption() {
+
+        return (m_currentContext != null) && (m_contextLabels.size() > 1);
+    }
 }
