@@ -49,6 +49,7 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -208,7 +209,7 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
             result.add(siteParam);
         }
         if (scope.isIncludeSubSite() && (subSiteParam != null)) {
-            result.add(subSiteParam);
+            result.add(CmsStringUtil.joinPaths(siteParam, subSiteParam));
         }
         if (scope.isIncludeShared()) {
             String sharedFolder = OpenCms.getSiteManager().getSharedFolder();
