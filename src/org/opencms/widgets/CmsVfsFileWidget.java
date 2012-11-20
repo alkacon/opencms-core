@@ -491,7 +491,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
      */
     public boolean isInternal() {
 
-        return false;
+        return true;
     }
 
     /**
