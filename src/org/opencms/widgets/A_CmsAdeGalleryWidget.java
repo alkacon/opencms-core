@@ -119,7 +119,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         }
         StringBuffer result = new StringBuffer(512);
         result.append("<td class=\"xmlTd\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td class=\"xmlTd\">");
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\"><tr><td class=\"xmlTd\">");
         result.append("<input class=\"xmlInput textInput");
         if (param.hasError()) {
             result.append(" xmlInputError");
