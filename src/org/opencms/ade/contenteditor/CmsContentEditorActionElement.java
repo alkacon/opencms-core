@@ -98,6 +98,10 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
      */
     private String getPrefetch() throws Exception {
 
+        long timer = 0;
+        if (CmsContentService.LOG.isDebugEnabled()) {
+            timer = System.currentTimeMillis();
+        }
         CmsContentDefinition definition = CmsContentService.newInstance(getRequest()).prefetch();
         StringBuffer sb = new StringBuffer();
         String backlink = getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
@@ -114,6 +118,12 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
             definition);
         sb.append(prefetchedData);
         addExternalResourceTags(sb, definition);
+        if (CmsContentService.LOG.isDebugEnabled()) {
+            CmsContentService.LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2,
+                definition.getSitePath(),
+                "" + (System.currentTimeMillis() - timer)));
+        }
         return sb.toString();
     }
 

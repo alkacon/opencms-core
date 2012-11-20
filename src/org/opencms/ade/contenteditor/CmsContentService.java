@@ -59,7 +59,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
-import org.opencms.workplace.editors.Messages;
 import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -688,6 +687,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Locale locale,
         boolean newLocale) throws CmsException {
 
+        long timer = 0;
+        if (LOG.isDebugEnabled()) {
+            timer = System.currentTimeMillis();
+        }
         CmsObject cms = getCmsObject();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(entityId)) {
             entityId = CmsContentDefinition.uuidToEntityId(resource.getStructureId(), locale.toString());
@@ -698,8 +701,21 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if (performedAutoCorrection) {
             content.initDocument();
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_TAKE_UNMARSHALING_TIME_1,
+                "" + (System.currentTimeMillis() - timer)));
+        }
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, locale);
+        if (LOG.isDebugEnabled()) {
+            timer = System.currentTimeMillis();
+        }
         visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_TAKE_VISITING_TYPES_TIME_1,
+                "" + (System.currentTimeMillis() - timer)));
+        }
         Entity entity = null;
         if (content.hasLocale(locale) && newLocale) {
             // a new locale is requested, so remove the present one
@@ -709,6 +725,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             content.addLocale(cms, locale);
         }
         Element element = content.getLocaleNode(locale);
+        if (LOG.isDebugEnabled()) {
+            timer = System.currentTimeMillis();
+        }
         entity = readEntity(
             content,
             element,
@@ -717,7 +736,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             "",
             getTypeUri(content.getContentDefinition()),
             visitor.getTypes());
-
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_TAKE_READING_ENTITY_TIME_1,
+                "" + (System.currentTimeMillis() - timer)));
+        }
         List<String> contentLocales = new ArrayList<String>();
         for (Locale contentLocale : content.getLocales()) {
             contentLocales.add(contentLocale.toString());
@@ -860,7 +883,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         try {
             file.setContents(decodedContent.getBytes(encoding));
         } catch (UnsupportedEncodingException e) {
-            throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, file.getRootPath()), e);
+            throw new CmsException(org.opencms.workplace.editors.Messages.get().container(
+                org.opencms.workplace.editors.Messages.ERR_INVALID_CONTENT_ENC_1,
+                file.getRootPath()), e);
         }
         // the file content might have been modified during the write operation    
         file = cms.writeFile(file);

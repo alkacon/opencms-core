@@ -295,23 +295,36 @@ public class CmsContentTypeVisitor {
         try {
 
             I_CmsWidget widget = schemaType.getContentDefinition().getContentHandler().getWidget(schemaType);
-            widgetName = widget.getClass().getName();
-            if (widget instanceof I_CmsADEWidget) {
-                if (!checkWidgetsOnly) {
-                    I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
-                    widgetName = adeWidget.getWidgetName();
-                    widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
-                    if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
-                        CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
-                            widgetName,
-                            adeWidget.getInitCall(),
-                            adeWidget.getJavaScriptResourceLinks(cms),
-                            adeWidget.getCssResourceLinks(cms));
-                        m_widgetConfigurations.put(widgetName, externalConfiguration);
+            if (widget != null) {
+                widgetName = widget.getClass().getName();
+                long timer = 0;
+
+                if (widget instanceof I_CmsADEWidget) {
+                    if (!checkWidgetsOnly) {
+                        if (CmsContentService.LOG.isDebugEnabled()) {
+                            timer = System.currentTimeMillis();
+                        }
+                        I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
+                        widgetName = adeWidget.getWidgetName();
+                        widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
+                        if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
+                            CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
+                                widgetName,
+                                adeWidget.getInitCall(),
+                                adeWidget.getJavaScriptResourceLinks(cms),
+                                adeWidget.getCssResourceLinks(cms));
+                            m_widgetConfigurations.put(widgetName, externalConfiguration);
+                        }
+                        if (CmsContentService.LOG.isDebugEnabled()) {
+                            CmsContentService.LOG.debug(Messages.get().getBundle().key(
+                                Messages.LOG_TAKE_READING_WIDGET_CONFIGURATION_TIME_2,
+                                widgetName,
+                                "" + (System.currentTimeMillis() - timer)));
+                        }
                     }
                 }
+                m_widgets.add(widget);
             }
-            m_widgets.add(widget);
         } catch (Exception e) {
             // may happen if no widget was set for the value
             CmsContentService.LOG.debug(e.getMessage(), e);
@@ -370,6 +383,7 @@ public class CmsContentTypeVisitor {
             String subTypeName = null;
             String childPath = path + "/" + subType.getName();
             String subAttributeName = CmsContentService.getAttributeName(subType.getName(), typeName);
+
             AttributeConfiguration config = readConfiguration(
                 (A_CmsXmlContentValue)subType,
                 childPath,
