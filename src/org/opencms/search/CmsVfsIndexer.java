@@ -193,16 +193,20 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 resources = m_cms.readResources(resourceName, CmsResourceFilter.IGNORE_EXPIRATION.addRequireFile());
             } catch (CmsException e) {
                 if (m_report != null) {
-                    m_report.println(Messages.get().container(
-                        Messages.RPT_UNABLE_TO_READ_SOURCE_2,
-                        resourceName,
-                        e.getLocalizedMessage()), I_CmsReport.FORMAT_WARNING);
+                    m_report.println(
+                        Messages.get().container(
+                            Messages.RPT_UNABLE_TO_READ_SOURCE_2,
+                            resourceName,
+                            e.getLocalizedMessage()),
+                        I_CmsReport.FORMAT_WARNING);
                 }
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_UNABLE_TO_READ_SOURCE_2,
-                        resourceName,
-                        m_index.getName()), e);
+                    LOG.warn(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_UNABLE_TO_READ_SOURCE_2,
+                            resourceName,
+                            m_index.getName()),
+                        e);
                 }
             }
             if (resources != null) {
@@ -238,21 +242,26 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         while (i.hasNext()) {
             CmsPublishedResource res = i.next();
             CmsResource resource = null;
-            try {
-                resource = m_cms.readResource(res.getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
-            } catch (CmsException e) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_UNABLE_TO_READ_RESOURCE_2,
-                        res.getRootPath(),
-                        m_index.getName()), e);
+            if (!CmsResource.isTemporaryFileName(res.getRootPath())) {
+                try {
+                    resource = m_cms.readResource(res.getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
+                } catch (CmsException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_UNABLE_TO_READ_RESOURCE_2,
+                                res.getRootPath(),
+                                m_index.getName()),
+                            e);
+                    }
                 }
-            }
-            if (resource != null) {
-                if (!resourcesAlreadyUpdated.contains(resource.getRootPath())) {
-                    // ensure resources are only indexed once per update
-                    resourcesAlreadyUpdated.add(resource.getRootPath());
-                    updateResource(writer, threadManager, resource);
+
+                if (resource != null) {
+                    if (!resourcesAlreadyUpdated.contains(resource.getRootPath())) {
+                        // ensure resources are only indexed once per update
+                        resourcesAlreadyUpdated.add(resource.getRootPath());
+                        updateResource(writer, threadManager, resource);
+                    }
                 }
             }
         }
@@ -292,10 +301,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             indexWriter.deleteDocuments(rootPath);
         } catch (IOException e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_IO_INDEX_DOCUMENT_DELETE_2,
-                    rootPath,
-                    m_index.getName()), e);
+                LOG.warn(
+                    Messages.get().getBundle().key(Messages.LOG_IO_INDEX_DOCUMENT_DELETE_2, rootPath, m_index.getName()),
+                    e);
             }
         }
     }
@@ -340,10 +348,12 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     I_CmsReport.FORMAT_WARNING);
             }
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                    resource.getRootPath(),
-                    m_index.getName()), e);
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                        resource.getRootPath(),
+                        m_index.getName()),
+                    e);
             }
             throw new CmsIndexException(Messages.get().container(
                 Messages.ERR_INDEX_RESOURCE_FAILED_2,
@@ -365,10 +375,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             indexWriter.updateDocument(rootPath, doc);
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_IO_INDEX_DOCUMENT_UPDATE_2,
-                    rootPath,
-                    m_index.getName()), e);
+                LOG.warn(
+                    Messages.get().getBundle().key(Messages.LOG_IO_INDEX_DOCUMENT_UPDATE_2, rootPath, m_index.getName()),
+                    e);
             }
         }
     }
