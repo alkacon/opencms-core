@@ -48,6 +48,7 @@ import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.collections.Factory;
 
@@ -206,7 +207,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
      * @param cms the CMS context
      * @param resource the edited resource
      * 
-     * @return a comma separated list of the default search type names
+     * @return a comma separated list of the default search type names 
      */
     protected static String getDefaultSearchTypes(CmsObject cms, CmsResource resource) {
 
@@ -215,13 +216,14 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
             cms,
             cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()));
+        Set<String> detailPageTypes = OpenCms.getADEManager().getDetailPageTypes(cms);
         for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
+            String typeName = typeConfig.getTypeName();
+            if (!detailPageTypes.contains(typeName)) {
+                continue;
+            }
             if (typeConfig.checkViewable(cms, referenceSitePath)) {
-                String typeName = typeConfig.getTypeName();
-                List<String> detailPages = OpenCms.getADEManager().getDetailPages(cms, typeName);
-                if ((detailPages != null) && (detailPages.size() > 0)) {
-                    result.append(typeName).append(",");
-                }
+                result.append(typeName).append(",");
             }
         }
         result.append(CmsResourceTypeBinary.getStaticTypeName()).append(",");

@@ -45,8 +45,10 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -255,6 +257,24 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         for (CmsADEConfigData configData : m_siteConfigurations.values()) {
             for (CmsDetailPageInfo pageInfo : configData.getDetailPagesForType(type)) {
                 result.add(pageInfo.getUri());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the set of type names for which detail pages are configured in any sitemap configuration.<p>
+     * 
+     * @return the set of type names with configured detail pages  
+     */
+    protected synchronized Set<String> getDetailPageTypes() {
+
+        readRemainingConfigurations();
+        Set<String> result = new HashSet<String>();
+        for (CmsADEConfigData configData : m_siteConfigurations.values()) {
+            List<CmsDetailPageInfo> detailPageInfos = configData.getAllDetailPages(false);
+            for (CmsDetailPageInfo info : detailPageInfos) {
+                result.add(info.getType());
             }
         }
         return result;
@@ -501,8 +521,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        synchronized (m_pathCache) {
-            m_pathCache.remove(structureId);
+        if (m_pathCache.containsKey(structureId)) {
             m_pathCache.put(structureId, rootPath);
         }
         if (isSitemapConfiguration(rootPath, type)) {

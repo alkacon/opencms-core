@@ -66,6 +66,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
@@ -329,6 +330,21 @@ public class CmsADEManager {
         ? m_onlineCache
         : m_offlineCache;
         return cache.getDetailPages(type);
+    }
+
+    /**
+     * Gets the set of types for which detail pages are defined.<p>
+     * 
+     * @param cms the current CMS context 
+     *  
+     * @return the set of types for which detail pages are defined 
+     */
+    public Set<String> getDetailPageTypes(CmsObject cms) {
+
+        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
+        ? m_onlineCache
+        : m_offlineCache;
+        return cache.getDetailPageTypes();
     }
 
     /**
