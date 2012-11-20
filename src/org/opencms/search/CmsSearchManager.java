@@ -179,7 +179,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
                     Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
-                    if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
+                    if ((change != null)
+                        && (change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED)) || change.equals(new Integer(
+                            CmsDriverManager.CHANGED_PROJECT)))) {
                         // skip lock & unlock
                         return;
                     }
