@@ -765,14 +765,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         } else {
             result = result.newInstance();
         }
-        // set the configuration value for this widget
-        String configuration = getConfiguration(value);
-        if (configuration == null) {
-            // no individual configuration defined, try to get global default configuration
-            configuration = OpenCms.getXmlContentTypeManager().getWidgetDefaultConfiguration(result);
+        if (result != null) {
+            // set the configuration value for this widget
+            String configuration = getConfiguration(value);
+            if (configuration == null) {
+                // no individual configuration defined, try to get global default configuration
+                configuration = OpenCms.getXmlContentTypeManager().getWidgetDefaultConfiguration(result);
+            }
+            result.setConfiguration(configuration);
         }
-        result.setConfiguration(configuration);
-
         return result;
     }
 
