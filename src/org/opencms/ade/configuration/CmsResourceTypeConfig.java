@@ -37,6 +37,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -340,7 +341,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             getType().getTypeId(),
             null,
             new ArrayList<CmsProperty>(0));
-        rootCms.unlockResource(creationPath);
+        try {
+            rootCms.unlockResource(creationPath);
+        } catch (CmsLockException e) {
+            // probably the parent folder is locked 
+            LOG.info(e.getLocalizedMessage(), e);
+        }
         return createdResource;
     }
 
