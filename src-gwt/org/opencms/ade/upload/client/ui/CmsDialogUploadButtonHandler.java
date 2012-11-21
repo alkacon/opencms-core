@@ -77,6 +77,23 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     }
 
     /**
+     * Creates a new upload button handler.<p>
+     * 
+     * @param contextFactory the context factory to use for upload contexts
+     * @param targetFolder the target folder
+     * @param isRootPath true fi the target folder is a root path 
+     */
+    public CmsDialogUploadButtonHandler(
+        Supplier<I_CmsUploadContext> contextFactory,
+        String targetFolder,
+        boolean isRootPath) {
+
+        m_contextFactory = contextFactory;
+        m_targetFolder = targetFolder;
+        m_isTargetRootPath = isRootPath;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler#initializeFileInput(org.opencms.gwt.client.ui.input.upload.CmsFileInput)
      */
     public void initializeFileInput(CmsFileInput fileInput) {
@@ -100,7 +117,10 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
                 m_uploadDialog.setContext(context);
                 updateDialog();
                 // the current upload button is located outside the dialog, reinitialize it with a new button handler instance
-                m_button.reinitButton(new CmsDialogUploadButtonHandler(m_contextFactory));
+                m_button.reinitButton(new CmsDialogUploadButtonHandler(
+                    m_contextFactory,
+                    m_targetFolder,
+                    m_isTargetRootPath));
             } catch (Exception e) {
                 CmsErrorDialog.handleException(new Exception(
                     "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",

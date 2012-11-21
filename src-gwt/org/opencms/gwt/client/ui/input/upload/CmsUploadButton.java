@@ -139,17 +139,43 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     }
 
     /**
-     * Reinitializes the button with a new button handler.<p>
+     * Formats a given bytes value (file size).<p>
+     *  
+     * @param filesize the file size to format
      * 
-     * @param buttonHandler the button handler
+     * @return the formated file size in KB
      */
-    public void reinitButton(I_CmsUploadButtonHandler buttonHandler) {
+    public static String formatBytes(long filesize) {
 
-        m_buttonHandler = buttonHandler;
-        m_buttonHandler.setButton(this);
-        updateState("up");
-        m_enabled = true;
-        createFileInput();
+        double kByte = Math.ceil(filesize / KILOBYTE);
+        String formated = NumberFormat.getDecimalFormat().format(new Double(kByte));
+        return formated + " KB";
+    }
+
+    /**
+     * Creates and adds a file input.<p>
+     * 
+     * @return returns the previous file input widget 
+     */
+    public CmsFileInput createFileInput() {
+
+        // remove the current file input field and add a new one
+        CmsFileInput previous = m_fileInput;
+        if (m_fileInput != null) {
+            m_fileInput.getElement().getStyle().setDisplay(Display.NONE);
+        }
+        m_fileInput = new CmsFileInput();
+        m_fileInput.addChangeHandler(new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+
+                CmsDomUtil.ensureMouseOut(m_main.getElement());
+                m_buttonHandler.onChange(m_fileInput);
+            }
+        });
+        m_buttonHandler.initializeFileInput(m_fileInput);
+        m_main.add(m_fileInput);
+        return previous;
     }
 
     /**
@@ -262,6 +288,20 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     public boolean isUseMinWidth() {
 
         return m_useMinWidth;
+    }
+
+    /**
+     * Reinitializes the button with a new button handler.<p>
+     * 
+     * @param buttonHandler the button handler
+     */
+    public void reinitButton(I_CmsUploadButtonHandler buttonHandler) {
+
+        m_buttonHandler = buttonHandler;
+        m_buttonHandler.setButton(this);
+        updateState("up");
+        m_enabled = true;
+        createFileInput();
     }
 
     /**
@@ -384,32 +424,6 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     }
 
     /**
-     * Creates and adds a file input.<p>
-     * 
-     * @return returns the previous file input widget 
-     */
-    public CmsFileInput createFileInput() {
-
-        // remove the current file input field and add a new one
-        CmsFileInput previous = m_fileInput;
-        if (m_fileInput != null) {
-            m_fileInput.getElement().getStyle().setDisplay(Display.NONE);
-        }
-        m_fileInput = new CmsFileInput();
-        m_fileInput.addChangeHandler(new ChangeHandler() {
-
-            public void onChange(ChangeEvent event) {
-
-                CmsDomUtil.ensureMouseOut(m_main.getElement());
-                m_buttonHandler.onChange(m_fileInput);
-            }
-        });
-        m_buttonHandler.initializeFileInput(m_fileInput);
-        m_main.add(m_fileInput);
-        return previous;
-    }
-
-    /**
      * Convenience method to assemble the HTML to use for a button face.<p>
      * 
      * @param text text the up face text to set, set to <code>null</code> to not show any
@@ -468,19 +482,5 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
             m_main.setStyleDependentName(styleDependent, true);
             m_styleDependent = styleDependent;
         }
-    }
-
-    /**
-     * Formats a given bytes value (file size).<p>
-     *  
-     * @param filesize the file size to format
-     * 
-     * @return the formated file size in KB
-     */
-    public static String formatBytes(long filesize) {
-
-        double kByte = Math.ceil(filesize / KILOBYTE);
-        String formated = NumberFormat.getDecimalFormat().format(new Double(kByte));
-        return formated + " KB";
     }
 }
