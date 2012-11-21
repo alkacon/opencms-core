@@ -363,31 +363,31 @@ tinymce.create('tinymce.opencms', {
       
       ed.addButton('OcmsImageGallery', {
          title: '<fmt:message key="GUI_IMAGE_GALLERY_TITLE_0" />',
-         image: '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-imagegallery.gif")%>',
+         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-imagegallery.gif") %>',
          cmd: "cmsImageGallery"
        });
       
       ed.addButton('OcmsDownloadGallery', {
          title: '<fmt:message key="GUI_DOWNLOAD_GALLERY_TITLE_0" />',
-         image: '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-downloadgallery.gif")%>',
+         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-downloadgallery.gif") %>',
          cmd: "cmsDownloadGallery"
       });
       
       ed.addButton('oc-link', {
          title: '<%= CmsEncoder.encodeJavaEntities(OpenCms.getWorkplaceManager().getMessages(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0), encoding) %>',
-         image: '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-link.gif")%>',
+         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-link.gif") %>',
          cmd: "cmsLink"
        });
       
       ed.addButton('OcmsHtmlGallery', {
          title : '<%=org.opencms.workplace.galleries.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.galleries.Messages.GUI_HTMLGALLERY_EDITOR_TOOLTIP_0)%>',
-         image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-htmlgallery.gif")%>',
+         image : '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-htmlgallery.gif") %>',
          cmd: 'cmsHtmlGallery'
       });
       
       ed.addButton('OcmsLinkGallery', { 
          title : '<%=org.opencms.workplace.galleries.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject())).key(org.opencms.workplace.galleries.Messages.GUI_LINKGALLERY_EDITOR_TOOLTIP_0)%>',
-         image: '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-linkgallery.gif")%>',
+         image: '<%= org.opencms.workplace.CmsWorkplace.getResourceUri("editors/tinymce/toolbar/oc-linkgallery.gif") %>',
          cmd : 'cmsLinkGallery'
       });
       
