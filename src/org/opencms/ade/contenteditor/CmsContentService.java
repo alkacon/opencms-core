@@ -92,11 +92,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** The logger for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsContentService.class);
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 7873052619331296648L;
-
     /** The type name prefix. */
     static final String TYPE_NAME_PREFIX = "http://opencms.org/types/";
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 7873052619331296648L;
 
     /** The current users workplace locale. */
     private Locale m_workplaceLocale;
@@ -251,6 +251,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         String paramResource = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
         String paramNewLink = getRequest().getParameter(CmsXmlContentEditor.PARAM_NEWLINK);
+        paramNewLink = decodeNewLink(paramNewLink);
         String paramLocale = getRequest().getParameter(CmsEditor.PARAM_ELEMENTLANGUAGE);
         Locale locale;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
@@ -381,6 +382,33 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             }
         }
         return new ValidationResult(null, null);
+    }
+
+    /**
+     * Decodes the newlink request parameter if possible.<p>
+     * 
+     * @param newLink the parameter to decode 
+     * 
+     * @return the decoded value 
+     */
+    protected String decodeNewLink(String newLink) {
+
+        String result = newLink;
+        if (result == null) {
+            return null;
+        }
+        try {
+            result = CmsEncoder.decode(result);
+            try {
+                result = CmsEncoder.decode(result);
+            } catch (Throwable e) {
+                LOG.info(e.getLocalizedMessage(), e);
+            }
+        } catch (Throwable e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        }
+
+        return result;
     }
 
     /**
