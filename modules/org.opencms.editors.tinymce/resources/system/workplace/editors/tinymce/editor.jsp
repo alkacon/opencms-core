@@ -582,7 +582,7 @@ default:
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
-<link rel=stylesheet type="text/css" href="<%= cms.link("tinymce_xmlpage.css") %>">
+<link rel=stylesheet type="text/css" href="<%= cms.link("/system/workplace/editors/tinymce/tinymce_xmlpage.css") %>">
 <!-- <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/gallery.js</cms:link>"></script>
 <script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/link.js</cms:link>"></script>-->
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tiny_mce/" %>tiny_mce_src.js"></script>
