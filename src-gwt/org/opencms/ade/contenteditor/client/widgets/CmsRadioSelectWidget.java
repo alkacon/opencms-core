@@ -217,6 +217,10 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
         // check if the value has changed. If there is no change do nothing.
         if (m_active == active) {
+            // if the value is initial activated set the default value.
+            if (active) {
+                fireChangeEvent();
+            }
             return;
         }
         // set the new value.
@@ -233,6 +237,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
                 // select the default value if set.
                 if (m_defaultCheckBox != null) {
                     m_defaultCheckBox.setChecked(active);
+                    fireChangeEvent();
                 }
             }
         }
@@ -400,7 +405,7 @@ public class CmsRadioSelectWidget extends Composite implements I_EditWidget {
 
                 }
                 //copy value and option to the Map.
-                values.put(options[i], value[i]);
+                values.put(value[i], options[i]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
