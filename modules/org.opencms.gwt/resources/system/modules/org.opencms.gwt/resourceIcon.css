@@ -1,2 +1,1 @@
-<%@page import="org.opencms.gwt.CmsIconUtil"%>
-<%= CmsIconUtil.buildResourceIconCss() %>
+<%= org.opencms.gwt.CmsIconUtil.buildResourceIconCss() %>

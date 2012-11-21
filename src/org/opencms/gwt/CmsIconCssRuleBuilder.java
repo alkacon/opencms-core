@@ -56,9 +56,11 @@ public class CmsIconCssRuleBuilder {
     public void addSelectorForSubType(String type, String suffix, boolean small) {
 
         String template = " .%1$s.%2$s.%3$s";
-        String selector = String.format(template, CmsIconUtil.TYPE_ICON_CLASS, CmsIconUtil.getResourceTypeIconClass(
-            type,
-            small), CmsIconUtil.getResourceSubTypeIconClass(type, suffix, small));
+        String selector = String.format(
+            template,
+            CmsIconUtil.TYPE_ICON_CLASS,
+            CmsIconUtil.getResourceTypeIconClass(type, small),
+            CmsIconUtil.getResourceSubTypeIconClass(type, suffix, small));
         m_selectors.add(selector);
     }
 
@@ -71,9 +73,10 @@ public class CmsIconCssRuleBuilder {
     public void addSelectorForType(String type, boolean small) {
 
         String template = " div.%1$s.%2$s";
-        String selector = String.format(template, CmsIconUtil.TYPE_ICON_CLASS, CmsIconUtil.getResourceTypeIconClass(
-            type,
-            small));
+        String selector = String.format(
+            template,
+            CmsIconUtil.TYPE_ICON_CLASS,
+            CmsIconUtil.getResourceTypeIconClass(type, small));
         m_selectors.add(selector);
     }
 
@@ -95,11 +98,9 @@ public class CmsIconCssRuleBuilder {
     public void writeCss(StringBuffer buffer) {
 
         buffer.append(CmsStringUtil.listAsString(m_selectors, ", "));
-        buffer.append(" {\n");
-        buffer.append("  background-image: url(\"");
+        buffer.append(" { background-image: url(\"");
         buffer.append(m_imageUri);
-
-        buffer.append("\");\n}\n\n");
+        buffer.append("\");} ");
     }
 
 }
