@@ -32,7 +32,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
-import org.opencms.search.CmsLuceneIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
@@ -81,13 +81,16 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     public static final String PARAM_INDEXNAME = "indexname";
 
     /** The user object that is edited on this dialog. */
-    protected A_CmsSearchIndex m_index;
+    protected CmsSearchIndex m_index;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;
 
     /** Stores the value of the request parameter for the search index Name. */
     private String m_paramIndexName;
+
+    /** The user object that is edited on this dialog. */
+    private A_CmsSearchIndex m_searchIndex;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -132,19 +135,19 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
         try {
 
             // if new create it first
-            if (!m_searchManager.getSearchIndexes().contains(m_index)) {
+            if (!m_searchManager.getSearchIndexes().contains(m_searchIndex)) {
                 // check the index name for invalid characters
                 CmsStringUtil.checkName(
-                    m_index.getName(),
+                    m_searchIndex.getName(),
                     INDEX_NAME_CONSTRAINTS,
                     Messages.ERR_SEARCHINDEX_BAD_INDEXNAME_4,
                     Messages.get());
                 // empty or null name and uniqueness check in add method 
-                m_searchManager.addSearchIndex(m_index);
+                m_searchManager.addSearchIndex(m_searchIndex);
             }
             // check if field configuration has been updated, if thus set field configuration to the now used
-            if (!m_index.getFieldConfigurationName().equals(m_index.getFieldConfiguration().getName())) {
-                m_index.setFieldConfiguration(m_searchManager.getFieldConfiguration(m_index.getFieldConfigurationName()));
+            if (!m_searchIndex.getFieldConfigurationName().equals(m_searchIndex.getFieldConfiguration().getName())) {
+                m_searchIndex.setFieldConfiguration(m_searchManager.getFieldConfiguration(m_searchIndex.getFieldConfigurationName()));
             }
             writeConfiguration();
 
@@ -204,6 +207,16 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the search index.<p>
+     * 
+     * @return the search index
+     */
+    protected A_CmsSearchIndex getSearchIndexIndex() {
+
+        return m_searchIndex;
+    }
+
+    /**
      * Returns the root path of this dialog (path relative to "/system/workplace/admin").<p>
      * 
      * @return the root path of this dialog (path relative to "/system/workplace/admin")
@@ -237,12 +250,15 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     protected void initUserObject() {
 
         try {
-            m_index = m_searchManager.getIndex(getParamIndexName());
-            if (m_index == null) {
-                m_index = createDummySearchIndex();
+            m_searchIndex = m_searchManager.getIndex(getParamIndexName());
+            if (m_searchIndex == null) {
+                m_searchIndex = createDummySearchIndex();
             }
         } catch (Exception e) {
-            m_index = createDummySearchIndex();
+            m_searchIndex = createDummySearchIndex();
+        }
+        if (m_searchIndex instanceof CmsSearchIndex) {
+            m_index = (CmsSearchIndex)m_searchIndex;
         }
     }
 
@@ -273,7 +289,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
         Map<String, A_CmsSearchIndex> dialogObject = (Map<String, A_CmsSearchIndex>)getDialogObject();
         if (dialogObject == null) {
             dialogObject = new HashMap<String, A_CmsSearchIndex>();
-            dialogObject.put(PARAM_INDEXNAME, m_index);
+            dialogObject.put(PARAM_INDEXNAME, m_searchIndex);
             setDialogObject(dialogObject);
         }
 
@@ -334,7 +350,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      */
     private A_CmsSearchIndex createDummySearchIndex() {
 
-        A_CmsSearchIndex result = new CmsLuceneIndex();
+        A_CmsSearchIndex result = new CmsSearchIndex();
         result.setLocale(Locale.ENGLISH);
         result.setProject("Online");
         result.setRebuildMode("auto");

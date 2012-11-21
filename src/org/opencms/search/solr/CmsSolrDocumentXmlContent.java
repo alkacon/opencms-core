@@ -41,8 +41,8 @@ import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlUtils;
@@ -122,16 +122,16 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                         // The key must be the local extended parameter value of the Solr field mapping defined in:
                         // CmsDefaultXmlContentHandler.initSearchSettings(Element, CmsXmlContentDefinition)
                         // later during index process the values are retrieved in:
-                        // I_CmsSearchFieldMapping#getStringValue(CmsObject, CmsResource, I_CmsExtractionResult, List, List)
+                        // CmsSearchFieldMapping#getStringValue(CmsObject, CmsResource, I_CmsExtractionResult, List, List)
                         items.put(
-                            A_CmsSearchFieldConfiguration.getLocaleExtendedName(CmsXmlUtils.removeXpath(xpath), locale),
+                            CmsSearchFieldConfiguration.getLocaleExtendedName(CmsXmlUtils.removeXpath(xpath), locale),
                             extracted);
                     }
                 }
                 if (content.length() > 0) {
                     // add the extracted content with a localized key into the extraction result
-                    String contentKey = A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                        I_CmsSearchField.FIELD_CONTENT,
+                    String contentKey = CmsSearchFieldConfiguration.getLocaleExtendedName(
+                        CmsSearchField.FIELD_CONTENT,
                         locale);
                     items.put(contentKey, content.toString());
                     if (resLocale.equals(locale)) {
@@ -139,10 +139,10 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                     }
                 }
                 // add the locales that have been indexed for this document as item
-                items.put(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString());
+                items.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString());
             }
             // get all search fields configured in the XSD of this XML content
-            Set<I_CmsSearchField> fields = new HashSet<I_CmsSearchField>(xmlContent.getHandler().getSearchFields());
+            Set<CmsSearchField> fields = new HashSet<CmsSearchField>(xmlContent.getHandler().getSearchFields());
             return new CmsExtractionResult(defaultContent, items, fields);
         } catch (Exception e) {
             throw new CmsIndexException(

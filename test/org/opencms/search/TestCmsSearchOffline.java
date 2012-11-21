@@ -105,7 +105,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
      */
     public void testSearchIndexSetup() throws Exception {
 
-        CmsLuceneIndex searchIndex = new CmsLuceneIndex(INDEX_SPECIAL);
+        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
         searchIndex.setProject("Offline");
         searchIndex.setLocale(Locale.ENGLISH);
         searchIndex.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_OFFLINE);

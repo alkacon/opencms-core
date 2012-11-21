@@ -27,14 +27,14 @@
 
 package org.opencms.search;
 
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 
 import org.apache.lucene.index.FieldInvertState;
 import org.apache.lucene.search.DefaultSimilarity;
 
 /**
  * Reduces the importance of the <code>{@link #computeNorm(String, FieldInvertState)}</code> factor 
- * for the <code>{@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT}</code> field, while 
+ * for the <code>{@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT}</code> field, while 
  * keeping the Lucene default for all other fields.<p>
  * 
  * This implementation was added since apparently the default length norm is heavily biased 
@@ -64,7 +64,7 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
 
     /**
      * Special implementation for "compute norm" to reduce the significance of this factor 
-     * for the <code>{@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT}</code> field, while 
+     * for the <code>{@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT}</code> field, while 
      * keeping the Lucene default for all other fields.<p>
      * 
      * @see org.apache.lucene.search.DefaultSimilarity#computeNorm(java.lang.String, org.apache.lucene.index.FieldInvertState)
@@ -72,7 +72,7 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
     @Override
     public float computeNorm(String fieldName, FieldInvertState state) {
 
-        if (fieldName.equals(I_CmsSearchField.FIELD_CONTENT)) {
+        if (fieldName.equals(CmsSearchField.FIELD_CONTENT)) {
             final int numTerms = state.getLength() - state.getNumOverlap();
             // special length norm for content
             return (float)(3.0 / (Math.log(1000 + numTerms) / LOG10));

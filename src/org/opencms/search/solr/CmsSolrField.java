@@ -32,7 +32,7 @@
 package org.opencms.search.solr;
 
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.A_CmsSearchField;
+import org.opencms.search.fields.CmsLuceneSearchField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 
@@ -48,7 +48,7 @@ import org.apache.solr.schema.SchemaField;
  * 
  * @since 8.5.0
  */
-public class CmsSolrField extends A_CmsSearchField {
+public class CmsSolrField extends CmsSearchField {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3920245109164517028L;
@@ -67,7 +67,7 @@ public class CmsSolrField extends A_CmsSearchField {
      * 
      * @param luceneField
      */
-    public CmsSolrField(CmsSearchField luceneField) {
+    public CmsSolrField(CmsLuceneSearchField luceneField) {
 
         super();
         String name = luceneField.getName();
@@ -109,16 +109,18 @@ public class CmsSolrField extends A_CmsSearchField {
     }
 
     /**
-     * @see org.opencms.search.fields.I_CmsSearchField#createField(java.lang.String)
+     * @see org.opencms.search.fields.CmsSearchField#createField(java.lang.String)
      */
+    @Override
     public Fieldable createField(String value) {
 
         return createField(getName(), value);
     }
 
     /**
-     * @see org.opencms.search.fields.I_CmsSearchField#createField(java.lang.String, java.lang.String)
+     * @see org.opencms.search.fields.CmsSearchField#createField(java.lang.String, java.lang.String)
      */
+    @Override
     public Fieldable createField(String name, String value) {
 
         // TODO: write a test case
@@ -143,9 +145,9 @@ public class CmsSolrField extends A_CmsSearchField {
     }
 
     /**
-     * Returns the locale.<p>
+     * Returns the locale of this field or <code>null</code> if the field does not have a locale.<p>
      * 
-     * @return the locale
+     * @return the locale of this field
      */
     public Locale getLocale() {
 

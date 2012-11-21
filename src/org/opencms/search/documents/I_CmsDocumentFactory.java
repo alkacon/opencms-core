@@ -70,7 +70,7 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, org.opencms.search.extractors.I_CmsExtractionResult)
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, org.opencms.search.extractors.I_CmsExtractionResult)
      */
     I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, A_CmsSearchIndex index) throws CmsException;
 

@@ -40,7 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.documents.CmsDocumentDependency;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
@@ -276,7 +276,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
             results = index.search(cms, squery);
             assertEquals(1, results.size());
             CmsSearchResource res = results.get(0);
-            List<String> fieldLocales = res.getMultivaluedField(I_CmsSearchField.FIELD_CONTENT_LOCALES);
+            List<String> fieldLocales = res.getMultivaluedField(CmsSearchField.FIELD_CONTENT_LOCALES);
             assertTrue(fieldLocales.size() == filename.getValue().size());
             assertTrue(fieldLocales.containsAll(filename.getValue()));
             assertTrue(filename.getValue().containsAll(fieldLocales));
@@ -287,7 +287,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         results = index.search(cms, squery);
         assertEquals(1, results.size());
         CmsSearchResource res = results.get(0);
-        List<String> fieldLocales = res.getMultivaluedField(I_CmsSearchField.FIELD_CONTENT_LOCALES);
+        List<String> fieldLocales = res.getMultivaluedField(CmsSearchField.FIELD_CONTENT_LOCALES);
         assertTrue(fieldLocales.size() == 1);
         fieldLocales.contains(Collections.singletonList("en"));
     }

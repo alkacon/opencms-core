@@ -85,7 +85,7 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
             // forward to the rebuild report page 
             Map<String, String[]> params = new HashMap<String, String[]>();
             // rebuild report built for several indexes (comma-separated value string)
-            params.put(CmsRebuildReport.PARAM_INDEXES, new String[] {m_index.getName()});
+            params.put(CmsRebuildReport.PARAM_INDEXES, new String[] {getSearchIndexIndex().getName()});
             params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/rebuildreport", params);
 
@@ -119,7 +119,7 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
             result.append(createWidgetTableStart());
             result.append(key(
                 Messages.GUI_LIST_SEARCHINDEX_ACTION_REBUILD_NAME_CONF_1,
-                new Object[] {m_index.getName()}));
+                new Object[] {getSearchIndexIndex().getName()}));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }

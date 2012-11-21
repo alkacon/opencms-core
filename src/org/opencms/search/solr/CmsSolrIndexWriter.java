@@ -35,7 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 
 import java.io.IOException;
 
@@ -153,7 +153,7 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
                     rootPath,
                     m_index.getName(),
                     m_index.getPath()));
-                m_server.deleteByQuery(I_CmsSearchField.FIELD_PATH + ":" + rootPath + "*");
+                m_server.deleteByQuery(CmsSearchField.FIELD_PATH + ":" + rootPath + "*");
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
             }

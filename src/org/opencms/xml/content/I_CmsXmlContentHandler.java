@@ -34,7 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsDefaultSet;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -257,7 +257,7 @@ public interface I_CmsXmlContentHandler {
      * 
      * @return the Search fields for this XMl content
      */
-    Collection<I_CmsSearchField> getSearchFields();
+    Collection<CmsSearchField> getSearchFields();
 
     /**
      * Returns the element settings defined for the container page formatters.<p>

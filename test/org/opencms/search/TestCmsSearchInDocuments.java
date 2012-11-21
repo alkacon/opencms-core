@@ -40,7 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
@@ -472,7 +472,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         searchBean.setQuery(query);
         // ensure only meta information is searched
-        searchBean.setField(new String[] {I_CmsSearchField.FIELD_META});
+        searchBean.setField(new String[] {CmsSearchField.FIELD_META});
         searchResult = searchBean.getSearchResult();
         // since no resource has any description, no results should be found
         System.out.println("\n\n----- No results should be displayed below");

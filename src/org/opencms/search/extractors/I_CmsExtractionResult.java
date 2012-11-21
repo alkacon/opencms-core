@@ -27,7 +27,7 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 
 import java.util.Map;
 import java.util.Set;
@@ -120,14 +120,14 @@ public interface I_CmsExtractionResult {
      * 
      * @return a list of mapping fields
      */
-    Set<I_CmsSearchField> getMappingFields();
+    Set<CmsSearchField> getMappingFields();
 
     /** 
      * Adds a mapping field to the extraction result.<p>
      * 
      * @param field the field to add
      */
-    void addMappingField(I_CmsSearchField field);
+    void addMappingField(CmsSearchField field);
 
     /**
      * Releases the information stored in this extraction result, to free up the memory used.<p>

@@ -28,7 +28,7 @@
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -139,7 +139,7 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
             m_field.setStored(true);
             m_field.setIndexed(true);
             m_field.setDisplayed(true);
-            m_field.setBoost(I_CmsSearchField.BOOST_DEFAULT);
+            m_field.setBoost(CmsSearchField.BOOST_DEFAULT);
         }
 
         // widgets to display

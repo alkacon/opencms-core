@@ -35,7 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.Messages;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -192,7 +192,7 @@ public class CmsGallerySearch {
      */
     public CmsGallerySearchResult searchByPath(String path, Locale locale) throws CmsException {
 
-        I_CmsSearchDocument sDoc = m_index.getDocument(I_CmsSearchField.FIELD_PATH, path);
+        I_CmsSearchDocument sDoc = m_index.getDocument(CmsSearchField.FIELD_PATH, path);
         CmsGallerySearchResult result = null;
         if ((sDoc != null) && (sDoc.getDocument() != null)) {
             Document doc = (Document)sDoc.getDocument();

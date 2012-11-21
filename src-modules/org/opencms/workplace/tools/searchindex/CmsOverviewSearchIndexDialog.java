@@ -113,10 +113,14 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         super.defineWidgets();
 
         // widgets to display in first block (like edit view)
-        addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "rebuildMode", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "locale", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "project", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_index, "fieldConfigurationName", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "name", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "rebuildMode", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "locale", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "project", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(
+            getSearchIndexIndex(),
+            "fieldConfigurationName",
+            PAGES[0],
+            new CmsDisplayWidget()));
     }
 }

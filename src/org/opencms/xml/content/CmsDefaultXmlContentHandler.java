@@ -53,10 +53,10 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
-import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.search.solr.CmsSolrField;
 import org.opencms.security.CmsAccessControlEntry;
@@ -418,7 +418,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected Map<String, CmsRelationType> m_relations;
 
     /** The Solr field configurations. */
-    protected Map<String, I_CmsSearchField> m_searchFields;
+    protected Map<String, CmsSearchField> m_searchFields;
 
     /** The search settings. */
     protected Map<String, Boolean> m_searchSettings;
@@ -715,9 +715,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchFields()
      */
-    public Collection<I_CmsSearchField> getSearchFields() {
+    public Collection<CmsSearchField> getSearchFields() {
 
-        Set<I_CmsSearchField> searchFields = new HashSet<I_CmsSearchField>(m_searchFields.values());
+        Set<CmsSearchField> searchFields = new HashSet<CmsSearchField>(m_searchFields.values());
         return Collections.unmodifiableCollection(searchFields);
     }
 
@@ -1531,9 +1531,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param field the Solr field
      */
-    protected void addSearchField(CmsXmlContentDefinition contentDefinition, I_CmsSearchField field) {
+    protected void addSearchField(CmsXmlContentDefinition contentDefinition, CmsSearchField field) {
 
-        String key = A_CmsSearchFieldConfiguration.getLocaleExtendedName(field.getName(), field.getLocale());
+        Locale locale = null;
+        if (field instanceof CmsSolrField) {
+            locale = ((CmsSolrField)field).getLocale();
+        }
+        String key = CmsSearchFieldConfiguration.getLocaleExtendedName(field.getName(), locale);
         m_searchFields.put(key, field);
     }
 
@@ -1779,7 +1783,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
         m_titleMappings = new ArrayList<String>(2);
         m_formatters = new ArrayList<CmsFormatterBean>();
-        m_searchFields = new HashMap<String, I_CmsSearchField>();
+        m_searchFields = new HashMap<String, CmsSearchField>();
         m_allowedTemplates = new CmsDefaultSet<String>();
         m_allowedTemplates.setDefaultMembership(true);
     }
@@ -2182,14 +2186,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     String copyFieldNames = solrElement.attributeValue(APPINFO_ATTR_COPY_FIELDS, "");
                     List<String> copyFields = CmsStringUtil.splitAsList(copyFieldNames, ',');
                     String defaultValue = solrElement.attributeValue(APPINFO_ATTR_DEFAULT);
-                    String defaultBoost = String.valueOf(I_CmsSearchField.BOOST_DEFAULT);
+                    String defaultBoost = String.valueOf(CmsSearchField.BOOST_DEFAULT);
                     float boost = Float.valueOf(solrElement.attributeValue(APPINFO_ATTR_BOOST, defaultBoost)).floatValue();
                     CmsSolrField field = new CmsSolrField(targetField, copyFields, locale, defaultValue, boost);
 
                     // create a mapping for the element itself
                     CmsSearchFieldMapping valueMapping = new CmsSearchFieldMapping(
                         CmsSearchFieldMappingType.ITEM,
-                        A_CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, locale));
+                        CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, locale));
                     field.addMapping(valueMapping);
 
                     // create the field mappings for this element
@@ -2888,7 +2892,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             case 0: // content
             case 3: // item
                 // localized
-                String p = A_CmsSearchFieldConfiguration.getLocaleExtendedName(element.getStringValue(), locale);
+                String p = CmsSearchFieldConfiguration.getLocaleExtendedName(element.getStringValue(), locale);
                 fieldMapping = new CmsSearchFieldMapping(type, p);
                 break;
             case 1: // property

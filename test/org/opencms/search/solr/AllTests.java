@@ -30,7 +30,7 @@ package org.opencms.search.solr;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.search.CmsSearchResource;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
@@ -193,7 +193,7 @@ public final class AllTests {
             CmsSearchResource res = i.next();
             String path = res.getRootPath();
             colPath = Math.max(colPath, path.length() + 3);
-            String title = res.getField(I_CmsSearchField.FIELD_TITLE
+            String title = res.getField(CmsSearchField.FIELD_TITLE
                 + "_"
                 + cms.getRequestContext().getLocale().toString());
             if (title == null) {
@@ -207,7 +207,7 @@ public final class AllTests {
         for (CmsSearchResource res : results) {
             System.out.print(CmsStringUtil.padRight("" + ++count, 4));
             System.out.print(CmsStringUtil.padRight(res.getRootPath(), colPath));
-            String title = res.getField(I_CmsSearchField.FIELD_TITLE
+            String title = res.getField(CmsSearchField.FIELD_TITLE
                 + "_"
                 + cms.getRequestContext().getLocale().toString());
             if (title == null) {
@@ -216,7 +216,7 @@ public final class AllTests {
                 title = title.trim();
             }
             System.out.print(CmsStringUtil.padRight(title, colTitle));
-            String type = res.getField(I_CmsSearchField.FIELD_TYPE);
+            String type = res.getField(CmsSearchField.FIELD_TYPE);
             if (type == null) {
                 type = "";
             }

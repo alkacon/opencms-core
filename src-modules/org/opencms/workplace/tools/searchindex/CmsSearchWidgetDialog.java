@@ -32,11 +32,11 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
-import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.CmsSearch;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.fields.CmsLuceneSearchField;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.I_CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -235,13 +235,13 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * 
      * @return the list of searchable fields used in the workplace search index
      */
-    public List<I_CmsSearchField> getSearchFields() {
+    public List<CmsSearchField> getSearchFields() {
 
         A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(getParamIndexName());
-        List<I_CmsSearchField> result = new ArrayList<I_CmsSearchField>();
-        Iterator<I_CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
+        List<CmsSearchField> result = new ArrayList<CmsSearchField>();
+        Iterator<CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
-            CmsSearchField field = (CmsSearchField)i.next();
+            CmsLuceneSearchField field = (CmsLuceneSearchField)i.next();
             if (field.isIndexed() && field.isDisplayed()) {
                 // only include indexed (ie. searchable) fields
                 result.add(field);
@@ -493,7 +493,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
                 m_search = new CmsSearch();
             }
         }
-        m_searchParams.setSearchIndex((CmsLuceneIndex)m_index);
+        m_searchParams.setSearchIndex((CmsSearchIndex)getSearchIndexIndex());
     }
 
     /**
@@ -572,7 +572,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             // proprietary workplace admin link for pagelinks of search: 
             resultView.setSearchRessourceUrl(getJsp().link(
                 "/system/workplace/views/admin/admin-main.jsp?path=/searchindex/singleindex/search&indexname="
-                    + m_index.getName()));
+                    + getSearchIndexIndex().getName()));
             m_search.init(getCms());
 
             // custom parameters (non-widget controlled) 
@@ -645,9 +645,9 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
         List<CmsSelectWidgetOption> retVal = new ArrayList<CmsSelectWidgetOption>();
         try {
-            Iterator<I_CmsSearchField> i = getSearchFields().iterator();
+            Iterator<CmsSearchField> i = getSearchFields().iterator();
             while (i.hasNext()) {
-                CmsSearchField field = (CmsSearchField)i.next();
+                CmsLuceneSearchField field = (CmsLuceneSearchField)i.next();
                 retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
                     field.getDisplayName())));
             }

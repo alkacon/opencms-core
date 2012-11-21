@@ -36,7 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsDateUtil;
@@ -103,7 +103,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
             CmsSearchResult res = i.next();
             String path = cms.getRequestContext().removeSiteRoot(res.getPath());
             colPath = Math.max(colPath, path.length() + 3);
-            String title = res.getField(I_CmsSearchField.FIELD_TITLE);
+            String title = res.getField(CmsSearchField.FIELD_TITLE);
             if (title == null) {
                 title = "";
             } else {
@@ -117,7 +117,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
             count++;
             System.out.print(CmsStringUtil.padRight("" + count, 4));
             System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), colPath));
-            String title = res.getField(I_CmsSearchField.FIELD_TITLE);
+            String title = res.getField(CmsSearchField.FIELD_TITLE);
             if (title == null) {
                 title = "";
             } else {
@@ -130,8 +130,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
             }
             System.out.print(CmsStringUtil.padRight(type, 10));
             if (res.getDateLastModified() != null) {
-                System.out.print(CmsStringUtil.padRight(""
-                    + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN), 17));
+                System.out.print(CmsStringUtil.padRight(
+                    "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
+                    17));
             }
             System.out.println("score: " + res.getScore());
             if (showExcerpt) {
@@ -430,7 +431,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
      */
     public void testIndexGeneration() throws Throwable {
 
-        CmsLuceneIndex searchIndex = new CmsLuceneIndex(INDEX_TEST);
+        CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_TEST);
         searchIndex.setProject("Offline");
         // important: use german locale for a special treat on term analyzing
         searchIndex.setLocale(Locale.GERMAN);

@@ -40,7 +40,7 @@ import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
@@ -177,7 +177,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
         StringBuffer content = new StringBuffer();
         Map<String, String> items = new HashMap<String, String>();
-        Set<I_CmsSearchField> fields = new HashSet<I_CmsSearchField>();
+        Set<CmsSearchField> fields = new HashSet<CmsSearchField>();
 
         for (I_CmsExtractionResult ex : all) {
             if (ex.getContent() != null) {

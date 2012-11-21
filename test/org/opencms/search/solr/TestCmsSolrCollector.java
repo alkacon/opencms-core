@@ -37,8 +37,8 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
-import org.opencms.search.CmsLuceneIndex;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -108,7 +108,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
                         A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index instanceof CmsLuceneIndex) {
+                        if (index instanceof CmsSearchIndex) {
                             index.setEnabled(false);
                         }
                     }
@@ -141,7 +141,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
         q.append("&fq=parent-folders:/sites/default/xmlcontent/");
         q.append("&fq=type:article");
         q.append("&rows=" + 3);
-        q.append("&sort=" + I_CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
+        q.append("&sort=" + CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
         List<CmsResource> resources = collector.getResults(cms, "byQuery", q.toString());
 
         // assert that 3 files are returned
@@ -185,7 +185,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
         q.append("q=");
         q.append("+type:article");
         q.append("&rows=" + 3);
-        q.append("&sort=" + I_CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
+        q.append("&sort=" + CmsSearchField.FIELD_DATE_LASTMODIFIED + " desc");
         List<CmsResource> resources = collector.getResults(getCmsObject(), "byContext", q.toString());
 
         // assert that 3 files are returned

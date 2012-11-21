@@ -28,7 +28,7 @@
 package org.opencms.search;
 
 import org.opencms.relations.CmsCategory;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 
 import java.util.Date;
 import java.util.List;
@@ -111,7 +111,7 @@ public interface I_CmsSearchDocument {
      * @param field the field
      * @param value the value
      */
-    void addSearchField(I_CmsSearchField field, String value);
+    void addSearchField(CmsSearchField field, String value);
 
     /**
      * Adds the suffix field to the document. This field should contain the resource suffix.<p>

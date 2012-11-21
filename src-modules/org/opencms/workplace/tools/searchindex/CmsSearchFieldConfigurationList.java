@@ -34,10 +34,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsLuceneSearchField;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
-import org.opencms.search.fields.I_CmsSearchField;
-import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * A list that displays information about the <code>{@link org.opencms.search.fields.CmsSearchFieldConfiguration}</code> 
+ * A list that displays information about the <code>{@link org.opencms.search.fields.CmsLuceneSearchFieldConfiguration}</code> 
  * that are members of the <code>{@link org.opencms.search.A_CmsSearchIndex}</code> 
  * in the current request scope (param "searchindex").<p> 
  * 
@@ -192,7 +192,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
             // execute the delete multiaction
             Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             CmsListItem listItem;
-            I_CmsSearchFieldConfiguration fieldconfig;
+            CmsSearchFieldConfiguration fieldconfig;
             while (itItems.hasNext()) {
                 listItem = itItems.next();
                 fieldconfig = searchManager.getFieldConfiguration((String)listItem.get(LIST_COLUMN_NAME));
@@ -264,10 +264,10 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
         CmsSearchManager manager = OpenCms.getSearchManager();
 
         // get content
-        List<I_CmsSearchFieldConfiguration> configs = new LinkedList<I_CmsSearchFieldConfiguration>(
+        List<CmsSearchFieldConfiguration> configs = new LinkedList<CmsSearchFieldConfiguration>(
             manager.getFieldConfigurationsLucene());
-        Iterator<I_CmsSearchFieldConfiguration> itConfigs = configs.iterator();
-        I_CmsSearchFieldConfiguration config;
+        Iterator<CmsSearchFieldConfiguration> itConfigs = configs.iterator();
+        CmsSearchFieldConfiguration config;
         while (itConfigs.hasNext()) {
             try {
                 config = itConfigs.next();
@@ -432,14 +432,14 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
         // search for the corresponding A_CmsSearchIndex: 
         String idxConfigName = (String)item.get(LIST_COLUMN_NAME);
 
-        I_CmsSearchFieldConfiguration idxFieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(
+        CmsSearchFieldConfiguration idxFieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(
             idxConfigName);
-        List<I_CmsSearchField> fields = idxFieldConfiguration.getFields();
+        List<CmsSearchField> fields = idxFieldConfiguration.getFields();
 
         html.append("<ul>\n");
-        Iterator<I_CmsSearchField> itFields = fields.iterator();
+        Iterator<CmsSearchField> itFields = fields.iterator();
         while (itFields.hasNext()) {
-            CmsSearchField field = (CmsSearchField)itFields.next();
+            CmsLuceneSearchField field = (CmsLuceneSearchField)itFields.next();
             String fieldName = field.getName();
             boolean fieldStore = field.isStored();
             String fieldIndex = field.getIndexed();
@@ -458,7 +458,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
             if (fieldExcerpt) {
                 html.append(", ").append("excerpt=").append(fieldExcerpt);
             }
-            if (fieldBoost != I_CmsSearchField.BOOST_DEFAULT) {
+            if (fieldBoost != CmsSearchField.BOOST_DEFAULT) {
                 html.append(", ").append("boost=").append(fieldBoost);
             }
             if (fieldDefault != null) {

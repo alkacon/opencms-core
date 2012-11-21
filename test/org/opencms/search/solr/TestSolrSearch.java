@@ -37,9 +37,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.A_CmsSearchIndex;
-import org.opencms.search.CmsLuceneIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchResource;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
@@ -111,7 +111,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
                         A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index instanceof CmsLuceneIndex) {
+                        if (index instanceof CmsSearchIndex) {
                             index.setEnabled(false);
                         }
                     }
@@ -547,9 +547,9 @@ public class TestSolrSearch extends OpenCmsTestCase {
             CmsSearchResource res = i.next();
             if (lastTitle != null) {
                 // make sure result is sorted correctly
-                assertTrue(lastTitle.compareTo(res.getField(I_CmsSearchField.FIELD_TITLE)) <= 0);
+                assertTrue(lastTitle.compareTo(res.getField(CmsSearchField.FIELD_TITLE)) <= 0);
             }
-            lastTitle = res.getField(I_CmsSearchField.FIELD_TITLE);
+            lastTitle = res.getField(CmsSearchField.FIELD_TITLE);
         }
 
         // third run use date last modified

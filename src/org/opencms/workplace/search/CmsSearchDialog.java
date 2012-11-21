@@ -33,7 +33,7 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
-import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsLuceneSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.CmsCalendarWidget;
@@ -153,7 +153,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         List result = new ArrayList();
         Iterator i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
-            CmsSearchField field = (CmsSearchField)i.next();
+            CmsLuceneSearchField field = (CmsLuceneSearchField)i.next();
             if (field.isIndexed() && field.isDisplayed()) {
                 // only include indexed (ie. searchable) fields
                 result.add(field);
@@ -269,7 +269,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         try {
             Iterator i = getFields().iterator();
             while (i.hasNext()) {
-                CmsSearchField field = (CmsSearchField)i.next();
+                CmsLuceneSearchField field = (CmsLuceneSearchField)i.next();
                 if (isInitialCall()) {
                     // search form is in the initial state
                     retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(

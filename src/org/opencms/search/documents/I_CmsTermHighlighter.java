@@ -27,7 +27,7 @@
 
 package org.opencms.search.documents;
 
-import org.opencms.search.CmsLuceneIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 
 import java.io.IOException;
@@ -58,6 +58,6 @@ public interface I_CmsTermHighlighter {
      * @throws IOException if something goes wrong
      * @throws InvalidTokenOffsetsException in case of problems with the Lucene tokenizer
      */
-    String getExcerpt(Document doc, CmsLuceneIndex index, CmsSearchParameters params, Query query, Analyzer analyzer)
+    String getExcerpt(Document doc, CmsSearchIndex index, CmsSearchParameters params, Query query, Analyzer analyzer)
     throws IOException, InvalidTokenOffsetsException;
 }

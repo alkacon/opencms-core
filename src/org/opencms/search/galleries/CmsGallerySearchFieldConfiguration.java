@@ -35,8 +35,8 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
@@ -51,7 +51,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @since 8.0.0 
  */
-public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfiguration {
+public class CmsGallerySearchFieldConfiguration extends CmsLuceneSearchFieldConfiguration {
 
     /**
      * Default constructor.<p>
@@ -82,15 +82,15 @@ public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfigurat
         List<CmsProperty> properties,
         List<CmsProperty> propertiesSearched) {
 
-        Iterator<I_CmsSearchField> fieldConfigs = getFields().iterator();
+        Iterator<CmsSearchField> fieldConfigs = getFields().iterator();
         while (fieldConfigs.hasNext()) {
             // check all field configurations 
-            I_CmsSearchField fieldConfig = fieldConfigs.next();
+            CmsSearchField fieldConfig = fieldConfigs.next();
 
-            if (I_CmsSearchField.FIELD_TITLE.equals(fieldConfig.getName())
-                || (CmsResourceTypeXmlContent.isXmlContent(resource) && (I_CmsSearchField.FIELD_CONTENT.equals(fieldConfig.getName())
-                    || I_CmsSearchField.FIELD_TITLE_UNSTORED.equals(fieldConfig.getName())
-                    || I_CmsSearchField.FIELD_DESCRIPTION.equals(fieldConfig.getName()) || I_CmsSearchField.FIELD_META.equals(fieldConfig.getName())))) {
+            if (CmsSearchField.FIELD_TITLE.equals(fieldConfig.getName())
+                || (CmsResourceTypeXmlContent.isXmlContent(resource) && (CmsSearchField.FIELD_CONTENT.equals(fieldConfig.getName())
+                    || CmsSearchField.FIELD_TITLE_UNSTORED.equals(fieldConfig.getName())
+                    || CmsSearchField.FIELD_DESCRIPTION.equals(fieldConfig.getName()) || CmsSearchField.FIELD_META.equals(fieldConfig.getName())))) {
                 appendMultipleFieldMapping(
                 // XML content and special multiple language mapping field
                     document,
@@ -131,7 +131,7 @@ public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfigurat
      */
     protected I_CmsSearchDocument appendMultipleFieldMapping(
         I_CmsSearchDocument document,
-        I_CmsSearchField field,
+        CmsSearchField field,
         CmsObject cms,
         CmsResource resource,
         I_CmsExtractionResult extractionResult,
@@ -142,21 +142,21 @@ public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfigurat
         String fieldName = field.getName();
         String value = null;
 
-        if (I_CmsSearchField.FIELD_CONTENT.equals(fieldName)) {
-            mappingName = I_CmsSearchField.FIELD_CONTENT;
-        } else if (I_CmsSearchField.FIELD_TITLE_UNSTORED.equals(fieldName)) {
-            mappingName = I_CmsSearchField.FIELD_TITLE_UNSTORED;
-        } else if (I_CmsSearchField.FIELD_TITLE.equals(fieldName)) {
+        if (CmsSearchField.FIELD_CONTENT.equals(fieldName)) {
+            mappingName = CmsSearchField.FIELD_CONTENT;
+        } else if (CmsSearchField.FIELD_TITLE_UNSTORED.equals(fieldName)) {
+            mappingName = CmsSearchField.FIELD_TITLE_UNSTORED;
+        } else if (CmsSearchField.FIELD_TITLE.equals(fieldName)) {
             if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
                 // not an XML content - we need to read the property and map it to all fields
                 value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_TITLE, properties).getValue();
             } else {
-                mappingName = I_CmsSearchField.FIELD_TITLE_UNSTORED;
+                mappingName = CmsSearchField.FIELD_TITLE_UNSTORED;
             }
-        } else if (I_CmsSearchField.FIELD_DESCRIPTION.equals(fieldName)) {
-            mappingName = I_CmsSearchField.FIELD_DESCRIPTION;
-        } else if (I_CmsSearchField.FIELD_META.equals(fieldName)) {
-            mappingName = I_CmsSearchField.FIELD_META;
+        } else if (CmsSearchField.FIELD_DESCRIPTION.equals(fieldName)) {
+            mappingName = CmsSearchField.FIELD_DESCRIPTION;
+        } else if (CmsSearchField.FIELD_META.equals(fieldName)) {
+            mappingName = CmsSearchField.FIELD_META;
         }
 
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
@@ -164,12 +164,12 @@ public class CmsGallerySearchFieldConfiguration extends CmsSearchFieldConfigurat
 
             if ((mappingName != null) && (extractionResult != null)) {
                 // should be the case for XML contents only
-                if (mappingName == I_CmsSearchField.FIELD_META) {
+                if (mappingName == CmsSearchField.FIELD_META) {
                     // meta field - we can use == because the String has been initialized above
                     String title = extractionResult.getContentItems().get(
-                        getLocaleExtendedName(I_CmsSearchField.FIELD_TITLE_UNSTORED, locale));
+                        getLocaleExtendedName(CmsSearchField.FIELD_TITLE_UNSTORED, locale));
                     String description = extractionResult.getContentItems().get(
-                        getLocaleExtendedName(I_CmsSearchField.FIELD_DESCRIPTION, locale));
+                        getLocaleExtendedName(CmsSearchField.FIELD_DESCRIPTION, locale));
                     StringBuffer v = new StringBuffer();
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
                         v.append(title);

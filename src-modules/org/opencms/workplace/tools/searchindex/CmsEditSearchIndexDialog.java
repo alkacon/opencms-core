@@ -31,8 +31,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
@@ -118,19 +117,31 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         super.defineWidgets();
 
         // widgets to display
-        if ((m_index == null) || (m_index.getName() == null)) {
-            addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsInputWidget()));
+        if ((getSearchIndexIndex() == null) || (getSearchIndexIndex().getName() == null)) {
+            addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "name", PAGES[0], new CmsInputWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(m_index, "rebuildMode", "", PAGES[0], new CmsSelectWidget(
+        addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "rebuildMode", "", PAGES[0], new CmsSelectWidget(
             getRebuildModeWidgetConfiguration()), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_index, "localeString", "", PAGES[0], new CmsSelectWidget(
-            getLocaleWidgetConfiguration()), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_index, "project", "", PAGES[0], new CmsSelectWidget(
+        addWidget(new CmsWidgetDialogParameter(
+            getSearchIndexIndex(),
+            "localeString",
+            "",
+            PAGES[0],
+            new CmsSelectWidget(getLocaleWidgetConfiguration()),
+            0,
+            1));
+        addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "project", "", PAGES[0], new CmsSelectWidget(
             getProjectWidgetConfiguration()), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_index, "fieldConfigurationName", "", PAGES[0], new CmsSelectWidget(
-            getFieldConfigurationWidgetConfiguration()), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(
+            getSearchIndexIndex(),
+            "fieldConfigurationName",
+            "",
+            PAGES[0],
+            new CmsSelectWidget(getFieldConfigurationWidgetConfiguration()),
+            0,
+            1));
     }
 
     /**
@@ -141,12 +152,12 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
     private List<CmsSelectWidgetOption> getFieldConfigurationWidgetConfiguration() {
 
         List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
-        List<I_CmsSearchFieldConfiguration> fieldConfigurations = m_searchManager.getFieldConfigurations();
+        List<CmsSearchFieldConfiguration> fieldConfigurations = m_searchManager.getFieldConfigurations();
 
-        for (I_CmsSearchFieldConfiguration config : fieldConfigurations) {
+        for (CmsSearchFieldConfiguration config : fieldConfigurations) {
             CmsSelectWidgetOption option = new CmsSelectWidgetOption(
                 config.getName(),
-                (config.getName()).equals(A_CmsSearchFieldConfiguration.STR_STANDARD));
+                (config.getName()).equals(CmsSearchFieldConfiguration.STR_STANDARD));
             result.add(option);
         }
         return result;
@@ -163,7 +174,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         for (Locale locale : m_searchManager.getAnalyzers().keySet()) {
             CmsSelectWidgetOption option = new CmsSelectWidgetOption(
                 locale.toString(),
-                locale.equals(m_index.getLocale()));
+                locale.equals(getSearchIndexIndex().getLocale()));
             result.add(option);
         }
         return result;
@@ -198,7 +209,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
     private List<CmsSelectWidgetOption> getRebuildModeWidgetConfiguration() {
 
         List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
-        String rebuildMode = m_index.getRebuildMode();
+        String rebuildMode = getSearchIndexIndex().getRebuildMode();
         result.add(new CmsSelectWidgetOption("auto", "auto".equals(rebuildMode)));
         result.add(new CmsSelectWidgetOption("manual", "manual".equals(rebuildMode)));
         result.add(new CmsSelectWidgetOption("offline", "offline".equals(rebuildMode)));

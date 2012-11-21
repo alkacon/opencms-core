@@ -1,8 +1,12 @@
 /*
+ * File   : $Source$
+ * Date   : $Date$
+ * Version: $Revision$
+ *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,207 +31,651 @@
 
 package org.opencms.search.fields;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.search.CmsLuceneDocument;
-import org.opencms.search.CmsLuceneIndex;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategoryService;
+import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
-import org.apache.lucene.document.Document;
-
 /**
- * Describes a configuration of fields that are used in building a search index.<p>
+ * Abstract implementation for OpenCms search field configurations.<p>
  * 
- * @since 7.0.0 
+ * @since 8.5.0
  */
-public class CmsSearchFieldConfiguration extends A_CmsSearchFieldConfiguration {
+public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldConfiguration> {
+
+    /** The name for the standard field configuration. */
+    public static final String STR_STANDARD = "standard";
+
+    /** The description of the configuration. */
+    private String m_description;
+
+    /** Map to lookup the configured {@link CmsSearchField} instances by name. */
+    private Map<String, CmsSearchField> m_fieldLookup;
+
+    /** The list of configured {@link CmsSearchField} names. */
+    private List<String> m_fieldNames;
+
+    /** The list of configured {@link CmsSearchField} instances. */
+    private List<CmsSearchField> m_fields;
+
+    /** The current index. */
+    private A_CmsSearchIndex m_index;
+
+    /** The name of the configuration. */
+    private String m_name;
 
     /**
-     * The default for the standard search configuration.<p>
-     * 
-     * This defines the default that is used in case no "standard" field configuration 
-     * is defined in <code>opencms-search.xml</code>.<p>
+     * Creates a new, empty field configuration.<p>
      */
-    public static final CmsSearchFieldConfiguration DEFAULT_STANDARD = createStandardConfiguration();
+    public CmsSearchFieldConfiguration() {
 
-    /** The description for the standard field configuration. */
-    public static final String STR_STANDARD_DESCRIPTION = "The standard OpenCms search index field configuration.";
-
-    /** Contains all names of the fields that are used in the excerpt. */
-    private List<String> m_excerptFieldNames;
-
-    /**
-     * Creates the default standard search configuration.<p>
-     * 
-     * This defines the default that is used in case no "standard" field configuration 
-     * is defined in <code>opencms-search.xml</code>.<p>
-     * 
-     * @return the default standard search configuration
-     */
-    private static CmsSearchFieldConfiguration createStandardConfiguration() {
-
-        CmsSearchFieldConfiguration result = new CmsSearchFieldConfiguration();
-        result.setName(STR_STANDARD);
-        result.setDescription(STR_STANDARD_DESCRIPTION);
-
-        CmsSearchField field;
-        // content mapping, store as compressed value
-        field = new CmsSearchField(
-            I_CmsSearchField.FIELD_CONTENT,
-            "%(key.field.content)",
-            true,
-            true,
-            true,
-            true,
-            true,
-            null,
-            I_CmsSearchField.BOOST_DEFAULT,
-            null);
-        field.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, null));
-        result.addField(field);
-
-        // title mapping as a keyword
-        field = new CmsSearchField(
-            I_CmsSearchField.FIELD_TITLE,
-            CmsSearchField.IGNORE_DISPLAY_NAME,
-            true,
-            true,
-            false,
-            false,
-            0.0f,
-            null);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_TITLE));
-        result.addField(field);
-
-        // title mapping as indexed field
-        field = new CmsSearchField(I_CmsSearchField.FIELD_TITLE_UNSTORED, "%(key.field.title)", false, true);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_TITLE));
-        result.addField(field);
-
-        // mapping of "Keywords" property to search field with the same name
-        field = new CmsSearchField(I_CmsSearchField.FIELD_KEYWORDS, "%(key.field.keywords)", true, true);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_KEYWORDS));
-        result.addField(field);
-
-        // mapping of "Description" property to search field with the same name
-        field = new CmsSearchField(I_CmsSearchField.FIELD_DESCRIPTION, "%(key.field.description)", true, true);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION));
-        result.addField(field);
-
-        // "meta" field is a combination of "Title", "Keywords" and "Description" properties
-        field = new CmsSearchField(I_CmsSearchField.FIELD_META, "%(key.field.meta)", false, true);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_TITLE));
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_KEYWORDS));
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION));
-        result.addField(field);
-
-        return result;
+        m_fields = new ArrayList<CmsSearchField>();
     }
 
     /**
-     * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#createEmptyDocument(org.opencms.file.CmsResource)
-     */
-    public I_CmsSearchDocument createEmptyDocument(CmsResource res) {
-
-        return new CmsLuceneDocument(new Document());
-    }
-
-    /**
-     * Returns an analyzer that wraps the given base analyzer with the analyzers of this individual field configuration.<p>
+     * Returns the locale extended name for the given lookup String.<p>
      * 
-     * @param analyzer the base analyzer to wrap
+     * @param lookup the lookup String
+     * @param locale the locale
      * 
-     * @return an analyzer that wraps the given base analyzer with the analyzers of this individual field configuration
+     * @return the locale extended name for the given lookup String
      */
-    public Analyzer getAnalyzer(Analyzer analyzer) {
+    public static final String getLocaleExtendedName(String lookup, Locale locale) {
 
-        // parent folder and last modified lookup fields must use whitespace analyzer
-        WhitespaceAnalyzer ws = new WhitespaceAnalyzer(CmsLuceneIndex.LUCENE_VERSION);
-        Map<String, Analyzer> analyzers = new HashMap<String, Analyzer>();
-        // first make map the default hard coded fields
-        analyzers.put(I_CmsSearchField.FIELD_PARENT_FOLDERS, ws);
-        analyzers.put(I_CmsSearchField.FIELD_CATEGORY, ws);
-        analyzers.put(I_CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, ws);
-        analyzers.put(I_CmsSearchField.FIELD_DATE_CREATED_LOOKUP, ws);
-
-        for (CmsSearchField field : getLuceneFields()) {
-            Analyzer fieldAnalyzer = field.getAnalyzer();
-            if (fieldAnalyzer != null) {
-                // this field has an individual analyzer configured
-                analyzers.put(field.getName(), fieldAnalyzer);
-            }
+        if (locale == null) {
+            return lookup;
         }
-        // return the individual field configured analyzer
-        return new PerFieldAnalyzerWrapper(analyzer, analyzers);
+        return getLocaleExtendedName(lookup, locale.toString());
     }
 
     /**
-     * Returns a list of all field names (Strings) that are used in generating the search excerpt.<p>
+     * Returns the locale extended name for the given lookup String.<p>
      * 
-     * @return a list of all field names (Strings) that are used in generating the search excerpt
+     * @param lookup the lookup String
+     * @param locale the locale
+     * 
+     * @return the locale extended name for the given lookup String
      */
-    public List<String> getExcerptFieldNames() {
+    public static final String getLocaleExtendedName(String lookup, String locale) {
 
-        if (m_excerptFieldNames == null) {
-            // lazy initialize the field names
-            m_excerptFieldNames = new ArrayList<String>();
-            Iterator<I_CmsSearchField> i = getFields().iterator();
-            while (i.hasNext()) {
-                CmsSearchField field = (CmsSearchField)i.next();
-                if (field.isInExcerptAndStored()) {
-                    m_excerptFieldNames.add(field.getName());
+        StringBuffer result = new StringBuffer(32);
+        result.append(lookup);
+        result.append('_');
+        result.append(locale);
+        return result.toString();
+    }
+
+    /**
+     * Creates a space separated list of all parent folders of the given root path.<p>
+     * 
+     * @param rootPath the root path to get the parent folder list for
+     * 
+     * @return a space separated list of all parent folders of the given root path
+     */
+    public static String getParentFolderTokens(String rootPath) {
+
+        if (CmsStringUtil.isEmpty(rootPath)) {
+            return "/";
+        }
+        StringBuffer result = new StringBuffer(128);
+        String folderName = CmsResource.getFolderPath(rootPath);
+        for (int i = 0; i < folderName.length(); i++) {
+            char c = folderName.charAt(i);
+            if (c == '/') {
+                if (result.length() > 0) {
+                    result.append(' ');
                 }
+                result.append(folderName.substring(0, i + 1));
             }
         }
-
-        // create a copy of the list to prevent changes in other classes
-        return new ArrayList<String>(m_excerptFieldNames);
+        return result.toString();
     }
 
     /**
-     * Returns a list of the concrete Lucene search fields.<p>
+     * Adds a field to this search field configuration.<p>
      * 
-     * @return a list of lucene search fields
+     * @param field the field to add
      */
-    public List<CmsSearchField> getLuceneFields() {
+    public void addField(CmsSearchField field) {
 
-        List<CmsSearchField> result = new ArrayList<CmsSearchField>();
-        for (I_CmsSearchField field : getFields()) {
-            if (field instanceof CmsSearchField) {
-                result.add((CmsSearchField)field);
-            }
+        if (field != null) {
+            m_fields.add(field);
         }
-        return result;
     }
 
     /**
-     * @see org.opencms.search.fields.I_CmsSearchFieldConfiguration#init()
+     * Adds fields.<p>
+     * 
+     * @param fields the fields to add
+     */
+    public void addFields(Collection<CmsSearchField> fields) {
+
+        for (CmsSearchField field : fields) {
+            if (!getFieldNames().contains(field.getName())) {
+                addField(field);
+            }
+        }
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(CmsSearchFieldConfiguration obj) {
+
+        return m_name.compareTo(obj.getName());
+    }
+
+    /**
+     * Creates the Lucene Document with this field configuration for the provided VFS resource, search index and content.<p>
+     * 
+     * This triggers the indexing process for the given VFS resource according to the configuration 
+     * of the provided index.<p>
+     * 
+     * The provided index resource contains the basic contents to index.
+     * The provided search index contains the configuration what to index, such as the locale and 
+     * possible special field mappings.<p>
+     * 
+     * @param cms the OpenCms user context used to access the OpenCms VFS
+     * @param resource the resource to create the Lucene document from
+     * @param index the search index to create the Document for
+     * @param extraction the plain text content extracted from the document
+     * 
+     * @return the Search Document for the given VFS resource and the given search index
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public I_CmsSearchDocument createDocument(
+        CmsObject cms,
+        CmsResource resource,
+        A_CmsSearchIndex index,
+        I_CmsExtractionResult extraction) throws CmsException {
+
+        m_index = index;
+
+        I_CmsSearchDocument document = m_index.createEmptyDocument(resource);
+
+        List<CmsProperty> propertiesSearched = cms.readPropertyObjects(resource, true);
+        List<CmsProperty> properties = cms.readPropertyObjects(resource, false);
+
+        document = appendContentBlob(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendPath(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendType(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendDates(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendLocales(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendProperties(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendCategories(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendFieldMappings(document, cms, resource, extraction, properties, propertiesSearched);
+        document = setBoost(document, cms, resource, extraction, properties, propertiesSearched);
+
+        return document;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if ((obj instanceof CmsSearchFieldConfiguration)) {
+            return ((CmsSearchFieldConfiguration)obj).getName().equals(m_name);
+        }
+        return false;
+    }
+
+    /**
+     * Returns the description of this field configuration.<p>
+     * 
+     * @return the description of this field configuration
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+
+    /**
+     * Returns the configured {@link CmsSearchField} instance with the given name.<p>
+     * 
+     * @param name the search field name to look up
+     * 
+     * @return the configured {@link CmsSearchField} instance with the given name
+     */
+    public CmsSearchField getField(String name) {
+
+        if (m_fieldLookup == null) {
+            // lazy initialize the field names
+            m_fieldLookup = new HashMap<String, CmsSearchField>();
+            for (CmsSearchField field : m_fields) {
+                m_fieldLookup.put(field.getName(), field);
+            }
+        }
+        return m_fieldLookup.get(name);
+    }
+
+    /**
+     * Returns the list of configured field names (Strings).<p>
+     * 
+     * @return the list of configured field names (Strings)
+     */
+    public List<String> getFieldNames() {
+
+        if (m_fieldNames == null) {
+            // lazy initialize the field names
+            m_fieldNames = new ArrayList<String>();
+            for (CmsSearchField field : m_fields) {
+                m_fieldNames.add(field.getName());
+            }
+        }
+        // create a copy of the list to prevent changes in other classes
+        return new ArrayList<String>(m_fieldNames);
+    }
+
+    /**
+     * Returns the list of configured {@link CmsSearchField} instances.<p>
+     * 
+     * @return the list of configured {@link CmsSearchField} instances
+     */
+    public List<CmsSearchField> getFields() {
+
+        return m_fields;
+    }
+
+    /**
+     * Returns the index.<p>
+     *
+     * @return the index
+     */
+    public A_CmsSearchIndex getIndex() {
+
+        return m_index;
+    }
+
+    /**
+     * Returns the name of this field configuration.<p>
+     *
+     * @return the name of this field configuration
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return m_name.hashCode();
+    }
+
+    /**
+     * Initializes this field configuration.<p>
      */
     public void init() {
 
-        // nothing to do here 
+        // nothing to do here
+    }
+
+    /**
+     * Sets the description of this field configuration.<p>
+     * 
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+
+        m_description = description;
+    }
+
+    /**
+     * Sets the index.<p>
+     *
+     * @param index the index to set
+     */
+    public void setIndex(A_CmsSearchIndex index) {
+
+        m_index = index;
+    }
+
+    /**
+     * Sets the name of this field configuration.<p>
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
+    }
+
+    /**
+     * Extends the given document by resource category information based on properties.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by resource category information
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected I_CmsSearchDocument appendCategories(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) throws CmsException {
+
+        CmsCategoryService categoryService = CmsCategoryService.getInstance();
+        document.addCategoryField(categoryService.readResourceCategories(cms, resource));
+
+        return document;
+    }
+
+    /**
+     * Extends the given document by a field that contains the extracted content blob.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by a field that contains the extracted content blob
+     */
+    protected I_CmsSearchDocument appendContentBlob(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        if (extractionResult != null) {
+            byte[] data = extractionResult.getBytes();
+            if (data != null) {
+                document.addContentField(data);
+            }
+        }
+
+        return document;
+    }
+
+    /**
+     * Extends the given document by fields for date of creation, content and last modification.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by fields for date of creation, content and last modification
+     */
+    protected I_CmsSearchDocument appendDates(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        document.addDateField(CmsSearchField.FIELD_DATE_CREATED, resource.getDateCreated(), true);
+        document.addDateField(CmsSearchField.FIELD_DATE_LASTMODIFIED, resource.getDateLastModified(), true);
+        document.addDateField(CmsSearchField.FIELD_DATE_CONTENT, resource.getDateContent(), false);
+
+        return document;
+    }
+
+    /**
+     * Extends the given document by the mappings for the given field.<p>
+     * 
+     * @param document the document to extend
+     * @param field the field to create the mappings for
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by the mappings for the given field
+     */
+    protected I_CmsSearchDocument appendFieldMapping(
+        I_CmsSearchDocument document,
+        CmsSearchField field,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        StringBuffer text = new StringBuffer();
+        for (I_CmsSearchFieldMapping mapping : field.getMappings()) {
+            String mapResult = mapping.getStringValue(cms, resource, extractionResult, properties, propertiesSearched);
+            if (mapResult != null) {
+                if (text.length() > 0) {
+                    text.append('\n');
+                }
+                text.append(mapResult);
+            }
+        }
+        if (text.length() > 0) {
+            document.addSearchField(field, text.toString());
+        }
+
+        return document;
+    }
+
+    /**
+     * Extends the given document by the configured field mappings.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by the configured field mappings
+     */
+    protected I_CmsSearchDocument appendFieldMappings(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        for (CmsSearchField field : getFields()) {
+            document = appendFieldMapping(
+                document,
+                field,
+                cms,
+                resource,
+                extractionResult,
+                properties,
+                propertiesSearched);
+        }
+
+        return document;
+    }
+
+    /**
+     * Extends the given document by the "res_locales" field.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extraction the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by the resource locales
+     */
+    protected I_CmsSearchDocument appendLocales(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extraction,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        return document;
+    }
+
+    /**
+     * Extends the given document by fields for VFS path lookup.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by fields for VFS path lookup
+     */
+    protected I_CmsSearchDocument appendPath(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        document.addPathField(resource.getRootPath());
+
+        document.addRootPathField(resource.getRootPath());
+
+        return document;
+    }
+
+    /**
+     * Appends all direct properties, that are not empty or white space only to the document.<p>
+     *  
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extraction the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by resource category information
+     */
+    protected I_CmsSearchDocument appendProperties(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extraction,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        return document;
+    }
+
+    /**
+     * Extends the given document by a field that contains the resource type name.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by a field that contains the resource type name
+     * 
+     * @throws CmsLoaderException in case of errors identifying the resource type name
+     */
+    protected I_CmsSearchDocument appendType(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) throws CmsLoaderException {
+
+        // add the resource type to the document
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        String typeName = "VFS";
+        if (type != null) {
+            typeName = type.getTypeName();
+        }
+        document.addTypeField(typeName);
+
+        // add the file name suffix to the document
+        String resName = CmsResource.getName(resource.getRootPath());
+        int index = resName.lastIndexOf('.');
+        if (index != -1) {
+            document.addSuffixField(resName.substring(index));
+        }
+
+        return document;
+    }
+
+    /**
+     * Extends the given document with a boost factor.<p>
+     * 
+     * @param document the document to extend
+     * @param cms the OpenCms context used for building the search index
+     * @param resource the resource that is indexed
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
+     * 
+     * @return the document extended by a boost factor
+     */
+    protected I_CmsSearchDocument setBoost(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        String value;
+        // set individual document boost factor for the search
+        float boost = CmsSearchField.BOOST_DEFAULT;
+        // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"
+        value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, propertiesSearched).getValue();
+        if (value != null) {
+            value = value.trim().toLowerCase();
+            if (value.equals(I_CmsSearchDocument.SEARCH_PRIORITY_MAX_VALUE)) {
+                boost = 2.0f;
+            } else if (value.equals(I_CmsSearchDocument.SEARCH_PRIORITY_HIGH_VALUE)) {
+                boost = 1.5f;
+            } else if (value.equals(I_CmsSearchDocument.SEARCH_PRIORITY_LOW_VALUE)) {
+                boost = 0.5f;
+            }
+        }
+        if (boost != CmsSearchField.BOOST_DEFAULT) {
+            // set individual document boost factor if required
+            document.setBoost(boost);
+        }
+
+        return document;
     }
 }

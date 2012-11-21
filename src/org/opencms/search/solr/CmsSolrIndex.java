@@ -53,7 +53,7 @@ import org.opencms.search.CmsSearchResultList;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -160,9 +160,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
         String type = null;
         CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, null);
         if (index != null) {
-            I_CmsSearchDocument doc = index.getDocument(I_CmsSearchField.FIELD_PATH, rootPath);
+            I_CmsSearchDocument doc = index.getDocument(CmsSearchField.FIELD_PATH, rootPath);
             if (doc != null) {
-                type = doc.getFieldValueAsString(I_CmsSearchField.FIELD_TYPE);
+                type = doc.getFieldValueAsString(CmsSearchField.FIELD_TYPE);
             }
         }
         return type;
@@ -235,7 +235,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.CmsLuceneIndex#getDocumentFactory(org.opencms.file.CmsResource)
+     * @see org.opencms.search.CmsSearchIndex#getDocumentFactory(org.opencms.file.CmsResource)
      */
     @Override
     public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
@@ -687,9 +687,9 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
             if (core != null) {
                 SolrRequestHandler h = core.getRequestHandler("/replication");
                 if (h instanceof ReplicationHandler) {
-                    h.handleRequest(new LocalSolrQueryRequest(
-                        core,
-                        CmsRequestUtil.createParameterMap("?command=backup")), new SolrQueryResponse());
+                    h.handleRequest(
+                        new LocalSolrQueryRequest(core, CmsRequestUtil.createParameterMap("?command=backup")),
+                        new SolrQueryResponse());
                 }
             }
         }
@@ -746,5 +746,16 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     protected void indexSearcherUpdate() {
 
         // nothing to do here
+    }
+
+    /**
+     * @see org.opencms.search.A_CmsSearchIndex#createEmptyDocument(org.opencms.file.CmsResource)
+     */
+    @Override
+    public I_CmsSearchDocument createEmptyDocument(CmsResource resource) {
+
+        CmsSolrDocument doc = new CmsSolrDocument(new SolrInputDocument());
+        doc.setId(resource.getStructureId());
+        return doc;
     }
 }

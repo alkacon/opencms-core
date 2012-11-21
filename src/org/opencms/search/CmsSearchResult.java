@@ -29,7 +29,7 @@ package org.opencms.search;
 
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.text.ParseException;
@@ -94,23 +94,23 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
                 String name = field.name();
                 String value = field.stringValue();
                 if (CmsStringUtil.isNotEmpty(value)
-                    && !I_CmsSearchField.FIELD_PATH.equals(name)
-                    && !I_CmsSearchField.FIELD_DATE_CREATED.equals(name)
-                    && !I_CmsSearchField.FIELD_DATE_LASTMODIFIED.equals(name)) {
+                    && !CmsSearchField.FIELD_PATH.equals(name)
+                    && !CmsSearchField.FIELD_DATE_CREATED.equals(name)
+                    && !CmsSearchField.FIELD_DATE_LASTMODIFIED.equals(name)) {
                     // these "hard coded" fields are treated differently
                     m_fields.put(name, value);
                 }
             }
         }
 
-        Fieldable f = doc.getFieldable(I_CmsSearchField.FIELD_PATH);
+        Fieldable f = doc.getFieldable(CmsSearchField.FIELD_PATH);
         if (f != null) {
             m_path = f.stringValue();
         } else {
             m_path = null;
         }
 
-        f = doc.getFieldable(I_CmsSearchField.FIELD_DATE_CREATED);
+        f = doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED);
         if (f != null) {
             try {
                 m_dateCreated = DateTools.stringToDate(f.stringValue());
@@ -121,7 +121,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
             m_dateCreated = null;
         }
 
-        f = doc.getFieldable(I_CmsSearchField.FIELD_DATE_LASTMODIFIED);
+        f = doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED);
         if (f != null) {
             try {
                 m_dateLastModified = DateTools.stringToDate(f.stringValue());
@@ -132,7 +132,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
             m_dateLastModified = null;
         }
 
-        f = doc.getFieldable(I_CmsSearchField.FIELD_TYPE);
+        f = doc.getFieldable(CmsSearchField.FIELD_TYPE);
         if (f != null) {
             m_documentType = f.stringValue();
         } else {
@@ -207,11 +207,11 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the description
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link org.opencms.search.fields.CmsSearchField#FIELD_DESCRIPTION} to get the description (if available)
+     *      for example use {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_DESCRIPTION} to get the description (if available)
      */
     public String getDescription() {
 
-        return getField(I_CmsSearchField.FIELD_DESCRIPTION);
+        return getField(CmsSearchField.FIELD_DESCRIPTION);
     }
 
     /**
@@ -260,11 +260,11 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the key words
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link org.opencms.search.fields.CmsSearchField#FIELD_KEYWORDS} to get the keywords (if available)
+     *      for example use {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_KEYWORDS} to get the keywords (if available)
      */
     public String getKeywords() {
 
-        return getField(I_CmsSearchField.FIELD_KEYWORDS);
+        return getField(CmsSearchField.FIELD_KEYWORDS);
     }
 
     /**
@@ -325,11 +325,11 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the title
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link org.opencms.search.fields.CmsSearchField#FIELD_TITLE} to get the title (if available)
+     *      for example use {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_TITLE} to get the title (if available)
      */
     public String getTitle() {
 
-        return getField(I_CmsSearchField.FIELD_TITLE);
+        return getField(CmsSearchField.FIELD_TITLE);
     }
 
     /**

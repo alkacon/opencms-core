@@ -36,7 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWidgetDialog;
 
@@ -240,7 +240,7 @@ public class CmsSearchResultView {
                     result.append(path);
                     result.append("', '_blank', 'width='+screen.availWidth+', height='+ screen.availHeight+', scrollbars=yes, menubar=yes, toolbar=yes')\"");
                     result.append("\">\n");
-                    name = entry.getField(I_CmsSearchField.FIELD_TITLE);
+                    name = entry.getField(CmsSearchField.FIELD_TITLE);
                     if (name == null) {
                         name = entry.getPath();
                     }

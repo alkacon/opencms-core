@@ -1,8 +1,12 @@
 /*
+ * File   : $Source$
+ * Date   : $Date$
+ * Version: $Revision$
+ *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,626 +31,358 @@
 
 package org.opencms.search.fields;
 
-import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Locale;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Fieldable;
 
 /**
- * An individual field configuration in a Lucene search index.<p>
+ * A abstract implementation for a search field.<p>
  * 
- * @since 7.0.0 
+ * @since 8.5.0
  */
-public class CmsSearchField extends A_CmsSearchField {
+public abstract class CmsSearchField implements Serializable {
 
-    /** Value of m_displayName if field should not be displayed. */
-    public static final String IGNORE_DISPLAY_NAME = "-";
+    /** Th default boost factor (1.0), used in case no boost has been set for a field. */
+    public static final float BOOST_DEFAULT = 1.0f;
 
-    /** Constant for the "compress" index setting. */
-    public static final String STR_COMPRESS = "compress";
+    /** Name of the field that contains the (optional) category of the document (hardcoded). */
+    public static final String FIELD_CATEGORY = "category";
 
-    /** Constant for the "no" index setting. */
-    public static final String STR_NO = "no";
+    /** Name of the field that usually contains the complete content of the document (optional). */
+    public static final String FIELD_CONTENT = "content";
 
-    /** Constant for the "tokenized" index setting. */
-    public static final String STR_TOKENIZED = "tokenized";
+    /** Name of the field that contains the complete extracted content of the document as serialized object (hardcoded). */
+    public static final String FIELD_CONTENT_BLOB = "contentblob";
 
-    /** Constant for the "untokenized" index setting. */
-    public static final String STR_UN_TOKENIZED = "untokenized";
+    /** Name of the field that contains the locale of the document. */
+    public static final String FIELD_CONTENT_LOCALES = "con_locales";
 
-    /** Constant for the "yes" index setting. */
-    public static final String STR_YES = "yes";
+    /** Name of the field that contains the document content date (hardcoded). */
+    public static final String FIELD_DATE_CONTENT = "contentdate";
 
-    /** The serial version UID. */
-    private static final long serialVersionUID = -4946013624087640706L;
+    /** Name of the field that contains the document creation date (hardcoded). */
+    public static final String FIELD_DATE_CREATED = "created";
 
-    /** The special analyzer to use for this field. */
-    private Analyzer m_analyzer;
+    /** Name of the field that contains the document creation date for fast lookup (hardcoded). */
+    public static final String FIELD_DATE_CREATED_LOOKUP = "created_lookup";
+
+    /** The field name for the expiration date. */
+    public static final String FIELD_DATE_EXPIRED = "expired";
+
+    /** Name of the field that contains the document last modification date (hardcoded). */
+    public static final String FIELD_DATE_LASTMODIFIED = "lastmodified";
+
+    /** Name of the field that contains the document last modification date for fast lookup (hardcoded). */
+    public static final String FIELD_DATE_LASTMODIFIED_LOOKUP = "lastmodified_lookup";
+
+    /** The lookup suffix for date fields. */
+    public static final String FIELD_DATE_LOOKUP_SUFFIX = "_lookup";
+
+    /** The field name for the release date. */
+    public static final String FIELD_DATE_RELEASED = "relased";
+
+    /** The dependency type. */
+    public static final String FIELD_DEPENDENCY_TYPE = "dependencyType";
+
+    /** Name of the field that usually contains the value of the "Description" property of the document (optional). */
+    public static final String FIELD_DESCRIPTION = "description";
+
+    /** Name of the dynamic exact field. */
+    public static final String FIELD_DYNAMIC_EXACT = "_exact";
+
+    /** Name of the dynamic property field. */
+    public static final String FIELD_DYNAMIC_PROPERTIES = "_prop";
+
+    /** Name of the field that contains the documents structure id. */
+    public static final String FIELD_ID = "id";
+
+    /** Name of the field that usually contains the value of the "Keywords" property of the document (optional). */
+    public static final String FIELD_KEYWORDS = "keywords";
+
+    /** The field name for the link. */
+    public static final String FIELD_LINK = "link";
+
+    /** 
+     * Name of the field that usually combines all document "meta" information, 
+     * that is the values of the "Title", "Keywords" and "Description" properties (optional).
+     */
+    public static final String FIELD_META = "meta";
+
+    /** Name of the field that contains all VFS parent folders of a document (hardcoded). */
+    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
+
+    /** Name of the field that contains the document root path in the VFS (hardcoded). */
+    public static final String FIELD_PATH = "path";
+
+    /** The prefix used to store dependency fields. */
+    public static final String FIELD_PREFIX_DEPENDENCY = "dep_";
+
+    /** The prefix for dynamic fields. */
+    public static final String FIELD_PREFIX_DYNAMIC = "*_";
+
+    /** The default text field prefix. */
+    public static final String FIELD_PREFIX_TEXT = "text_";
+
+    /** 
+     * Name of the field that contains the (optional) document priority, 
+     * which can be used to boost the document in the result list (hardcoded). 
+     */
+    public static final String FIELD_PRIORITY = "priority";
+
+    /** Name of the field that contains the resource locales of the document. */
+    public static final String FIELD_RESOURCE_LOCALES = "res_locales";
+
+    /** The name of the score field. */
+    public static final String FIELD_SCORE = "score";
+
+    /** Name of the field that contains the searched property value of 'search.exclude'. */
+    public static final String FIELD_SEARCH_EXCLUDE = "search_exclude";
+
+    /** Name of the field that contains the file name suffix of the resource. */
+    public static final String FIELD_SUFFIX = "suffix";
+
+    /** Name of the field that contains the general text of a resource and also serves as prefix. */
+    public static final String FIELD_TEXT = "text";
+
+    /** 
+     * Name of the field that usually contains the value of the "Title" property of the document 
+     * as a keyword used for sorting and also for retrieving the title text (optional).
+     * 
+     * Please note: This field should NOT be used for searching. Use {@link #FIELD_TITLE_UNSTORED} instead.<p>
+     */
+    public static final String FIELD_TITLE = "title-key";
+
+    /** 
+     * Name of the field that usually contains the value of the "Title" property of the document 
+     * in an analyzed form used for searching in the title (optional).
+     */
+    public static final String FIELD_TITLE_UNSTORED = "title";
+
+    /** Name of the field that contains the type of the document. */
+    public static final String FIELD_TYPE = "type";
+
+    /** Serial version UID. */
+    private static final long serialVersionUID = 3185631015824549119L;
 
     /** The boost factor of the field. */
     private float m_boost;
 
-    /** Indicates if the content of this field is compressed. */
-    private boolean m_compressed;
+    /** A default value for the field in case the content does not provide the value. */
+    private String m_defaultValue;
 
-    /** Indicates if this field should be displayed. */
-    private boolean m_displayed;
+    /** The search field mappings. */
+    private List<I_CmsSearchFieldMapping> m_mappings;
 
-    /** The display name of the field. */
-    private String m_displayName;
-
-    /** The display name set from the configuration. */
-    private String m_displayNameForConfiguration;
-
-    /** Indicates if this field should be used for generating the excerpt. */
-    private boolean m_excerpt;
-
-    /** Indicates if the content of this field should be indexed. */
-    private boolean m_indexed;
-
-    /** Indicates if the content of this field should be stored. */
-    private boolean m_stored;
-
-    /** Indicates if the content of this field should be tokenized. */
-    private boolean m_tokenized;
-
-    /** The type used to convert a field to a Solr field. */
-    private String m_type;
+    /** The name of the field. */
+    private String m_name;
 
     /**
-     * Creates a new search field configuration.<p>
+     * Creates a new search field.<p>
      */
     public CmsSearchField() {
 
-        super();
+        m_mappings = new ArrayList<I_CmsSearchFieldMapping>();
+        m_boost = BOOST_DEFAULT;
     }
 
     /**
-     * Creates a new search field configuration.<p>
-     * 
-     * The field will be tokenized if it is indexed.
-     * The field will not be in the excerpt. 
-     * The boost value is the default, that is no special boost is used.
-     * There is no default value.<p> 
+     * Creates a new search field.<p>
      * 
      * @param name the name of the field, see {@link #setName(String)}
-     * @param displayName the display name of this field, see {@link #setDisplayName(String)}
-     * @param isStored controls if the field is stored and in the excerpt, see {@link #setStored(boolean)}
-     * @param isIndexed controls if the field is indexed and tokenized, see {@link #setIndexed(boolean)}
-     */
-    public CmsSearchField(String name, String displayName, boolean isStored, boolean isIndexed) {
-
-        this(name, displayName, isStored, isIndexed, isIndexed, false, BOOST_DEFAULT, null);
-    }
-
-    /**
-     * Creates a new search field configuration.<p>
+     * @param defaultValue the default value to use, see {@link #setDefaultValue(String)}
+     * @param boost the boost factor, see {@link #setBoost(float)}
      * 
-     * @param name the name of the field, see {@link #setName(String)}
-     * @param displayName the display name of this field, see {@link #setDisplayName(String)}
-     * @param isStored controls if the field is stored, see {@link #setStored(boolean)}
-     * @param isCompressed controls if the filed is compressed, see {@link #setCompressed(boolean)}
-     * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
-     * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
-     * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
-     * @param analyzer the analyzer to use, see {@link #setAnalyzer(Analyzer)}
-     * @param boost the boost factor for the field, see {@link #setBoost(float)}
-     * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
-    public CmsSearchField(
-        String name,
-        String displayName,
-        boolean isStored,
-        boolean isCompressed,
-        boolean isIndexed,
-        boolean isTokenized,
-        boolean isInExcerpt,
-        Analyzer analyzer,
-        float boost,
-        String defaultValue) {
+    public CmsSearchField(String name, String defaultValue, float boost) {
 
-        super(name, defaultValue, boost);
-        setDisplayName(displayName);
-        setStored(isStored);
-        setCompressed(isCompressed);
-        setIndexed(isIndexed);
-        setTokenized(isTokenized);
-        setInExcerpt(isInExcerpt);
-        setAnalyzer(analyzer);
+        this();
+        m_name = name;
+        m_boost = boost;
+        m_defaultValue = defaultValue;
     }
 
     /**
-     * Creates a new search field configuration.<p>
+     * Adds a new field mapping to the internal list of mappings.<p>
      * 
-     * @param name the name of the field, see {@link #setName(String)}
-     * @param displayName the display name of this field, see {@link #setDisplayName(String)}
-     * @param isStored controls if the field is stored, see {@link #setStored(boolean)}
-     * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
-     * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
-     * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
-     * @param boost the boost factor for the field, see {@link #setBoost(float)}
-     * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
+     * @param mapping the mapping to add
      */
-    public CmsSearchField(
-        String name,
-        String displayName,
-        boolean isStored,
-        boolean isIndexed,
-        boolean isTokenized,
-        boolean isInExcerpt,
-        float boost,
-        String defaultValue) {
+    public void addMapping(I_CmsSearchFieldMapping mapping) {
 
-        this(name, displayName, isStored, false, isIndexed, isTokenized, isInExcerpt, null, boost, defaultValue);
+        m_mappings.add(mapping);
     }
 
     /**
-     * @see org.opencms.search.fields.I_CmsSearchField#createField(java.lang.String)
+     * Creates a field from the configuration and the provided content.<p>
+     * 
+     * The configured name of the field as provided by {@link #getName()} is used.<p>
+     * 
+     * If no valid content is provided (that is the content is either <code>null</code> or 
+     * only whitespace), then no field is created and <code>null</code> is returned.<p>
+     * 
+     * @param content the content to create the field with
+     * 
+     * @return a field created from the configuration and the provided content
      */
-    public Field createField(String content) {
+    public Fieldable createField(String content) {
 
         return createField(getName(), content);
     }
 
     /**
-     * @see org.opencms.search.fields.I_CmsSearchField#createField(java.lang.String, java.lang.String)
+     * Creates a field with the given name from the configuration and the provided content.<p>
+     * 
+     * If no valid content is provided (that is the content is either <code>null</code> or 
+     * only whitespace), then no field is created and <code>null</code> is returned.<p>
+     * 
+     * @param name the name of the field to create
+     * @param content the content to create the field with
+     * 
+     * @return a field with the given name from the configuration and the provided content
      */
-    public Field createField(String name, String content) {
+    public abstract Fieldable createField(String name, String content);
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(content)) {
-            content = getDefaultValue();
+    /**
+     * Two fields are equal if the name of the Lucene field is equal.<p>
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if ((obj instanceof CmsSearchField)) {
+            return CmsStringUtil.isEqual(m_name, ((CmsSearchField)obj).getName());
         }
-        if (content != null) {
-
-            Field.Index index = Field.Index.NO;
-            if (isIndexed()) {
-                if (isTokenizedAndIndexed()) {
-                    index = Field.Index.ANALYZED;
-                } else {
-                    index = Field.Index.NOT_ANALYZED;
-                }
-            }
-            Field.Store store = Field.Store.NO;
-            if (isStored() || isCompressed()) {
-                store = Field.Store.YES;
-            }
-            Field result = new Field(name, content, store, index);
-            if (getBoost() != BOOST_DEFAULT) {
-                result.setBoost(getBoost());
-            }
-            return result;
-        }
-        return null;
+        return false;
     }
 
     /**
-     * Returns the analyzer used for this field.<p>
+     * Returns the boost factor of this field.<p>
      *
-     * @return the analyzer used for this field
+     * The boost factor is a Lucene function that controls the "importance" of a field in the 
+     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field 
+     * less important for the result ranking, a higher value will make it more important.<p>
+     *
+     * @return the boost factor of this field
      */
-    public Analyzer getAnalyzer() {
+    public float getBoost() {
 
-        return m_analyzer;
+        return m_boost;
     }
 
     /**
-     * Returns the boost factor of this field as String value for display use.<p>
+     * Returns the default value to use if no content for this field was collected.<p>
+     *
+     * In case no default is configured, <code>null</code> is returned.<p>
+     *
+     * @return the default value to use if no content for this field was collected
+     */
+    public String getDefaultValue() {
+
+        return m_defaultValue;
+    }
+
+    /**
+     * Returns the mappings for this field.<p>
      * 
-     * @return the boost factor of this field as String value for display use
+     * @return the mappings for this field
      */
-    public String getBoostDisplay() {
+    public List<I_CmsSearchFieldMapping> getMappings() {
 
-        if (m_boost == BOOST_DEFAULT) {
-            return null;
-        }
-        return String.valueOf(m_boost);
+        return m_mappings;
     }
 
     /**
-     * Returns the display name of the field.<p>
+     * Returns the name of this field in the Lucene search index.<p>
+     *
+     * @return the name of this field in the Lucene search index
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * The hash code for a field is based only on the field name.<p>
      * 
-     * @return the display name of the field
+     * @see java.lang.Object#hashCode()
      */
-    public String getDisplayName() {
+    @Override
+    public int hashCode() {
 
-        if (!isDisplayed()) {
-            return IGNORE_DISPLAY_NAME;
-        }
-        if (m_displayName == null) {
-            return getName();
-        } else {
-            return m_displayName;
-        }
+        return m_name == null ? 41 : this.m_name.hashCode();
     }
 
     /**
-     * Returns the displayNameForConfiguration.<p>
+     * Sets the boost factor for this field.<p>
      *
-     * @return the displayNameForConfiguration
-     */
-    public String getDisplayNameForConfiguration() {
-
-        return m_displayNameForConfiguration;
-    }
-
-    /**
-     * Returns the String value state of this field if it is indexed (and possibly tokenized) in the Lucene index.<p>
+     * The boost factor is a Lucene function that controls the "importance" of a field in the 
+     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field 
+     * less important for the result ranking, a higher value will make it more important.<p>
      * 
-     * @return the String value state of this field if it is indexed (and possibly tokenized) in the Lucene index
-     * 
-     * @see #isTokenizedAndIndexed()
-     * @see #isIndexed()
-     */
-    public String getIndexed() {
-
-        if (isTokenizedAndIndexed()) {
-            return String.valueOf(isTokenizedAndIndexed());
-        }
-        if (isIndexed()) {
-            return STR_UN_TOKENIZED;
-        } else {
-            return String.valueOf(isIndexed());
-        }
-    }
-
-    /**
-     * @see org.opencms.search.fields.I_CmsSearchField#getLocale()
-     */
-    public Locale getLocale() {
-
-        // The default implementation of Lucene Fields is not localized yet
-        return null;
-    }
-
-    /**
-     * Returns the type.<p>
+     * <b>Use with caution:</b> You should only use this if you fully understand the concept behind 
+     * boost factors. Otherwise it is likely that your result rankings will be worse then with 
+     * the default values.<p>
      *
-     * @return the type
-     */
-    public String getType() {
-
-        return m_type;
-    }
-
-    /**
-     * Returns <code>true</code> if the content of this field is compressed.<p>
-     *
-     * If the field is compressed, it must also be stored, this means 
-     * {@link #isStored()} will always return <code>true</code> for compressed fields.<p>
-     *
-     * @return <code>true</code> if the content of this field is compressed
-     */
-    public boolean isCompressed() {
-
-        return m_compressed;
-    }
-
-    /**
-     * Returns true if the field should be displayed.<p>
-     * 
-     * @return returns true if the field should be displayed otherwise false
-     */
-    public boolean isDisplayed() {
-
-        return m_displayed;
-    }
-
-    /**
-     * Returns the indexed.<p>
-     *
-     * @return the indexed
-     */
-    public boolean isIndexed() {
-
-        return m_indexed;
-    }
-
-    /**
-     * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
-     *
-     * @return <code>true</code> if this fields content is used in the search result excerpt
-     * 
-     * @see #isStored()
-     */
-    public boolean isInExcerpt() {
-
-        return m_excerpt;
-    }
-
-    /**
-     * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
-     *
-     * A field can only be used in the excerpt if it is stored, see {@link #isStored()}.<p>
-     *
-     * @return <code>true</code> if this fields content is used in the search result excerpt
-     * 
-     * @see #isStored()
-     */
-    public boolean isInExcerptAndStored() {
-
-        return m_excerpt && m_stored;
-    }
-
-    /**
-     * Returns <code>true</code> if the content of this field is stored in the Lucene index.<p>
-     *
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Store}
-     * for the concept behind stored and unstored fields.<p>
-     *
-     * @return <code>true</code> if the content of this field is stored in the Lucene index
-     * 
-     * @see #isTokenizedAndIndexed()
-     */
-    public boolean isStored() {
-
-        return m_stored;
-    }
-
-    /**
-     * Returns <code>true</code> if the content of this field is tokenized in the Lucene index.<p>
-     * 
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Index}
-     * for the concept behind tokenized and untokenized fields.<p>
-     *
-     * @return <code>true</code> if the content of this field is tokenized in the Lucene index
-     */
-    public boolean isTokenized() {
-
-        return m_tokenized;
-    }
-
-    /**
-     * Returns <code>true</code> if the content of this field is tokenized in the Lucene index.<p>
-     * 
-     * A field can only be tokenized if it is also indexed, see {@link #isIndexed()}.<p>
-     * 
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Index}
-     * for the concept behind tokenized and untokenized fields.<p>
-     *
-     * @return <code>true</code> if the content of this field is tokenized in the Lucene index
-     * 
-     * @see #isStored()
-     * @see #isIndexed()
-     */
-    public boolean isTokenizedAndIndexed() {
-
-        return m_tokenized && m_indexed;
-    }
-
-    /**
-     * Sets the analyzer used for this field.<p>
-     *
-     * @param analyzer the analyzer to set
-     */
-    public void setAnalyzer(Analyzer analyzer) {
-
-        m_analyzer = analyzer;
-    }
-
-    /**
-     * Sets the analyzer used for this field.<p>
-     *
-     * The parameter must be a name of a class the implements the Lucene {@link Analyzer} interface.
-     *
-     * @param analyzerName the analyzer class name to set
-     * 
-     * @throws Exception in case of problems creating the analyzer class instance
-     */
-    public void setAnalyzer(String analyzerName) throws Exception {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(analyzerName)) {
-            setAnalyzer(CmsSearchManager.getAnalyzer(analyzerName));
-        }
-    }
-
-    /**
-     * Sets the boost factor of this field (only for display use).<p>
-     * 
      * @param boost the boost factor to set
-     * 
-     * @see #setBoost(String)
      */
-    public void setBoostDisplay(String boost) {
+    public void setBoost(float boost) {
 
-        setBoost(boost);
+        if (boost < 0.0F) {
+            boost = 0.0F;
+        }
+        m_boost = boost;
     }
 
     /**
-     * Controls if this field value will be stored compressed or not.<p>
-     *
-     * If this is set to <code>true</code>, the value for {@link #isStored()} will also 
-     * be set to <code>true</code>, since compressed fields are always stored.<p>
-     *
-     * @param compressed if <code>true</code>, the field value will be stored compressed
+     * Sets the boost factor for this field from a String value.<p>
+     * 
+     * @param boostAsString the boost factor to set
+     * 
+     * @see #setBoost(float)
      */
-    public void setCompressed(boolean compressed) {
+    public void setBoost(String boostAsString) {
 
-        m_compressed = compressed;
-        if (compressed) {
-            setStored(true);
+        try {
+            setBoost(Float.valueOf(boostAsString).floatValue());
+        } catch (NumberFormatException e) {
+            setBoost(1.0F);
         }
     }
 
     /**
-     * Controls if the field is displayed or not.<p> 
-     * 
-     * @param displayed if true the field is displayed
+     * Sets the default value to use if no content for this field was collected.<p>
+     *
+     * @param defaultValue the default value to set
      */
-    public void setDisplayed(boolean displayed) {
+    public void setDefaultValue(String defaultValue) {
 
-        m_displayed = displayed;
-    }
-
-    /**
-     * Sets the display name. If the given name equals IGNORE_DISPLAY_NAME the field is not displayed.<p> 
-     * 
-     * @param displayName the display name to set
-     */
-    public void setDisplayName(String displayName) {
-
-        if (CmsStringUtil.isEmpty(displayName) || (IGNORE_DISPLAY_NAME.equals(displayName))) {
-            m_displayName = null;
-            setDisplayed(false);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defaultValue)) {
+            m_defaultValue = defaultValue.trim();
         } else {
-            m_displayName = displayName;
-            m_displayNameForConfiguration = displayName;
-            setDisplayed(true);
+            m_defaultValue = null;
         }
     }
 
     /**
-     * Sets the displayNameForConfiguration.<p>
+     * Sets the name of this field in the Lucene search index.<p>
      *
-     * @param displayNameForConfiguration the displayNameForConfiguration to set
+     * @param fieldName the name to set
      */
-    public void setDisplayNameForConfiguration(String displayNameForConfiguration) {
+    public void setName(String fieldName) {
 
-        m_displayNameForConfiguration = displayNameForConfiguration;
-        setDisplayName(displayNameForConfiguration);
+        m_name = fieldName;
     }
 
     /**
-     * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index.<p> 
-     *
-     * @param indexed the indexed to set
-     * 
-     * @see #setTokenized(boolean)
+     * @see java.lang.Object#toString()
      */
-    public void setIndexed(boolean indexed) {
+    @Override
+    public String toString() {
 
-        m_indexed = indexed;
-    }
-
-    /**
-     * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index from a String parameter.<p> 
-     * 
-     * This sets the values for {@link #isIndexed()} as well as {@link #isTokenizedAndIndexed()}.<p>
-     * 
-     * The parameter can have the following values:
-     * <ul>
-     * <li><b>"true"</b> or <b>"tokenized"</b>: The field is indexed and tokenized.
-     * <li><b>"false"</b> or <b>"no"</b>: The field is not indexed and not tokenized.
-     * <li><b>"untokenized"</b>: The field is indexed but not tokenized.
-     * </ul>
-     * 
-     * @param indexed the index setting to use
-     * 
-     * @see #setIndexed(boolean)
-     * @see #setTokenized(boolean)
-     */
-    public void setIndexed(String indexed) {
-
-        boolean isIndexed = false;
-        boolean isTokenized = false;
-        if (indexed != null) {
-            indexed = indexed.trim().toLowerCase();
-            if (STR_TOKENIZED.equals(indexed)) {
-                isIndexed = true;
-                isTokenized = true;
-            } else if (STR_UN_TOKENIZED.equals(indexed)) {
-                isIndexed = true;
-            } else if (STR_NO.equals(indexed)) {
-                // "no", both values will be false
-            } else {
-                // only "true" or "false" remain
-                isIndexed = Boolean.valueOf(indexed).booleanValue();
-                isTokenized = isIndexed;
-            }
-        }
-        setIndexed(isIndexed);
-        setTokenized(isTokenized);
-    }
-
-    /**
-     * Controls if this fields content is used in the search result excerpt.<p>
-     *
-     * @param excerpt if <code>true</code>, then this fields content is used in the search excerpt
-     */
-    public void setInExcerpt(boolean excerpt) {
-
-        m_excerpt = excerpt;
-    }
-
-    /**
-     * Controls if this fields content is used in the search result excerpt.<p>
-     * 
-     * @param excerpt if <code>"true"</code>, then this fields content is used in the search excerpt
-     * 
-     * @see #setInExcerpt(boolean)
-     */
-    public void setInExcerpt(String excerpt) {
-
-        setInExcerpt(Boolean.valueOf(String.valueOf(excerpt)).booleanValue());
-    }
-
-    /**
-     * Controls if the content of this field is stored in the Lucene index.<p>
-     *
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Store}
-     * for the concept behind stored and unstored fields.<p>
-     *
-     * @param stored if <code>true</code>, then the field content is stored
-     * 
-     * @see #setTokenized(boolean)
-     */
-    public void setStored(boolean stored) {
-
-        m_stored = stored;
-    }
-
-    /**
-     * Controls if the content of this field is stored in the Lucene index from a String parameter.<p> 
-     * 
-     * @param stored if <code>"true"</code>, then the field content is stored
-     * 
-     * @see #setStored(boolean)
-     */
-    public void setStored(String stored) {
-
-        boolean isStored = false;
-        boolean isCompressed = false;
-        if (stored != null) {
-            stored = stored.trim().toLowerCase();
-            if (STR_COMPRESS.equals(stored)) {
-                isCompressed = true;
-                isStored = true;
-            } else if (STR_YES.equals(stored)) {
-                // "yes", value will be stored but not compressed
-                isStored = true;
-            } else {
-                // only "true" or "false" remain
-                isStored = Boolean.valueOf(stored).booleanValue();
-            }
-        }
-        setStored(isStored);
-        setCompressed(isCompressed);
-    }
-
-    /**
-     * Controls if the content of this field is tokenized in the Lucene index.<p>
-     *
-     * Please refer to the Lucene documentation about {@link org.apache.lucene.document.Field.Index}
-     * for the concept behind tokenized and untokenized fields.<p>
-     *
-     * @param tokenized if <code>true</code>, then the field content is tokenized
-     * 
-     * @see #setStored(boolean)
-     */
-    public void setTokenized(boolean tokenized) {
-
-        m_tokenized = tokenized;
-    }
-
-    /**
-     * Sets the type.<p>
-     *
-     * @param type the type to set
-     */
-    public void setType(String type) {
-
-        m_type = type;
+        return getName();
     }
 }

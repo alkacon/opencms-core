@@ -44,8 +44,8 @@ import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -84,10 +84,10 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
      * 
-     * For gallery document generators, we never check for {@link org.opencms.search.CmsLuceneIndex#isExtractingContent()} since
+     * For gallery document generators, we never check for {@link org.opencms.search.CmsSearchIndex#isExtractingContent()} since
      * all these classes are assumed to be written with optimizations special to gallery search indexing anyway.<p>
      * 
-     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, I_CmsExtractionResult)
+     * @see org.opencms.search.fields.CmsLuceneSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, I_CmsExtractionResult)
      * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, A_CmsSearchIndex)
      */
     @Override
@@ -160,10 +160,10 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                                         if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propertyName)) {
                                             // field is title
                                             hasTitleMapping = true;
-                                            fieldName = I_CmsSearchField.FIELD_TITLE_UNSTORED;
+                                            fieldName = CmsSearchField.FIELD_TITLE_UNSTORED;
                                         } else {
                                             // if field is not title, it must be description
-                                            fieldName = I_CmsSearchField.FIELD_DESCRIPTION;
+                                            fieldName = CmsSearchField.FIELD_DESCRIPTION;
                                         }
                                         putMappingValue(xmlContent, fieldName, locale, items, extracted);
                                     }
@@ -175,17 +175,17 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                 if (!hasTitleMapping) {
                     // in case no title mapping present, use the title property for all locales
                     String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                    putMappingValue(xmlContent, I_CmsSearchField.FIELD_TITLE_UNSTORED, locale, items, title);
+                    putMappingValue(xmlContent, CmsSearchField.FIELD_TITLE_UNSTORED, locale, items, title);
                 }
                 if (content.length() > 0) {
                     // append language individual content field
                     items.put(
-                        A_CmsSearchFieldConfiguration.getLocaleExtendedName(I_CmsSearchField.FIELD_CONTENT, locale),
+                        CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale),
                         content.toString());
                 }
                 // store the locales
                 items.put(
-                    I_CmsSearchField.FIELD_RESOURCE_LOCALES,
+                    CmsSearchField.FIELD_RESOURCE_LOCALES,
                     CmsStringUtil.listAsString(getLocalesToStore(xmlContent), " "));
             }
 
@@ -217,7 +217,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
         List<Locale> fieldTargetLocales = getTargetLocalesForField(xmlContent, fieldName, sourceLocale);
         // append language individual property field
         for (Locale targetLocale : fieldTargetLocales) {
-            items.put(A_CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, targetLocale), value);
+            items.put(CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, targetLocale), value);
         }
     }
 

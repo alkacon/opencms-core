@@ -35,7 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 
 import java.util.List;
 import java.util.Locale;
@@ -132,11 +132,11 @@ public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
                     extractionResult,
                     properties,
                     propertiesSearched);
-            } else if (I_CmsSearchField.FIELD_RESOURCE_LOCALES.equals(getParam())) {
+            } else if (CmsSearchField.FIELD_RESOURCE_LOCALES.equals(getParam())) {
                 List<Locale> locales = null;
                 if (CmsResourceTypeXmlContent.isXmlContent(res)) {
                     // resource type is XML content - just return the locales actually available
-                    result = extractionResult.getContentItems().get(I_CmsSearchField.FIELD_RESOURCE_LOCALES);
+                    result = extractionResult.getContentItems().get(CmsSearchField.FIELD_RESOURCE_LOCALES);
                 } else {
                     // for all other resource types we return the locales available
                     locales = OpenCms.getLocaleManager().getAvailableLocales(cms, res);

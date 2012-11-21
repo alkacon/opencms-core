@@ -35,10 +35,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsLuceneSearchField;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
-import org.opencms.search.fields.I_CmsSearchField;
-import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -570,8 +570,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         A_CmsSearchIndex idx = OpenCms.getSearchManager().getIndexLucene(idxName);
         if (idx != null) {
             StringBuffer html = new StringBuffer();
-            I_CmsSearchFieldConfiguration idxFieldConfiguration = idx.getFieldConfiguration();
-            List<I_CmsSearchField> fields = idxFieldConfiguration.getFields();
+            CmsSearchFieldConfiguration idxFieldConfiguration = idx.getFieldConfiguration();
+            List<CmsSearchField> fields = idxFieldConfiguration.getFields();
 
             html.append("<ul>\n");
             html.append("  <li>\n").append("    ").append("name      : ").append(idxFieldConfiguration.getName()).append(
@@ -580,9 +580,9 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             html.append("  <li>\n").append("    ").append("fields : ").append("\n");
             html.append("    <ul>\n");
 
-            Iterator<I_CmsSearchField> itFields = fields.iterator();
+            Iterator<CmsSearchField> itFields = fields.iterator();
             while (itFields.hasNext()) {
-                CmsSearchField field = (CmsSearchField)itFields.next();
+                CmsLuceneSearchField field = (CmsLuceneSearchField)itFields.next();
                 String fieldName = field.getName();
                 boolean fieldStore = field.isStored();
                 String fieldIndex = field.getIndexed();
@@ -601,7 +601,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
                 if (fieldExcerpt) {
                     html.append(", ").append("excerpt=").append(fieldExcerpt);
                 }
-                if (fieldBoost != I_CmsSearchField.BOOST_DEFAULT) {
+                if (fieldBoost != CmsSearchField.BOOST_DEFAULT) {
                     html.append(", ").append("boost=").append(fieldBoost);
                 }
                 if (fieldDefault != null) {

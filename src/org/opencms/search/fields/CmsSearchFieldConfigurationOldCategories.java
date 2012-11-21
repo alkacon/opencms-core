@@ -48,7 +48,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @since 8.0.0 
  */
-public class CmsSearchFieldConfigurationOldCategories extends CmsSearchFieldConfiguration {
+public class CmsSearchFieldConfigurationOldCategories extends CmsLuceneSearchFieldConfiguration {
 
     /**
      * Default constructor.<p>
@@ -70,7 +70,7 @@ public class CmsSearchFieldConfigurationOldCategories extends CmsSearchFieldConf
      * 
      * @return the document extended by resource category information
      * 
-     * @see org.opencms.search.fields.A_CmsSearchFieldConfiguration#appendCategories(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#appendCategories(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
     @Override
     protected I_CmsSearchDocument appendCategories(
@@ -90,7 +90,7 @@ public class CmsSearchFieldConfigurationOldCategories extends CmsSearchFieldConf
             value = value.trim().toLowerCase();
             if (value.length() > 0) {
                 Fieldable field = new Field(
-                    I_CmsSearchField.FIELD_CATEGORY,
+                    CmsSearchField.FIELD_CATEGORY,
                     value,
                     Field.Store.YES,
                     Field.Index.NOT_ANALYZED);

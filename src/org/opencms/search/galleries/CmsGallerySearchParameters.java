@@ -29,10 +29,10 @@ package org.opencms.search.galleries;
 
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.search.CmsLuceneIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchField;
 
 import java.util.Arrays;
 import java.util.List;
@@ -181,13 +181,13 @@ public class CmsGallerySearchParameters {
 
     /** Sort result documents by date of creation ascending. */
     public static final Sort SORT_DATE_CREATED_ASC = new Sort(new SortField(
-        I_CmsSearchField.FIELD_DATE_CREATED,
+        CmsSearchField.FIELD_DATE_CREATED,
         SortField.STRING,
         false));
 
     /** Sort result documents by date of creation descending. */
     public static final Sort SORT_DATE_CREATED_DESC = new Sort(new SortField(
-        I_CmsSearchField.FIELD_DATE_CREATED,
+        CmsSearchField.FIELD_DATE_CREATED,
         SortField.STRING,
         true));
 
@@ -205,13 +205,13 @@ public class CmsGallerySearchParameters {
 
     /** Sort result documents by date of last modification ascending. */
     public static final Sort SORT_DATE_LASTMODIFIED_ASC = new Sort(new SortField(
-        I_CmsSearchField.FIELD_DATE_LASTMODIFIED,
+        CmsSearchField.FIELD_DATE_LASTMODIFIED,
         SortField.STRING,
         false));
 
     /** Sort result documents by date of last modification descending. */
     public static final Sort SORT_DATE_LASTMODIFIED_DESC = new Sort(new SortField(
-        I_CmsSearchField.FIELD_DATE_LASTMODIFIED,
+        CmsSearchField.FIELD_DATE_LASTMODIFIED,
         SortField.STRING,
         true));
 
@@ -239,13 +239,13 @@ public class CmsGallerySearchParameters {
 
     /** Sort result documents by VFS path ascending. */
     public static final Sort SORT_PATH_ASC = new Sort(new SortField(
-        I_CmsSearchField.FIELD_PATH,
+        CmsSearchField.FIELD_PATH,
         SortField.STRING,
         false));
 
     /** Sort result documents by VFS path descending. */
     public static final Sort SORT_PATH_DESC = new Sort(new SortField(
-        I_CmsSearchField.FIELD_PATH,
+        CmsSearchField.FIELD_PATH,
         SortField.STRING,
         true));
 
@@ -264,43 +264,43 @@ public class CmsGallerySearchParameters {
 
     /** Sort result documents by title ascending, then score. */
     public static final Sort SORT_TITLE_ASC = new Sort(new SortField[] {
-        new SortField(I_CmsSearchField.FIELD_TITLE, SortField.STRING, false),
+        new SortField(CmsSearchField.FIELD_TITLE, SortField.STRING, false),
         SortField.FIELD_SCORE});
 
     /** Sort result documents by title descending, then score. */
     public static final Sort SORT_TITLE_DESC = new Sort(new SortField[] {
-        new SortField(I_CmsSearchField.FIELD_TITLE, SortField.STRING, true),
+        new SortField(CmsSearchField.FIELD_TITLE, SortField.STRING, true),
         SortField.FIELD_SCORE});
 
     /** Sort result documents by resource type ascending, then score. */
     public static final Sort SORT_TYPE_ASC = new Sort(new SortField[] {
-        new SortField(I_CmsSearchField.FIELD_TYPE, SortField.STRING, false),
+        new SortField(CmsSearchField.FIELD_TYPE, SortField.STRING, false),
         SortField.FIELD_SCORE});
 
     /** Sort result documents by resource type descending, then score. */
     public static final Sort SORT_TYPE_DESC = new Sort(new SortField[] {
-        new SortField(I_CmsSearchField.FIELD_TYPE, SortField.STRING, true),
+        new SortField(CmsSearchField.FIELD_TYPE, SortField.STRING, true),
         SortField.FIELD_SCORE});
 
     /** Sort result documents by date user who created ascending, then date of creation. */
     public static final Sort SORT_USER_CREATED_ASC = new Sort(new SortField[] {
         new SortField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_CREATED, SortField.STRING, false),
-        new SortField(I_CmsSearchField.FIELD_DATE_CREATED, SortField.STRING, true)});
+        new SortField(CmsSearchField.FIELD_DATE_CREATED, SortField.STRING, true)});
 
     /** Sort result documents by date user who created descending, then date of creation. */
     public static final Sort SORT_USER_CREATED_DESC = new Sort(new SortField[] {
         new SortField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_CREATED, SortField.STRING, true),
-        new SortField(I_CmsSearchField.FIELD_DATE_CREATED, SortField.STRING, true)});
+        new SortField(CmsSearchField.FIELD_DATE_CREATED, SortField.STRING, true)});
 
     /** Sort result documents by date user who did the last modification ascending, then date of last modification. */
     public static final Sort SORT_USER_LASTMODIFIED_ASC = new Sort(new SortField[] {
         new SortField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_LASTMODIFIED, SortField.STRING, false),
-        new SortField(I_CmsSearchField.FIELD_DATE_LASTMODIFIED, SortField.STRING, true)});
+        new SortField(CmsSearchField.FIELD_DATE_LASTMODIFIED, SortField.STRING, true)});
 
     /** Sort result documents by date user who did the last modification descending, then date of last modification. */
     public static final Sort SORT_USER_LASTMODIFIED_DESC = new Sort(new SortField[] {
         new SortField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_LASTMODIFIED, SortField.STRING, true),
-        new SortField(I_CmsSearchField.FIELD_DATE_LASTMODIFIED, SortField.STRING, true)});
+        new SortField(CmsSearchField.FIELD_DATE_LASTMODIFIED, SortField.STRING, true)});
 
     /** The categories to search in. */
     private List<String> m_categories;
@@ -417,14 +417,14 @@ public class CmsGallerySearchParameters {
      * Returns the list of the names of the fields to search in.<p>
      *
      * If this has not been set, then the default fields defined in
-     * {@link CmsLuceneIndex#DOC_META_FIELDS} are used as default.<p>
+     * {@link CmsSearchIndex#DOC_META_FIELDS} are used as default.<p>
      *
      * @return the list of the names of the fields to search in
      */
     public List<String> getFields() {
 
         if (m_fields == null) {
-            setFields(Arrays.asList(CmsLuceneIndex.DOC_META_FIELDS));
+            setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
         }
         return m_fields;
     }
@@ -628,7 +628,7 @@ public class CmsGallerySearchParameters {
      */
     public Sort getTitleSort(String locale, boolean desc) {
 
-        String titleName = A_CmsSearchFieldConfiguration.getLocaleExtendedName(I_CmsSearchField.FIELD_TITLE, locale);
+        String titleName = CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE, locale);
         return new Sort(new SortField[] {new SortField(titleName, SortField.STRING, desc), SortField.FIELD_SCORE});
     }
 

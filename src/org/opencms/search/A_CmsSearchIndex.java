@@ -44,8 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -128,7 +127,7 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
     private boolean m_extractContent;
 
     /** The search field configuration of this index. */
-    private I_CmsSearchFieldConfiguration m_fieldConfiguration;
+    private CmsSearchFieldConfiguration m_fieldConfiguration;
 
     /** The name of the search field configuration used by this index. */
     private String m_fieldConfigurationName;
@@ -269,6 +268,15 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
     }
 
     /**
+     * Creates an empty document that can be used by this search field configuration.<p>
+     * 
+     * @param resource the resource to create the document for
+     * 
+     * @return a new and empty document
+     */
+    public abstract I_CmsSearchDocument createEmptyDocument(CmsResource resource);
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -355,7 +363,7 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
      * 
      * @return the search field configuration of this index
      */
-    public I_CmsSearchFieldConfiguration getFieldConfiguration() {
+    public CmsSearchFieldConfiguration getFieldConfiguration() {
 
         return m_fieldConfiguration;
     }
@@ -594,7 +602,7 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
         // initialize the search field configuration
         if (m_fieldConfigurationName == null) {
             // if not set, use standard field configuration
-            m_fieldConfigurationName = A_CmsSearchFieldConfiguration.STR_STANDARD;
+            m_fieldConfigurationName = CmsSearchFieldConfiguration.STR_STANDARD;
         }
         m_fieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(m_fieldConfigurationName);
         if (m_fieldConfiguration == null) {
@@ -732,7 +740,7 @@ public abstract class A_CmsSearchIndex implements I_CmsConfigurationParameterHan
      * 
      * @param fieldConfiguration the field configuration to set
      */
-    public void setFieldConfiguration(I_CmsSearchFieldConfiguration fieldConfiguration) {
+    public void setFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
 
         m_fieldConfiguration = fieldConfiguration;
     }

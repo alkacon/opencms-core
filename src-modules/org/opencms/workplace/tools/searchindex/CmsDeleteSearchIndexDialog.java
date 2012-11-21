@@ -81,7 +81,7 @@ public class CmsDeleteSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
         try {
 
-            m_searchManager.removeSearchIndex(m_index);
+            m_searchManager.removeSearchIndex(getSearchIndexIndex());
             clearDialogObject();
             writeConfiguration();
             // if we go back to /searchindex/singleindex (overview) the deleted searchindex is not 
@@ -116,7 +116,9 @@ public class CmsDeleteSearchIndexDialog extends A_CmsEditSearchIndexDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_LIST_SEARCHINDEX_MACTION_DELETE_NAME_0)));
             result.append(createWidgetTableStart());
-            result.append(key(Messages.GUI_LIST_SEARCHINDEX_ACTION_DELETE_CONF_1, new Object[] {m_index.getName()}));
+            result.append(key(
+                Messages.GUI_LIST_SEARCHINDEX_ACTION_DELETE_CONF_1,
+                new Object[] {getSearchIndexIndex().getName()}));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }

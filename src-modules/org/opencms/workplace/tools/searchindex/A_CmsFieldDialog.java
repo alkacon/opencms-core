@@ -32,10 +32,10 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
-import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * 
- * Abstract widget dialog for all dialogs working with <code>{@link CmsSearchField}</code>.<p> 
+ * Abstract widget dialog for all dialogs working with <code>{@link CmsLuceneSearchField}</code>.<p> 
  * 
  * @since 6.5.5
  */
@@ -78,10 +78,10 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     public static final String PARAM_FIELDCONFIGURATION = "fieldconfiguration";
 
     /** The user object that is edited on this dialog. */
-    protected CmsSearchField m_field;
+    protected CmsLuceneSearchField m_field;
 
     /** The user object that is edited on this dialog. */
-    protected I_CmsSearchFieldConfiguration m_fieldconfiguration;
+    protected CmsSearchFieldConfiguration m_fieldconfiguration;
 
     /** The search manager singleton for convenient access. **/
     protected CmsSearchManager m_searchManager;
@@ -136,7 +136,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
 
             // if new create it first
             boolean found = false;
-            for (I_CmsSearchField field : m_fieldconfiguration.getFields()) {
+            for (CmsSearchField field : m_fieldconfiguration.getFields()) {
                 if (field.getName().equals(m_field.getName())) {
                     found = true;
                 }
@@ -235,28 +235,28 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
             try {
                 m_fieldconfiguration = m_searchManager.getFieldConfiguration(getParamFieldconfiguration());
                 if (m_fieldconfiguration == null) {
-                    m_fieldconfiguration = new CmsSearchFieldConfiguration();
+                    m_fieldconfiguration = new CmsLuceneSearchFieldConfiguration();
                 }
             } catch (Exception e) {
-                m_fieldconfiguration = new CmsSearchFieldConfiguration();
+                m_fieldconfiguration = new CmsLuceneSearchFieldConfiguration();
             }
         }
 
         if (m_field == null) {
             try {
-                Iterator<I_CmsSearchField> itFields = m_fieldconfiguration.getFields().iterator();
+                Iterator<CmsSearchField> itFields = m_fieldconfiguration.getFields().iterator();
                 while (itFields.hasNext()) {
-                    CmsSearchField curField = (CmsSearchField)itFields.next();
+                    CmsLuceneSearchField curField = (CmsLuceneSearchField)itFields.next();
                     if (curField.getName().equals(getParamField())) {
                         m_field = curField;
                         break;
                     }
                 }
                 if (m_field == null) {
-                    m_field = new CmsSearchField();
+                    m_field = new CmsLuceneSearchField();
                 }
             } catch (Exception e) {
-                m_field = new CmsSearchField();
+                m_field = new CmsLuceneSearchField();
             }
         }
     }

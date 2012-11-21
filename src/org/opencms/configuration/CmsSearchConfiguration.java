@@ -31,17 +31,17 @@ import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
-import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.CmsSearchAnalyzer;
 import org.opencms.search.CmsSearchDocumentType;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
-import org.opencms.search.fields.I_CmsSearchField;
-import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.util.CmsStringUtil;
@@ -295,7 +295,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // search index rule
         xPath = XPATH_SEARCH + "/" + N_INDEXES + "/" + N_INDEX;
-        digester.addObjectCreate(xPath, A_CLASS, CmsLuceneIndex.class);
+        digester.addObjectCreate(xPath, A_CLASS, CmsSearchIndex.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_REBUILD, "setRebuildMode", 0);
         digester.addCallMethod(xPath + "/" + N_PROJECT, "setProject", 0);
@@ -316,13 +316,13 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // field configuration rules
         xPath = XPATH_SEARCH + "/" + N_FIELDCONFIGURATIONS + "/" + N_FIELDCONFIGURATION;
-        digester.addObjectCreate(xPath, A_CLASS, CmsSearchFieldConfiguration.class);
+        digester.addObjectCreate(xPath, A_CLASS, CmsLuceneSearchFieldConfiguration.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_DESCRIPTION, "setDescription", 0);
         digester.addSetNext(xPath, "addFieldConfiguration");
 
         xPath = xPath + "/" + N_FIELDS + "/" + N_FIELD;
-        digester.addObjectCreate(xPath, CmsSearchField.class);
+        digester.addObjectCreate(xPath, CmsLuceneSearchField.class);
         digester.addCallMethod(xPath, "setName", 1);
         digester.addCallParam(xPath, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallMethod(xPath, "setDisplayNameForConfiguration", 1);
@@ -472,7 +472,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             // add the next <index> element
             Element indexElement = indexesElement.addElement(N_INDEX);
             // add class attribute (if required)
-            if (!searchIndex.getClass().equals(CmsLuceneIndex.class)) {
+            if (!searchIndex.getClass().equals(CmsSearchIndex.class)) {
                 indexElement.addAttribute(A_CLASS, searchIndex.getClass().getName());
             }
             // add <name> element
@@ -540,10 +540,10 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // <fieldconfigurations>
         Element fieldConfigurationsElement = searchElement.addElement(N_FIELDCONFIGURATIONS);
-        for (I_CmsSearchFieldConfiguration fieldConfiguration : m_searchManager.getFieldConfigurations()) {
+        for (CmsSearchFieldConfiguration fieldConfiguration : m_searchManager.getFieldConfigurations()) {
             Element fieldConfigurationElement = fieldConfigurationsElement.addElement(N_FIELDCONFIGURATION);
             // add class attribute (if required)
-            if (!fieldConfiguration.getClass().equals(CmsSearchFieldConfiguration.class)) {
+            if (!fieldConfiguration.getClass().equals(CmsLuceneSearchFieldConfiguration.class)) {
                 fieldConfigurationElement.addAttribute(A_CLASS, fieldConfiguration.getClass().getName());
             }
             fieldConfigurationElement.addElement(N_NAME).setText(fieldConfiguration.getName());
@@ -552,16 +552,16 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             }
             // search fields
             Element fieldsElement = fieldConfigurationElement.addElement(N_FIELDS);
-            for (I_CmsSearchField sfield : fieldConfiguration.getFields()) {
-                if (sfield instanceof CmsSearchField) {
-                    CmsSearchField field = (CmsSearchField)sfield;
+            for (CmsSearchField sfield : fieldConfiguration.getFields()) {
+                if (sfield instanceof CmsLuceneSearchField) {
+                    CmsLuceneSearchField field = (CmsLuceneSearchField)sfield;
                     Element fieldElement = fieldsElement.addElement(N_FIELD);
                     fieldElement.addAttribute(A_NAME, field.getName());
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDisplayNameForConfiguration())) {
                         fieldElement.addAttribute(A_DISPLAY, field.getDisplayNameForConfiguration());
                     }
                     if (field.isCompressed()) {
-                        fieldElement.addAttribute(A_STORE, CmsSearchField.STR_COMPRESS);
+                        fieldElement.addAttribute(A_STORE, CmsLuceneSearchField.STR_COMPRESS);
                     } else {
                         fieldElement.addAttribute(A_STORE, String.valueOf(field.isStored()));
                     }
@@ -572,14 +572,14 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                             index = CmsStringUtil.TRUE;
                         } else {
                             // indexed but not tokenized
-                            index = CmsSearchField.STR_UN_TOKENIZED;
+                            index = CmsLuceneSearchField.STR_UN_TOKENIZED;
                         }
                     } else {
                         // not indexed at all
                         index = CmsStringUtil.FALSE;
                     }
                     fieldElement.addAttribute(A_INDEX, index);
-                    if (field.getBoost() != I_CmsSearchField.BOOST_DEFAULT) {
+                    if (field.getBoost() != CmsSearchField.BOOST_DEFAULT) {
                         fieldElement.addAttribute(A_BOOST, String.valueOf(field.getBoost()));
                     }
                     if (field.isInExcerptAndStored()) {

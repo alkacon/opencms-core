@@ -33,8 +33,8 @@ package org.opencms.search;
 
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -77,14 +77,14 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      * 
      * @return a list of date terms for the optimized date range search
      * 
-     * @see CmsLuceneIndex#getDateRangeSpan(long, long)
+     * @see CmsSearchIndex#getDateRangeSpan(long, long)
      */
     public static String getDateTerms(long date) {
 
         Calendar cal = Calendar.getInstance(OpenCms.getLocaleManager().getTimeZone());
         cal.setTimeInMillis(date);
-        String day = CmsLuceneIndex.DATES[cal.get(5)];
-        String month = CmsLuceneIndex.DATES[(cal.get(2) + 1)];
+        String day = CmsSearchIndex.DATES[cal.get(5)];
+        String month = CmsSearchIndex.DATES[(cal.get(2) + 1)];
         String year = String.valueOf(cal.get(1));
 
         StringBuffer result = new StringBuffer();
@@ -113,7 +113,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
             }
             if (categoryBuffer.length() > 0) {
                 Fieldable field = new Field(
-                    I_CmsSearchField.FIELD_CATEGORY,
+                    CmsSearchField.FIELD_CATEGORY,
                     categoryBuffer.toString().toLowerCase(),
                     Field.Store.YES,
                     Field.Index.ANALYZED);
@@ -123,7 +123,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
         } else {
             // synthetic "unknown" category if no category property defined for resource
             Fieldable field = new Field(
-                I_CmsSearchField.FIELD_CATEGORY,
+                CmsSearchField.FIELD_CATEGORY,
                 CmsSearchCategoryCollector.UNKNOWN_CATEGORY,
                 Field.Store.YES,
                 Field.Index.ANALYZED);
@@ -137,7 +137,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addContentField(byte[] data) {
 
-        Fieldable field = new Field(I_CmsSearchField.FIELD_CONTENT_BLOB, data);
+        Fieldable field = new Field(CmsSearchField.FIELD_CONTENT_BLOB, data);
         m_doc.add(field);
     }
 
@@ -164,7 +164,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
         m_doc.add(field);
         if (analyzed) {
             field = new Field(
-                name + I_CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX,
+                name + CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX,
                 getDateTerms(date),
                 Field.Store.NO,
                 Field.Index.ANALYZED);
@@ -178,9 +178,9 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addPathField(String rootPath) {
 
-        String parentFolders = A_CmsSearchFieldConfiguration.getParentFolderTokens(rootPath);
+        String parentFolders = CmsSearchFieldConfiguration.getParentFolderTokens(rootPath);
         Fieldable field = new Field(
-            I_CmsSearchField.FIELD_PARENT_FOLDERS,
+            CmsSearchField.FIELD_PARENT_FOLDERS,
             parentFolders,
             Field.Store.NO,
             Field.Index.ANALYZED);
@@ -201,13 +201,13 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addRootPathField(String rootPath) {
 
-        m_doc.add(new Field(I_CmsSearchField.FIELD_PATH, rootPath, Field.Store.YES, Field.Index.NOT_ANALYZED));
+        m_doc.add(new Field(CmsSearchField.FIELD_PATH, rootPath, Field.Store.YES, Field.Index.NOT_ANALYZED));
     }
 
     /**
-     * @see org.opencms.search.I_CmsSearchDocument#addSearchField(org.opencms.search.fields.I_CmsSearchField, java.lang.String)
+     * @see org.opencms.search.I_CmsSearchDocument#addSearchField(org.opencms.search.fields.CmsSearchField, java.lang.String)
      */
-    public void addSearchField(I_CmsSearchField field, String value) {
+    public void addSearchField(CmsSearchField field, String value) {
 
         m_doc.add(field.createField(value));
     }
@@ -217,7 +217,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addSuffixField(String suffix) {
 
-        m_doc.add(new Field(I_CmsSearchField.FIELD_SUFFIX, suffix, Field.Store.YES, Field.Index.NOT_ANALYZED));
+        m_doc.add(new Field(CmsSearchField.FIELD_SUFFIX, suffix, Field.Store.YES, Field.Index.NOT_ANALYZED));
     }
 
     /**
@@ -225,7 +225,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addTypeField(String typeName) {
 
-        m_doc.add(new Field(I_CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+        m_doc.add(new Field(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.NOT_ANALYZED));
     }
 
     /**
@@ -233,7 +233,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public byte[] getContentBlob() {
 
-        Fieldable fieldContentBlob = m_doc.getFieldable(I_CmsSearchField.FIELD_CONTENT_BLOB);
+        Fieldable fieldContentBlob = m_doc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB);
         if (fieldContentBlob != null) {
             return fieldContentBlob.getBinaryValue();
         }
@@ -301,7 +301,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public String getPath() {
 
-        return getFieldValueAsString(I_CmsSearchField.FIELD_PATH);
+        return getFieldValueAsString(CmsSearchField.FIELD_PATH);
     }
 
     /**
@@ -317,7 +317,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public String getType() {
 
-        return getFieldValueAsString(I_CmsSearchField.FIELD_TYPE);
+        return getFieldValueAsString(CmsSearchField.FIELD_TYPE);
     }
 
     /**

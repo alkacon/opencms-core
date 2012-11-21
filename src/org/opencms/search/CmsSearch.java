@@ -118,7 +118,7 @@ public class CmsSearch {
         m_parameters.setSearchPage(1);
         m_searchResultCount = 0;
         m_parameters.setSort(CmsSearchParameters.SORT_DEFAULT);
-        m_parameters.setFields(Arrays.asList(CmsLuceneIndex.DOC_META_FIELDS));
+        m_parameters.setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
         m_parsedQuerySet = false;
     }
 
@@ -759,7 +759,7 @@ public class CmsSearch {
         resetLastResult();
         if (CmsStringUtil.isNotEmpty(indexName)) {
             try {
-                CmsLuceneIndex index = OpenCms.getSearchManager().getIndexLucene(indexName);
+                CmsSearchIndex index = OpenCms.getSearchManager().getIndexLucene(indexName);
                 if (index == null) {
                     throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
                 }

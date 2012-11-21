@@ -31,8 +31,8 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.search.CmsVfsIndexer;
-import org.opencms.search.fields.CmsSearchField;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.search.galleries.CmsGallerySearchFieldConfiguration;
@@ -676,10 +676,10 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     node.detach();
                 }
                 // create field config
-                CmsSearchFieldConfiguration fieldConf = new CmsSearchFieldConfiguration();
+                CmsLuceneSearchFieldConfiguration fieldConf = new CmsLuceneSearchFieldConfiguration();
                 fieldConf.setName("gallery_fields");
                 fieldConf.setDescription("The standard OpenCms search index field configuration.");
-                CmsSearchField field = new CmsSearchField();
+                CmsLuceneSearchField field = new CmsLuceneSearchField();
                 // <field name="content" store="compress" index="true" excerpt="true">
                 field.setName("content");
                 field.setStored("compress");
@@ -692,7 +692,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="title-key" store="true" index="untokenized" boost="0.0">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("title-key");
                 field.setStored("true");
                 field.setIndexed("untokenized");
@@ -704,7 +704,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="title" store="false" index="true">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("title");
                 field.setStored("false");
                 field.setIndexed("true");
@@ -716,7 +716,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="description" store="true" index="true">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("description");
                 field.setStored("true");
                 field.setIndexed("true");
@@ -728,7 +728,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="meta" store="false" index="true">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("meta");
                 field.setStored("false");
                 field.setIndexed("true");
@@ -752,7 +752,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 fieldConf.addField(field);
 
                 // <field name="res_dateExpired" store="true" index="untokenized">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("res_dateExpired");
                 field.setStored("true");
                 field.setIndexed("untokenized");
@@ -763,7 +763,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="res_dateReleased" store="true" index="untokenized">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("res_dateReleased");
                 field.setStored("true");
                 field.setIndexed("untokenized");
@@ -774,7 +774,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="res_length" store="true" index="untokenized">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("res_length");
                 field.setStored("true");
                 field.setIndexed("untokenized");
@@ -785,7 +785,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="res_state" store="true" index="untokenized">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("res_state");
                 field.setStored("true");
                 field.setIndexed("untokenized");
@@ -796,7 +796,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="res_structureId" store="true" index="false">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("res_structureId");
                 field.setStored("true");
                 field.setIndexed("untokenized");
@@ -807,7 +807,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="res_userCreated" store="true" index="untokenized">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("res_userCreated");
                 field.setStored("true");
                 field.setIndexed("untokenized");
@@ -818,7 +818,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="res_userLastModified" store="true" index="untokenized">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("res_userLastModified");
                 field.setStored("true");
                 field.setIndexed("untokenized");
@@ -829,7 +829,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="res_locales" store="true" index="true" analyzer="WhitespaceAnalyzer">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("res_locales");
                 field.setStored("true");
                 field.setIndexed("true");
@@ -846,7 +846,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="additional_info" store="true" index="false">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("additional_info");
                 field.setStored("true");
                 field.setIndexed("false");
@@ -857,7 +857,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 field.addMapping(mapping);
                 fieldConf.addField(field);
                 // <field name="container_types" store="true" index="true" analyzer="WhitespaceAnalyzer">
-                field = new CmsSearchField();
+                field = new CmsLuceneSearchField();
                 field.setName("container_types");
                 field.setStored("true");
                 field.setIndexed("true");

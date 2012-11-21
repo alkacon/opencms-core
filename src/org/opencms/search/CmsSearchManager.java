@@ -50,12 +50,11 @@ import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.CmsExtractionResultCache;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
-import org.opencms.search.fields.I_CmsSearchField;
-import org.opencms.search.fields.I_CmsSearchFieldConfiguration;
 import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.search.solr.CmsSolrFieldConfiguration;
@@ -625,7 +624,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     private CmsExtractionResultCache m_extractionResultCache;
 
     /** Contains the available field configurations. */
-    private Map<String, I_CmsSearchFieldConfiguration> m_fieldConfigurations;
+    private Map<String, CmsSearchFieldConfiguration> m_fieldConfigurations;
 
     /** The force unlock type. */
     private CmsSearchForceUnlockMode m_forceUnlockMode;
@@ -679,9 +678,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_offlineUpdateFrequency = DEFAULT_OFFLINE_UPDATE_FREQNENCY;
         m_maxModificationsBeforeCommit = DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT;
 
-        m_fieldConfigurations = new HashMap<String, I_CmsSearchFieldConfiguration>();
+        m_fieldConfigurations = new HashMap<String, CmsSearchFieldConfiguration>();
         // make sure we have a "standard" field configuration
-        addFieldConfiguration(CmsSearchFieldConfiguration.DEFAULT_STANDARD);
+        addFieldConfiguration(CmsLuceneSearchFieldConfiguration.DEFAULT_STANDARD);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SEARCH_CONFIG_0));
@@ -707,7 +706,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * Since Lucene 3.0, many analyzers require a "version" parameter in the constructor and 
      * can not be created by a simple <code>newInstance()</code> call.
-     * This method will create analyzers by name for the {@link CmsLuceneIndex#LUCENE_VERSION} version.<p>
+     * This method will create analyzers by name for the {@link CmsSearchIndex#LUCENE_VERSION} version.<p>
      * 
      * @param className the class name of the analyzer
      * @param stemmer the optional stemmer parameter required for the snowball analyzer
@@ -733,10 +732,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
         if (StandardAnalyzer.class.equals(analyzerClass)) {
             // the Lucene standard analyzer is used
-            analyzer = new StandardAnalyzer(CmsLuceneIndex.LUCENE_VERSION);
+            analyzer = new StandardAnalyzer(CmsSearchIndex.LUCENE_VERSION);
         } else if (CmsGallerySearchAnalyzer.class.equals(analyzerClass)) {
             // OpenCms gallery multiple language analyzer
-            analyzer = new CmsGallerySearchAnalyzer(CmsLuceneIndex.LUCENE_VERSION);
+            analyzer = new CmsGallerySearchAnalyzer(CmsSearchIndex.LUCENE_VERSION);
         } else {
             boolean hasEmpty = false;
             boolean hasVersion = false;
@@ -765,12 +764,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             if (hasVersionWithString) {
                 // a constructor with a Lucene version parameter and a String has been found
                 analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class, String.class}).newInstance(
-                    CmsLuceneIndex.LUCENE_VERSION,
+                    CmsSearchIndex.LUCENE_VERSION,
                     stemmer);
             } else if (hasVersion) {
                 // a constructor with a Lucene version parameter has been found
                 analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance(
-                    CmsLuceneIndex.LUCENE_VERSION);
+                    CmsSearchIndex.LUCENE_VERSION);
             } else if (hasEmpty) {
                 // an empty constructor has been found
                 analyzer = (Analyzer)analyzerClass.newInstance();
@@ -868,7 +867,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @param fieldConfiguration the search field configuration to add
      */
-    public void addFieldConfiguration(I_CmsSearchFieldConfiguration fieldConfiguration) {
+    public void addFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
 
         fieldConfiguration.init();
         m_fieldConfigurations.put(fieldConfiguration.getName(), fieldConfiguration);
@@ -1191,19 +1190,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return the search field configuration with the given name
      */
-    public I_CmsSearchFieldConfiguration getFieldConfiguration(String name) {
+    public CmsSearchFieldConfiguration getFieldConfiguration(String name) {
 
         return m_fieldConfigurations.get(name);
     }
 
     /**
-     * Returns the unmodifieable List of configured {@link I_CmsSearchFieldConfiguration} entries.<p>
+     * Returns the unmodifieable List of configured {@link CmsSearchFieldConfiguration} entries.<p>
      * 
-     * @return the unmodifieable List of configured {@link I_CmsSearchFieldConfiguration} entries
+     * @return the unmodifieable List of configured {@link CmsSearchFieldConfiguration} entries
      */
-    public List<I_CmsSearchFieldConfiguration> getFieldConfigurations() {
+    public List<CmsSearchFieldConfiguration> getFieldConfigurations() {
 
-        List<I_CmsSearchFieldConfiguration> result = new ArrayList<I_CmsSearchFieldConfiguration>(
+        List<CmsSearchFieldConfiguration> result = new ArrayList<CmsSearchFieldConfiguration>(
             m_fieldConfigurations.values());
         Collections.sort(result);
         return Collections.unmodifiableList(result);
@@ -1214,12 +1213,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return the Lucene search field configurations
      */
-    public List<CmsSearchFieldConfiguration> getFieldConfigurationsLucene() {
+    public List<CmsLuceneSearchFieldConfiguration> getFieldConfigurationsLucene() {
 
-        List<CmsSearchFieldConfiguration> result = new ArrayList<CmsSearchFieldConfiguration>();
-        for (I_CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
-            if (conf instanceof CmsSearchFieldConfiguration) {
-                result.add((CmsSearchFieldConfiguration)conf);
+        List<CmsLuceneSearchFieldConfiguration> result = new ArrayList<CmsLuceneSearchFieldConfiguration>();
+        for (CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
+            if (conf instanceof CmsLuceneSearchFieldConfiguration) {
+                result.add((CmsLuceneSearchFieldConfiguration)conf);
             }
         }
         Collections.sort(result);
@@ -1234,7 +1233,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public List<CmsSolrFieldConfiguration> getFieldConfigurationsSolr() {
 
         List<CmsSolrFieldConfiguration> result = new ArrayList<CmsSolrFieldConfiguration>();
-        for (I_CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
+        for (CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
             if (conf instanceof CmsSolrFieldConfiguration) {
                 result.add((CmsSolrFieldConfiguration)conf);
             }
@@ -1300,11 +1299,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * @param indexName then name of the requested Lucene index
      * @return the Lucene index configured with the given name
      */
-    public CmsLuceneIndex getIndexLucene(String indexName) {
+    public CmsSearchIndex getIndexLucene(String indexName) {
 
         A_CmsSearchIndex index = getIndex(indexName);
-        if (index instanceof CmsLuceneIndex) {
-            return (CmsLuceneIndex)index;
+        if (index instanceof CmsSearchIndex) {
+            return (CmsSearchIndex)index;
         }
         return null;
     }
@@ -1705,11 +1704,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *         <code>{@link A_CmsSearchIndex}</code>.
      *  
      */
-    public boolean removeSearchFieldConfiguration(I_CmsSearchFieldConfiguration fieldConfiguration)
+    public boolean removeSearchFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration)
     throws CmsIllegalStateException {
 
         // never remove the standard field configuration
-        if (fieldConfiguration.getName().equals(A_CmsSearchFieldConfiguration.STR_STANDARD)) {
+        if (fieldConfiguration.getName().equals(CmsSearchFieldConfiguration.STR_STANDARD)) {
             throw new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_INDEX_CONFIGURATION_DELETE_STANDARD_1,
                 fieldConfiguration.getName()));
@@ -1719,7 +1718,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         A_CmsSearchIndex idx;
         // the list for collecting indexes that use the given field configuration
         List<A_CmsSearchIndex> referrers = new ArrayList<A_CmsSearchIndex>();
-        I_CmsSearchFieldConfiguration refFieldConfig;
+        CmsSearchFieldConfiguration refFieldConfig;
         while (itIndexes.hasNext()) {
             idx = itIndexes.next();
             refFieldConfig = idx.getFieldConfiguration();
@@ -1751,8 +1750,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * @throws CmsIllegalStateException if the given field is the last field inside the given field configuration.
      */
     public boolean removeSearchFieldConfigurationField(
-        I_CmsSearchFieldConfiguration fieldConfiguration,
-        I_CmsSearchField field) throws CmsIllegalStateException {
+        CmsSearchFieldConfiguration fieldConfiguration,
+        CmsSearchField field) throws CmsIllegalStateException {
 
         if (fieldConfiguration.getFields().size() < 2) {
             throw new CmsIllegalStateException(Messages.get().container(
@@ -1783,7 +1782,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @throws CmsIllegalStateException if the given mapping is the last mapping inside the given field.
      */
-    public boolean removeSearchFieldMapping(CmsSearchField field, CmsSearchFieldMapping mapping)
+    public boolean removeSearchFieldMapping(CmsLuceneSearchField field, CmsSearchFieldMapping mapping)
     throws CmsIllegalStateException {
 
         if (field.getMappings().size() < 2) {

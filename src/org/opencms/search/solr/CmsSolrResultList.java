@@ -4,7 +4,7 @@ package org.opencms.search.solr;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchResource;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -441,7 +441,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
         int[] luceneIds = new int[m_rows.intValue()];
         int docs = 0;
         for (SolrDocument doc : list) {
-            String idString = (String)doc.getFirstValue(I_CmsSearchField.FIELD_ID);
+            String idString = (String)doc.getFirstValue(CmsSearchField.FIELD_ID);
             int id = m_solrQueryRequest.getSearcher().getFirstMatch(
                 new Term(idField.getName(), idField.getType().toInternal(idString)));
             luceneIds[docs++] = id;

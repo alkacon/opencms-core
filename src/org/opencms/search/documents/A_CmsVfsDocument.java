@@ -38,7 +38,7 @@ import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -119,10 +119,10 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             if ((cache != null) && (resource.getSiblingCount() > 1)) {
                 // hard drive based caching only makes sense for resources that have siblings, 
                 // because the index will also store the content as a blob
-                cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocaleForResource(
-                    cms,
+                cacheName = cache.getCacheName(
                     resource,
-                    null) : null, getName());
+                    isLocaleDependend() ? index.getLocaleForResource(cms, resource, null) : null,
+                    getName());
                 content = cache.getCacheObject(cacheName);
             }
 
@@ -130,10 +130,10 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                 // extraction result has not been found in the cache
                 // compare "date of last modification of content" from Lucene index and OpenCms VFS
                 // if this is identical, then the data from the Lucene index can be re-used 
-                I_CmsSearchDocument oldDoc = index.getDocument(I_CmsSearchField.FIELD_PATH, resource.getRootPath());
+                I_CmsSearchDocument oldDoc = index.getDocument(CmsSearchField.FIELD_PATH, resource.getRootPath());
                 // first check if the document is already in the index
-                if ((oldDoc != null) && (oldDoc.getFieldValueAsDate(I_CmsSearchField.FIELD_DATE_CONTENT) != null)) {
-                    long contentDateIndex = oldDoc.getFieldValueAsDate(I_CmsSearchField.FIELD_DATE_CONTENT).getTime();
+                if ((oldDoc != null) && (oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT) != null)) {
+                    long contentDateIndex = oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT).getTime();
                     // now compare the date with the date stored in the resource
                     if (contentDateIndex == resource.getDateContent()) {
                         // extract stored content blob from index

@@ -36,8 +36,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsTermHighlighter;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
@@ -90,11 +90,11 @@ import org.apache.lucene.util.Version;
  * 
  * @since 6.0.0 
  */
-public class CmsLuceneIndex extends A_CmsSearchIndex {
+public class CmsSearchIndex extends A_CmsSearchIndex {
 
     /**
      * Lucene filter index reader implementation that will ensure the OpenCms default search index fields
-     * {@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT_BLOB}
+     * {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT_BLOB}
      * are lazy loaded.<p>
      * 
      * This is to optimize performance - these 2 fields will be rather large especially for extracted
@@ -203,8 +203,8 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
 
     /** Constant for a field list that contains the "meta" field as well as the "content" field. */
     public static final String[] DOC_META_FIELDS = new String[] {
-        I_CmsSearchField.FIELD_META,
-        I_CmsSearchField.FIELD_CONTENT};
+        CmsSearchField.FIELD_META,
+        CmsSearchField.FIELD_CONTENT};
 
     /** Constant for additional parameter for the Lucene index setting. */
     public static final String LUCENE_AUTO_COMMIT = "lucene.AutoCommit";
@@ -231,7 +231,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
     public static final String PROPERTY_SEARCH_EXCLUDE_VALUE_GALLERY = "gallery";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLuceneIndex.class);
+    private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
 
     /** The configured Lucene analyzer used for this index. */
     private Analyzer m_analyzer;
@@ -266,10 +266,10 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
     /**
      * Default constructor only intended to be used by the XML configuration. <p>
      * 
-     * It is recommended to use the constructor <code>{@link #CmsLuceneIndex(String)}</code> 
+     * It is recommended to use the constructor <code>{@link #CmsSearchIndex(String)}</code> 
      * as it enforces the mandatory name argument. <p>
      */
-    public CmsLuceneIndex() {
+    public CmsSearchIndex() {
 
         super();
         m_createExcerpt = true;
@@ -284,7 +284,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
      * 
      * @throws CmsIllegalArgumentException if the given name is null, empty or already taken by another search index 
      */
-    public CmsLuceneIndex(String name)
+    public CmsSearchIndex(String name)
     throws CmsIllegalArgumentException {
 
         this();
@@ -370,7 +370,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
 
     /**
      * Returns a field selector for Lucene that that will ensure the OpenCms default search index fields
-     * {@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsSearchField#FIELD_CONTENT_BLOB}
+     * {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT_BLOB}
      * are lazy loaded.<p>
      * 
      * This is to optimize performance - these 2 fields will be rather large especially for extracted
@@ -395,8 +395,8 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
              */
             public FieldSelectorResult accept(String fieldName) {
 
-                if (I_CmsSearchField.FIELD_CONTENT.equals(fieldName)
-                    || I_CmsSearchField.FIELD_CONTENT_BLOB.equals(fieldName)) {
+                if (CmsSearchField.FIELD_CONTENT.equals(fieldName)
+                    || CmsSearchField.FIELD_CONTENT_BLOB.equals(fieldName)) {
                     return FieldSelectorResult.LAZY_LOAD;
                 }
                 if (base == null) {
@@ -522,6 +522,15 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
     }
 
     /**
+     * @see org.opencms.search.A_CmsSearchIndex#createEmptyDocument(org.opencms.file.CmsResource)
+     */
+    @Override
+    public I_CmsSearchDocument createEmptyDocument(CmsResource resource) {
+
+        return new CmsLuceneDocument(new Document());
+    }
+
+    /**
      * Returns the Lucene analyzer used for this index.<p>
      *
      * @return the Lucene analyzer used for this index
@@ -568,13 +577,13 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
      * 
      * @return the Lucene document with the given root path from the index
      * 
-     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link org.opencms.search.fields.CmsSearchField#FIELD_PATH} as field to search in
+     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_PATH} as field to search in
      */
     @Deprecated
     public Document getDocument(String rootPath) {
 
-        if (getDocument(I_CmsSearchField.FIELD_PATH, rootPath) != null) {
-            return (Document)getDocument(I_CmsSearchField.FIELD_PATH, rootPath).getDocument();
+        if (getDocument(CmsSearchField.FIELD_PATH, rootPath) != null) {
+            return (Document)getDocument(CmsSearchField.FIELD_PATH, rootPath).getDocument();
         }
         return null;
     }
@@ -606,15 +615,15 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * Returns the concrete Lucene field configuration.<p>
-     * 
-     * @return the Lucene field configuration
+     * @see org.opencms.search.A_CmsSearchIndex#getFieldConfiguration()
      */
-    public CmsSearchFieldConfiguration getLuceneFieldConfiguration() {
+    @Override
+    public CmsLuceneSearchFieldConfiguration getFieldConfiguration() {
 
-        return (getFieldConfiguration() instanceof CmsSearchFieldConfiguration)
-        ? (CmsSearchFieldConfiguration)getFieldConfiguration()
-        : null;
+        if (super.getFieldConfiguration() instanceof CmsLuceneSearchFieldConfiguration) {
+            return (CmsLuceneSearchFieldConfiguration)super.getFieldConfiguration();
+        }
+        return null;
     }
 
     /**
@@ -655,8 +664,8 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
 
         // get the configured analyzer and apply the the field configuration analyzer wrapper
         Analyzer baseAnalyzer = OpenCms.getSearchManager().getAnalyzer(getLocale());
-        if (getFieldConfiguration() instanceof CmsSearchFieldConfiguration) {
-            setAnalyzer(getLuceneFieldConfiguration().getAnalyzer(baseAnalyzer));
+        if (getFieldConfiguration() != null) {
+            setAnalyzer(getFieldConfiguration().getAnalyzer(baseAnalyzer));
         }
         // initialize the index searcher instance
         indexSearcherOpen(getPath());
@@ -766,7 +775,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
                 // since OpenCms 8 the query can be empty in which case only filters are used for the result
                 if (params.getParsedQuery() != null) {
                     // the query was already build, re-use it 
-                    QueryParser p = new QueryParser(LUCENE_VERSION, I_CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                    QueryParser p = new QueryParser(LUCENE_VERSION, CmsSearchField.FIELD_CONTENT, getAnalyzer());
                     fieldsQuery = p.parse(params.getParsedQuery());
                 } else if (params.getFieldQueries() != null) {
                     // each field has an individual query
@@ -820,7 +829,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
                     fieldsQuery = searcher.rewrite(booleanFieldsQuery);
                 } else {
                     // if no fields are provided, just use the "content" field by default
-                    QueryParser p = new QueryParser(LUCENE_VERSION, I_CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                    QueryParser p = new QueryParser(LUCENE_VERSION, CmsSearchField.FIELD_CONTENT, getAnalyzer());
                     fieldsQuery = searcher.rewrite(p.parse(params.getQuery()));
                 }
 
@@ -838,7 +847,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
                 query = new MatchAllDocsQuery();
             } else {
                 // store the parsed query for page browsing
-                params.setParsedQuery(query.toString(I_CmsSearchField.FIELD_CONTENT));
+                params.setParsedQuery(query.toString(CmsSearchField.FIELD_CONTENT));
             }
 
             // collect the categories
@@ -960,6 +969,16 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
     }
 
     /**
+     * Sets the field configuration used for this index.<p>
+     * 
+     * @param fieldConfiguration the field configuration to set
+     */
+    public void setFieldConfiguration(CmsLuceneSearchFieldConfiguration fieldConfiguration) {
+
+        super.setFieldConfiguration(fieldConfiguration);
+    }
+
+    /**
      * Sets the number of how many hits are loaded at maximum.<p> 
      * 
      * This must be set at least to 50, or this setting is ignored.<p>
@@ -1016,7 +1035,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
                 lowerCaseCategories.add(category.toLowerCase());
             }
             filter.add(new FilterClause(
-                getMultiTermQueryFilter(I_CmsSearchField.FIELD_CATEGORY, lowerCaseCategories),
+                getMultiTermQueryFilter(CmsSearchField.FIELD_CATEGORY, lowerCaseCategories),
                 BooleanClause.Occur.MUST));
         }
 
@@ -1041,7 +1060,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
     protected BooleanFilter appendDateCreatedFilter(BooleanFilter filter, long startTime, long endTime) {
 
         // create special optimized sub-filter for the date last modified search
-        Filter dateFilter = createDateRangeFilter(I_CmsSearchField.FIELD_DATE_CREATED_LOOKUP, startTime, endTime);
+        Filter dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, startTime, endTime);
         if (dateFilter != null) {
             // extend main filter with the created date filter
             filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
@@ -1068,7 +1087,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
     protected BooleanFilter appendDateLastModifiedFilter(BooleanFilter filter, long startTime, long endTime) {
 
         // create special optimized sub-filter for the date last modified search
-        Filter dateFilter = createDateRangeFilter(I_CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, startTime, endTime);
+        Filter dateFilter = createDateRangeFilter(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, startTime, endTime);
         if (dateFilter != null) {
             // extend main filter with the created date filter
             filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
@@ -1132,7 +1151,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
         if ((resourceTypes != null) && (resourceTypes.size() > 0)) {
             // add query resource types (if required)
             filter.add(new FilterClause(
-                getMultiTermQueryFilter(I_CmsSearchField.FIELD_TYPE, resourceTypes),
+                getMultiTermQueryFilter(CmsSearchField.FIELD_TYPE, resourceTypes),
                 BooleanClause.Occur.MUST));
         }
 
@@ -1248,7 +1267,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
         if (!CmsResource.isFolder(searchRoot)) {
             searchRoot += "/";
         }
-        pathFilter.addTerm(new Term(I_CmsSearchField.FIELD_PARENT_FOLDERS, searchRoot));
+        pathFilter.addTerm(new Term(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoot));
     }
 
     /**
@@ -1464,7 +1483,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
 
         try {
             // check the creation date of the document against the given time range
-            Date dateCreated = DateTools.stringToDate(doc.getFieldable(I_CmsSearchField.FIELD_DATE_CREATED).stringValue());
+            Date dateCreated = DateTools.stringToDate(doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED).stringValue());
             if (dateCreated.getTime() < params.getMinDateCreated()) {
                 return false;
             }
@@ -1473,7 +1492,7 @@ public class CmsLuceneIndex extends A_CmsSearchIndex {
             }
 
             // check the last modification date of the document against the given time range
-            Date dateLastModified = DateTools.stringToDate(doc.getFieldable(I_CmsSearchField.FIELD_DATE_LASTMODIFIED).stringValue());
+            Date dateLastModified = DateTools.stringToDate(doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED).stringValue());
             if (dateLastModified.getTime() < params.getMinDateLastModified()) {
                 return false;
             }

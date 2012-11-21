@@ -32,7 +32,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 
 /**
- * Contains the search parameters for a call to <code>{@link org.opencms.search.CmsLuceneIndex#search(org.opencms.file.CmsObject, CmsSearchParameters)}</code>.<p>
+ * Contains the search parameters for a call to <code>{@link org.opencms.search.CmsSearchIndex#search(org.opencms.file.CmsObject, CmsSearchParameters)}</code>.<p>
  * 
  * Primary purpose is translation of search arguments to response parameters and from request parameters as 
  * well as support for creation of restrictions of several search query parameter sets. <p>
@@ -205,13 +205,13 @@ public class CmsSearchParameters {
 
     /** Sort result documents by date of creation, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField(
-        I_CmsSearchField.FIELD_DATE_CREATED,
+        CmsSearchField.FIELD_DATE_CREATED,
         SortField.STRING,
         true));
 
     /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField(
-        I_CmsSearchField.FIELD_DATE_LASTMODIFIED,
+        CmsSearchField.FIELD_DATE_LASTMODIFIED,
         SortField.STRING,
         true));
 
@@ -227,7 +227,7 @@ public class CmsSearchParameters {
 
     /** Sort result documents by title, then score. */
     public static final Sort SORT_TITLE = new Sort(new SortField[] {
-        new SortField(I_CmsSearchField.FIELD_TITLE, SortField.STRING),
+        new SortField(CmsSearchField.FIELD_TITLE, SortField.STRING),
         SortField.FIELD_SCORE});
 
     /** The log object for this class. */
@@ -255,7 +255,7 @@ public class CmsSearchParameters {
     private List<String> m_fields;
 
     /** The index to search. */
-    private CmsLuceneIndex m_index;
+    private CmsSearchIndex m_index;
 
     /** Indicates if the query part should be ignored so that only filters are used for searching. */
     private boolean m_isIgnoreQuery;
@@ -349,8 +349,8 @@ public class CmsSearchParameters {
         m_query = (query == null) ? "" : query;
         if (fields == null) {
             fields = new ArrayList<String>(2);
-            fields.add(CmsLuceneIndex.DOC_META_FIELDS[0]);
-            fields.add(CmsLuceneIndex.DOC_META_FIELDS[1]);
+            fields.add(CmsSearchIndex.DOC_META_FIELDS[0]);
+            fields.add(CmsSearchIndex.DOC_META_FIELDS[1]);
         }
         m_fields = fields;
         if (roots == null) {
@@ -600,11 +600,11 @@ public class CmsSearchParameters {
 
     /**
      * Returns the search index to search in or null if not set before 
-     * (<code>{@link #setSearchIndex(CmsLuceneIndex)}</code>). <p>
+     * (<code>{@link #setSearchIndex(CmsSearchIndex)}</code>). <p>
      * 
-     * @return the search index to search in or null if not set before (<code>{@link #setSearchIndex(CmsLuceneIndex)}</code>)
+     * @return the search index to search in or null if not set before (<code>{@link #setSearchIndex(CmsSearchIndex)}</code>)
      */
-    public CmsLuceneIndex getSearchIndex() {
+    public CmsSearchIndex getSearchIndex() {
 
         return m_index;
     }
@@ -889,10 +889,10 @@ public class CmsSearchParameters {
      */
     public void setIndex(String indexName) {
 
-        CmsLuceneIndex index;
+        CmsSearchIndex index;
         if (CmsStringUtil.isNotEmpty(indexName)) {
             try {
-                index = (CmsLuceneIndex)OpenCms.getSearchManager().getIndex(indexName);
+                index = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(indexName);
                 if (index == null) {
                     throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
                 }
@@ -1044,7 +1044,7 @@ public class CmsSearchParameters {
      * 
      * @throws CmsIllegalArgumentException if null is given as argument 
      */
-    public void setSearchIndex(CmsLuceneIndex index) throws CmsIllegalArgumentException {
+    public void setSearchIndex(CmsSearchIndex index) throws CmsIllegalArgumentException {
 
         if (index == null) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INDEX_NULL_0));

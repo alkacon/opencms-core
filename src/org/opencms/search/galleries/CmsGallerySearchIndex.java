@@ -40,15 +40,15 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsLuceneDocument;
-import org.opencms.search.CmsLuceneIndex;
 import org.opencms.search.CmsSearchException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.Messages;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -75,7 +75,7 @@ import org.apache.lucene.search.TopDocs;
  * 
  * @since 8.0.0 
  */
-public class CmsGallerySearchIndex extends CmsLuceneIndex {
+public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /** The system folder. */
     public static final String FOLDER_SYSTEM = "/system/";
@@ -319,7 +319,7 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
                 fields = getLocaleExtendedFields(params.getFields(), locale);
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.                
                 for (String field : fields) {
-                    QueryParser p = new QueryParser(CmsLuceneIndex.LUCENE_VERSION, field, getAnalyzer());
+                    QueryParser p = new QueryParser(CmsSearchIndex.LUCENE_VERSION, field, getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getSearchWords()), BooleanClause.Occur.SHOULD);
                 }
                 fieldsQuery = searcher.rewrite(booleanFieldsQuery);
@@ -449,7 +449,7 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
 
         if (!ignoreSearchExclude) {
             filter.add(new FilterClause(getMultiTermQueryFilter(
-                I_CmsSearchField.FIELD_SEARCH_EXCLUDE,
+                CmsSearchField.FIELD_SEARCH_EXCLUDE,
                 EXCLUDE_PROPERTY_VALUES), BooleanClause.Occur.MUST_NOT));
         }
         return filter;
@@ -473,7 +473,7 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
         if (locale != null) {
             // add query categories (if required)
             filter.add(new FilterClause(
-                getTermQueryFilter(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locale),
+                getTermQueryFilter(CmsSearchField.FIELD_RESOURCE_LOCALES, locale),
                 BooleanClause.Occur.MUST));
         }
 
@@ -549,10 +549,10 @@ public class CmsGallerySearchIndex extends CmsLuceneIndex {
         for (String fieldName : fields) {
             result.add(fieldName);
             if (locale != null) {
-                result.add(A_CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale));
+                result.add(CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale));
             } else {
                 for (Locale l : OpenCms.getLocaleManager().getAvailableLocales()) {
-                    result.add(A_CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, l));
+                    result.add(CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, l));
                 }
             }
         }

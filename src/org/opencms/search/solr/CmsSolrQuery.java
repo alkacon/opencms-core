@@ -35,7 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -73,47 +73,47 @@ public class CmsSolrQuery extends SolrQuery {
     public static final Integer DEFAULT_ROWS = new Integer(10);
 
     /** A constant to add the score field to the result documents. */
-    public static final String MINIMUM_FIELDS = I_CmsSearchField.FIELD_PATH
+    public static final String MINIMUM_FIELDS = CmsSearchField.FIELD_PATH
         + ","
-        + I_CmsSearchField.FIELD_TYPE
+        + CmsSearchField.FIELD_TYPE
         + ","
-        + I_CmsSearchField.FIELD_ID;
+        + CmsSearchField.FIELD_ID;
 
     /** A constant to add the score field to the result documents. */
-    public static final String STRUCTURE_FIELDS = I_CmsSearchField.FIELD_PATH
+    public static final String STRUCTURE_FIELDS = CmsSearchField.FIELD_PATH
         + ","
-        + I_CmsSearchField.FIELD_TYPE
+        + CmsSearchField.FIELD_TYPE
         + ","
-        + I_CmsSearchField.FIELD_ID
+        + CmsSearchField.FIELD_ID
         + ","
-        + I_CmsSearchField.FIELD_CATEGORY
+        + CmsSearchField.FIELD_CATEGORY
         + ","
-        + I_CmsSearchField.FIELD_DATE_CONTENT
+        + CmsSearchField.FIELD_DATE_CONTENT
         + ","
-        + I_CmsSearchField.FIELD_DATE_CREATED
+        + CmsSearchField.FIELD_DATE_CREATED
         + ","
-        + I_CmsSearchField.FIELD_DATE_EXPIRED
+        + CmsSearchField.FIELD_DATE_EXPIRED
         + ","
-        + I_CmsSearchField.FIELD_DATE_LASTMODIFIED
+        + CmsSearchField.FIELD_DATE_LASTMODIFIED
         + ","
-        + I_CmsSearchField.FIELD_DATE_RELEASED
+        + CmsSearchField.FIELD_DATE_RELEASED
         + ","
-        + I_CmsSearchField.FIELD_SUFFIX
+        + CmsSearchField.FIELD_SUFFIX
         + ","
-        + I_CmsSearchField.FIELD_DEPENDENCY_TYPE
+        + CmsSearchField.FIELD_DEPENDENCY_TYPE
         + ","
-        + I_CmsSearchField.FIELD_DESCRIPTION
+        + CmsSearchField.FIELD_DESCRIPTION
         + ","
         + CmsPropertyDefinition.PROPERTY_TITLE
-        + I_CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+        + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
         + ","
-        + I_CmsSearchField.FIELD_RESOURCE_LOCALES
+        + CmsSearchField.FIELD_RESOURCE_LOCALES
         + ","
-        + I_CmsSearchField.FIELD_CONTENT_LOCALES
+        + CmsSearchField.FIELD_CONTENT_LOCALES
         + ","
-        + I_CmsSearchField.FIELD_SCORE
+        + CmsSearchField.FIELD_SCORE
         + ","
-        + I_CmsSearchField.FIELD_PARENT_FOLDERS;
+        + CmsSearchField.FIELD_PARENT_FOLDERS;
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2387357736597627703L;
@@ -173,8 +173,8 @@ public class CmsSolrQuery extends SolrQuery {
         int count = 0;
         if (fqs != null) {
             for (String fq : fqs) {
-                if (fq.startsWith(I_CmsSearchField.FIELD_TYPE + ":")) {
-                    String val = fq.substring((I_CmsSearchField.FIELD_TYPE + ":").length());
+                if (fq.startsWith(CmsSearchField.FIELD_TYPE + ":")) {
+                    String val = fq.substring((CmsSearchField.FIELD_TYPE + ":").length());
                     if (OpenCms.getResourceManager().hasResourceType(val)) {
                         count++;
                         ret = val;
@@ -227,7 +227,7 @@ public class CmsSolrQuery extends SolrQuery {
     public void setCategories(List<String> categories) {
 
         if ((categories != null) && !categories.isEmpty()) {
-            addFilterQuery(I_CmsSearchField.FIELD_CATEGORY + "_exact", true, categories);
+            addFilterQuery(CmsSearchField.FIELD_CATEGORY + "_exact", true, categories);
         }
     }
 
@@ -248,7 +248,7 @@ public class CmsSolrQuery extends SolrQuery {
      * 
      * The parameter Map uses as:<p>
      * <ul>
-     * <li><code>keys: </code>Solr field name {@link org.opencms.search.fields.I_CmsSearchField} and
+     * <li><code>keys: </code>Solr field name {@link org.opencms.search.fields.CmsSearchField} and
      * <li><code>values: </code> pairs with min date as first and max date as second {@link org.opencms.util.CmsPair}
      * </ul>
      * Alternatively you can use Solr standard query syntax like:<p>
@@ -299,10 +299,10 @@ public class CmsSolrQuery extends SolrQuery {
 
         m_textSearchFields = new ArrayList<String>();
         if ((locales == null) || locales.isEmpty()) {
-            m_textSearchFields.add(I_CmsSearchField.FIELD_TEXT);
+            m_textSearchFields.add(CmsSearchField.FIELD_TEXT);
             if (getFilterQueries() != null) {
                 for (String fq : getFilterQueries()) {
-                    if (fq.startsWith(I_CmsSearchField.FIELD_CONTENT_LOCALES + ":")) {
+                    if (fq.startsWith(CmsSearchField.FIELD_CONTENT_LOCALES + ":")) {
                         removeFilterQuery(fq);
                     }
                 }
@@ -313,7 +313,7 @@ public class CmsSolrQuery extends SolrQuery {
                 localeStrings.add(locale.toString());
                 m_textSearchFields.add("text_" + locale);
             }
-            addFilterQuery(I_CmsSearchField.FIELD_CONTENT_LOCALES, false, localeStrings);
+            addFilterQuery(CmsSearchField.FIELD_CONTENT_LOCALES, false, localeStrings);
         }
     }
 
@@ -335,7 +335,7 @@ public class CmsSolrQuery extends SolrQuery {
     public void setResourceTypes(List<String> resourceTypes) {
 
         if ((resourceTypes != null) && !resourceTypes.isEmpty()) {
-            addFilterQuery(I_CmsSearchField.FIELD_TYPE, false, resourceTypes);
+            addFilterQuery(CmsSearchField.FIELD_TYPE, false, resourceTypes);
         }
     }
 
@@ -357,7 +357,7 @@ public class CmsSolrQuery extends SolrQuery {
     public void setSearchRoots(List<String> searchRoots) {
 
         if ((searchRoots != null) && !searchRoots.isEmpty()) {
-            addFilterQuery(I_CmsSearchField.FIELD_PARENT_FOLDERS, false, searchRoots);
+            addFilterQuery(CmsSearchField.FIELD_PARENT_FOLDERS, false, searchRoots);
         }
     }
 
@@ -477,7 +477,7 @@ public class CmsSolrQuery extends SolrQuery {
     private String createTextQuery(String text) {
 
         if (m_textSearchFields.isEmpty()) {
-            m_textSearchFields.add(I_CmsSearchField.FIELD_TEXT);
+            m_textSearchFields.add(CmsSearchField.FIELD_TEXT);
         }
         String q = "{!q.op=OR qf=";
         boolean first = true;

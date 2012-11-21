@@ -36,8 +36,8 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.A_CmsSearchFieldConfiguration;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -181,7 +181,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         m_excerpt = excerpt;
 
         m_path = null;
-        Fieldable f = doc.getFieldable(I_CmsSearchField.FIELD_PATH);
+        Fieldable f = doc.getFieldable(CmsSearchField.FIELD_PATH);
         if (f != null) {
             m_path = f.stringValue();
         }
@@ -192,13 +192,13 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_title = null;
-        f = doc.getFieldable(I_CmsSearchField.FIELD_TITLE);
+        f = doc.getFieldable(CmsSearchField.FIELD_TITLE);
         if (f != null) {
             m_title = f.stringValue();
         }
         if (m_title == null) {
-            f = doc.getFieldable(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                I_CmsSearchField.FIELD_TITLE,
+            f = doc.getFieldable(CmsSearchFieldConfiguration.getLocaleExtendedName(
+                CmsSearchField.FIELD_TITLE,
                 locale));
             if (f != null) {
                 m_title = f.stringValue();
@@ -206,13 +206,13 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_description = null;
-        f = doc.getFieldable(I_CmsSearchField.FIELD_DESCRIPTION);
+        f = doc.getFieldable(CmsSearchField.FIELD_DESCRIPTION);
         if (f != null) {
             m_description = f.stringValue();
         }
         if (m_description == null) {
-            f = doc.getFieldable(A_CmsSearchFieldConfiguration.getLocaleExtendedName(
-                I_CmsSearchField.FIELD_DESCRIPTION,
+            f = doc.getFieldable(CmsSearchFieldConfiguration.getLocaleExtendedName(
+                CmsSearchField.FIELD_DESCRIPTION,
                 locale));
             if (f != null) {
                 m_description = f.stringValue();
@@ -220,13 +220,13 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_resourceType = null;
-        f = doc.getFieldable(I_CmsSearchField.FIELD_TYPE);
+        f = doc.getFieldable(CmsSearchField.FIELD_TYPE);
         if (f != null) {
             m_resourceType = f.stringValue();
         }
 
         m_dateCreated = null;
-        f = doc.getFieldable(I_CmsSearchField.FIELD_DATE_CREATED);
+        f = doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED);
         if (f != null) {
             try {
                 m_dateCreated = DateTools.stringToDate(f.stringValue());
@@ -236,7 +236,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_dateLastModified = null;
-        f = doc.getFieldable(I_CmsSearchField.FIELD_DATE_LASTMODIFIED);
+        f = doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED);
         if (f != null) {
             try {
                 m_dateLastModified = DateTools.stringToDate(f.stringValue());
@@ -317,7 +317,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         m_locales = null;
-        f = doc.getFieldable(I_CmsSearchField.FIELD_RESOURCE_LOCALES);
+        f = doc.getFieldable(CmsSearchField.FIELD_RESOURCE_LOCALES);
         if (f != null) {
             String locales = f.stringValue();
             m_locales = CmsStringUtil.splitAsList(locales, ' ');

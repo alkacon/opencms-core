@@ -27,7 +27,7 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -57,7 +57,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     private Map<String, String> m_contentItems;
 
     /** The list of mapping fields. */
-    private Set<I_CmsSearchField> m_mappingFields;
+    private Set<CmsSearchField> m_mappingFields;
 
     /** The serialized version of this object. */
     private byte[] m_serializedVersion;
@@ -81,7 +81,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      */
     public CmsExtractionResult(String content, Map<String, String> contentItems) {
 
-        m_mappingFields = new HashSet<I_CmsSearchField>();
+        m_mappingFields = new HashSet<CmsSearchField>();
         if (contentItems != null) {
             m_contentItems = contentItems;
         } else {
@@ -99,14 +99,14 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      * @param contentItems the individual extracted content items
      * @param mappingFields the mapping fields
      */
-    public CmsExtractionResult(String content, Map<String, String> contentItems, Set<I_CmsSearchField> mappingFields) {
+    public CmsExtractionResult(String content, Map<String, String> contentItems, Set<CmsSearchField> mappingFields) {
 
         this(content, contentItems);
 
         if (mappingFields != null) {
             m_mappingFields = mappingFields;
         } else {
-            m_mappingFields = new HashSet<I_CmsSearchField>();
+            m_mappingFields = new HashSet<CmsSearchField>();
         }
     }
 
@@ -180,7 +180,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     /**
      * @see org.opencms.search.extractors.I_CmsExtractionResult#getMappingFields()
      */
-    public Set<I_CmsSearchField> getMappingFields() {
+    public Set<CmsSearchField> getMappingFields() {
 
         return m_mappingFields;
     }
@@ -198,9 +198,9 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     }
 
     /**
-     * @see org.opencms.search.extractors.I_CmsExtractionResult#addMappingField(org.opencms.search.fields.I_CmsSearchField)
+     * @see org.opencms.search.extractors.I_CmsExtractionResult#addMappingField(org.opencms.search.fields.CmsSearchField)
      */
-    public void addMappingField(I_CmsSearchField field) {
+    public void addMappingField(CmsSearchField field) {
 
         m_mappingFields.add(field);
 

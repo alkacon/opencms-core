@@ -132,15 +132,19 @@ public class CmsIndexingThread extends Thread {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
                     I_CmsReport.FORMAT_ERROR);
-                m_report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    exc.toString()), I_CmsReport.FORMAT_ERROR);
+                m_report.println(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        exc.toString()),
+                    I_CmsReport.FORMAT_ERROR);
             }
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                    m_res.getRootPath(),
-                    m_index.getName()), exc);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                        m_res.getRootPath(),
+                        m_index.getName()),
+                    exc);
             }
             // set flag to avoid logging in finally block
             docOk = true;
@@ -148,12 +152,15 @@ public class CmsIndexingThread extends Thread {
             if (!docOk) {
                 // apparently there was a Throwable that causes an issue
                 if (m_report != null) {
-                    m_report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_ERROR);
-                    m_report.println(Messages.get().container(
-                        Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                        m_res.getRootPath(),
-                        m_index.getName()), I_CmsReport.FORMAT_ERROR);
+                    m_report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                        I_CmsReport.FORMAT_ERROR);
+                    m_report.println(
+                        Messages.get().container(
+                            Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                            m_res.getRootPath(),
+                            m_index.getName()),
+                        I_CmsReport.FORMAT_ERROR);
                 }
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
@@ -188,9 +195,11 @@ public class CmsIndexingThread extends Thread {
         I_CmsSearchDocument result = null;
 
         if (report != null) {
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_1,
-                String.valueOf(count)), I_CmsReport.FORMAT_NOTE);
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_1,
+                    String.valueOf(count)),
+                I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,

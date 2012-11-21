@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
-import org.opencms.search.fields.I_CmsSearchField;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -105,7 +105,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
         if ((categories != null) && (categories.size() > 0)) {
             for (CmsCategory category : categories) {
-                m_doc.addField(I_CmsSearchField.FIELD_CATEGORY, category.getPath());
+                m_doc.addField(CmsSearchField.FIELD_CATEGORY, category.getPath());
             }
         }
     }
@@ -115,7 +115,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void addContentField(byte[] data) {
 
-        m_doc.setField(I_CmsSearchField.FIELD_CONTENT_BLOB, ByteBuffer.wrap(data));
+        m_doc.setField(CmsSearchField.FIELD_CONTENT_BLOB, ByteBuffer.wrap(data));
     }
 
     /**
@@ -125,7 +125,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
         if ((locales != null) && !locales.isEmpty()) {
             for (Locale locale : locales) {
-                m_doc.addField(I_CmsSearchField.FIELD_CONTENT_LOCALES, locale.toString());
+                m_doc.addField(CmsSearchField.FIELD_CONTENT_LOCALES, locale.toString());
             }
         }
     }
@@ -138,7 +138,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         String dateValue = DateField.formatExternal(new Date(time));
         m_doc.addField(name, dateValue);
         if (analyzed) {
-            m_doc.addField(name + I_CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX, dateValue);
+            m_doc.addField(name + CmsSearchField.FIELD_DATE_LOOKUP_SUFFIX, dateValue);
         }
     }
 
@@ -151,20 +151,20 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     public void addDocumentDependency(CmsObject cms, CmsDocumentDependency resDeps) {
 
         if (resDeps != null) {
-            m_doc.addField(I_CmsSearchField.FIELD_DEPENDENCY_TYPE, resDeps.getType());
+            m_doc.addField(CmsSearchField.FIELD_DEPENDENCY_TYPE, resDeps.getType());
             if ((resDeps.getMainDocument() != null) && (resDeps.getType() != null)) {
                 m_doc.addField(
-                    I_CmsSearchField.FIELD_PREFIX_DEPENDENCY + resDeps.getType().toString(),
+                    CmsSearchField.FIELD_PREFIX_DEPENDENCY + resDeps.getType().toString(),
                     resDeps.getMainDocument().toDependencyString(cms));
             }
             for (CmsDocumentDependency dep : resDeps.getVariants()) {
                 m_doc.addField(
-                    I_CmsSearchField.FIELD_PREFIX_DEPENDENCY + dep.getType().toString(),
+                    CmsSearchField.FIELD_PREFIX_DEPENDENCY + dep.getType().toString(),
                     dep.toDependencyString(cms));
             }
             for (CmsDocumentDependency dep : resDeps.getAttachments()) {
                 m_doc.addField(
-                    I_CmsSearchField.FIELD_PREFIX_DEPENDENCY + dep.getType().toString(),
+                    CmsSearchField.FIELD_PREFIX_DEPENDENCY + dep.getType().toString(),
                     dep.toDependencyString(cms));
             }
         }
@@ -194,7 +194,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
         for (int i = 0; i < folderName.length(); i++) {
             char c = folderName.charAt(i);
             if (c == '/') {
-                m_doc.addField(I_CmsSearchField.FIELD_PARENT_FOLDERS, folderName.substring(0, i + 1));
+                m_doc.addField(CmsSearchField.FIELD_PARENT_FOLDERS, folderName.substring(0, i + 1));
             }
         }
     }
@@ -206,7 +206,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
         if ((locales != null) && !locales.isEmpty()) {
             for (Locale locale : locales) {
-                m_doc.addField(I_CmsSearchField.FIELD_RESOURCE_LOCALES, locale.toString());
+                m_doc.addField(CmsSearchField.FIELD_RESOURCE_LOCALES, locale.toString());
             }
         }
     }
@@ -216,13 +216,13 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void addRootPathField(String rootPath) {
 
-        m_doc.addField(I_CmsSearchField.FIELD_PATH, rootPath);
+        m_doc.addField(CmsSearchField.FIELD_PATH, rootPath);
     }
 
     /**
-     * @see org.opencms.search.I_CmsSearchDocument#addSearchField(org.opencms.search.fields.I_CmsSearchField, java.lang.String)
+     * @see org.opencms.search.I_CmsSearchDocument#addSearchField(org.opencms.search.fields.CmsSearchField, java.lang.String)
      */
-    public void addSearchField(I_CmsSearchField sfield, String value) {
+    public void addSearchField(CmsSearchField sfield, String value) {
 
         CmsSolrField field = (CmsSolrField)sfield;
         List<String> fieldsToAdd = new ArrayList<String>(Collections.singletonList(field.getName()));
@@ -272,7 +272,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void addSuffixField(String suffix) {
 
-        m_doc.addField(I_CmsSearchField.FIELD_SUFFIX, suffix);
+        m_doc.addField(CmsSearchField.FIELD_SUFFIX, suffix);
     }
 
     /**
@@ -280,7 +280,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void addTypeField(String type) {
 
-        m_doc.addField(I_CmsSearchField.FIELD_TYPE, type);
+        m_doc.addField(CmsSearchField.FIELD_TYPE, type);
     }
 
     /**
@@ -288,7 +288,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public byte[] getContentBlob() {
 
-        Object o = m_doc.getFieldValue(I_CmsSearchField.FIELD_CONTENT_BLOB);
+        Object o = m_doc.getFieldValue(CmsSearchField.FIELD_CONTENT_BLOB);
         if (o != null) {
             if (o instanceof byte[]) {
                 return (byte[])o;
@@ -374,7 +374,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public String getPath() {
 
-        return getFieldValueAsString(I_CmsSearchField.FIELD_PATH);
+        return getFieldValueAsString(CmsSearchField.FIELD_PATH);
     }
 
     /**
@@ -382,7 +382,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public float getScore() {
 
-        Float score = (Float)getSolrDocument().getFirstValue(I_CmsSearchField.FIELD_SCORE);
+        Float score = (Float)getSolrDocument().getFirstValue(CmsSearchField.FIELD_SCORE);
         if (score != null) {
             m_score = score.floatValue();
             return m_score;
@@ -405,7 +405,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public String getType() {
 
-        return getFieldValueAsString(I_CmsSearchField.FIELD_TYPE);
+        return getFieldValueAsString(CmsSearchField.FIELD_TYPE);
     }
 
     /**
@@ -423,7 +423,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
      */
     public void setId(CmsUUID structureId) {
 
-        m_doc.addField(I_CmsSearchField.FIELD_ID, structureId);
+        m_doc.addField(CmsSearchField.FIELD_ID, structureId);
 
     }
 
@@ -441,6 +441,6 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     @Override
     public String toString() {
 
-        return getFieldValueAsString(I_CmsSearchField.FIELD_PATH);
+        return getFieldValueAsString(CmsSearchField.FIELD_PATH);
     }
 }
