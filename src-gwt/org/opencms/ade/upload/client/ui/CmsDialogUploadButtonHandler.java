@@ -54,14 +54,17 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     /** The handler registration for the close handler of the dialog. */
     private HandlerRegistration m_closeHandlerRegistration;
 
+    /** Factory for creating upload contexts. */
+    private Supplier<I_CmsUploadContext> m_contextFactory;
+
+    /** True if the the target folder should be treated as a root path. */
+    private boolean m_isTargetRootPath;
+
     /** The target folder for the upload dialog. */
     private String m_targetFolder;
 
     /** The upload dialog instance. */
     private A_CmsUploadDialog m_uploadDialog;
-
-    /** Factory for creating upload contexts. */
-    private Supplier<I_CmsUploadContext> m_contextFactory;
 
     /**
      * Creates a new upload button handler.<p>
@@ -130,6 +133,16 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     }
 
     /**
+     * Chooses whether the target folder should be interpreted as a root path.<p>
+     * 
+     * @param isTargetRootPath true if the target folder should be treated as a root path 
+     */
+    public void setIsTargetRootPath(boolean isTargetRootPath) {
+
+        m_isTargetRootPath = isTargetRootPath;
+    }
+
+    /**
      * Sets the upload target folder.<p>
      * 
      * @param targetFolder the upload target folder 
@@ -165,6 +178,7 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
             if ((m_targetFolder != null)) {
                 m_uploadDialog.setTargetFolder(m_targetFolder);
             }
+            m_uploadDialog.setIsTargetRootPath(m_isTargetRootPath);
         }
     }
 }

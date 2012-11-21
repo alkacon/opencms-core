@@ -487,6 +487,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
         uploader.uploadFiles(
             CmsCoreProvider.get().link(I_CmsUploadConstants.UPLOAD_ACTION_JSP_URI),
             CmsResource.getFolderPath(m_replaceInfo.getSitepath()),
+            false,
             Collections.singletonList(info),
             Collections.<String> emptyList(),
             this);

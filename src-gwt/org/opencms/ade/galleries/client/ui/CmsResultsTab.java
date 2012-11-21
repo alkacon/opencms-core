@@ -700,7 +700,7 @@ public class CmsResultsTab extends A_CmsListTab {
             targets.addAll(searchObj.getFolders());
         }
         if (m_uploadButton == null) {
-            m_uploadButton = createUploadButtonForTarget("");
+            m_uploadButton = createUploadButtonForTarget("", false);
             m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().resultTabUpload());
             m_tab.insert(m_uploadButton, 0);
         }

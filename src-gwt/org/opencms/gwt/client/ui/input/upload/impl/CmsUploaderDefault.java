@@ -84,16 +84,17 @@ public class CmsUploaderDefault implements I_CmsUploader {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploader#uploadFiles(java.lang.String, java.lang.String, java.util.List, java.util.List, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploader#uploadFiles(java.lang.String, java.lang.String, boolean, java.util.List, java.util.List, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
      */
     public void uploadFiles(
         String uploadUri,
         String targetFolder,
+        boolean isRootPath,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip,
         I_CmsUploadDialog dialog) {
 
-        FormPanel form = createForm(uploadUri, targetFolder, filesToUpload, filesToUnzip);
+        FormPanel form = createForm(uploadUri, targetFolder, isRootPath, filesToUpload, filesToUnzip);
         form.addSubmitCompleteHandler(new CmsUploadHandler(dialog, form));
         form.getElement().getStyle().setDisplay(Display.NONE);
         RootPanel.get().add(form);
@@ -120,6 +121,7 @@ public class CmsUploaderDefault implements I_CmsUploader {
      * 
      * @param uploadUri the upload URI
      * @param targetFolder the target folder
+     * @param isRootPath if the target folder is given as a root path 
      * @param filesToUpload the files to upload
      * @param filesToUnzip the files to unzip
      * @return the created form panel
@@ -127,6 +129,7 @@ public class CmsUploaderDefault implements I_CmsUploader {
     private FormPanel createForm(
         String uploadUri,
         String targetFolder,
+        boolean isRootPath,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip) {
 
@@ -152,6 +155,7 @@ public class CmsUploaderDefault implements I_CmsUploader {
             addHiddenField(inputFieldsPanel, I_CmsUploadConstants.UPLOAD_UNZIP_FILES_FIELD_NAME, URL.encode(filename));
         }
         addHiddenField(inputFieldsPanel, I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME, targetFolder);
+        addHiddenField(inputFieldsPanel, I_CmsUploadConstants.UPLOAD_IS_ROOT_PATH_FIELD_NAME, "" + isRootPath);
         form.setWidget(inputFieldsPanel);
         return form;
     }

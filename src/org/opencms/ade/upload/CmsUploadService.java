@@ -27,6 +27,7 @@
 
 package org.opencms.ade.upload;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
@@ -111,7 +112,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
                 try {
                     Streams.checkFileName(fileName);
                     String newResName = CmsUploadBean.getNewResourceName(getCmsObject(), fileName, targetFolder);
-                    if (getCmsObject().existsResource(newResName, CmsResourceFilter.ALL)) {
+                    if (existsResource(newResName)) {
                         existingResourceNames.add(fileName);
                     }
                 } catch (InvalidFileNameException e) {
@@ -149,5 +150,30 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
         long uploadFileSizeLimit = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject());
         CmsUploadData data = new CmsUploadData(uploadFileSizeLimit);
         return data;
+    }
+
+    /**
+     * Checks if a resource already exists for the given path.<p>
+     * 
+     * @param path the path
+     *  
+     * @return true if a resource already exists 
+     */
+    private boolean existsResource(String path) {
+
+        CmsObject cms = getCmsObject();
+        if (cms.existsResource(path, CmsResourceFilter.ALL)) {
+            return true;
+        }
+        String origSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot("");
+            if (cms.existsResource(path, CmsResourceFilter.ALL)) {
+                return true;
+            }
+        } finally {
+            cms.getRequestContext().setSiteRoot(origSiteRoot);
+        }
+        return false;
     }
 }

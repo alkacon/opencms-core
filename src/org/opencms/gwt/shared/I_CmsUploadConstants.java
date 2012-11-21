@@ -75,6 +75,9 @@ public interface I_CmsUploadConstants extends IsSerializable {
     /** The encoded file name field name suffix. */
     String UPLOAD_FILENAME_ENCODED_SUFFIX = "_filename_encoded";
 
+    /** Name of the form field which stores whether the target folder is given as a root path. */
+    String UPLOAD_IS_ROOT_PATH_FIELD_NAME = "isRootPath";
+
     /** Upload JSP URI. */
     String UPLOAD_JSP_URI = "/system/modules/org.opencms.ade.upload/upload.jsp";
 

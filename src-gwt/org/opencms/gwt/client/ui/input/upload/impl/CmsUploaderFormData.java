@@ -43,11 +43,12 @@ import com.google.gwt.core.client.JsArray;
 public class CmsUploaderFormData implements I_CmsUploader {
 
     /**
-     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploader#uploadFiles(java.lang.String, java.lang.String, java.util.List, java.util.List, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploader#uploadFiles(java.lang.String, java.lang.String, boolean, java.util.List, java.util.List, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
      */
     public void uploadFiles(
         String uploadUri,
         String targetFolder,
+        boolean isRootPath,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip,
         I_CmsUploadDialog dialog) {
@@ -62,7 +63,7 @@ public class CmsUploaderFormData implements I_CmsUploader {
         for (String filename : filesToUnzip) {
             CmsClientStringUtil.pushArray(filesToUnzipArray, filename);
         }
-        upload(uploadUri, targetFolder, filesToUploadArray, filesToUnzipArray, dialog);
+        upload(uploadUri, targetFolder, isRootPath, filesToUploadArray, filesToUnzipArray, dialog);
     }
 
     /**
@@ -70,6 +71,7 @@ public class CmsUploaderFormData implements I_CmsUploader {
      * 
      * @param uploadUri the URI of the JSP that performs the upload
      * @param targetFolder the target folder to upload
+     * @param isRootPath true if the target folder is given as a root path 
      * @param filesToUpload the files to upload
      * @param filesToUnzip the file names to unzip
      * @param dialog this dialog
@@ -77,49 +79,54 @@ public class CmsUploaderFormData implements I_CmsUploader {
     protected native void upload(
         String uploadUri,
         String targetFolder,
+        boolean isRootPath,
         JsArray<CmsFileInfo> filesToUpload,
         JavaScriptObject filesToUnzip,
         I_CmsUploadDialog dialog) /*-{
 
-        var data = new FormData();
+      var data = new FormData();
 
-        for (i = 0; i < filesToUpload.length; i++) {
-            var file = filesToUpload[i];
-            var fieldName = "file_" + i;
-            data.append(fieldName, file);
-            // get the current file name/override-name
-            var fileName = file.overrideFileName ? file.overrideFileName
-                    : file.name ? file.name : file.fileName;
-            data
-                    .append(
-                            fieldName
-                                    + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
-                            encodeURI(fileName));
-        }
-        data
-                .append(
-                        @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
-                        targetFolder);
+      for (i = 0; i < filesToUpload.length; i++) {
+         var file = filesToUpload[i];
+         var fieldName = "file_" + i;
+         data.append(fieldName, file);
+         // get the current file name/override-name
+         var fileName = file.overrideFileName ? file.overrideFileName
+               : file.name ? file.name : file.fileName;
+         data
+               .append(
+                     fieldName
+                           + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
+                     encodeURI(fileName));
+      }
+      data
+            .append(
+                  @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
+                  targetFolder);
+      data
+            .append(
+                  @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_IS_ROOT_PATH_FIELD_NAME,
+                  "" + isRootPath);
 
-        for ( var i = 0; i < filesToUnzip.length; ++i) {
-            data
-                    .append(
-                            @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
-                            encodeURI(filesToUnzip[i]));
-        }
+      for ( var i = 0; i < filesToUnzip.length; ++i) {
+         data
+               .append(
+                     @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_UNZIP_FILES_FIELD_NAME,
+                     encodeURI(filesToUnzip[i]));
+      }
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", uploadUri, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    dialog.@org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog::parseResponse(Ljava/lang/String;)(xhr.responseText);
-                } else {
-                    dialog.@org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
-                }
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", uploadUri, true);
+      xhr.onreadystatechange = function() {
+         if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+               dialog.@org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog::parseResponse(Ljava/lang/String;)(xhr.responseText);
+            } else {
+               dialog.@org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog::showErrorReport(Ljava/lang/String;Ljava/lang/String;)(xhr.statusText, null);
             }
-        }
-        xhr.send(data);
+         }
+      }
+      xhr.send(data);
 
     }-*/;
 }

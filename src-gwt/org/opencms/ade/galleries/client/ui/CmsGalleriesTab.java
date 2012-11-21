@@ -247,6 +247,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /** An iterator which produces new list items which should be added to the tab.<p> */
     protected Iterator<CmsTreeItem> m_itemIterator;
+
     /** List of selected galleries. */
     protected List<String> m_selectedGalleries;
 
@@ -445,7 +446,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
             checkBox.setChecked(true);
         }
         if (galleryInfo.isEditable()) {
-            listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath()));
+            listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
         }
         listItemWidget.addButton(createSelectButton(selectionHandler));
         CmsTreeItem treeItem = new CmsTreeItem(forTree, checkBox, listItemWidget);

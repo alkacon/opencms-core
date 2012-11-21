@@ -221,7 +221,7 @@ public class CmsVfsTab extends A_CmsListTab {
             true), name, vfsEntry.getDisplayName());
         dataValue.setUnselectable();
         if (vfsEntry.isEditable()) {
-            dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath()));
+            dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath(), true));
         }
         CmsLazyTreeItem result;
         SelectionHandler selectionHandler;

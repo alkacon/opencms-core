@@ -930,6 +930,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public void saveProperties(CmsPropertyChangeSet changes) throws CmsRpcException {
 
         try {
+            getCmsObject().getRequestContext().setSiteRoot("");
             internalSaveProperties(changes);
         } catch (Throwable t) {
             error(t);

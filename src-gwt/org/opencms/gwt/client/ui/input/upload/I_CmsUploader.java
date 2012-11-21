@@ -39,6 +39,7 @@ public interface I_CmsUploader {
      * 
      * @param uploadUri the upload URI
      * @param targetFolder the target folder
+     * @param isRootPath true if the target folder is given as a root path 
      * @param filesToUpload the files to upload
      * @param filesToUnzip the files to unzip
      * @param dialog the dialog instance
@@ -46,6 +47,7 @@ public interface I_CmsUploader {
     void uploadFiles(
         String uploadUri,
         String targetFolder,
+        boolean isRootPath,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip,
         I_CmsUploadDialog dialog);

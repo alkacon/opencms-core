@@ -116,11 +116,11 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     /** The interval for updating the progress information in milliseconds. */
     private static final int UPDATE_PROGRESS_INTERVALL = 1000;
 
-    /** The drag and drop message. */
-    protected HTML m_dragAndDropMessage;
-
     /** The upload context. */
     protected I_CmsUploadContext m_context;
+
+    /** The drag and drop message. */
+    protected HTML m_dragAndDropMessage;
 
     /** The scroll panel. */
     protected CmsScrollPanel m_scrollPanel;
@@ -172,6 +172,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /** The close handler registration. */
     private HandlerRegistration m_handlerReg;
+
+    /** True if the target folder is given as a root path. */
+    private boolean m_isTargetRootPath;
 
     /** Stores the list items of all added files. */
     private Map<String, CmsListItem> m_listItems;
@@ -450,6 +453,16 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
+     * Sets the boolean flag to control whether the target folder is interpreted as a root path.<p>
+     * 
+     * @param isTargetRootPath true if the target folder should be treated as a root path 
+     */
+    public void setIsTargetRootPath(boolean isTargetRootPath) {
+
+        m_isTargetRootPath = isTargetRootPath;
+    }
+
+    /**
      * Sets the target folder.<p>
      * 
      * @param target the target folder to set 
@@ -490,7 +503,13 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         Collections.sort(filesToUpload, CmsFileInfo.INFO_COMPARATOR);
 
         CmsUploader uploader = new CmsUploader();
-        uploader.uploadFiles(getUploadUri(), getTargetFolder(), filesToUpload, getFilesToUnzip(false), this);
+        uploader.uploadFiles(
+            getUploadUri(),
+            getTargetFolder(),
+            m_isTargetRootPath,
+            filesToUpload,
+            getFilesToUnzip(false),
+            this);
     }
 
     /**

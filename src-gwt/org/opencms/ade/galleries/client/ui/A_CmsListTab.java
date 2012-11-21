@@ -470,10 +470,11 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      * Creates an upload button for the given target.<p>
      * 
      * @param target the upload target folder
+     * @param isRootPath true if target is a root path 
      * 
      * @return the upload button
      */
-    protected CmsUploadButton createUploadButtonForTarget(String target) {
+    protected CmsUploadButton createUploadButtonForTarget(String target, boolean isRootPath) {
 
         CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(
 
@@ -491,7 +492,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
                 };
             }
         });
+
         buttonHandler.setTargetFolder(target);
+        buttonHandler.setIsTargetRootPath(isRootPath);
         CmsUploadButton uploadButton = new CmsUploadButton(buttonHandler);
 
         //uploadButton.setTargetFolder(target);
