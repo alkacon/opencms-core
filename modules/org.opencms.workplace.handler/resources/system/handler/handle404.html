@@ -41,6 +41,9 @@ if (cms.showException() && cms.getException() != null) {
 // include the template foot part
 cms.includeTemplatePart(template, "foot");
 
+// write the exception to the opencms.log, if present
+cms.logException();
+
 // set the original error status code for the returned page
 Integer status = cms.getStatusCode();
 if (status != null) {

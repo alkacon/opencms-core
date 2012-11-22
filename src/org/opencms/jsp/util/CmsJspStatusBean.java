@@ -31,6 +31,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
@@ -46,6 +47,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * This bean provides methods to generate customized http status error pages, e.g. to handle 404 (not found) errors.<p>
  * 
@@ -54,6 +57,9 @@ import javax.servlet.jsp.PageContext;
  * @since 6.0
  */
 public class CmsJspStatusBean extends CmsJspActionElement {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspStatusBean.class);
 
     /** Request attribute key for the error message. */
     public static final String ERROR_MESSAGE = "javax.servlet.error.message";
@@ -387,6 +393,16 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
         keyName += "_";
         return key(keyName + getStatusCodeMessage(), keyName + UNKKNOWN_STATUS_CODE);
+    }
+
+    /**
+     * Writes the exception into the 'opencms.log', if the exception is not <code>null</code>.<p>
+     */
+    public void logException() {
+
+        if (m_exception != null) {
+            LOG.error(m_exception.getMessage(), m_exception);
+        }
     }
 
     /**
