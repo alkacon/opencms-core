@@ -39,9 +39,7 @@ import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.lucene.document.Fieldable;
 import org.apache.solr.schema.IndexSchema;
-import org.apache.solr.schema.SchemaField;
 
 /**
  * An individual field for the Solr search index.<p>
@@ -109,32 +107,6 @@ public class CmsSolrField extends CmsSearchField {
     }
 
     /**
-     * @see org.opencms.search.fields.CmsSearchField#createField(java.lang.String)
-     */
-    @Override
-    public Fieldable createField(String value) {
-
-        return createField(getName(), value);
-    }
-
-    /**
-     * @see org.opencms.search.fields.CmsSearchField#createField(java.lang.String, java.lang.String)
-     */
-    @Override
-    public Fieldable createField(String name, String value) {
-
-        // TODO: write a test case
-        Fieldable fieldable = null;
-        IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
-        SchemaField schemaField = schema.getField(name);
-        if (schemaField != null) {
-            createCopyFields(getCopyFields());
-            fieldable = schemaField.createField(value, getBoost());
-        }
-        return fieldable;
-    }
-
-    /**
      * Returns the copy fields.<p>
      * 
      * @return the copy fields.<p>
@@ -192,20 +164,5 @@ public class CmsSolrField extends CmsSearchField {
     public void setTargetField(String targetField) {
 
         m_targetField = targetField;
-    }
-
-    /**
-     * Creates the copy fields.<p>
-     * 
-     * @param copyFields the names of the target fields
-     */
-    private void createCopyFields(List<String> copyFields) {
-
-        IndexSchema schema = OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema();
-        if ((copyFields != null) && !copyFields.isEmpty()) {
-            for (String copyName : copyFields) {
-                schema.registerCopyField(getName(), copyName);
-            }
-        }
     }
 }

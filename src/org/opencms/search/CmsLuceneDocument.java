@@ -31,8 +31,10 @@
 
 package org.opencms.search;
 
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
+import org.opencms.search.fields.CmsLuceneSearchField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 
@@ -209,7 +211,13 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public void addSearchField(CmsSearchField field, String value) {
 
-        m_doc.add(field.createField(value));
+        if (field instanceof CmsLuceneSearchField) {
+            m_doc.add(((CmsLuceneSearchField)field).createField(value));
+        } else {
+            new CmsRuntimeException(Messages.get().container(
+                Messages.LOG_INVALID_FIELD_CLASS_1,
+                field.getClass().getName()));
+        }
     }
 
     /**

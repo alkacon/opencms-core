@@ -182,18 +182,33 @@ public class CmsLuceneSearchField extends CmsSearchField {
     }
 
     /**
-     * @see org.opencms.search.fields.CmsSearchField#createField(java.lang.String)
+     * Creates a field from the configuration and the provided content.<p>
+     * 
+     * The configured name of the field as provided by {@link #getName()} is used.<p>
+     * 
+     * If no valid content is provided (that is the content is either <code>null</code> or 
+     * only whitespace), then no field is created and <code>null</code> is returned.<p>
+     * 
+     * @param content the content to create the field with
+     * 
+     * @return a field created from the configuration and the provided content
      */
-    @Override
     public Field createField(String content) {
 
         return createField(getName(), content);
     }
 
     /**
-     * @see org.opencms.search.fields.CmsSearchField#createField(java.lang.String, java.lang.String)
+     * Creates a field with the given name from the configuration and the provided content.<p>
+     * 
+     * If no valid content is provided (that is the content is either <code>null</code> or 
+     * only whitespace), then no field is created and <code>null</code> is returned.<p>
+     * 
+     * @param name the name of the field to create
+     * @param content the content to create the field with
+     * 
+     * @return a field with the given name from the configuration and the provided content
      */
-    @Override
     public Field createField(String name, String content) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(content)) {
@@ -280,6 +295,7 @@ public class CmsLuceneSearchField extends CmsSearchField {
      * @see #isTokenizedAndIndexed()
      * @see #isIndexed()
      */
+    @Override
     public String getIndexed() {
 
         if (isTokenizedAndIndexed()) {
@@ -342,6 +358,7 @@ public class CmsLuceneSearchField extends CmsSearchField {
      * 
      * @see #isStored()
      */
+    @Override
     public boolean isInExcerpt() {
 
         return m_excerpt;
@@ -371,6 +388,7 @@ public class CmsLuceneSearchField extends CmsSearchField {
      * 
      * @see #isTokenizedAndIndexed()
      */
+    @Override
     public boolean isStored() {
 
         return m_stored;

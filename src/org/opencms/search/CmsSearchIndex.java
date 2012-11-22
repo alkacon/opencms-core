@@ -615,18 +615,6 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#getFieldConfiguration()
-     */
-    @Override
-    public CmsLuceneSearchFieldConfiguration getFieldConfiguration() {
-
-        if (super.getFieldConfiguration() instanceof CmsLuceneSearchFieldConfiguration) {
-            return (CmsLuceneSearchFieldConfiguration)super.getFieldConfiguration();
-        }
-        return null;
-    }
-
-    /**
      * Indicates the number of how many hits are loaded at maximum.<p> 
      * 
      * The number of maximum documents to load from the index
@@ -664,9 +652,12 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
 
         // get the configured analyzer and apply the the field configuration analyzer wrapper
         Analyzer baseAnalyzer = OpenCms.getSearchManager().getAnalyzer(getLocale());
-        if (getFieldConfiguration() != null) {
-            setAnalyzer(getFieldConfiguration().getAnalyzer(baseAnalyzer));
+
+        if (super.getFieldConfiguration() instanceof CmsLuceneSearchFieldConfiguration) {
+            CmsLuceneSearchFieldConfiguration fc = (CmsLuceneSearchFieldConfiguration)getFieldConfiguration();
+            setAnalyzer(fc.getAnalyzer(baseAnalyzer));
         }
+
         // initialize the index searcher instance
         indexSearcherOpen(getPath());
     }

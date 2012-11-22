@@ -35,6 +35,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.search.fields.CmsLuceneSearchField;
 import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
@@ -187,9 +188,11 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneSearchFieldConf
                 }
             }
 
-            if (value != null) {
+            if ((value != null) && (field instanceof CmsLuceneSearchField)) {
                 // localized content is available for this field
-                Fieldable fieldable = field.createField(getLocaleExtendedName(fieldName, locale), value);
+                Fieldable fieldable = ((CmsLuceneSearchField)field).createField(
+                    getLocaleExtendedName(fieldName, locale),
+                    value);
                 ((Document)document.getDocument()).add(fieldable);
             }
         }

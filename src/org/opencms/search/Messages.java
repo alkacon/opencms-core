@@ -277,6 +277,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEXING_WITH_FACTORY_2 = "LOG_INDEXING_WITH_FACTORY_2";
 
+    /** Name of the used resource bundle. */
+    public static final String LOG_INVALID_FIELD_CLASS_1 = "LOG_INVALID_FIELD_CLASS_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INVALID_PARAM_3 = "LOG_INVALID_PARAM_3";
 

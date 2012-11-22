@@ -37,14 +37,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.lucene.document.Fieldable;
-
 /**
  * A abstract implementation for a search field.<p>
  * 
  * @since 8.5.0
  */
-public abstract class CmsSearchField implements Serializable {
+public class CmsSearchField implements Serializable {
 
     /** Th default boost factor (1.0), used in case no boost has been set for a field. */
     public static final float BOOST_DEFAULT = 1.0f;
@@ -216,36 +214,6 @@ public abstract class CmsSearchField implements Serializable {
     }
 
     /**
-     * Creates a field from the configuration and the provided content.<p>
-     * 
-     * The configured name of the field as provided by {@link #getName()} is used.<p>
-     * 
-     * If no valid content is provided (that is the content is either <code>null</code> or 
-     * only whitespace), then no field is created and <code>null</code> is returned.<p>
-     * 
-     * @param content the content to create the field with
-     * 
-     * @return a field created from the configuration and the provided content
-     */
-    public Fieldable createField(String content) {
-
-        return createField(getName(), content);
-    }
-
-    /**
-     * Creates a field with the given name from the configuration and the provided content.<p>
-     * 
-     * If no valid content is provided (that is the content is either <code>null</code> or 
-     * only whitespace), then no field is created and <code>null</code> is returned.<p>
-     * 
-     * @param name the name of the field to create
-     * @param content the content to create the field with
-     * 
-     * @return a field with the given name from the configuration and the provided content
-     */
-    public abstract Fieldable createField(String name, String content);
-
-    /**
      * Two fields are equal if the name of the Lucene field is equal.<p>
      * 
      * @see java.lang.Object#equals(java.lang.Object)
@@ -286,6 +254,18 @@ public abstract class CmsSearchField implements Serializable {
     }
 
     /**
+     * Returns the String value state of this field if it is indexed (and possibly tokenized) in the index.<p>
+     * 
+     * <b>IMPORTANT:</b> Not supported by Solr
+     * 
+     * @return the String value state of this field if it is indexed (and possibly tokenized) in the index
+     */
+    public String getIndexed() {
+
+        return null;
+    }
+
+    /**
      * Returns the mappings for this field.<p>
      * 
      * @return the mappings for this field
@@ -314,6 +294,30 @@ public abstract class CmsSearchField implements Serializable {
     public int hashCode() {
 
         return m_name == null ? 41 : this.m_name.hashCode();
+    }
+
+    /**
+     * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
+     * 
+     * <b>IMPORTANT:</b> Not supported by Solr
+     *
+     * @return <code>true</code> if this fields content is used in the search result excerpt
+     */
+    public boolean isInExcerpt() {
+
+        return false;
+    }
+
+    /**
+     * Returns <code>true</code> if the content of this field is stored in the index.<p>
+     * 
+     * <b>IMPORTANT:</b> Not supported by Solr
+     *
+     * @return <code>true</code> if the content of this field is stored in the Lucene index
+     */
+    public boolean isStored() {
+
+        return false;
     }
 
     /**

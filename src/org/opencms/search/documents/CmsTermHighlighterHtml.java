@@ -71,8 +71,12 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
         if ((doc == null) || (index == null) || (params == null) || (analyzer == null) || (query == null)) {
             return null;
         }
+        if (!(index.getFieldConfiguration() instanceof CmsLuceneSearchFieldConfiguration)) {
+            // also return null if the field configuration is not a lucene field configuration
+            return null;
+        }
         Highlighter highlighter = null;
-        CmsLuceneSearchFieldConfiguration conf = index.getFieldConfiguration();
+        CmsLuceneSearchFieldConfiguration conf = (CmsLuceneSearchFieldConfiguration)index.getFieldConfiguration();
         Iterator<String> excerptFieldNames = conf.getExcerptFieldNames().iterator();
         StringBuffer excerptBuffer = new StringBuffer();
         while (excerptFieldNames.hasNext()) {
