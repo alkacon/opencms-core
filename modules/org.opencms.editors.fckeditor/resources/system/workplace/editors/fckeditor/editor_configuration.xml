@@ -13,6 +13,6 @@
 		<agent>^Mozilla/5\.0 \(.*\) Gecko/20\d* .*$</agent>
 		<agent>^Mozilla/5\.0 \(.*\) Gecko/\d+\.\d+ .*$</agent>
 		<agent>^Mozilla/5\.0 \(.*\).*Chrome.*$</agent>
-		<agent>^Mozilla/5\.0 \(.*\).* Version/[34].* Safari.*$</agent>
+		<agent>^Mozilla/5\.0 \(.*\).* Version/.* Safari.*$</agent>
 	</useragents>
 </editor>
