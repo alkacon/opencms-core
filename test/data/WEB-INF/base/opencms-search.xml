@@ -435,8 +435,28 @@
       </fieldconfiguration>
       <fieldconfiguration class="org.opencms.search.solr.CmsSolrFieldConfiguration">
         <name>solr_fields</name>
-        <description>The Solr search index field configuration.</description>
-        <fields/>
+        <description>The Solr search index field configuration with Lucene field migration.</description>
+        <fields>
+          <field name="keywords" store="true" index="true" type="txt">
+            <mapping type="property">Keywords</mapping>
+          </field>
+          <field name="description" store="true" index="true" type="txt">
+            <mapping type="property">Description</mapping>
+          </field>
+          <field name="meta" store="false" index="true" type="txt">
+            <mapping type="property">Title</mapping>
+            <mapping type="property">Keywords</mapping>
+            <mapping type="property">Description</mapping>
+          </field>
+          <field name="special" store="true" index="true" type="txt">
+            <mapping type="item">special</mapping>
+            <mapping type="item">Teaser[1]</mapping>
+            <mapping type="item">Teaser[2]</mapping>
+            <mapping type="item">Teaser[3]</mapping>
+            <mapping type="property">NavText</mapping>
+            <mapping type="property-search">search.special</mapping>
+          </field>
+        </fields>
       </fieldconfiguration>
     </fieldconfigurations>
   </search>

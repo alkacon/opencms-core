@@ -92,6 +92,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         suite.addTest(new TestSolrFieldConfiguration("testContentLocalesField"));
         suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
         suite.addTest(new TestSolrFieldConfiguration("testDependencies"));
+        suite.addTest(new TestSolrFieldConfiguration("testLuceneMigration"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -427,5 +428,31 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
             squery.addFilterQuery("path:" + absoluteFileName);
             results = index.search(cms, squery);
         }
+    }
+
+    /**
+     * Tests if the field configuration in the 'opencms-search.xml' can also be used for Solr.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLuceneMigration() throws Throwable {
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+
+        CmsSolrFieldConfiguration conf = (CmsSolrFieldConfiguration)index.getFieldConfiguration();
+        assertNotNull(conf.getSolrFields().get("meta_txt"));
+        assertNotNull(conf.getSolrFields().get("description_txt"));
+        assertNotNull(conf.getSolrFields().get("keywords_txt"));
+        assertNotNull(conf.getSolrFields().get("special_txt"));
+
+        CmsSolrQuery squery = new CmsSolrQuery(
+            null,
+            CmsRequestUtil.createParameterMap("q=path:/sites/default/xmlcontent/article_0001.html"));
+        CmsSolrResultList results = index.search(getCmsObject(), squery);
+
+        CmsSearchResource res = results.get(0);
+        String value = "Sample article 1  (>>SearchEgg1<<)";
+        List<String> metaValue = res.getMultivaluedField("meta_txt");
+        assertEquals(value, metaValue.get(0));
     }
 }
