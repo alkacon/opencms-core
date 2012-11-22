@@ -35,7 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -582,7 +582,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
             Iterator<CmsSearchField> itFields = fields.iterator();
             while (itFields.hasNext()) {
-                CmsLuceneSearchField field = (CmsLuceneSearchField)itFields.next();
+                CmsLuceneField field = (CmsLuceneField)itFields.next();
                 String fieldName = field.getName();
                 boolean fieldStore = field.isStored();
                 String fieldIndex = field.getIndexed();

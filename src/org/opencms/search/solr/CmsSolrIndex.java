@@ -190,6 +190,17 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
+     * @see org.opencms.search.A_CmsSearchIndex#createEmptyDocument(org.opencms.file.CmsResource)
+     */
+    @Override
+    public I_CmsSearchDocument createEmptyDocument(CmsResource resource) {
+
+        CmsSolrDocument doc = new CmsSolrDocument(new SolrInputDocument());
+        doc.setId(resource.getStructureId());
+        return doc;
+    }
+
+    /**
      * @see org.opencms.search.A_CmsSearchIndex#createIndexWriter(boolean, org.opencms.report.I_CmsReport)
      */
     @Override
@@ -746,16 +757,5 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     protected void indexSearcherUpdate() {
 
         // nothing to do here
-    }
-
-    /**
-     * @see org.opencms.search.A_CmsSearchIndex#createEmptyDocument(org.opencms.file.CmsResource)
-     */
-    @Override
-    public I_CmsSearchDocument createEmptyDocument(CmsResource resource) {
-
-        CmsSolrDocument doc = new CmsSolrDocument(new SolrInputDocument());
-        doc.setId(resource.getStructureId());
-        return doc;
     }
 }

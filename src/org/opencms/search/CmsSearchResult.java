@@ -207,7 +207,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the description
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_DESCRIPTION} to get the description (if available)
+     *      for example use {@link org.opencms.search.fields.CmsLuceneField#FIELD_DESCRIPTION} to get the description (if available)
      */
     public String getDescription() {
 
@@ -260,7 +260,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the key words
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_KEYWORDS} to get the keywords (if available)
+     *      for example use {@link org.opencms.search.fields.CmsLuceneField#FIELD_KEYWORDS} to get the keywords (if available)
      */
     public String getKeywords() {
 
@@ -325,7 +325,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * @return the title
      * 
      * @Deprecated use {@link #getField(String)} instead with the name of the field, 
-     *      for example use {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_TITLE} to get the title (if available)
+     *      for example use {@link org.opencms.search.fields.CmsLuceneField#FIELD_TITLE} to get the title (if available)
      */
     public String getTitle() {
 

@@ -44,8 +44,8 @@ import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -87,7 +87,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
      * For gallery document generators, we never check for {@link org.opencms.search.CmsSearchIndex#isExtractingContent()} since
      * all these classes are assumed to be written with optimizations special to gallery search indexing anyway.<p>
      * 
-     * @see org.opencms.search.fields.CmsLuceneSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, I_CmsExtractionResult)
+     * @see org.opencms.search.fields.CmsLuceneFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, I_CmsExtractionResult)
      * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, A_CmsSearchIndex)
      */
     @Override
@@ -199,29 +199,6 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
     }
 
     /**
-     * Adds the given value to the document items for all target locales.<p>
-     * 
-     * @param xmlContent the XML content 
-     * @param fieldName the field name 
-     * @param sourceLocale the source locale
-     * @param items the document items
-     * @param value the value to put
-     */
-    protected void putMappingValue(
-        A_CmsXmlDocument xmlContent,
-        String fieldName,
-        Locale sourceLocale,
-        Map<String, String> items,
-        String value) {
-
-        List<Locale> fieldTargetLocales = getTargetLocalesForField(xmlContent, fieldName, sourceLocale);
-        // append language individual property field
-        for (Locale targetLocale : fieldTargetLocales) {
-            items.put(CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, targetLocale), value);
-        }
-    }
-
-    /**
      * Gallery index content is stored in multiple languages, so the result is NOT locale dependent.<p>
      * 
      * @see org.opencms.search.documents.CmsDocumentXmlContent#isLocaleDependend()
@@ -284,6 +261,29 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
         } catch (CmsLoaderException e) {
             LOG.error(e.getLocalizedMessage(), e);
             return false;
+        }
+    }
+
+    /**
+     * Adds the given value to the document items for all target locales.<p>
+     * 
+     * @param xmlContent the XML content 
+     * @param fieldName the field name 
+     * @param sourceLocale the source locale
+     * @param items the document items
+     * @param value the value to put
+     */
+    protected void putMappingValue(
+        A_CmsXmlDocument xmlContent,
+        String fieldName,
+        Locale sourceLocale,
+        Map<String, String> items,
+        String value) {
+
+        List<Locale> fieldTargetLocales = getTargetLocalesForField(xmlContent, fieldName, sourceLocale);
+        // append language individual property field
+        for (Locale targetLocale : fieldTargetLocales) {
+            items.put(CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, targetLocale), value);
         }
     }
 }

@@ -42,7 +42,7 @@ import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -52,8 +52,10 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,7 +75,10 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     private static final Log LOG = CmsLog.getLog(CmsSolrFieldConfiguration.class);
 
     /** Stores additional fields to index. */
-    private List<CmsSearchField> m_additionalFields;
+    private List<CmsSolrField> m_additionalFields;
+
+    /** A list of Solr fields. */
+    private Map<String, CmsSolrField> m_solrFields = new HashMap<String, CmsSolrField>();
 
     /**
      * Default constructor.<p>
@@ -140,7 +145,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         addContentFields();
         addAdditionalFields();
         addLuceneFields();
-        // m_initialized = true;
     }
 
     /**
@@ -260,7 +264,18 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             }
         }
 
-        return super.appendFieldMappings(document, cms, resource, extractionResult, properties, propertiesSearched);
+        for (CmsSolrField field : m_solrFields.values()) {
+            document = appendFieldMapping(
+                document,
+                field,
+                cms,
+                resource,
+                extractionResult,
+                properties,
+                propertiesSearched);
+        }
+
+        return document;
     }
 
     /**
@@ -342,7 +357,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
      *
      * @param additionalFields the additionalFields to set
      */
-    protected void setAdditionalFields(List<CmsSearchField> additionalFields) {
+    protected void setAdditionalFields(List<CmsSolrField> additionalFields) {
 
         m_additionalFields = additionalFields;
     }
@@ -353,7 +368,9 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     private void addAdditionalFields() {
 
         if (m_additionalFields != null) {
-            addFields(m_additionalFields);
+            for (CmsSolrField solrField : m_additionalFields) {
+                m_solrFields.put(solrField.getName(), solrField);
+            }
         }
     }
 
@@ -371,7 +388,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             null,
             CmsSearchField.BOOST_DEFAULT);
         solrField.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, CmsSearchField.FIELD_CONTENT));
-        addField(solrField);
+        m_solrFields.put(solrField.getName(), solrField);
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
             solrField = new CmsSolrField(
                 CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale),
@@ -382,7 +399,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             solrField.addMapping(new CmsSearchFieldMapping(
                 CmsSearchFieldMappingType.CONTENT,
                 CmsSearchField.FIELD_CONTENT));
-            addField(solrField);
+            m_solrFields.put(solrField.getName(), solrField);
         }
     }
 
@@ -391,13 +408,12 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
      */
     private void addLuceneFields() {
 
-        List<CmsSearchField> fieldsToAdd = new ArrayList<CmsSearchField>();
-        for (CmsSearchField field : getFields()) {
-            if (field instanceof CmsLuceneSearchField) {
-                fieldsToAdd.add(new CmsSolrField((CmsLuceneSearchField)field));
+        for (CmsSearchField field : super.getFields()) {
+            if (field instanceof CmsLuceneField) {
+                CmsSolrField solrField = new CmsSolrField((CmsLuceneField)field);
+                m_solrFields.put(solrField.getName(), solrField);
             }
         }
-        addFields(fieldsToAdd);
     }
 
     /**

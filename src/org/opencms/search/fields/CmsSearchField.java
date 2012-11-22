@@ -293,7 +293,7 @@ public class CmsSearchField implements Serializable {
     @Override
     public int hashCode() {
 
-        return m_name == null ? 41 : this.m_name.hashCode();
+        return m_name == null ? 41 : m_name.hashCode();
     }
 
     /**

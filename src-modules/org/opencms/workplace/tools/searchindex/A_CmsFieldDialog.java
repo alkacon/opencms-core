@@ -32,8 +32,8 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsLuceneSearchField;
-import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneField;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * 
- * Abstract widget dialog for all dialogs working with <code>{@link CmsLuceneSearchField}</code>.<p> 
+ * Abstract widget dialog for all dialogs working with <code>{@link CmsLuceneField}</code>.<p> 
  * 
  * @since 6.5.5
  */
@@ -78,7 +78,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     public static final String PARAM_FIELDCONFIGURATION = "fieldconfiguration";
 
     /** The user object that is edited on this dialog. */
-    protected CmsLuceneSearchField m_field;
+    protected CmsLuceneField m_field;
 
     /** The user object that is edited on this dialog. */
     protected CmsSearchFieldConfiguration m_fieldconfiguration;
@@ -235,10 +235,10 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
             try {
                 m_fieldconfiguration = m_searchManager.getFieldConfiguration(getParamFieldconfiguration());
                 if (m_fieldconfiguration == null) {
-                    m_fieldconfiguration = new CmsLuceneSearchFieldConfiguration();
+                    m_fieldconfiguration = new CmsLuceneFieldConfiguration();
                 }
             } catch (Exception e) {
-                m_fieldconfiguration = new CmsLuceneSearchFieldConfiguration();
+                m_fieldconfiguration = new CmsLuceneFieldConfiguration();
             }
         }
 
@@ -246,17 +246,17 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
             try {
                 Iterator<CmsSearchField> itFields = m_fieldconfiguration.getFields().iterator();
                 while (itFields.hasNext()) {
-                    CmsLuceneSearchField curField = (CmsLuceneSearchField)itFields.next();
+                    CmsLuceneField curField = (CmsLuceneField)itFields.next();
                     if (curField.getName().equals(getParamField())) {
                         m_field = curField;
                         break;
                     }
                 }
                 if (m_field == null) {
-                    m_field = new CmsLuceneSearchField();
+                    m_field = new CmsLuceneField();
                 }
             } catch (Exception e) {
-                m_field = new CmsLuceneSearchField();
+                m_field = new CmsLuceneField();
             }
         }
     }

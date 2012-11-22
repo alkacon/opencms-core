@@ -33,7 +33,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A list that displays the mappings of a request parameter given 
- * <code>{@link org.opencms.search.fields.CmsLuceneSearchField}</code> ("field"). 
+ * <code>{@link org.opencms.search.fields.CmsLuceneField}</code> ("field"). 
  * 
  * This list is no stand-alone page but has to be embedded in another dialog 
  * (see <code> {@link org.opencms.workplace.tools.searchindex.A_CmsEmbeddedListDialog}</code>. <p>
@@ -165,7 +165,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
             List<CmsSearchField> fields = searchManager.getFieldConfiguration(m_paramFieldconfiguration).getFields();
             Iterator<CmsSearchField> itFields = fields.iterator();
             while (itFields.hasNext()) {
-                CmsLuceneSearchField curField = (CmsLuceneSearchField)itFields.next();
+                CmsLuceneField curField = (CmsLuceneField)itFields.next();
                 if (curField.getName().equals(m_paramField)) {
                     // we found the field to edit
                     List<I_CmsSearchFieldMapping> deleteMappings = new ArrayList<I_CmsSearchFieldMapping>();
@@ -421,13 +421,13 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
         CmsSearchFieldConfiguration fieldConfig = manager.getFieldConfiguration(getParamFieldconfiguration());
-        CmsLuceneSearchField field;
+        CmsLuceneField field;
         List<I_CmsSearchFieldMapping> result = null;
         Iterator<CmsSearchField> itFields;
         if (fieldConfig != null) {
             itFields = fieldConfig.getFields().iterator();
             while (itFields.hasNext()) {
-                field = (CmsLuceneSearchField)itFields.next();
+                field = (CmsLuceneField)itFields.next();
                 if (field.getName().equals(getParamField())) {
                     result = field.getMappings();
                 }

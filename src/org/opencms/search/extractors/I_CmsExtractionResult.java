@@ -78,6 +78,13 @@ public interface I_CmsExtractionResult {
     /** Key to access the document title in the item map. */
     String ITEM_TITLE = "title";
 
+    /** 
+     * Adds a mapping field to the extraction result.<p>
+     * 
+     * @param field the field to add
+     */
+    void addMappingField(CmsSearchField field);
+
     /**
      * Returns this extraction result serialized as a byte array.<p>
      * 
@@ -121,13 +128,6 @@ public interface I_CmsExtractionResult {
      * @return a list of mapping fields
      */
     Set<CmsSearchField> getMappingFields();
-
-    /** 
-     * Adds a mapping field to the extraction result.<p>
-     * 
-     * @param field the field to add
-     */
-    void addMappingField(CmsSearchField field);
 
     /**
      * Releases the information stored in this extraction result, to free up the memory used.<p>

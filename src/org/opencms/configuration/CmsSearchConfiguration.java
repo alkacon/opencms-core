@@ -36,8 +36,8 @@ import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsLuceneSearchField;
-import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneField;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -316,13 +316,13 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // field configuration rules
         xPath = XPATH_SEARCH + "/" + N_FIELDCONFIGURATIONS + "/" + N_FIELDCONFIGURATION;
-        digester.addObjectCreate(xPath, A_CLASS, CmsLuceneSearchFieldConfiguration.class);
+        digester.addObjectCreate(xPath, A_CLASS, CmsLuceneFieldConfiguration.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_DESCRIPTION, "setDescription", 0);
         digester.addSetNext(xPath, "addFieldConfiguration");
 
         xPath = xPath + "/" + N_FIELDS + "/" + N_FIELD;
-        digester.addObjectCreate(xPath, CmsLuceneSearchField.class);
+        digester.addObjectCreate(xPath, CmsLuceneField.class);
         digester.addCallMethod(xPath, "setName", 1);
         digester.addCallParam(xPath, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallMethod(xPath, "setDisplayNameForConfiguration", 1);
@@ -543,7 +543,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         for (CmsSearchFieldConfiguration fieldConfiguration : m_searchManager.getFieldConfigurations()) {
             Element fieldConfigurationElement = fieldConfigurationsElement.addElement(N_FIELDCONFIGURATION);
             // add class attribute (if required)
-            if (!fieldConfiguration.getClass().equals(CmsLuceneSearchFieldConfiguration.class)) {
+            if (!fieldConfiguration.getClass().equals(CmsLuceneFieldConfiguration.class)) {
                 fieldConfigurationElement.addAttribute(A_CLASS, fieldConfiguration.getClass().getName());
             }
             fieldConfigurationElement.addElement(N_NAME).setText(fieldConfiguration.getName());
@@ -553,15 +553,15 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             // search fields
             Element fieldsElement = fieldConfigurationElement.addElement(N_FIELDS);
             for (CmsSearchField sfield : fieldConfiguration.getFields()) {
-                if (sfield instanceof CmsLuceneSearchField) {
-                    CmsLuceneSearchField field = (CmsLuceneSearchField)sfield;
+                if (sfield instanceof CmsLuceneField) {
+                    CmsLuceneField field = (CmsLuceneField)sfield;
                     Element fieldElement = fieldsElement.addElement(N_FIELD);
                     fieldElement.addAttribute(A_NAME, field.getName());
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDisplayNameForConfiguration())) {
                         fieldElement.addAttribute(A_DISPLAY, field.getDisplayNameForConfiguration());
                     }
                     if (field.isCompressed()) {
-                        fieldElement.addAttribute(A_STORE, CmsLuceneSearchField.STR_COMPRESS);
+                        fieldElement.addAttribute(A_STORE, CmsLuceneField.STR_COMPRESS);
                     } else {
                         fieldElement.addAttribute(A_STORE, String.valueOf(field.isStored()));
                     }
@@ -572,7 +572,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                             index = CmsStringUtil.TRUE;
                         } else {
                             // indexed but not tokenized
-                            index = CmsLuceneSearchField.STR_UN_TOKENIZED;
+                            index = CmsLuceneField.STR_UN_TOKENIZED;
                         }
                     } else {
                         // not indexed at all

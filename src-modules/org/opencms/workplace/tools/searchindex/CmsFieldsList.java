@@ -33,7 +33,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A list that displays the fields of a request parameter given 
- * <code>{@link org.opencms.search.fields.CmsLuceneSearchFieldConfiguration}</code> ("fieldconfiguration"). 
+ * <code>{@link org.opencms.search.fields.CmsLuceneFieldConfiguration}</code> ("fieldconfiguration"). 
  * 
  * This list is no stand-alone page but has to be embedded in another dialog 
  * (see <code> {@link org.opencms.workplace.tools.searchindex.A_CmsEmbeddedListDialog}</code>. <p>
@@ -216,7 +216,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
             // execute the delete multiaction
             Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             CmsListItem listItem;
-            CmsLuceneSearchField field;
+            CmsLuceneField field;
             List<CmsSearchField> deleteFields = new ArrayList<CmsSearchField>();
             List<CmsSearchField> fields = searchManager.getFieldConfiguration(m_paramFieldconfiguration).getFields();
             Iterator<CmsSearchField> itFields;
@@ -226,7 +226,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
                 itFields = fields.iterator();
                 while (itFields.hasNext()) {
                     String item = (String)listItem.get(LIST_COLUMN_NAME);
-                    CmsLuceneSearchField curField = (CmsLuceneSearchField)itFields.next();
+                    CmsLuceneField curField = (CmsLuceneField)itFields.next();
                     String fieldName = curField.getName();
                     if (item.equals(fieldName)) {
                         deleteFields.add(curField);
@@ -237,7 +237,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
             itFields = deleteFields.iterator();
             while (itFields.hasNext()) {
-                field = (CmsLuceneSearchField)itFields.next();
+                field = (CmsLuceneField)itFields.next();
                 searchManager.removeSearchFieldConfigurationField(
                     searchManager.getFieldConfiguration(m_paramFieldconfiguration),
                     field);
@@ -264,9 +264,9 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         CmsSearchFieldConfiguration fieldConfig = OpenCms.getSearchManager().getFieldConfiguration(
             m_paramFieldconfiguration);
         Iterator<CmsSearchField> itFields = fieldConfig.getFields().iterator();
-        CmsLuceneSearchField fieldObject = null;
+        CmsLuceneField fieldObject = null;
         while (itFields.hasNext()) {
-            CmsLuceneSearchField curField = (CmsLuceneSearchField)itFields.next();
+            CmsLuceneField curField = (CmsLuceneField)itFields.next();
             if (curField.getName().equals(field)) {
                 fieldObject = curField;
             }
@@ -382,9 +382,9 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         // get content
         List<CmsSearchField> fields = getFields();
         Iterator<CmsSearchField> itFields = fields.iterator();
-        CmsLuceneSearchField field;
+        CmsLuceneField field;
         while (itFields.hasNext()) {
-            field = (CmsLuceneSearchField)itFields.next();
+            field = (CmsLuceneField)itFields.next();
             CmsListItem item = getList().newItem(field.getName());
             String defaultValue = field.getDefaultValue();
             if (defaultValue == null) {
@@ -663,7 +663,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         }
         Iterator<CmsSearchField> itFields = fields.iterator();
         while (itFields.hasNext()) {
-            CmsLuceneSearchField curField = (CmsLuceneSearchField)itFields.next();
+            CmsLuceneField curField = (CmsLuceneField)itFields.next();
             if (curField.getMappings().isEmpty()) {
                 return false;
             }
@@ -685,9 +685,9 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
         List<CmsSearchField> fields = OpenCms.getSearchManager().getFieldConfiguration(m_paramFieldconfiguration).getFields();
         Iterator<CmsSearchField> itFields = fields.iterator();
-        CmsLuceneSearchField idxField = null;
+        CmsLuceneField idxField = null;
         while (itFields.hasNext()) {
-            CmsLuceneSearchField curField = (CmsLuceneSearchField)itFields.next();
+            CmsLuceneField curField = (CmsLuceneField)itFields.next();
             if (curField.getName().equals(idxFieldName)) {
                 idxField = curField;
             }

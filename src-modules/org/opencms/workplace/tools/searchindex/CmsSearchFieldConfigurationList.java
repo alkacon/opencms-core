@@ -34,7 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * A list that displays information about the <code>{@link org.opencms.search.fields.CmsLuceneSearchFieldConfiguration}</code> 
+ * A list that displays information about the <code>{@link org.opencms.search.fields.CmsLuceneFieldConfiguration}</code> 
  * that are members of the <code>{@link org.opencms.search.A_CmsSearchIndex}</code> 
  * in the current request scope (param "searchindex").<p> 
  * 
@@ -439,7 +439,7 @@ public class CmsSearchFieldConfigurationList extends A_CmsListDialog {
         html.append("<ul>\n");
         Iterator<CmsSearchField> itFields = fields.iterator();
         while (itFields.hasNext()) {
-            CmsLuceneSearchField field = (CmsLuceneSearchField)itFields.next();
+            CmsLuceneField field = (CmsLuceneField)itFields.next();
             String fieldName = field.getName();
             boolean fieldStore = field.isStored();
             String fieldIndex = field.getIndexed();

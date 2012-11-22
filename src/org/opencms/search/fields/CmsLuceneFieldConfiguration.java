@@ -45,7 +45,7 @@ import org.apache.lucene.analysis.WhitespaceAnalyzer;
  * 
  * @since 7.0.0 
  */
-public class CmsLuceneSearchFieldConfiguration extends CmsSearchFieldConfiguration {
+public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * The default for the standard search configuration.<p>
@@ -53,7 +53,7 @@ public class CmsLuceneSearchFieldConfiguration extends CmsSearchFieldConfigurati
      * This defines the default that is used in case no "standard" field configuration 
      * is defined in <code>opencms-search.xml</code>.<p>
      */
-    public static final CmsLuceneSearchFieldConfiguration DEFAULT_STANDARD = createStandardConfiguration();
+    public static final CmsLuceneFieldConfiguration DEFAULT_STANDARD = createStandardConfiguration();
 
     /** The description for the standard field configuration. */
     public static final String STR_STANDARD_DESCRIPTION = "The standard OpenCms search index field configuration.";
@@ -69,15 +69,15 @@ public class CmsLuceneSearchFieldConfiguration extends CmsSearchFieldConfigurati
      * 
      * @return the default standard search configuration
      */
-    private static CmsLuceneSearchFieldConfiguration createStandardConfiguration() {
+    private static CmsLuceneFieldConfiguration createStandardConfiguration() {
 
-        CmsLuceneSearchFieldConfiguration result = new CmsLuceneSearchFieldConfiguration();
+        CmsLuceneFieldConfiguration result = new CmsLuceneFieldConfiguration();
         result.setName(STR_STANDARD);
         result.setDescription(STR_STANDARD_DESCRIPTION);
 
-        CmsLuceneSearchField field;
+        CmsLuceneField field;
         // content mapping, store as compressed value
-        field = new CmsLuceneSearchField(
+        field = new CmsLuceneField(
             CmsSearchField.FIELD_CONTENT,
             "%(key.field.content)",
             true,
@@ -92,9 +92,9 @@ public class CmsLuceneSearchFieldConfiguration extends CmsSearchFieldConfigurati
         result.addField(field);
 
         // title mapping as a keyword
-        field = new CmsLuceneSearchField(
+        field = new CmsLuceneField(
             CmsSearchField.FIELD_TITLE,
-            CmsLuceneSearchField.IGNORE_DISPLAY_NAME,
+            CmsLuceneField.IGNORE_DISPLAY_NAME,
             true,
             true,
             false,
@@ -107,28 +107,28 @@ public class CmsLuceneSearchFieldConfiguration extends CmsSearchFieldConfigurati
         result.addField(field);
 
         // title mapping as indexed field
-        field = new CmsLuceneSearchField(CmsSearchField.FIELD_TITLE_UNSTORED, "%(key.field.title)", false, true);
+        field = new CmsLuceneField(CmsSearchField.FIELD_TITLE_UNSTORED, "%(key.field.title)", false, true);
         field.addMapping(new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY,
             CmsPropertyDefinition.PROPERTY_TITLE));
         result.addField(field);
 
         // mapping of "Keywords" property to search field with the same name
-        field = new CmsLuceneSearchField(CmsSearchField.FIELD_KEYWORDS, "%(key.field.keywords)", true, true);
+        field = new CmsLuceneField(CmsSearchField.FIELD_KEYWORDS, "%(key.field.keywords)", true, true);
         field.addMapping(new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY,
             CmsPropertyDefinition.PROPERTY_KEYWORDS));
         result.addField(field);
 
         // mapping of "Description" property to search field with the same name
-        field = new CmsLuceneSearchField(CmsSearchField.FIELD_DESCRIPTION, "%(key.field.description)", true, true);
+        field = new CmsLuceneField(CmsSearchField.FIELD_DESCRIPTION, "%(key.field.description)", true, true);
         field.addMapping(new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY,
             CmsPropertyDefinition.PROPERTY_DESCRIPTION));
         result.addField(field);
 
         // "meta" field is a combination of "Title", "Keywords" and "Description" properties
-        field = new CmsLuceneSearchField(CmsSearchField.FIELD_META, "%(key.field.meta)", false, true);
+        field = new CmsLuceneField(CmsSearchField.FIELD_META, "%(key.field.meta)", false, true);
         field.addMapping(new CmsSearchFieldMapping(
             CmsSearchFieldMappingType.PROPERTY,
             CmsPropertyDefinition.PROPERTY_TITLE));
@@ -161,7 +161,7 @@ public class CmsLuceneSearchFieldConfiguration extends CmsSearchFieldConfigurati
         analyzers.put(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, ws);
         analyzers.put(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, ws);
 
-        for (CmsLuceneSearchField field : getLuceneFields()) {
+        for (CmsLuceneField field : getLuceneFields()) {
             Analyzer fieldAnalyzer = field.getAnalyzer();
             if (fieldAnalyzer != null) {
                 // this field has an individual analyzer configured
@@ -184,7 +184,7 @@ public class CmsLuceneSearchFieldConfiguration extends CmsSearchFieldConfigurati
             m_excerptFieldNames = new ArrayList<String>();
             Iterator<CmsSearchField> i = getFields().iterator();
             while (i.hasNext()) {
-                CmsLuceneSearchField field = (CmsLuceneSearchField)i.next();
+                CmsLuceneField field = (CmsLuceneField)i.next();
                 if (field.isInExcerptAndStored()) {
                     m_excerptFieldNames.add(field.getName());
                 }
@@ -200,12 +200,12 @@ public class CmsLuceneSearchFieldConfiguration extends CmsSearchFieldConfigurati
      * 
      * @return a list of lucene search fields
      */
-    public List<CmsLuceneSearchField> getLuceneFields() {
+    public List<CmsLuceneField> getLuceneFields() {
 
-        List<CmsLuceneSearchField> result = new ArrayList<CmsLuceneSearchField>();
+        List<CmsLuceneField> result = new ArrayList<CmsLuceneField>();
         for (CmsSearchField field : getFields()) {
-            if (field instanceof CmsLuceneSearchField) {
-                result.add((CmsLuceneSearchField)field);
+            if (field instanceof CmsLuceneField) {
+                result.add((CmsLuceneField)field);
             }
         }
         return result;

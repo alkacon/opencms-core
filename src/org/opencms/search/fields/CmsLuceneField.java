@@ -38,7 +38,7 @@ import org.apache.lucene.document.Field;
  * 
  * @since 7.0.0 
  */
-public class CmsLuceneSearchField extends CmsSearchField {
+public class CmsLuceneField extends CmsSearchField {
 
     /** Value of m_displayName if field should not be displayed. */
     public static final String IGNORE_DISPLAY_NAME = "-";
@@ -97,7 +97,7 @@ public class CmsLuceneSearchField extends CmsSearchField {
     /**
      * Creates a new search field configuration.<p>
      */
-    public CmsLuceneSearchField() {
+    public CmsLuceneField() {
 
         super();
     }
@@ -115,7 +115,7 @@ public class CmsLuceneSearchField extends CmsSearchField {
      * @param isStored controls if the field is stored and in the excerpt, see {@link #setStored(boolean)}
      * @param isIndexed controls if the field is indexed and tokenized, see {@link #setIndexed(boolean)}
      */
-    public CmsLuceneSearchField(String name, String displayName, boolean isStored, boolean isIndexed) {
+    public CmsLuceneField(String name, String displayName, boolean isStored, boolean isIndexed) {
 
         this(name, displayName, isStored, isIndexed, isIndexed, false, BOOST_DEFAULT, null);
     }
@@ -134,7 +134,7 @@ public class CmsLuceneSearchField extends CmsSearchField {
      * @param boost the boost factor for the field, see {@link #setBoost(float)}
      * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
-    public CmsLuceneSearchField(
+    public CmsLuceneField(
         String name,
         String displayName,
         boolean isStored,
@@ -168,7 +168,7 @@ public class CmsLuceneSearchField extends CmsSearchField {
      * @param boost the boost factor for the field, see {@link #setBoost(float)}
      * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
-    public CmsLuceneSearchField(
+    public CmsLuceneField(
         String name,
         String displayName,
         boolean isStored,

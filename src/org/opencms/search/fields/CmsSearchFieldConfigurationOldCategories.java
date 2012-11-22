@@ -48,7 +48,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @since 8.0.0 
  */
-public class CmsSearchFieldConfigurationOldCategories extends CmsLuceneSearchFieldConfiguration {
+public class CmsSearchFieldConfigurationOldCategories extends CmsLuceneFieldConfiguration {
 
     /**
      * Default constructor.<p>

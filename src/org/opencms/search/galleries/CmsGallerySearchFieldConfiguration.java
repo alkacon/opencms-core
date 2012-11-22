@@ -35,8 +35,8 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.CmsLuceneSearchField;
-import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneField;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @since 8.0.0 
  */
-public class CmsGallerySearchFieldConfiguration extends CmsLuceneSearchFieldConfiguration {
+public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfiguration {
 
     /**
      * Default constructor.<p>
@@ -188,9 +188,9 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneSearchFieldConf
                 }
             }
 
-            if ((value != null) && (field instanceof CmsLuceneSearchField)) {
+            if ((value != null) && (field instanceof CmsLuceneField)) {
                 // localized content is available for this field
-                Fieldable fieldable = ((CmsLuceneSearchField)field).createField(
+                Fieldable fieldable = ((CmsLuceneField)field).createField(
                     getLocaleExtendedName(fieldName, locale),
                     value);
                 ((Document)document.getDocument()).add(fieldable);

@@ -31,8 +31,8 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -238,16 +238,10 @@ public class CmsGallerySearchParameters {
         SortField.FIELD_SCORE});
 
     /** Sort result documents by VFS path ascending. */
-    public static final Sort SORT_PATH_ASC = new Sort(new SortField(
-        CmsSearchField.FIELD_PATH,
-        SortField.STRING,
-        false));
+    public static final Sort SORT_PATH_ASC = new Sort(new SortField(CmsSearchField.FIELD_PATH, SortField.STRING, false));
 
     /** Sort result documents by VFS path descending. */
-    public static final Sort SORT_PATH_DESC = new Sort(new SortField(
-        CmsSearchField.FIELD_PATH,
-        SortField.STRING,
-        true));
+    public static final Sort SORT_PATH_DESC = new Sort(new SortField(CmsSearchField.FIELD_PATH, SortField.STRING, true));
 
     /** Sort result documents by score. */
     public static final Sort SORT_SCORE = Sort.RELEVANCE;

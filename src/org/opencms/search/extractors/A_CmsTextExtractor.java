@@ -185,7 +185,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
             int type = Character.getType(ch);
             switch (type) {
 
-                // punctuation
+            // punctuation
                 case Character.CURRENCY_SYMBOL:
                 case Character.CONNECTOR_PUNCTUATION:
                 case Character.FINAL_QUOTE_PUNCTUATION:

@@ -32,8 +32,8 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsLuceneSearchField;
-import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneField;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -301,10 +301,10 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
             try {
                 m_fieldconfiguration = m_searchManager.getFieldConfiguration(getParamFieldconfiguration());
                 if (m_fieldconfiguration == null) {
-                    m_fieldconfiguration = new CmsLuceneSearchFieldConfiguration();
+                    m_fieldconfiguration = new CmsLuceneFieldConfiguration();
                 }
             } catch (Exception e) {
-                m_fieldconfiguration = new CmsLuceneSearchFieldConfiguration();
+                m_fieldconfiguration = new CmsLuceneFieldConfiguration();
             }
         }
 
@@ -319,10 +319,10 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
                     }
                 }
                 if (m_field == null) {
-                    m_field = new CmsLuceneSearchField();
+                    m_field = new CmsLuceneField();
                 }
             } catch (Exception e) {
-                m_field = new CmsLuceneSearchField();
+                m_field = new CmsLuceneField();
             }
         }
         if (m_mapping == null) {

@@ -36,7 +36,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsTermHighlighter;
-import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
@@ -94,7 +94,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
 
     /**
      * Lucene filter index reader implementation that will ensure the OpenCms default search index fields
-     * {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT_BLOB}
+     * {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT_BLOB}
      * are lazy loaded.<p>
      * 
      * This is to optimize performance - these 2 fields will be rather large especially for extracted
@@ -370,7 +370,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
 
     /**
      * Returns a field selector for Lucene that that will ensure the OpenCms default search index fields
-     * {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_CONTENT_BLOB}
+     * {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT} and {@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT_BLOB}
      * are lazy loaded.<p>
      * 
      * This is to optimize performance - these 2 fields will be rather large especially for extracted
@@ -577,7 +577,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
      * 
      * @return the Lucene document with the given root path from the index
      * 
-     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link org.opencms.search.fields.CmsLuceneSearchField#FIELD_PATH} as field to search in
+     * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link org.opencms.search.fields.CmsLuceneField#FIELD_PATH} as field to search in
      */
     @Deprecated
     public Document getDocument(String rootPath) {
@@ -653,8 +653,8 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
         // get the configured analyzer and apply the the field configuration analyzer wrapper
         Analyzer baseAnalyzer = OpenCms.getSearchManager().getAnalyzer(getLocale());
 
-        if (super.getFieldConfiguration() instanceof CmsLuceneSearchFieldConfiguration) {
-            CmsLuceneSearchFieldConfiguration fc = (CmsLuceneSearchFieldConfiguration)getFieldConfiguration();
+        if (super.getFieldConfiguration() instanceof CmsLuceneFieldConfiguration) {
+            CmsLuceneFieldConfiguration fc = (CmsLuceneFieldConfiguration)getFieldConfiguration();
             setAnalyzer(fc.getAnalyzer(baseAnalyzer));
         }
 
@@ -964,7 +964,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
      * 
      * @param fieldConfiguration the field configuration to set
      */
-    public void setFieldConfiguration(CmsLuceneSearchFieldConfiguration fieldConfiguration) {
+    public void setFieldConfiguration(CmsLuceneFieldConfiguration fieldConfiguration) {
 
         super.setFieldConfiguration(fieldConfiguration);
     }

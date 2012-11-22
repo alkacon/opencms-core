@@ -32,7 +32,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
-import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * 
- * Abstract widget dialog for all dialogs working with <code>{@link CmsLuceneSearchFieldConfiguration}</code>.<p> 
+ * Abstract widget dialog for all dialogs working with <code>{@link CmsLuceneFieldConfiguration}</code>.<p> 
  * 
  * @since 6.5.5
  */
@@ -243,10 +243,10 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
             try {
                 m_fieldconfiguration = m_searchManager.getFieldConfiguration(getParamFieldconfiguration());
                 if (m_fieldconfiguration == null) {
-                    m_fieldconfiguration = new CmsLuceneSearchFieldConfiguration();
+                    m_fieldconfiguration = new CmsLuceneFieldConfiguration();
                 }
             } catch (Exception e) {
-                m_fieldconfiguration = new CmsLuceneSearchFieldConfiguration();
+                m_fieldconfiguration = new CmsLuceneFieldConfiguration();
             }
         }
     }

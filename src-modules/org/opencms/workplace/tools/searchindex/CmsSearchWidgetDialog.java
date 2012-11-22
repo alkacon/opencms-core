@@ -35,7 +35,7 @@ import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
-import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
@@ -241,7 +241,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         List<CmsSearchField> result = new ArrayList<CmsSearchField>();
         Iterator<CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {
-            CmsLuceneSearchField field = (CmsLuceneSearchField)i.next();
+            CmsLuceneField field = (CmsLuceneField)i.next();
             if (field.isIndexed() && field.isDisplayed()) {
                 // only include indexed (ie. searchable) fields
                 result.add(field);
@@ -647,7 +647,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         try {
             Iterator<CmsSearchField> i = getSearchFields().iterator();
             while (i.hasNext()) {
-                CmsLuceneSearchField field = (CmsLuceneSearchField)i.next();
+                CmsLuceneField field = (CmsLuceneField)i.next();
                 retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
                     field.getDisplayName())));
             }

@@ -36,8 +36,8 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -197,9 +197,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             m_title = f.stringValue();
         }
         if (m_title == null) {
-            f = doc.getFieldable(CmsSearchFieldConfiguration.getLocaleExtendedName(
-                CmsSearchField.FIELD_TITLE,
-                locale));
+            f = doc.getFieldable(CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE, locale));
             if (f != null) {
                 m_title = f.stringValue();
             }

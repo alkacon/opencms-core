@@ -50,8 +50,8 @@ import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.CmsExtractionResultCache;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
-import org.opencms.search.fields.CmsLuceneSearchField;
-import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneField;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -680,7 +680,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         m_fieldConfigurations = new HashMap<String, CmsSearchFieldConfiguration>();
         // make sure we have a "standard" field configuration
-        addFieldConfiguration(CmsLuceneSearchFieldConfiguration.DEFAULT_STANDARD);
+        addFieldConfiguration(CmsLuceneFieldConfiguration.DEFAULT_STANDARD);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SEARCH_CONFIG_0));
@@ -1213,12 +1213,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return the Lucene search field configurations
      */
-    public List<CmsLuceneSearchFieldConfiguration> getFieldConfigurationsLucene() {
+    public List<CmsLuceneFieldConfiguration> getFieldConfigurationsLucene() {
 
-        List<CmsLuceneSearchFieldConfiguration> result = new ArrayList<CmsLuceneSearchFieldConfiguration>();
+        List<CmsLuceneFieldConfiguration> result = new ArrayList<CmsLuceneFieldConfiguration>();
         for (CmsSearchFieldConfiguration conf : m_fieldConfigurations.values()) {
-            if (conf instanceof CmsLuceneSearchFieldConfiguration) {
-                result.add((CmsLuceneSearchFieldConfiguration)conf);
+            if (conf instanceof CmsLuceneFieldConfiguration) {
+                result.add((CmsLuceneFieldConfiguration)conf);
             }
         }
         Collections.sort(result);
@@ -1782,7 +1782,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @throws CmsIllegalStateException if the given mapping is the last mapping inside the given field.
      */
-    public boolean removeSearchFieldMapping(CmsLuceneSearchField field, CmsSearchFieldMapping mapping)
+    public boolean removeSearchFieldMapping(CmsLuceneField field, CmsSearchFieldMapping mapping)
     throws CmsIllegalStateException {
 
         if (field.getMappings().size() < 2) {

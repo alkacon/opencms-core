@@ -140,6 +140,15 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     }
 
     /**
+     * @see org.opencms.search.extractors.I_CmsExtractionResult#addMappingField(org.opencms.search.fields.CmsSearchField)
+     */
+    public void addMappingField(CmsSearchField field) {
+
+        m_mappingFields.add(field);
+
+    }
+
+    /**
      * @see org.opencms.search.extractors.I_CmsExtractionResult#getBytes()
      */
     public byte[] getBytes() {
@@ -195,14 +204,5 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         }
         m_contentItems = null;
         m_serializedVersion = null;
-    }
-
-    /**
-     * @see org.opencms.search.extractors.I_CmsExtractionResult#addMappingField(org.opencms.search.fields.CmsSearchField)
-     */
-    public void addMappingField(CmsSearchField field) {
-
-        m_mappingFields.add(field);
-
     }
 }

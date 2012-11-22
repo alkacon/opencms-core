@@ -42,6 +42,17 @@ public class CmsIndexNoContentException extends CmsIndexException {
     private static final long serialVersionUID = 3349103125695597197L;
 
     /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsIndexNoContentException(CmsMessageContainer container) {
+
+        super(container);
+
+    }
+
+    /**
      * Creates a new localized Exception that also contains a root cause.<p>
      * 
      * @param container the localized message container to use
@@ -50,17 +61,6 @@ public class CmsIndexNoContentException extends CmsIndexException {
     public CmsIndexNoContentException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-
-    }
-
-    /**
-     * Creates a new localized Exception.<p>
-     * 
-     * @param container the localized message container to use
-     */
-    public CmsIndexNoContentException(CmsMessageContainer container) {
-
-        super(container);
 
     }
 

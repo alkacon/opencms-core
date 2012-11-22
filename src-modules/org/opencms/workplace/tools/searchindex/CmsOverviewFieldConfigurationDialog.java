@@ -37,7 +37,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * 
- * Widget dialog for an overview of a <code>{@link org.opencms.search.fields.CmsLuceneSearchFieldConfiguration}</code>.<p> 
+ * Widget dialog for an overview of a <code>{@link org.opencms.search.fields.CmsLuceneFieldConfiguration}</code>.<p> 
  * 
  * @since 6.5.5
  */

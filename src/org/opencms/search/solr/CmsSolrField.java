@@ -32,7 +32,7 @@
 package org.opencms.search.solr;
 
 import org.opencms.main.OpenCms;
-import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 
@@ -65,7 +65,7 @@ public class CmsSolrField extends CmsSearchField {
      * 
      * @param luceneField
      */
-    public CmsSolrField(CmsLuceneSearchField luceneField) {
+    public CmsSolrField(CmsLuceneField luceneField) {
 
         super();
         String name = luceneField.getName();

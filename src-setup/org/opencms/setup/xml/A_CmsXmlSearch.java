@@ -31,7 +31,7 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.CmsVfsIndexer;
-import org.opencms.search.fields.CmsLuceneSearchField;
+import org.opencms.search.fields.CmsLuceneField;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
@@ -70,7 +70,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
             xpath + "/" + CmsSearchConfiguration.N_DESCRIPTION,
             fieldConf.getDescription());
         for (CmsSearchField sField : fieldConf.getFields()) {
-            CmsLuceneSearchField field = (CmsLuceneSearchField)sField;
+            CmsLuceneField field = (CmsLuceneField)sField;
             String fieldPath = xpath
                 + "/"
                 + CmsSearchConfiguration.N_FIELDS
@@ -159,7 +159,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
      * @param xpath the xpath to the field, ie <code>opencms/search/fieldconfigurations/fieldconfiguration[name='...']/fields/field[@name="..."]</code>
      * @param field the field
      */
-    protected void createField(Document document, String xpath, CmsLuceneSearchField field) {
+    protected void createField(Document document, String xpath, CmsLuceneField field) {
 
         CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_NAME, field.getName());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDisplayNameForConfiguration())) {
@@ -172,7 +172,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
             CmsSetupXmlHelper.setValue(
                 document,
                 xpath + "/@" + CmsSearchConfiguration.A_STORE,
-                CmsLuceneSearchField.STR_COMPRESS);
+                CmsLuceneField.STR_COMPRESS);
         } else {
             CmsSetupXmlHelper.setValue(
                 document,
@@ -186,7 +186,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
                 index = CmsStringUtil.TRUE;
             } else {
                 // indexed but not tokenized
-                index = CmsLuceneSearchField.STR_UN_TOKENIZED;
+                index = CmsLuceneField.STR_UN_TOKENIZED;
             }
         } else {
             // not indexed at all

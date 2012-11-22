@@ -31,7 +31,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
-import org.opencms.search.fields.CmsLuceneSearchFieldConfiguration;
+import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -71,12 +71,12 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
         if ((doc == null) || (index == null) || (params == null) || (analyzer == null) || (query == null)) {
             return null;
         }
-        if (!(index.getFieldConfiguration() instanceof CmsLuceneSearchFieldConfiguration)) {
+        if (!(index.getFieldConfiguration() instanceof CmsLuceneFieldConfiguration)) {
             // also return null if the field configuration is not a lucene field configuration
             return null;
         }
         Highlighter highlighter = null;
-        CmsLuceneSearchFieldConfiguration conf = (CmsLuceneSearchFieldConfiguration)index.getFieldConfiguration();
+        CmsLuceneFieldConfiguration conf = (CmsLuceneFieldConfiguration)index.getFieldConfiguration();
         Iterator<String> excerptFieldNames = conf.getExcerptFieldNames().iterator();
         StringBuffer excerptBuffer = new StringBuffer();
         while (excerptFieldNames.hasNext()) {

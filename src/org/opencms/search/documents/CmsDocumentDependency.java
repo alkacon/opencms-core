@@ -711,7 +711,7 @@ public final class CmsDocumentDependency {
 
         Map<Integer, CmsDocumentDependency> attachments = new HashMap<Integer, CmsDocumentDependency>();
         if (isAttachment()) {
-            attachments.put(new Integer(this.getAttachmentNumber()), this);
+            attachments.put(new Integer(getAttachmentNumber()), this);
         }
 
         // iterate all resources in the folder to check if this is a language version

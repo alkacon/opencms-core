@@ -33,9 +33,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.OpenCms;
 import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
-import org.opencms.search.fields.CmsSearchField;
 
 import java.util.List;
 import java.util.Locale;
