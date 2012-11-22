@@ -869,7 +869,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void addFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
 
-        fieldConfiguration.init();
         m_fieldConfigurations.put(fieldConfiguration.getName(), fieldConfiguration);
         if (fieldConfiguration.getFields().isEmpty()) {
             LOG.debug(Messages.get().getBundle().key(
