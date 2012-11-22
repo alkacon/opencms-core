@@ -331,6 +331,13 @@ public interface I_CmsXmlContentHandler {
     boolean isAcaciaEditorDisabled();
 
     /**
+     * Returns the exclude from index flag.<p>
+     *
+     * @return the exclude from index flag
+     */
+    boolean isExcludedFromIndex();
+
+    /**
      * Returns <code>true</code> in case the given value should be searchable with 
      * the integrated full text search.<p> 
      * 

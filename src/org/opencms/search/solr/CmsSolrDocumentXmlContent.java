@@ -45,8 +45,10 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.HashMap;
@@ -82,6 +84,29 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
      */
     @Override
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    throws CmsException {
+
+        I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+        if (handler.isExcludedFromIndex()) {
+            // if the exclude attribute is set to 'true' in the 'searchsettings'-node of the XSD
+            return new CmsExtractionResult(true);
+        } else {
+            return extractElementContent(cms, resource, index);
+        }
+    }
+
+    /**
+     * Performs the extraction.<p>
+     * 
+     * @param cms the cms object
+     * @param resource the resource to extract the content from
+     * @param index the index to extract the content for
+     * 
+     * @return the extracted content of the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public I_CmsExtractionResult extractElementContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
     throws CmsException {
 
         logContentExtraction(resource, index);

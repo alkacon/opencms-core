@@ -127,9 +127,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "collapse" appinfo attribute name. */
     public static final String APPINFO_ATTR_COLLAPSE = "collapse";
 
-    /** Constant for the "forbidden-contexts" appinfo attribute name. */
-    public static final String APPINFO_FORBIDDEN_CONTEXTS = "forbidden-contexts";
-
     /** Constant for the "configuration" appinfo attribute name. */
     public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
 
@@ -147,6 +144,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "error" appinfo attribute name. */
     public static final String APPINFO_ATTR_ERROR = "error";
+
+    /** The exclude from index attribute. */
+    public static final String APPINFO_ATTR_EXCLUDE = "exclude";
 
     /** Constant for the "invalidate" appinfo attribute name. */
     public static final String APPINFO_ATTR_INVALIDATE = "invalidate";
@@ -244,6 +244,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "defaults" appinfo element name. */
     public static final String APPINFO_DEFAULTS = "defaults";
 
+    /** Constant for the "forbidden-contexts" appinfo attribute name. */
+    public static final String APPINFO_FORBIDDEN_CONTEXTS = "forbidden-contexts";
+
     /** Constant for the "formatter" appinfo element name. */
     public static final String APPINFO_FORMATTER = "formatter";
 
@@ -295,12 +298,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
 
-    /** Node name. */
-    public static final String APPINFO_TEMPLATE = "template";
-
-    /** Node name. */
-    public static final String APPINFO_TEMPLATES = "templates";
-
     /** The file where the default appinfo schema is located. */
     public static final String APPINFO_SCHEMA_FILE = "org/opencms/xml/content/DefaultAppinfo.xsd";
 
@@ -336,6 +333,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "tabs" appinfo element name. */
     public static final String APPINFO_TABS = "tabs";
 
+    /** Node name. */
+    public static final String APPINFO_TEMPLATE = "template";
+
+    /** Node name. */
+    public static final String APPINFO_TEMPLATES = "templates";
+
     /** Constant for the "validationrule" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULE = "validationrule";
 
@@ -344,6 +347,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "xmlbundle" appinfo element name. */
     public static final String APPINFO_XMLBUNDLE = "xmlbundle";
+
+    /** Attribute name. */
+    public static final String ATTR_ENABLED = "enabled";
+
+    /** Attribute name. */
+    public static final String ATTR_ENABLED_BY_DEFAULT = "enabledByDefault";
+
+    /** Attribute name. */
+    public static final String ATTR_USE_ACACIA = "useAcacia";
 
     /** Constant for head include type attribute: CSS. */
     public static final String ATTRIBUTE_INCLUDE_TYPE_CSS = "css";
@@ -375,11 +387,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The principal list separator. */
     private static final String PRINCIPAL_LIST_SEPARATOR = ",";
 
-    /** The configuration values for the element widgets (as defined in the annotations). */
-    protected Map<String, String> m_configurationValues;
-
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
+
+    /** The configuration values for the element widgets (as defined in the annotations). */
+    protected Map<String, String> m_configurationValues;
 
     /** The CSS resources to include into the html-page head. */
     protected Set<String> m_cssHeadIncludes;
@@ -432,6 +444,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The list of mappings to the "Title" property. */
     protected List<String> m_titleMappings;
 
+    /** Flag which controls whether the Acacia editor should be disabled for this type. */
+    protected boolean m_useAcacia = true;
+
     /** The messages for the error validation rules. */
     protected Map<String, String> m_validationErrorMessages;
 
@@ -444,17 +459,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
 
-    /** Attribute name. */
-    public static final String ATTR_ENABLED_BY_DEFAULT = "enabledByDefault";
-
-    /** Attribute name. */
-    public static final String ATTR_ENABLED = "enabled";
-
-    /** Attribute name. */
-    public static final String ATTR_USE_ACACIA = "useAcacia";
-
-    /** Flag which controls whether the Acacia editor should be disabled for this type. */
-    protected boolean m_useAcacia = true;
+    /** The exclude from index flag. */
+    private boolean m_excludedFromIndex;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -919,6 +925,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public boolean isAcaciaEditorDisabled() {
 
         return !m_useAcacia;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isExcludedFromIndex()
+     */
+    public boolean isExcludedFromIndex() {
+
+        return m_excludedFromIndex;
     }
 
     /**
@@ -2143,6 +2157,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void initSearchSettings(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
 
+        String exclude = root.attributeValue(APPINFO_ATTR_EXCLUDE);
+        m_excludedFromIndex = (!CmsStringUtil.isEmpty(exclude)) || (Boolean.valueOf(exclude).booleanValue());
         Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(root, APPINFO_SEARCHSETTING);
         while (i.hasNext()) {
             Element element = i.next();

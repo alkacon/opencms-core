@@ -41,6 +41,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -90,6 +91,11 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
         try {
             CmsFile file = readFile(cms, resource);
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
+            I_CmsXmlContentHandler handler = xmlContent.getHandler();
+            if (handler.isExcludedFromIndex()) {
+                // if the exclude attribute is set to 'true' in the 'searchsettings'-node of the XSD
+                return new CmsExtractionResult(true);
+            }
             Locale locale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
 
             List<String> elements = xmlContent.getNames(locale);
@@ -99,7 +105,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                 String xpath = i.next();
                 // xpath will have the form "Text[1]" or "Nested[1]/Text[1]"
                 I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
-                if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
+                if (handler.isSearchable(value)) {
                     // the content value is searchable
                     String extracted = value.getPlainText(cms);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {

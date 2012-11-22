@@ -78,6 +78,13 @@ public interface I_CmsExtractionResult {
     /** Key to access the document title in the item map. */
     String ITEM_TITLE = "title";
 
+    /**
+     * Returns the exclude flag.<p>
+     *
+     * @return the exclude flag
+     */
+    public boolean isExclude();
+
     /** 
      * Adds a mapping field to the extraction result.<p>
      * 

@@ -115,6 +115,7 @@
 		<xsd:sequence>
 			<xsd:element name="searchsetting" type="OpenCmsDefaultAppinfoSearchsetting" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
+        <xsd:attribute name="exclude" type="xsd:boolean" use="optional" default="false" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoSearchsetting">
