@@ -137,6 +137,16 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
+     * Returns all configured Solr fields.<p>
+     * 
+     * @return all configured Solr fields
+     */
+    public Map<String, CmsSolrField> getSolrFields() {
+
+        return Collections.unmodifiableMap(m_solrFields);
+    }
+
+    /**
      * Initializes the Solr field configuration.<p>
      */
     @Override
