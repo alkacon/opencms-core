@@ -422,13 +422,15 @@ public class CmsJspNavBuilder {
         folder = CmsFileUtil.removeTrailingSeparator(folder);
         List<CmsJspNavElement> result = new ArrayList<CmsJspNavElement>();
 
-        List<CmsResource> resources;
+        List<CmsResource> resources = null;
         try {
 
             resources = m_cms.getResourcesInFolder(folder, resourceFilter);
         } catch (Exception e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);
+        }
+        if (resources == null) {
             return Collections.<CmsJspNavElement> emptyList();
         }
         boolean includeAll = visibility == Visibility.all;
@@ -688,7 +690,7 @@ public class CmsJspNavBuilder {
                 }
             }
         } catch (Exception e) {
-            // should never happen
+            // may happen if permissions are not sufficient
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }

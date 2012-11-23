@@ -240,6 +240,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (m_configuration.getTabIds() != null) {
             m_tabIds = m_configuration.getTabIds();
         }
+
         setShowSiteSelector(m_configuration.isShowSiteSelector());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration.getStartSite())) {
             setStartSite(m_configuration.getStartSite());
@@ -550,18 +551,15 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     public String getPreselectOption(String siteRoot, List<CmsSiteSelectorOption> options) {
 
-        int i = 0;
         if ((siteRoot == null) || options.isEmpty()) {
             return null;
         }
         for (CmsSiteSelectorOption option : options) {
-            String key = "" + i;
             if (CmsStringUtil.joinPaths(siteRoot, "/").equals(CmsStringUtil.joinPaths(option.getSiteRoot(), "/"))) {
-                return key;
+                return option.getSiteRoot();
             }
-            i += 1;
         }
-        return null;
+        return options.get(0).getSiteRoot();
     }
 
     /**
@@ -1634,8 +1632,10 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         if (m_startSite != null) {
             return m_startSite;
-        } else {
+        } else if ((options != null) && (!options.isEmpty())) {
             return options.get(0).getSiteRoot();
+        } else {
+            return CmsCoreProvider.get().getSiteRoot();
         }
     }
 

@@ -31,6 +31,8 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption.Type;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
@@ -124,18 +126,26 @@ public class CmsSiteSelectorOptionBuilder {
 
         CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
         List<CmsSite> sites = siteManager.getAvailableSites(m_cms, true, false, m_cms.getRequestContext().getOuFqn());
-        for (CmsSite site : sites) {
-            String siteRoot = site.getSiteRoot();
-            Type type = Type.site;
-            String message = siteRoot;
-            if (siteRoot.equals("")) {
-                type = Type.root;
-                message = "/";
-                if (!includeRoot) {
-                    continue;
+        try {
+            CmsObject rootCms = OpenCms.initCmsObject(m_cms);
+            rootCms.getRequestContext().setSiteRoot("/");
+            for (CmsSite site : sites) {
+                String siteRoot = site.getSiteRoot();
+                if (rootCms.existsResource(siteRoot, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    Type type = Type.site;
+                    String message = siteRoot;
+                    if (siteRoot.equals("")) {
+                        type = Type.root;
+                        message = "/";
+                        if (!includeRoot) {
+                            continue;
+                        }
+                    }
+                    addOption(type, siteRoot, message);
                 }
             }
-            addOption(type, siteRoot, message);
+        } catch (CmsException e) {
+            // TODO: improve logging
         }
     }
 
@@ -145,7 +155,7 @@ public class CmsSiteSelectorOptionBuilder {
     public void addSharedSite() {
 
         String shared = OpenCms.getSiteManager().getSharedFolder();
-        if (shared != null) {
+        if ((shared != null) && m_cms.existsResource(shared, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
             addOption(
                 Type.shared,
                 shared,

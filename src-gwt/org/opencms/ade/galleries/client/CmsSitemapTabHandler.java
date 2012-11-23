@@ -100,15 +100,12 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
      */
     public LinkedHashMap<String, String> getSortList() {
 
-        if (!m_controller.isShowSiteSelector()) {
+        if (!m_controller.isShowSiteSelector() || !(m_controller.getSitemapSiteSelectorOptions().size() > 1)) {
             return null;
         }
         LinkedHashMap<String, String> options = new LinkedHashMap<String, String>();
-        int i = 0;
         for (CmsSiteSelectorOption option : m_controller.getSitemapSiteSelectorOptions()) {
-            String key = "" + i;
-            options.put(key, option.getMessage());
-            i += 1;
+            options.put(option.getSiteRoot(), option.getMessage());
         }
         return options;
     }
@@ -144,21 +141,21 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         if (getTab().isInitialized()) {
             getTab().onContentChange();
         } else {
-            String key = m_controller.getPreselectOption(
+            String siteRoot = m_controller.getPreselectOption(
                 m_controller.getStartSiteRoot(),
                 m_controller.getSitemapSiteSelectorOptions());
-            getTab().setSortSelectBoxValue(key);
-            getSubEntries(
-                m_controller.getDefaultVfsTabSiteRoot(),
-                true,
-                new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
+            getTab().setSortSelectBoxValue(siteRoot);
+            if (siteRoot == null) {
+                siteRoot = m_controller.getDefaultVfsTabSiteRoot();
+            }
+            getSubEntries(siteRoot, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
-                    public void execute(List<CmsSitemapEntryBean> result) {
+                public void execute(List<CmsSitemapEntryBean> result) {
 
-                        getTab().fillInitially(result);
-                        getTab().onContentChange();
-                    }
-                });
+                    getTab().fillInitially(result);
+                    getTab().onContentChange();
+                }
+            });
         }
     }
 
@@ -168,10 +165,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(String sortParams, String filter) {
 
-        int siteIndex = Integer.parseInt(sortParams);
-
-        final CmsSiteSelectorOption option = m_controller.getSitemapSiteSelectorOptions().get(siteIndex);
-        m_controller.getSubEntries(option.getSiteRoot(), true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
+        m_controller.getSubEntries(sortParams, true, new I_CmsSimpleCallback<List<CmsSitemapEntryBean>>() {
 
             public void execute(List<CmsSitemapEntryBean> entries) {
 

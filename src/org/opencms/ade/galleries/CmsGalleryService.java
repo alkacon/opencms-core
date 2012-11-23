@@ -440,7 +440,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(conf.getStartSite())) {
                             cloneCms.getRequestContext().setSiteRoot(conf.getStartSite());
                         }
-                        if (cloneCms.existsResource(conf.getStartFolder())) {
+                        if (cloneCms.existsResource(conf.getStartFolder(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                             data.setStartFolder(cloneCms.getRequestContext().addSiteRoot(conf.getStartFolder()));
                         }
                     } catch (CmsException e) {
@@ -593,6 +593,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsJspNavElement navElement = navBuilder.getNavigationForResource(
                     rootPath,
                     CmsResourceFilter.ONLY_VISIBLE);
+                if (navElement == null) {
+                    return result;
+                }
                 CmsSitemapEntryBean root = prepareSitemapEntry(rootCms, navElement, isRoot);
                 root.setChildren(result);
                 return Collections.singletonList(root);
@@ -612,14 +615,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         try {
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
             cms.getRequestContext().setSiteRoot("");
-            CmsResource resource = cms.readResource(rootPath);
-            List<CmsResource> resources = cms.getSubFolders(resource.getRootPath());
             List<CmsVfsEntryBean> result = new ArrayList<CmsVfsEntryBean>();
-            for (CmsResource res : resources) {
-                String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                result.add(new CmsVfsEntryBean(res.getRootPath(), res.getStructureId(), title, false, isEditable(
-                    cms,
-                    res)));
+            if (cms.existsResource(rootPath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                CmsResource resource = cms.readResource(rootPath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                List<CmsResource> resources = cms.getSubFolders(
+                    resource.getRootPath(),
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                for (CmsResource res : resources) {
+                    String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                    result.add(new CmsVfsEntryBean(res.getRootPath(), res.getStructureId(), title, false, isEditable(
+                        cms,
+                        res)));
+                }
             }
             return result;
         } catch (Throwable e) {
@@ -636,6 +643,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         try {
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
             cms.getRequestContext().setSiteRoot("");
+            if (!cms.existsResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                String startFolder = CmsStringUtil.joinPaths(
+                    path,
+                    getWorkplaceSettings().getUserSettings().getStartFolder());
+                if (cms.existsResource(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    path = startFolder;
+                }
+            }
             CmsResource optionRes = cms.readResource(path);
             CmsVfsEntryBean entryBean = new CmsVfsEntryBean(path, optionRes.getStructureId(), path, true, isEditable(
                 cms,
@@ -828,9 +843,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setType(sResult.getResourceType());
         // structured id
         bean.setClientId(sResult.getStructureId());
-        CmsResource resultResource = cms.readResource(
-            new CmsUUID(sResult.getStructureId()),
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+        CmsResource resultResource = cms.readResource(new CmsUUID(sResult.getStructureId()));
         CmsVfsService.addLockInfo(cms, resultResource, bean);
         String permalink = CmsStringUtil.joinPaths(
             OpenCms.getSystemInfo().getOpenCmsContext(),
@@ -1230,14 +1243,27 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         List<CmsVfsEntryBean> rootFolders = new ArrayList<CmsVfsEntryBean>();
         CmsObject cms = getCmsObject();
         try {
-            CmsResource rootFolderResource = getCmsObject().readResource("/");
-            String title = cms.readPropertyObject("/", CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-            rootFolders.add(new CmsVfsEntryBean(
-                rootFolderResource.getRootPath(),
-                rootFolderResource.getStructureId(),
-                title,
-                true,
-                isEditable(getCmsObject(), rootFolderResource)));
+            String path = "/";
+            if (!cms.existsResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                String startFolder = getWorkplaceSettings().getUserSettings().getStartFolder();
+                if (cms.existsResource(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    path = startFolder;
+                } else {
+                    path = null;
+                }
+            }
+            if (path != null) {
+                CmsResource rootFolderResource = getCmsObject().readResource(
+                    path,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                String title = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                rootFolders.add(new CmsVfsEntryBean(
+                    rootFolderResource.getRootPath(),
+                    rootFolderResource.getStructureId(),
+                    title,
+                    true,
+                    isEditable(getCmsObject(), rootFolderResource)));
+            }
 
         } catch (CmsException e) {
             error(e);

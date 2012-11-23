@@ -96,15 +96,12 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
      */
     public LinkedHashMap<String, String> getSortList() {
 
-        if (!m_controller.isShowSiteSelector()) {
+        if (!m_controller.isShowSiteSelector() || !(m_controller.getVfsSiteSelectorOptions().size() > 1)) {
             return null;
         }
         LinkedHashMap<String, String> options = new LinkedHashMap<String, String>();
-        int i = 0;
         for (CmsSiteSelectorOption option : m_controller.getVfsSiteSelectorOptions()) {
-            String key = "" + i;
-            options.put(key, option.getMessage());
-            i += 1;
+            options.put(option.getSiteRoot(), option.getMessage());
         }
         return options;
 
@@ -156,26 +153,27 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
         if (m_tabInitialized) {
             m_tab.onContentChange();
         } else {
-            String key = m_controller.getPreselectOption(
+            String siteRoot = m_controller.getPreselectOption(
                 m_controller.getStartSiteRoot(),
                 m_controller.getVfsSiteSelectorOptions());
-            m_tab.setSortSelectBoxValue(key);
-            m_controller.loadVfsEntryBean(
-                m_controller.getDefaultVfsTabSiteRoot(),
-                new AsyncCallback<CmsVfsEntryBean>() {
+            m_tab.setSortSelectBoxValue(siteRoot);
+            if (siteRoot == null) {
+                siteRoot = m_controller.getDefaultVfsTabSiteRoot();
+            }
+            m_controller.loadVfsEntryBean(siteRoot, new AsyncCallback<CmsVfsEntryBean>() {
 
-                    public void onFailure(Throwable caught) {
+                public void onFailure(Throwable caught) {
 
-                        // nothing to do
-                    }
+                    // nothing to do
+                }
 
-                    public void onSuccess(CmsVfsEntryBean result) {
+                public void onSuccess(CmsVfsEntryBean result) {
 
-                        m_tab.fillInitially(Collections.singletonList(result));
-                        m_tabInitialized = true;
-                        m_tab.onContentChange();
-                    }
-                });
+                    m_tab.fillInitially(Collections.singletonList(result));
+                    m_tabInitialized = true;
+                    m_tab.onContentChange();
+                }
+            });
 
         }
     }
@@ -186,9 +184,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
     @Override
     public void onSort(String sortParams, String filter) {
 
-        int siteIndex = Integer.parseInt(sortParams);
-        final CmsSiteSelectorOption option = m_controller.getVfsSiteSelectorOptions().get(siteIndex);
-        m_controller.loadVfsEntryBean(option.getSiteRoot(), new AsyncCallback<CmsVfsEntryBean>() {
+        m_controller.loadVfsEntryBean(sortParams, new AsyncCallback<CmsVfsEntryBean>() {
 
             public void onFailure(Throwable caught) {
 
