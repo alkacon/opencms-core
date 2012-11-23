@@ -281,6 +281,7 @@
    <dynamicField name="*_tdt"        type="tdate"        indexed="true"  stored="true"/>
    <dynamicField name="*_dt"         type="date"         indexed="true"  stored="true"/>
    <dynamicField name="*_pi"         type="pint"         indexed="true"  stored="true"/>
+   <dynamicField name="*_loc"        type="location"     indexed="true"  stored="true"/>
    <dynamicField name="attr_*"       type="text_general" indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="random_*"     type="random" />
    <dynamicField name="text_*"       type="text_general" indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
