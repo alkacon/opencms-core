@@ -27,6 +27,7 @@
     <fieldType name="sfloat" class="solr.SortableFloatField" sortMissingLast="true" omitNorms="true"/>
     <fieldType name="sdouble" class="solr.SortableDoubleField" sortMissingLast="true" omitNorms="true"/>
     <fieldType name="random" class="solr.RandomSortField" indexed="true" />
+    <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
 
     <!-- A text field that only splits on whitespace for exact matching of words -->
     <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="2">
@@ -241,6 +242,7 @@
    <field name="category"            type="text_general" indexed="true"  stored="true" multiValued="true" />
    <field name="category_exact"      type="string"       indexed="true"  stored="true" multiValued="true" termVectors="true" /><!-- is copied -->
    <field name="dependencyType"       type="string"       indexed="true" stored="true" />
+   <field name="place"               type="location"     indexed="true"  stored="true" />
    <field name="text"                type="text_general" indexed="true"  stored="true" multiValued="true"/><!-- Catchall for general text fields -->
    <field name="text_en"             type="text_en"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for English text fields -->
    <field name="text_de"             type="text_de"      indexed="true"  stored="true" multiValued="true"/><!-- Catchall for German  text fields -->
