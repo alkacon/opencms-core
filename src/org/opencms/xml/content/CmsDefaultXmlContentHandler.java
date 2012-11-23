@@ -2206,18 +2206,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     float boost = Float.valueOf(solrElement.attributeValue(APPINFO_ATTR_BOOST, defaultBoost)).floatValue();
                     CmsSolrField field = new CmsSolrField(targetField, copyFields, locale, defaultValue, boost);
 
-                    // create a mapping for the element itself
-                    CmsSearchFieldMapping valueMapping = new CmsSearchFieldMapping(
-                        CmsSearchFieldMappingType.ITEM,
-                        CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, locale));
-                    field.addMapping(valueMapping);
-
                     // create the field mappings for this element
                     Iterator<Element> ite = CmsXmlGenericWrapper.elementIterator(solrElement, APPINFO_ATTR_MAPPING);
                     while (ite.hasNext()) {
                         Element mappingElement = ite.next();
                         field.addMapping(createSearchFieldMapping(contentDefinition, mappingElement, locale));
                     }
+
+                    // if no mapping was defined yet, create a mapping for the element itself 
+                    if ((field.getMappings() != null) && !field.getMappings().isEmpty()) {
+
+                        CmsSearchFieldMapping valueMapping = new CmsSearchFieldMapping(
+                            CmsSearchFieldMappingType.ITEM,
+                            CmsSearchFieldConfiguration.getLocaleExtendedName(elementName, locale));
+                        field.addMapping(valueMapping);
+                    }
+
                     addSearchField(contentDefinition, field);
                 }
             }
