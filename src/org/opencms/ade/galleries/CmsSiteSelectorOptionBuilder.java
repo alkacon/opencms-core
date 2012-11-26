@@ -122,16 +122,42 @@ public class CmsSiteSelectorOptionBuilder {
      * 
      * @param includeRoot if true, also adds the root site 
      */
-    public void addNormalSites(boolean includeRoot) {
+    public void addNormalSites(boolean includeRoot, String startFolder) {
 
         CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
         List<CmsSite> sites = siteManager.getAvailableSites(m_cms, true, false, m_cms.getRequestContext().getOuFqn());
         try {
             CmsObject rootCms = OpenCms.initCmsObject(m_cms);
             rootCms.getRequestContext().setSiteRoot("/");
+            if (sites.isEmpty()) {
+                String siteRoot = m_cms.getRequestContext().getSiteRoot();
+                if (!rootCms.existsResource(siteRoot, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    if (startFolder != null) {
+                        siteRoot = CmsStringUtil.joinPaths(siteRoot, startFolder);
+                    }
+                    if ((startFolder == null)
+                        || !rootCms.existsResource(siteRoot, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                        siteRoot = null;
+                    }
+                }
+                if (siteRoot != null) {
+                    Type type = Type.site;
+                    String message = siteRoot;
+                    addOption(type, siteRoot, message);
+                }
+            }
             for (CmsSite site : sites) {
                 String siteRoot = site.getSiteRoot();
-                if (rootCms.existsResource(siteRoot, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                if (!rootCms.existsResource(siteRoot, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    if (startFolder != null) {
+                        siteRoot = CmsStringUtil.joinPaths(siteRoot, startFolder);
+                    }
+                    if ((startFolder == null)
+                        || !rootCms.existsResource(siteRoot, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                        siteRoot = null;
+                    }
+                }
+                if (siteRoot != null) {
                     Type type = Type.site;
                     String message = siteRoot;
                     if (siteRoot.equals("")) {

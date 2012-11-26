@@ -477,12 +477,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
         }
         CmsSiteSelectorOptionBuilder optionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
-        optionBuilder.addNormalSites(true);
+        optionBuilder.addNormalSites(true, getWorkplaceSettings().getUserSettings().getStartFolder());
         optionBuilder.addSharedSite();
         data.setVfsSiteSelectorOptions(optionBuilder.getOptions());
 
         CmsSiteSelectorOptionBuilder sitemapOptionBuilder = new CmsSiteSelectorOptionBuilder(getCmsObject());
-        sitemapOptionBuilder.addNormalSites(false);
+        sitemapOptionBuilder.addNormalSites(false, null);
         if (data.getReferenceSitePath() != null) {
             sitemapOptionBuilder.addCurrentSubsite(getCmsObject().addSiteRoot(data.getReferenceSitePath()));
         }
