@@ -162,7 +162,14 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         if (m_editableData.getElementName() != null) {
             formValues.put("elementname", m_editableData.getElementName());
         }
-        formValues.put("backlink", CmsCoreProvider.get().getUri() + Window.Location.getQueryString());
+        String backlink = CmsCoreProvider.get().getUri();
+        if (Window.Location.getPath().endsWith(backlink)) {
+            // CmsCoreProvider.get().getUri() is the request context uri from the time the direct edit provider
+            // includes are generated. In case the template has changed the request context uri before that point, 
+            // we don't append the request parameters, as they may be inappropriate for the new URI. 
+            backlink += Window.Location.getQueryString();
+        }
+        formValues.put("backlink", backlink);
         formValues.put("redirect", "true");
         formValues.put("directedit", "true");
         formValues.put("editcontext", CmsCoreProvider.get().getUri());
