@@ -298,15 +298,15 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
         assertTrue("Choice sequence B not recognized", xmlcontent.hasChoiceOptions("ChoiceTestB", Locale.ENGLISH));
         assertTrue("Choice sequence C not recognized", xmlcontent.hasChoiceOptions("ChoiceTestC", Locale.ENGLISH));
 
-        assertTrue("Choice sequence A sub-options not recognized", xmlcontent.hasChoiceOptions(
-            "ChoiceTestA/DateTimeChoice",
-            Locale.ENGLISH));
-        assertTrue("Choice sequence B sub-options not recognized", xmlcontent.hasChoiceOptions(
-            "ChoiceTestB/HtmlChoice",
-            Locale.ENGLISH));
-        assertFalse("Choice sequence C sub-options wrongly recognized", xmlcontent.hasChoiceOptions(
-            "ChoiceTestC/NameChoiceC",
-            Locale.ENGLISH));
+        assertTrue(
+            "Choice sequence A sub-options not recognized",
+            xmlcontent.hasChoiceOptions("ChoiceTestA/DateTimeChoice", Locale.ENGLISH));
+        assertTrue(
+            "Choice sequence B sub-options not recognized",
+            xmlcontent.hasChoiceOptions("ChoiceTestB/HtmlChoice", Locale.ENGLISH));
+        assertFalse(
+            "Choice sequence C sub-options wrongly recognized",
+            xmlcontent.hasChoiceOptions("ChoiceTestC/NameChoiceC", Locale.ENGLISH));
 
         List<I_CmsXmlSchemaType> choices = xmlcontent.getChoiceOptions("ChoiceTestA", Locale.ENGLISH);
         assertTrue("Choice sequence A must have 2 choice options", choices.size() == 2);
@@ -383,12 +383,12 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
         System.out.println(content.toString());
 
         I_CmsXmlContentValue v1 = content.getValue("ChoiceTestA/StringChoice", Locale.ENGLISH);
-        I_CmsXmlContentValue v2 = content.getValue("ChoiceTestA/StringChoice", Locale.ENGLISH, 1);
+        I_CmsXmlContentValue v2 = content.getValue("ChoiceTestA/StringChoice", Locale.ENGLISH, 0);
         assertTrue("StringChoice value must be available through xpath lookup", v1 != null);
         assertTrue("StringChoice value must be available through index lookup 1", v2 != null);
         assertSame("Value from index and xpath lookup must be the same", v1, v2);
 
-        content.removeValue("ChoiceTestA/StringChoice", Locale.ENGLISH, 1);
+        content.removeValue("ChoiceTestA/StringChoice", Locale.ENGLISH, 0);
         content.removeValue("ChoiceTestA/DateTimeChoice", Locale.ENGLISH, 0);
         System.out.println(content.toString());
     }

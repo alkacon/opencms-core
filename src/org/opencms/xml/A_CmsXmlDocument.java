@@ -295,6 +295,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                                         Element category = elements.get(0);
                                         List<Element> categories = new ArrayList<Element>();
                                         for (Element value : elements) {
+                                            @SuppressWarnings("unchecked")
                                             Iterator<Element> itLink = value.elementIterator();
                                             while (itLink.hasNext()) {
                                                 Element link = itLink.next();
