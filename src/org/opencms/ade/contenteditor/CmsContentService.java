@@ -527,7 +527,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             }
             String path = parentPath + child.getName();
             if (registeredTypes.get(subTypeName).isSimpleType()) {
-                I_CmsXmlContentValue value = content.getValue(path, locale, counter);
+                I_CmsXmlContentValue value = content.getValueForEntity(path, locale, counter);
                 result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
                 Entity subEntity = readEntity(
@@ -589,14 +589,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     String elementPath = parentPath + getElementName(choiceAttribute.getAttributeName());
                     if (choiceAttribute.isSimpleValue()) {
                         String value = choiceAttribute.getSimpleValue();
-                        I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                        I_CmsXmlContentValue field = content.getValueForEntity(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
                         }
                         field.setStringValue(cms, value);
                     } else {
                         I_Entity child = choiceAttribute.getComplexValue();
-                        I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                        I_CmsXmlContentValue field = content.getValueForEntity(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
                         }
@@ -609,7 +609,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     List<String> values = attribute.getSimpleValues();
                     for (int i = 0; i < values.size(); i++) {
                         String value = values.get(i);
-                        I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                        I_CmsXmlContentValue field = content.getValueForEntity(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
                         }
@@ -620,7 +620,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     List<I_Entity> entities = attribute.getComplexValues();
                     for (int i = 0; i < entities.size(); i++) {
                         I_Entity child = entities.get(i);
-                        I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
+                        I_CmsXmlContentValue field = content.getValueForEntity(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
                         }

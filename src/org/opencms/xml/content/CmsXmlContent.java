@@ -564,6 +564,36 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
+     * Gets the XML content value for use in entities, e.g. for the new Acacia editor.<p>
+     * 
+     * @param path the xpath of the value 
+     * @param locale the locale 
+     * @param index the index of the value 
+     * 
+     * @return the content value 
+     */
+    public I_CmsXmlContentValue getValueForEntity(String path, Locale locale, int index) {
+
+        I_CmsXmlContentValue result = super.getValue(CmsXmlUtils.removeXpathIndex(path), locale, index);
+        if (((result == null)) && CmsXmlUtils.isDeepXpath(path)) {
+            String parentPath = CmsXmlUtils.removeLastXpathElement(path);
+            I_CmsXmlContentValue v2 = super.getValue(parentPath, locale);
+            if ((v2 != null) && v2.isChoiceType()) {
+                // the parent is a choice node - check the sub-nodes using to the absolute index
+                List<I_CmsXmlContentValue> values = getSubValues(parentPath, locale);
+                if (index < values.size()) {
+                    I_CmsXmlContentValue v3 = values.get(index);
+                    if (v3.getName().equals(CmsXmlUtils.getLastXpathElement(path))) {
+                        // name of value at the position must match the provided name
+                        result = v3;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the value sequence for the selected element xpath in this XML content.<p>
      * 
      * If the given element xpath is not valid according to the schema of this XML content,
