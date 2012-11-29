@@ -161,8 +161,13 @@ public class CmsContentTypeVisitor {
         m_messages = new CmsMultiMessages(messageLocale);
         try {
             messages = OpenCms.getWorkplaceManager().getMessages(messageLocale);
-            m_messages.addMessages(messages);
-            m_messages.addMessages(m_contentHandler.getMessages(messageLocale));
+            if (messages != null) {
+                m_messages.addMessages(messages);
+            }
+            messages = m_contentHandler.getMessages(messageLocale);
+            if (messages != null) {
+                m_messages.addMessages(messages);
+            }
         } catch (Exception e) {
             //ignore
         }
