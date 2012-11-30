@@ -33,6 +33,7 @@ import org.opencms.ade.galleries.shared.CmsSiteSelectorOption.Type;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
@@ -45,10 +46,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Helper class for building the options for the site selector in the gallery dialog.<p>
  */
 public class CmsSiteSelectorOptionBuilder {
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSiteSelectorOptionBuilder.class.getName());
 
     /**
      * Comparator used for ordering the options in the site selector.<p>
@@ -121,6 +127,7 @@ public class CmsSiteSelectorOptionBuilder {
      * Adds 'normal' sites.<p>
      * 
      * @param includeRoot if true, also adds the root site 
+     * @param startFolder the users configured start folder
      */
     public void addNormalSites(boolean includeRoot, String startFolder) {
 
@@ -171,7 +178,7 @@ public class CmsSiteSelectorOptionBuilder {
                 }
             }
         } catch (CmsException e) {
-            // TODO: improve logging
+            LOG.error(e);
         }
     }
 
