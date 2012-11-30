@@ -433,7 +433,7 @@ public final class CmsJspContentAccessValueWrapper {
             return CmsStringUtil.isEmptyOrWhitespaceOnly(m_contentValue.getStringValue(m_cms));
         } else {
             // nested types are not empty if they have any children in the XML
-            return m_contentValue.getElement().elements().size() > 0;
+            return m_contentValue.getElement().elements().isEmpty();
         }
     }
 
