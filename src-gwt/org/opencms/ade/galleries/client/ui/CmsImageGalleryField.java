@@ -527,9 +527,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             String scal = "";
             int hasmoreValues = params.lastIndexOf("&");
             if (hasmoreValues > indexofscale) {
-
                 scal = params.substring(indexofscale, params.indexOf("&")).replace(PARAMETER_SCALE, "");
-
             } else {
                 scal = params.substring(indexofscale).replace(PARAMETER_SCALE, "");
             }
