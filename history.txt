@@ -15,6 +15,14 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms - November 30, 2012
+* Fixed issue #116 where the upload did not work from gallery folder tab
+* Fixed radio select widget default value handling
+* Fixed view permission handling in galleries dialog
+* Fixed HTML widget initialization issue when handling choice options
+- Improved file selector widget 
+- New content editor performance improvements
+
 OpenCms 8.5.0.4 - November 16, 2012
 ! Added editor selector feature, to detect whether the old or new XMLContent editor should be used
 * Fixed in-line editor issue for string widget, now preventing line breaks of being added
