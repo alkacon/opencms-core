@@ -30,7 +30,11 @@ package org.opencms.workplace.editors.directedit;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.Messages;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Random;
 
@@ -96,8 +100,8 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         switch (m_lastPermissionMode) {
 
             case 1: // disabled
-                content = endDirectEditDisabled();
-                break;
+                //                content = endDirectEditDisabled();
+                //                break;
             case 2: // enabled
                 content = endDirectEditEnabled();
                 break;
@@ -130,8 +134,8 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         m_lastPermissionMode = resourceInfo.getPermissions().getPermission();
         switch (m_lastPermissionMode) {
             case 1: // disabled
-                content = startDirectEditDisabled(params, resourceInfo);
-                break;
+                //                content = startDirectEditDisabled(params, resourceInfo);
+                //                break;
             case 2: // enabled
                 try {
                     content = startDirectEditEnabled(params, resourceInfo);
@@ -219,7 +223,20 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         editableData.put("hasDelete", params.getButtonSelection().isShowDelete());
         editableData.put("hasNew", params.getButtonSelection().isShowNew());
         editableData.put("newtitle", m_messages.key(Messages.GUI_EDITOR_TITLE_NEW_0));
+        if (m_lastPermissionMode == 1) {
 
+            try {
+                String noEditReason = new CmsResourceUtil(m_cms, resourceInfo.getResource()).getNoEditReason(
+                    OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms),
+                    true);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noEditReason)) {
+                    editableData.put("noEditReason", noEditReason);
+                }
+            } catch (CmsException e) {
+                // TODO: Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         StringBuffer result = new StringBuffer(512);
         if (m_useIds) {
             result.append("<div id=\"" + getRandomId() + "\" class='cms-editable' rel='").append(
@@ -227,7 +244,6 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         } else {
             result.append("<div class='cms-editable' rel='").append(editableData.toString()).append("'></div>");
         }
-
         return result.toString();
     }
 }

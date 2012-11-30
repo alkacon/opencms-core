@@ -72,6 +72,13 @@ public interface I_CmsEditableData {
     String getNewTitle();
 
     /**
+     * Returns the no edit reason.<p>
+     * 
+     * @return the no edit reason
+     */
+    String getNoEditReason();
+
+    /**
      * Returns the site path.<p>
      * 
      * @return the site path

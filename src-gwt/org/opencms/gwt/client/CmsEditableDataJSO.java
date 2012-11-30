@@ -93,6 +93,17 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
     }-*/;
 
     /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getNoEditReason()
+     */
+    public native String getNoEditReason() /*-{
+
+        if (this.noEditReason)
+            return this.noEditReason;
+        else
+            return null;
+    }-*/;
+
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getSitePath()
      */
     public native String getSitePath() /*-{

@@ -108,6 +108,11 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                 return null;
             }
 
+            public String getNoEditReason() {
+
+                return null;
+            }
+
             public String getSitePath() {
 
                 return filename;

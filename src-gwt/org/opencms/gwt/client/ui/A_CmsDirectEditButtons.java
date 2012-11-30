@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.client.CmsEditableDataJSO;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -172,7 +173,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
             addMouseOutHandler(handler);
             addMouseOverHandler(handler);
 
-            if (m_editableData.hasDelete()) {
+            if (m_editableData.hasDelete() && CmsStringUtil.isEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
                 m_delete = new CmsPushButton();
                 m_delete.setImageClass(I_CmsButton.ButtonData.DELETE.getIconClass());
                 m_delete.addStyleName(I_CmsButton.ButtonData.DELETE.getIconClass());
@@ -189,6 +190,9 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 m_edit.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
                 add(m_edit);
                 m_edit.addClickHandler(handler);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
+                    m_edit.disable(m_editableData.getNoEditReason());
+                }
             }
             if (m_editableData.hasNew()) {
                 m_new = new CmsPushButton();
@@ -294,8 +298,9 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         Element parent = CmsDomUtil.getPositioningParent(getElement());
 
         Style style = getElement().getStyle();
-        style.setRight(parent.getOffsetWidth()
-            - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()), Unit.PX);
+        style.setRight(
+            parent.getOffsetWidth() - ((m_position.getLeft() + m_position.getWidth()) - parent.getAbsoluteLeft()),
+            Unit.PX);
         int top = m_position.getTop() - parent.getAbsoluteTop();
         if (top < 25) {
             // if top is <25 the buttons might overlap with the option bar, so increase to 25

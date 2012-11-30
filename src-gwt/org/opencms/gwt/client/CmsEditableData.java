@@ -51,6 +51,9 @@ public class CmsEditableData implements I_CmsEditableData {
     /** The new title. */
     private String m_newTitle;
 
+    /** The no edit reason. */
+    private String m_noEditReason;
+
     /** The site path. */
     private String m_sitePath;
 
@@ -95,6 +98,14 @@ public class CmsEditableData implements I_CmsEditableData {
     public String getNewTitle() {
 
         return m_newTitle;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getNoEditReason()
+     */
+    public String getNoEditReason() {
+
+        return m_noEditReason;
     }
 
     /**
@@ -161,6 +172,16 @@ public class CmsEditableData implements I_CmsEditableData {
     public void setNewTitle(String newTitle) {
 
         m_newTitle = newTitle;
+    }
+
+    /**
+     * Sets the no edit reason.<p>
+     *
+     * @param noEditReason the no edit reason to set
+     */
+    public void setNoEditReason(String noEditReason) {
+
+        m_noEditReason = noEditReason;
     }
 
     /**
