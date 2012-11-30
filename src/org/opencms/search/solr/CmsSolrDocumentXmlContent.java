@@ -87,7 +87,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
     throws CmsException {
 
         I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-        if (handler.isExcludedFromIndex()) {
+        if (handler.isContainerPageOnly()) {
             // if the exclude attribute is set to 'true' in the 'searchsettings'-node of the XSD
             return new CmsExtractionResult(true);
         } else {

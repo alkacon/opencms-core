@@ -146,7 +146,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public static final String APPINFO_ATTR_ERROR = "error";
 
     /** The exclude from index attribute. */
-    public static final String APPINFO_ATTR_EXCLUDE = "exclude";
+    public static final String APPINFO_ATTR_CONTAINER_PAGE_ONLY = "containerPageOnly";
 
     /** Constant for the "invalidate" appinfo attribute name. */
     public static final String APPINFO_ATTR_INVALIDATE = "invalidate";
@@ -459,8 +459,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
 
-    /** The exclude from index flag. */
-    private boolean m_excludedFromIndex;
+    /** The container page only flag, indicating if this XML content should be indexed on container pages only. */
+    private boolean m_containerPageOnly;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
@@ -928,11 +928,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isExcludedFromIndex()
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isContainerPageOnly()
      */
-    public boolean isExcludedFromIndex() {
+    public boolean isContainerPageOnly() {
 
-        return m_excludedFromIndex;
+        return m_containerPageOnly;
     }
 
     /**
@@ -2157,8 +2157,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void initSearchSettings(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
 
-        String exclude = root.attributeValue(APPINFO_ATTR_EXCLUDE);
-        m_excludedFromIndex = (!CmsStringUtil.isEmpty(exclude)) || (Boolean.valueOf(exclude).booleanValue());
+        String containerPageOnly = root.attributeValue(APPINFO_ATTR_CONTAINER_PAGE_ONLY);
+        m_containerPageOnly = (!CmsStringUtil.isEmpty(containerPageOnly))
+            || (Boolean.valueOf(containerPageOnly).booleanValue());
         Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(root, APPINFO_SEARCHSETTING);
         while (i.hasNext()) {
             Element element = i.next();

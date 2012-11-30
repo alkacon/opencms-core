@@ -331,11 +331,19 @@ public interface I_CmsXmlContentHandler {
     boolean isAcaciaEditorDisabled();
 
     /**
-     * Returns the exclude from index flag.<p>
+     * Returns <code>true</code> if the XML content should be indexed when it is dropped in a container page,
+     * and returns <code>false</code> if this XML content should be indexed as 'stand-alone' document.<p>
      *
-     * @return the exclude from index flag
+     * This flag is intended by excluding XML contents from the search index that are not used as detail pages,
+     * but to index those extraction result when they are part of a container page.<p>
+     *
+     * In order to set this falg add an attribute <code>containerpageOnly="true"</code> to the 
+     * <code>'&lt;searchsettings&gt;-node'</code> of the XSD of the resource type you want to be indexed only 
+     * when it is part of a container page.<p>
+     *
+     * @return the container page only flag
      */
-    boolean isExcludedFromIndex();
+    boolean isContainerPageOnly();
 
     /**
      * Returns <code>true</code> in case the given value should be searchable with 

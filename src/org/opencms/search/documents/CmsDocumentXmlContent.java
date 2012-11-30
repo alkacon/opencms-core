@@ -92,7 +92,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
             CmsFile file = readFile(cms, resource);
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
             I_CmsXmlContentHandler handler = xmlContent.getHandler();
-            if (handler.isExcludedFromIndex()) {
+            if (handler.isContainerPageOnly()) {
                 // if the exclude attribute is set to 'true' in the 'searchsettings'-node of the XSD
                 return new CmsExtractionResult(true);
             }
