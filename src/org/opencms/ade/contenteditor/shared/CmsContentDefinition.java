@@ -124,40 +124,6 @@ public class CmsContentDefinition extends ContentDefinition {
         m_performedAutocorrection = performedAutocorrection;
     }
 
-    public static String getValueForPath(I_Entity entity, String path) {
-
-        String result = null;
-        if (path.startsWith("/")) {
-            path = path.substring(1);
-        }
-        String attributeName;
-        if (path.contains("/")) {
-            attributeName = path.substring(0, path.indexOf("/"));
-            path = path.substring(path.indexOf("/"));
-        } else {
-            attributeName = path;
-            path = null;
-        }
-        int index = ContentDefinition.extractIndex(attributeName);
-        if (index > 0) {
-            index--;
-        }
-        attributeName = entity.getTypeName() + "/" + ContentDefinition.removeIndex(attributeName);
-        I_EntityAttribute attribute = entity.getAttribute(attributeName);
-        if (!((attribute == null) || (attribute.isComplexValue() && (path == null)))) {
-            if (attribute.isSimpleValue()) {
-                if ((path == null) && (attribute.getValueCount() > 0)) {
-                    List<String> values = attribute.getSimpleValues();
-                    result = values.get(index);
-                }
-            } else if (attribute.getValueCount() > (index + 1)) {
-                List<I_Entity> values = attribute.getComplexValues();
-                result = getValueForPath(values.get(index), path);
-            }
-        }
-        return result;
-    }
-
     /**
      * Constructor for model file informations object.<p>
      * 
@@ -214,6 +180,48 @@ public class CmsContentDefinition extends ContentDefinition {
             return entityId.substring(ENTITY_ID_PREFIX.length(), entityId.lastIndexOf("/"));
         }
         return null;
+    }
+
+    /**
+     * Returns the value for the given XPath expression.<p>
+     *  
+     * @param entity the entity
+     * @param path the path
+     * 
+     * @return the value
+     */
+    public static String getValueForPath(I_Entity entity, String path) {
+
+        String result = null;
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        String attributeName;
+        if (path.contains("/")) {
+            attributeName = path.substring(0, path.indexOf("/"));
+            path = path.substring(path.indexOf("/"));
+        } else {
+            attributeName = path;
+            path = null;
+        }
+        int index = ContentDefinition.extractIndex(attributeName);
+        if (index > 0) {
+            index--;
+        }
+        attributeName = entity.getTypeName() + "/" + ContentDefinition.removeIndex(attributeName);
+        I_EntityAttribute attribute = entity.getAttribute(attributeName);
+        if (!((attribute == null) || (attribute.isComplexValue() && (path == null)))) {
+            if (attribute.isSimpleValue()) {
+                if ((path == null) && (attribute.getValueCount() > 0)) {
+                    List<String> values = attribute.getSimpleValues();
+                    result = values.get(index);
+                }
+            } else if (attribute.getValueCount() > (index + 1)) {
+                List<I_Entity> values = attribute.getComplexValues();
+                result = getValueForPath(values.get(index), path);
+            }
+        }
+        return result;
     }
 
     /**
