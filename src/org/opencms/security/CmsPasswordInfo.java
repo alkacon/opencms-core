@@ -175,6 +175,9 @@ public class CmsPasswordInfo {
      */
     public void validate() {
 
+        if (CmsStringUtil.isEmpty(getNewPwd())) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_NEWPWD_0));
+        }
         if (!getNewPwd().equals(getConfirmation())) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEWPWD_MISMATCH_0));
         }
