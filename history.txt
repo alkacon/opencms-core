@@ -15,7 +15,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms - November 30, 2012
+OpenCms 8.5.0.6 - November 30, 2012
 * Fixed issue #116 where the upload did not work from gallery folder tab
 * Fixed radio select widget default value handling
 * Fixed view permission handling in galleries dialog
