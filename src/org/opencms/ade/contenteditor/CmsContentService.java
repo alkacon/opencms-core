@@ -251,24 +251,35 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         String paramResource = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
         String paramNewLink = getRequest().getParameter(CmsXmlContentEditor.PARAM_NEWLINK);
-        paramNewLink = decodeNewLink(paramNewLink);
+        boolean createNew = false;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramNewLink)) {
+            createNew = true;
+            paramNewLink = decodeNewLink(paramNewLink);
+        }
         String paramLocale = getRequest().getParameter(CmsEditor.PARAM_ELEMENTLANGUAGE);
-        Locale locale;
+        Locale locale = null;
+        CmsObject cms = getCmsObject();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
             try {
-                CmsResource resource = getCmsObject().readResource(paramResource, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsResource resource = cms.readResource(paramResource, CmsResourceFilter.IGNORE_EXPIRATION);
                 if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
                         locale = CmsLocaleManager.getLocale(paramLocale);
-                    } else {
-                        locale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), paramResource);
                     }
 
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramNewLink)) {
-
+                    if (createNew) {
+                        if (locale == null) {
+                            locale = OpenCms.getLocaleManager().getDefaultLocale(cms, paramResource);
+                        }
                         return readContentDefnitionForNew(paramNewLink, resource, null, locale);
-                    } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
-                        return readContentDefinition(resource, null, locale, false);
+                    } else {
+
+                        CmsFile file = cms.readFile(resource);
+                        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                        if (locale == null) {
+                            locale = getBestAvailableLocale(resource, content);
+                        }
+                        return readContentDefinition(file, content, null, locale, false);
                     }
                 }
             } catch (Throwable e) {
@@ -655,6 +666,46 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Returns the best available locale present in the given XML content, or the default locale.<p>
+     * 
+     * @param resource the resource
+     * @param content the XML content
+     * 
+     * @return the locale
+     */
+    private Locale getBestAvailableLocale(CmsResource resource, CmsXmlContent content) {
+
+        CmsObject cms = getCmsObject();
+        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), resource);
+        if (!content.hasLocale(locale)) {
+            // if the requested locale is not available, get the first matching default locale,
+            // or the first matching available locale
+            boolean foundLocale = false;
+            if (content.getLocales().size() > 0) {
+                List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+                for (Locale defaultLocale : locales) {
+                    if (content.hasLocale(defaultLocale)) {
+                        locale = defaultLocale;
+                        foundLocale = true;
+                        break;
+                    }
+                }
+                if (!foundLocale) {
+                    locales = OpenCms.getLocaleManager().getAvailableLocales(cms, resource);
+                    for (Locale availableLocale : locales) {
+                        if (content.hasLocale(availableLocale)) {
+                            locale = availableLocale;
+                            foundLocale = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return locale;
+    }
+
+    /**
      * Returns the path elements for the given content value.<p>
      * 
      * @param content the XML content
@@ -700,7 +751,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * Reads the content definition for the given resource and locale.<p>
      * 
-     * @param resource the resource
+     * @param file the resource file
+     * @param content the XML content
      * @param entityId the entity id
      * @param locale the content locale
      * @param newLocale if the locale content should be created as new
@@ -710,7 +762,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @throws CmsException if something goes wrong
      */
     private CmsContentDefinition readContentDefinition(
-        CmsResource resource,
+        CmsFile file,
+        CmsXmlContent content,
         String entityId,
         Locale locale,
         boolean newLocale) throws CmsException {
@@ -721,10 +774,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         CmsObject cms = getCmsObject();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(entityId)) {
-            entityId = CmsContentDefinition.uuidToEntityId(resource.getStructureId(), locale.toString());
+            entityId = CmsContentDefinition.uuidToEntityId(file.getStructureId(), locale.toString());
         }
-        CmsFile file = cms.readFile(resource);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
         boolean performedAutoCorrection = checkAutoCorrection(cms, content);
         if (performedAutoCorrection) {
             content.initDocument();
@@ -775,11 +826,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         TreeMap<String, String> availableLocales = new TreeMap<String, String>();
-        for (Locale availableLocale : OpenCms.getLocaleManager().getAvailableLocales(cms, resource)) {
+        for (Locale availableLocale : OpenCms.getLocaleManager().getAvailableLocales(cms, file)) {
             availableLocales.put(availableLocale.toString(), availableLocale.getDisplayName(workplaceLocale));
         }
-        String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-        String typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+        String title = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        String typeName = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
         return new CmsContentDefinition(
             entity,
             visitor.getAttributeConfigurations(),
@@ -790,9 +841,33 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             contentLocales,
             availableLocales,
             title,
-            cms.getSitePath(resource),
+            cms.getSitePath(file),
             typeName,
             performedAutoCorrection);
+    }
+
+    /**
+     * Reads the content definition for the given resource and locale.<p>
+     * 
+     * @param resource the resource
+     * @param entityId the entity id
+     * @param locale the content locale
+     * @param newLocale if the locale content should be created as new
+     * 
+     * @return the content definition
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsContentDefinition readContentDefinition(
+        CmsResource resource,
+        String entityId,
+        Locale locale,
+        boolean newLocale) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsFile file = cms.readFile(resource);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+        return readContentDefinition(file, content, entityId, locale, newLocale);
     }
 
     /**
