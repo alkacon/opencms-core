@@ -36,8 +36,10 @@ import org.opencms.ade.detailpage.CmsSitemapDetailPageFinder;
 import org.opencms.ade.detailpage.I_CmsDetailPageFinder;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.I_CmsProjectDriver;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -46,17 +48,23 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsJspNavBuilder;
+import org.opencms.jsp.CmsJspNavElement;
+import org.opencms.jsp.CmsJspTagLink;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADECache;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.Messages;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
@@ -67,10 +75,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
@@ -551,6 +562,61 @@ public class CmsADEManager {
         } else {
             return basePath;
         }
+    }
+
+    /**
+     * Processes a HTML redirect content.<p>
+     * 
+     * This needs to be in the ADE manager because the user for whom the HTML redirect is being loaded
+     * does not necessarily have read permissions for the redirect target, so we read the redirect target
+     * with admin privileges.<p> 
+     * 
+     * @param userCms the CMS context of the current user 
+     * @param request the servlet request 
+     * @param response the servlet response 
+     * @param htmlRedirect the path of the HTML redirect resource
+     *  
+     * @throws Exception if something goes wrong 
+     */
+    public void handleHtmlRedirect(
+        CmsObject userCms,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        String htmlRedirect) throws Exception {
+
+        CmsObject cms = OpenCms.initCmsObject(m_offlineCms);
+        CmsRequestContext userContext = userCms.getRequestContext();
+        CmsRequestContext currentContext = cms.getRequestContext();
+        currentContext.setCurrentProject(userContext.getCurrentProject());
+        currentContext.setSiteRoot(userContext.getSiteRoot());
+        currentContext.setLocale(userContext.getLocale());
+        currentContext.setUri(userContext.getUri());
+
+        CmsFile file = cms.readFile(htmlRedirect);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+        Locale contentLocale = currentContext.getLocale();
+        String typeValue = content.getValue("Type", contentLocale).getStringValue(cms);
+        String lnkUri = "";
+        String errorCode = "";
+        if ("sublevel".equals(typeValue)) {
+            // use the nav builder to get the first sub level entry
+            CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
+            if (navBuilder.getNavigationForFolder().size() > 0) {
+                CmsJspNavElement target = navBuilder.getNavigationForFolder().get(0);
+                lnkUri = CmsJspTagLink.linkTagAction(target.getResourceName(), request);
+                errorCode = HttpServletResponse.SC_MOVED_TEMPORARILY + "";
+            } else {
+                // send error 404 if no sub entry available
+                errorCode = HttpServletResponse.SC_NOT_FOUND + "";
+            }
+        } else {
+            String linkValue = content.getValue("Link", contentLocale).getStringValue(cms);
+            lnkUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, linkValue);
+            errorCode = typeValue;
+        }
+        request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(errorCode));
+        response.setHeader("Location", lnkUri);
+        response.setHeader("Connection", "close");
     }
 
     /**
