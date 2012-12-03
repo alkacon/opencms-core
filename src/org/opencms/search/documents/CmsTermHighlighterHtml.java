@@ -43,7 +43,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
-import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.QueryTermScorer;
 
 /**
  * Default highlighter implementation used for generation of search excerpts.<p>
@@ -92,11 +92,11 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
 
                 if (params.isExcerptOnlySearchedFields()) {
                     // highlight the search query only in the matching fields 
-                    highlighter = new Highlighter(new QueryScorer(query, fieldName));
+                    highlighter = new Highlighter(new QueryTermScorer(query, fieldName));
                 } else {
                     // highlight search query in all fields
                     if (highlighter == null) {
-                        highlighter = new Highlighter(new QueryScorer(query));
+                        highlighter = new Highlighter(new QueryTermScorer(query));
                     }
                 }
                 String fragment = highlighter.getBestFragments(

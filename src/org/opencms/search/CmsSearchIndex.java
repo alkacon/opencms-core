@@ -75,6 +75,7 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.MultiTermQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -815,6 +816,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                     // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                     for (int i = 0; i < params.getFields().size(); i++) {
                         QueryParser p = new QueryParser(LUCENE_VERSION, params.getFields().get(i), getAnalyzer());
+                        p.setMultiTermRewriteMethod(MultiTermQuery.SCORING_BOOLEAN_QUERY_REWRITE);
                         booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                     }
                     fieldsQuery = searcher.rewrite(booleanFieldsQuery);
