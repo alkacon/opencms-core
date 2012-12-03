@@ -1000,8 +1000,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsResource resource = null;
         int pos = resourceName.indexOf("?");
         String resName = resourceName;
+        String query = "";
         if (pos > -1) {
+            query = resourceName.substring(pos);
             resName = resourceName.substring(0, pos);
+        }
+        String resNameWithoutServer = OpenCms.getLinkManager().getRootPath(getCmsObject(), resName);
+        if (resNameWithoutServer != null) {
+            resName = resNameWithoutServer;
         }
         CmsObject cms = getCmsObject();
         try {
@@ -1027,7 +1033,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         initialSearchObj.setTypes(types);
         ArrayList<String> galleries = new ArrayList<String>();
         for (CmsGalleryFolderBean gallery : data.getGalleries()) {
-            if (gallery.getPath().equals(CmsResource.getFolderPath(resName))) {
+            String galleryPath = gallery.getPath();
+            String galleryRootPath = cms.addSiteRoot(galleryPath);
+            String folderPath = CmsResource.getFolderPath(resName);
+            if (galleryPath.equals(folderPath) || galleryRootPath.equals(folderPath)) {
                 galleries.add(gallery.getPath());
                 initialSearchObj.setGalleries(galleries);
                 break;
@@ -1081,7 +1090,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             initialSearchObj.setPage(1);
             initialSearchObj.setLastPage(currentPage);
             initialSearchObj.setTabId(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name());
-            initialSearchObj.setResourcePath(resourceName);
+            initialSearchObj.setResourcePath(resName + query);
             initialSearchObj.setResourceType(resType);
         } else {
             log("could not find selected resource");
