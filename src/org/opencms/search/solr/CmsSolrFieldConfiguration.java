@@ -74,9 +74,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrFieldConfiguration.class);
 
-    /** Stores additional fields to index. */
-    private List<CmsSolrField> m_additionalFields;
-
     /** A list of Solr fields. */
     private Map<String, CmsSolrField> m_solrFields = new HashMap<String, CmsSolrField>();
 
@@ -153,7 +150,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     public void init() {
 
         addContentFields();
-        addAdditionalFields();
         addLuceneFields();
     }
 
@@ -363,22 +359,14 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
-     * Sets the additionalFields.<p>
-     *
-     * @param additionalFields the additionalFields to set
-     */
-    protected void setAdditionalFields(List<CmsSolrField> additionalFields) {
-
-        m_additionalFields = additionalFields;
-    }
-
-    /**
      * Adds the additional fields to the configuration, if they are not null.<p>
+     * 
+     * @param additionalFields the additional fields to add
      */
-    private void addAdditionalFields() {
+    protected void addAdditionalFields(List<CmsSolrField> additionalFields) {
 
-        if (m_additionalFields != null) {
-            for (CmsSolrField solrField : m_additionalFields) {
+        if (additionalFields != null) {
+            for (CmsSolrField solrField : additionalFields) {
                 m_solrFields.put(solrField.getName(), solrField);
             }
         }
