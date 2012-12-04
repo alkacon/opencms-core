@@ -2215,7 +2215,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     }
 
                     // if no mapping was defined yet, create a mapping for the element itself 
-                    if ((field.getMappings() != null) && !field.getMappings().isEmpty()) {
+                    if ((field.getMappings() == null) || field.getMappings().isEmpty()) {
 
                         CmsSearchFieldMapping valueMapping = new CmsSearchFieldMapping(
                             CmsSearchFieldMappingType.ITEM,
