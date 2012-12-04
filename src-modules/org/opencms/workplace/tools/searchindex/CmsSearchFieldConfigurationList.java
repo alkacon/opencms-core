@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A list that displays information about the <code>{@link org.opencms.search.fields.CmsLuceneFieldConfiguration}</code> 
- * that are members of the <code>{@link org.opencms.search.A_CmsSearchIndex}</code> 
+ * that are members of the <code>{@link org.opencms.search.CmsSearchIndex}</code> 
  * in the current request scope (param "searchindex").<p> 
  * 
  * This list is stand-alone displayable (not to embed in another dialog) and 

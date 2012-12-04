@@ -33,7 +33,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchIndexSource;
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A list that displays the <code>{@link org.opencms.search.CmsSearchIndexSource}</code> 
- * instances that are not members of the <code>{@link org.opencms.search.A_CmsSearchIndex}</code> 
+ * instances that are not members of the <code>{@link org.opencms.search.CmsSearchIndex}</code> 
  * in the current request scope (param "searchindex" and allows to add them to the index.<p> 
  * 
  * This list is no stand-alone page but has to be embedded in another dialog 
@@ -187,7 +187,7 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
             // execute the delete multiaction
             Iterator<CmsListItem> itItems = getSelectedItems().iterator();
             String indexSource;
-            A_CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
+            CmsSearchIndex idx = searchManager.getIndexGeneral(getParamIndexName());
             while (itItems.hasNext()) {
                 item = itItems.next();
                 indexSource = (String)item.get(LIST_COLUMN_NAME);
@@ -219,7 +219,7 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
         String action = getParamListAction();
         if (action.equals(LIST_ACTION_ADDSOURCE) || action.equals(LIST_COLUMN_ADDSOURCE2)) {
 
-            A_CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
+            CmsSearchIndex idx = searchManager.getIndexGeneral(getParamIndexName());
             idx.addSourceName(indexsourceName);
             try {
                 idx.initialize();
@@ -550,7 +550,7 @@ public class CmsSearchIndexSourceAddList extends A_CmsEmbeddedListDialog {
     private List<CmsSearchIndexSource> searchIndexSources() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        A_CmsSearchIndex index = manager.getIndex(getParamIndexName());
+        CmsSearchIndex index = manager.getIndexGeneral(getParamIndexName());
         List<CmsSearchIndexSource> sources = index.getSources();
         return sources;
     }

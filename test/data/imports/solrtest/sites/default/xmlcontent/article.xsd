@@ -41,6 +41,7 @@
 				<searchsetting element="Title" searchcontent="true">
 					<solrfield targetfield="atitle">
 						<mapping type="property">Author</mapping>
+						<mapping type="item">Title</mapping>
 					</solrfield>
 				</searchsetting>
 				<searchsetting element="Teaser">

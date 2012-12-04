@@ -37,7 +37,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentXmlContent;
@@ -87,11 +87,11 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
      * For gallery document generators, we never check for {@link org.opencms.search.CmsSearchIndex#isExtractingContent()} since
      * all these classes are assumed to be written with optimizations special to gallery search indexing anyway.<p>
      * 
-     * @see org.opencms.search.fields.CmsLuceneFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, I_CmsExtractionResult)
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, A_CmsSearchIndex)
+     * @see org.opencms.search.fields.CmsLuceneFieldConfiguration#createDocument(CmsObject, CmsResource, CmsSearchIndex, I_CmsExtractionResult)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, CmsSearchIndex)
      */
     @Override
-    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
         // extract the content from the resource
@@ -116,10 +116,10 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
      * accessible using their xpath. The xpath will start with the locale and have the form like for example 
      * <code>de/Text[1]</code> or <code>en/Nested[1]/Text[1]</code>.<p>  
      * 
-     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, A_CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
     @Override
-    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
         logContentExtraction(resource, index);

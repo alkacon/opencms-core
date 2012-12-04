@@ -118,10 +118,10 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
     }
 
     /**
-     * @see org.opencms.search.CmsVfsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.A_CmsSearchIndex)
+     * @see org.opencms.search.CmsVfsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex)
      */
     @Override
-    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, A_CmsSearchIndex index) {
+    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, CmsSearchIndex index) {
 
         CmsDependencyIndexer indexer = new CmsDependencyIndexer();
 

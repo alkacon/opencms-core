@@ -30,7 +30,6 @@ package org.opencms.configuration;
 import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchAnalyzer;
 import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchIndex;
@@ -468,7 +467,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // <indexes>
         Element indexesElement = searchElement.addElement(N_INDEXES);
-        for (A_CmsSearchIndex searchIndex : m_searchManager.getSearchIndexes()) {
+        for (CmsSearchIndex searchIndex : m_searchManager.getSearchIndexesAll()) {
             // add the next <index> element
             Element indexElement = indexesElement.addElement(N_INDEX);
             // add class attribute (if required)

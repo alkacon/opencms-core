@@ -36,7 +36,6 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
@@ -107,8 +106,8 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
-                        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index instanceof CmsSearchIndex) {
+                        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                        if (index != null) {
                             index.setEnabled(false);
                         }
                     }

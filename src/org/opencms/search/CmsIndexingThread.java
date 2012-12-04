@@ -57,7 +57,7 @@ public class CmsIndexingThread extends Thread {
     private int m_count;
 
     /** The current index. */
-    private A_CmsSearchIndex m_index;
+    private CmsSearchIndex m_index;
 
     /** The current report. */
     private I_CmsReport m_report;
@@ -77,7 +77,7 @@ public class CmsIndexingThread extends Thread {
      * @param count the report count
      * @param report the report to write the output to
      */
-    public CmsIndexingThread(CmsObject cms, CmsResource res, A_CmsSearchIndex index, int count, I_CmsReport report) {
+    public CmsIndexingThread(CmsObject cms, CmsResource res, CmsSearchIndex index, int count, I_CmsReport report) {
 
         super("OpenCms: Indexing '" + res.getName() + "'");
 
@@ -188,7 +188,7 @@ public class CmsIndexingThread extends Thread {
     protected I_CmsSearchDocument createIndexDocument(
         CmsObject cms,
         CmsResource res,
-        A_CmsSearchIndex index,
+        CmsSearchIndex index,
         int count,
         I_CmsReport report) throws CmsException {
 

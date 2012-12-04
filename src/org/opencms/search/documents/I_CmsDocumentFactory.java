@@ -30,7 +30,7 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 
 import java.util.List;
@@ -70,9 +70,9 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, A_CmsSearchIndex, org.opencms.search.extractors.I_CmsExtractionResult)
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, CmsSearchIndex, org.opencms.search.extractors.I_CmsExtractionResult)
      */
-    I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, A_CmsSearchIndex index) throws CmsException;
+    I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException;
 
     /**
      * Returns the disk based cache used to store the raw extraction results.<p>

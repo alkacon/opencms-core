@@ -40,7 +40,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
@@ -75,7 +75,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     private List<CmsSearchField> m_fields;
 
     /** The current index. */
-    private A_CmsSearchIndex m_index;
+    private CmsSearchIndex m_index;
 
     /** The name of the configuration. */
     private String m_name;
@@ -203,7 +203,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     public I_CmsSearchDocument createDocument(
         CmsObject cms,
         CmsResource resource,
-        A_CmsSearchIndex index,
+        CmsSearchIndex index,
         I_CmsExtractionResult extraction) throws CmsException {
 
         if ((extraction != null) && extraction.isExclude()) {
@@ -307,7 +307,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
      *
      * @return the index
      */
-    public A_CmsSearchIndex getIndex() {
+    public CmsSearchIndex getIndex() {
 
         return m_index;
     }
@@ -354,7 +354,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
      *
      * @param index the index to set
      */
-    public void setIndex(A_CmsSearchIndex index) {
+    public void setIndex(CmsSearchIndex index) {
 
         m_index = index;
     }

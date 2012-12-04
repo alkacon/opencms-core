@@ -111,10 +111,10 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
         searchIndex.setProject("Online");
         searchIndex.setLocale(Locale.ENGLISH);
-        searchIndex.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_AUTO);
+        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
-        searchIndex.addConfigurationParameter(A_CmsSearchIndex.BACKUP_REINDEXING, "true");
+        searchIndex.addConfigurationParameter(CmsSearchIndex.BACKUP_REINDEXING, "true");
 
         // initialize the new index
         searchIndex.initialize();
@@ -198,7 +198,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
         String fileName = "/sites/default/test/master.pdf";
 
-        CmsSearchIndex searchIndex = OpenCms.getSearchManager().getIndexLucene(INDEX_SPECIAL);
+        CmsSearchIndex searchIndex = OpenCms.getSearchManager().getIndex(INDEX_SPECIAL);
         Document doc = (Document)searchIndex.getDocument(CmsSearchField.FIELD_PATH, fileName).getDocument();
 
         assertNotNull("Document '" + fileName + "' not found", doc);

@@ -32,7 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.Messages;
 import org.opencms.search.fields.CmsSearchField;
@@ -218,7 +218,7 @@ public class CmsGallerySearch {
         if (CmsStringUtil.isEmpty(indexName)) {
             throw new CmsException(Messages.get().container(Messages.ERR_INDEXSOURCE_CREATE_MISSING_NAME_0));
         }
-        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
         if (index == null) {
             throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
         }

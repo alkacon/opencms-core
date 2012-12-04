@@ -33,7 +33,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchIndexSource;
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
 /**
  * A list that displays the <code>{@link org.opencms.search.CmsSearchIndexSource}</code> 
  * instances of the OpenCms system that are assigned to the 
- * <code>{@link org.opencms.search.A_CmsSearchIndex}</code> in the current request scope (param "searchindex") and allows to remove those sources to the 
+ * <code>{@link org.opencms.search.CmsSearchIndex}</code> in the current request scope (param "searchindex") and allows to remove those sources to the 
  * current searchindex.<p> 
  * 
  * This list is no stand-alone page but has to be embedded in another dialog 
@@ -187,7 +187,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
         if (action.equals(LIST_MACTION_REMOVESOURCE)) {
             // execute the delete multiaction
             Iterator<CmsListItem> itItems = getSelectedItems().iterator();
-            A_CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
+            CmsSearchIndex idx = searchManager.getIndexGeneral(getParamIndexName());
             while (itItems.hasNext()) {
                 listItem = itItems.next();
                 if (idx.getSourceNames().size() > 1) {
@@ -220,7 +220,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
         String action = getParamListAction();
         String indexsourceName = (String)item.get(LIST_COLUMN_NAME);
         if (action.equals(LIST_ACTION_REMOVESOURCE) || action.equals(LIST_ACTION_REMOVESOURCE2)) {
-            A_CmsSearchIndex idx = searchManager.getIndex(getParamIndexName());
+            CmsSearchIndex idx = searchManager.getIndexGeneral(getParamIndexName());
             // Don't allow removing last index source, config file will become invalid: 
             if (idx.getSourceNames().size() > 1) {
                 idx.removeSourceName((String)item.get(LIST_COLUMN_NAME));
@@ -555,7 +555,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
     private List<CmsSearchIndexSource> searchIndexSources() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        A_CmsSearchIndex index = manager.getIndex(getParamIndexName());
+        CmsSearchIndex index = manager.getIndexGeneral(getParamIndexName());
         List<CmsSearchIndexSource> sources = index.getSources();
         return sources;
     }

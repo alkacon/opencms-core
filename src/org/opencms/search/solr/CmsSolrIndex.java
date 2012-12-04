@@ -44,7 +44,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.CmsSearchParameters;
@@ -94,7 +94,7 @@ import org.apache.solr.response.SolrQueryResponse;
  * 
  * @since 8.5.0 
  */
-public class CmsSolrIndex extends A_CmsSearchIndex {
+public class CmsSolrIndex extends CmsSearchIndex {
 
     /** The name of the default Solr Offline index. */
     public static final String DEFAULT_INDEX_NAME_OFFLINE = "Solr Offline";
@@ -169,7 +169,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#addConfigurationParameter(java.lang.String, java.lang.String)
+     * @see org.opencms.search.CmsSearchIndex#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     @Override
     public void addConfigurationParameter(String key, String value) {
@@ -190,7 +190,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#createEmptyDocument(org.opencms.file.CmsResource)
+     * @see org.opencms.search.CmsSearchIndex#createEmptyDocument(org.opencms.file.CmsResource)
      */
     @Override
     public I_CmsSearchDocument createEmptyDocument(CmsResource resource) {
@@ -201,7 +201,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#createIndexWriter(boolean, org.opencms.report.I_CmsReport)
+     * @see org.opencms.search.CmsSearchIndex#createIndexWriter(boolean, org.opencms.report.I_CmsReport)
      */
     @Override
     public I_CmsIndexWriter createIndexWriter(boolean create, I_CmsReport report) {
@@ -210,7 +210,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#getConfiguration()
+     * @see org.opencms.search.CmsSearchIndex#getConfiguration()
      */
     @Override
     public CmsParameterConfiguration getConfiguration() {
@@ -223,7 +223,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#getDocument(java.lang.String, java.lang.String)
+     * @see org.opencms.search.CmsSearchIndex#getDocument(java.lang.String, java.lang.String)
      */
     @Override
     public I_CmsSearchDocument getDocument(String fieldname, String term) {
@@ -307,7 +307,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#initialize()
+     * @see org.opencms.search.CmsSearchIndex#initialize()
      */
     @Override
     public void initialize() throws CmsSearchException {
@@ -604,7 +604,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#shutDown()
+     * @see org.opencms.search.CmsSearchIndex#shutDown()
      */
     @Override
     public void shutDown() {
@@ -683,7 +683,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#createIndexBackup()
+     * @see org.opencms.search.CmsSearchIndex#createIndexBackup()
      */
     @Override
     protected String createIndexBackup() {
@@ -709,7 +709,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#excludeFromIndex(CmsObject, CmsResource)
+     * @see org.opencms.search.CmsSearchIndex#excludeFromIndex(CmsObject, CmsResource)
      */
     @Override
     protected boolean excludeFromIndex(CmsObject cms, CmsResource resource) {
@@ -734,7 +734,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherClose()
+     * @see org.opencms.search.CmsSearchIndex#indexSearcherClose()
      */
     @Override
     protected void indexSearcherClose() {
@@ -743,7 +743,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherOpen(java.lang.String)
+     * @see org.opencms.search.CmsSearchIndex#indexSearcherOpen(java.lang.String)
      */
     @Override
     protected void indexSearcherOpen(String path) {
@@ -752,7 +752,7 @@ public class CmsSolrIndex extends A_CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#indexSearcherUpdate()
+     * @see org.opencms.search.CmsSearchIndex#indexSearcherUpdate()
      */
     @Override
     protected void indexSearcherUpdate() {

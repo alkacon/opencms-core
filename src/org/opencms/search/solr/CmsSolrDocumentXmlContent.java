@@ -35,7 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.Messages;
@@ -80,10 +80,10 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
     }
 
     /**
-     * @see org.opencms.search.documents.CmsDocumentXmlContent#extractContent(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.A_CmsSearchIndex)
+     * @see org.opencms.search.documents.CmsDocumentXmlContent#extractContent(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.CmsSearchIndex)
      */
     @Override
-    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
         I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
@@ -106,7 +106,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
      * 
      * @throws CmsException if something goes wrong
      */
-    public I_CmsExtractionResult extractElementContent(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    public I_CmsExtractionResult extractElementContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
         logContentExtraction(resource, index);

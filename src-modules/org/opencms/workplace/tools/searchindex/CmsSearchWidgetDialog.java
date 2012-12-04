@@ -31,7 +31,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * A <code>{@link org.opencms.workplace.CmsWidgetDialog}</code> that performs a 
- * search on the <code>{@link org.opencms.search.A_CmsSearchIndex}</code> identified 
+ * search on the <code>{@link org.opencms.search.CmsSearchIndex}</code> identified 
  * by request parameter 
  * <code>{@link org.opencms.workplace.tools.searchindex.A_CmsEditSearchIndexDialog#PARAM_INDEXNAME}</code> 
  * using an instance of <code>{@link org.opencms.search.CmsSearchParameters}</code> 
@@ -237,7 +237,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      */
     public List<CmsSearchField> getSearchFields() {
 
-        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(getParamIndexName());
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndexGeneral(getParamIndexName());
         List<CmsSearchField> result = new ArrayList<CmsSearchField>();
         Iterator<CmsSearchField> i = index.getFieldConfiguration().getFields().iterator();
         while (i.hasNext()) {

@@ -34,7 +34,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResultList;
 import org.opencms.search.galleries.CmsGallerySearch;
@@ -188,7 +188,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         OpenCms.getSearchManager().rebuildAllIndexes(report);
 
         // make sure the ADE index actually exists
-        A_CmsSearchIndex adeIndex = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        CmsSearchIndex adeIndex = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         assertNotNull("Index for galleries not initialized", adeIndex);
         assertEquals("Index for galleries not of required class", CmsGallerySearchIndex.class, adeIndex.getClass());
     }
@@ -395,7 +395,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
         cms.lockResource("/foo1.txt");
         cms.moveResource("/foo1.txt", "/foo2.txt");
         OpenCms.getSearchManager().updateOfflineIndexes(5000);
-        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         CmsSearchParameters params = new CmsSearchParameters("/foo1.txt");
         CmsSearchResultList results = index.search(cms, params);
         assertEquals(1, results.size());

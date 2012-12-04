@@ -121,8 +121,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching with limiting to time ranges");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndexLucene(INDEX_OFFLINE);
-        index.addConfigurationParameter(A_CmsSearchIndex.TIME_RANGE, "true");
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "true");
         assertTrue("Index '" + INDEX_OFFLINE + "' not checking time range as expected", index.isCheckingTimeRange());
 
         CmsSearch searchBean = new CmsSearch();
@@ -211,8 +211,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching with optimized limiting to time ranges");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndexLucene(INDEX_OFFLINE);
-        index.addConfigurationParameter(A_CmsSearchIndex.TIME_RANGE, "false");
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
         assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
 
         CmsSearch searchBean = new CmsSearch();
@@ -308,8 +308,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching without a query only using a filter");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndexLucene(INDEX_OFFLINE);
-        index.addConfigurationParameter(A_CmsSearchIndex.TIME_RANGE, "false");
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
         assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
 
         CmsSearch searchBean = new CmsSearch();
@@ -413,7 +413,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing searching for categories");
 
-        CmsSearchIndex index = OpenCms.getSearchManager().getIndexLucene(INDEX_OFFLINE);
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
         assertTrue(index.getFieldConfiguration() instanceof CmsSearchFieldConfigurationOldCategories);
 
         // perform a search on the newly generated index

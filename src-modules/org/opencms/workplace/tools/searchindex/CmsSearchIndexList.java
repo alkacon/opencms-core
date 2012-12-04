@@ -32,7 +32,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsLuceneField;
@@ -223,7 +223,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             List<String> removedItems = new ArrayList<String>();
             while (itItems.hasNext()) {
                 CmsListItem listItem = itItems.next();
-                searchManager.removeSearchIndex(searchManager.getIndex((String)listItem.get(LIST_COLUMN_NAME)));
+                searchManager.removeSearchIndex(searchManager.getIndexGeneral((String)listItem.get(LIST_COLUMN_NAME)));
                 removedItems.add(listItem.getId());
             }
             writeConfiguration(false);
@@ -265,7 +265,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
         String action = getParamListAction();
         if (action.equals(LIST_ACTION_DELETE)) {
-            searchManager.removeSearchIndex(searchManager.getIndex(index));
+            searchManager.removeSearchIndex(searchManager.getIndexGeneral(index));
             writeConfiguration(false);
         } else if (action.equals(LIST_ACTION_REBUILD)) {
             // forward to the rebuild index screen   
@@ -315,8 +315,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
         List<CmsListItem> result = new ArrayList<CmsListItem>();
         // get content
-        List<A_CmsSearchIndex> indexes = OpenCms.getSearchManager().getSearchIndexes();
-        for (A_CmsSearchIndex index : indexes) {
+        List<CmsSearchIndex> indexes = OpenCms.getSearchManager().getSearchIndexesAll();
+        for (CmsSearchIndex index : indexes) {
             CmsListItem item = getList().newItem(index.getName());
             item.set(LIST_COLUMN_NAME, index.getName());
             item.set(LIST_COLUMN_CONFIGURATION, index.getFieldConfiguration().getName());
@@ -567,7 +567,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
         // search for the corresponding A_CmsSearchIndex: 
         String idxName = (String)item.get(LIST_COLUMN_NAME);
-        A_CmsSearchIndex idx = OpenCms.getSearchManager().getIndexLucene(idxName);
+        CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(idxName);
         if (idx != null) {
             StringBuffer html = new StringBuffer();
             CmsSearchFieldConfiguration idxFieldConfiguration = idx.getFieldConfiguration();
@@ -640,7 +640,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
         StringBuffer html = new StringBuffer();
         // search for the corresponding A_CmsSearchIndex: 
-        A_CmsSearchIndex idx = OpenCms.getSearchManager().getIndex((String)item.get(LIST_COLUMN_NAME));
+        CmsSearchIndex idx = OpenCms.getSearchManager().getIndexGeneral((String)item.get(LIST_COLUMN_NAME));
 
         html.append("<ul>\n");
         // get the index sources (nice API)

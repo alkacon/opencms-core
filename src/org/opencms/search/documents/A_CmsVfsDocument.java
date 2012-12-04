@@ -34,7 +34,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
 /**
  * Base document factory class for a VFS <code>{@link org.opencms.file.CmsResource}</code>, 
  * just requires a specialized implementation of 
- * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, CmsResource, A_CmsSearchIndex)}</code>
+ * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, CmsResource, CmsSearchIndex)}</code>
  * for text extraction from the binary document content.<p>
  * 
  * @since 6.0.0 
@@ -102,9 +102,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, A_CmsSearchIndex)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, CmsSearchIndex)
      */
-    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, A_CmsSearchIndex index)
+    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsException {
 
         // extract the content from the resource
@@ -230,7 +230,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
      * @param resource the resource to log content extraction for
      * @param index the search index to log content extraction for
      */
-    protected void logContentExtraction(CmsResource resource, A_CmsSearchIndex index) {
+    protected void logContentExtraction(CmsResource resource, CmsSearchIndex index) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(

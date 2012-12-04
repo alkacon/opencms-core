@@ -146,7 +146,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     }
 
     /**
-     * @see org.opencms.search.A_CmsSearchIndex#getDocumentFactory(org.opencms.file.CmsResource)
+     * @see org.opencms.search.CmsSearchIndex#getDocumentFactory(org.opencms.file.CmsResource)
      */
     @Override
     public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
@@ -563,7 +563,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
      * We are overriding getResource since the default implementation uses the path to read the resource,
      * which doesn't work for resources in a different site.<p>
      * 
-     * @see org.opencms.search.A_CmsSearchIndex#getResource(org.opencms.file.CmsObject, org.opencms.search.I_CmsSearchDocument)
+     * @see org.opencms.search.CmsSearchIndex#getResource(org.opencms.file.CmsObject, org.opencms.search.I_CmsSearchDocument)
      */
     @Override
     protected CmsResource getResource(CmsObject cms, I_CmsSearchDocument doc) {

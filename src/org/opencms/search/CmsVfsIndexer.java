@@ -60,7 +60,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     protected CmsObject m_cms;
 
     /** The index. */
-    protected A_CmsSearchIndex m_index;
+    protected CmsSearchIndex m_index;
 
     /** The report. */
     protected I_CmsReport m_report;
@@ -109,7 +109,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      *     
      * @return the OpenCms search index updated by this indexer 
      */
-    public A_CmsSearchIndex getIndex() {
+    public CmsSearchIndex getIndex() {
 
         return m_index;
     }
@@ -161,9 +161,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.A_CmsSearchIndex)
+     * @see org.opencms.search.I_CmsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex)
      */
-    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, A_CmsSearchIndex index) {
+    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, CmsSearchIndex index) {
 
         CmsVfsIndexer indexer = new CmsVfsIndexer();
 

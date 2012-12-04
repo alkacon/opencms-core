@@ -30,7 +30,7 @@
     List indexNames = searchManager.getIndexNames();
 	for (int i = 0, n = indexNames.size(); i < n; i++) {
 		String indexName = (String)indexNames.get(i);
-		A_CmsSearchIndex index = searchManager.getIndex(indexName);
+		CmsSearchIndex index = searchManager.getIndex(indexName);
 %>
 		<tr>
 			<td><%=index.getName()%></td>

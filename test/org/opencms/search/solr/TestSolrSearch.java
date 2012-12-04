@@ -36,7 +36,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.fields.CmsSearchField;
@@ -110,8 +110,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
                 // disable all lucene indexes
                 for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
                     if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
-                        A_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index instanceof CmsSearchIndex) {
+                        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                        if (index != null) {
                             index.setEnabled(false);
                         }
                     }
@@ -239,7 +239,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         index.setProject("Offline");
         // important: use german locale for a special treat on term analyzing
         index.setLocale(Locale.GERMAN);
-        index.setRebuildMode(A_CmsSearchIndex.REBUILD_MODE_AUTO);
+        index.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         index.setFieldConfigurationName("solr_fields");
         index.addSourceName("solr_source2");

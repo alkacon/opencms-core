@@ -32,7 +32,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsSearchIndex;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * A list that displays information about the <code>{@link org.opencms.search.CmsSearchIndexSource}</code> 
- * that are members of the <code>{@link org.opencms.search.A_CmsSearchIndex}</code> 
+ * that are members of the <code>{@link org.opencms.search.CmsSearchIndex}</code> 
  * in the current request scope (param "searchindex").<p> 
  * 
  * This list is no stand-alone page but has to be embedded in another dialog 
@@ -464,7 +464,7 @@ public class CmsSearchIndexSourceList extends A_CmsEmbeddedListDialog {
     private List<CmsSearchIndexSource> searchIndexSources() {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
-        A_CmsSearchIndex index = manager.getIndex(getParamIndexName());
+        CmsSearchIndex index = manager.getIndexGeneral(getParamIndexName());
         List<CmsSearchIndexSource> sources = index.getSources();
         return sources;
     }
