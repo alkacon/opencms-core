@@ -95,9 +95,13 @@ input.textBox{
 	box-shadow: none;
 	width: 100%;
 	padding: 0px 4px;
+	margin: 0px;
+	line-height: value("constants.css.lineHeight");
 	height: 18px;
-	font-size: 12px;
+	font-size: value("constants.css.fontSize");
 	outline:none;
+	display: inline;
+	vertical-align: baseline;
 }
 
 

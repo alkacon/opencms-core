@@ -14,6 +14,9 @@ input.textBox {
 	font-size: value("constants.css.fontSize");
 	box-shadow:none;
 	outline: none;
+	display: inline;
+	height: auto;
+	vertical-align: baseline;
 }
 input.textBox:focus{
 	box-shadow:none;
