@@ -373,7 +373,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                     m_croppingParam = new CmsCroppingParamBean(croppingParameter);
                     String path = resourcePath + "?";
                     path += croppingParameter.toString();
-                    path += PARAMETER_FORMAT + croppingParameter.getFormatName();
+                    path += "&" + PARAMETER_FORMAT + croppingParameter.getFormatName();
                     setValue(path, true);
                     m_popup.hide();
                 }
