@@ -83,6 +83,16 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     }
 
     /**
+     * Returns true if a results tab exists.<p>
+     * 
+     * @return true if a results tab exists 
+     */
+    public boolean hasResultsTab() {
+
+        return m_galleryDialog.getResultsTab() != null;
+    }
+
+    /**
      * Hides or shows the show-preview-button.<p>
      * 
      * @param hide <code>true</code> to hide the button
@@ -416,7 +426,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
-    }-*/;
+                                           return $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+                                           }-*/;
 
 }

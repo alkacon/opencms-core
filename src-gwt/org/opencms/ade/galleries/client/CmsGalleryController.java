@@ -1336,7 +1336,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         // if the RPC call will be sent the search object is in a unchanged state
         m_searchObjectChanged = false;
-
+        if (!m_handler.hasResultsTab()) {
+            return;
+        }
         if (m_searchObject.isEmpty()) {
             // don't search: notify the user that at least one search criteria should be selected
             m_handler.showNoParamsMessage();
