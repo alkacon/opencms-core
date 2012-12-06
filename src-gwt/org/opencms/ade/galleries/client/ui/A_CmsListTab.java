@@ -106,8 +106,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         public void onClick(ClickEvent event) {
 
             if (event.getSource().equals(m_selectButton)) {
-                m_checkBox.setChecked(true);
-                onSelectionChange();
+                selectBeforeGoingToResultTab();
                 getTabHandler().selectResultTab();
             } else if (event.getSource().equals(m_checkBox)) {
                 onSelectionChange();
@@ -119,8 +118,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
          */
         public void onDoubleClick(DoubleClickEvent event) {
 
-            m_checkBox.setChecked(true);
-            onSelectionChange();
+            selectBeforeGoingToResultTab();
             getTabHandler().selectResultTab();
             event.stopPropagation();
             event.preventDefault();
@@ -150,6 +148,16 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
          * Executed on selection change. Either when the check box was clicked or on double click on a list item.<p>
          */
         protected abstract void onSelectionChange();
+
+        /**
+         * This method is called if a list item is selected in a way such that the result tab should be displayed
+         * immediately.<p>
+         */
+        protected void selectBeforeGoingToResultTab() {
+
+            m_checkBox.setChecked(true);
+            onSelectionChange();
+        }
     }
 
     /**

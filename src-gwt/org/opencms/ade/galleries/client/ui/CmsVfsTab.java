@@ -79,6 +79,7 @@ public class CmsVfsTab extends A_CmsListTab {
 
             super(checkBox);
             m_vfsEntry = vfsEntry;
+            m_selectionHandlers.add(this);
         }
 
         /**
@@ -109,6 +110,24 @@ public class CmsVfsTab extends A_CmsListTab {
                 getTabHandler().onSelectFolder(m_vfsEntry.getRootPath(), getCheckBox().isChecked());
             }
         }
+
+        /**
+         * @see org.opencms.ade.galleries.client.ui.A_CmsListTab.A_SelectionHandler#selectBeforeGoingToResultTab()
+         */
+        @Override
+        protected void selectBeforeGoingToResultTab() {
+
+            for (SelectionHandler otherHandler : m_selectionHandlers) {
+                if ((otherHandler != this)
+                    && (otherHandler.getCheckBox() != null)
+                    && otherHandler.getCheckBox().isChecked()) {
+                    otherHandler.getCheckBox().setChecked(false);
+                    otherHandler.onSelectionChange();
+                }
+            }
+            getCheckBox().setChecked(true);
+            onSelectionChange();
+        }
     }
 
     /** Text metrics key. */
@@ -119,6 +138,9 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /** The tab handler. */
     protected CmsVfsTabHandler m_tabHandler;
+
+    /** The selection handlers for the current tab. */
+    List<SelectionHandler> m_selectionHandlers = new ArrayList<SelectionHandler>();
 
     /** Flag indicating files are included. */
     private boolean m_includeFiles;
@@ -193,6 +215,7 @@ public class CmsVfsTab extends A_CmsListTab {
     protected void clear() {
 
         clearList();
+        m_selectionHandlers.clear();
         m_entryMap = new IdentityHashMap<CmsLazyTreeItem, CmsVfsEntryBean>();
     }
 
