@@ -800,10 +800,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0]
             : null);
         }
-        // if no parameter is specified try to use the default online/offline indexes by context
-        indexName = (indexName == null) && cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
-        : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
+        if (indexName == null) {
+            // if no parameter is specified try to use the default online/offline indexes by context
+            indexName = cms.getRequestContext().getCurrentProject().isOnlineProject()
+            ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
+            : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
+        }
         // try to get the index
         index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
         if (index == null) {
@@ -1273,7 +1275,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         CmsSearchIndex index = getIndexGeneral(indexName);
         if (index instanceof CmsSearchIndex) {
-            return (CmsSearchIndex)index;
+            return index;
         }
         return null;
     }
