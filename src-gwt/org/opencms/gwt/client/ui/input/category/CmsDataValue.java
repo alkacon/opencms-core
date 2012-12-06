@@ -97,6 +97,10 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
     /** The ui-binder instance for this class. */
     private static I_CmsDataValueUiBinder uiBinder = GWT.create(I_CmsDataValueUiBinder.class);
 
+    /** The button panel. */
+    @UiField
+    FlowPanel m_buttonPanel;
+
     /**The image panel. */
     @UiField
     SimplePanel m_imagePanel;
@@ -112,10 +116,6 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
     /** The table. */
     @UiField
     FlexTable m_table;
-
-    /** The button panel. */
-    @UiField
-    FlowPanel m_buttonPanel;
 
     /** The css string for the image that is shown in front of the label. */
     private String m_image;
@@ -166,6 +166,16 @@ public class CmsDataValue extends Composite implements I_CmsTruncable {
     public String getLabel() {
 
         return m_parameters[0];
+    }
+
+    /**
+     * Gets the label widget.<p>
+     * 
+     * @return the label widget
+     */
+    public Label getLabelWidget() {
+
+        return m_label;
     }
 
     /**

@@ -51,6 +51,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -258,6 +260,15 @@ public class CmsVfsTab extends A_CmsListTab {
             result = new CmsLazyTreeItem(dataValue, true);
             selectionHandler = new SelectionHandler(vfsEntry, null);
         }
+        // we need this in a final variable to access it in the click handler 
+        final CmsLazyTreeItem constResult = result;
+        dataValue.getLabelWidget().addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent e) {
+
+                constResult.setOpen(true);
+            }
+        });
         dataValue.addDomHandler(selectionHandler, DoubleClickEvent.getType());
         if (getTabHandler().hasSelectResource()) {
             String selectPath = m_tabHandler.getSelectPath(vfsEntry);
