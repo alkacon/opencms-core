@@ -302,6 +302,8 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             if (m_includeFiles) {
                 tabIds = GalleryTabId.cms_tab_types.name()
                     + ","
+                    + GalleryTabId.cms_tab_galleries.name()
+                    + ","
                     + GalleryTabId.cms_tab_vfstree.name()
                     + ","
                     + GalleryTabId.cms_tab_sitemap.name()
