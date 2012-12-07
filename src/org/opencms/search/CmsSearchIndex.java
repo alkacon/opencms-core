@@ -2169,14 +2169,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         // check if the resource exits in the VFS, 
         // this will implicitly check read permission and if the resource was deleted
-        String contextPath = cms.getRequestContext().removeSiteRoot(doc.getPath());
-
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
         if (isRequireViewPermission()) {
             filter = CmsResourceFilter.DEFAULT_ONLY_VISIBLE;
         }
         try {
-            return cms.readResource(contextPath, filter);
+            CmsObject clone = OpenCms.initCmsObject(cms);
+            clone.getRequestContext().setSiteRoot("");
+            return clone.readResource(doc.getPath(), filter);
         } catch (CmsException e) {
             // Do nothing 
         }
