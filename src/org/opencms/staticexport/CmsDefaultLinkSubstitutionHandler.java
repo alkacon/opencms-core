@@ -483,8 +483,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return null;
         }
 
-        // relative URI (= VFS path relative to currently selected site root)
         if (CmsStringUtil.isNotEmpty(path)) {
+            if (OpenCms.getSiteManager().getSiteRoot(path) != null) {
+                // path already seems to be a root path 
+                return path + suffix;
+            }
+            // relative URI (= VFS path relative to currently selected site root)
             return cms.getRequestContext().addSiteRoot(path) + suffix;
         }
 
