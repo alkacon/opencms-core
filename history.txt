@@ -15,6 +15,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 8.5.0.7 - December 10, 2012
+* Fixed issue #124 where search excerpt was missing when using wildcards
+* Fixed issue #117 where xsd:choice nesting another xsd:choice caused errors in new content editor
+* Fixed start gallery issue when opening the file selector dialog
+- Improved locale handling when opening the new content editor
+
 OpenCms 8.5.0.6 - November 30, 2012
 * Fixed issue #116 where the upload did not work from gallery folder tab
 * Fixed radio select widget default value handling
