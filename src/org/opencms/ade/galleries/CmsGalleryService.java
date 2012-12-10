@@ -84,6 +84,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.commons.CmsPreferences;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.text.DateFormat;
@@ -449,10 +450,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
                 data.setStartTab(GalleryTabId.cms_tab_results);
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery()) && !types.isEmpty()) {
+
                     String lastGallery = getWorkplaceSettings().getLastUsedGallery(types.get(0).getTypeId());
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastGallery) && !data.getGalleries().isEmpty()) {
+                        // check the user preferences for any configured start gallery
+                        String galleryTypeName = data.getGalleries().get(0).getType();
+                        lastGallery = getWorkplaceSettings().getUserSettings().getStartGallery(
+                            galleryTypeName,
+                            getCmsObject());
+                        if (!CmsPreferences.INPUT_DEFAULT.equals(lastGallery)) {
+                            lastGallery = getCmsObject().getRequestContext().removeSiteRoot(lastGallery);
+                        }
+                    }
                     // check if the gallery is available in this site and still exists
                     if (getCmsObject().existsResource(lastGallery)) {
                         data.setStartGallery(lastGallery);
+                    } else if (!data.getGalleries().isEmpty()) {
+                        // use the first available gallery
+                        data.setStartGallery(data.getGalleries().get(0).getPath());
                     }
                 }
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(data.getStartGallery())
